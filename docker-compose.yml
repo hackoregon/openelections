@@ -1,5 +1,22 @@
 version: '3'
 services:
+  api:
+    tty: true # Enables debugging capabilities when attached to this container.
+    image: 'bitnami/express:latest'
+    command: npm run development
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - SKIP_DB_WAIT=0
+      - SKIP_DB_MIGRATION=0
+      - SKIP_NPM_INSTALL=0
+      - SKIP_BOWER_INSTALL=0
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api:/app
   redis:
     image: redis
     ports: ['6379:6379']
