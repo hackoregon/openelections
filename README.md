@@ -12,8 +12,12 @@ You'll need docker to get going. Setup docker by visiting: https://docs.docker.c
 
 Pull all the docker images by running: 
 
+```bash
     docker-compose pull
+```
     
 Start application by running:
 
-    docker-compose up -d
+```bash
+       docker-compose up -d
+```
