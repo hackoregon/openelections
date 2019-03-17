@@ -2,3 +2,4 @@
 node_modules/
 .gitignore
 docker-compose.yml
+package-lock.json
