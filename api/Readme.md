@@ -25,3 +25,11 @@ Finally, boot up the development server:
 ```
 npm run develop
 ```
+
+We use TSlint to run linting. You can run linting and tests by running:
+
+```
+yarn test
+#or 
+npm test
+```
