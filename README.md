@@ -19,5 +19,5 @@ Pull all the docker images by running:
 Start application by running:
 
 ```bash
-       docker-compose up -d
+    docker-compose up -d
 ```
