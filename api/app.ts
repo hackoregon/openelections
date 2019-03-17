@@ -31,14 +31,14 @@ const sequelize = new Sequelize(process.env.DB_NAME || 'testdb', process.env.DB_
   host: process.env.DB_HOST || 'localhost',
   dialect: 'postgres'
 });
-console.log('[APP.JS]: sequelize?')
+
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    console.log('[APP.JS]: Connection has been established successfully.');
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    console.error('[APP.JS]: Unable to connect to the database:', err);
   });
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
