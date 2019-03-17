@@ -5,7 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import * as logger from 'morgan';
 // import * as session 'express-session';
 // import * as passport from 'passport';
-import * as Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
@@ -27,9 +27,12 @@ app.use(cookieParser());
 // app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const sequelize = new Sequelize(process.env.DB_NAME || 'testdb', process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST || 'localhost',
-  dialect: 'postgres'
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: 'postgres'
 });
 
 sequelize
@@ -40,6 +43,7 @@ sequelize
   .catch(err => {
     console.error('[APP.JS]: Unable to connect to the database:', err);
   });
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
