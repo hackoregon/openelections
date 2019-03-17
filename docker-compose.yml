@@ -2,7 +2,10 @@ version: '3'
 services:
   api:
     tty: true # Enables debugging capabilities when attached to this container.
-    image: 'bitnami/express:latest'
+    user: root
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.development'
     # command: npm run development
     command: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "develop"]
     environment:
