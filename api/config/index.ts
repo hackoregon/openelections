@@ -8,7 +8,6 @@ export default {
   },
   test: {
     username: 'database_test',
-    password: null,
     database: 'database_test',
     host: process.env.DB_HOST,
     dialect: 'postgres'

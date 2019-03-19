@@ -8,7 +8,7 @@
     "develop": "nodemon --watch ./ -e ts --exec npm run server",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
-    "test": "echo 'test'",
+    "test": "mocha ./test/",
     "erd": "ts-node models/erd.ts"
   },
   "dependencies": {

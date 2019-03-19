@@ -11,8 +11,8 @@ import {
     HasManyRemoveAssociationsMixin,
     HasManySetAssociationsMixin,
     Model,
-} from 'sequelize'
-import sequelize from './db'
+} from 'sequelize';
+import sequelize from './db';
 
 export class UserGroup extends Model {
     public static associations: {
@@ -32,7 +32,7 @@ export class UserGroup extends Model {
     public countUsers: HasManyCountAssociationsMixin;
     public hasUser: HasManyHasAssociationMixin<User, number>;
     public removeUser: HasManyRemoveAssociationMixin<User, number>;
-    public removeUsers: HasManyRemoveAssociationsMixin<User, number>
+    public removeUsers: HasManyRemoveAssociationsMixin<User, number>;
 }
 
 // attach all the metadata to the model
@@ -41,5 +41,5 @@ UserGroup.init({ name: DataTypes.STRING }, { sequelize });
 
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
-import { User } from './User'
+import { User } from './User';
 export const Users = UserGroup.hasMany(User, { as: 'users', foreignKey: 'groupId' });

@@ -6,7 +6,7 @@ import {
     DataTypes,
     FindOptions,
     Model,
-} from 'sequelize'
+} from 'sequelize';
 import sequelize from './db';
 
 export class User extends Model {
@@ -26,7 +26,7 @@ export class User extends Model {
     public group: UserGroup;
     public getGroup: BelongsToGetAssociationMixin<UserGroup>;
     public setGroup: BelongsToSetAssociationMixin<UserGroup, number>;
-    public createGroup: BelongsToCreateAssociationMixin<UserGroup>
+    public createGroup: BelongsToCreateAssociationMixin<UserGroup>;
 }
 
 User.init(
@@ -40,10 +40,10 @@ User.init(
 
 // Hooks
 User.afterFind((users, options: FindOptions) => {
-    console.log('found')
+    console.log('found');
 });
 
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
-import { UserGroup } from './UserGroup'
+import { UserGroup } from './UserGroup';
 export const Group = User.belongsTo(UserGroup, { as: 'group', foreignKey: 'groupId' });
