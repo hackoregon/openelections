@@ -55,3 +55,16 @@ services:
       PGDATA: /var/lib/postgresql/data
 
 ```
+
+## Access the DB via command line
+
+```bash
+# Get into the [ db ] container
+docker-compose run db bash
+
+# Once into the [ db ] container you can 
+psql -h db -U postgres postgres
+#pw: password
+
+# Now you can query the db inside the postgres db
+```
