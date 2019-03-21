@@ -14,3 +14,11 @@ export default router.get('/', async (req, res, next) => {
         }
     }));
 });
+
+router.get('/test', async (req, res, next) => {
+    res.status(200);
+    res.contentType('application/json');
+    res.send(JSON.stringify({
+        test: 'yep'
+    }));
+})

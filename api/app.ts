@@ -6,6 +6,7 @@ import * as logger from 'morgan';
 // import * as session 'express-session';
 // import * as passport from 'passport';
 import sequelize from './models/db';
+import passportSetup from './auth/passport';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
@@ -21,9 +22,9 @@ app.use(cookieParser());
 //   resave: false,
 //   saveUninitialized: true
 // }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(flash());
+
+passportSetup(app, sequelize);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 sequelize
