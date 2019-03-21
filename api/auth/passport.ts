@@ -1,8 +1,7 @@
+
 import * as bcrypt from 'bcryptjs';
 import * as passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-
-
+const LocalStrategy = require('passport-local').Strategy;
 export default (app, sequelize) => {
 
 app.use(passport.initialize());
@@ -32,13 +31,13 @@ passport.use(new LocalStrategy( (username, password, done) => {
 
 passport.serializeUser( (user: {id: string}, done) => {
   // done(null, user.id);
+
 });
 
 passport.deserializeUser(function(id, done) {
   // Get user from DB. If pass: done(err, user);
 
 });
-
 
 
 function generateHash (password: string) {
@@ -51,3 +50,4 @@ function comparePass(userPassword: string, databasePassword: string) {
 }
 
 };
+
