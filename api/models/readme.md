@@ -159,7 +159,7 @@ campaignId
 ```
 
 ### Permissions
-Field typy: boolean
+Field type: boolean
 
 A quick look up perimissions for instant session validation of resources crud operations. Cached for 48 hours.
 Rehydrated by the application api when permission doesn't exist in redis.    
@@ -167,4 +167,16 @@ Rehydrated by the application api when permission doesn't exist in redis.
 ```
 permissions.{permissionId} - key - an md5Hash of {sessionId}{resource}{level} - value - boolean
 ```
+
+### Data
+Field type - blob/json
+
+A key value store for big data queries stored by the api from postgres
+
+```text
+data.{dataKey} - blog (stringified json}
+
+```
+
+
 
