@@ -1,4 +1,8 @@
-### All tables
+# Postgres data models
+
+The following is a list of table descriptions, fields and general information about each data primitive in our system. It's not meant to be exhaustive, but a guide to build out our models. 
+
+The API data models folder contains the definitive postgres schema and corresponding database model tables. 
 
 Required fields are the minimum number of fields required to **create the record** in the database. The application may require additional fields.
 
@@ -96,6 +100,9 @@ name - varchar(255) - human readable and displayable name for the election cycle
 status - enum[open|closed] - status for the campaign cycle. maybe contain more statuses
 ```
 
+### OfficeSought 
+A list of offices by government and election cycle that campaigns can submit records too, administered by the government administrator.
+
 ### Donor
 Campaigns enter donor information. This in a unique record for each donation and will most likely be duplicated information (i.e. name, phone, email, etc).
 
@@ -112,11 +119,13 @@ A master table of residents from approved data sources. Resident records may be 
 A resident and a donor can be matched. This table records a history of matches (1 max per data source/resident)
 
 ### Donor Match Rule
+A rule for government, election cycle and office sought (unique). TBD.  
 
 ### Expenditure
 Campaigns enter expenditures. This is a unique record for each expenditure.
 
 ### Expenditure Match Rule
+A rule for government, election cycle and office sought (unique). TBD.
 
 ### Settings
 Settings are undefined, added as needed, to customize the application and code for the government entity. Settings might include things like logos, colors, customized text, etc.
@@ -127,4 +136,35 @@ governmentId - record linkage to the government
 key - varchar(255) - the setting key
 value - blob - the binary or text blob. Can be json, binary (image), text, etc.
 ```
+
 ### Documents
+A table of uploaded document links to an encrypted file located in S3.
+
+### History
+A list of operations users have taken, used for data and audit logging. 
+
+# Redis data models
+
+### Sessions
+field type: (hash) https://redis.io/commands/hset
+
+A session lookup for instant user session validation, cached for 48 hours. Rehydrated by the application api on signin.
+
+```
+sessions.{sessionid} - key - secure random UID
+hash:
+userId
+govermentId
+campaignId
+```
+
+### Permissions
+Field typy: boolean
+
+A quick look up perimissions for instant session validation of resources crud operations. Cached for 48 hours.
+Rehydrated by the application api when permission doesn't exist in redis.    
+
+```
+permissions.{permissionId} - key - an md5Hash of {sessionId}{resource}{level} - value - boolean
+```
+
