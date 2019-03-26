@@ -15,7 +15,7 @@ services:
       - POSTGRES_DEV_DB=postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
-      - DB_NAME=postgres
+      - DB_NAME=open_elections_dev
       - DB_HOST=db
       - SKIP_DB_WAIT=0
       - SKIP_DB_MIGRATION=0
@@ -42,7 +42,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=testdb
+      - POSTGRES_DB=open_elections_dev
     networks:
       - openelections
 networks:
