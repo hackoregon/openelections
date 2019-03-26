@@ -10,8 +10,10 @@
     "posttest": "npm run lint",
     "test": "mocha ./test/",
     "erd": "ts-node models/erd.ts",
-    "db:migrate": "./node_modules/.bin/sequelize db:migrate",
-    "db:seed": "./node_modules/.bin/sequelize db:seed:all"
+    "db:migrate": "ts-node ./models/db.ts",
+    "seed": "ts-node ./seeders/users.ts",
+    "db": "./node_modules/.bin/sequelize",
+    "console": "ts-node"
   },
   "dependencies": {
     "@types/express": "^4.16.1",
