@@ -3,9 +3,10 @@ import * as express from'express';
 import * as path from 'path';
 import * as cookieParser from 'cookie-parser';
 import * as logger from 'morgan';
-// import * as session 'express-session';
+import * as session from 'express-session';
 // import * as passport from 'passport';
-import sequelize from './models/db';
+// import sequelize from './models/db';
+import models from './models/db';
 import passportSetup from './auth/passport';
 
 import indexRouter from './routes/index';
@@ -17,17 +18,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(session({
-//   secret: process.env.SECRET_KEY,
-//   resave: false,
-//   saveUninitialized: true
-// }));
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true
+}));
 
-passportSetup(app, sequelize);
 
 app.use(express.static(path.join(__dirname, 'public')));
-
-sequelize
+console.log('crash debug')
+models.sequelize
   .authenticate()
   .then(() => {
     console.log('[APP.JS]: Connection has been established successfully.');
@@ -36,6 +36,7 @@ sequelize
     console.error('[APP.JS]: Unable to connect to the database:', err);
   });
 
+passportSetup(app, models);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

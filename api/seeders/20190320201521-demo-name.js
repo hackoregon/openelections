@@ -5,6 +5,8 @@ module.exports = {
         username: 'testuser',
         firstName: 'John',
         lastName: 'Doe',
+        password: 'lksafdljksd',
+        email: 'test@email.com',
         createdAt : new Date(),
         updatedAt : new Date()
       }], {});
