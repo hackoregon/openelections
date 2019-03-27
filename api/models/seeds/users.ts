@@ -1,5 +1,5 @@
-import db from '../index'
-import {createUserAsync} from "../../services/UserService";
+import db from '../index';
+import { createUserAsync } from '../../services/UserService';
 
 db.then( async connection => {
     await createUserAsync({
@@ -7,6 +7,12 @@ db.then( async connection => {
         password: 'password',
         firstName: 'Dan',
         lastName: 'Melton'
-    })
-    console.log('User created')
+    });
+    await createUserAsync({
+        email: 'andrew.erickson@civicsoftwarefoundation.org',
+        password: 'password',
+        firstName: 'Andrew',
+        lastName: 'Erickson'
+    });
+    console.log('User created');
 });

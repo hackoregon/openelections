@@ -7,7 +7,7 @@
     "develop": "nodemon --watch ./ -e ts --exec npm run start",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
-    "test": "mocha ./test/",
+    "test": "mocha -r ts-node/register test/*.spec.ts",
     "seed": "tsc && node build/models/seeds/users.js",
     "console": "ts-node"
   },
@@ -29,18 +29,21 @@
     "pg-hstore": "^2.3.2",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
-    "ts-node": "^8.0.3",
     "typeorm": "^0.2.16",
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/chai": "^4.1.7",
     "@types/express-session": "^1.15.12",
-    "@types/passport": "^1.0.0",
-    "nodemon": "^1.18.10",
-    "tslint": "^5.14.0",
-    "ts-node": "3.3.0",
+    "@types/mocha": "^5.2.6",
+    "@types/morgan": "^1.7.35",
     "@types/node": "^8.0.29",
+    "@types/passport": "^1.0.0",
+    "chai-http": "^4.2.1",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
     "typescript": "2.5.2"
   }
 }

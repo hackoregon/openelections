@@ -1,6 +1,6 @@
-import {Request, Response} from "express";
-import {getManager} from "typeorm";
-import {User} from "../models/entity/User";
+import { Request, Response } from 'express';
+import { getManager } from 'typeorm';
+import { User } from '../models/entity/User';
 
 /**
  * Loads all users from the database.

@@ -1,11 +1,11 @@
-import * as express from'express';
+import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from "body-parser";
-import { AppRoutes } from "./routes";
-import db from "./models";
+import { AppRoutes } from './routes';
+import db from './models';
 
+const app = express();
 db.then( async connection => {
-    const app = express();
     app.use(bodyParser.json());
 
     AppRoutes.forEach(route => {
@@ -20,5 +20,6 @@ db.then( async connection => {
 
 
     app.listen(3000);
-});
+  });
 
+  export default app; // for testing
