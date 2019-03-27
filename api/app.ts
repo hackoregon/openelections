@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as logger from 'morgan';
-import * as bodyParser from "body-parser";
+import * as bodyParser from 'body-parser';
 import { AppRoutes } from './routes';
 import db from './models';
 
