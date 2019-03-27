@@ -12,7 +12,7 @@ export interface IPasswordHash {
 
 export function createHash(password:string):IPasswordHash  {
     const salt = generateSalt(SaltLength);
-    const hash = md5(password + salt);
+    const hash = md5(salt + password);
     return {hash, salt};
 }
 
