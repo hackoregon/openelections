@@ -5,6 +5,8 @@
   "scripts": {
     "start": "tsc && node build/app.js",
     "develop": "nodemon --watch ./ -e ts --exec npm run start",
+    "dev:seed": "npm run develop && npm run seed",
+    "testdev": "npm run develop & npm run test",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
     "test": "mocha -r ts-node/register test/*.spec.ts",
@@ -40,7 +42,7 @@
     "@types/morgan": "^1.7.35",
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.0",
-    "chai-http": "^4.2.1",
+    "axios": "^0.18.0",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.3",
     "tslint": "^5.14.0",

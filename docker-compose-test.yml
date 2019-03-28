@@ -1,0 +1,52 @@
+version: '3'
+services:
+  api:
+    tty: true # Enables debugging capabilities when attached to this container.
+    user: root
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.test'
+    # command: npm run development
+    command: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "testdev"]
+    environment:
+      - PORT=3000
+      - NODE_ENV=test
+      - SECRET_KEY=bananas
+      - POSTGRES_DEV_DB=postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=open_elections_dev
+      - DB_HOST=db
+      - SKIP_DB_WAIT=0
+      - SKIP_DB_MIGRATION=0
+      - SKIP_NPM_INSTALL=0
+      - SKIP_BOWER_INSTALL=0
+      - DB_PORT=5432
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api:/app
+    networks:
+      - openelections
+  redis:
+    image: redis
+    ports: ['6379:6379']
+    networks:
+      - openelections
+  db:
+    image: mdillon/postgis
+    ports: ['5432:5432']
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=open_elections_dev
+    networks:
+      - openelections
+networks:
+  openelections:
+
+

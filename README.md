@@ -21,3 +21,10 @@ Start application by running:
 ```bash
     docker-compose up -d
 ```
+
+
+### Testing
+
+Gotchas:
+As a heads up. When you are testing make sure you understand the difference between `docker-compose run api bash` and `docker exec -it {containerIdHere} bash`. The first actually will start up a new container for the api, which means when you bash into it, you are actually not in the same docker-compose network. For more into on this difference, checkout [this stackoverflow response](https://stackoverflow.com/questions/37063822/econnrefused-nodejs-with-express-inside-docker-container). 
+

@@ -3,10 +3,15 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import { AppRoutes } from './routes';
 import db from './models';
+import { initialSeedInit } from './models/seeds/users';
 
-const app = express();
-db.then( async connection => {
+export default db.then( async connection => {
+    const app = express();
     app.use(bodyParser.json());
+
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        await initialSeedInit(connection);
+    }
 
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: express.Request, response: express.Response, next: Function) => {
@@ -19,7 +24,6 @@ db.then( async connection => {
     app.use(logger('dev'));
 
 
-    app.listen(3000);
-  });
 
-  export default app; // for testing
+    return app.listen(3000);
+  });

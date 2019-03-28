@@ -1,0 +1,17 @@
+## Dockerfile for building production image
+FROM bitnami/express:4.16.4-debian-9-r137
+LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
+
+ENV DISABLE_WELCOME_MESSAGE=1
+USER root
+RUN sudo chown -R bitnami: /app
+
+WORKDIR /app
+COPY package.json .
+RUN npm install
+
+COPY . /app
+COPY wait-for-it.sh .
+
+EXPOSE 3000
+CMD ["npm", "testdev"]
