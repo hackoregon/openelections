@@ -4,10 +4,12 @@ import * as bodyParser from 'body-parser';
 import { AppRoutes } from './routes';
 import db from './models';
 import { initialSeedInit } from './models/seeds/users';
+import passport from './auth/passport';
 
 export default db.then( async connection => {
     const app = express();
     app.use(bodyParser.json());
+    passport(app, connection);
 
     if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         await initialSeedInit(connection);
@@ -15,7 +17,7 @@ export default db.then( async connection => {
 
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: express.Request, response: express.Response, next: Function) => {
-            route.action(request, response)
+            route.action(request, response, next)
                 .then(() => next)
                 .catch(err => next(err));
         });

@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
@@ -20,5 +21,17 @@ export class User {
 
     @Column()
     salt: string;
+
+    async validatePassword(plainTextPassword: string) {
+        return await bcrypt.compare(plainTextPassword, this.passwordHash);
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email
+        };
+    }
 
 }
