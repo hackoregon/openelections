@@ -3,38 +3,39 @@ import { describe, it } from 'mocha';
 import { initialUserArray } from '../models/seeds/users';
 const { expect } = chai;
 import axios from 'axios';
-
-
-
-
+const rootUrl = 'http://localhost:3000/';
 describe('Find initial seeded users', () => {
-  it('Fetches /users endpoint', function(done) {
-    axios.get('http://localhost:3000/users')
+  it('Fetches /users endpoint', (done) => {
+    axios.get(rootUrl + 'users')
       .then( res => {
+        console.log('[TESTING . . .]: ', res.data);
         expect(res.status).to.equal(200);
-        expect(res.data.users).to.deep.equal(initialUserArray);
+        expect(res.data.users[0]).to.have.all.keys('firstName', 'lastName', 'email', 'id');
+        expect(res.data.users[0]).to.not.have.any.keys('password');
         done();
       })
       .catch( err => {
-        console.log(err);
-        done();
+        done(err);
       });
   });
 });
 
-// describe('Fetch /users data', () => {
-//   axios.get('http://localhost:3000/users')
-//     .then( res => {
-//       it('should return status 200', (done) => {
-//         expect(res.status).to.equal(200);
-//         done();
-//       });
-//       it('should return initial user data', (done) => {
-//         expect(res.data.users).to.deep.equal(initialUserArray);
-//         done();
-//       });
-//     })
-//     .catch( err => {
-//       console.log(err);
-//     });
-// });
+describe('Create User', () => {
+  it('Adds a user into the database', (done) => {
+    const testUser = {
+      firstName: 'Andy',
+      lastName: 'Testing',
+      email: 'andy@email.com',
+      password: 'password'
+    };
+    axios.post(rootUrl + 'signup', testUser)
+      .then( res => {
+        expect(res.data).to.be.an('object');
+        expect(res.data).to.not.have.any.keys('password');
+        done();
+      })
+      .catch( err => {
+        done(err);
+      });
+  });
+});

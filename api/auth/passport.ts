@@ -35,7 +35,7 @@ export default (app, connection: Connection) => {
         const user = await userRepo.findOne({ email });
         console.log('[LOCAL STRATEGY]: validHash?', user.passwordHash, user.salt, password );
         if (await validateHash(user.passwordHash, user.salt, password)) {
-          console.log('[LOCAL STRATEGY]: valid hash!!!')
+          console.log('[LOCAL STRATEGY]: valid hash!!!');
           done(undefined, user.toJSON());
         } else {
           done(undefined, false);
