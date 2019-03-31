@@ -1,6 +1,5 @@
 //
 // import { compare as compareHash } from 'bcryptjs';
-import { validateHash } from '../services/UserService';
 import * as passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Connection, getManager } from 'typeorm';
@@ -34,7 +33,7 @@ export default (app, connection: Connection) => {
         console.log('[LOCAL STRATEGY]: Trying . . . ', email, password);
         const user = await userRepo.findOne({ email });
         console.log('[LOCAL STRATEGY]: validHash?', user.passwordHash, user.salt, password );
-        if (await validateHash(user.passwordHash, user.salt, password)) {
+        if (user.validatePassword(password)) {
           console.log('[LOCAL STRATEGY]: valid hash!!!');
           done(undefined, user.toJSON());
         } else {

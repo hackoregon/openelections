@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { createConnection, getConnection, Connection, getConnectionManager } from 'typeorm';
+import { createConnection, Connection } from 'typeorm';
 
 export default async (): Promise<Connection> => {
     let connection: Connection;

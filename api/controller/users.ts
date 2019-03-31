@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getManager } from 'typeorm';
 import { User } from '../models/entity/User';
-import { createUserAsync } from '../services/UserService';
+import { createUserAsync } from '../services/userService';
 import * as passport from 'passport';
 
 /**

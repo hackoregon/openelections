@@ -5,7 +5,8 @@ import { AppRoutes } from "./routes";
 import db from "./models/db";
 import passport from './auth/passport';
 
-export default db().then( async connection => {
+(async () => {
+    const connection = await db();
     const app = express();
     app.use(bodyParser.json());
     passport(app, connection);
@@ -19,8 +20,5 @@ export default db().then( async connection => {
     });
 
     app.use(logger('dev'));
-
-
-
     return app.listen(3000);
-  });
+})();

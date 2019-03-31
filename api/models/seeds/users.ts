@@ -1,4 +1,4 @@
-import {createUserAsync} from "../../services/UserService";
+import {createUserAsync} from "../../services/userService";
 
 export default async () => {
     if (process.env.NODE_ENV !== 'development') {

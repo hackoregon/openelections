@@ -23,6 +23,15 @@ Start application by running:
 ```
 
 
+### Seeding the Databse
+
+We have a set of seed files located in models/seeds, to run them:
+
+```bash
+    docker-compose -f docker-compose-test.yml up -d
+    docker-compose run --rm api npm run seed
+```
+
 ### Testing
 
 > Heads up: Make sure after each test you swipe the dockers or you will probably get `Error: Request failed with status code 403`.
@@ -32,19 +41,16 @@ Start application by running:
     docker-compose -f docker-compose-test.yml build
 ```
 
-2. Then you can run the test:
+2. Then you can run the testdb:
 ```bash
-    docker-compose -f docker-compose-test.yml up
+    docker-compose -f docker-compose-test.yml up -d
 ```
 
-3. Check out the logs and make sure it passes. When done you will want to kill the dockers:
+3. Run the test suite:
+
 ```bash
-    docker-compose -f docker-compose-test.yml stop
-    docker-compose -f docker-compose-test.yml rm
-    docker-compose -f docker-compose-test.yml down
+
+    docker-compose -f docker-compose-test.yml run --rm api bash
+    > npm test
+    > npm test-watch
 ```
-
-Gotchas:
-
-As a heads up. When you are testing and for some reason need to manually connect to a docker instance, make sure you understand the difference between `docker-compose run api bash` and `docker exec -it {containerIdHere} bash`. The first actually will start up a new container for the api, which means when you bash into it, you are actually not in the same docker-compose network. For more into on this difference, checkout [this stackoverflow response](https://stackoverflow.com/questions/37063822/econnrefused-nodejs-with-express-inside-docker-container). 
-

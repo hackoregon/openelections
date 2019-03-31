@@ -3,15 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "tsc && node build/app.js",
-    "develop": "nodemon --watch ./ -e ts --exec npm run start",
+    "start": "ts-node app.ts",
+    "develop": "nodemon --watch ./ -e ts --exec ts-node app.ts",
     "dev:seed": "npm run develop && npm run seed",
     "testdev": "npm-run-all -p -r start test",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
     "test": "mocha --require ts-node/register test/setup.ts test/**/*.spec.ts",
     "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
-    "seed": "tsc && node build/models/seeds/index.js",
+    "seed": "ts-node models/seeds/index.ts",
     "console": "ts-node"
   },
   "dependencies": {
