@@ -33,3 +33,7 @@ yarn test
 #or 
 npm test
 ```
+
+### Testing
+
+We're using fixutres from https://github.com/RobinCK/typeorm-fixtures located in the tests

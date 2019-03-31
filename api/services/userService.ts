@@ -1,31 +1,31 @@
 import { User } from '../models/entity/User';
-import {getRepository} from "typeorm";
+import { getConnection } from 'typeorm';
 
 const crypto = require('crypto');
 
 const SaltLength = 9;
 
 export interface IPasswordHash {
-    hash: string,
-    salt: string
+    hash: string;
+    salt: string;
 }
 
-export function createHash(password:string):IPasswordHash  {
+export function createHash(password: string): IPasswordHash  {
     const salt = generateSalt(SaltLength);
     const hash = md5(salt + password);
     return {hash, salt};
 }
 
-export function validateHash(hash:string, password:string) {
+export function validateHash(hash: string, password: string) {
     const salt = hash.substr(0, SaltLength);
     const validHash = salt + md5(password + salt);
     return hash === validHash;
 }
 
 export function generateSalt(len: number) {
-    let set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ',
-        setLen = set.length,
-        salt = '';
+    const set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ',
+        setLen = set.length;
+    let salt = '';
     for (let i = 0; i < len; i++) {
         const p = Math.floor(Math.random() * setLen);
         salt += set[p];
@@ -38,14 +38,14 @@ export function md5(string: string) {
 }
 
 export interface ICreateUser {
-    email: string,
-    password: string,
-    firstName?: string,
-    lastName?: string,
+    email: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
 }
 
 export function createUserAsync(userAttrs: ICreateUser) {
-    const repository = getRepository(User);
+    const repository = getConnection('default').getRepository('User');
     const user = new User();
     user.firstName = userAttrs.firstName;
     user.lastName = userAttrs.lastName;
@@ -53,5 +53,5 @@ export function createUserAsync(userAttrs: ICreateUser) {
     const { salt, hash } = createHash(userAttrs.password);
     user.salt = salt;
     user.passwordHash = hash;
-    return repository.save(user)
+    return repository.save(user);
 }

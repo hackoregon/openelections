@@ -21,4 +21,5 @@ export class User {
     @Column()
     salt: string;
 
+
 }

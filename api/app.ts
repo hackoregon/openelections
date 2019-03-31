@@ -2,7 +2,7 @@ import * as express from'express';
 import * as logger from 'morgan';
 import * as bodyParser from "body-parser";
 import { AppRoutes } from "./routes";
-import db from "./models";
+import db from "./models/db";
 
 db.then( async connection => {
     const app = express();

@@ -12,16 +12,15 @@ services:
       - PORT=3000
       - NODE_ENV=development
       - SECRET_KEY=bananas
-      - POSTGRES_DEV_DB=postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
       - DB_NAME=open_elections_dev
       - DB_HOST=db
+      - DB_PORT=5432
       - SKIP_DB_WAIT=0
       - SKIP_DB_MIGRATION=0
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
-      - DB_PORT=5432
     depends_on:
       - db
     ports:
