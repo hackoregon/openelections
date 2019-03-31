@@ -1,16 +1,18 @@
-import * as express from'express';
+import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from "body-parser";
 import { AppRoutes } from "./routes";
 import db from "./models/db";
+import passport from './auth/passport';
 
-db.then( async connection => {
+export default db().then( async connection => {
     const app = express();
     app.use(bodyParser.json());
+    passport(app, connection);
 
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: express.Request, response: express.Response, next: Function) => {
-            route.action(request, response)
+            route.action(request, response, next)
                 .then(() => next)
                 .catch(err => next(err));
         });
@@ -19,6 +21,6 @@ db.then( async connection => {
     app.use(logger('dev'));
 
 
-    app.listen(3000);
-});
 
+    return app.listen(3000);
+  });

@@ -1,7 +1,6 @@
-import db from '../db'
 import {createUserAsync} from "../../services/UserService";
 
-export default () => db.then( async connection => {
+export default async () => {
     if (process.env.NODE_ENV !== 'development') {
         return console.log('Can only seed in development mode');
     }
@@ -11,5 +10,10 @@ export default () => db.then( async connection => {
         firstName: 'Dan',
         lastName: 'Melton'
     });
-    console.log('User created');
-});
+    await createUserAsync({
+        email: 'andrew.erickson@civicsoftwarefoundation.org',
+        password: 'password',
+        firstName: 'Andrew',
+        lastName: 'Erickson'
+    });
+}

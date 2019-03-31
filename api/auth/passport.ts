@@ -1,73 +1,54 @@
 //
-// import * as bcrypt from 'bcryptjs';
-// import * as passport from 'passport';
-// // import { Strategy as LocalStrategy } from 'passport-local';
-// const LocalStrategy = require('passport-local').Strategy;
-// import models from '../models/db';
-// const User = models.User;
-// export default (app, sequelize) => {
-//   const Op = sequelize.Op;
-//
-//   app.use(passport.initialize());
-//   app.use(passport.session());
-//   passport.serializeUser<any, any>((user, done) => {
-//     done(undefined, user.id);
-//   });
-//
-//   passport.deserializeUser( async (id, done) => {
-//     console.log('[Passport.ts]: deserializeUser')
-//     await User.findOne({
-//       where: {
-//         id
-//       }
-//     }).then(user => {
-//       done(undefined, user);
-//     }).catch(err => done(err, undefined));
-//   });
-//   passport.use(new LocalStrategy( async (username: string, password: string, done) => {
-//     console.log('[Passport.ts]: user name: ' + username);
-//     console.log('[Passport.ts]: user password: ' + password);
-//     // console.log('[Passport.ts]: have User db?: ', User.count());
-//
-//     // Get user from DB
-//     await User.findOne({
-//       [Op.or]: [
-//         {
-//           where: {
-//             username: username
-//           }
-//         },
-//         {
-//           where: {
-//             email: username
-//           }
-//         }
-//       ]
-//     }).then( user => {
-//       console.log('Passport Auth: ', user);
-//       if (!user) {
-//         console.log('[Passport.ts]: No User!')
-//         return done(undefined, false, { message: `Email or Username ${username} not found.` });
-//       } else if (!user.validPassword(password)) {
-//         return done(undefined, false, { message: `Wrong Password.` });
-//       } else {
-//         return done(undefined, user);
-//       }
-//     }).catch( error => console.log('[Passport.ts error]: ', error));
-//     console.log('[Passport.ts]: no user found?')
-//   }));
-//
-//
-//
-//
-//   // function generateHash (password: string) {
-//   //   const salt = bcrypt.genSaltSync();
-//   //   const hash = bcrypt.hashSync(password, salt);
-//   //   return hash;
-//   // }
-//   // function comparePass(userPassword: string, databasePassword: string) {
-//   //   return bcrypt.compareSync(userPassword, databasePassword);
-//   // }
-//
+// import { compare as compareHash } from 'bcryptjs';
+import { validateHash } from '../services/UserService';
+import * as passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import { Connection, getManager } from 'typeorm';
+import { User } from '../models/entity/User';
+
+export default (app, connection: Connection) => {
+  const userRepo = connection.getRepository(User);
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  passport.serializeUser<any, any>((user, done) => {
+    done(undefined, user.id);
+  });
+
+  passport.deserializeUser( async (id, done) => {
+    console.log('[Passport.ts]: deserializeUser');
+    const userManager = getManager().getRepository(User);
+    const user = await userRepo.findOne(id);
+    if (user) {
+      done(undefined, user.toJSON());
+    } else {
+        done(undefined, {});
+    }
+  });
+
+  passport.use('local', new LocalStrategy( { usernameField: 'email' },
+    async function(email: string, password: string, done: Function) {
+      console.log('[LOCAL STRATEGY]: ', email, password);
+      try {
+        console.log('[LOCAL STRATEGY]: Trying . . . ', email, password);
+        const user = await userRepo.findOne({ email });
+        console.log('[LOCAL STRATEGY]: validHash?', user.passwordHash, user.salt, password );
+        if (await validateHash(user.passwordHash, user.salt, password)) {
+          console.log('[LOCAL STRATEGY]: valid hash!!!');
+          done(undefined, user.toJSON());
+        } else {
+          done(undefined, false);
+        }
+      } catch (err) {
+        done(err);
+      }
+    }));
+};
+
+// export const isAuthenticated = (request: Request, response: Response, next: Function) => {
+//   if (request.isAuthenticated()) {
+//     return next();
+//   }
+//   response.send(JSON.stringify('nooo'))
 // };
-//
