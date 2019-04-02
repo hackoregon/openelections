@@ -4,8 +4,8 @@ services:
   - docker
 
 before_install:
-  - docker-compose  -f docker-compose-travis.yml pull
-  - docker-compose -f docker-compose-travis.yml build api
+  - docker-compose -f docker-compose-test.yml pull
+  - docker-compose -f docker-compose-test.yml build api
 
 script:
-  - docker-compose -f docker-compose-travis.yml run --rm api npm test
+  - docker-compose -f docker-compose-test.yml run --rm api npm test

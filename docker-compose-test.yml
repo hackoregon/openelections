@@ -6,41 +6,36 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-    # command: npm run development
-    command: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "develop"]
+    # volumes:
+    #   - ./api:/app
+    command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "develop"]
     environment:
       - PORT=3000
       - NODE_ENV=development
       - SECRET_KEY=bananas
-      - POSTGRES_DEV_DB=postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
-      - DB_NAME=postgres
-      - DB_HOST=db
+      - DB_NAME=open_elections_test
+      - DB_HOST=testdb
       - SKIP_DB_WAIT=0
       - SKIP_DB_MIGRATION=0
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
+      - DB_PORT=5432
     depends_on:
-      - db
+      - testdb
     ports:
       - 3000:3000
     networks:
       - openelections
-  redis:
-    image: redis
-    ports: ['6379:6379']
-    networks:
-      - openelections
-  db:
+  testdb:
     image: mdillon/postgis
-    ports: ['5432:5432']
-    # volumes:
-    #   - ./pgdata:/var/lib/postgresql/data
+    ports: ['5432:5433']
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=testdb
+      - POSTGRES_DB=open_elections_test
+      - POSTGRES_PORT=5432
     networks:
       - openelections
 networks:

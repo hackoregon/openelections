@@ -3,16 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ts-node ./server.ts",
-    "server": "DEBUG=* ts-node server",
-    "develop": "nodemon --watch ./ -e ts --exec npm run server",
+    "start": "ts-node app.ts",
+    "develop": "nodemon --watch ./ -e ts --exec ts-node app.ts",
+    "dev:seed": "npm run develop && npm run seed",
+    "testdev": "npm-run-all -p -r start test",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
-    "test": "mocha ./test/",
-    "erd": "ts-node models/erd.ts"
+    "test": "mocha --require ts-node/register test/setup.ts test/**/*.spec.ts",
+    "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
+    "seed": "ts-node models/seeds/index.ts",
+    "console": "ts-node"
   },
   "dependencies": {
-    "@types/express": "^4.16.1",
+    "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -20,22 +23,30 @@
     "express-session": "^1.15.6",
     "flash": "^1.1.0",
     "http-errors": "~1.6.2",
-    "mocha": "^6.0.2",
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
-    "pg": "^7.8.2",
+    "passport-local": "^1.0.0",
+    "pg": "^7.9.0",
     "pg-hstore": "^2.3.2",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
-    "sequelize": "^5.1.0",
-    "sequelize-cli": "^5.4.0",
-    "ts-node": "^8.0.3",
+    "typeorm": "^0.2.16",
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.16.1",
     "@types/express-session": "^1.15.12",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^8.0.29",
     "@types/passport": "^1.0.0",
-    "@types/sequelize": "^4.27.41",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
-    "tslint": "^5.14.0"
+    "ts-node": "3.3.0",
+    "tslint": "^5.14.0",
+    "typeorm-fixtures": "^0.8.5",
+    "typescript": "2.5.2"
   }
 }

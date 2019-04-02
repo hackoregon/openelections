@@ -13,14 +13,15 @@ psql -U postgres
 # command. You will be prompted for the password. 
 # You can verify the host, port, username in the docker-compose file
 # psql -h HOST -p PORT -U USERNAME  DATABASENAME
-psql -h localhost -p 5432 -U postgres testdb
+psql -h localhost -p 5432 -U postgres postgres
 
 # want to import an .sql file into a new database?
 # make sure to use the path to the .sql file
 psql -h localhost -p 5432 -U postgres testdb < dump.sql
 
 # when connected to a db you can do some queries
-select * from testdb
+# Gotcha: if you have caps for table name, use quotes 🙄 so NOT Users; but "Users";
+select * from "Users"; 
 
 # you can clone a db like this (when you are not connected):
 pg_data testdb -f dump.sql
@@ -29,6 +30,11 @@ pg_data testdb -f dump.sql
 # to drop a db (⚠️⚠️⚠️USE WITH CAUTION⚠️⚠️⚠️)
 # dropdb -h HOST -p PORT -U USERNAME  DATABASENAME
 dropdb -h localhost -p 5432 -U postgres testdb
+
+
+# to exit the postgres=# use
+\q
+
 ```
 
 ## About Postgres
@@ -54,4 +60,17 @@ services:
       POSTGRES_INITDB_WALDIR: 
       PGDATA: /var/lib/postgresql/data
 
+```
+
+## Access the DB via command line
+
+```bash
+# Get into the [ db ] container
+docker-compose run db bash
+
+# Once into the [ db ] container you can 
+psql -h db -U postgres postgres
+#pw: password
+
+# Now you can query the db inside the postgres db
 ```

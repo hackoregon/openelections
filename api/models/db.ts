@@ -1,9 +1,22 @@
-import sequelizeConfig from '../config';
-import * as Sequelize from 'sequelize';
-const env = process.env.NODE_ENV;
+import 'reflect-metadata';
+import { createConnection, Connection } from 'typeorm';
 
-const sequelize = new Sequelize.Sequelize(sequelizeConfig[env]);
+export default async (): Promise<Connection> => {
+    let connection: Connection;
 
-sequelize.sync().then(() => console.log('synced with db'));
+    connection = await createConnection({
+        type: 'postgres',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT),
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        entities: [
+            __dirname + '/entity/*.ts'
+        ],
+        synchronize: true,
+        logging: true
+    });
 
-export default sequelize;
+    return connection;
+};

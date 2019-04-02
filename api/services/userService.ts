@@ -1,0 +1,19 @@
+import { User } from '../models/entity/User';
+import { getConnection } from 'typeorm';
+
+export interface ICreateUser {
+    email: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+}
+
+export function createUserAsync(userAttrs: ICreateUser) {
+    const repository = getConnection('default').getRepository('User');
+    const user = new User();
+    user.firstName = userAttrs.firstName;
+    user.lastName = userAttrs.lastName;
+    user.email = userAttrs.email;
+    user.setPassword(userAttrs.password);
+    return repository.save(user);
+}

@@ -1,57 +1,24 @@
-import createError from 'http-errors';
-import * as express from'express';
-import * as path from 'path';
-import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import * as logger from 'morgan';
-// import * as session 'express-session';
-// import * as passport from 'passport';
-import sequelize from './models/db';
+import * as bodyParser from "body-parser";
+import { AppRoutes } from "./routes";
+import db from "./models/db";
+import passport from './auth/passport';
 
-import indexRouter from './routes/index';
-import usersRouter from './routes/users';
+(async () => {
+    const connection = await db();
+    const app = express();
+    app.use(bodyParser.json());
+    passport(app, connection);
 
-const app = express();
-app.use(logger('dev'));
+    AppRoutes.forEach(route => {
+        app[route.method](route.path, (request: express.Request, response: express.Response, next: Function) => {
+            route.action(request, response, next)
+                .then(() => next)
+                .catch(err => next(err));
+        });
+    });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-// app.use(session({
-//   secret: process.env.SECRET_KEY,
-//   resave: false,
-//   saveUninitialized: true
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(flash());
-app.use(express.static(path.join(__dirname, 'public')));
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('[APP.JS]: Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('[APP.JS]: Unable to connect to the database:', err);
-  });
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
-
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-export default app;
+    app.use(logger('dev'));
+    return app.listen(3000);
+})();
