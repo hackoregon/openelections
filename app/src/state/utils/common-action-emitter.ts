@@ -1,7 +1,7 @@
 const actionEmitter = (type: any) => (payload: any) => {
-  const ret = { type };
+  const ret: any = { type };
   if (payload != null) {
-    ret[payload] = payload;
+    ret.payload = payload;
   }
   return ret;
 };
