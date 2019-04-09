@@ -1,10 +1,10 @@
-import * as type from '../constants/ActionTypes';
+import * as type from '../test/actions';
 
 
 export const INITIAL_STATE = {
-  text: '',
+  text: 'initial text',
   isLoading: true,
-  error: undefined
+  error: null
 }
 
 const reducer = (state = INITIAL_STATE, action: any) => {

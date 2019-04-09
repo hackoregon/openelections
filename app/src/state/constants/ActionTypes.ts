@@ -1,2 +1,0 @@
-export const VARIABLE_HERE = 'VARIABLE_HERE';
-export type VARIABLE_HERE = typeof VARIABLE_HERE;

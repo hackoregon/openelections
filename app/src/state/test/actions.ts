@@ -1,4 +1,4 @@
-import actionEmitter from '../common-action-emitter';
+import actionEmitter from '../utils/common-action-emitter';
 
 // Constants
 export const VARIABLE_HERE = 'VARIABLE_HERE';

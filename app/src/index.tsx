@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import reducer from './state/test';
+import reducer from './state';
 import thunk from 'redux-thunk';
 
 
@@ -17,7 +17,7 @@ if (!composeEnhancers) {
     'https://github.com/zalmoxisus/redux-devtools-extension#installation');
 }
 
-const store = createStore(reducer, undefined, composeEnhancers(
+const store = createStore(reducer(undefined), composeEnhancers(
   applyMiddleware(thunk)
 ));
 
