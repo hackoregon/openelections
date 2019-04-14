@@ -15,4 +15,4 @@ export const createReducer = (asyncReducers: any) => {
     test: testReducer,
     ...asyncReducers
   });
-}
+};
