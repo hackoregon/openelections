@@ -1,26 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createHashHistory } from 'history';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import reducer from './state';
-import thunk from 'redux-thunk';
-
-
+import { default as configureStore } from './configureStore';
 import './index.css';
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-if (!composeEnhancers) {
-  console.warn('Install Redux DevTools Extension to inspect the app state: ' +
-    'https://github.com/zalmoxisus/redux-devtools-extension#installation');
-}
-
-const store = createStore(reducer(undefined), composeEnhancers(
-  applyMiddleware(thunk)
-));
-
+const history = createHashHistory();
+const store = configureStore(history);
 
 ReactDOM.render(
   <Provider store={store}>

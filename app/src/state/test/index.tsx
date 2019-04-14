@@ -7,6 +7,8 @@ export const INITIAL_STATE = {
   error: null
 }
 
+export type TestState = typeof INITIAL_STATE;
+
 const reducer = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case type.VARIABLE_HERE:
