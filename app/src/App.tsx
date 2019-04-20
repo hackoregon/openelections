@@ -10,30 +10,28 @@ class App extends React.Component {
 
 
   public render() {
-
-    let app = <Route render={ ({location}) => (
-      <>
-        <TransitionGroup className="smooth-container">
-          <CSSTransition
-            key={location.pathname}
-            timeout={{enter: 500, exit: 300}}
-            classNames="page"
-            appear
-            >
-            <Switch location={location}>
-              <Route
-                exact
-                path="/"
-                component={HomePage}/>
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>
-      </>
-    )} />
-
     return (
       <BrowserRouter> 
-          { app }
+        <Route render={ ({location}) => (
+          <>
+            <TransitionGroup className="smooth-container">
+            {console.log(location)}
+              <CSSTransition
+                key={location.pathname}
+                timeout={{enter: 500, exit: 300}}
+                classNames="page"
+                appear
+                >
+                <Switch location={location}>
+                  <Route
+                    exact
+                    path="/"
+                    component={HomePage}/>
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          </>
+        )} />
       </BrowserRouter>
     );
 
