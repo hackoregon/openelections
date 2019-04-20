@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import HomePage from './components/Home/Home'
+import HomePage from './Pages/Home/Home'
+import DashboardPage from './Pages/Dashboard/Dashboard';
 // import Doohicky from './components/Doohicky'
 import './App.css';
 
@@ -27,6 +28,10 @@ class App extends React.Component {
                     exact
                     path="/"
                     component={HomePage}/>
+                  <Route
+                    exact
+                    path="/dashboard"
+                    component={DashboardPage}/>
                 </Switch>
               </CSSTransition>
             </TransitionGroup>
