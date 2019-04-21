@@ -6,3 +6,4 @@ export const getStorybook: any;
 export const raw: any;
 export const setAddon: any;
 export const storiesOf: any;
+export type RenderFunction = {};

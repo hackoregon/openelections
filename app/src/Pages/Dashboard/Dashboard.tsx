@@ -4,7 +4,15 @@ import * as React from 'react';
 const DashboardPage = (props: any) => {
 
   return (
-    <h1>Dashboard</h1>
+      <>
+        <h1>Dashboard</h1>
+          <div>
+          {/* Sidebar */}
+          </div>
+          <div>
+          {/* Router Outlet */}
+          </div>
+      </>
   )
 }
 export default DashboardPage;

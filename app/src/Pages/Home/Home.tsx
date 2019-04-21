@@ -4,7 +4,7 @@ import * as React from 'react';
 const HomePage = (props: any) => {
 
   return (
-    <h1>Home</h1>
+        <h1>Home</h1>
   )
 }
 export default HomePage;
