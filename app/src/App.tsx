@@ -2,9 +2,10 @@ import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import HomePage from './Pages/Home/Home'
-import DashboardPage from './Pages/Dashboard/Dashboard';
+import Portal from './Pages/Portal/Portal';
 // import Doohicky from './components/Doohicky'
 import './App.css';
+import Navigation from './components/Navigation/Navigation';
 
 
 class App extends React.Component {
@@ -15,8 +16,8 @@ class App extends React.Component {
       <BrowserRouter> 
         <Route render={ ({location}) => (
           <>
+            <Navigation />
             <TransitionGroup className="smooth-container">
-            {console.log(location)}
               <CSSTransition
                 key={location.pathname}
                 timeout={{enter: 500, exit: 300}}
@@ -29,9 +30,7 @@ class App extends React.Component {
                     path="/"
                     component={HomePage}/>
                   <Route
-                    exact
-                    path="/dashboard"
-                    component={DashboardPage}/>
+                    component={Portal}/>
                 </Switch>
               </CSSTransition>
             </TransitionGroup>

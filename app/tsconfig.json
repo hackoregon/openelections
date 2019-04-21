@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "paths": { "*": ["types/*"] },
+    "paths": { 
+      "*": ["types/*"],
+      "@Components/*": ["./src/components/*"],
+      "@Pages/*": ["./src/Pages/*"],
+      "@State/*": ["./src/state/*"]
+     },
     "baseUrl": ".",
     "outDir": "build/dist",
     "module": "esnext",
