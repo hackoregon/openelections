@@ -16,8 +16,12 @@ storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo(
 
 
 storiesOf('Doohicky', module)
-    // .addDecorator((story: any) => <Provider story={story()} />)
-    .add('Doohicky', () => <p>This is the Doohicky Section</p>)
+    .add('Intro', () => <p>This is the Doohicky Section</p>);
 
 Doohicky();
+
+storiesOf('Portal', module)
+    .add('Intro', () => <p>These are components used within the Dashboard</p>);
+
+// Manage Portal
 UserInfoBox();

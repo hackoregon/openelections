@@ -5,6 +5,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, optionsKnob as options, OptionsKnobOptions } from '@storybook/addon-knobs';
 import UserInfoBox, { UserInfoBoxProps } from '../src/components/UserInfoBox';
 import { MemoryRouter } from 'react-router';
+import { checkA11y } from "@storybook/addon-a11y";
 
 // import { withKnobs } from '@storybook/addon-knobs/react';
 
@@ -25,8 +26,9 @@ const optionsObj: OptionsKnobOptions = {
     display: 'select'
 };
 
-export default () => storiesOf('Doohicky', module)
+export default () => storiesOf('Portal/Manage Portal', module)
     .addDecorator(withKnobs)
+    .addDecorator(checkA11y)
     .addDecorator((story: any) =>
         <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>
     )
