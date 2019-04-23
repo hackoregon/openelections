@@ -3,15 +3,13 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import HomePage from './Pages/Home/Home'
 import Portal from './Pages/Portal/Portal';
-// import Doohicky from './components/Doohicky'
-import './App.css';
 import Navigation from './components/Navigation/Navigation';
 
 
 class App extends React.Component {
 
 
-  public render() {
+  render() {
     return (
       <BrowserRouter> 
         <Route render={ ({location}) => (

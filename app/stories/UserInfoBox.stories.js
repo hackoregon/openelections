@@ -9,27 +9,20 @@ import { checkA11y } from "@storybook/addon-a11y";
 
 // import { withKnobs } from '@storybook/addon-knobs/react';
 
-const data: UserInfoBoxProps = {
-    role: 'admin',
-    name: 'Andrew',
-    email: 'Andy@email.com',
-    isVerified: true,
-};
-
 const label = 'Role';
 const valuesObj = {
     Admin: 'admin',
     Staff: 'staff',
 };
 const defaultValue = 'admin';
-const optionsObj: OptionsKnobOptions = {
+const optionsObj = {
     display: 'select'
 };
 
 export default () => storiesOf('Portal/Manage Portal', module)
     .addDecorator(withKnobs)
     .addDecorator(checkA11y)
-    .addDecorator((story: any) =>
+    .addDecorator((story) =>
         <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>
     )
     .add('User Info Box',
@@ -39,7 +32,7 @@ export default () => storiesOf('Portal/Manage Portal', module)
             const email = text( "email", data.email);
             const isVerified = boolean( "isVerified", data.isVerified);
 
-            return (<UserInfoBox {...({name, role, email, isVerified} as UserInfoBoxProps)} />);
+            return (<UserInfoBox {...({name, role, email, isVerified})} />);
         }
 
 

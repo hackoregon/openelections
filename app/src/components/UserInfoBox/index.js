@@ -1,14 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom';
 
-export interface UserInfoBoxProps {
-    role: 'admin' | 'staff';
-    name: string;
-    email: string;
-    isVerified: boolean;
-}
-
-const UserInfoBox = ({ role, name, email, isVerified }: UserInfoBoxProps) => {
+const UserInfoBox = ({ role, name, email, isVerified }) => {
   if (! isVerified) {
       return (
           <div>

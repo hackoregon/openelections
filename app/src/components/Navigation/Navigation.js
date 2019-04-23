@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 // import { connect } from 'react-redux';
 // import { getCurrentState } from '../../state/test/selectors';
 // import { testEmitter } from '../../state/test/actions';
-const Navigation = (props: any) => {
+const Navigation = (props) => {
 
   console.log(props.data);
   return (

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux';
 import { getCurrentState } from '../../state/test/selectors';
 import { testEmitter } from '../../state/test/actions';
-const doohicky = (props: any) => {
+const doohicky = (props) => {
 
   console.log(props.data);
   return (
@@ -18,7 +18,7 @@ export default connect(
     data: getCurrentState(state)
   }),
   dispatch => ({
-    testSend(message: string) {
+    testSend(message) {
       console.log(message)
       dispatch(testEmitter(message));
     }

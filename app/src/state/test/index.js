@@ -1,4 +1,4 @@
-import * as type from '../test/actions';
+import * as type from './actions';
 
 
 export const INITIAL_STATE = {
@@ -7,9 +7,7 @@ export const INITIAL_STATE = {
   error: null
 }
 
-export type TestState = typeof INITIAL_STATE;
-
-const reducer = (state = INITIAL_STATE, action: any) => {
+const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case type.VARIABLE_HERE:
       console.log('reducering. . .', {action})

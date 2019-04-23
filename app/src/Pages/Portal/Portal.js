@@ -5,7 +5,7 @@ import DashboardPage from './Dashboard/Dashboard'
 import ContributionsPage from './Contributions/Contributions'
 // import { connect } from 'react-redux'
 
-const Portal = (props: any) => {
+const Portal = (props) => {
 
   return (
     <main>

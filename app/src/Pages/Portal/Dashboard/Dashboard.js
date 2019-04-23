@@ -1,10 +1,10 @@
 import * as React from 'react';
 // import { connect } from 'react-redux'
 
-const HomePage = (props: any) => {
+const DashboardPage = (props) => {
 
   return (
-        <h1>Home</h1>
+      <h1>Dashboard</h1>
   )
 }
-export default HomePage;
+export default DashboardPage;

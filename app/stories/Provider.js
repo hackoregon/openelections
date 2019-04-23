@@ -7,7 +7,7 @@ import { createHashHistory } from 'history';
 ​const history = createHashHistory();
 const store = configureStore( history );
 
-export default function Provider({ story }: any) {
+export default function Provider({ story }) {
   return (
     <ReduxProvider store={store}>
       {story}
