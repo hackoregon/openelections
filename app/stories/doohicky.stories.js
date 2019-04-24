@@ -9,7 +9,7 @@ import Provider from './Provider';
 // import { withKnobs } from '@storybook/addon-knobs/react';
 
 export default () => storiesOf('Doohicky', module)
-    .addDecorator((story: any) => <Provider story={story()} />)
+    .addDecorator((story) => <Provider story={story()} />)
     .add(
   'basic PrimaryButton',
   () => (

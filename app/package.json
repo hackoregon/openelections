@@ -35,7 +35,9 @@
     "@storybook/addons": "^5.0.6",
     "@storybook/react": "^5.0.6",
     "babel-loader": "^8.0.5",
-    "redux-devtools-extension": "^2.13.8"
+    "redux-devtools-extension": "^2.13.8",
+    "webpack": "^4.30.0",
+    "webpack-blocks": "^2.0.0"
   },
   "browserslist": {
     "production": [
