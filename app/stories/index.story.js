@@ -7,8 +7,8 @@ import { linkTo } from '@storybook/addon-links';
 import { Welcome } from '@storybook/react/demo';
 // import Doohicky from '../src/components/Doohicky/index';
 // import Provider from './Provider';
-import Doohicky from './doohicky.stories';
-import UserInfoBox from './UserInfoBox.stories';
+import Doohicky from './doohicky.story';
+import UserInfoBox from './UserInfoBox.story';
 // import Provider from './Provider';
 
 
