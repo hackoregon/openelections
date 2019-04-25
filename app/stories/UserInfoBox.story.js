@@ -3,18 +3,25 @@ import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 // import { action } from '@storybook/addon-actions';
 import { withKnobs, text, boolean, optionsKnob as options, OptionsKnobOptions } from '@storybook/addon-knobs';
-import UserInfoBox, { UserInfoBoxProps } from '../src/components/UserInfoBox';
+import UserInfoBox from '../src/components/UserInfoBox';
 import { MemoryRouter } from 'react-router';
 import { checkA11y } from "@storybook/addon-a11y";
 
 // import { withKnobs } from '@storybook/addon-knobs/react';
+
+const data = {
+    role: 'admin',
+    name: 'Andrew',
+    email: 'example@test.com',
+    isVerified: true
+};
 
 const label = 'Role';
 const valuesObj = {
     Admin: 'admin',
     Staff: 'staff',
 };
-const defaultValue = 'admin';
+const defaultValue = data.role;
 const optionsObj = {
     display: 'select'
 };
@@ -34,6 +41,4 @@ export default () => storiesOf('Portal/Manage Portal', module)
 
             return (<UserInfoBox {...({name, role, email, isVerified})} />);
         }
-
-
     );

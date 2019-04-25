@@ -24,6 +24,7 @@
     "build-storybook": "build-storybook"
   },
   "devDependencies": {
+    "@emotion/core": "^10.0.10",
     "@babel/core": "^7.4.3",
     "@storybook/addon-a11y": "^5.0.10",
     "@storybook/addon-actions": "^5.0.6",
