@@ -59,6 +59,17 @@ services:
       - POSTGRES_DB=open_elections_dev
     networks:
       - openelections
+  data_db:
+    image: mdillon/postgis
+    ports: ['5433:5432']
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=open_elections_data
+    networks:
+      - openelections
 networks:
   openelections:
 
