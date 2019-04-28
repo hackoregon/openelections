@@ -5,9 +5,9 @@ import HomePage from './Pages/Home/Home'
 import Portal from './Pages/Portal/Portal';
 import Navigation from './components/Navigation/Navigation';
 
+import './assets/styles/styles.scss';
 
 class App extends React.Component {
-
 
   render() {
     return (
