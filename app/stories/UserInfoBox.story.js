@@ -4,14 +4,14 @@ import { storiesOf } from '@storybook/react';
 // import { action } from '@storybook/addon-actions';
 import { withKnobs, text, boolean, optionsKnob as options, OptionsKnobOptions } from '@storybook/addon-knobs';
 import UserInfoBox from '../src/components/UserInfoBox';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import { checkA11y } from "@storybook/addon-a11y";
 
 // import { withKnobs } from '@storybook/addon-knobs/react';
 
 const data = {
     role: 'admin',
-    name: 'Andrew',
+    name: 'Andrew Erickson',
     email: 'example@test.com',
     isVerified: true
 };
