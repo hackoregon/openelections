@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import DashboardPage from './Dashboard/Dashboard'
 import ContributionsPage from './Contributions/Contributions'
-// import { connect } from 'react-redux'
+
 
 const Portal = (props) => {
 
