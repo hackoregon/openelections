@@ -6,8 +6,8 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-    # volumes:
-    #   - ./api:/app
+    volumes:
+      - ./api:/app
     command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "develop"]
     environment:
       - PORT=3000
@@ -30,12 +30,11 @@ services:
       - openelections
   testdb:
     image: mdillon/postgis
-    ports: ['5432:5433']
+    ports: ['5434:5432']
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=open_elections_test
-      - POSTGRES_PORT=5432
     networks:
       - openelections
 networks:

@@ -20,8 +20,7 @@ export class Permission {
         enum: UserRole,
         default: UserRole.CAMPAIGN_STAFF
     })
-    role: 'enum';
-    enum: ['governmentAdmin', 'campaignAdmin', 'campaignStaff'];
+    role: UserRole;
 
 
     @ManyToOne(type => Government, government => government.permissions)
@@ -37,7 +36,10 @@ export class Permission {
     toJSON() {
         return {
             id: this.id,
-            name: this.name,
+            user: this.user.id,
+            role: this.role,
+            campaign: {id: this.campaign.id, name: this.campaign.name},
+            government: {id: this.government.id, name: this.government.name},
         };
     }
 }

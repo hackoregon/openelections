@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinTable } from 'typeorm';
 import { Government } from './Government';
 import { Permission } from './Permission';
 import { User } from './User';
@@ -15,9 +15,8 @@ export class Campaign {
     @ManyToOne(type => Government, government => government.campaigns)
     government: Government;
 
-    @ManyToMany(type => Permission)
-    @JoinTable()
-    users: User[];
+    @OneToMany(type => Permission, permission => permission.campaign )
+    permissions: Permission[];
 
     toJSON() {
         return {
