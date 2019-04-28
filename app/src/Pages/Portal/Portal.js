@@ -4,7 +4,6 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import DashboardPage from './Dashboard/Dashboard'
 import ContributionsPage from './Contributions/Contributions'
 
-
 const Portal = (props) => {
 
   return (
