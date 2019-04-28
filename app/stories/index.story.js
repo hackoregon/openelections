@@ -9,6 +9,7 @@ import { Welcome } from '@storybook/react/demo';
 // import Provider from './Provider';
 import Doohicky from './doohicky.story';
 import UserInfoBox from './UserInfoBox.story';
+import SearchBox from './SearchBox.story';
 // import Provider from './Provider';
 
 import '../src/assets/styles/styles.scss';
@@ -25,3 +26,9 @@ storiesOf('Portal', module)
 
 // Manage Portal
 UserInfoBox();
+
+storiesOf('UI Components', module)
+	.add('Intro', () => <p>These are components used within the Dashboard</p>);
+
+// UI Components
+SearchBox();
