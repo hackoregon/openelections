@@ -11,9 +11,9 @@ import Doohicky from './doohicky.story';
 import UserInfoBox from './UserInfoBox.story';
 // import Provider from './Provider';
 
+import '../src/assets/styles/styles.scss';
 
 // storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
-
 
 storiesOf('Doohicky', module)
     .add('Intro', () => <p>This is the Doohicky Section</p>);
