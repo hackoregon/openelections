@@ -11,7 +11,7 @@ import { checkA11y } from "@storybook/addon-a11y";
 
 const data = {
     role: 'admin',
-    name: 'Andrew',
+    name: 'Andrew Erickson',
     email: 'example@test.com',
     isVerified: true
 };

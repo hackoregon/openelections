@@ -5,13 +5,23 @@ import { Link } from 'react-router-dom';
 import { css, jsx } from '@emotion/core';
 
 const styles = css`
-  border: 1px solid;
+  border: 1px solid #ccc;
   display: inline-block;
-  padding: 20px;
+  padding: 15px;
+  border-radius: 5px;
   
   .role {
-    margin: 0;
-    color: #888;
+    margin: 0 0 20px 0;
+    color: #666;
+    text-transform: capitalize;
+  }
+  
+  .name {
+    margin-bottom: 0;
+  }
+  
+  .email {
+    margin-bottom: 20px;
   }
   
   
