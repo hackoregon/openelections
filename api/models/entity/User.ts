@@ -105,5 +105,4 @@ export class User {
         this.passwordHash = hash;
         this.salt = salt;
     }
-
 }
