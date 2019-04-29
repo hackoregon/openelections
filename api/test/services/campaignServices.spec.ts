@@ -17,6 +17,10 @@ describe('campaignServices', () => {
         });
     });
 
+    after(async () => {
+        await governmentRepository.query('TRUNCATE "government" CASCADE');
+    });
+
     afterEach(async() => {
         await campaignRepository.query('TRUNCATE "campaign" CASCADE');
     });

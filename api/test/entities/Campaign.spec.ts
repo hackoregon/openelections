@@ -20,6 +20,10 @@ describe('Campaign', () => {
         await campaignRepository.query('TRUNCATE "campaign" CASCADE');
     });
 
+    after(async () => {
+        await governmentRepository.query('TRUNCATE "government" CASCADE');
+    });
+
     context('Validations', () => {
         it('name', async () => {
             const campaign = new Campaign();

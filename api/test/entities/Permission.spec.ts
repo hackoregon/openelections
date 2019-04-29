@@ -10,6 +10,7 @@ import { createUserAsync } from '../../services/userService';
 let permissionRepository: any;
 let campaignRepository: any;
 let governmentRepository: any;
+let userRepository: any;
 let government: Government;
 let campaign: Campaign;
 let user: User;
@@ -20,6 +21,7 @@ describe('Permission', () => {
         campaignRepository = getConnection('default').getRepository('Campaign');
         governmentRepository = getConnection('default').getRepository('Government');
         permissionRepository = getConnection('default').getRepository('Permission');
+        userRepository = getConnection('default').getRepository('User');
         government = new Government();
         government.name = 'City of Portland';
         await governmentRepository.save(government);
@@ -31,6 +33,12 @@ describe('Permission', () => {
 
     afterEach(async () => {
         await permissionRepository.query('TRUNCATE "permission" CASCADE');
+    });
+
+    after(async () => {
+        await governmentRepository.query('TRUNCATE "government" CASCADE');
+        await campaignRepository.query('TRUNCATE "campaign" CASCADE');
+        await userRepository.query('TRUNCATE "user" CASCADE');
     });
 
     context('Validations', () => {
