@@ -1,4 +1,7 @@
-from typing import Dict
+"""
+Database module
+"""
+from typing import Dict, List, Optional
 import json
 from functools import lru_cache
 from openelections import _POSTGRES_LOGIN_FILE, _VOTER_LIST
@@ -86,9 +89,13 @@ def create_table(table_name: str, field_key: Dict[str, str], drop_if_exists: boo
             curr.execute(cmd)
 
 
-def initialize_voter_list():
+def initialize_voter_list(zip_codes: Optional[List[str]] = None):
     """
     Initializes the voter list table
+
+    :param zip_codes: List of zip codes to load.  Loads all if not specified.
+
+    >>> initialize_voter_list(zip_codes=['97080'])
     """
 
     # Create voter list table
@@ -97,6 +104,9 @@ def initialize_voter_list():
     # Load voter list data from file
     data = pd.read_csv(_VOTER_LIST, sep='\t', encoding="latin",
                        usecols=list(VOTER_LIST_KEY.keys()), dtype=VOTER_LIST_KEY, keep_default_na=False)
+
+    if zip_codes is not None:
+        data = data[data['ZIP_CODE'].isin(zip_codes)]
 
     cmd = f'INSERT INTO {VOTER_LIST_TABLE} ({",".join(data.keys())}) VALUES ({",".join(["%s" for f in data.keys()])})'
     with connect(**POSTGRES_LOGIN) as conn:
