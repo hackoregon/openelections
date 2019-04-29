@@ -8,12 +8,15 @@ export interface ICreateUser {
     lastName?: string;
 }
 
-export function createUserAsync(userAttrs: ICreateUser) {
+export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
     const repository = getConnection('default').getRepository('User');
     const user = new User();
     user.firstName = userAttrs.firstName;
     user.lastName = userAttrs.lastName;
     user.email = userAttrs.email;
     user.setPassword(userAttrs.password);
-    return repository.save(user);
+    if (await user.isValidAsync()) {
+        await repository.save(user);
+    }
+    return user;
 }

@@ -10,6 +10,7 @@
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
     "test": "mocha --require ts-node/register test/setup.ts test/**/*.spec.ts",
+    "testone": "mocha --require ts-node/register test/setup.ts",
     "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
     "seed": "ts-node models/seeds/index.ts",
     "console": "ts-node"
@@ -17,6 +18,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
+    "class-validator": "^0.9.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",

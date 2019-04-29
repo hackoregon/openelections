@@ -1,7 +1,7 @@
 import { createUserAsync } from '../../services/userService';
-import { User} from "../../models/entity/User";
+import { User } from '../../models/entity/User';
 import { expect } from 'chai';
-import {getConnection} from "typeorm";
+import { getConnection } from 'typeorm';
 
 let userRepository: any;
 
@@ -11,7 +11,7 @@ describe('userService', () => {
     });
 
     afterEach(async() => {
-        await userRepository.clear()
+        await userRepository.query('TRUNCATE "user" CASCADE');
     });
 
     it('Creates the user', async () => {
@@ -24,5 +24,5 @@ describe('userService', () => {
         });
         expect(user.validatePassword('password')).equal(true);
         expect(await userRepository.count()).equal(1);
-    })
+    });
 });
