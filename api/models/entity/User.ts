@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate} from 'typeorm';
+import { IsEmail, IsDefined, validate, ValidationError } from 'class-validator';
 import * as crypto from 'crypto';
-const SaltLength = 9;
+import { Permission } from './Permission';
 
 export interface IPasswordHash {
     hash: string;
@@ -8,6 +9,9 @@ export interface IPasswordHash {
 }
 
 export function createHash(password: string): IPasswordHash  {
+    if (!password) {
+        throw new Error('must supply a password');
+    }
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 2048, 32, 'sha512').toString('hex');
     return {
@@ -16,8 +20,11 @@ export function createHash(password: string): IPasswordHash  {
     };
 }
 
-export function md5(string: string) {
-    return crypto.createHash('md5').update(string).digest('hex');
+export function md5(text: string) {
+    if (!text) {
+        throw new Error('must supply text to hash');
+    }
+    return crypto.createHash('md5').update(text).digest('hex');
 }
 
 
@@ -28,19 +35,50 @@ export class User {
     id: number;
 
     @Column()
+    @IsDefined()
     firstName: string;
 
     @Column()
+    @IsDefined()
     lastName: string;
 
     @Column()
+    @IsDefined()
     passwordHash: string;
 
     @Column()
+    @IsEmail()
+    @IsDefined()
     email: string;
 
     @Column()
+    @IsDefined()
     salt: string;
+
+    @OneToMany(type => Permission, permission => permission.user)
+    permissions: Permission[];
+
+    public errors: ValidationError[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async validate() {
+        await this.validateAsync();
+        if (this.errors.length > 0) {
+            throw new Error('user has one or more validation problems')
+        }
+    }
+
+    async isValidAsync(): Promise<boolean> {
+    await this.validateAsync();
+    return this.errors.length === 0;
+    }
+
+
+    async validateAsync() {
+        const errors = await validate(this);
+        this.errors = errors;
+    }
 
     toJSON() {
         return {
@@ -52,14 +90,19 @@ export class User {
     }
 
     validatePassword(password: string) {
+        if (!password) {
+            throw new Error('must set a password');
+        }
         const validHash = crypto.pbkdf2Sync(password, this.salt, 2048, 32, 'sha512').toString('hex');
         return this.passwordHash === validHash;
     }
 
     setPassword(password) {
-        const { salt, hash } = createHash(password)
+        if (!password) {
+            throw new Error('must set a password');
+        }
+        const { salt, hash } = createHash(password);
         this.passwordHash = hash;
         this.salt = salt;
     }
-
 }

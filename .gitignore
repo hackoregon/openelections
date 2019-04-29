@@ -2,6 +2,8 @@
 .DS_Store
 pgdata
 /gitflow
+api/ts-node*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
