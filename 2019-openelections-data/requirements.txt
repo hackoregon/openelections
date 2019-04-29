@@ -22,6 +22,7 @@ decorator==4.4.0
 defusedxml==0.5.0
 docutils==0.14
 entrypoints==0.3
+flake8==3.7.7
 future==0.17.1
 idna==2.8
 imagesize==1.1.0
@@ -61,6 +62,7 @@ poyo==0.4.2
 prometheus-client==0.6.0
 prompt-toolkit==2.0.9
 psycopg2==2.7.6.1
+psycopg2-binary==2.8.2
 ptyprocess==0.6.0
 py==1.8.0
 pyarrow==0.11.1
