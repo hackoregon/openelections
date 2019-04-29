@@ -9,13 +9,13 @@ export interface ICreateCampaign {
 
 export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promise<Campaign> {
     const campaignRepository = getConnection('default').getRepository('Campaign');
-    const governmnentRepository = getConnection('default').getRepository('Government');
-    governmnentRepository.findOne(campaignAttrs.governmentId).then(
-        (government => {
-            const campaign = new Campaign();
-            campaign.name = campaignAttrs.name;
-            campaign.government = government;
-            return campaignRepository.save(campaign);
-        })
-    );
+    const governmentRepository = getConnection('default').getRepository('Government');
+    const campaign = new Campaign();
+    campaign.name = campaignAttrs.name;
+    const government = await governmentRepository.findOne(campaignAttrs.governmentId) as Government;
+    campaign.government = government;
+    if (await campaign.isValidAsync()) {
+        await campaignRepository.save(campaign);
+    }
+    return campaign;
 }

@@ -4,13 +4,12 @@ import {
     Column,
     ManyToOne,
     OneToMany,
-    JoinColumn,
     BeforeInsert,
     BeforeUpdate
 } from 'typeorm';
-import {Government} from './Government';
-import {Permission} from './Permission';
-import {IsDefined, validate, ValidationError} from 'class-validator';
+import { Government } from './Government';
+import { Permission } from './Permission';
+import { IsDefined, validate, ValidationError } from 'class-validator';
 
 @Entity()
 export class Campaign {

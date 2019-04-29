@@ -1,14 +1,16 @@
 import { Government } from '../models/entity/Government';
 import { getConnection } from 'typeorm';
 
-export interface ICreateGovernment {
+export interface ICreateGovernmentAttrs {
     name: string;
 }
 
-export function createGovernmentAsync(governmentAttrs: ICreateGovernment): Promise<Government> {
+export async function createGovernmentAsync(governmentAttrs: ICreateGovernmentAttrs): Promise<Government> {
     const governmentRepository = getConnection('default').getRepository('Government');
     const government = new Government();
     government.name = governmentAttrs.name;
-    return governmentRepository.save(government);
-
+    if (await government.isValidAsync()) {
+        await governmentRepository.save(government);
+    }
+    return government;
 }
