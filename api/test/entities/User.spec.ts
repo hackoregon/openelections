@@ -69,6 +69,36 @@ describe('User', () => {
             expect(user.errors[0].constraints.isEmail).equal('email must be an email');
         });
 
+        it('isValid', async () => {
+            const user = new User();
+            expect(await user.isValidAsync()).to.be.false;
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.setPassword('password');
+            user.email = 'dan@civicsoftwarefoundation.org';
+            expect(await user.isValidAsync()).to.be.true;
+        });
+
+        it('validate throws error', async () => {
+            const user = new User();
+            try {
+                await userRepository.save(user);
+            } catch (e) {
+                expect(e.message).to.equal('user has one or more validation problems');
+            }
+        });
+
+        it('validate does not throws error', async () => {
+            const user = new User();
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.setPassword('password');
+            user.email = 'dan@civicsoftwarefoundation.org';
+            expect(await userRepository.count()).equal(0);
+            await userRepository.save(user);
+            expect(await userRepository.count()).equal(1);
+        });
+
     });
 
     context('JSON', () => {

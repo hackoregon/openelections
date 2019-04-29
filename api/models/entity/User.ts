@@ -69,6 +69,12 @@ export class User {
         }
     }
 
+    async isValidAsync(): Promise<boolean> {
+    await this.validateAsync();
+    return this.errors.length === 0;
+    }
+
+
     async validateAsync() {
         const errors = await validate(this);
         this.errors = errors;
