@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import Navigation from '../components/Navigation/Navigation'
 import HomePage from './Home/Home'
+import SignupPage from './Signup/Signup'
 import Portal from './Portal/Portal';
 const Routes = (props) => {
   
@@ -22,6 +23,10 @@ const Routes = (props) => {
                 exact
                 path="/"
                 component={HomePage}/>
+              <Route
+                exact
+                path="/signup"
+                component={SignupPage}/>
               <Route
                 component={Portal}/>
             </Switch>
