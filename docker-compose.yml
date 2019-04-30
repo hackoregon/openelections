@@ -35,8 +35,10 @@ services:
       - SKIP_DB_MIGRATION=0
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
+      - redis
     ports:
       - 3000:3000
     volumes:
