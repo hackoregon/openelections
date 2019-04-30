@@ -44,6 +44,7 @@
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.0",
     "chai-as-promised": "^7.1.1",
+    "faker": "^4.1.0",
     "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
     "ts-node": "3.3.0",
