@@ -1,15 +1,13 @@
 import * as express from 'express';
 import * as logger from 'morgan';
-import * as bodyParser from "body-parser";
-import { AppRoutes } from "./routes";
-import db from "./models/db";
-import passport from './auth/passport';
+import * as bodyParser from 'body-parser';
+import { AppRoutes } from './routes';
+import db from './models/db';
 
 (async () => {
-    const connection = await db();
+    await db();
     const app = express();
     app.use(bodyParser.json());
-    passport(app, connection);
 
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: express.Request, response: express.Response, next: Function) => {
