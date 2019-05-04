@@ -26,6 +26,7 @@
     "flash": "^1.1.0",
     "http-errors": "~1.6.2",
     "ioredis": "^4.9.0",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",

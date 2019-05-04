@@ -36,6 +36,7 @@ services:
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
       - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=djcmTZHzA:6c4+P%2[P*SYxcvX9ma|KWyN$gnD{h
     depends_on:
       - db
       - redis
