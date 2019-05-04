@@ -1,4 +1,5 @@
 import { getConnection } from 'typeorm';
+import * as jsonwebtoken from 'jsonwebtoken';
 import { Permission, UserRole } from '../models/entity/Permission';
 import { Campaign } from '../models/entity/Campaign';
 import { User } from '../models/entity/User';
@@ -44,7 +45,7 @@ export async function addPermissionAsync(attrs: IAddPermissionAsyncAttrs): Promi
 
 export async function removePermissionAsync(permissionId: number): Promise<boolean> {
     const permissionRepository = getConnection('default').getRepository('Permission');
-    const permission = await permissionRepository.findOne(permissionId);
+    const permission = await permissionRepository.findOneOrFail(permissionId) as Permission;
     if (permission) {
         return (await permissionRepository.delete(permissionId)).affected === 1;
     }
@@ -139,4 +140,87 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
         return addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
     }
     throw new Error('user does not have sufficient permissions');
+}
+
+export enum PermissionEntity {
+    GOVERNMENT = 'government',
+    CAMPAIGN = 'campaign'
+}
+
+export interface IToken {
+    id: number;
+    exp: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    permissions: {
+        id: number,
+        type: PermissionEntity,
+        role: UserRole
+    }[];
+}
+
+export interface PermissionsRawQueryResult {
+    permission_id: number;
+    permission_role: UserRole;
+    permission_governmentId?: number;
+    permission_campaignId?: number;
+    permission_userId: number;
+}
+
+export async function createTokenObjectAsync(userId: number): Promise<IToken> {
+    const userRepository = getConnection('default').getRepository('User');
+    const permissionRepository = getConnection('default').getRepository('Permission');
+    const user = await userRepository.findOneOrFail(userId) as User;
+    const permissions = (await permissionRepository.createQueryBuilder('permission')
+        .where('"userId" = :userId', {userId}).getRawAndEntities()).raw as PermissionsRawQueryResult[];
+    const exp = Date.now() + (72 * 60 * 60 * 1000); // 72 hours from now in miliseconds
+    return {
+        id: userId,
+        exp,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        permissions: permissions.map(item => {
+            if (item.permission_campaignId) {
+                return {
+                    role: item.permission_role,
+                    type: PermissionEntity.CAMPAIGN,
+                    id: item.permission_campaignId
+                };
+            } else if (item.permission_governmentId) {
+                return {
+                    role: item.permission_role,
+                    type: PermissionEntity.GOVERNMENT,
+                    id: item.permission_governmentId
+                };
+            }
+        })
+    };
+}
+
+export async function generateJWTokenAsync(userId: number): Promise<string> {
+    const tokenObj = await createTokenObjectAsync(userId);
+    const token = jsonwebtoken.sign(tokenObj, process.env.SECRET_KEY);
+    return token;
+}
+
+export interface IJWTToken {
+    payload: IToken;
+}
+
+export function decipherJWTokenAsync(token: string): Promise<IToken> {
+   return new Promise((resolve, reject) => {
+        try {
+            jsonwebtoken.verify(token, process.env.SECRET_KEY);
+        } catch (e) {
+            reject(e);
+        }
+        const decoded = jsonwebtoken.decode(token, {complete: true}) as IJWTToken;
+        const payload: IToken = decoded.payload;
+        if (payload.exp < Date.now()) {
+            throw new Error('Token expired');
+        }
+        resolve(payload);
+    });
 }

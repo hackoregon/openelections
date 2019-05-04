@@ -1,16 +1,17 @@
 import { expect } from 'chai';
 import * as faker from 'faker';
 import { getConnection } from 'typeorm';
+import * as jsonwebtoken from 'jsonwebtoken';
 import { Campaign } from '../../models/entity/Campaign';
 import { Government } from '../../models/entity/Government';
 import { User } from '../../models/entity/User';
 import { Permission, UserRole } from '../../models/entity/Permission';
 import { createUserAsync } from '../../services/userService';
 import {
-    addPermissionAsync, addUserToCampaignAsync, addUserToGovernmentAsync,
+    addPermissionAsync, addUserToCampaignAsync, addUserToGovernmentAsync, decipherJWTokenAsync, generateJWTokenAsync,
     isCampaignAdminAsync,
     isCampaignStaffAsync,
-    isGovernmentAdminAsync, removePermissionAsync
+    isGovernmentAdminAsync, IToken, PermissionEntity, removePermissionAsync
 } from '../../services/permissionService';
 
 
@@ -196,7 +197,11 @@ describe('Permission', () => {
 
     context('removePermissionsAsync', () => {
         it('fails id not found', async () => {
-            expect(await removePermissionAsync(1100)).to.be.false;
+            try {
+                await removePermissionAsync(1100);
+            } catch (e) {
+                expect(e.message).to.equal('Could not find any entity of type "Permission" matching: 1100');
+            }
         });
 
         it('succeeds', async () => {
@@ -287,7 +292,7 @@ describe('Permission', () => {
                 expect(await permissionRepository.count()).equal(2);
             });
 
-            it('new user is not created testme', async () => {
+            it('new user is not created', async () => {
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
@@ -448,6 +453,104 @@ describe('Permission', () => {
                 expect((await userRepository.count())).equal(userCount);
                 expect(await permissionRepository.count()).equal(2);
             });
+        });
+    });
+
+    describe('generateJWTokenAsync and decipherJWToken', () => {
+
+        beforeEach(async () => {
+            await addPermissionAsync({
+                userId: govUser.id,
+                role: UserRole.GOVERNMENT_ADMIN,
+                governmentId: government.id
+            });
+            await addPermissionAsync({
+                userId: campaignAdminUser.id,
+                role: UserRole.CAMPAIGN_ADMIN,
+                campaignId: campaign.id
+            });
+            await addPermissionAsync({
+                userId: campaignStaffUser.id,
+                role: UserRole.CAMPAIGN_STAFF,
+                campaignId: campaign.id
+            });
+        });
+
+        afterEach(async () => {
+            await permissionRepository.query('TRUNCATE "permission" CASCADE');
+        });
+
+        it('fails no user found', async () => {
+            try {
+                await generateJWTokenAsync(1100);
+            } catch (e) {
+                expect(e.message).to.equal('Could not find any entity of type "User" matching: 1100');
+            }
+
+        });
+
+        it('fails invalid token', async () => {
+            try {
+                await decipherJWTokenAsync('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+            } catch (e) {
+                expect(e.message).to.equal('invalid signature');
+            }
+
+        });
+
+        it('fails token expired testme', async () => {
+            const tokenObj = {
+                exp: Date.now() - 10000
+            };
+            const token = jsonwebtoken.sign(tokenObj, process.env.SECRET_KEY);
+            try {
+                await decipherJWTokenAsync(token);
+            } catch (e) {
+                expect(e.message).to.equal('Token expired');
+            }
+        });
+
+
+        it('government admin', async () => {
+            const token = await generateJWTokenAsync(govUser.id);
+            const decodedToken = await decipherJWTokenAsync(token);
+            expect(decodedToken.id).to.equal(govUser.id);
+            expect(decodedToken.firstName).to.equal(govUser.firstName);
+            expect(decodedToken.lastName).to.equal(govUser.lastName);
+            expect(decodedToken.email).to.equal(govUser.email);
+            expect(decodedToken.exp > Date.now()).to.be.true;
+            expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions[0].role).to.equal(UserRole.GOVERNMENT_ADMIN);
+            expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.GOVERNMENT);
+            expect(decodedToken.permissions[0].id).to.equal(government.id);
+        });
+
+        it('campaign admin', async () => {
+            const token = await generateJWTokenAsync(campaignAdminUser.id);
+            const decodedToken = await decipherJWTokenAsync(token);
+            expect(decodedToken.id).to.equal(campaignAdminUser.id);
+            expect(decodedToken.firstName).to.equal(campaignAdminUser.firstName);
+            expect(decodedToken.lastName).to.equal(campaignAdminUser.lastName);
+            expect(decodedToken.email).to.equal(campaignAdminUser.email);
+            expect(decodedToken.exp > Date.now()).to.be.true;
+            expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_ADMIN);
+            expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
+            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
+        });
+
+        it('campaign staff', async () => {
+            const token = await generateJWTokenAsync(campaignStaffUser.id);
+            const decodedToken = await decipherJWTokenAsync(token);
+            expect(decodedToken.id).to.equal(campaignStaffUser.id);
+            expect(decodedToken.firstName).to.equal(campaignStaffUser.firstName);
+            expect(decodedToken.lastName).to.equal(campaignStaffUser.lastName);
+            expect(decodedToken.email).to.equal(campaignStaffUser.email);
+            expect(decodedToken.exp > Date.now()).to.be.true;
+            expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_STAFF);
+            expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
+            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
         });
     });
 
