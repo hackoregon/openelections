@@ -130,7 +130,7 @@ export class User {
             throw new Error('code must match invitationCode to reset password');
         }
         this.setPassword(newPassword);
-        this.invitationCode = undefined;
+        this.invitationCode = null;
         return true;
     }
 

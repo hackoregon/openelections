@@ -60,6 +60,39 @@ export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationE
   return sendEmail(email);
 }
 
+
+export interface ISendPasswordResetEmailAttrs {
+  to: string;
+  invitationCode: string;
+}
+
+export async function sendPasswordResetEmail(params: ISendPasswordResetEmailAttrs) {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+    Destination: {
+      ToAddresses: [params.to]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<html><head><body><p>A password reset has been requested</p><p><a href="${host}/passwordReset?invitationCode=${params.invitationCode}">Click here to reset your password.</a></p></body></head>`
+        },
+        Text: {
+          Charset: 'UTF-8',
+          Data: `A password reset has been requested. Please visit ${host}/passwordReset?invitationCode=${params.invitationCode} to reset your password`
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `Reset your password`,
+      }
+    },
+    Source: 'no-reply@openelectionsprojecg.org',
+  };
+  return sendEmail(email);
+}
+
 export interface ISendInvitationEmailAttrs {
   to: string;
   campaignName?: string;

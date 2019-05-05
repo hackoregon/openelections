@@ -1,5 +1,6 @@
 import { User } from '../models/entity/User';
 import { getConnection } from 'typeorm';
+import {sendPasswordResetEmail} from "./emailService";
 
 export interface ICreateUser {
     email: string;
@@ -48,5 +49,24 @@ export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs):
     await repository.save(user);
 
     return user;
+}
+
+export async function generatePasswordResetAsync(email: string): Promise<string> {
+    const repository = getConnection('default').getRepository('User');
+    const user = await repository.findOneOrFail({email: email}) as User;
+    const code = user.generatePasswordResetCode();
+    await repository.save(user);
+    await sendPasswordResetEmail({to: user.email, invitationCode: user.invitationCode});
+    return code;
+}
+
+export async function passwordResetAsync(invitationCode, password: string): Promise<User> {
+    const repository = getConnection('default').getRepository('User');
+    const user = await repository.findOneOrFail({invitationCode: invitationCode}) as User;
+    if (password.length < 6) {
+        throw new Error('User password must be at least 6 characters');
+    }
+    user.resetPassword(invitationCode, password);
+    return repository.save(user);
 }
 
