@@ -25,3 +25,28 @@ export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
     return user;
 }
 
+export interface IAcceptInvitationAttrs {
+    invitationCode: string;
+    firstName?: string;
+    lastName?: string;
+    password: string;
+}
+
+export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs): Promise<User> {
+    const repository = getConnection('default').getRepository('User');
+    const user = await repository.findOneOrFail({invitationCode: params.invitationCode}) as User;
+    if (params.password.length < 6) {
+        throw new Error('User password must be at least 6 characters');
+    }
+    user.redeemInvitation(params.invitationCode, params.password);
+    if (params.firstName) {
+        user.firstName = params.firstName;
+    }
+    if (params.lastName) {
+        user.lastName = params.lastName;
+    }
+    await repository.save(user);
+
+    return user;
+}
+
