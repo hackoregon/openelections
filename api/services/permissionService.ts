@@ -5,7 +5,7 @@ import { Campaign } from '../models/entity/Campaign';
 import { User } from '../models/entity/User';
 import { Government } from '../models/entity/Government';
 import { createUserAsync } from './userService';
-import {sendInvitationEmail, sendNewUserInvitationEmail} from './emailService';
+import { sendInvitationEmail, sendNewUserInvitationEmail } from './emailService';
 
 export interface IAddPermissionAsyncAttrs {
     userId: number;

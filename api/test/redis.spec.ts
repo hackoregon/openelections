@@ -7,7 +7,7 @@ describe('redisClient examples', () => {
             throw new Error('Dont run this command in production or develop :(');
         }
         await redisClient.flushall();
-    })
+    });
     it('set and get', async () => {
         expect(await redisClient.get('love')).to.be.null;
         await redisClient.set('love', 1);
