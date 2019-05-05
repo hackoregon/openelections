@@ -71,7 +71,7 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
     return repository.save(user);
 }
 
-export async function createUserSessionFromLoginAsync(email, password: string ): Promise<string> {
+export async function createUserSessionFromLoginAsync(email, password: string): Promise<string> {
     const repository = getConnection('default').getRepository('User');
     try {
         const user = await repository.findOneOrFail({email}) as User;
@@ -83,5 +83,20 @@ export async function createUserSessionFromLoginAsync(email, password: string ):
     } catch (e) {
         throw new Error('Invalid email or password');
     }
+}
+
+export async function updateUserPasswordAsync(userId: number, currentPassword, newPassword: string): Promise<boolean> {
+    const repository = getConnection('default').getRepository('User');
+    const user = await repository.findOneOrFail(userId) as User;
+    if (user.validatePassword(currentPassword)) {
+        if (newPassword.length < 6) {
+            throw new Error('Invalid password');
+        }
+        user.setPassword(newPassword);
+        await repository.save(user);
+    } else {
+        throw new Error('Invalid password');
+    }
+    return true;
 }
 

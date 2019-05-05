@@ -3,7 +3,7 @@ import {
     acceptUserInvitationAsync,
     createUserAsync, createUserSessionFromLoginAsync,
     generatePasswordResetAsync,
-    passwordResetAsync
+    passwordResetAsync, updateUserPasswordAsync
 } from '../../services/userService';
 import { User, UserStatus } from '../../models/entity/User';
 import { expect } from 'chai';
@@ -188,6 +188,60 @@ describe('userService', () => {
             } catch (e) {
                 expect(e.message).to.equal('Invalid email or password');
             }
+        });
+    });
+
+    context('updateUserPasswordAsync', () => {
+        it('succeeds', async () => {
+            let user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            expect(user.validatePassword('password')).to.be.true;
+            await updateUserPasswordAsync(user.id, 'password', 'newpassword');
+            user = await userRepository.findOne(user.id) as User;
+            expect(user.validatePassword('newpassword')).to.be.true;
+        });
+
+        it('fails invalid current password', async () => {
+            let user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            expect(user.validatePassword('password')).to.be.true;
+            try {
+                await updateUserPasswordAsync(user.id, 'password1', 'newpassword');
+            } catch (e) {
+                expect(e.message).to.equal('Invalid password');
+            }
+
+            user = await userRepository.findOne(user.id) as User;
+            expect(user.validatePassword('password')).to.be.true;
+        });
+
+        it('fails invalid new password length', async () => {
+            let user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            expect(user.validatePassword('password')).to.be.true;
+            try {
+                await updateUserPasswordAsync(user.id, 'password', 'new');
+            } catch (e) {
+                expect(e.message).to.equal('Invalid password');
+            }
+
+            user = await userRepository.findOne(user.id) as User;
+            expect(user.validatePassword('password')).to.be.true;
         });
     });
 });
