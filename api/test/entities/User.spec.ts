@@ -1,6 +1,6 @@
-import { User, md5, UserStatus } from '../../models/entity/User';
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
+import {md5, User, UserStatus} from '../../models/entity/User';
+import {expect} from 'chai';
+import {getConnection} from 'typeorm';
 
 let userRepository: any;
 
@@ -157,6 +157,83 @@ describe('User', () => {
         expect(user.invitationCode).to.equal(code);
         expect(user.userStatus).to.equal(UserStatus.INVITED);
         expect(user.validatePassword('password')).to.be.false;
+    });
+
+    it('generatePasswordResetCode fails invalid userstatus', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        const code = user.generateInvitationCode();
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        expect(user.invitationCode).to.equal(code);
+        await userRepository.save(user);
+        try {
+            user.generatePasswordResetCode();
+        } catch (e) {
+            expect(e.message).to.equal('Cannot reset an inactive or invited user');
+        }
+    });
+
+    it('generatePasswordResetCode succeeds', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        user.setPassword('password');
+        user.userStatus = UserStatus.ACTIVE;
+        await userRepository.save(user);
+        expect(user.invitationCode).to.be.null;
+        user.generatePasswordResetCode();
+        expect(user.invitationCode).to.not.be.null;
+    });
+
+
+    it('resetPassword fails invalid userStatus', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        const code = user.generateInvitationCode();
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        expect(user.invitationCode).to.equal(code);
+        await userRepository.save(user);
+        try {
+            user.resetPassword(code, 'password');
+        } catch (e) {
+            expect(e.message).to.equal('Cannot reset an inactive or invited user');
+        }
+    });
+
+    it('resetPassword fails invalid code', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        user.userStatus = UserStatus.INVITED;
+        user.generateInvitationCode();
+        await userRepository.save(user);
+        try {
+            user.resetPassword('love', 'password');
+        } catch (e) {
+            expect(e.message).to.equal('Cannot reset an inactive or invited user');
+        }
+    });
+
+    it('resetPassword succeeds', async () => {
+        let user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        user.setPassword('password');
+        user.userStatus = UserStatus.ACTIVE;
+        await userRepository.save(user);
+        expect(user.invitationCode).to.be.null;
+        user.generatePasswordResetCode();
+        expect(user.invitationCode).to.not.be.null;
+        user.resetPassword(user.invitationCode, 'passwordchanged');
+        user = await userRepository.save(user);
+        expect(user.validatePassword('passwordchanged')).to.be.true;
     });
 });
 

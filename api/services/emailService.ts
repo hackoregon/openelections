@@ -1,4 +1,4 @@
-import {UserRole} from "../models/entity/Permission";
+import { UserRole } from '../models/entity/Permission';
 
 const AWS = require('aws-sdk');
 

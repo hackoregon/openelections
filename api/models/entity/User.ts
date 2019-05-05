@@ -122,6 +122,27 @@ export class User {
         this.salt = salt;
     }
 
+    resetPassword(code, newPassword: string): boolean {
+        if (this.userStatus !== UserStatus.ACTIVE) {
+            throw new Error('Cannot reset an inactive or invited user');
+        }
+        if (code !== this.invitationCode) {
+            throw new Error('code must match invitationCode to reset password');
+        }
+        this.setPassword(newPassword);
+        this.invitationCode = undefined;
+        return true;
+    }
+
+    generatePasswordResetCode() {
+        if (this.userStatus !== UserStatus.ACTIVE) {
+            throw new Error('Cannot reset an inactive or invited user');
+        }
+        const invitationCode = crypto.randomBytes(16).toString('hex');
+        this.invitationCode = invitationCode;
+        return invitationCode;
+    }
+
     generateInvitationCode() {
         const invitationCode = crypto.randomBytes(16).toString('hex');
         this.userStatus = UserStatus.INVITED;
