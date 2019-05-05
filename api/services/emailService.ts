@@ -1,3 +1,5 @@
+import {UserRole} from "../models/entity/Permission";
+
 const AWS = require('aws-sdk');
 
 export interface ISESEmailParams {
@@ -7,7 +9,7 @@ export interface ISESEmailParams {
   Message: {
     Body: {
       Html: {
-        Charset: 'UTF-8',
+        Charset: string,
           Data: string
       };
       Text: {
@@ -21,7 +23,74 @@ export interface ISESEmailParams {
     }
   };
   Source: string;
-  ReplyToAddresses: string[];
+  ReplyToAddresses?: string[];
+}
+
+export interface ISendNewUserInvitationEmailAttrs {
+  to: string;
+  campaignName?: string;
+  governmentName?: string;
+  invitationCode: string;
+}
+
+export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationEmailAttrs) {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+    Destination: {
+      ToAddresses: [params.to]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName}</p><p><a href="${host}/invitation?invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
+        },
+        Text: {
+          Charset: 'UTF-8',
+          Data: `You've been invited to join the ${params.campaignName || params.governmentName}. Please visit ${host}/invitation?invitationCode=${params.invitationCode} to accept the invitation`
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `You've been invited to ${params.campaignName || params.governmentName}`,
+      }
+    },
+    Source: 'no-reply@openelectionsprojecg.org',
+  };
+  return sendEmail(email);
+}
+
+export interface ISendInvitationEmailAttrs {
+  to: string;
+  campaignName?: string;
+  governmentName?: string;
+}
+
+export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+    Destination: {
+      ToAddresses: [params.to]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName}</p><p><a href="${host}">Click here to sign in.</a></p></body></head>`
+        },
+        Text: {
+          Charset: 'UTF-8',
+          Data: `You've been invited to join the ${params.campaignName || params.governmentName}. Please visit ${host} to sign in.`
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `You've been invited to ${params.campaignName || params.governmentName}`,
+      }
+    },
+    Source: 'no-reply@openelectionsprojecg.org',
+  };
+  return sendEmail(email);
 }
 
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {

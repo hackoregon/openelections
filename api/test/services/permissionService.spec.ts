@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 import * as faker from 'faker';
 import { getConnection } from 'typeorm';
 import * as jsonwebtoken from 'jsonwebtoken';
@@ -6,6 +7,7 @@ import { Campaign } from '../../models/entity/Campaign';
 import { Government } from '../../models/entity/Government';
 import { User } from '../../models/entity/User';
 import { Permission, UserRole } from '../../models/entity/Permission';
+import * as emails from '../../services/emailService';
 import { createUserAsync } from '../../services/userService';
 import {
     addPermissionAsync, addUserToCampaignAsync, addUserToGovernmentAsync, decipherJWTokenAsync, generateJWTokenAsync,
@@ -24,6 +26,7 @@ let campaign: Campaign;
 let govUser: User;
 let campaignAdminUser: User;
 let campaignStaffUser: User;
+let mockEmail: any;
 
 describe('Permission', () => {
     before(async () => {
@@ -58,8 +61,13 @@ describe('Permission', () => {
         await campaignRepository.save(campaign);
     });
 
+    beforeEach(() => {
+        mockEmail = sinon.mock(emails);
+    });
+
     afterEach(async () => {
         await permissionRepository.query('TRUNCATE "permission" CASCADE');
+        sinon.reset();
     });
 
     after(async () => {
@@ -272,7 +280,7 @@ describe('Permission', () => {
         });
 
         context( 'succeeds', () => {
-            it('government admin can add another government admin', async () => {
+            it('government admin can add another government admin testme', async () => {
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
@@ -280,16 +288,19 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                const email = faker.internet.email();
+                mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToGovernmentAsync({
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: government.id,
                     currentUserId: govUser.id,
-                    email: faker.internet.email(),
+                    email,
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
                 expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
+                mockEmail.verify();
             });
 
             it('new user is not created', async () => {
@@ -300,6 +311,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendInvitationEmail').once();
                 await addUserToGovernmentAsync({
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: government.id,
@@ -308,6 +320,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -362,6 +375,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
                     role: UserRole.CAMPAIGN_ADMIN,
                     campaignId: campaign.id,
@@ -370,6 +384,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -382,6 +397,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
                     role: UserRole.CAMPAIGN_STAFF,
                     campaignId: campaign.id,
@@ -390,6 +406,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -402,6 +419,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
                     role: UserRole.CAMPAIGN_ADMIN,
                     campaignId: campaign.id,
@@ -410,6 +428,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -422,6 +441,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
                     role: UserRole.CAMPAIGN_STAFF,
                     campaignId: campaign.id,
@@ -430,6 +450,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -442,6 +463,7 @@ describe('Permission', () => {
                 });
                 expect(await permissionRepository.count()).equal(1);
                 const userCount = await userRepository.count();
+                mockEmail.expects('sendInvitationEmail').once();
                 await addUserToCampaignAsync({
                     role: UserRole.CAMPAIGN_STAFF,
                     campaignId: campaign.id,
@@ -450,6 +472,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
+                mockEmail.verify()
                 expect((await userRepository.count())).equal(userCount);
                 expect(await permissionRepository.count()).equal(2);
             });
@@ -498,7 +521,7 @@ describe('Permission', () => {
 
         });
 
-        it('fails token expired testme', async () => {
+        it('fails token expired', async () => {
             const tokenObj = {
                 exp: Date.now() - 10000
             };

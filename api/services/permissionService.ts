@@ -5,6 +5,7 @@ import { Campaign } from '../models/entity/Campaign';
 import { User } from '../models/entity/User';
 import { Government } from '../models/entity/Government';
 import { createUserAsync } from './userService';
+import {sendInvitationEmail, sendNewUserInvitationEmail} from './emailService';
 
 export interface IAddPermissionAsyncAttrs {
     userId: number;
@@ -106,10 +107,24 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
                 email: attrs.email,
                 firstName: attrs.firstName,
                 lastName: attrs.lastName,
-                password: 'changeme'
+            });
+            await sendNewUserInvitationEmail({
+                to: user.email,
+                invitationCode: user.invitationCode,
+                campaignName: campaign.name,
+            });
+        } else {
+            await sendInvitationEmail({
+                to: user.email,
+                campaignName: campaign.name,
             });
         }
-        return addPermissionAsync({userId: user.id, role: attrs.role, campaignId: campaign.id, governmentId: campaign.government.id});
+        return addPermissionAsync({
+            userId: user.id,
+            role: attrs.role,
+            campaignId: campaign.id,
+            governmentId: campaign.government.id
+        });
     }
     throw new Error('user does not have sufficient permissions');
 }
@@ -134,7 +149,17 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
                 email: attrs.email,
                 firstName: attrs.firstName,
                 lastName: attrs.lastName,
-                password: 'changeme'
+            });
+            await sendNewUserInvitationEmail({
+                to: user.email,
+                invitationCode: user.invitationCode,
+                governmentName: government.name,
+            });
+        } else {
+
+            await sendInvitationEmail({
+                to: user.email,
+                governmentName: government.name,
             });
         }
         return addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
@@ -210,7 +235,7 @@ export interface IJWTToken {
 }
 
 export function decipherJWTokenAsync(token: string): Promise<IToken> {
-   return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         try {
             jsonwebtoken.verify(token, process.env.SECRET_KEY);
         } catch (e) {
