@@ -1,7 +1,6 @@
-import { User, createHash, md5 } from '../../models/entity/User';
+import { User, md5, UserStatus } from '../../models/entity/User';
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
-import { ValidationError } from 'class-validator';
 
 let userRepository: any;
 
@@ -117,4 +116,43 @@ describe('User', () => {
         });
     });
 
+    it('generateInvitationCode', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        const code = user.generateInvitationCode();
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        await userRepository.save(user);
+        expect(user.validatePassword(code)).to.be.true;
+    });
+
+    it('redeemInvitation succeeds', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        const code = user.generateInvitationCode();
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        await userRepository.save(user);
+        user.redeemInvitation(code, 'password');
+        await userRepository.save(user);
+        expect(user.userStatus).to.equal(UserStatus.ACTIVE);
+        expect(user.validatePassword('password')).to.be.true;
+    });
+
+    it('redeemInvitation fails', async () => {
+        const user = new User();
+        user.firstName = 'Dan';
+        user.lastName = 'Melton';
+        user.email = 'dan@civicsoftwarefoundation.org';
+        const code = user.generateInvitationCode();
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        await userRepository.save(user);
+        user.redeemInvitation('111', 'password');
+        await userRepository.save(user);
+        expect(user.userStatus).to.equal(UserStatus.INVITED);
+        expect(user.validatePassword('password')).to.be.false;
+    });
 });
+

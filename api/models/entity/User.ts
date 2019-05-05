@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate} from 'typeorm';
 import { IsEmail, IsDefined, validate, ValidationError } from 'class-validator';
 import * as crypto from 'crypto';
-import { Permission } from './Permission';
+import {Permission, UserRole} from './Permission';
 
 export interface IPasswordHash {
     hash: string;
@@ -27,6 +27,11 @@ export function md5(text: string) {
     return crypto.createHash('md5').update(text).digest('hex');
 }
 
+export enum UserStatus {
+    INVITED = 'invited',
+    ACTIVE = 'active',
+    INACTIVE = 'inactive',
+}
 
 @Entity()
 export class User {
@@ -57,6 +62,13 @@ export class User {
 
     @OneToMany(type => Permission, permission => permission.user)
     permissions: Permission[];
+
+    @Column({
+        type: 'enum',
+        enum: UserStatus,
+        default: UserStatus.INVITED
+    })
+    userStatus: UserStatus;
 
     public errors: ValidationError[];
 
@@ -104,5 +116,21 @@ export class User {
         const { salt, hash } = createHash(password);
         this.passwordHash = hash;
         this.salt = salt;
+    }
+
+    generateInvitationCode() {
+        const invitationCode = crypto.randomBytes(16).toString('hex');
+        this.userStatus = UserStatus.INVITED;
+        this.setPassword(invitationCode);
+        return invitationCode;
+    }
+
+    redeemInvitation(code, newPassword: string) {
+        if (this.validatePassword(code)) {
+            this.setPassword(newPassword);
+            this.userStatus = UserStatus.ACTIVE;
+            return true;
+        }
+        return false;
     }
 }
