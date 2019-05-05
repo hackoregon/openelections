@@ -1,7 +1,7 @@
 import { User } from '../models/entity/User';
 import { getConnection } from 'typeorm';
 import { sendPasswordResetEmail } from './emailService';
-import {generateJWTokenAsync} from "./permissionService";
+import { generateJWTokenAsync } from './permissionService';
 
 export interface ICreateUser {
     email: string;
