@@ -1,6 +1,7 @@
 import { User } from '../models/entity/User';
 import { getConnection } from 'typeorm';
 import { sendPasswordResetEmail } from './emailService';
+import {generateJWTokenAsync} from "./permissionService";
 
 export interface ICreateUser {
     email: string;
@@ -68,5 +69,19 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
     }
     user.resetPassword(invitationCode, password);
     return repository.save(user);
+}
+
+export async function createUserSessionFromLoginAsync(email, password: string ): Promise<string> {
+    const repository = getConnection('default').getRepository('User');
+    try {
+        const user = await repository.findOneOrFail({email}) as User;
+        if (user.validatePassword(password)) {
+            return generateJWTokenAsync(user.id);
+        } else {
+            throw new Error('Invalid email or password');
+        }
+    } catch (e) {
+        throw new Error('Invalid email or password');
+    }
 }
 

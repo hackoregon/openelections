@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import {
     acceptUserInvitationAsync,
-    createUserAsync,
+    createUserAsync, createUserSessionFromLoginAsync,
     generatePasswordResetAsync,
     passwordResetAsync
 } from '../../services/userService';
@@ -9,6 +9,7 @@ import { User, UserStatus } from '../../models/entity/User';
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import * as emails from '../../services/emailService';
+import {decipherJWTokenAsync} from "../../services/permissionService";
 
 let userRepository: any;
 let mockEmail: any;
@@ -132,7 +133,7 @@ describe('userService', () => {
     });
 
     context('passwordResetAsync', () => {
-        it('succeeds testme', async () => {
+        it('succeeds', async () => {
             let user = new User();
             user.email = 'dan@civicsoftwarefoundation.org';
             user.firstName = 'Dan';
@@ -149,6 +150,44 @@ describe('userService', () => {
             user = await userRepository.findOne(user.id) as User;
             expect(user.validatePassword('password1')).to.be.true;
             expect(user.invitationCode).to.be.null;
-        })
-    })
+        });
+    });
+
+    context('createUserSessionFromLoginAsync', () => {
+        it('succeeds', async () => {
+            const user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            const token = await createUserSessionFromLoginAsync(user.email, 'password');
+            const tokenObj = await decipherJWTokenAsync(token);
+            expect(tokenObj.email).to.equal(user.email);
+        });
+
+        it('fails no email found', async () => {
+            try {
+                await createUserSessionFromLoginAsync('dan@hello.com', 'password');
+            } catch (e) {
+                expect(e.message).to.equal('Invalid email or password');
+            }
+        });
+
+        it('fails wrong password', async () => {
+            const user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            try {
+                await createUserSessionFromLoginAsync(user.email, 'password1');
+            } catch (e) {
+                expect(e.message).to.equal('Invalid email or password');
+            }
+        });
+    });
 });
