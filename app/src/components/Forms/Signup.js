@@ -1,10 +1,18 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-
+// import Input from '@material-ui/core/Input';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 export const SignupForm = (props) => {
+
+
   const {
-    values: { firstName, lastName, email },
+    values: { userRole, firstName, lastName, email },
+    userRoles,
+    handleRoleChange,
     errors,
     touched,
     handleSubmit,
@@ -22,6 +30,21 @@ export const SignupForm = (props) => {
 
   return (
    <form onSubmit={handleSubmit}>
+    {console.log(userRoles, userRole)}
+    <FormControl>
+      <InputLabel htmlFor="userRole">Role</InputLabel>
+      <Select 
+        value={userRole}
+        onChange={handleRoleChange}
+        inputProps={{
+          name: 'userRole',
+          id: 'userRole',
+        }}
+        autoWidth
+      >
+       {userRoles.map( role => <MenuItem value={role} key={role}>{ role }</MenuItem>)}
+      </Select>
+      </FormControl>
       <TextField
         id="email"
         name="email"

@@ -7,6 +7,7 @@ import * as Yup from "yup";
 // import { connect } from 'react-redux'
 
 const validationSchema = Yup.object({
+  userRole: Yup.string("Choose a user role").required("A user role is required"),
   firstName: Yup.string("Enter your first name").required("First Name is required"),
   lastName: Yup.string("Enter your last name").required("Last Name is required"),
   email: Yup.string("Enter your email").email("Enter a valid email").required("Email is required")
@@ -26,21 +27,43 @@ const styles = theme => ({
 });
 
 class Signup extends React.Component {
+  state = {
+    role: 'Staff'
+  };
+  handleRoleChange = event => {
+    console.log('change', this.state.role);
+    this.setState({ role: event.target.value });
+  };
   render () {
     const initilValues = {
       firstName: '',
       lastName: '',
-      email: ''
+      email: '',
+      userRole: this.state.role
     }
+    const userRoles = [
+      'Admin',
+      'Staff'
+    ];
+
+    const { classes } = this.props;
 
     return (
-      <div>
-        <Paper elevation={1}>
-        <Formik
-          render={props => <SignupForm {...props} />}
-          initialValues={initilValues}
-          validationSchema={validationSchema}
-        />
+      <div className={classes.container}>
+      {console.log('classes test', classes)}
+        <Paper elevation={1} className={classes.paper}>
+          <Formik
+            onSubmit={(values, actions) => {
+              console.log('Submitting: ', values, actions)
+            }}
+            render={props => (
+              <SignupForm 
+                handleRoleChange={this.handleRoleChange.bind(this)} 
+                {...{...props, userRoles}} 
+              />)}
+            initialValues={initilValues}
+            validationSchema={validationSchema}
+          />
         </Paper>
       </div>
     )
