@@ -1,6 +1,6 @@
 import { User } from '../models/entity/User';
 import { getConnection } from 'typeorm';
-import {sendPasswordResetEmail} from "./emailService";
+import { sendPasswordResetEmail } from './emailService';
 
 export interface ICreateUser {
     email: string;
