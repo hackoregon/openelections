@@ -70,6 +70,10 @@ export class User {
     })
     userStatus: UserStatus;
 
+    @Column({ nullable: true })
+    invitationCode: string;
+
+
     public errors: ValidationError[];
 
     @BeforeInsert()
@@ -121,6 +125,7 @@ export class User {
     generateInvitationCode() {
         const invitationCode = crypto.randomBytes(16).toString('hex');
         this.userStatus = UserStatus.INVITED;
+        this.invitationCode = invitationCode;
         this.setPassword(invitationCode);
         return invitationCode;
     }
@@ -128,6 +133,7 @@ export class User {
     redeemInvitation(code, newPassword: string) {
         if (this.validatePassword(code)) {
             this.setPassword(newPassword);
+            this.invitationCode = null;
             this.userStatus = UserStatus.ACTIVE;
             return true;
         }

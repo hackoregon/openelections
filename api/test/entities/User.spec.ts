@@ -122,6 +122,7 @@ describe('User', () => {
         user.lastName = 'Melton';
         user.email = 'dan@civicsoftwarefoundation.org';
         const code = user.generateInvitationCode();
+        expect(user.invitationCode).to.equal(code);
         expect(user.userStatus).to.equal(UserStatus.INVITED);
         await userRepository.save(user);
         expect(user.validatePassword(code)).to.be.true;
@@ -134,9 +135,11 @@ describe('User', () => {
         user.email = 'dan@civicsoftwarefoundation.org';
         const code = user.generateInvitationCode();
         expect(user.userStatus).to.equal(UserStatus.INVITED);
+        expect(user.invitationCode).to.equal(code);
         await userRepository.save(user);
         user.redeemInvitation(code, 'password');
         await userRepository.save(user);
+        expect(user.invitationCode).to.be.null;
         expect(user.userStatus).to.equal(UserStatus.ACTIVE);
         expect(user.validatePassword('password')).to.be.true;
     });
@@ -151,6 +154,7 @@ describe('User', () => {
         await userRepository.save(user);
         user.redeemInvitation('111', 'password');
         await userRepository.save(user);
+        expect(user.invitationCode).to.equal(code);
         expect(user.userStatus).to.equal(UserStatus.INVITED);
         expect(user.validatePassword('password')).to.be.false;
     });

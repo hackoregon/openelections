@@ -51,6 +51,7 @@
     "ioredis-mock": "^4.9.0",
     "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
+    "sinon": "^7.3.2",
     "ts-node": "3.3.0",
     "tslint": "^5.14.0",
     "typeorm-fixtures": "^0.8.5",

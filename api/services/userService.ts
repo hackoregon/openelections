@@ -3,7 +3,7 @@ import { getConnection } from 'typeorm';
 
 export interface ICreateUser {
     email: string;
-    password: string;
+    password?: string;
     firstName?: string;
     lastName?: string;
 }
@@ -14,9 +14,14 @@ export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
     user.firstName = userAttrs.firstName;
     user.lastName = userAttrs.lastName;
     user.email = userAttrs.email;
-    user.setPassword(userAttrs.password);
+    if (userAttrs.password) {
+        user.setPassword(userAttrs.password);
+    } else {
+        user.generateInvitationCode();
+    }
     if (await user.isValidAsync()) {
         await repository.save(user);
     }
     return user;
 }
+
