@@ -1,7 +1,7 @@
-import {User, UserStatus} from '../models/entity/User';
-import {getConnection} from 'typeorm';
-import {resendInvitationEmail, sendPasswordResetEmail} from './emailService';
-import {generateJWTokenAsync} from './permissionService';
+import { User, UserStatus } from '../models/entity/User';
+import { getConnection } from 'typeorm';
+import { resendInvitationEmail, sendPasswordResetEmail } from './emailService';
+import { generateJWTokenAsync } from './permissionService';
 
 export interface ICreateUser {
     email: string;
