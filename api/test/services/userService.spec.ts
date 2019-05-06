@@ -206,6 +206,14 @@ describe('userService', () => {
             expect(user.validatePassword('newpassword')).to.be.true;
         });
 
+        it('fails user not found', async () => {
+            try {
+                await updateUserPasswordAsync(1100, 'password', 'newpassword');
+            } catch (e) {
+             expect(e.message).to.equal('Could not find any entity of type "User" matching: 1100');
+            }
+        });
+
         it('fails invalid current password', async () => {
             let user = new User();
             user.email = 'dan@civicsoftwarefoundation.org';
