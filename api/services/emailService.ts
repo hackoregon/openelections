@@ -60,6 +60,38 @@ export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationE
   return sendEmail(email);
 }
 
+export interface IResendInvitationEmailAttrs {
+  to: string;
+  invitationCode: string;
+}
+
+export async function resendInvitationEmail(params: IResendInvitationEmailAttrs) {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+    Destination: {
+      ToAddresses: [params.to]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<html><head><body><p>You've been invited to the OpenElections Program.</p><p><a href="${host}/invitation?invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
+        },
+        Text: {
+          Charset: 'UTF-8',
+          Data: `You've been invited to the OpenElections Program. Please visit ${host}/invitation?invitationCode=${params.invitationCode} to accept the invitation`
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `You've been invited to the OpenElections Program.`,
+      }
+    },
+    Source: 'no-reply@openelectionsprojecg.org',
+  };
+  return sendEmail(email);
+}
+
 
 export interface ISendPasswordResetEmailAttrs {
   to: string;
