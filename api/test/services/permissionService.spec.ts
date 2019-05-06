@@ -385,8 +385,8 @@ describe('Permission', () => {
                     lastName: 'Melton'
                 });
                 mockEmail.verify();
-                expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
+                expect((await userRepository.count())).equal(userCount + 1);
             });
 
             it('government admin can add campaign staff', async () => {
@@ -407,8 +407,8 @@ describe('Permission', () => {
                     lastName: 'Melton'
                 });
                 mockEmail.verify();
-                expect((await userRepository.count())).equal(userCount + 1);
                 expect(await permissionRepository.count()).equal(2);
+                expect(await userRepository.count()).equal(userCount + 1);
             });
 
             it('campaign admin can add campaign admin', async () => {
