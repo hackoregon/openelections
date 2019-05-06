@@ -1,15 +1,18 @@
 import * as sinon from 'sinon';
 import {
     acceptUserInvitationAsync,
-    createUserAsync, createUserSessionFromLoginAsync,
+    createUserAsync,
+    createUserSessionFromLoginAsync,
     generatePasswordResetAsync,
-    passwordResetAsync, updateUserPasswordAsync
+    passwordResetAsync,
+    resendInvitationAsync,
+    updateUserPasswordAsync
 } from '../../services/userService';
 import { User, UserStatus } from '../../models/entity/User';
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import * as emails from '../../services/emailService';
-import {decipherJWTokenAsync} from "../../services/permissionService";
+import { decipherJWTokenAsync } from '../../services/permissionService';
 
 let userRepository: any;
 let mockEmail: any;
@@ -127,7 +130,7 @@ describe('userService', () => {
             try {
                 await generatePasswordResetAsync('dan@hello.com');
             } catch (e) {
-                expect(e.message).to.equal('Could not find any entity of type "User" matching: {\n    "email": "dan@hello.com"\n}')
+                expect(e.message).to.equal('Could not find any entity of type "User" matching: {\n    "email": "dan@hello.com"\n}');
             }
         });
     });
@@ -250,6 +253,45 @@ describe('userService', () => {
 
             user = await userRepository.findOne(user.id) as User;
             expect(user.validatePassword('password')).to.be.true;
+        });
+    });
+
+    context('resendInvitationAsync', () => {
+
+        it('succeeds', async () => {
+            const user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.generateInvitationCode();
+            await userRepository.save(user);
+            expect(user.invitationCode).to.not.be.null;
+            mockEmail.expects('resendInvitationEmail').once();
+            await resendInvitationAsync(user.id);
+            mockEmail.verify();
+        });
+
+        it('fails no user', async () => {
+            try {
+                await resendInvitationAsync(1100);
+            } catch (e) {
+                expect(e.message).to.equal('Could not find any entity of type "User" matching: 1100');
+            }
+        });
+
+        it('fails user status is not invited', async () => {
+            const user = new User();
+            user.email = 'dan@civicsoftwarefoundation.org';
+            user.firstName = 'Dan';
+            user.lastName = 'Melton';
+            user.userStatus = UserStatus.ACTIVE;
+            user.setPassword('password');
+            await userRepository.save(user);
+            try {
+                await resendInvitationAsync(user.id);
+            } catch (e) {
+                expect(e.message).to.equal('User is already in the system or there is no invitation code');
+            }
         });
     });
 });

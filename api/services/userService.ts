@@ -1,7 +1,7 @@
-import { User } from '../models/entity/User';
-import { getConnection } from 'typeorm';
-import { sendPasswordResetEmail } from './emailService';
-import { generateJWTokenAsync } from './permissionService';
+import {User, UserStatus} from '../models/entity/User';
+import {getConnection} from 'typeorm';
+import {resendInvitationEmail, sendPasswordResetEmail} from './emailService';
+import {generateJWTokenAsync} from './permissionService';
 
 export interface ICreateUser {
     email: string;
@@ -100,3 +100,13 @@ export async function updateUserPasswordAsync(userId: number, currentPassword, n
     return true;
 }
 
+export async function resendInvitationAsync(userId: number): Promise<boolean> {
+    const repository = getConnection('default').getRepository('User');
+    const user = await repository.findOneOrFail(userId) as User;
+    if (user.userStatus === UserStatus.INVITED && user.invitationCode) {
+        await resendInvitationEmail({to: user.email, invitationCode: user.invitationCode});
+        return true;
+    } else {
+        throw new Error('User is already in the system or there is no invitation code');
+    }
+}
