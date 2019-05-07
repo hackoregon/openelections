@@ -22,6 +22,8 @@ services:
       dockerfile: 'Dockerfile.development'
     # command: npm run development
     command: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "develop"]
+    env_file:
+      - .env
     environment:
       - PORT=3000
       - NODE_ENV=development
@@ -35,8 +37,11 @@ services:
       - SKIP_DB_MIGRATION=0
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=djcmTZHzA:6c4+P%2[P*SYxcvX9ma|KWyN$gnD{h
     depends_on:
       - db
+      - redis
     ports:
       - 3000:3000
     volumes:

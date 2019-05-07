@@ -25,7 +25,7 @@ services:
     command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "develop"]
     environment:
       - PORT=3000
-      - NODE_ENV=development
+      - NODE_ENV=test
       - SECRET_KEY=bananas
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
