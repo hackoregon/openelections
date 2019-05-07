@@ -30,7 +30,7 @@ class Signup extends React.Component {
   state = {
     role: 'Staff'
   };
-  handleRoleChange = event => {
+  handleRoleChange(event) {
     console.log('change', this.state.role);
     this.setState({ role: event.target.value });
   };
@@ -39,19 +39,22 @@ class Signup extends React.Component {
       firstName: '',
       lastName: '',
       email: '',
-      userRole: this.state.role
+      userRole: 'Staff'
     }
     const userRoles = [
       'Admin',
       'Staff'
     ];
+    const selectedValues = {
+      role: this.state.role
+    }
 
     const { classes } = this.props;
 
     return (
       <div className={classes.container}>
-      {console.log('classes test', classes)}
         <Paper elevation={1} className={classes.paper}>
+        {console.log(initilValues, this.state.role)}
           <Formik
             onSubmit={(values, actions) => {
               console.log('Submitting: ', values, actions)
@@ -59,7 +62,7 @@ class Signup extends React.Component {
             render={props => (
               <SignupForm 
                 handleRoleChange={this.handleRoleChange.bind(this)} 
-                {...{...props, userRoles}} 
+                {...{...props, userRoles, selectedValues}} 
               />)}
             initialValues={initilValues}
             validationSchema={validationSchema}
