@@ -6,6 +6,7 @@ This project was bootstrapped with Create React App.
 
 - [Quick start](#quick-start)
 - [Adding Routes](#adding-routes)
+- [Forms](#forms)
 
 
 ## Quick Start
@@ -75,3 +76,28 @@ Then add it to the Switch:
     component={ContributionsPage}/>
 </Switch>
 ```
+
+## Forms
+Forms can be very frustrating and and difficult to manage, so here is an attempt to find some standardization in the form creation process. Feel free to add and improve this process.
+
+### File Structure
+In the hopes of having single-purpose components, we have a separation of the actual form html element (plus select methods), and the logic/validation/state. The forms are utilizing the [`Formik`](https://jaredpalmer.com/formik/) library, [`Yup`](https://github.com/jquense/yup) library, and the [`Material UI`](https://material-ui.com) library. This choice was largely made because creating a form, valiation, & UI system could take a few Hack Oregon seasons and we are volunteers with a deadline 😅. So let's dig a little deeper into how the forms are set up. Ultimately, there are 2 components: the form and the form logic/validation/state.
+
+#### The Form
+The forms in the `src/components/Form` directory should return the `<form>...</form>` jsx. Since this component is wrapped in the Formik HOC, it has access to a [bunch of useful props](https://jaredpalmer.com/formik/docs/api/formik#props). When creating this component be sure to checkout the [material ui docs](https://material-ui.com).
+
+#### Form Logic / Validation / State
+In this component the [validationSchema]() should be defined, a state will need to be utilize (so it should be a stateful component), styles should be defined (if not global already), and any special logic should be defined, such as a method that handles updating the state from a `select` component. This form does not have to be located anywhere in particular.
+
+### Validation
+Here is an example of the Sign up form `validationSchema`. It is utilizing the [`Yup`](https://github.com/jquense/yup) library.
+
+```js
+const validationSchema = Yup.object({
+  userRole: Yup.string("Choose a user role").required("A user role is required"),
+  firstName: Yup.string("Enter your first name").required("First Name is required"),
+  lastName: Yup.string("Enter your last name").required("Last Name is required"),
+  email: Yup.string("Enter your email").email("Enter a valid email").required("Email is required")
+});
+```
+
