@@ -26,6 +26,7 @@ VOTER_LIST_KEY = {'FIRST_NAME': 'VARCHAR(255)',
                   'EFF_ZIP_PLUS_FOUR': 'VARCHAR(255)',
                   'RES_ADDRESS_1': 'VARCHAR(255)',
                   'RES_ADDRESS_2': 'VARCHAR(255)',
+                  'CITY': 'VARCHAR(255)',
                   'STATE': 'VARCHAR(255)',
                   'ZIP_CODE': 'VARCHAR(255)',
                   'ZIP_PLUS_FOUR': 'VARCHAR(255)'}
