@@ -26,7 +26,7 @@ export const SignupForm = (props) => {
 
   const change = (name, e) => {
     e.persist();
-    handleChange(e);
+    name === 'userRole' ? handleRoleChange(e) : handleChange(e);
     console.log(errors);
     setFieldTouched(name, true, false);
   };
@@ -38,7 +38,7 @@ export const SignupForm = (props) => {
       <InputLabel htmlFor="userRole">Role</InputLabel>
       <Select 
         value={role}
-        onChange={handleRoleChange}
+        onChange={change.bind(null, "userRole")}
         inputProps={{
           name: 'userRole',
           id: 'userRole',
