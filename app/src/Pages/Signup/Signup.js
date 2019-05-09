@@ -58,6 +58,7 @@ class Signup extends React.Component {
     return (
       <div className={classes.container}>
         <Paper elevation={1} className={classes.paper}>
+        {console.log({state: this.state})}
           <Formik
             onSubmit={(values, actions) => {
               console.log('Submitting: ', values, actions)

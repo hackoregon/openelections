@@ -12,7 +12,6 @@ export const SignupForm = (props) => {
   const {
     values: { userRole, firstName, lastName, email },
     userRoles,
-    // selectedValues: {selectedUserRole},
     handleStateChange,
     errors,
     touched,
@@ -34,7 +33,6 @@ export const SignupForm = (props) => {
 
   return (
    <form onSubmit={handleSubmit}>
-    {console.log({userRole})}
     <FormControl>
       <InputLabel htmlFor="userRole">Role</InputLabel>
       <Select 
