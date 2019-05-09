@@ -12,8 +12,8 @@ export const SignupForm = (props) => {
   const {
     values: { userRole, firstName, lastName, email },
     userRoles,
-    selectedValues: {role},
-    handleRoleChange,
+    // selectedValues: {selectedUserRole},
+    handleStateChange,
     errors,
     touched,
     handleSubmit,
@@ -26,7 +26,8 @@ export const SignupForm = (props) => {
 
   const change = (name, e) => {
     e.persist();
-    name === 'userRole' ? handleRoleChange(e) : handleChange(e);
+    handleStateChange(name, e);
+    handleChange(e)
     console.log(errors);
     setFieldTouched(name, true, false);
   };
@@ -37,7 +38,7 @@ export const SignupForm = (props) => {
     <FormControl>
       <InputLabel htmlFor="userRole">Role</InputLabel>
       <Select 
-        value={role}
+        value={userRole}
         onChange={change.bind(null, "userRole")}
         inputProps={{
           name: 'userRole',

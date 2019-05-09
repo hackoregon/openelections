@@ -28,43 +28,46 @@ const styles = theme => ({
 
 class Signup extends React.Component {
   state = {
-    role: 'Staff'
+    firstName: '',
+    lastName: '',
+    email: '',
+    userRole: 'Staff'
   };
-  handleRoleChange(event) {
-    console.log('change', this.state.role);
-    this.setState({ role: event.target.value });
+  handleStateChange(name, event) {
+    console.log('change', name);
+    this.setState({ [name]: event.target.value });
   };
+
   render () {
-    const initilValues = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      userRole: 'Staff'
-    }
+    // const initilValues = {
+    //   firstName: '',
+    //   lastName: '',
+    //   email: '',
+    //   userRole: 'Staff'
+    // }
     const userRoles = [
       'Admin',
       'Staff'
     ];
-    const selectedValues = {
-      role: this.state.role
-    }
+    // const selectedValues = {
+    //   selectedUserRole: this.state.userRole
+    // }
 
     const { classes } = this.props;
 
     return (
       <div className={classes.container}>
         <Paper elevation={1} className={classes.paper}>
-        {console.log(initilValues, this.state.role)}
           <Formik
             onSubmit={(values, actions) => {
               console.log('Submitting: ', values, actions)
             }}
             render={props => (
               <SignupForm 
-                handleRoleChange={this.handleRoleChange.bind(this)} 
-                {...{...props, userRoles, selectedValues}} 
+                handleStateChange={this.handleStateChange.bind(this)} 
+                {...{...props, userRoles /*, selectedValues */}} 
               />)}
-            initialValues={initilValues}
+            initialValues={this.state}
             validationSchema={validationSchema}
           />
         </Paper>
