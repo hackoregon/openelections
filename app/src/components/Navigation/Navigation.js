@@ -6,6 +6,7 @@ const Navigation = (props) => {
   return (
     <nav>
       <NavLink to="/">Home</NavLink>
+      <NavLink to="/signup">Sign Up</NavLink>
       <NavLink to="/dashboard">Dashboard</NavLink>
       <NavLink to="/contributions">Contributions</NavLink>
     </nav>
