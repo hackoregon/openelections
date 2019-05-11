@@ -21,7 +21,7 @@ export const AddUserForm = (props) => {
     isValid,
     initialValues,
     setFieldTouched,
-    // handleBlur ,
+    handleBlur ,
     resetForm,
     clearState,
     // handleReset
@@ -34,7 +34,7 @@ export const AddUserForm = (props) => {
     handleStateChange(name, e);
     handleChange(e)
     console.log(errors);
-    setFieldTouched(name, true, false);
+    // setFieldTouched(name, true, false);
   };
 
   return (
@@ -49,7 +49,6 @@ export const AddUserForm = (props) => {
       <Select 
         value={userRole}
         onChange={change.bind(null, "userRole")}
-        // onBlur={handleBlur}
         inputProps={{
           name: 'userRole',
           id: 'userRole',
@@ -68,6 +67,10 @@ export const AddUserForm = (props) => {
       error={touched.email && Boolean(errors.email)}
       value={email}
       onChange={change.bind(null, "email")}
+      onBlur={(e) => {
+        handleBlur(e)
+        console.log('blurring', e)
+      }}
       fullWidth
     />
     <TextField
