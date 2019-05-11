@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Formik } from "formik";
 import Paper from "@material-ui/core/Paper";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { SignupForm } from '../../components/Forms/Signup'
+import { AddUserForm } from '../../components/Forms/AddUser'
 import * as Yup from "yup";
 // import { connect } from 'react-redux'
 
@@ -22,11 +22,11 @@ const styles = theme => ({
       .spacing.unit * 5}px`
   },
   container: {
-    maxWidth: "200px"
+    maxWidth: "350px"
   }
 });
 
-class Signup extends React.Component {
+class AddUser extends React.Component {
   state = {
     firstName: '',
     lastName: '',
@@ -39,19 +39,10 @@ class Signup extends React.Component {
   };
 
   render () {
-    // const initilValues = {
-    //   firstName: '',
-    //   lastName: '',
-    //   email: '',
-    //   userRole: 'Staff'
-    // }
     const userRoles = [
       'Admin',
       'Staff'
     ];
-    // const selectedValues = {
-    //   selectedUserRole: this.state.userRole
-    // }
 
     const { classes } = this.props;
 
@@ -64,7 +55,7 @@ class Signup extends React.Component {
               console.log('Submitting: ', values, actions)
             }}
             render={props => (
-              <SignupForm 
+              <AddUserForm 
                 handleStateChange={this.handleStateChange.bind(this)} 
                 {...{...props, userRoles /*, selectedValues */}} 
               />)}
@@ -76,4 +67,4 @@ class Signup extends React.Component {
     )
   }
 }
-export default withStyles(styles)(Signup);
+export default withStyles(styles)(AddUser);
