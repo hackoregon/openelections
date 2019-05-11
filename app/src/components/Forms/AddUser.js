@@ -12,13 +12,19 @@ export const AddUserForm = (props) => {
   const {
     values: { userRole, firstName, lastName, email },
     userRoles,
+    formValues,
     handleStateChange,
     errors,
     touched,
     handleSubmit,
     handleChange,
     isValid,
-    setFieldTouched
+    initialValues,
+    setFieldTouched,
+    // handleBlur ,
+    resetForm,
+    clearState,
+    // handleReset
   } = props;
   
 
@@ -32,22 +38,28 @@ export const AddUserForm = (props) => {
   };
 
   return (
-   <form onSubmit={handleSubmit}>
-   {console.log(props)}
+   <form>
+   {console.log({props})}
+    <p style={{
+      fontSize: 35 + 'px',
+      letterSpacing: -2 + 'px'
+      }}>Add a New User</p>
     <FormControl>
       <InputLabel htmlFor="userRole">Role</InputLabel>
-        <Select 
-          value={userRole}
-          onChange={change.bind(null, "userRole")}
-          inputProps={{
-            name: 'userRole',
-            id: 'userRole',
-          }}
-          autoWidth
+      <Select 
+        value={userRole}
+        onChange={change.bind(null, "userRole")}
+        // onBlur={handleBlur}
+        inputProps={{
+          name: 'userRole',
+          id: 'userRole',
+        }}
+        autoWidth
         >
           {userRoles.map( role => <MenuItem value={role} key={role}>{ role }</MenuItem>)}
-        </Select>
+      </Select>
     </FormControl>
+    <p>Enter the user's information and we will send them an email with instructions to join your portal.</p>
     <TextField
       id="email"
       name="email"
@@ -78,15 +90,32 @@ export const AddUserForm = (props) => {
       onChange={change.bind(null, "lastName")}
       fullWidth
     />
+    <div 
+      className="form-submission-options"
+      style={{marginTop: 30 + 'px'}}
+    >
+    <Button
+      type="button"
+      variant="outlined"
+      color="secondary"
+      onClick={(e) => {
+        console.log('resetting values', formValues, e);
+        resetForm(initialValues)
+        clearState()
+      }}
+      >
+       Cancel
+    </Button>
     <Button
       type="submit"
-      fullWidth
       variant="contained"
       color="primary"
       disabled={!isValid}
-    >
+      onClick={handleSubmit}
+      >
        Submit
     </Button>
+    </div>
    </form>
  );
 };

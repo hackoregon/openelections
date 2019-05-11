@@ -28,15 +28,26 @@ const styles = theme => ({
 
 class AddUser extends React.Component {
   state = {
+    userRole: 'Staff',
     firstName: '',
     lastName: '',
-    email: '',
-    userRole: 'Staff'
+    email: ''
   };
   handleStateChange(name, event) {
     console.log('change', name);
     this.setState({ [name]: event.target.value });
   };
+
+  clearState(e) {
+    // e.preventDefault();
+    console.log('clearing state')
+    this.setState({
+      firstName: '',
+      lastName: '',
+      email: '',
+      userRole: 'Staff'
+    })
+  }
 
   render () {
     const userRoles = [
@@ -45,7 +56,6 @@ class AddUser extends React.Component {
     ];
 
     const { classes } = this.props;
-
     return (
       <div className={classes.container}>
         <Paper elevation={1} className={classes.paper}>
@@ -54,10 +64,17 @@ class AddUser extends React.Component {
             onSubmit={(values, actions) => {
               console.log('Submitting: ', values, actions)
             }}
+            onReset={ (values, bag) => {
+              console.log('on reset', {values}, {bag})
+              this.clearState()
+              bag.resetForm(this.state)
+            }}
             render={props => (
               <AddUserForm 
                 handleStateChange={this.handleStateChange.bind(this)} 
-                {...{...props, userRoles /*, selectedValues */}} 
+                clearState={this.clearState.bind(this)} 
+                formValues={this.state}
+                {...{...props, userRoles }} 
               />)}
             initialValues={this.state}
             validationSchema={validationSchema}
