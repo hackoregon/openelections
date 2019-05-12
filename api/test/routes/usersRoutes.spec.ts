@@ -1,23 +1,17 @@
 import * as express from 'express';
 import { expect } from 'chai';
-import * as sinon from 'sinon';
-import * as bodyParser from 'body-parser';
 import * as request from 'supertest';
-import * as controller from '../../controller/users';
 import { setupRoutes } from '../../routes';
 import { User } from '../../models/entity/User';
 import { newActiveUserAsync, truncateAll } from '../factories';
 
 let app: express.Express;
-let mockController: any;
 let user: User;
 
 describe('Routes /users', () => {
     before(async () => {
         app = express();
-        app.use(bodyParser.json());
         setupRoutes(app);
-        mockController = sinon.mock(controller);
     });
 
     beforeEach(async () => {
