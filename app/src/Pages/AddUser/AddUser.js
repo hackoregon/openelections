@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Formik } from "formik";
 import Paper from "@material-ui/core/Paper";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { SignupForm } from '../../components/Forms/Signup'
+import { AddUserForm } from '../../components/Forms/AddUser'
 import * as Yup from "yup";
 // import { connect } from 'react-redux'
 
@@ -22,39 +22,40 @@ const styles = theme => ({
       .spacing.unit * 5}px`
   },
   container: {
-    maxWidth: "200px"
+    maxWidth: "350px"
   }
 });
 
-class Signup extends React.Component {
+class AddUser extends React.Component {
   state = {
+    userRole: 'Staff',
     firstName: '',
     lastName: '',
-    email: '',
-    userRole: 'Staff'
+    email: ''
   };
   handleStateChange(name, event) {
     console.log('change', name);
     this.setState({ [name]: event.target.value });
   };
 
+  clearState(e) {
+    // e.preventDefault();
+    console.log('clearing state')
+    this.setState({
+      firstName: '',
+      lastName: '',
+      email: '',
+      userRole: 'Staff'
+    })
+  }
+
   render () {
-    // const initilValues = {
-    //   firstName: '',
-    //   lastName: '',
-    //   email: '',
-    //   userRole: 'Staff'
-    // }
     const userRoles = [
       'Admin',
       'Staff'
     ];
-    // const selectedValues = {
-    //   selectedUserRole: this.state.userRole
-    // }
 
     const { classes } = this.props;
-
     return (
       <div className={classes.container}>
         <Paper elevation={1} className={classes.paper}>
@@ -63,10 +64,17 @@ class Signup extends React.Component {
             onSubmit={(values, actions) => {
               console.log('Submitting: ', values, actions)
             }}
+            onReset={ (values, bag) => {
+              console.log('on reset', {values}, {bag})
+              this.clearState()
+              bag.resetForm(this.state)
+            }}
             render={props => (
-              <SignupForm 
+              <AddUserForm 
                 handleStateChange={this.handleStateChange.bind(this)} 
-                {...{...props, userRoles /*, selectedValues */}} 
+                clearState={this.clearState.bind(this)} 
+                formValues={this.state}
+                {...{...props, userRoles }} 
               />)}
             initialValues={this.state}
             validationSchema={validationSchema}
@@ -76,4 +84,4 @@ class Signup extends React.Component {
     )
   }
 }
-export default withStyles(styles)(Signup);
+export default withStyles(styles)(AddUser);
