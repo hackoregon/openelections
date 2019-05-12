@@ -20,7 +20,7 @@ export const AddUserForm = (props) => {
     handleChange,
     isValid,
     initialValues,
-    setFieldTouched,
+    // setFieldTouched,
     handleBlur ,
     resetForm,
     clearState,
@@ -42,7 +42,8 @@ export const AddUserForm = (props) => {
    {console.log({props})}
     <p style={{
       fontSize: 35 + 'px',
-      letterSpacing: -2 + 'px'
+      letterSpacing: -2 + 'px',
+      margin: 10 + 'px ' + 0 + 'px' 
       }}>Add a New User</p>
     <FormControl>
       <InputLabel htmlFor="userRole">Role</InputLabel>
