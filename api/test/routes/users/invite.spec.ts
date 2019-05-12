@@ -4,7 +4,13 @@ import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../../factories';
+import {
+    newActiveUserAsync,
+    newCampaignAsync,
+    newGovernmentAsync,
+    newInactiveUserAsync,
+    truncateAll
+} from '../../factories';
 import { Government } from '../../../models/entity/Government';
 import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
@@ -138,6 +144,56 @@ describe('Routes /users', () => {
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
             expect(response.status).to.equal(201);
+        });
+    });
+
+    context('/users/resend-invite', () => {
+        it('succeeds, invite to government', async () => {
+            const newUser = await newInactiveUserAsync();
+            let response = await request(app)
+                .post('/users/invite')
+                .send({
+                    email: newUser.email,
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                    governmentId: government.id,
+                    role: UserRole.GOVERNMENT_ADMIN
+                })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(201);
+            response = await request(app)
+                .post('/users/resend-invite')
+                .send({
+                    userId: newUser.id
+                })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(200);
+        });
+
+        it('fails, no user', async () => {
+            const response = await request(app)
+                .post('/users/resend-invite')
+                .send({
+                    userId: 1100
+                })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(422);
+            expect(response.body.message).to.equal('Could not find any entity of type "User" matching: 1100');
+        });
+
+        it('fails, user already accepted', async () => {
+            const response = await request(app)
+                .post('/users/resend-invite')
+                .send({
+                    userId: govAdmin.id
+                })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(422);
+            expect(response.body.message).to.equal('User is already in the system or there is no invitation code');
         });
     });
 });
