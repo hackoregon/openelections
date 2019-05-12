@@ -25,7 +25,7 @@ export const AppRoutes = [
     },
 ];
 
-export function setupRoutes(app: express.Express) {
+export const setupRoutes = (app: express.Express) => {
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(getCurrentUser);
@@ -34,4 +34,4 @@ export function setupRoutes(app: express.Express) {
             route.action(request, response, next).then(() => next).catch(err => next(err));
         });
     });
-}
+};
