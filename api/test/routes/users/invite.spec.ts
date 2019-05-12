@@ -2,13 +2,13 @@ import * as express from 'express';
 import { expect } from 'chai';
 import * as faker from 'faker';
 import * as request from 'supertest';
-import { setupRoutes } from '../../routes';
-import { User } from '../../models/entity/User';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
-import { Government } from '../../models/entity/Government';
-import { Campaign } from '../../models/entity/Campaign';
-import { addPermissionAsync, generateJWTokenAsync } from '../../services/permissionService';
-import { UserRole } from '../../models/entity/Permission';
+import { setupRoutes } from '../../../routes';
+import { User } from '../../../models/entity/User';
+import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../../factories';
+import { Government } from '../../../models/entity/Government';
+import { Campaign } from '../../../models/entity/Campaign';
+import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
+import { UserRole } from '../../../models/entity/Permission';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -59,46 +59,6 @@ describe('Routes /users', () => {
 
     afterEach(async () => {
         await truncateAll();
-    });
-
-    context('/users/login', () => {
-        it('email not found', async () => {
-            const response = await request(app)
-                .post('/users/login')
-                .send({password: 'password'})
-                .send({email: 'dan@civicsoftwarefoundation.org'})
-                .set('Accept', 'application/json');
-            expect(response.status).to.equal(401);
-            expect(response.body.message).to.equal('No user found with email or password');
-        });
-
-        it('password not correct', async () => {
-            const response = await request(app)
-                .post('/users/login')
-                .send({password: 'password1'})
-                .send({email: campaignStaff.email})
-                .set('Accept', 'application/json');
-            expect(response.status).to.equal(401);
-            expect(response.body.message).to.equal('No user found with email or password');
-        });
-
-        it('success, sets token in cookie', async () => {
-            const response = await request(app)
-                .post('/users/login')
-                .send({password: 'password'})
-                .send({email: campaignStaff.email})
-                .set('Accept', 'application/json');
-            expect(response.status).to.equal(204);
-
-            const regex = /(.*?)=(.*?)($|;|,(?! ))/g;
-            const matches = [];
-            let match = regex.exec(response.header['set-cookie']);
-            while (match != undefined) {
-                matches.push(match[1]);
-                match = regex.exec(response.header['set-cookie']);
-            }
-            expect(matches).to.deep.equal([ 'token', ' Path', ' Expires' ]);
-        });
     });
 
     context('/users/invite', () => {

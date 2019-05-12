@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createUserSessionFromLoginAsync } from '../services/userService';
+import {createUserSessionFromLoginAsync, resendInvitationAsync} from '../services/userService';
 import {
     addUserToCampaignAsync,
     addUserToGovernmentAsync,
@@ -36,6 +36,16 @@ export async function invite(request: IRequest, response: Response, next: Functi
         } else {
             throw new Error('No government or campaign id present');
         }
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+
+export async function resendInvite(request: IRequest, response: Response, next: Function) {
+    try {
+        await resendInvitationAsync(request.body.userId)
+        response.status(201).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});
     }

@@ -64,6 +64,7 @@ If a cookie session has 'token', its parsed and the request object has request.c
 - Services - All complex business logic effecting multiple models, permissions, etc are located here. 
 
 - test - All test files/folders follow the top level directories. Note, controllers are not tested separately. They are tested via routes.
+If test files get too long, create a new folder for the master test area, and smaller named files -> test/routes/users/invite.spec.ts
   
 ### Adding new libaries
 

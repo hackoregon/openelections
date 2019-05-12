@@ -1,4 +1,4 @@
-import { login, invite } from '../controller/users';
+import { login, invite, resendInvite } from '../controller/users';
 import * as express from 'express';
 import { getCurrentUser, IRequest } from './helpers';
 import * as bodyParser from 'body-parser';
@@ -23,6 +23,11 @@ export const AppRoutes = [
         method: 'post',
         action: invite
     },
+    {
+        path: '/users/resend-invite',
+        method: 'post',
+        action: resendInvite
+    }
 ];
 
 export const setupRoutes = (app: express.Express) => {
