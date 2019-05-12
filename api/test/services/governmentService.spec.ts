@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
-import {truncateAll} from "../factories";
+import { truncateAll } from '../factories';
 
 let governmentRepository: any;
 

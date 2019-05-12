@@ -23,7 +23,7 @@ import {
 import { UserRole } from '../../models/entity/Permission';
 import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
-import {newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll} from '../factories';
+import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
 
 let userRepository: any;
 let campaignRepository: any;

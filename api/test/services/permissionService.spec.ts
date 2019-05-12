@@ -15,7 +15,7 @@ import {
     isCampaignStaffAsync,
     isGovernmentAdminAsync, IToken, PermissionEntity, removePermissionAsync
 } from '../../services/permissionService';
-import {truncateAll} from "../factories";
+import { truncateAll } from '../factories';
 
 
 let permissionRepository: any;
@@ -471,7 +471,7 @@ describe('Permission', () => {
                     firstName: 'Dan',
                     lastName: 'Melton'
                 });
-                mockEmail.verify()
+                mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount);
                 expect(await permissionRepository.count()).equal(2);
             });

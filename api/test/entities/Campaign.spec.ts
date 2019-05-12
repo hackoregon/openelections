@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { Campaign } from '../../models/entity/Campaign';
 import { Government } from '../../models/entity/Government';
-import {truncateAll} from "../factories";
+import { truncateAll } from '../factories';
 
 let campaignRepository: any;
 let governmentRepository: any;

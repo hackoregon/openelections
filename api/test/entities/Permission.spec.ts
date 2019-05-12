@@ -9,7 +9,7 @@ import {
     Permission,
     UserRole
 } from '../../models/entity/Permission';
-import {newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll} from '../factories';
+import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
 
 
 let permissionRepository: any;

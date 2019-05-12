@@ -3,7 +3,7 @@ import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
 import { Government } from '../../models/entity/Government';
 import { createCampaignAsync } from '../../services/campaignService';
-import {truncateAll} from "../factories";
+import { truncateAll } from '../factories';
 
 let governmentRepository: any;
 let campaignRepository: any;
