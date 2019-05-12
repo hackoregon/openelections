@@ -33,7 +33,7 @@ export enum UserStatus {
     INACTIVE = 'inactive',
 }
 
-@Entity()
+@Entity({name: 'users'})
 export class User {
 
     @PrimaryGeneratedColumn()
@@ -80,7 +80,6 @@ export class User {
     async validate() {
         await this.validateAsync();
         if (this.errors.length > 0) {
-            console.log(this.errors);
             throw new Error('user has one or more validation problems');
         }
     }

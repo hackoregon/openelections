@@ -1,6 +1,7 @@
-import {md5, User, UserStatus} from '../../models/entity/User';
-import {expect} from 'chai';
-import {getConnection} from 'typeorm';
+import { md5, User, UserStatus } from '../../models/entity/User';
+import { expect } from 'chai';
+import { getConnection } from 'typeorm';
+import { truncateAll } from '../factories';
 
 let userRepository: any;
 
@@ -10,7 +11,7 @@ describe('User', () => {
     });
 
     afterEach(async () => {
-        await userRepository.query('TRUNCATE "user" CASCADE');
+        await truncateAll();
     });
 
     it('md5', async () => {

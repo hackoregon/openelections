@@ -16,6 +16,17 @@ export async function newActiveUserAsync(): Promise<User> {
     return user;
 }
 
+export async function newInactiveUserAsync(): Promise<User> {
+    const userRepository = getConnection('default').getRepository('User');
+    let user = new User();
+    user.firstName = faker.name.firstName();
+    user.lastName = faker.name.lastName();
+    user.email = faker.internet.email();
+    user.setPassword('password');
+    user.generateInvitationCode();
+    user = await userRepository.save(user) as User;
+    return user;
+}
 
 export async function newGovernmentAsync(): Promise<Government> {
     const repository = getConnection('default').getRepository('Government');
@@ -36,4 +47,12 @@ export async function newCampaignAsync(gov?: Government): Promise<Campaign> {
     campaign.government = gov || government;
     campaign = await campaignRepository.save(campaign) as Campaign;
     return campaign;
+}
+
+export async function truncateAll() {
+    const connection = getConnection('default');
+    await connection.query('TRUNCATE "government" CASCADE');
+    await connection.query('TRUNCATE "users" CASCADE');
+    await connection.query('TRUNCATE "campaign" CASCADE');
+    await connection.query('TRUNCATE "permission" CASCADE');
 }

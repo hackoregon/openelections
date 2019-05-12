@@ -60,7 +60,6 @@ export async function isGovernmentAdminAsync(userId, governmentId: number): Prom
         .andWhere('"governmentId" = :governmentId', {governmentId})
         .andWhere('"role" = :role', {role: UserRole.GOVERNMENT_ADMIN})
         .getOne();
-
     return !!permission;
 }
 
@@ -71,7 +70,6 @@ export async function isCampaignAdminAsync(userId, campaignId: number): Promise<
         .andWhere('"campaignId" = :campaignId', {campaignId})
         .andWhere('"role" = :role', {role: UserRole.CAMPAIGN_ADMIN})
         .getOne();
-
     return !!permission;
 }
 
@@ -156,7 +154,6 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
                 governmentName: government.name,
             });
         } else {
-
             await sendInvitationEmail({
                 to: user.email,
                 governmentName: government.name,
