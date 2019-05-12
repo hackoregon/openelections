@@ -1,6 +1,11 @@
-import { decipherJWTokenAsync } from '../services/permissionService';
+import { decipherJWTokenAsync, IToken } from '../services/permissionService';
+import { Request } from 'express';
 
-export async function getCurrentUser(req, res, next) {
+export interface IRequest extends Request {
+    currentUser?: IToken;
+}
+
+export async function getCurrentUser(req: IRequest, res, next) {
     if (req.cookies && req.cookies.token) {
         try {
             req.currentUser = await decipherJWTokenAsync(req.cookies.token);
@@ -12,5 +17,12 @@ export async function getCurrentUser(req, res, next) {
         }
     } else {
         next();
+    }
+}
+
+
+export function checkCurrentUser(req: IRequest) {
+    if (!req.currentUser) {
+        throw new Error('No token set');
     }
 }
