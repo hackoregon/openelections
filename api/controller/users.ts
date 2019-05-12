@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
-import { createUserSessionFromLoginAsync, resendInvitationAsync } from '../services/userService';
+import {
+    createUserSessionFromLoginAsync,
+    IRetrieveUserParams,
+    resendInvitationAsync,
+    retrieveUserPermissionsAsync
+} from '../services/userService';
 import {
     addUserToCampaignAsync,
     addUserToGovernmentAsync,
@@ -46,6 +51,18 @@ export async function resendInvite(request: IRequest, response: Response, next: 
     try {
         await resendInvitationAsync(request.body.userId);
         response.status(200).send({});
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+export async function getUsers(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const body = request.body as IRetrieveUserParams;
+        body.currentUserId = request.currentUser.id;
+        const users = await retrieveUserPermissionsAsync(body);
+        return response.status(200).json(users);
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
