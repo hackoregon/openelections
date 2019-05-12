@@ -15,6 +15,7 @@ import {
     isCampaignStaffAsync,
     isGovernmentAdminAsync, IToken, PermissionEntity, removePermissionAsync
 } from '../../services/permissionService';
+import {truncateAll} from "../factories";
 
 
 let permissionRepository: any;
@@ -71,9 +72,7 @@ describe('Permission', () => {
     });
 
     after(async () => {
-        await governmentRepository.query('TRUNCATE "government" CASCADE');
-        await campaignRepository.query('TRUNCATE "campaign" CASCADE');
-        await userRepository.query('TRUNCATE "user" CASCADE');
+        await truncateAll();
     });
 
     describe('permissionChecks', () => {

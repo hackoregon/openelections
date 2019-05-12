@@ -37,3 +37,11 @@ export async function newCampaignAsync(gov?: Government): Promise<Campaign> {
     campaign = await campaignRepository.save(campaign) as Campaign;
     return campaign;
 }
+
+export async function truncateAll() {
+    const connection = getConnection('default');
+    await connection.query('TRUNCATE "government" CASCADE');
+    await connection.query('TRUNCATE "user" CASCADE');
+    await connection.query('TRUNCATE "campaign" CASCADE');
+    await connection.query('TRUNCATE "permission" CASCADE');
+}

@@ -9,7 +9,7 @@ import {
     Permission,
     UserRole
 } from '../../models/entity/Permission';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync } from '../factories';
+import {newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll} from '../factories';
 
 
 let permissionRepository: any;
@@ -36,10 +36,7 @@ describe('Permission', () => {
     });
 
     afterEach(async () => {
-        await permissionRepository.query('TRUNCATE "permission" CASCADE');
-        await governmentRepository.query('TRUNCATE "government" CASCADE');
-        await campaignRepository.query('TRUNCATE "campaign" CASCADE');
-        await userRepository.query('TRUNCATE "user" CASCADE');
+        await truncateAll();
     });
 
     context('Validations', () => {
