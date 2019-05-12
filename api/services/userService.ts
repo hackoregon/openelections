@@ -1,7 +1,20 @@
 import { User, UserStatus } from '../models/entity/User';
 import { getConnection } from 'typeorm';
 import { resendInvitationEmail, sendPasswordResetEmail } from './emailService';
-import { generateJWTokenAsync } from './permissionService';
+import {
+    generateJWTokenAsync,
+    IAddUserCampaignAttrs,
+    isCampaignAdminAsync,
+    isGovernmentAdminAsync
+} from './permissionService';
+import {
+    getPermissionsByCampaignIdAsync,
+    getPermissionsByGovernmentIdAsync,
+    IUserPermission,
+    Permission,
+    UserRole
+} from '../models/entity/Permission';
+import { Campaign } from '../models/entity/Campaign';
 
 export interface ICreateUser {
     email: string;
@@ -109,4 +122,26 @@ export async function resendInvitationAsync(userId: number): Promise<boolean> {
     } else {
         throw new Error('User is already in the system or there is no invitation code');
     }
+}
+
+export interface IRetrieveUserParams {
+    currentUserId: number;
+    governmentId?: number;
+    campaignId?: number;
+}
+
+
+
+export async function retrieveUserPermissionsAsync(attrs: IRetrieveUserParams): Promise<IUserPermission[]> {
+    if (attrs.campaignId) {
+        const campaignRepository = getConnection('default').getRepository('Campaign');
+        const campaign = await campaignRepository.findOneOrFail(attrs.campaignId) as Campaign;
+        if (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id)) {
+            return getPermissionsByCampaignIdAsync(attrs.campaignId);
+        }
+        return [];
+    } else if (attrs.governmentId && (await isGovernmentAdminAsync(attrs.currentUserId, attrs.governmentId))) {
+        return getPermissionsByGovernmentIdAsync(attrs.governmentId);
+    }
+    return [];
 }

@@ -280,7 +280,7 @@ describe('Permission', () => {
         });
 
         context( 'succeeds', () => {
-            it('government admin can add another government admin testme', async () => {
+            it('government admin can add another government admin', async () => {
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,

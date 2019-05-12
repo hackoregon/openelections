@@ -54,18 +54,6 @@ describe('User', () => {
             await user.validateAsync();
             expect(user.errors[0].property).equal('email');
             expect(user.errors[0].constraints.isDefined).equal('email should not be null or undefined');
-            expect(user.errors[0].constraints.isEmail).equal('email must be an email');
-        });
-
-        it('email invalid', async () => {
-            const user = new User();
-            user.firstName = 'Dan';
-            user.lastName = 'Melton';
-            user.setPassword('password');
-            user.email = 'love';
-            await user.validateAsync();
-            expect(user.errors[0].property).equal('email');
-            expect(user.errors[0].constraints.isEmail).equal('email must be an email');
         });
 
         it('isValid', async () => {
