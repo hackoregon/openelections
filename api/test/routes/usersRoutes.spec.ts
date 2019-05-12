@@ -1,7 +1,6 @@
 import * as express from 'express';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as request from 'supertest';
 import * as controller from '../../controller/users';
