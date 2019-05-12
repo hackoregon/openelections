@@ -69,3 +69,8 @@ export class Campaign {
         };
     }
 }
+
+export interface ICampaignSummary {
+    id: number;
+    name: string;
+}

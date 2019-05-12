@@ -55,3 +55,8 @@ export class Government {
         };
     }
 }
+
+export interface IGovernmentSummary {
+    id: number;
+    name: string;
+}
