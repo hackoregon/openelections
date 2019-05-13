@@ -1,88 +1,69 @@
 import { Request, Response } from 'express';
-import { getManager } from 'typeorm';
-import { User } from '../models/entity/User';
-import { createUserAsync } from '../services/userService';
-import * as passport from 'passport';
+import {
+    createUserSessionFromLoginAsync,
+    IRetrieveUserParams,
+    resendInvitationAsync,
+    retrieveUserPermissionsAsync
+} from '../services/userService';
+import {
+    addUserToCampaignAsync,
+    addUserToGovernmentAsync,
+    decipherJWTokenAsync,
+    IAddUserCampaignAttrs,
+    IAddUserGovAttrs
+} from '../services/permissionService';
+import { checkCurrentUser, IRequest } from '../routes/helpers';
 
-/**
- * Loads all users from the database.
- */
-export async function userGetAllAction(request: Request, response: Response) {
-    const userManager = getManager().getRepository(User);
-
-    const users = await userManager.find();
-
-    // return loaded posts
-    response.status(200);
-    response.send({users});
-}
-/**
- * Returns user by id from db
- */
-export async function userGetByIdAction(request: Request, response: Response) {
-    const userManager = getManager().getRepository(User);
-
-    const user = await userManager.find(request.params.id);
-    response.status(200);
-    response.send({user});
-}
-
-/**
- * Accepts user data and creates new user
- */
-export async function userSignUp(request: Request, response: Response) {
-    const {firstName, lastName, email, password} = request.body;
-    if (!email) {
-        response.statusCode = 403;
-        response.send(JSON.stringify('No email sent'));
-    }
-    if (!password) {
-        response.statusCode = 403;
-        response.send(JSON.stringify('No password sent'));
-    }
-    if (!firstName) {
-        response.statusCode = 403;
-        response.send(JSON.stringify('No first name sent'));
-    }
-    if (!lastName) {
-        response.statusCode = 403;
-        response.send(JSON.stringify('No last name sent'));
-    }
-    const userRepo = await getManager().getRepository(User);
-    const existingUser = await userRepo.findOne({ email });
-
-
-    response.setHeader('Content-Type', 'application/json');
-
-    if (existingUser) {
-        response.statusCode = 403;
-        response.send(JSON.stringify('User already exists'));
-    } else {
-        createUserAsync({
-            email,
-            password,
-            firstName,
-            lastName
-        }).then( user => {
-            response.send(user.toJSON());
-        });
+export async function login(request: IRequest, response: Response, next: Function) {
+    try {
+        const token = await createUserSessionFromLoginAsync(request.body.email, request.body.password);
+        const tokenObj = await decipherJWTokenAsync(token);
+        response.cookie('token', token, { expires: new Date(tokenObj.exp)} );
+        return response.status(204).json({});
+    } catch (err) {
+        return response.status(401).json({message: 'No user found with email or password'});
     }
 }
 
-/**
- * Accepts user data and logs them in
- */
-export async function userLogin(request: Request, response: Response, next: Function) {
-    // TODO: add validation
-
-    passport.authenticate('local', (err: Error, user, info) => {
-        if (err) { return next(err); }
-        if (!user) {
-          return response.send(JSON.stringify('No User!'));
+export async function invite(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        if (request.body.governmentId) {
+            const body = request.body as IAddUserGovAttrs;
+            body.currentUserId = request.currentUser.id;
+            await addUserToGovernmentAsync(body);
+            response.status(201).send({});
+        } else if (request.body.campaignId) {
+            const body = request.body as IAddUserCampaignAttrs;
+            body.currentUserId = request.currentUser.id;
+            await addUserToCampaignAsync(body);
+            response.status(201).send({});
+        } else {
+            throw new Error('No government or campaign id present');
         }
-        request.logIn( user, (err) => {
-          if (err) { return next(err); }
-          return response.send(JSON.stringify('User logged in!'));
-        });
-      })(request, response, next);
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+
+export async function resendInvite(request: IRequest, response: Response, next: Function) {
+    try {
+        await resendInvitationAsync(request.body.userId);
+        response.status(200).send({});
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+export async function getUsers(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const body = request.body as IRetrieveUserParams;
+        body.currentUserId = request.currentUser.id;
+        const users = await retrieveUserPermissionsAsync(body);
+        return response.status(200).json(users);
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
 }

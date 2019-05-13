@@ -3,7 +3,6 @@ import { getConnection } from 'typeorm';
 import { resendInvitationEmail, sendPasswordResetEmail } from './emailService';
 import {
     generateJWTokenAsync,
-    IAddUserCampaignAttrs,
     isCampaignAdminAsync,
     isGovernmentAdminAsync
 } from './permissionService';
@@ -11,8 +10,6 @@ import {
     getPermissionsByCampaignIdAsync,
     getPermissionsByGovernmentIdAsync,
     IUserPermission,
-    Permission,
-    UserRole
 } from '../models/entity/Permission';
 import { Campaign } from '../models/entity/Campaign';
 
