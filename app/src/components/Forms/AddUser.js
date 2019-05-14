@@ -40,11 +40,6 @@ export const AddUserForm = (props) => {
   return (
    <form>
    {console.log({props})}
-    <p style={{
-      fontSize: 35 + 'px',
-      letterSpacing: -2 + 'px',
-      margin: 10 + 'px ' + 0 + 'px' 
-      }}>Add a New User</p>
     <FormControl>
       <InputLabel htmlFor="userRole">Role</InputLabel>
       <Select 
