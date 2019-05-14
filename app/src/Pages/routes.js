@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import Navigation from '../components/Navigation/Navigation'
+import Header from '../components/Header/Header'
 import HomePage from './Home/Home'
 import AddUserPage from './AddUser/AddUser'
 import Portal from './Portal/Portal';
@@ -10,8 +10,8 @@ const Routes = (props) => {
   return (
     <Route render={ ({location}) => (
       <>
-        <Navigation />
-        <TransitionGroup className="smooth-container">
+        <Header />
+        <TransitionGroup className="oe-page-container">
           <CSSTransition
             key={location.pathname}
             timeout={{enter: 500, exit: 300}}

@@ -1,4 +1,6 @@
-
+body {
+  margin: 0;
+}
 /**
 * Typography
 */
@@ -8,3 +10,8 @@
 * FORMS
 */
 @import "forms";
+
+/**
+* ANIMATIONS
+*/
+@import "animations";
