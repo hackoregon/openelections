@@ -4,6 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { AddUserForm } from '../../components/Forms/AddUser'
 import * as Yup from "yup";
+import PageHoc from '../../components/PageHoc/PageHoc'
+
 // import { connect } from 'react-redux'
 
 const validationSchema = Yup.object({
@@ -57,6 +59,7 @@ class AddUser extends React.Component {
 
     const { classes } = this.props;
     return (
+      <PageHoc>
       <div className={classes.container}>
         <Paper elevation={1} className={classes.paper}>
         {console.log({state: this.state})}
@@ -81,6 +84,7 @@ class AddUser extends React.Component {
           />
         </Paper>
       </div>
+      </PageHoc>
     )
   }
 }
