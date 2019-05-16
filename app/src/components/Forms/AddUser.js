@@ -2,13 +2,11 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 // import Input from '@material-ui/core/Input';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-export const AddUserForm = (props) => {
-
-
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+export const AddUserForm = props => {
   const {
     values: { userRole, firstName, lastName, email },
     userRoles,
@@ -21,100 +19,102 @@ export const AddUserForm = (props) => {
     isValid,
     initialValues,
     // setFieldTouched,
-    handleBlur ,
+    handleBlur,
     resetForm,
-    clearState,
+    clearState
     // handleReset
   } = props;
-  
-
 
   const change = (name, e) => {
     e.persist();
     handleStateChange(name, e);
-    handleChange(e)
+    handleChange(e);
     console.log(errors);
     // setFieldTouched(name, true, false);
   };
 
   return (
-   <form>
-   {console.log({props})}
-    <FormControl>
-      <InputLabel htmlFor="userRole">Role</InputLabel>
-      <Select 
-        value={userRole}
-        onChange={change.bind(null, "userRole")}
-        inputProps={{
-          name: 'userRole',
-          id: 'userRole',
-        }}
-        autoWidth
+    <form>
+      {console.log({ props })}
+      <FormControl>
+        <InputLabel htmlFor="userRole">Role</InputLabel>
+        <Select
+          value={userRole}
+          onChange={change.bind(null, "userRole")}
+          inputProps={{
+            name: "userRole",
+            id: "userRole"
+          }}
+          autoWidth
         >
-          {userRoles.map( role => <MenuItem value={role} key={role}>{ role }</MenuItem>)}
-      </Select>
-    </FormControl>
-    <p>Enter the user's information and we will send them an email with instructions to join your portal.</p>
-    <TextField
-      id="email"
-      name="email"
-      label="Email"
-      helperText={touched.email ? errors.email : ""}
-      error={touched.email && Boolean(errors.email)}
-      value={email}
-      onChange={change.bind(null, "email")}
-      onBlur={(e) => {
-        handleBlur(e)
-        console.log('blurring', e)
-      }}
-      fullWidth
-    />
-    <TextField
-      id="firstName"
-      name="firstName"
-      label="First Name"
-      helperText={touched.firstName ? errors.firstName : ""}
-      error={touched.firstName && Boolean(errors.firstName)}
-      value={firstName}
-      onChange={change.bind(null, "firstName")}
-      fullWidth
-    />
-    <TextField
-      id="lastName"
-      name="lastName"
-      label="Last Name"
-      helperText={touched.lastName ? errors.lastName : ""}
-      error={touched.lastName && Boolean(errors.lastName)}
-      value={lastName}
-      onChange={change.bind(null, "lastName")}
-      fullWidth
-    />
-    <div 
-      className="form-submission-options"
-      style={{marginTop: 30 + 'px'}}
-    >
-    <Button
-      type="button"
-      variant="outlined"
-      color="secondary"
-      onClick={(e) => {
-        console.log('resetting values', formValues, e);
-        resetForm(initialValues)
-        clearState()
-      }}
-      >
-       Cancel
-    </Button>
-    <Button
-      type="submit"
-      variant="contained"
-      color="primary"
-      disabled={!isValid}
-      onClick={handleSubmit}
-      >
-       Submit
-    </Button>
-    </div>
-   </form>
- );
+          {userRoles.map(role => (
+            <MenuItem value={role} key={role}>
+              {role}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <p>
+        Enter the user's information and we will send them an email with
+        instructions to join your portal.
+      </p>
+      <TextField
+        id="email"
+        name="email"
+        label="Email"
+        helperText={touched.email ? errors.email : ""}
+        error={touched.email && Boolean(errors.email)}
+        value={email}
+        onChange={change.bind(null, "email")}
+        onBlur={e => {
+          handleBlur(e);
+          console.log("blurring", e);
+        }}
+        fullWidth
+      />
+      <TextField
+        id="firstName"
+        name="firstName"
+        label="First Name"
+        helperText={touched.firstName ? errors.firstName : ""}
+        error={touched.firstName && Boolean(errors.firstName)}
+        value={firstName}
+        onChange={change.bind(null, "firstName")}
+        fullWidth
+      />
+      <TextField
+        id="lastName"
+        name="lastName"
+        label="Last Name"
+        helperText={touched.lastName ? errors.lastName : ""}
+        error={touched.lastName && Boolean(errors.lastName)}
+        value={lastName}
+        onChange={change.bind(null, "lastName")}
+        fullWidth
+      />
+      <div className="form-submission-options" style={{ marginTop: 30 + "px" }}>
+        <Button
+          type="button"
+          variant="outlined"
+          color="secondary"
+          onClick={e => {
+            console.log("resetting values", formValues, e);
+            resetForm(initialValues);
+            clearState();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!isValid}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </div>
+    </form>
+  );
 };
