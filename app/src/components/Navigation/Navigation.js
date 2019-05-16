@@ -1,8 +1,7 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-const Navigation = (props) => {
-
+const Navigation = props => {
   return (
     <nav>
       <NavLink to="/">Home</NavLink>
@@ -10,7 +9,7 @@ const Navigation = (props) => {
       <NavLink to="/dashboard">Dashboard</NavLink>
       <NavLink to="/contributions">Contributions</NavLink>
     </nav>
-    )
-}
+  );
+};
 
 export default Navigation;
