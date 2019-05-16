@@ -22,8 +22,8 @@ services:
       dockerfile: 'Dockerfile.development'
     # command: npm run development
     command: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "develop"]
-    env_file:
-      - .env
+#    env_file:
+#      - .env
     environment:
       - PORT=3000
       - NODE_ENV=development
