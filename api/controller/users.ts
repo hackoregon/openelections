@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {
-    createUserSessionFromLoginAsync,
+    createUserSessionFromLoginAsync, generatePasswordResetAsync,
     IRetrieveUserParams,
     resendInvitationAsync,
     retrieveUserPermissionsAsync
@@ -46,7 +46,6 @@ export async function invite(request: IRequest, response: Response, next: Functi
     }
 }
 
-
 export async function resendInvite(request: IRequest, response: Response, next: Function) {
     try {
         await resendInvitationAsync(request.body.userId);
@@ -63,6 +62,15 @@ export async function getUsers(request: IRequest, response: Response, next: Func
         body.currentUserId = request.currentUser.id;
         const users = await retrieveUserPermissionsAsync(body);
         return response.status(200).json(users);
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+export async function sendPasswordReset(request: IRequest, response: Response, next: Function) {
+    try {
+        await generatePasswordResetAsync(request.body.email);
+        response.status(200).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
