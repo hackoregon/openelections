@@ -3,7 +3,7 @@ import {
     createUserSessionFromLoginAsync, generatePasswordResetAsync,
     IRetrieveUserParams, passwordResetAsync,
     resendInvitationAsync,
-    retrieveUserPermissionsAsync
+    retrieveUserPermissionsAsync, updateUserPasswordAsync
 } from '../services/userService';
 import {
     addUserToCampaignAsync,
@@ -49,7 +49,7 @@ export async function invite(request: IRequest, response: Response, next: Functi
 export async function resendInvite(request: IRequest, response: Response, next: Function) {
     try {
         await resendInvitationAsync(request.body.userId);
-        response.status(200).send({});
+        response.status(204).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
@@ -70,7 +70,7 @@ export async function getUsers(request: IRequest, response: Response, next: Func
 export async function sendPasswordReset(request: IRequest, response: Response, next: Function) {
     try {
         await generatePasswordResetAsync(request.body.email);
-        response.status(200).send({});
+        response.status(204).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
@@ -79,8 +79,20 @@ export async function sendPasswordReset(request: IRequest, response: Response, n
 export async function resetPassword(request: IRequest, response: Response, next: Function) {
     try {
         await passwordResetAsync(request.body.invitationCode, request.body.password);
-        response.status(200).send({});
+        response.status(204).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
 }
+
+export async function updatePassword(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const currentUserId = request.currentUser.id;
+        await updateUserPasswordAsync(currentUserId, request.body.currentPassword, request.body.newPassword);
+        return response.status(204).send({});
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
