@@ -8,6 +8,7 @@ import {
     newActiveUserAsync,
     truncateAll
 } from '../../factories';
+import { generatePasswordResetAsync } from '../../../services/userService';
 
 let app: express.Express;
 let govAdmin: User;
@@ -45,6 +46,33 @@ describe('Routes /users', () => {
                 .post('/users/send-password-reset-email')
                 .send({
                     email: govAdmin.email
+                })
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(200);
+        });
+    });
+
+    context('/users/reset-password', () => {
+        it('fails, invitation code not found', async () => {
+            const email = faker.internet.email();
+            const response = await request(app)
+                .post('/users/reset-password')
+                .send({
+                    invitationCode: 'nope',
+                    password: 'lotsofnope'
+                })
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(422);
+            expect(response.body.message).to.equal(`Could not find any entity of type "User" matching: {\n    "invitationCode": "nope"\n}`);
+        });
+
+        it('succeeds, user found', async () => {
+            const code = await generatePasswordResetAsync(govAdmin.email);
+            const response = await request(app)
+                .post('/users/reset-password')
+                .send({
+                    invitationCode: code,
+                    password: 'lotsofnope'
                 })
                 .set('Accept', 'application/json');
             expect(response.status).to.equal(200);

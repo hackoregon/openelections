@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {
     createUserSessionFromLoginAsync, generatePasswordResetAsync,
-    IRetrieveUserParams,
+    IRetrieveUserParams, passwordResetAsync,
     resendInvitationAsync,
     retrieveUserPermissionsAsync
 } from '../services/userService';
@@ -70,6 +70,15 @@ export async function getUsers(request: IRequest, response: Response, next: Func
 export async function sendPasswordReset(request: IRequest, response: Response, next: Function) {
     try {
         await generatePasswordResetAsync(request.body.email);
+        response.status(200).send({});
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+export async function resetPassword(request: IRequest, response: Response, next: Function) {
+    try {
+        await passwordResetAsync(request.body.invitationCode, request.body.password);
         response.status(200).send({});
     } catch (err) {
         return response.status(422).json({message: err.message});

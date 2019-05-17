@@ -1,4 +1,4 @@
-import { login, invite, resendInvite, getUsers, sendPasswordReset } from '../controller/users';
+import { login, invite, resendInvite, getUsers, sendPasswordReset, resetPassword } from '../controller/users';
 import * as express from 'express';
 import { getCurrentUser, IRequest } from './helpers';
 import * as bodyParser from 'body-parser';
@@ -37,6 +37,11 @@ export const AppRoutes = [
         path: '/users/send-password-reset-email',
         method: 'post',
         action: sendPasswordReset
+    },
+    {
+        path: '/users/reset-password',
+        method: 'post',
+        action: resetPassword
     }
 ];
 
