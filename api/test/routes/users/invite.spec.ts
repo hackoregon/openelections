@@ -169,7 +169,7 @@ describe('Routes /users', () => {
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
+            expect(response.status).to.equal(204);
         });
 
         it('fails, no user', async () => {
@@ -194,6 +194,52 @@ describe('Routes /users', () => {
                 .set('Cookie', [`token=${govAdminToken}`]);
             expect(response.status).to.equal(422);
             expect(response.body.message).to.equal('User is already in the system or there is no invitation code');
+        });
+    });
+
+    context('/users/redeem-invite', () => {
+        it('succeeds', async () => {
+            const newUser = await newInactiveUserAsync();
+            const response = await request(app)
+                .post('/users/redeem-invite')
+                .send({
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                    password: 'newpassword',
+                    invitationCode: newUser.invitationCode,
+                })
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(204);
+        });
+
+        it('fails, invitationCode not found', async () => {
+            const newUser = await newInactiveUserAsync();
+            const response = await request(app)
+                .post('/users/redeem-invite')
+                .send({
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                    password: 'newpassword',
+                    invitationCode: 111111,
+                })
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(422);
+            expect(response.body.message).to.equal('Could not find any entity of type "User" matching: {\n    "invitationCode": 111111\n}');
+        });
+
+        it('fails, password not correct', async () => {
+            const newUser = await newInactiveUserAsync();
+            const response = await request(app)
+                .post('/users/redeem-invite')
+                .send({
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                    password: 'p',
+                    invitationCode: newUser.invitationCode,
+                })
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(422);
+            expect(response.body.message).to.equal('User password must be at least 6 characters');
         });
     });
 });

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import {
+    acceptUserInvitationAsync,
     createUserSessionFromLoginAsync, generatePasswordResetAsync,
     IRetrieveUserParams, passwordResetAsync,
     resendInvitationAsync,
@@ -45,6 +46,22 @@ export async function invite(request: IRequest, response: Response, next: Functi
         return response.status(422).json({message: err.message});
     }
 }
+
+export async function redeemInvite(request: IRequest, response: Response, next: Function) {
+    try {
+        await acceptUserInvitationAsync({
+            invitationCode: request.body.invitationCode as string,
+            password: request.body.password as string,
+            firstName: request.body.firstName,
+            lastName: request.body.firstName,
+        });
+        return response.status(204).json({});
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+
 
 export async function resendInvite(request: IRequest, response: Response, next: Function) {
     try {
