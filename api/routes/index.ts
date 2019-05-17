@@ -5,7 +5,7 @@ import {
     getUsers,
     sendPasswordReset,
     resetPassword,
-    updatePassword
+    updatePassword, redeemInvite
 } from '../controller/users';
 import * as express from 'express';
 import { getCurrentUser, IRequest } from './helpers';
@@ -35,6 +35,11 @@ export const AppRoutes = [
         path: '/users/resend-invite',
         method: 'post',
         action: resendInvite
+    },
+    {
+        path: '/users/redeem-invite',
+        method: 'post',
+        action: redeemInvite
     },
     {
         path: '/users',
