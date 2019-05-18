@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IsString, IsNumber } from 'class-validator';
 import { checkDto } from './helpers';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
-import { ICreateCampaign } from '../services/campaignService';
+import { ICreateCampaign, createCampaignAsync } from '../services/campaignService';
 
 class CreateCampaignDto implements ICreateCampaign {
     @IsString()
@@ -17,6 +17,7 @@ export async function addCampaign(request: IRequest, response: Response, next: F
     try {
         const createCampaignDto = Object.assign(new CreateCampaignDto(), request.body);
         await Promise.all([checkCurrentUser(request), checkDto(createCampaignDto)]);
+        await createCampaignAsync(createCampaignDto);
         return response.status(204).send({});
     } catch (err) {
         return response.status(422).json({ message: err.message });
