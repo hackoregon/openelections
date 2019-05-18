@@ -21,10 +21,16 @@
   "scripts": {
     "start": "PORT=4000 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "jest": {
+    "setupFiles": ["./test/jestsetup.js"],
+    "snapshotSerializers": ["enzyme-to-json/serializer"]
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -40,6 +46,11 @@
     "@storybook/react": "^5.0.6",
     "babel-loader": "^8.0.5",
     "babel-preset-env": "^1.7.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.0",
+    "enzyme-to-json": "^3.3.5",
+    "jest": "^24.8.0",
+    "react-test-renderer": "^16.8.6",
     "redux-devtools-extension": "^2.13.8"
   },
   "browserslist": {
