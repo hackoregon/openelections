@@ -11,13 +11,13 @@ const validationSchema = Yup.object({
   oldPassword: Yup.string("What was you old password").required(
     "What was your old password"
   ),
-  password: Yup.string("Choose a new password").required(
+  newPassword: Yup.string("Choose a new password").required(
     "Password is required"
   ),
-  passwordConfirm: Yup.string(
+  confirmNewPassword: Yup.string(
     "Choose a new password that matches the other one"
   )
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
     .required("Password confirm is required")
 });
 

@@ -13,7 +13,7 @@ export const ChangePasswordForm = props => {
     handleChange,
     isValid,
     initialValues,
-    // setFieldTouched,
+    setFieldTouched,
     handleBlur,
     resetForm,
     clearState
@@ -25,7 +25,7 @@ export const ChangePasswordForm = props => {
     handleStateChange(name, e);
     handleChange(e);
     console.log(errors);
-    // setFieldTouched(name, true, false);
+    setFieldTouched(name, true, false);
   };
 
   return (
@@ -39,6 +39,8 @@ export const ChangePasswordForm = props => {
         id="oldPassword"
         name="oldPassword"
         label="Old Password"
+        type="password"
+        autoComplete="current-password"
         helperText={touched.oldPassword ? errors.oldPassword : ""}
         error={touched.oldPassword && Boolean(errors.oldPassword)}
         value={oldPassword}
@@ -53,6 +55,7 @@ export const ChangePasswordForm = props => {
         id="newPassword"
         name="newPassword"
         label="New Password"
+        type="password"
         helperText={touched.newPassword ? errors.newPassword : ""}
         error={touched.newPassword && Boolean(errors.newPassword)}
         value={newPassword}
@@ -63,6 +66,7 @@ export const ChangePasswordForm = props => {
         id="confirmNewPassword"
         name="confirmNewPassword"
         label="Confirm New Password"
+        type="password"
         helperText={touched.confirmNewPassword ? errors.confirmNewPassword : ""}
         error={touched.confirmNewPassword && Boolean(errors.confirmNewPassword)}
         value={confirmNewPassword}
