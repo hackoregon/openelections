@@ -10,6 +10,7 @@ import {
 import { Government } from './Government';
 import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
+import { Activity } from './Activity';
 
 @Entity()
 export class Campaign {
@@ -25,6 +26,9 @@ export class Campaign {
         eager: true
     })
     government: Government;
+
+    @OneToMany(type => Activity, activity => activity.user)
+    activities: Activity[];
 
     @OneToMany(type => Permission, permission => permission.campaign)
     permissions: Permission[];

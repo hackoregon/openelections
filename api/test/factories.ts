@@ -55,4 +55,5 @@ export async function truncateAll() {
     await connection.query('TRUNCATE "users" CASCADE');
     await connection.query('TRUNCATE "campaign" CASCADE');
     await connection.query('TRUNCATE "permission" CASCADE');
+    await connection.query('TRUNCATE "activity" CASCADE');
 }
