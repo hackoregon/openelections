@@ -28,7 +28,7 @@ const styles = css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 10px;
+    padding: 40px 40px;
   }
   .form-title {
     font-size: 35px;
