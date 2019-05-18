@@ -61,10 +61,10 @@ export class User {
     salt: string;
 
     @OneToMany(type => Permission, permission => permission.user)
-    permissions: Permission[];
+    permissions: Promise<Permission[]>;
 
     @OneToMany(type => Activity, activity => activity.user)
-    activities: Activity[];
+    activities: Promise<Activity[]>;
 
     @Column({
         type: 'enum',

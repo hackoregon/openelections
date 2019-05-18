@@ -13,7 +13,7 @@ import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } fr
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
-    government: Government;
+    government?: Government;
     campaign?: Campaign;
     activityId: number;
     activityType: ActivityTypeEnum;

@@ -8,20 +8,20 @@ import { Government } from '../../models/entity/Government';
 import { User } from '../../models/entity/User';
 import { Permission, UserRole } from '../../models/entity/Permission';
 import * as emails from '../../services/emailService';
-import { createUserAsync } from '../../services/userService';
 import {
     addPermissionAsync, addUserToCampaignAsync, addUserToGovernmentAsync, decipherJWTokenAsync, generateJWTokenAsync,
     isCampaignAdminAsync,
     isCampaignStaffAsync,
-    isGovernmentAdminAsync, IToken, PermissionEntity, removePermissionAsync
+    isGovernmentAdminAsync, PermissionEntity, removePermissionAsync
 } from '../../services/permissionService';
-import { truncateAll } from '../factories';
+import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
 
 
 let permissionRepository: any;
 let campaignRepository: any;
 let governmentRepository: any;
 let userRepository: any;
+let activityRepository: any;
 let government: Government;
 let campaign: Campaign;
 let govUser: User;
@@ -30,74 +30,46 @@ let campaignStaffUser: User;
 let mockEmail: any;
 
 describe('Permission', () => {
-    before(async () => {
-        govUser = await createUserAsync({
-            firstName: 'Dan',
-            lastName: 'Melton',
-            password: 'password',
-            email: 'dan@civicsoftwarefoundation.org'
-        });
-        campaignAdminUser = await createUserAsync({
-            firstName: 'Jane',
-            lastName: 'Doe',
-            password: 'password',
-            email: 'jane@civicsoftwarefoundation.org'
-        });
-        campaignStaffUser = await createUserAsync({
-            firstName: 'John',
-            lastName: 'Doe',
-            password: 'password',
-            email: 'john@civicsoftwarefoundation.org'
-        });
+    beforeEach(async () => {
+        govUser = await newActiveUserAsync();
+        campaignAdminUser = await newActiveUserAsync();
+        campaignStaffUser = await newActiveUserAsync();
         campaignRepository = getConnection('default').getRepository('Campaign');
         governmentRepository = getConnection('default').getRepository('Government');
         permissionRepository = getConnection('default').getRepository('Permission');
         userRepository = getConnection('default').getRepository('User');
-        government = new Government();
-        government.name = 'City of Portland';
-        await governmentRepository.save(government);
-        campaign = new Campaign();
-        campaign.name = 'Someone for Mayor';
-        campaign.government = government;
-        await campaignRepository.save(campaign);
-    });
+        activityRepository = getConnection('default').getRepository('Activity');
+        government = await newGovernmentAsync();
+        campaign = await newCampaignAsync(government);
 
-    beforeEach(() => {
+        await addPermissionAsync({
+            userId: govUser.id,
+            role: UserRole.GOVERNMENT_ADMIN,
+            governmentId: government.id
+        });
+
+        await addPermissionAsync({
+            userId: campaignAdminUser.id,
+            role: UserRole.CAMPAIGN_ADMIN,
+            campaignId: campaign.id
+        });
+
+        await addPermissionAsync({
+            userId: campaignStaffUser.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
+
         mockEmail = sinon.mock(emails);
     });
 
     afterEach(async () => {
-        await permissionRepository.query('TRUNCATE "permission" CASCADE');
+        await truncateAll();
         sinon.reset();
     });
 
-    after(async () => {
-        await truncateAll();
-    });
 
     describe('permissionChecks', () => {
-        beforeEach(async () => {
-            await addPermissionAsync({
-                userId: govUser.id,
-                role: UserRole.GOVERNMENT_ADMIN,
-                governmentId: government.id
-            });
-            await addPermissionAsync({
-                userId: campaignAdminUser.id,
-                role: UserRole.CAMPAIGN_ADMIN,
-                campaignId: campaign.id
-            });
-            await addPermissionAsync({
-                userId: campaignStaffUser.id,
-                role: UserRole.CAMPAIGN_STAFF,
-                campaignId: campaign.id
-            });
-        });
-
-        afterEach(async () => {
-            await permissionRepository.query('TRUNCATE "permission" CASCADE');
-        });
-
 
         context('isGovernmentAdminAsync', async () => {
             it('true', async () => {
@@ -183,21 +155,24 @@ describe('Permission', () => {
 
         context('succeeds', () => {
             it('adding gov admin', async () => {
-                expect(await permissionRepository.count()).equal(0);
-                await addPermissionAsync({userId: govUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
+                const newUser = await newActiveUserAsync();
+                await addPermissionAsync({userId: newUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
+                expect(await permissionRepository.count()).equal(count + 1);
             });
 
             it('adding campaign admin', async () => {
-                expect(await permissionRepository.count()).equal(0);
-                await addPermissionAsync({userId: campaignAdminUser.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
+                const newUser = await newActiveUserAsync();
+                await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+                expect(await permissionRepository.count()).equal(count + 1);
             });
 
             it('adding campaign staff', async () => {
-                expect(await permissionRepository.count()).equal(0);
-                await addPermissionAsync({userId: campaignStaffUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
+                const newUser = await newActiveUserAsync();
+                await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id});
+                expect(await permissionRepository.count()).equal(count + 1);
             });
         });
     });
@@ -212,11 +187,12 @@ describe('Permission', () => {
         });
 
         it('succeeds', async () => {
-            expect(await permissionRepository.count()).equal(0);
-            const permission = await addPermissionAsync({userId: govUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
-            expect(await permissionRepository.count()).equal(1);
+            const count = await permissionRepository.count();
+            const newUser = await newActiveUserAsync();
+            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
+            expect(await permissionRepository.count()).equal(count + 1);
             expect(await removePermissionAsync(permission.id)).to.be.true;
-            expect(await permissionRepository.count()).equal(0);
+            expect(await permissionRepository.count()).equal(count);
         });
     });
 
@@ -239,7 +215,7 @@ describe('Permission', () => {
 
             it('campaign admin cannot add a government admin', async () => {
                 await addPermissionAsync({userId: govUser.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id, governmentId: campaign.government.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 try {
                     await addUserToGovernmentAsync({
@@ -254,12 +230,12 @@ describe('Permission', () => {
                     expect(e.message).to.equal('user does not have sufficient permissions');
                 }
                 expect(await userRepository.count()).equal(userCount);
-                expect(await permissionRepository.count()).equal(1);
+                expect(await permissionRepository.count()).equal(count);
             });
 
             it('campaign staff cannot add a government admin', async () => {
                 await addPermissionAsync({userId: govUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id, governmentId: campaign.government.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 try {
                     await addUserToGovernmentAsync({
@@ -274,18 +250,19 @@ describe('Permission', () => {
                     expect(e.message).to.equal('user does not have sufficient permissions');
                 }
                 expect(await userRepository.count()).equal(userCount);
-                expect(await permissionRepository.count()).equal(1);
+                expect(await permissionRepository.count()).equal(count);
             });
         });
 
         context( 'succeeds', () => {
             it('government admin can add another government admin', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: campaign.government.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 const email = faker.internet.email();
                 mockEmail.expects('sendNewUserInvitationEmail').once();
@@ -298,17 +275,19 @@ describe('Permission', () => {
                     lastName: 'Melton'
                 });
                 expect((await userRepository.count())).equal(userCount + 1);
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
                 mockEmail.verify();
+                expect(await activityRepository.count()).to.equal(activityCount + 2);
             });
 
             it('new user is not created', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: campaign.government.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendInvitationEmail').once();
                 await addUserToGovernmentAsync({
@@ -321,7 +300,8 @@ describe('Permission', () => {
                 });
                 mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount);
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 1);
             });
         });
     });
@@ -329,6 +309,7 @@ describe('Permission', () => {
     context('addUserToCampaignAsync', () => {
         context('fails', () => {
             it('campaign not found', async () => {
+                const activityCount = await activityRepository.count();
                 try {
                     await addUserToCampaignAsync({
                         role: UserRole.GOVERNMENT_ADMIN,
@@ -341,11 +322,13 @@ describe('Permission', () => {
                 } catch (e) {
                     expect(e.message).to.equal('Could not find any entity of type "Campaign" matching: 1100');
                 }
+                expect(await activityRepository.count()).to.equal(activityCount);
             });
 
             it('campaign staff cannot add users', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({userId: govUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id, governmentId: campaign.government.id});
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 try {
                     await addUserToCampaignAsync({
@@ -360,19 +343,21 @@ describe('Permission', () => {
                     expect(e.message).to.equal('user does not have sufficient permissions');
                 }
                 expect((await userRepository.count())).equal(userCount);
-                expect(await permissionRepository.count()).equal(1);
+                expect(await permissionRepository.count()).equal(count);
+                expect(await activityRepository.count()).to.equal(activityCount);
             });
         });
 
         context('succeeds', () => {
 
             it('government admin can add campaign admin', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: campaign.government.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
@@ -384,17 +369,19 @@ describe('Permission', () => {
                     lastName: 'Melton'
                 });
                 mockEmail.verify();
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
                 expect((await userRepository.count())).equal(userCount + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 2);
             });
 
             it('government admin can add campaign staff', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: govUser.id,
                     role: UserRole.GOVERNMENT_ADMIN,
                     governmentId: campaign.government.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
@@ -406,17 +393,19 @@ describe('Permission', () => {
                     lastName: 'Melton'
                 });
                 mockEmail.verify();
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
                 expect(await userRepository.count()).equal(userCount + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 2);
             });
 
             it('campaign admin can add campaign admin', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: campaignAdminUser.id,
                     role: UserRole.CAMPAIGN_ADMIN,
                     campaignId: campaign.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
@@ -429,16 +418,18 @@ describe('Permission', () => {
                 });
                 mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 2);
             });
 
             it('campaign admin can add campaign staff', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: campaignAdminUser.id,
                     role: UserRole.CAMPAIGN_ADMIN,
                     campaignId: campaign.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendNewUserInvitationEmail').once();
                 await addUserToCampaignAsync({
@@ -451,16 +442,18 @@ describe('Permission', () => {
                 });
                 mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount + 1);
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 2);
             });
 
             it('new user not created if exists', async () => {
+                const activityCount = await activityRepository.count();
                 await addPermissionAsync({
                     userId: campaignAdminUser.id,
                     role: UserRole.CAMPAIGN_ADMIN,
                     campaignId: campaign.id
                 });
-                expect(await permissionRepository.count()).equal(1);
+                const count = await permissionRepository.count();
                 const userCount = await userRepository.count();
                 mockEmail.expects('sendInvitationEmail').once();
                 await addUserToCampaignAsync({
@@ -473,34 +466,13 @@ describe('Permission', () => {
                 });
                 mockEmail.verify();
                 expect((await userRepository.count())).equal(userCount);
-                expect(await permissionRepository.count()).equal(2);
+                expect(await permissionRepository.count()).equal(count + 1);
+                expect(await activityRepository.count()).to.equal(activityCount + 1);
             });
         });
     });
 
-    describe('generateJWTokenAsync and decipherJWToken', () => {
-
-        beforeEach(async () => {
-            await addPermissionAsync({
-                userId: govUser.id,
-                role: UserRole.GOVERNMENT_ADMIN,
-                governmentId: government.id
-            });
-            await addPermissionAsync({
-                userId: campaignAdminUser.id,
-                role: UserRole.CAMPAIGN_ADMIN,
-                campaignId: campaign.id
-            });
-            await addPermissionAsync({
-                userId: campaignStaffUser.id,
-                role: UserRole.CAMPAIGN_STAFF,
-                campaignId: campaign.id
-            });
-        });
-
-        afterEach(async () => {
-            await permissionRepository.query('TRUNCATE "permission" CASCADE');
-        });
+    context('generateJWTokenAsync and decipherJWToken', () => {
 
         it('fails no user found', async () => {
             try {
@@ -575,6 +547,5 @@ describe('Permission', () => {
             expect(decodedToken.permissions[0].id).to.equal(campaign.id);
         });
     });
-
 
 });

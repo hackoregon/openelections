@@ -51,16 +51,6 @@ describe('Activity', () => {
             expect(activity.errors[0].constraints.isDefined).to.equal('activityType should not be null or undefined');
         });
 
-        it('governmentId', async () => {
-            const activity = new Activity();
-            activity.notes = 'Dan Melton updates something';
-            activity.activityId = 1;
-            activity.activityType = ActivityTypeEnum.GOVERNMENT;
-            expect(await activity.isValidAsync()).to.be.false;
-            expect(activity.errors[0].property).to.equal('governmentId');
-            expect(activity.errors[0].constraints.isDefined).to.equal('governmentId should not be null or undefined');
-        });
-
         it('valid', async () => {
             const activity = new Activity();
             activity.notes = 'Dan Melton updates something';

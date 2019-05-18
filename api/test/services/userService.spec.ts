@@ -28,6 +28,7 @@ import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll }
 let userRepository: any;
 let campaignRepository: any;
 let governmentRepository: any;
+let activityRepository: any;
 let mockEmail: any;
 let govUser: User;
 let campaignAdminUser: User;
@@ -40,10 +41,13 @@ describe('userService', () => {
         userRepository = getConnection('default').getRepository('User');
         governmentRepository = getConnection('default').getRepository('Government');
         campaignRepository = getConnection('default').getRepository('Campaign');
+        activityRepository = getConnection('default').getRepository('Activity');
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         mockEmail = sinon.mock(emails);
+        government = await newGovernmentAsync();
+        campaign = await newCampaignAsync(government);
     });
 
     afterEach(async() => {
@@ -75,13 +79,19 @@ describe('userService', () => {
             }
         });
 
-        it('fails password length incorrect', async () => {
-            const user = new User();
+        it('fails password length incorrect testme', async () => {
+            let user = new User();
             user.email = faker.internet.email();
             user.firstName = 'Dan';
             user.lastName = 'Melton';
             user.generateInvitationCode();
-            await userRepository.save(user);
+            user = await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             try {
                 await acceptUserInvitationAsync({
                     invitationCode: user.invitationCode,
@@ -99,7 +109,14 @@ describe('userService', () => {
             user.firstName = 'Dan';
             user.lastName = 'Melton';
             user.generateInvitationCode();
-            await userRepository.save(user);
+            user = await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
+            const activityCount = await activityRepository.count();
             user = await acceptUserInvitationAsync({
                 invitationCode: user.invitationCode,
                 password: 'password',
@@ -110,6 +127,7 @@ describe('userService', () => {
             expect(user.validatePassword('password')).to.be.true;
             expect(user.firstName).to.equal('Daniel');
             expect(user.lastName).to.equal('Meltonion');
+            expect(await activityRepository.count()).to.equal(activityCount + 1);
         });
     });
 
@@ -121,23 +139,37 @@ describe('userService', () => {
             user.lastName = 'Melton';
             user.userStatus = UserStatus.ACTIVE;
             user.setPassword('password');
-            await userRepository.save(user);
+            user = await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             expect(user.invitationCode).to.be.null;
             mockEmail.expects('sendPasswordResetEmail').once();
+            const activityCount = await activityRepository.count();
             const code = await generatePasswordResetAsync(user.email);
             user = await userRepository.findOne(user.id) as User;
             expect(user.invitationCode).to.equal(code);
             mockEmail.verify();
+            expect(await activityRepository.count()).to.equal(activityCount + 1);
         });
 
         it('fails user has a status of invited', async () => {
-            const user = new User();
+            let user = new User();
             user.email = faker.internet.email();
             user.firstName = 'Dan';
             user.lastName = 'Melton';
             user.userStatus = UserStatus.INVITED;
             const code = user.generateInvitationCode();
-            await userRepository.save(user);
+            user = await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             expect(user.invitationCode).to.equal(code);
             try {
                 await generatePasswordResetAsync(user.email);
@@ -163,9 +195,16 @@ describe('userService', () => {
             user.lastName = 'Melton';
             user.userStatus = UserStatus.ACTIVE;
             user.setPassword('password');
-            await userRepository.save(user);
+            user = await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             expect(user.invitationCode).to.be.null;
             mockEmail.expects('sendPasswordResetEmail').once();
+            const activityCount = await activityRepository.count();
             const code = await generatePasswordResetAsync(user.email);
             mockEmail.verify();
             expect(user.validatePassword('password')).to.be.true;
@@ -173,15 +212,24 @@ describe('userService', () => {
             user = await userRepository.findOne(user.id) as User;
             expect(user.validatePassword('password1')).to.be.true;
             expect(user.invitationCode).to.be.null;
+            expect(await activityRepository.count()).to.equal(activityCount + 2);
         });
     });
 
     context('createUserSessionFromLoginAsync', () => {
         it('succeeds', async () => {
+            const activityCount = await activityRepository.count();
             const user = await newActiveUserAsync();
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             const token = await createUserSessionFromLoginAsync(user.email, 'password');
             const tokenObj = await decipherJWTokenAsync(token);
             expect(tokenObj.email).to.equal(user.email);
+            expect(await activityRepository.count()).to.equal(activityCount + 1);
         });
 
         it('fails no email found', async () => {
@@ -204,11 +252,13 @@ describe('userService', () => {
 
     context('updateUserPasswordAsync', () => {
         it('succeeds', async () => {
+            const activityCount = await activityRepository.count();
             let user = await newActiveUserAsync();
             expect(user.validatePassword('password')).to.be.true;
             await updateUserPasswordAsync(user.id, 'password', 'newpassword');
             user = await userRepository.findOne(user.id) as User;
             expect(user.validatePassword('newpassword')).to.be.true;
+            expect(await activityRepository.count()).to.equal(activityCount + 1);
         });
 
         it('fails user not found', async () => {
@@ -249,15 +299,23 @@ describe('userService', () => {
     context('resendInvitationAsync', () => {
 
         it('succeeds', async () => {
+            const activityCount = await activityRepository.count();
             const user = new User();
             user.email = faker.internet.email();
             user.firstName = 'Dan';
             user.lastName = 'Melton';
             user.generateInvitationCode();
             await userRepository.save(user);
+            await addPermissionAsync({
+                userId: user.id,
+                campaignId: campaign.id,
+                governmentId: government.id,
+                role: UserRole.CAMPAIGN_STAFF,
+            });
             expect(user.invitationCode).to.not.be.null;
             mockEmail.expects('resendInvitationEmail').once();
             await resendInvitationAsync(user.id);
+            expect(await activityRepository.count()).to.equal(activityCount + 1);
             mockEmail.verify();
         });
 

@@ -17,7 +17,8 @@ export enum ActivityTypeEnum {
     USER = 'user',
     PERMISSION = 'permission',
     CAMPAIGN = 'campaign',
-    GOVERNMENT = 'government'
+    GOVERNMENT = 'government',
+    INVITATION_EMAIL = 'invitation email',
 }
 
 @Entity()
@@ -73,17 +74,6 @@ export class Activity {
     async validateAsync() {
         const errors = await validate(this);
         this.errors = errors;
-        await this.validateGovernmentAsync();
-    }
-
-    async validateGovernmentAsync() {
-        const g = await this.government;
-        if (!g) {
-            const error = new ValidationError();
-            error.property = 'governmentId';
-            error.constraints = {isDefined: 'governmentId should not be null or undefined'};
-            this.errors.push(error);
-        }
     }
 
     async validateUserAsync() {
