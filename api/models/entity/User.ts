@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, Before
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import * as crypto from 'crypto';
 import { Permission } from './Permission';
+import { Activity } from './Activity';
 
 export interface IPasswordHash {
     hash: string;
@@ -60,7 +61,10 @@ export class User {
     salt: string;
 
     @OneToMany(type => Permission, permission => permission.user)
-    permissions: Permission[];
+    permissions: Promise<Permission[]>;
+
+    @OneToMany(type => Activity, activity => activity.user)
+    activities: Promise<Activity[]>;
 
     @Column({
         type: 'enum',
@@ -167,6 +171,10 @@ export class User {
             return true;
         }
         return false;
+    }
+
+    name() {
+        return `${this.firstName} ${this.lastName}}`;
     }
 }
 
