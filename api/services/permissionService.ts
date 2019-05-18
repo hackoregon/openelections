@@ -1,13 +1,13 @@
-import {getConnection} from 'typeorm';
+import { getConnection } from 'typeorm';
 import * as jsonwebtoken from 'jsonwebtoken';
-import {Permission, UserRole} from '../models/entity/Permission';
-import {Campaign} from '../models/entity/Campaign';
-import {User} from '../models/entity/User';
-import {Government} from '../models/entity/Government';
-import {createUserAsync} from './userService';
-import {sendInvitationEmail, sendNewUserInvitationEmail} from './emailService';
-import {createActivityRecordAsync} from "./activityService";
-import {ActivityTypeEnum} from "../models/entity/Activity";
+import { Permission, UserRole } from '../models/entity/Permission';
+import { Campaign } from '../models/entity/Campaign';
+import { User } from '../models/entity/User';
+import { Government } from '../models/entity/Government';
+import { createUserAsync } from './userService';
+import { sendInvitationEmail, sendNewUserInvitationEmail } from './emailService';
+import { createActivityRecordAsync } from './activityService';
+import { ActivityTypeEnum } from '../models/entity/Activity';
 
 export interface IAddPermissionAsyncAttrs {
     userId: number;
