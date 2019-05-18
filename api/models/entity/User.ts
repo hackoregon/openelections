@@ -172,6 +172,10 @@ export class User {
         }
         return false;
     }
+
+    name() {
+        return `${this.firstName} ${this.lastName}}`;
+    }
 }
 
 export interface IUserSummary {

@@ -5,12 +5,13 @@ import {
     ManyToOne,
     BeforeInsert,
     BeforeUpdate,
-    CreateDateColumn
+    CreateDateColumn, getConnection
 } from 'typeorm';
 import { Government, IGovernmentSummary } from './Government';
 import { Campaign, ICampaignSummary } from './Campaign';
 import { IUserSummary, User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
+import { IUserPermission, IUserPermissionResult } from './Permission';
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -96,21 +97,33 @@ export class Activity {
     }
 }
 
-export interface IActivity {
+export interface IActivityResult {
     id: number;
-    user: {
-        id: number;
-        firstName: string;
-        lastName: string;
-    };
-    government: {
-        id: number;
-        name: string;
-    };
-    campaign: {
-        id: number;
-        name: string;
-    };
+    userId: number;
     notes: string;
-    record: ICampaignSummary | IGovernmentSummary | IUserSummary;
+    activityId: number;
+    activityType: ActivityTypeEnum;
+    campaignId?: number;
+}
+
+export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
+        .orderBy('"activity"."createdAt"', 'DESC')
+        .limit(perPage)
+        .offset(perPage * page)
+        .getRawMany() as IActivityResult[];
+}
+
+export async function getActivityByCampaignAsync(campaignId, perPage, page: number): Promise<IActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
+        .orderBy('"activity"."createdAt"', 'DESC')
+        .limit(perPage)
+        .offset(perPage * page)
+        .getRawMany() as IActivityResult[];
 }
