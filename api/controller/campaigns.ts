@@ -17,8 +17,8 @@ export async function addCampaign(request: IRequest, response: Response, next: F
     try {
         const createCampaignDto = Object.assign(new CreateCampaignDto(), request.body);
         await Promise.all([checkCurrentUser(request), checkDto(createCampaignDto)]);
-        await createCampaignAsync(createCampaignDto);
-        return response.status(204).send({});
+        const campaign = await createCampaignAsync(createCampaignDto);
+        return response.status(201).send(campaign);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
