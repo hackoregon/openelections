@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IsString, IsNumber } from 'class-validator';
 import { checkDto } from './helpers';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
-import { ICreateCampaign, createCampaignAsync } from '../services/campaignService';
+import { ICreateCampaign, IGetCampaigns, createCampaignAsync, getCampaignsAsync } from '../services/campaignService';
 
 class CreateCampaignDto implements ICreateCampaign {
     @IsString()
@@ -23,6 +23,28 @@ export async function addCampaign(request: IRequest, response: Response, next: F
         await checkDto(createCampaignDto);
         const campaign = await createCampaignAsync(createCampaignDto);
         return response.status(201).send(campaign);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+class GetCampaignsDto implements IGetCampaigns {
+    @IsNumber()
+    governmentId: number;
+    @IsNumber()
+    currentUserId: number;
+}
+
+export async function getCampaigns(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const getCampaignsDto = Object.assign(new GetCampaignsDto(), {
+            ...request.body,
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(getCampaignsDto);
+        const campaigns = await getCampaignsAsync(getCampaignsDto);
+        return response.status(200).json(campaigns);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
