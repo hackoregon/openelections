@@ -12,7 +12,6 @@ import { addPermissionAsync } from '../../services/permissionService';
 let governmentRepository: any;
 let campaignRepository: any;
 let userRepository: any;
-let permissionRepository: any;
 let government: Government;
 let govUser: User;
 let campaignAdminUser: User;
