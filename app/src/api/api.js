@@ -51,6 +51,14 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
   return post(`${baseUrl()}/users/redeem-invite`, data);
 }
 
+export function getCampaignUsers(campaignId) {
+  return post(`${baseUrl()}/users`, {campaignId}).then( response => response.json());
+}
+
+export function getGovernmentUsers(governmentId) {
+  return post(`${baseUrl()}/users`, {governmentId}).then( response => response.json());
+}
+
 export function post(url, data) {
   const headers = { "Content-Type": "application/json", Accept: "application/json" };
   if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
@@ -80,10 +88,6 @@ export function decodeToken(token) {
   return jwtDecode(token);
 }
 
-//   path: '/users/resend-invite',
-//   method: 'post',
-//   path: '/users/redeem-invite',
-//   method: 'post',
 //   path: '/users',
 //   method: 'post',
 //   path: '/users/send-password-reset-email',

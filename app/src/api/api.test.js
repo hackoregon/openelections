@@ -1,5 +1,7 @@
 import * as api from "./api";
 import { UserRoleEnum } from "./api";
+import { getCampaignUsers } from "./api";
+import { getGovernmentUsers } from "./api";
 
 let govAdminToken;
 let campaignAdminToken;
@@ -125,6 +127,18 @@ describe("API", () => {
   it('redeemInvite', async ()=> {
     let response = await api.redeemInvite('inviteme', 'password');
     expect(response.status).toEqual(204);
-  })
+  });
+
+  it('getCampaignUsers', async () => {
+    process.env.TOKEN = campaignAdminToken;
+    const response = await getCampaignUsers(campaignId);
+    expect(response.length > 1).toBeTruthy();
+  });
+
+  it('getGovernmentUsers', async () => {
+    process.env.TOKEN = govAdminToken;
+    const response = await getGovernmentUsers(governmentId);
+    expect(response.length > 1).toBeTruthy();
+  });
 
 });
