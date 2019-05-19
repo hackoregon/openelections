@@ -2970,16 +2970,6 @@ babel-loader@8.0.5:
     mkdirp "^0.5.1"
     util.promisify "^1.0.0"
 
-babel-loader@^8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.6.tgz#e33bdb6f362b03f4bb141a0c21ab87c501b70dfb"
-  integrity sha512-4BmWKtBOBm13uoUwd08UwjZlaw3O9GWf456R9j+5YykFZ6LUIjIKLc0zEZf+hauxPOJs96C8k6FvYD09vWzhYw==
-  dependencies:
-    find-cache-dir "^2.0.0"
-    loader-utils "^1.0.2"
-    mkdirp "^0.5.1"
-    pify "^4.0.1"
-
 babel-messages@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-messages/-/babel-messages-6.23.0.tgz#f3cdf4703858035b2a2951c6ec5edf6c62f2630e"
@@ -4570,9 +4560,9 @@ core-js@^1.0.0:
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
 core-js@^2.4.0, core-js@^2.5.7, core-js@^2.6.5:
-  version "2.6.5"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
-  integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.6.tgz#00eb6d6bf815471cc16d8563edd7d38786dec50b"
+  integrity sha512-Mt/LaAym54NXnrjEMdo918cT2h70tqb/Yl7T3uPHQHRm5SxVoqlKmerUy4mL11k8saSBDWQ7ULIHxmeFyT3pfg==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -5452,11 +5442,12 @@ entities@^1.1.1, entities@~1.1.1:
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
 enzyme-adapter-react-16@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.13.0.tgz#530e4aed3c127d7a7c5c7f4f634ad9ba65f719f6"
-  integrity sha512-ZUVo9XATKrKavfe9v61EiYDu6V1NJCKtJyp1X2ILPgtuGQ58bItUR9uWwH6gzKJNww3sUiXM826jIiwPgO9iVQ==
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.13.1.tgz#2e8ee300e38674b9914ae52b04af9493050355e2"
+  integrity sha512-DCKbkiVlfLTbn4SXO8mXDQx1SmmwON5oKXn2QfQSMCt8eTYGwUXy/OBGSuss6KKwY5w5QfK1sQFxhgFOkMCjrw==
   dependencies:
     enzyme-adapter-utils "^1.12.0"
+    has "^1.0.3"
     object.assign "^4.1.0"
     object.values "^1.1.0"
     prop-types "^15.7.2"
@@ -6286,9 +6277,9 @@ format@^0.2.2:
   integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
 
 formik@^1.5.4:
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/formik/-/formik-1.5.6.tgz#60a00894fe9c162f3631ded83ca7cb866c74d939"
-  integrity sha512-gP4eh/GS173RV/K1dmG0zL0T+DoMVaKH1i2+yKFmG6Tfdvd/HlsVcVY28bgvHA/IxdHPmcVVTr2KVRe1tSRj2w==
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/formik/-/formik-1.5.7.tgz#2fc5fc2f0c693cdc4e8c9dad3a10eb4c4e131ff5"
+  integrity sha512-kZo8lS4WzfC2uivnSkE9DOuX9x+jVjCtIZOlb1A4lHGeURyuLt6eDfwGJzNlcP0lXIwmpANKzegiB8j60B54TA==
   dependencies:
     create-react-context "^0.2.2"
     deepmerge "^2.1.1"
