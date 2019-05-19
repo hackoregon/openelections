@@ -2,12 +2,13 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
 import { Government } from '../../models/entity/Government';
-import { createCampaignAsync } from '../../services/campaignService';
+import { createCampaignAsync, getCampaignsAsync } from '../../services/campaignService';
 import { truncateAll } from '../factories';
 import { createUserAsync } from '../../services/userService';
 import { User } from '../../models/entity/User';
 import { Permission, UserRole } from '../../models/entity/Permission';
 import { addPermissionAsync } from '../../services/permissionService';
+import { newCampaignAsync } from '../factories';
 
 let governmentRepository: any;
 let campaignRepository: any;
@@ -137,5 +138,44 @@ describe('campaignServices', () => {
             expect(e.message).to.equal('User is not an admin for the provided government');
         }
         expect(await campaignRepository.count()).equal(1);
+    });
+
+    it('Returns campaigns if the user is a government admin', async () => {
+        await Promise.all(Array.from(Array(10), (_, i) => government).map(newCampaignAsync));
+        expect(
+            await getCampaignsAsync({
+                governmentId: government.id,
+                currentUserId: govUser.id
+            })
+        )
+            .to.be.an.instanceof(Array)
+            .that.has.length(10)
+            .and.to.have.property(0)
+            .that.includes.all.keys(['id', 'name']);
+    });
+
+    it('Does not return campaigns if the user is not a government admin', async () => {
+        await Promise.all(Array.from(Array(10), (_, i) => government).map(newCampaignAsync));
+
+        let campaigns;
+        try {
+            campaigns = await getCampaignsAsync({
+                governmentId: government.id,
+                currentUserId: campaignAdminUser.id
+            });
+        } catch (e) {
+            expect(e.message).to.equal('User is not an admin for the provided government');
+        }
+        expect(campaigns).to.be.an('undefined');
+
+        try {
+            campaigns = await getCampaignsAsync({
+                governmentId: government.id,
+                currentUserId: undefined
+            });
+        } catch (e) {
+            expect(e.message).to.equal('User is not an admin for the provided government');
+        }
+        expect(campaigns).to.be.an('undefined');
     });
 });
