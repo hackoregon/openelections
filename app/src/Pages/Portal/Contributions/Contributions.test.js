@@ -1,10 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
-import App from "./App";
+import Contributions from "./Contributions";
 
-describe("<App/>", () => {
+describe("<Contributions/>", () => {
   it("should be defined", () => {
-    const wrapper = shallow(<App />);
+    const wrapper = shallow(<Contributions />);
     expect(wrapper).toBeDefined();
     expect(wrapper).toMatchSnapshot();
   });
