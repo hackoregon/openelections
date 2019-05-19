@@ -28,10 +28,10 @@ export async function newInactiveUserAsync(): Promise<User> {
     return user;
 }
 
-export async function newGovernmentAsync(): Promise<Government> {
+export async function newGovernmentAsync(name?: string): Promise<Government> {
     const repository = getConnection('default').getRepository('Government');
     let government = new Government();
-    government.name = faker.address.city();
+    government.name = name || faker.address.city();
     government = await repository.save(government) as Government;
     return government;
 }

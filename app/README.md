@@ -101,3 +101,14 @@ const validationSchema = Yup.object({
 });
 ```
 
+
+### Testing
+
+To run tests against the backend, you need to run the test stack:
+
+```bash
+    docker-compose -f docker-compose-test.yml run api
+
+```
+
+You can then run the test suite locally, and add/remove tests against api by removing the test/recordings.
