@@ -15,8 +15,12 @@ class CreateCampaignDto implements ICreateCampaign {
 
 export async function addCampaign(request: IRequest, response: Response, next: Function) {
     try {
-        const createCampaignDto = Object.assign(new CreateCampaignDto(), request.body);
-        await Promise.all([checkCurrentUser(request), checkDto(createCampaignDto)]);
+        checkCurrentUser(request);
+        const createCampaignDto = Object.assign(new CreateCampaignDto(), {
+            ...request.body,
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(createCampaignDto);
         const campaign = await createCampaignAsync(createCampaignDto);
         return response.status(201).send(campaign);
     } catch (err) {
