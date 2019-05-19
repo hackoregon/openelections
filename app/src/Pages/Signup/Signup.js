@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
 import { Formik } from "formik";
-import withStyles from "@material-ui/core/styles/withStyles";
-import { AddUserForm } from '../../components/Forms/AddUser'
+// import withStyles from "@material-ui/core/styles/withStyles";
+// import { AddUserForm } from '../../components/Forms/AddUser'
 import * as Yup from "yup";
-import { Input, InputLabel, FormControl, Paper, IconButton } from "@material-ui/core";
+import { Input, InputLabel, FormControl, Paper, IconButton, InputAdornment } from "@material-ui/core";
 // import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 // import { connect } from 'react-redux'
 
 const validationSchema = Yup.object({
-	userRole: Yup.string("Choose a user role").required("A user role is required"),
-	firstName: Yup.string("Enter your first name").required("First Name is required"),
-	lastName: Yup.string("Enter your last name").required("Last Name is required"),
-	email: Yup.string("Enter your email").email("Enter a valid email").required("Email is required")
+	// email: Yup.string("Enter your email").email("Enter a valid email").required("Email is required")
 });
 
 
 
 class Signup extends Component {
 
+	handleStateChange(name, event) {
+		console.log('change', name);
+		this.setState({ [name]: event.target.value });
+	};
+
 	render () {
-		const { classes } = this.props;
+		// const { classes } = this.props;
 		return (
-			<div className={classes.container}>
-				<Paper elevation={1} className={classes.paper}>
+			<div>
+				<Paper elevation={1}>
 					{console.log({state: this.state})}
 					<Formik
 						onSubmit={(values, actions) => {
@@ -35,11 +37,11 @@ class Signup extends Component {
 							bag.resetForm(this.state)
 						}}
 						render={props => (
-							<AddUserForm
+							<SignupForm
 								handleStateChange={this.handleStateChange.bind(this)}
-								clearState={this.clearState.bind(this)}
+								// clearState={this.clearState.bind(this)}
 								formValues={this.state}
-								{...{...props, userRoles }}
+								{...{...props }}
 							/>)}
 						initialValues={this.state}
 						validationSchema={validationSchema}
@@ -50,7 +52,7 @@ class Signup extends Component {
 	}
 }
 
-export default withStyles(styles)(Signup);
+export default Signup;
 
 class SignupForm extends Component {
 
@@ -74,25 +76,33 @@ class SignupForm extends Component {
 			handleChange,
 			handleBlur,
 			values,
-			errors
+			errors,
+			handleStateChange
 		} = this.props;
 
+		const change = (name, e) => {
+			e.persist();
+			handleStateChange(name, e);
+			handleChange(e);
+			console.log(errors);
+			// setFieldTouched(name, true, false);
+		};
+
 		return (
-			<form action="">
-				<FormControl className={classNames(classes.margin, classes.textField)}>
+			<form onSubmit={handleSubmit}>
+				<FormControl>
 					<InputLabel htmlFor="adornment-password">Password</InputLabel>
 					<Input
 						id="adornment-password"
 						type={this.state.showPassword ? 'text' : 'password'}
 						value={this.state.password}
-						onChange={this.handleChange('password')}
+						onChange={change.bind(null, 'password')}
 						endAdornment={
 							<InputAdornment position="end">
 								<IconButton
 									aria-label="Toggle password visibility"
-									onClick={this.handleClickShowPassword}
-								>
-									{this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+									onClick={this.handleClickShowPassword.bind(this)}>
+									{this.state.showPassword ? 'show' : 'hide'}
 								</IconButton>
 							</InputAdornment>
 						}
