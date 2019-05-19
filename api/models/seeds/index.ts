@@ -1,17 +1,15 @@
-import UserSeed from './users'
-import db from "../db";
+import UserSeed from './users';
+import GovernmentSeed from './governments';
+import PermissionSeed from './permissions';
+import db from '../db';
 
 (async () => {
     if (process.env.NODE_ENV !== 'development') {
         console.log('Can only seed in development mode');
-        return
+        return;
     }
     await db();
-    const promises = [];
-    promises.push(UserSeed());
-    await Promise.all(promises);
-    console.log('Database seeded');
-    process.exit()
+    const [users, governments] = await Promise.all([UserSeed(), GovernmentSeed()]);
+    await Promise.all([PermissionSeed({ users, governments })]);
+    process.exit();
 })();
-
-
