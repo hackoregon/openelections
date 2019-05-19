@@ -5,6 +5,7 @@ import Header from "../components/Header/Header";
 import HomePage from "./Home/Home";
 import AddUserPage from "./AddUser/AddUser";
 import ChangePasswordPage from "./ChangePassword/ChangePassword";
+import SignInPage from "./SignIn/SignIn";
 import Portal from "./Portal/Portal";
 const Routes = props => {
   return (
@@ -27,6 +28,7 @@ const Routes = props => {
                   path="/change-password"
                   component={ChangePasswordPage}
                 />
+                <Route exact path="/sign-in" component={SignInPage} />
                 <Route component={Portal} />
               </Switch>
             </CSSTransition>
