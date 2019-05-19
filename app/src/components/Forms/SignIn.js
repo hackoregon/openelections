@@ -5,19 +5,14 @@ import TextField from "@material-ui/core/TextField";
 export const SignInForm = props => {
   const {
     values: { email, password },
-    formValues,
     handleStateChange,
     errors,
     touched,
     handleSubmit,
     handleChange,
     isValid,
-    initialValues,
     setFieldTouched,
-    handleBlur,
-    resetForm,
-    clearState
-    // handleReset
+    handleBlur
   } = props;
 
   const change = (name, e) => {
@@ -25,7 +20,7 @@ export const SignInForm = props => {
     handleStateChange(name, e);
     handleChange(e);
     console.log(errors);
-    setFieldTouched(name, true, false);
+    // setFieldTouched(name, true, false);
   };
 
   return (
@@ -36,6 +31,7 @@ export const SignInForm = props => {
         id="email"
         name="email"
         label="Email"
+        autoComplete="email"
         helperText={touched.email ? errors.email : ""}
         error={touched.email && Boolean(errors.email)}
         value={email}
@@ -51,6 +47,7 @@ export const SignInForm = props => {
         name="password"
         label="Password"
         type="password"
+        autoComplete="current-password"
         helperText={touched.password ? errors.password : ""}
         error={touched.password && Boolean(errors.password)}
         value={password}
