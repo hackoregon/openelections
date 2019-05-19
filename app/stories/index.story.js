@@ -12,6 +12,7 @@ import UserInfoBox from "./UserInfoBox.story";
 import SearchBox from "./SearchBox.story";
 import AddUser from "./AddUser.story";
 import ChangePassword from "./ChangePassword.story";
+import SignIn from "./SignIn.story";
 // import Provider from './Provider';
 
 import "../src/assets/styles/styles.scss";
@@ -33,6 +34,7 @@ UserInfoBox();
 
 AddUser();
 ChangePassword();
+SignIn();
 
 storiesOf("UI Components", module).add("Intro", () => (
   <p>These are components used within the Dashboard</p>
