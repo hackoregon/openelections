@@ -55,6 +55,11 @@ export const AppRoutes = [
         action: users.updatePassword
     },
     {
+        path: '/campaigns',
+        method: 'post',
+        action: campaigns.getCampaigns
+    },
+    {
         path: '/campaigns/new',
         method: 'post',
         action: campaigns.addCampaign
