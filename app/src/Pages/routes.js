@@ -6,8 +6,11 @@ import HomePage from "./Home/Home";
 import AddUserPage from "./AddUser/AddUser";
 import ChangePasswordPage from "./ChangePassword/ChangePassword";
 import SignInPage from "./SignIn/SignIn";
+import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import Portal from "./Portal/Portal";
+
+
 const Routes = props => {
   return (
     <Route
@@ -30,6 +33,7 @@ const Routes = props => {
                   component={ChangePasswordPage}
                 />
                 <Route exact path="/sign-in" component={SignInPage} />
+                <Route exact path="/sign-up" component={SignUpPage} />
                 <Route
                   exact
                   path="/forgot-password"
