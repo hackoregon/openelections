@@ -1,15 +1,11 @@
 import { User, UserStatus } from '../models/entity/User';
 import { getConnection } from 'typeorm';
 import { resendInvitationEmail, sendPasswordResetEmail } from './emailService';
-import {
-    generateJWTokenAsync,
-    isCampaignAdminAsync,
-    isGovernmentAdminAsync
-} from './permissionService';
+import { generateJWTokenAsync, isCampaignAdminAsync, isGovernmentAdminAsync } from './permissionService';
 import {
     getPermissionsByCampaignIdAsync,
     getPermissionsByGovernmentIdAsync,
-    IUserPermission, Permission,
+    IUserPermission,
 } from '../models/entity/Permission';
 import { Campaign } from '../models/entity/Campaign';
 import { createActivityRecordAsync } from './activityService';
@@ -18,8 +14,9 @@ import { ActivityTypeEnum } from '../models/entity/Activity';
 export interface ICreateUser {
     email: string;
     password?: string;
-    firstName?: string;
-    lastName?: string;
+    invitationCode?: string;
+    firstName: string;
+    lastName: string;
 }
 
 export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
@@ -30,11 +27,17 @@ export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
     user.email = userAttrs.email;
     if (userAttrs.password) {
         user.setPassword(userAttrs.password);
+        user.userStatus = UserStatus.ACTIVE;
     } else {
         user.generateInvitationCode();
+        if (userAttrs.invitationCode) {
+            user.invitationCode = userAttrs.invitationCode;
+        }
     }
     if (await user.isValidAsync()) {
         await repository.save(user);
+    } else {
+        throw new Error(`User invalid ${user.errors}`);
     }
     return user;
 }
