@@ -8,8 +8,8 @@ import ChangePasswordPage from "./ChangePassword/ChangePassword";
 import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
+import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
 import Portal from "./Portal/Portal";
-
 
 const Routes = props => {
   return (
@@ -38,6 +38,11 @@ const Routes = props => {
                   exact
                   path="/forgot-password"
                   component={ForgotPasswordPage}
+                />
+                <Route
+                  exact
+                  path="/update-forgotten-password"
+                  component={UpdateForgottenPasswordPage}
                 />
                 <Route component={Portal} />
               </Switch>
