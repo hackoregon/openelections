@@ -84,7 +84,7 @@ class UpdateForgottenPassword extends Component {
       <PageHoc>
         <div css={styles}>
           <Paper elevation={1} className="paper">
-            <p className="form-title">Sign Up</p>
+            <p className="form-title">Update Forgotten Password</p>
 
             {!this.state.isSubmitted ? (
               <Formik
@@ -110,17 +110,12 @@ class UpdateForgottenPassword extends Component {
             ) : (
               <div className={"user-signedup"}>
                 <p>
-                  Your email is verified.
+                  Your password is updated.
                   <span>
                     {" "}
                     s.helen@example.com{" "}
                     <GreenCheck width={30} className={"checkMark"} />{" "}
                   </span>
-                </p>
-
-                <p>
-                  You've been invited to join
-                  <span className={"campaignName"}> Campaign Portal </span>
                 </p>
               </div>
             )}
