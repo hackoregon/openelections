@@ -85,6 +85,7 @@ export async function getCampaignSummariesByGovernmentIdAsync(governmentId: numb
         .createQueryBuilder('campaign')
         .andWhere('"campaign"."governmentId" = :governmentId', { governmentId })
         .select(['campaign.id', 'campaign.name'])
+        .innerJoinAndSelect('campaign.government', 'government')
         .getMany()) as ICampaignSummary[];
     return campaigns;
 }
