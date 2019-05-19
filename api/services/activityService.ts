@@ -33,7 +33,7 @@ export async function createActivityRecordAsync(params: ICreateActivityServicePa
         activity = await repository.save(activity);
         return activity;
     }
-    throw new Error('Invalid activity');
+    throw new Error(`Invalid activity ${activity.errors}`);
 }
 
 export interface IGetActivityRecordsForGovernmentOrCampaign {

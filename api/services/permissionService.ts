@@ -41,6 +41,8 @@ export async function addPermissionAsync(attrs: IAddPermissionAsyncAttrs): Promi
     }
     if (await permission.isValidAsync()) {
         await permissionRepository.save(permission);
+    } else {
+        throw new Error(`Permission invalid ${permission.errors}`);
     }
 
     return permission;
@@ -117,7 +119,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
             await createActivityRecordAsync({
                 currentUser: user,
                 notes: `${user.name} was sent an invitation email to ${user.email}`,
-                government: campaign.government,
+                government: await campaign.government,
                 campaign: campaign,
                 activityType: ActivityTypeEnum.INVITATION_EMAIL,
                 activityId: user.id
@@ -137,7 +139,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
         await createActivityRecordAsync({
             currentUser,
             notes: `${currentUser.name} added ${user.name()} to ${campaign.name} as a ${permission.role}`,
-            government: campaign.government,
+            government: await campaign.government,
             campaign: campaign,
             activityType: ActivityTypeEnum.PERMISSION,
             activityId: permission.id

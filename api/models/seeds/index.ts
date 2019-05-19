@@ -1,15 +1,17 @@
 import UserSeed from './users';
-import GovernmentSeed from './governments';
-import PermissionSeed from './permissions';
 import db from '../db';
+import { truncateAll } from '../../test/factories';
 
 (async () => {
-    if (process.env.NODE_ENV !== 'development') {
-        console.log('Can only seed in development mode');
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Can only seed in test, qa, or development mode');
         return;
     }
     await db();
-    const [users, governments] = await Promise.all([UserSeed(), GovernmentSeed()]);
-    await Promise.all([PermissionSeed({ users, governments })]);
+    await truncateAll();
+    const promises = [];
+    promises.push(UserSeed());
+    await Promise.all(promises);
+    console.log('Database seeded');
     process.exit();
 })();

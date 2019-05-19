@@ -6,3 +6,13 @@ Enzyme.configure({ adapter: new Adapter() });
 global.shallow = shallow;
 global.render = render;
 global.mount = mount;
+
+import fetch from 'fetch-vcr';
+fetch.configure({
+  fixturePath: './test/recordings',
+  mode: 'cache',
+});
+
+global.fetch = fetch;
+
+

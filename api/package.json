@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node app.ts",
     "develop": "nodemon --watch ./ -e ts --exec ts-node app.ts",
-    "dev:seed": "npm run develop && npm run seed",
+    "seedandrun": "npm run seed && npm run develop",
     "testdev": "npm-run-all -p -r start test",
     "lint": "tslint */**.ts",
     "posttest": "npm run lint",
