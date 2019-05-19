@@ -55,7 +55,7 @@ class SignUp extends Component {
 			newPassword: "",
 			confirmNewPassword: ""
 		},
-		isSubmitted: true
+		isSubmitted: false
 	};
 
 	handleStateChange(name, event) {
