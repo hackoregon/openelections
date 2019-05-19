@@ -11,6 +11,7 @@ import Doohicky from "./doohicky.story";
 import UserInfoBox from "./UserInfoBox.story";
 import SearchBox from "./SearchBox.story";
 import AddUser from "./AddUser.story";
+import ChangePassword from "./ChangePassword.story";
 // import Provider from './Provider';
 
 import "../src/assets/styles/styles.scss";
@@ -31,6 +32,7 @@ storiesOf("Portal", module).add("Intro", () => (
 UserInfoBox();
 
 AddUser();
+ChangePassword();
 
 storiesOf("UI Components", module).add("Intro", () => (
   <p>These are components used within the Dashboard</p>

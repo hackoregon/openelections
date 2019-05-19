@@ -6,6 +6,7 @@ const Navigation = props => {
     <nav>
       <NavLink to="/">Home</NavLink>
       <NavLink to="/add-user">Add User</NavLink>
+      <NavLink to="/change-password">Change password</NavLink>
       <NavLink to="/dashboard">Dashboard</NavLink>
       <NavLink to="/contributions">Contributions</NavLink>
     </nav>

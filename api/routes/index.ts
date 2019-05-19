@@ -1,18 +1,10 @@
 import * as express from 'express';
+import { getCurrentUser, IRequest } from './helpers';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import { getCurrentUser, IRequest } from './helpers';
-import {
-    login,
-    invite,
-    resendInvite,
-    getUsers,
-    sendPasswordReset,
-    resetPassword,
-    updatePassword,
-    redeemInvite
-} from '../controller/users';
+import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
+import * as activities from '../controller/activities';
 
 export const AppRoutes = [
     {
@@ -25,47 +17,52 @@ export const AppRoutes = [
     {
         path: '/users/login',
         method: 'post',
-        action: login
+        action: users.login
     },
     {
         path: '/users/invite',
         method: 'post',
-        action: invite
+        action: users.invite
     },
     {
         path: '/users/resend-invite',
         method: 'post',
-        action: resendInvite
+        action: users.resendInvite
     },
     {
         path: '/users/redeem-invite',
         method: 'post',
-        action: redeemInvite
+        action: users.redeemInvite
     },
     {
         path: '/users',
         method: 'post',
-        action: getUsers
+        action: users.getUsers
     },
     {
         path: '/users/send-password-reset-email',
         method: 'post',
-        action: sendPasswordReset
+        action: users.sendPasswordReset
     },
     {
         path: '/users/reset-password',
         method: 'post',
-        action: resetPassword
+        action: users.resetPassword
     },
     {
         path: '/users/password',
         method: 'put',
-        action: updatePassword
+        action: users.updatePassword
     },
     {
         path: '/campaigns/new',
         method: 'post',
         action: campaigns.addCampaign
+    },
+    {
+        path: '/activities',
+        method: 'post',
+        action: activities.activities
     }
 ];
 
