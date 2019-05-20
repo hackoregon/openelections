@@ -1,0 +1,182 @@
+# https://swagger.io/docs/specification/about/
+components:
+  # Reusable schemas (data models)
+  schemas:
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        notes:
+          type: string
+        activityId:
+          type: number
+        activityType:
+          type: string
+        campaignId:
+          type: integer
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        governmentId:
+          type: integer
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    NewUser:
+      type: object
+      properties:
+        email: 
+          type: string
+        firstName: 
+          type: string
+        lastName: 
+          type: string
+        role:
+          type: string
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+        type:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email: 
+          type: string
+        firstName: 
+          type: string
+        lastName: 
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+
+
+    
+  # Reusable path, query, header and cookie parameters
+  parameters:
+    
+  # Security scheme definitions (see Authentication)
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+    
+  # Reusable request bodies
+  requestBodies:
+    LoginBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+            required:
+              - email
+              - password
+    GetActivitiesBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              governmentId:
+                type: integer
+              campaignId:
+                type: integer
+              perPage:
+                type: integer
+              page:
+                type: integer
+    GetUsersBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - type: object
+                properties:
+                  campaignId:
+                    type: integer
+              - type: object
+                properties:
+                  governmentId:
+                    type: integer
+    RedeemInviteBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              invitationCode:
+                type: string
+              password:
+                type: string
+                format: password
+              firstName: 
+                type: string
+              lastName: 
+                type: string
+            required:
+              - invitationCode
+              - password
+              - firstName
+              - lastName
+    
+  # Reusable responses, such as 401 Unauthorized or 400 Bad Request
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: The server was unable to process the contained instructions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+  # Reusable response headers
+  headers:
+    
+  # Reusable examples
+  examples:
+    
+  # Reusable links
+  links:
+    
+  # Reusable callbacks
+  callbacks:
