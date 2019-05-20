@@ -21,6 +21,7 @@ export const UpdateForgottenPasswordForm = props => {
         name="newPassword"
         label="New Password"
         type="password"
+        autoComplete="new-password"
         helperText={touched.newPassword ? errors.newPassword : ""}
         error={touched.newPassword && Boolean(errors.newPassword)}
         value={newPassword}
@@ -33,6 +34,7 @@ export const UpdateForgottenPasswordForm = props => {
         name="confirmNewPassword"
         label="Confirm New Password"
         type="password"
+        autoComplete="new-password"
         helperText={touched.confirmNewPassword ? errors.confirmNewPassword : ""}
         error={touched.confirmNewPassword && Boolean(errors.confirmNewPassword)}
         value={confirmNewPassword}
