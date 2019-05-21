@@ -32,15 +32,23 @@ const styles = css`
     font-size: 35px;
     letter-spacing: -2px;
     margin: 10px 0px;
+    text-align: center;
+  }
+  
+  .user-signedup {
+    display: flex;
+    justify-content: center;
   }
   
   .user-signedup p {
-  	margin: 50px 0;
+    margin: 50px 0;
+    text-align: center;
   }
   
   .checkMark {
   	position: absolute;
-  	transform: translate(10px, -4px);
+    transform: translate(10px, -4px);
+    margin: 0
   }
   .campaignName {
   	font-size: 20px;
@@ -109,13 +117,10 @@ class UpdateForgottenPassword extends Component {
               />
             ) : (
               <div className={"user-signedup"}>
+                <GreenCheck width={50} className={"checkMark"} />
                 <p>
                   Your password is updated.
-                  <span>
-                    {" "}
-                    s.helen@example.com{" "}
-                    <GreenCheck width={30} className={"checkMark"} />{" "}
-                  </span>
+                  <span> s.helen@example.com </span>
                 </p>
               </div>
             )}
