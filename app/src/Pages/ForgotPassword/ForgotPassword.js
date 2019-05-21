@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import Paper from "@material-ui/core/Paper";
 import PageHoc from "../../components/PageHoc/PageHoc";
+import GreenCheck from "../../assets/icons/green-check";
 import { ForgotPasswordForm } from "../../components/Forms/ForgotPassword";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -94,25 +95,7 @@ class ForgotPassword extends Component {
                   justifyContent: "center"
                 }}
               >
-                <svg
-                  width="188"
-                  height="188"
-                  viewBox="0 0 188 188"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M75.6095 123.65L50.0455 98.0856L41.3403 106.73L75.6095 140.999L149.175 67.4335L140.531 58.7896L75.6095 123.65Z"
-                    fill="#42B44A"
-                  />
-                  <circle
-                    cx="94"
-                    cy="94"
-                    r="91"
-                    stroke="#42B44A"
-                    strokeWidth="6"
-                  />
-                </svg>
+                <GreenCheck width={80} />
                 <p style={{ textAlign: "center" }}>
                   An email was sent to {this.state.formValues.email} to reset
                   your password.
