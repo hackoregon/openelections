@@ -17,8 +17,8 @@ const styles = css`
 const Navigation = props => {
   return (
     <nav css={styles}>
-      <NavLink to="/">About</NavLink>
-      <NavLink to="/">Sandbox</NavLink>
+      <NavLink to="/about">About</NavLink>
+      <NavLink to="/sandbox">Sandbox</NavLink>
       <NavLink to="/portal">Portal</NavLink>
     </nav>
   );
