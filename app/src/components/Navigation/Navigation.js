@@ -1,19 +1,25 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
+
+const styles = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 2;
+  a {
+    margin: 0 15px;
+  }
+`;
 
 const Navigation = props => {
   return (
-    <nav>
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/add-user">Add User</NavLink>
-      <NavLink to="/change-password">Change password</NavLink>
-      <NavLink to="/sign-in">Sign In</NavLink>
-      <NavLink to="/forgot-password">Forgot Password</NavLink>
-      <NavLink to="/update-forgotten-password">
-        Update Forgotten Password
-      </NavLink>
-      <NavLink to="/dashboard">Dashboard</NavLink>
-      <NavLink to="/contributions">Contributions</NavLink>
+    <nav css={styles}>
+      <NavLink to="/">About</NavLink>
+      <NavLink to="/">Sandbox</NavLink>
+      <NavLink to="/portal">Portal</NavLink>
     </nav>
   );
 };
