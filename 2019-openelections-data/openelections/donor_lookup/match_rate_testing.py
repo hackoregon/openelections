@@ -4,6 +4,7 @@ Code for testing/estimating match rate
 
 import pickle
 import os
+import time
 import Levenshtein as leven
 from typing import Optional
 import numpy as np
@@ -163,32 +164,23 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 
     if address is not None:
         if address_levenshtein > 0:
-            where_stmt += f" and levenshtein(res_address_1,'{address.upper()}') <= {address_levenshtein:d}"
+            where_stmt += f" and levenshtein(address_1,'{address.upper()}') <= {address_levenshtein:d}"
         else:
-            where_stmt += f" and res_address_1 = '{address.upper()}'"
+            where_stmt += f" and address_1 = '{address.upper()}'"
 
     # Remove leading and
     where_stmt = where_stmt[4:]
 
     with connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
-            cmd = f"SELECT first_name, last_name, house_num, res_address_1, res_address_2, city, state, zip_code" \
-                  + f" FROM {db.VOTER_LIST_TABLE} WHERE " \
+            cmd = f"SELECT first_name, last_name, address_1, address_2, city, state, zip_code" \
+                  + f" FROM {db.UNIFIED_TABLE} WHERE " \
                   + where_stmt
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
-            cmd = f"SELECT first_name, last_name, house_num, eff_address_1, eff_address_2, eff_city, eff_state," \
-                  + " eff_zip_code" \
-                  + f" FROM {db.VOTER_LIST_TABLE} WHERE " \
-                  + ' eff_address_1 != res_address_1 and ' \
-                  + where_stmt.replace('zip_code', 'eff_zip_code').replace('res_address_1', 'eff_address_1')
-            curr.execute(cmd)
-            dbresult += curr.fetchall()
-
     data = np.unique(np.array(dbresult, dtype=np.dtype([('first_name', 'U128'),
                                                         ('last_name', 'U128'),
-                                                        ('house_num', 'U128'),
                                                         ('res_address_1', 'U128'),
                                                         ('res_address_2', 'U128'),
                                                         ('city', 'U128'),
@@ -301,7 +293,9 @@ def get_orestar():
 if not USE_SAVED_FILES:
     orestar = get_orestar()
     matches = []
+    runtimes = []
     for record in orestar:
+        start_time = time.time()
         matches.append(get_match(name=record['contributor_payee'],
                                  addr1=record['addr_line1'],
                                  addr2=record['addr_line2'],
@@ -309,7 +303,9 @@ if not USE_SAVED_FILES:
                                  state=record['state'],
                                  zip_code=record['zip'],
                                  amount=record['amount']))
+        runtimes.append(time.time() - start_time)
 
+    print(f'Average lookup time: {np.mean(runtimes):0,.3}sec')
     save(filename=os.path.join(_RESOURCES, 'orestar.pickle'), obj=orestar)
     save(filename=os.path.join(_RESOURCES, 'orestar_matches.pickle'), obj=matches)
 
