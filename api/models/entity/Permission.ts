@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { Government } from './Government';
-import { Campaign } from './Campaign';
-import { User } from './User';
-import { IsDefined, validate, ValidationError } from 'class-validator';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, getConnection} from 'typeorm';
+import {Government, IGovernmentSummary} from './Government';
+import {Campaign, ICampaignSummary} from './Campaign';
+import {IUserSummary, User, UserStatus} from './User';
+import {IsDefined, validate, ValidationError} from 'class-validator';
 
 export enum UserRole {
     GOVERNMENT_ADMIN = 'government_admin',
@@ -110,4 +110,76 @@ export class Permission {
             government: {id: this.government.id, name: this.government.name},
         };
     }
+}
+
+export interface IUserPermissionResult {
+    id: number;
+    role: UserRole;
+    user: User;
+    government: Government;
+    campaign: Campaign;
+}
+
+export interface IUserPermission {
+    id: number;
+    role: UserRole;
+    user: IUserSummary;
+    government: IGovernmentSummary;
+    campaign?: ICampaignSummary;
+}
+
+export async function getPermissionsByCampaignIdAsync(campaignId: number): Promise<IUserPermission[]> {
+    const permissionRepository = getConnection('default').getRepository('Permission');
+    const permissions = await permissionRepository.createQueryBuilder('permission')
+        .andWhere('"permission"."campaignId" = :campaignId', {campaignId}) // notice "" quotes around camelCase id items
+        .innerJoinAndSelect('permission.user', 'user',)
+        .innerJoinAndSelect('permission.campaign', 'campaign')
+        .innerJoinAndSelect('permission.government', 'government')
+        .getMany() as IUserPermissionResult[];
+    return permissions.map(permission => {
+        return {
+            id: permission.id,
+            role: permission.role,
+            user: permission.user.toJSON(),
+            campaign: {
+                id: permission.campaign.id,
+                name: permission.campaign.name,
+            },
+            government: {
+                id: permission.government.id,
+                name: permission.government.name,
+            },
+        };
+    });
+}
+
+export async function getPermissionsByGovernmentIdAsync(governmentId: number): Promise<IUserPermission[]> {
+    const permissionRepository = getConnection('default').getRepository('Permission');
+    const permissions = await permissionRepository.createQueryBuilder('permission')
+        .andWhere('"permission"."governmentId" = :governmentId', {governmentId})
+        .innerJoinAndSelect('permission.user', 'user')
+        .innerJoinAndSelect('permission.government', 'government')
+        .leftJoinAndSelect('permission.campaign', 'campaign')
+        .addOrderBy('"permission"."campaignId"', 'ASC')
+        .getMany() as IUserPermissionResult[];
+
+    return permissions.map(permission => {
+        const userPermission: IUserPermission = {
+            id: permission.id,
+            role: permission.role,
+            user: permission.user.toJSON(),
+            government: {
+                id: permission.government.id,
+                name: permission.government.name,
+            }
+        };
+
+        if (permission.campaign) {
+            userPermission.campaign = {
+                id: permission.campaign.id,
+                name: permission.campaign.name
+            };
+        }
+        return userPermission;
+    });
 }

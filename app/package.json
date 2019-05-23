@@ -2,8 +2,20 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  },
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "formik": "^1.5.4",
     "history": "^4.9.0",
+    "jwt-decode": "^2.2.0",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -13,18 +25,37 @@
     "react-transition-group": "^4.0.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "PORT=4000 react-scripts start",
+    "start-windows": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "flow": "flow"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/node_modules/regenerator-runtime/runtime",
+      "./test/jestsetup.js"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+    },
+    "snapshotResolver": "<rootDir>/snapshotResolver.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@emotion/core": "^10.0.10",
     "@storybook/addon-a11y": "^5.0.10",
     "@storybook/addon-actions": "^5.0.6",
@@ -35,8 +66,15 @@
     "@storybook/addon-storysource": "^5.0.10",
     "@storybook/addons": "^5.0.6",
     "@storybook/react": "^5.0.6",
-    "babel-loader": "^8.0.5",
+    "babel-jest": "^24.8.0",
     "babel-preset-env": "^1.7.0",
+    "babel-loader": "8.0.5",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.0",
+    "enzyme-to-json": "^3.3.5",
+    "fetch-vcr": "^3.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "react-test-renderer": "^16.8.6",
     "redux-devtools-extension": "^2.13.8"
   },
   "browserslist": {
