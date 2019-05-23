@@ -6,6 +6,8 @@ import { User } from '../models/entity/User';
 import { Government } from '../models/entity/Government';
 import { createUserAsync } from './userService';
 import { sendInvitationEmail, sendNewUserInvitationEmail } from './emailService';
+import { createActivityRecordAsync } from './activityService';
+import { ActivityTypeEnum } from '../models/entity/Activity';
 
 export interface IAddPermissionAsyncAttrs {
     userId: number;
@@ -39,6 +41,8 @@ export async function addPermissionAsync(attrs: IAddPermissionAsyncAttrs): Promi
     }
     if (await permission.isValidAsync()) {
         await permissionRepository.save(permission);
+    } else {
+        throw new Error(`Permission invalid ${permission.errors}`);
     }
 
     return permission;
@@ -60,7 +64,6 @@ export async function isGovernmentAdminAsync(userId, governmentId: number): Prom
         .andWhere('"governmentId" = :governmentId', {governmentId})
         .andWhere('"role" = :role', {role: UserRole.GOVERNMENT_ADMIN})
         .getOne();
-
     return !!permission;
 }
 
@@ -71,7 +74,6 @@ export async function isCampaignAdminAsync(userId, campaignId: number): Promise<
         .andWhere('"campaignId" = :campaignId', {campaignId})
         .andWhere('"role" = :role', {role: UserRole.CAMPAIGN_ADMIN})
         .getOne();
-
     return !!permission;
 }
 
@@ -100,6 +102,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
     const userRepository = getConnection('default').getRepository('User');
     const campaignRepository = getConnection('default').getRepository('Campaign');
     const campaign = await campaignRepository.findOneOrFail(attrs.campaignId) as Campaign;
+    const currentUser = await userRepository.findOneOrFail(attrs.currentUserId) as User;
     if (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id)) {
         let user = await userRepository.findOne({email: attrs.email}) as User;
         if (!user) {
@@ -113,18 +116,35 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
                 invitationCode: user.invitationCode,
                 campaignName: campaign.name,
             });
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.name} was sent an invitation email to ${user.email}`,
+                government: await campaign.government,
+                campaign: campaign,
+                activityType: ActivityTypeEnum.INVITATION_EMAIL,
+                activityId: user.id
+            });
         } else {
             await sendInvitationEmail({
                 to: user.email,
                 campaignName: campaign.name,
             });
         }
-        return addPermissionAsync({
+        const permission = await addPermissionAsync({
             userId: user.id,
             role: attrs.role,
             campaignId: campaign.id,
             governmentId: campaign.government.id
         });
+        await createActivityRecordAsync({
+            currentUser,
+            notes: `${currentUser.name} added ${user.name()} to ${campaign.name} as a ${permission.role}`,
+            government: await campaign.government,
+            campaign: campaign,
+            activityType: ActivityTypeEnum.PERMISSION,
+            activityId: permission.id
+        });
+        return permission;
     }
     throw new Error('user does not have sufficient permissions');
 }
@@ -142,6 +162,7 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
     const userRepository = getConnection('default').getRepository('User');
     const governmentRepository = getConnection('default').getRepository('Government');
     const government = await governmentRepository.findOneOrFail(attrs.governmentId) as Government;
+    const currentUser = await userRepository.findOneOrFail(attrs.currentUserId) as User;
     if (await isGovernmentAdminAsync(attrs.currentUserId, government.id)) {
         let user = await userRepository.findOne({email: attrs.email}) as User;
         if (!user) {
@@ -155,14 +176,28 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
                 invitationCode: user.invitationCode,
                 governmentName: government.name,
             });
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.name} was sent an invitation email to ${user.email}`,
+                government: government,
+                activityType: ActivityTypeEnum.INVITATION_EMAIL,
+                activityId: user.id
+            });
         } else {
-
             await sendInvitationEmail({
                 to: user.email,
                 governmentName: government.name,
             });
         }
-        return addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
+        const permission =  await addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
+        await createActivityRecordAsync({
+            currentUser,
+            notes: `${currentUser.name} added ${user.name()} to ${government.name} as a ${permission.role}`,
+            government: government,
+            activityType: ActivityTypeEnum.PERMISSION,
+            activityId: permission.id
+        });
+        return permission;
     }
     throw new Error('user does not have sufficient permissions');
 }

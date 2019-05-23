@@ -1,7 +1,8 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate} from 'typeorm';
-import { IsEmail, IsDefined, validate, ValidationError } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { IsDefined, validate, ValidationError } from 'class-validator';
 import * as crypto from 'crypto';
-import {Permission, UserRole} from './Permission';
+import { Permission } from './Permission';
+import { Activity } from './Activity';
 
 export interface IPasswordHash {
     hash: string;
@@ -33,7 +34,7 @@ export enum UserStatus {
     INACTIVE = 'inactive',
 }
 
-@Entity()
+@Entity({name: 'users'})
 export class User {
 
     @PrimaryGeneratedColumn()
@@ -52,7 +53,6 @@ export class User {
     passwordHash: string;
 
     @Column()
-    @IsEmail()
     @IsDefined()
     email: string;
 
@@ -61,7 +61,10 @@ export class User {
     salt: string;
 
     @OneToMany(type => Permission, permission => permission.user)
-    permissions: Permission[];
+    permissions: Promise<Permission[]>;
+
+    @OneToMany(type => Activity, activity => activity.user)
+    activities: Promise<Activity[]>;
 
     @Column({
         type: 'enum',
@@ -81,7 +84,15 @@ export class User {
     async validate() {
         await this.validateAsync();
         if (this.errors.length > 0) {
-            throw new Error('user has one or more validation problems')
+            throw new Error('user has one or more validation problems');
+        }
+    }
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    downCaseEmail() {
+        if (this.email) {
+            this.email = this.email.toLowerCase();
         }
     }
 
@@ -101,7 +112,8 @@ export class User {
             id: this.id,
             firstName: this.firstName,
             lastName: this.lastName,
-            email: this.email
+            email: this.email,
+            userStatus: this.userStatus,
         };
     }
 
@@ -160,4 +172,16 @@ export class User {
         }
         return false;
     }
+
+    name() {
+        return `${this.firstName} ${this.lastName}}`;
+    }
+}
+
+export interface IUserSummary {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    userStatus: UserStatus;
 }

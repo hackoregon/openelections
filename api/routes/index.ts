@@ -1,27 +1,86 @@
-import { userGetAllAction, userGetByIdAction, userSignUp, userLogin } from '../controller/users';
+import * as express from 'express';
+import { getCurrentUser, IRequest } from './helpers';
+import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
+import * as users from '../controller/users';
+import * as campaigns from '../controller/campaigns';
+import * as activities from '../controller/activities';
 
-/**
- * All application routes.
- */
 export const AppRoutes = [
     {
+        path: '/me',
+        method: 'get',
+        action: async (request: IRequest, response: express.Response) => {
+            return response.status(200).json(request.currentUser);
+        }
+    },
+    {
+        path: '/users/login',
+        method: 'post',
+        action: users.login
+    },
+    {
+        path: '/users/invite',
+        method: 'post',
+        action: users.invite
+    },
+    {
+        path: '/users/resend-invite',
+        method: 'post',
+        action: users.resendInvite
+    },
+    {
+        path: '/users/redeem-invite',
+        method: 'post',
+        action: users.redeemInvite
+    },
+    {
         path: '/users',
-        method: 'get',
-        action: userGetAllAction
-    },
-    {
-        path: '/users/:id',
-        method: 'get',
-        action: userGetByIdAction
-    },
-    {
-        path: '/signup',
         method: 'post',
-        action: userSignUp
+        action: users.getUsers
     },
     {
-        path: '/login',
+        path: '/users/send-password-reset-email',
         method: 'post',
-        action: userLogin
+        action: users.sendPasswordReset
+    },
+    {
+        path: '/users/reset-password',
+        method: 'post',
+        action: users.resetPassword
+    },
+    {
+        path: '/users/password',
+        method: 'put',
+        action: users.updatePassword
+    },
+    {
+        path: '/campaigns',
+        method: 'post',
+        action: campaigns.getCampaigns
+    },
+    {
+        path: '/campaigns/new',
+        method: 'post',
+        action: campaigns.addCampaign
+    },
+    {
+        path: '/activities',
+        method: 'post',
+        action: activities.activities
     }
 ];
+
+export const setupRoutes = (app: express.Express) => {
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+    app.use(getCurrentUser);
+    AppRoutes.forEach(route => {
+        app[route.method](route.path, (request: IRequest, response: express.Response, next: Function) => {
+            route
+                .action(request, response, next)
+                .then(() => next)
+                .catch(err => next(err));
+        });
+    });
+};

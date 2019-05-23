@@ -1,4 +1,4 @@
-const actionEmitter = (type) => (payload) => {
+const actionEmitter = type => payload => {
   const ret = { type };
   if (payload != null) {
     ret.payload = payload;

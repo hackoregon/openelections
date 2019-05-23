@@ -1,23 +1,19 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { storiesOf } from '@storybook/react';
+import { storiesOf } from "@storybook/react";
 // import { action } from '@storybook/addon-actions';
 // import { linkTo } from '@storybook/addon-links';
-import Doohicky from '../src/components/Doohicky/index';
-import Provider from './Provider';
+import Doohicky from "../src/components/Doohicky/index";
+import Provider from "./Provider";
 
 // import { withKnobs } from '@storybook/addon-knobs/react';
 
-export default () => storiesOf('Doohicky', module)
-    .addDecorator((story) => <Provider story={story()} />)
-    .add(
-  'basic PrimaryButton',
-  () => (
-    <Doohicky />
-  ),
-  {
-    info: {
-      text: `
+export default () =>
+  storiesOf("Doohicky", module)
+    .addDecorator(story => <Provider story={story()} />)
+    .add("basic PrimaryButton", () => <Doohicky />, {
+      info: {
+        text: `
 
   ### Notes
 
@@ -32,7 +28,6 @@ export default () => storiesOf('Doohicky', module)
   />
   ~~~
 
-`,
-    },
-  }
-);
+`
+      }
+    });

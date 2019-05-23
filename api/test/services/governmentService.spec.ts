@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
+import { truncateAll } from '../factories';
 
 let governmentRepository: any;
 
@@ -10,7 +11,7 @@ describe('governmentService', () => {
     });
 
     afterEach(async() => {
-        await governmentRepository.query('TRUNCATE "government" CASCADE');
+        await truncateAll();
     });
 
     it('Creates a valid government', async () => {
