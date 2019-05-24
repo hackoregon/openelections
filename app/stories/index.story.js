@@ -11,6 +11,7 @@ import Doohicky from "./doohicky.story";
 import UserInfoBox from "./UserInfoBox.story";
 import SearchBox from "./SearchBox.story";
 import AddUser from "./AddUser.story";
+import AddCampaign from "./AddCampaign.story";
 import ChangePassword from "./ChangePassword.story";
 import ForgotPassword from "./ForgotPassword.story";
 import UpdateForgottenPassword from "./UpdateForgottenPassword.story";
@@ -36,6 +37,7 @@ storiesOf("Portal", module).add("Intro", () => (
 UserInfoBox();
 
 AddUser();
+AddCampaign();
 ChangePassword();
 SignIn();
 SignUp();
