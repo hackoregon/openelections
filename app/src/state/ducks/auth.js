@@ -7,8 +7,10 @@ import * as api from "../../api";
 export const actionTypes = {
   LOGIN_REQUEST: "openelections/auth/LOGIN_REQUEST",
   LOGIN_SUCCESS: "openelections/auth/LOGIN_SUCCESS",
-  LOGIN_FAILURE: "openelections/auth/LOGIN_FAILURE"
-  // TODO: add logout
+  LOGIN_FAILURE: "openelections/auth/LOGIN_FAILURE",
+  REDEEM_INVITE_REQUEST: "openelections/auth/REDEEM_INVITE_REQUEST",
+  REDEEM_INVITE_SUCCESS: "openelections/auth/REDEEM_INVITE_SUCCESS",
+  REDEEM_INVITE_FAILURE: "openelections/auth/REDEEM_INVITE_FAILURE"
 };
 
 // Initial State
@@ -36,7 +38,16 @@ export default function reducer(state = initialState, action) {
 export const actionCreators = {
   setLoginRequest: () => ({ type: actionTypes.LOGIN_REQUEST }),
   setLoginSuccess: me => ({ type: actionTypes.LOGIN_SUCCESS, me }),
-  setLoginFailure: error => ({ type: actionTypes.LOGIN_FAILURE, error })
+  setLoginFailure: error => ({ type: actionTypes.LOGIN_FAILURE, error }),
+  setRedeemInviteRequest: () => ({ type: actionTypes.REDEEM_INVITE_REQUEST }),
+  setRedeemInviteSuccess: me => ({
+    type: actionTypes.REDEEM_INVITE_SUCCESS,
+    me
+  }),
+  setRedeemInviteFailure: error => ({
+    type: actionTypes.REDEEM_INVITE_FAILURE,
+    error
+  })
 };
 
 // Side Effects, e.g. thunks
@@ -56,6 +67,25 @@ export function login(email, password) {
       dispatch(actionCreators.setLoginSuccess(me));
     } catch (error) {
       dispatch(actionCreators.setLoginFailure(error));
+    }
+  };
+}
+
+export function redeemInvite(invitationCode, password, firstName, lastName) {
+  return async dispatch => {
+    dispatch(actionCreators.setRedeemInviteRequest());
+    try {
+      const { status } = await api.redeemInvite(
+        invitationCode,
+        password,
+        firstName,
+        lastName
+      );
+      status === 204
+        ? dispatch(actionCreators.setRedeemInviteSuccess())
+        : dispatch(actionCreators.setRedeemInviteFailure());
+    } catch (error) {
+      dispatch(actionCreators.setRedeemInviteFailure(error));
     }
   };
 }

@@ -12,6 +12,12 @@ const govAdmin = {
   password: "password"
 };
 
+const invite = {
+  code: "inviteme",
+  email: "campaignStaff+1@openelectionsportland.org",
+  password: "password"
+};
+
 describe("Action Creators", () => {
   it("login request", () => {
     const expectedAction = {
@@ -36,6 +42,33 @@ describe("Action Creators", () => {
       error: ""
     };
     expect(actionCreators.setLoginFailure(error)).toEqual(expectedAction);
+  });
+
+  it("redeem invite request", () => {
+    const expectedAction = {
+      type: actionTypes.REDEEM_INVITE_REQUEST
+    };
+    expect(actionCreators.setRedeemInviteRequest()).toEqual(expectedAction);
+  });
+
+  it("redeem invite success", () => {
+    const me = {};
+    const expectedAction = {
+      type: actionTypes.REDEEM_INVITE_SUCCESS,
+      me: {}
+    };
+    expect(actionCreators.setRedeemInviteSuccess(me)).toEqual(expectedAction);
+  });
+
+  it("redeem invite failure", () => {
+    const error = "";
+    const expectedAction = {
+      type: actionTypes.REDEEM_INVITE_FAILURE,
+      error: ""
+    };
+    expect(actionCreators.setRedeemInviteFailure(error)).toEqual(
+      expectedAction
+    );
   });
 });
 
@@ -73,6 +106,34 @@ describe("Side Effects", () => {
         const actions = store.getActions();
         expect(actions[0]).toEqual(expectedActions[0]);
         expect(actions[1].type).toEqual(expectedActions[1].type);
+      });
+  });
+
+  it("redeem invite", () => {
+    const expectedActions = [
+      { type: actionTypes.REDEEM_INVITE_REQUEST },
+      { type: actionTypes.REDEEM_INVITE_SUCCESS }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.redeemInvite(invite.code, invite.password))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("redeem invite failure", () => {
+    const expectedActions = [
+      { type: actionTypes.REDEEM_INVITE_REQUEST },
+      { type: actionTypes.REDEEM_INVITE_FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.redeemInvite("wrongcode", invite.password))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
       });
   });
 });
