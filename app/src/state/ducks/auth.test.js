@@ -45,7 +45,7 @@ describe("Side Effects", () => {
       { type: actionTypes.LOGIN_REQUEST },
       { type: actionTypes.LOGIN_SUCCESS }
     ];
-    const store = mockStore({ me: { email: "" } });
+    const store = mockStore({});
 
     return store
       .dispatch(auth.login(govAdmin.email, govAdmin.password))
@@ -57,6 +57,22 @@ describe("Side Effects", () => {
           id: expect.any(Number),
           email: expect.any(String)
         });
+      });
+  });
+
+  it("login failure", () => {
+    const expectedActions = [
+      { type: actionTypes.LOGIN_REQUEST },
+      { type: actionTypes.LOGIN_FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.login(govAdmin.email, "wrongpassword"))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
       });
   });
 });
