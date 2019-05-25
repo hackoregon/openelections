@@ -1,6 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as auth from "./auth";
+import * as api from "../../api";
 
 const { actionTypes, actionCreators } = auth;
 
@@ -73,6 +74,50 @@ describe("Action Creators", () => {
 });
 
 describe("Side Effects", () => {
+  beforeEach(() => {
+    delete process.env.TOKEN;
+  });
+
+  it("me", async () => {
+    const expectedActions = [
+      { type: actionTypes.ME_REQUEST },
+      { type: actionTypes.ME_SUCCESS }
+    ];
+    const store = mockStore({});
+
+    const tokenResponse = await api.login(
+      "govadmin@openelectionsportland.org",
+      "password"
+    );
+    process.env.TOKEN = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+
+    return store.dispatch(auth.me()).then(() => {
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(expectedActions[0]);
+      expect(actions[1].type).toEqual(expectedActions[1].type);
+      expect(actions[1].me).toMatchObject({
+        id: expect.any(Number),
+        email: expect.any(String)
+      });
+    });
+  });
+
+  it("me failure", () => {
+    const expectedActions = [
+      { type: actionTypes.ME_REQUEST },
+      { type: actionTypes.ME_FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store.dispatch(auth.me()).then(() => {
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(expectedActions[0]);
+      expect(actions[1].type).toEqual(expectedActions[1].type);
+    });
+  });
+
   it("login", () => {
     const expectedActions = [
       { type: actionTypes.LOGIN_REQUEST },

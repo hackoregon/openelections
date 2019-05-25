@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/me","status":200,"statusText":"OK","ok":true,"headers":{"x-powered-by":["Express"],"content-type":["application/json; charset=utf-8"],"date":["Sat, 25 May 2019 19:54:32 GMT"],"connection":["close"],"content-length":["0"]}}
