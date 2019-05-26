@@ -1,19 +1,19 @@
 // auth.js
+import createReducer from "../utils/createReducer";
+import createActionTypes from "../utils/createActionTypes";
+import action from "../utils/action";
 
 // Services
 import * as api from "../../api";
 
+export const STATE_KEY = "auth";
+
 // Action Types
 export const actionTypes = {
-  LOGIN_REQUEST: "openelections/auth/LOGIN_REQUEST",
-  LOGIN_SUCCESS: "openelections/auth/LOGIN_SUCCESS",
-  LOGIN_FAILURE: "openelections/auth/LOGIN_FAILURE",
-  REDEEM_INVITE_REQUEST: "openelections/auth/REDEEM_INVITE_REQUEST",
-  REDEEM_INVITE_SUCCESS: "openelections/auth/REDEEM_INVITE_SUCCESS",
-  REDEEM_INVITE_FAILURE: "openelections/auth/REDEEM_INVITE_FAILURE",
-  ME_REQUEST: "openelections/auth/ME_REQUEST",
-  ME_SUCCESS: "openelections/auth/ME_SUCCESS",
-  ME_FAILURE: "openelections/auth/ME_FAILURE"
+  ME: createActionTypes(STATE_KEY, "ME"),
+  LOGIN: createActionTypes(STATE_KEY, "LOGIN"),
+  REDEEM_INVITE: createActionTypes(STATE_KEY, "REDEEM_INVITE"),
+  RESET_PASSWORD: createActionTypes(STATE_KEY, "RESET_PASSWORD")
 };
 
 // Initial State
@@ -24,66 +24,71 @@ export const initialState = {
 };
 
 // Reducer
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case actionTypes.ME_REQUEST:
-      return { ...state, isLoading: true };
-    case actionTypes.ME_SUCCESS:
-      return { ...state, isLoading: false, me: action.me };
-    case actionTypes.ME_FAILURE:
-      return { ...state, isLoading: false, error: action.error };
-    case actionTypes.LOGIN_REQUEST:
-      return { ...state, isLoading: true };
-    case actionTypes.LOGIN_SUCCESS:
-      return { ...state, isLoading: false, me: action.me };
-    case actionTypes.LOGIN_FAILURE:
-      return { ...state, isLoading: false, error: action.error };
-    case actionTypes.REDEEM_INVITE_REQUEST:
-      return { ...state, isLoading: true };
-    case actionTypes.REDEEM_INVITE_SUCCESS:
-      return { ...state, isLoading: false };
-    case actionTypes.REDEEM_INVITE_FAILURE:
-      return { ...state, isLoading: false, error: action.error };
-    default:
-      return state;
+export default createReducer(initialState, {
+  [actionTypes.ME.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.ME.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false, me: action.me };
+  },
+  [actionTypes.ME.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.LOGIN.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.LOGIN.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false, me: action.me };
+  },
+  [actionTypes.LOGIN.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.REDEEM_INVITE.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.REDEEM_INVITE.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.REDEEM_INVITE.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
   }
-}
+});
 
 // Action Creators
 export const actionCreators = {
-  setMeRequest: () => ({ type: actionTypes.ME_REQUEST }),
-  setMeSuccess: me => ({ type: actionTypes.ME_SUCCESS, me }),
-  setMeFailure: error => ({ type: actionTypes.ME_FAILURE, error }),
-  setLoginRequest: () => ({ type: actionTypes.LOGIN_REQUEST }),
-  setLoginSuccess: me => ({ type: actionTypes.LOGIN_SUCCESS, me }),
-  setLoginFailure: error => ({ type: actionTypes.LOGIN_FAILURE, error }),
-  setRedeemInviteRequest: () => ({ type: actionTypes.REDEEM_INVITE_REQUEST }),
-  setRedeemInviteSuccess: me => ({
-    type: actionTypes.REDEEM_INVITE_SUCCESS,
-    me
-  }),
-  setRedeemInviteFailure: error => ({
-    type: actionTypes.REDEEM_INVITE_FAILURE,
-    error
-  })
+  me: {
+    request: () => action(actionTypes.ME.REQUEST),
+    success: me => action(actionTypes.ME.SUCCESS, { me }),
+    failure: error => action(actionTypes.ME.FAILURE, { error })
+  },
+  login: {
+    request: () => action(actionTypes.LOGIN.REQUEST),
+    success: me => action(actionTypes.LOGIN.SUCCESS, { me }),
+    failure: error => action(actionTypes.LOGIN.FAILURE, { error })
+  },
+  redeemInvite: {
+    request: () => action(actionTypes.REDEEM_INVITE.REQUEST),
+    success: me => action(actionTypes.REDEEM_INVITE.SUCCESS, { me }),
+    failure: error => action(actionTypes.REDEEM_INVITE.FAILURE, { error })
+  }
 };
 
 // Side Effects, e.g. thunks
 export function me() {
   return async dispatch => {
-    dispatch(actionCreators.setMeRequest());
+    dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
-      dispatch(actionCreators.setMeSuccess(me));
+      dispatch(actionCreators.me.success(me));
     } catch (error) {
-      dispatch(actionCreators.setMeFailure(error));
+      dispatch(actionCreators.me.failure(error));
     }
   };
 }
 
 export function login(email, password) {
   return async dispatch => {
-    dispatch(actionCreators.setLoginRequest());
+    dispatch(actionCreators.login.request());
     try {
       const response = await api.login(email, password);
       /**
@@ -94,16 +99,16 @@ export function login(email, password) {
         .get("set-cookie")
         .match(/=([a-zA-Z0-9].+); Path/)[1];
       const me = api.decodeToken(token);
-      dispatch(actionCreators.setLoginSuccess(me));
+      dispatch(actionCreators.login.success(me));
     } catch (error) {
-      dispatch(actionCreators.setLoginFailure(error));
+      dispatch(actionCreators.login.failure(error));
     }
   };
 }
 
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async dispatch => {
-    dispatch(actionCreators.setRedeemInviteRequest());
+    dispatch(actionCreators.redeemInvite.request());
     try {
       const { status } = await api.redeemInvite(
         invitationCode,
@@ -112,10 +117,10 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
         lastName
       );
       status === 204
-        ? dispatch(actionCreators.setRedeemInviteSuccess())
-        : dispatch(actionCreators.setRedeemInviteFailure());
+        ? dispatch(actionCreators.redeemInvite.success())
+        : dispatch(actionCreators.redeemInvite.failure());
     } catch (error) {
-      dispatch(actionCreators.setRedeemInviteFailure(error));
+      dispatch(actionCreators.redeemInvite.failure(error));
     }
   };
 }

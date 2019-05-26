@@ -19,57 +19,192 @@ const invite = {
   password: "password"
 };
 
+describe("Reducer", () => {
+  const reducer = auth.default;
+  it("initial state", () => {
+    expect(reducer(undefined, {})).toEqual({
+      me: null,
+      isLoading: false,
+      error: null
+    });
+  });
+
+  it("login", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.LOGIN.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.LOGIN.SUCCESS,
+        me: {}
+      })
+    ).toEqual({
+      me: {},
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.LOGIN.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
+
+  it("me", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.ME.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.ME.SUCCESS,
+        me: {}
+      })
+    ).toEqual({
+      me: {},
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.ME.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
+
+  it("redeem invite", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.REDEEM_INVITE.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.REDEEM_INVITE.SUCCESS
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.REDEEM_INVITE.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
+});
+
 describe("Action Creators", () => {
+  it("me request", () => {
+    const expectedAction = {
+      type: actionTypes.ME.REQUEST
+    };
+    expect(actionCreators.me.request()).toEqual(expectedAction);
+  });
+
+  it("me success", () => {
+    const me = {};
+    const expectedAction = {
+      type: actionTypes.ME.SUCCESS,
+      me: {}
+    };
+    expect(actionCreators.me.success(me)).toEqual(expectedAction);
+  });
+
+  it("me failure", () => {
+    const error = "";
+    const expectedAction = {
+      type: actionTypes.ME.FAILURE,
+      error: ""
+    };
+    expect(actionCreators.me.failure(error)).toEqual(expectedAction);
+  });
+
   it("login request", () => {
     const expectedAction = {
-      type: actionTypes.LOGIN_REQUEST
+      type: actionTypes.LOGIN.REQUEST
     };
-    expect(actionCreators.setLoginRequest()).toEqual(expectedAction);
+    expect(actionCreators.login.request()).toEqual(expectedAction);
   });
 
   it("login success", () => {
     const me = {};
     const expectedAction = {
-      type: actionTypes.LOGIN_SUCCESS,
+      type: actionTypes.LOGIN.SUCCESS,
       me: {}
     };
-    expect(actionCreators.setLoginSuccess(me)).toEqual(expectedAction);
+    expect(actionCreators.login.success(me)).toEqual(expectedAction);
   });
 
   it("login failure", () => {
     const error = "";
     const expectedAction = {
-      type: actionTypes.LOGIN_FAILURE,
+      type: actionTypes.LOGIN.FAILURE,
       error: ""
     };
-    expect(actionCreators.setLoginFailure(error)).toEqual(expectedAction);
+    expect(actionCreators.login.failure(error)).toEqual(expectedAction);
   });
 
   it("redeem invite request", () => {
     const expectedAction = {
-      type: actionTypes.REDEEM_INVITE_REQUEST
+      type: actionTypes.REDEEM_INVITE.REQUEST
     };
-    expect(actionCreators.setRedeemInviteRequest()).toEqual(expectedAction);
+    expect(actionCreators.redeemInvite.request()).toEqual(expectedAction);
   });
 
   it("redeem invite success", () => {
     const me = {};
     const expectedAction = {
-      type: actionTypes.REDEEM_INVITE_SUCCESS,
+      type: actionTypes.REDEEM_INVITE.SUCCESS,
       me: {}
     };
-    expect(actionCreators.setRedeemInviteSuccess(me)).toEqual(expectedAction);
+    expect(actionCreators.redeemInvite.success(me)).toEqual(expectedAction);
   });
 
   it("redeem invite failure", () => {
     const error = "";
     const expectedAction = {
-      type: actionTypes.REDEEM_INVITE_FAILURE,
+      type: actionTypes.REDEEM_INVITE.FAILURE,
       error: ""
     };
-    expect(actionCreators.setRedeemInviteFailure(error)).toEqual(
-      expectedAction
-    );
+    expect(actionCreators.redeemInvite.failure(error)).toEqual(expectedAction);
   });
 });
 
@@ -80,8 +215,8 @@ describe("Side Effects", () => {
 
   it("me", async () => {
     const expectedActions = [
-      { type: actionTypes.ME_REQUEST },
-      { type: actionTypes.ME_SUCCESS }
+      { type: actionTypes.ME.REQUEST },
+      { type: actionTypes.ME.SUCCESS }
     ];
     const store = mockStore({});
 
@@ -106,8 +241,8 @@ describe("Side Effects", () => {
 
   it("me failure", () => {
     const expectedActions = [
-      { type: actionTypes.ME_REQUEST },
-      { type: actionTypes.ME_FAILURE }
+      { type: actionTypes.ME.REQUEST },
+      { type: actionTypes.ME.FAILURE }
     ];
     const store = mockStore({});
 
@@ -120,8 +255,8 @@ describe("Side Effects", () => {
 
   it("login", () => {
     const expectedActions = [
-      { type: actionTypes.LOGIN_REQUEST },
-      { type: actionTypes.LOGIN_SUCCESS }
+      { type: actionTypes.LOGIN.REQUEST },
+      { type: actionTypes.LOGIN.SUCCESS }
     ];
     const store = mockStore({});
 
@@ -140,8 +275,8 @@ describe("Side Effects", () => {
 
   it("login failure", () => {
     const expectedActions = [
-      { type: actionTypes.LOGIN_REQUEST },
-      { type: actionTypes.LOGIN_FAILURE }
+      { type: actionTypes.LOGIN.REQUEST },
+      { type: actionTypes.LOGIN.FAILURE }
     ];
     const store = mockStore({});
 
@@ -156,8 +291,8 @@ describe("Side Effects", () => {
 
   it("redeem invite", () => {
     const expectedActions = [
-      { type: actionTypes.REDEEM_INVITE_REQUEST },
-      { type: actionTypes.REDEEM_INVITE_SUCCESS }
+      { type: actionTypes.REDEEM_INVITE.REQUEST },
+      { type: actionTypes.REDEEM_INVITE.SUCCESS }
     ];
     const store = mockStore({});
 
@@ -170,8 +305,8 @@ describe("Side Effects", () => {
 
   it("redeem invite failure", () => {
     const expectedActions = [
-      { type: actionTypes.REDEEM_INVITE_REQUEST },
-      { type: actionTypes.REDEEM_INVITE_FAILURE }
+      { type: actionTypes.REDEEM_INVITE.REQUEST },
+      { type: actionTypes.REDEEM_INVITE.FAILURE }
     ];
     const store = mockStore({});
 
