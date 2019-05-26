@@ -168,6 +168,39 @@ describe("Reducer", () => {
     });
   });
 
+  it("send password reset email", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.SEND_PASSWORD_RESET_EMAIL.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
+
   it("update password", () => {
     expect(
       reducer(undefined, {
@@ -297,6 +330,35 @@ describe("Action Creators", () => {
       error: ""
     };
     expect(actionCreators.resetPassword.failure(error)).toEqual(expectedAction);
+  });
+
+  it("send password reset email request", () => {
+    const expectedAction = {
+      type: actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST
+    };
+    expect(actionCreators.sendPasswordResetEmail.request()).toEqual(
+      expectedAction
+    );
+  });
+
+  it("send password reset email success", () => {
+    const expectedAction = {
+      type: actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS
+    };
+    expect(actionCreators.sendPasswordResetEmail.success()).toEqual(
+      expectedAction
+    );
+  });
+
+  it("send password reset email failure", () => {
+    const error = "";
+    const expectedAction = {
+      type: actionTypes.SEND_PASSWORD_RESET_EMAIL.FAILURE,
+      error: ""
+    };
+    expect(actionCreators.sendPasswordResetEmail.failure(error)).toEqual(
+      expectedAction
+    );
   });
 
   it("update password request", () => {
@@ -457,6 +519,40 @@ describe("Side Effects", () => {
 
     return store
       .dispatch(auth.resetPassword("wrongcode", reset.password))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("send password reset email", () => {
+    const expectedActions = [
+      { type: actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST },
+      { type: actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(
+        auth.sendPasswordResetEmail("campaignstaff@openelectionsportland.org")
+      )
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("send password reset email failure", () => {
+    const expectedActions = [
+      { type: actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST },
+      { type: actionTypes.SEND_PASSWORD_RESET_EMAIL.FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(
+        auth.sendPasswordResetEmail(
+          "wrong_campaignstaff@@openelectionsportland.org"
+        )
+      )
       .then(() => {
         expect(store.getActions()).toEqual(expectedActions);
       });

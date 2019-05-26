@@ -14,6 +14,10 @@ export const actionTypes = {
   LOGIN: createActionTypes(STATE_KEY, "LOGIN"),
   REDEEM_INVITE: createActionTypes(STATE_KEY, "REDEEM_INVITE"),
   RESET_PASSWORD: createActionTypes(STATE_KEY, "RESET_PASSWORD"),
+  SEND_PASSWORD_RESET_EMAIL: createActionTypes(
+    STATE_KEY,
+    "SEND_PASSWORD_RESET_EMAIL"
+  ),
   UPDATE_PASSWORD: createActionTypes(STATE_KEY, "UPDATE_PASSWORD")
 };
 
@@ -62,6 +66,15 @@ export default createReducer(initialState, {
   [actionTypes.RESET_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
+  [actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.SEND_PASSWORD_RESET_EMAIL.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  },
   [actionTypes.UPDATE_PASSWORD.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
@@ -94,6 +107,12 @@ export const actionCreators = {
     request: () => action(actionTypes.RESET_PASSWORD.REQUEST),
     success: () => action(actionTypes.RESET_PASSWORD.SUCCESS),
     failure: error => action(actionTypes.RESET_PASSWORD.FAILURE, { error })
+  },
+  sendPasswordResetEmail: {
+    request: () => action(actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST),
+    success: () => action(actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS),
+    failure: error =>
+      action(actionTypes.SEND_PASSWORD_RESET_EMAIL.FAILURE, { error })
   },
   updatePassword: {
     request: () => action(actionTypes.UPDATE_PASSWORD.REQUEST),
@@ -164,6 +183,20 @@ export function resetPassword(invitationCode, password) {
         : dispatch(actionCreators.resetPassword.failure());
     } catch (error) {
       dispatch(actionCreators.resetPassword.failure(error));
+    }
+  };
+}
+
+export function sendPasswordResetEmail(email) {
+  return async dispatch => {
+    dispatch(actionCreators.sendPasswordResetEmail.request());
+    try {
+      const { status } = await api.sendPasswordResetEmail(email);
+      status === 204
+        ? dispatch(actionCreators.sendPasswordResetEmail.success())
+        : dispatch(actionCreators.sendPasswordResetEmail.failure());
+    } catch (error) {
+      dispatch(actionCreators.sendPasswordResetEmail.failure(error));
     }
   };
 }
