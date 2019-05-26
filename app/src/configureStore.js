@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { createReducer } from "./state";
+import auth, { STATE_KEY as AUTH_STATE_KEY } from "./state/ducks/auth";
 
 export default function configureStore(history) {
   const composeEnhancers =
@@ -12,7 +13,9 @@ export default function configureStore(history) {
     );
   }
   return createStore(
-    createReducer(undefined),
+    createReducer({
+      [AUTH_STATE_KEY]: auth
+    }),
     composeEnhancers(applyMiddleware(thunk))
   );
 }
