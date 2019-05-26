@@ -167,6 +167,39 @@ describe("Reducer", () => {
       error: ""
     });
   });
+
+  it("update password", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.UPDATE_PASSWORD.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.UPDATE_PASSWORD.SUCCESS
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.UPDATE_PASSWORD.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
 });
 
 describe("Action Creators", () => {
@@ -264,6 +297,31 @@ describe("Action Creators", () => {
       error: ""
     };
     expect(actionCreators.resetPassword.failure(error)).toEqual(expectedAction);
+  });
+
+  it("update password request", () => {
+    const expectedAction = {
+      type: actionTypes.UPDATE_PASSWORD.REQUEST
+    };
+    expect(actionCreators.updatePassword.request()).toEqual(expectedAction);
+  });
+
+  it("update password success", () => {
+    const expectedAction = {
+      type: actionTypes.UPDATE_PASSWORD.SUCCESS
+    };
+    expect(actionCreators.updatePassword.success()).toEqual(expectedAction);
+  });
+
+  it("update password failure", () => {
+    const error = "";
+    const expectedAction = {
+      type: actionTypes.UPDATE_PASSWORD.FAILURE,
+      error: ""
+    };
+    expect(actionCreators.updatePassword.failure(error)).toEqual(
+      expectedAction
+    );
   });
 });
 
@@ -401,6 +459,44 @@ describe("Side Effects", () => {
       .dispatch(auth.resetPassword("wrongcode", reset.password))
       .then(() => {
         expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("update password", async () => {
+    const expectedActions = [
+      { type: actionTypes.UPDATE_PASSWORD.REQUEST },
+      { type: actionTypes.UPDATE_PASSWORD.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    const tokenResponse = await api.login(
+      "govadmin@openelectionsportland.org",
+      "password"
+    );
+    process.env.TOKEN = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+
+    return store
+      .dispatch(auth.updatePassword("password", "newpassword"))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("update password failure", () => {
+    const expectedActions = [
+      { type: actionTypes.UPDATE_PASSWORD.REQUEST },
+      { type: actionTypes.UPDATE_PASSWORD.FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.updatePassword("password", "newpassword"))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
       });
   });
 });
