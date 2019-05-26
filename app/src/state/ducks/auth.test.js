@@ -19,6 +19,11 @@ const invite = {
   password: "password"
 };
 
+const reset = {
+  code: "resetme",
+  password: "newpassword"
+};
+
 describe("Reducer", () => {
   const reducer = auth.default;
   it("initial state", () => {
@@ -129,6 +134,39 @@ describe("Reducer", () => {
       error: ""
     });
   });
+
+  it("reset password", () => {
+    expect(
+      reducer(undefined, {
+        type: actionTypes.RESET_PASSWORD.REQUEST
+      })
+    ).toEqual({
+      me: null,
+      isLoading: true,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.RESET_PASSWORD.SUCCESS
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: null
+    });
+
+    expect(
+      reducer(undefined, {
+        type: actionTypes.RESET_PASSWORD.FAILURE,
+        error: ""
+      })
+    ).toEqual({
+      me: null,
+      isLoading: false,
+      error: ""
+    });
+  });
 });
 
 describe("Action Creators", () => {
@@ -190,12 +228,10 @@ describe("Action Creators", () => {
   });
 
   it("redeem invite success", () => {
-    const me = {};
     const expectedAction = {
-      type: actionTypes.REDEEM_INVITE.SUCCESS,
-      me: {}
+      type: actionTypes.REDEEM_INVITE.SUCCESS
     };
-    expect(actionCreators.redeemInvite.success(me)).toEqual(expectedAction);
+    expect(actionCreators.redeemInvite.success()).toEqual(expectedAction);
   });
 
   it("redeem invite failure", () => {
@@ -205,6 +241,29 @@ describe("Action Creators", () => {
       error: ""
     };
     expect(actionCreators.redeemInvite.failure(error)).toEqual(expectedAction);
+  });
+
+  it("reset password request", () => {
+    const expectedAction = {
+      type: actionTypes.RESET_PASSWORD.REQUEST
+    };
+    expect(actionCreators.resetPassword.request()).toEqual(expectedAction);
+  });
+
+  it("reset password success", () => {
+    const expectedAction = {
+      type: actionTypes.RESET_PASSWORD.SUCCESS
+    };
+    expect(actionCreators.resetPassword.success()).toEqual(expectedAction);
+  });
+
+  it("reset password failure", () => {
+    const error = "";
+    const expectedAction = {
+      type: actionTypes.RESET_PASSWORD.FAILURE,
+      error: ""
+    };
+    expect(actionCreators.resetPassword.failure(error)).toEqual(expectedAction);
   });
 });
 
@@ -312,6 +371,34 @@ describe("Side Effects", () => {
 
     return store
       .dispatch(auth.redeemInvite("wrongcode", invite.password))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("reset password", () => {
+    const expectedActions = [
+      { type: actionTypes.RESET_PASSWORD.REQUEST },
+      { type: actionTypes.RESET_PASSWORD.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.resetPassword(reset.code, reset.password))
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("reset password failure", () => {
+    const expectedActions = [
+      { type: actionTypes.RESET_PASSWORD.REQUEST },
+      { type: actionTypes.RESET_PASSWORD.FAILURE }
+    ];
+    const store = mockStore({});
+
+    return store
+      .dispatch(auth.resetPassword("wrongcode", reset.password))
       .then(() => {
         expect(store.getActions()).toEqual(expectedActions);
       });

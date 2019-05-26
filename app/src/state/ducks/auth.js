@@ -51,6 +51,15 @@ export default createReducer(initialState, {
   },
   [actionTypes.REDEEM_INVITE.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.RESET_PASSWORD.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.RESET_PASSWORD.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.RESET_PASSWORD.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
   }
 });
 
@@ -68,8 +77,13 @@ export const actionCreators = {
   },
   redeemInvite: {
     request: () => action(actionTypes.REDEEM_INVITE.REQUEST),
-    success: me => action(actionTypes.REDEEM_INVITE.SUCCESS, { me }),
+    success: () => action(actionTypes.REDEEM_INVITE.SUCCESS),
     failure: error => action(actionTypes.REDEEM_INVITE.FAILURE, { error })
+  },
+  resetPassword: {
+    request: () => action(actionTypes.RESET_PASSWORD.REQUEST),
+    success: () => action(actionTypes.RESET_PASSWORD.SUCCESS),
+    failure: error => action(actionTypes.RESET_PASSWORD.FAILURE, { error })
   }
 };
 
@@ -121,6 +135,20 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
         : dispatch(actionCreators.redeemInvite.failure());
     } catch (error) {
       dispatch(actionCreators.redeemInvite.failure(error));
+    }
+  };
+}
+
+export function resetPassword(invitationCode, password) {
+  return async dispatch => {
+    dispatch(actionCreators.resetPassword.request());
+    try {
+      const { status } = await api.resetPassword(invitationCode, password);
+      status === 204
+        ? dispatch(actionCreators.resetPassword.success())
+        : dispatch(actionCreators.resetPassword.failure());
+    } catch (error) {
+      dispatch(actionCreators.resetPassword.failure(error));
     }
   };
 }
