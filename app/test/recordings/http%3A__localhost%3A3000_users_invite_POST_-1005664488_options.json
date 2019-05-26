@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/users/invite","status":201,"statusText":"Created","ok":true,"headers":{"x-powered-by":["Express"],"content-type":["application/json; charset=utf-8"],"content-length":["2"],"etag":["W/\"2-vyGp6PvFo4RvsFtPoIWeCReyIC8\""],"date":["Sun, 26 May 2019 18:00:31 GMT"],"connection":["close"]}}
