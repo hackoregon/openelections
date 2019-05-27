@@ -1,7 +1,9 @@
+import { getConnection } from 'typeorm';
 import { createUserAsync } from '../../services/userService';
 import { newCampaignAsync, newGovernmentAsync, truncateAll } from '../../test/factories';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../entity/Permission';
+import { User, UserStatus } from '../../models/entity/User';
 
 export default async () => {
     if (process.env.NODE_ENV === 'production') {
@@ -38,6 +40,16 @@ export default async () => {
         lastName: 'Staff'
     });
 
+    const userRepository = getConnection('default').getRepository('User');
+    let campaignStaffReset = new User();
+    campaignStaffReset.email = 'campaignStaff+2@openelectionsportland.org';
+    campaignStaffReset.firstName = 'Campaign';
+    campaignStaffReset.lastName = 'Staff';
+    campaignStaffReset.userStatus = UserStatus.ACTIVE;
+    campaignStaffReset.setPassword('password');
+    campaignStaffReset.invitationCode = 'resetme';
+    campaignStaffReset = await userRepository.save(campaignStaffReset);
+
     const government = await newGovernmentAsync('City of Portland');
     const campaign = await newCampaignAsync(government);
     await newCampaignAsync(government);
@@ -64,6 +76,12 @@ export default async () => {
 
     await addPermissionAsync({
         userId: campaignStaffInvited.id,
+        role: UserRole.CAMPAIGN_STAFF,
+        campaignId: campaign.id
+    });
+
+    await addPermissionAsync({
+        userId: campaignStaffReset.id,
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
     });
