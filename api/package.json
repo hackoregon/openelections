@@ -33,6 +33,8 @@
     "pg-hstore": "^2.3.2",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.0",
+    "swagger-jsdoc": "^3.2.9",
+    "swagger-ui-express": "^4.0.4",
     "typeorm": "^0.2.16",
     "typescript": "^3.3.3333"
   },
