@@ -1,17 +1,17 @@
-import UserSeed from './users'
-import db from "../db";
+import UserSeed from './users';
+import db from '../db';
+import { truncateAll } from '../../test/factories';
 
 (async () => {
-    if (process.env.NODE_ENV !== 'development') {
-        console.log('Can only seed in development mode');
-        return
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Can only seed in test, qa, or development mode');
+        return;
     }
     await db();
+    await truncateAll();
     const promises = [];
     promises.push(UserSeed());
     await Promise.all(promises);
     console.log('Database seeded');
-    process.exit()
+    process.exit();
 })();
-
-

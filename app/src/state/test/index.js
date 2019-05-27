@@ -1,23 +1,22 @@
-import * as type from './actions';
-
+import * as type from "./actions";
 
 export const INITIAL_STATE = {
-  text: 'initial text',
+  text: "initial text",
   isLoading: true,
   error: null
-}
+};
 
 const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case type.VARIABLE_HERE:
-      console.log('reducering. . .', {action})
+      console.log("reducering. . .", { action });
       return {
         ...state,
         text: action.payload
-      }
+      };
     default:
       return state;
   }
-}
+};
 
 export default reducer;

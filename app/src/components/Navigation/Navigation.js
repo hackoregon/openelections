@@ -1,15 +1,27 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from "react";
+import { NavLink } from "react-router-dom";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 
-const Navigation = (props) => {
+const styles = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 2;
+  a {
+    margin: 0 15px;
+  }
+`;
 
+const Navigation = props => {
   return (
-    <nav>
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/dashboard">Dashboard</NavLink>
-      <NavLink to="/contributions">Contributions</NavLink>
+    <nav css={styles}>
+      <NavLink to="/about">About</NavLink>
+      <NavLink to="/sandbox">Sandbox</NavLink>
+      <NavLink to="/portal">Portal</NavLink>
     </nav>
-    )
-}
+  );
+};
 
 export default Navigation;

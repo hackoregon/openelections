@@ -3,8 +3,13 @@ import { getConnection } from 'typeorm';
 import { Campaign } from '../../models/entity/Campaign';
 import { Government } from '../../models/entity/Government';
 import { User } from '../../models/entity/User';
-import { Permission, UserRole } from '../../models/entity/Permission';
-import { createUserAsync } from '../../services/userService';
+import {
+    getPermissionsByCampaignIdAsync,
+    getPermissionsByGovernmentIdAsync,
+    Permission,
+    UserRole
+} from '../../models/entity/Permission';
+import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
 
 
 let permissionRepository: any;
@@ -13,32 +18,25 @@ let governmentRepository: any;
 let userRepository: any;
 let government: Government;
 let campaign: Campaign;
+let campaign2: Campaign;
 let user: User;
+let user2: User;
 
 describe('Permission', () => {
-    before(async () => {
-        user = await createUserAsync({firstName: 'Dan', lastName: 'Melton', password: 'password', email: 'dan@civicsoftwarefoundation.org'});
+    beforeEach(async () => {
+        user = await newActiveUserAsync();
+        user2 = await newActiveUserAsync();
         campaignRepository = getConnection('default').getRepository('Campaign');
         governmentRepository = getConnection('default').getRepository('Government');
         permissionRepository = getConnection('default').getRepository('Permission');
         userRepository = getConnection('default').getRepository('User');
-        government = new Government();
-        government.name = 'City of Portland';
-        await governmentRepository.save(government);
-        campaign = new Campaign();
-        campaign.name = 'Melton for Mayor';
-        campaign.government = government;
-        await campaignRepository.save(campaign);
+        government = await newGovernmentAsync();
+        campaign = await newCampaignAsync(government);
+        campaign2 = await newCampaignAsync(government);
     });
 
     afterEach(async () => {
-        await permissionRepository.query('TRUNCATE "permission" CASCADE');
-    });
-
-    after(async () => {
-        await governmentRepository.query('TRUNCATE "government" CASCADE');
-        await campaignRepository.query('TRUNCATE "campaign" CASCADE');
-        await userRepository.query('TRUNCATE "user" CASCADE');
+        await truncateAll();
     });
 
     context('Validations', () => {
@@ -161,6 +159,88 @@ describe('Permission', () => {
             expect(await permissionRepository.count()).equal(0);
             await permissionRepository.save(permission);
             expect(await permissionRepository.count()).equal(1);
+        });
+    });
+
+    context('getPermissions', () => {
+        context('getPermissionsByCampaignIdAsync', () => {
+            it('returns [] no campaignId found', async () => {
+                const permission = new Permission();
+                permission.role = UserRole.CAMPAIGN_STAFF;
+                permission.user = user;
+                permission.government = government;
+                permission.campaign = campaign;
+                await permissionRepository.save(permission);
+                expect(await permissionRepository.count()).equal(1);
+                const userPermissions = await getPermissionsByCampaignIdAsync(10);
+                expect(userPermissions.length).to.equal(0);
+            });
+
+            it('returns [UserPermission] for campaign', async () => {
+                const permission = new Permission();
+                permission.role = UserRole.CAMPAIGN_STAFF;
+                permission.user = user;
+                permission.government = government;
+                permission.campaign = campaign;
+                await permissionRepository.save(permission);
+                const permission2 = new Permission();
+                permission2.role = UserRole.CAMPAIGN_ADMIN;
+                permission2.user = user2;
+                permission2.government = government;
+                permission2.campaign = campaign2;
+                await permissionRepository.save(permission);
+                expect(await permissionRepository.count()).equal(1);
+                const userPermissions = await getPermissionsByCampaignIdAsync(campaign.id);
+                expect(userPermissions.length).to.equal(1);
+                expect(Object.keys(userPermissions[0])).to.deep.equal(['id', 'role', 'user', 'campaign', 'government']);
+                expect(Object.keys(userPermissions[0].user)).to.deep.equal(['id', 'firstName', 'lastName', 'email', 'userStatus']);
+                expect(Object.keys(userPermissions[0].campaign)).to.deep.equal(['id', 'name']);
+                expect(Object.keys(userPermissions[0].government)).to.deep.equal(['id', 'name']);
+            });
+        });
+
+        context('getPermissionsByGovernmentIdAsync', () => {
+            it('returns [] no governmentId found', async () => {
+                const permission = new Permission();
+                permission.role = UserRole.CAMPAIGN_STAFF;
+                permission.user = user;
+                permission.government = government;
+                permission.campaign = campaign;
+                await permissionRepository.save(permission);
+                const permission2 = new Permission();
+                permission2.role = UserRole.GOVERNMENT_ADMIN;
+                permission2.user = user;
+                permission2.government = government;
+                await permissionRepository.save(permission2);
+                expect(await permissionRepository.count()).equal(2);
+                const userPermissions = await getPermissionsByGovernmentIdAsync(10);
+                expect(userPermissions.length).to.equal(0);
+            });
+
+            it('returns 2 [UserPermission] for government', async () => {
+                const permission = new Permission();
+                permission.role = UserRole.CAMPAIGN_STAFF;
+                permission.user = user;
+                permission.government = government;
+                permission.campaign = campaign;
+                await permissionRepository.save(permission);
+                const permission2 = new Permission();
+                permission2.role = UserRole.GOVERNMENT_ADMIN;
+                permission2.user = user2;
+                permission2.government = government;
+                await permissionRepository.save(permission2);
+                expect(await permissionRepository.count()).equal(2);
+                const userPermissions = await getPermissionsByGovernmentIdAsync(government.id);
+                expect(userPermissions.length).to.equal(2);
+                expect(Object.keys(userPermissions[0])).to.deep.equal(['id', 'role', 'user', 'government', 'campaign']);
+                expect(Object.keys(userPermissions[0].campaign)).to.deep.equal(['id', 'name']);
+                expect(Object.keys(userPermissions[0].user)).to.deep.equal(['id', 'firstName', 'lastName', 'email', 'userStatus']);
+                expect(Object.keys(userPermissions[0].government)).to.deep.equal(['id', 'name']);
+
+                expect(Object.keys(userPermissions[1])).to.deep.equal(['id', 'role', 'user', 'government']);
+                expect(Object.keys(userPermissions[1].user)).to.deep.equal(['id', 'firstName', 'lastName', 'email', 'userStatus']);
+                expect(Object.keys(userPermissions[1].government)).to.deep.equal(['id', 'name']);
+            });
         });
     });
 });
