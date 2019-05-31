@@ -12,6 +12,7 @@ import { Government } from './Government';
 import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Activity } from './Activity';
+import { Contribution } from './Contribution';
 
 @Entity()
 export class Campaign {
@@ -32,6 +33,9 @@ export class Campaign {
 
     @OneToMany(type => Permission, permission => permission.campaign)
     permissions: Permission[];
+
+    @OneToMany(type => Contribution, contribution => contribution.government)
+    contributions: Contribution[];
 
     public errors: ValidationError[];
 
