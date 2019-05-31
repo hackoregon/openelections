@@ -5,13 +5,14 @@ import {
     ManyToOne,
     BeforeInsert,
     BeforeUpdate,
-    CreateDateColumn, getConnection
+    CreateDateColumn, getConnection, OneToMany
 } from 'typeorm';
 import { Government, IGovernmentSummary } from './Government';
 import { Campaign, ICampaignSummary } from './Campaign';
 import { IUserSummary, User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { IUserPermission, IUserPermissionResult } from './Permission';
+import { Contribution } from './Contribution';
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -50,6 +51,9 @@ export class Activity {
 
     @ManyToOne(type => User, user => user.activities, {eager: true})
     user: User;
+
+    @ManyToOne(type => Contribution, contribution => contribution.activities, { eager: true })
+    contribution: Contribution;
 
     public errors: ValidationError[];
 
