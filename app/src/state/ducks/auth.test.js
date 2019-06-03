@@ -2,10 +2,11 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as auth from "./auth";
 import * as api from "../../api";
+import * as schema from "../../api/schema";
 
 const { actionTypes, actionCreators } = auth;
 
-const middlewares = [thunk];
+const middlewares = [thunk.withExtraArgument({ api, schema })];
 const mockStore = configureMockStore(middlewares);
 
 const govAdmin = {

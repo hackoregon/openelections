@@ -3,9 +3,6 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 
-// Services
-import * as api from "../../api";
-
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -123,7 +120,7 @@ export const actionCreators = {
 
 // Side Effects, e.g. thunks
 export function me() {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
@@ -135,7 +132,7 @@ export function me() {
 }
 
 export function login(email, password) {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.login.request());
     try {
       const response = await api.login(email, password);
@@ -155,7 +152,7 @@ export function login(email, password) {
 }
 
 export function redeemInvite(invitationCode, password, firstName, lastName) {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
     try {
       const { status } = await api.redeemInvite(
@@ -174,7 +171,7 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
 }
 
 export function resetPassword(invitationCode, password) {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.resetPassword.request());
     try {
       const { status } = await api.resetPassword(invitationCode, password);
@@ -188,7 +185,7 @@ export function resetPassword(invitationCode, password) {
 }
 
 export function sendPasswordResetEmail(email) {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.sendPasswordResetEmail.request());
     try {
       const { status } = await api.sendPasswordResetEmail(email);
@@ -202,7 +199,7 @@ export function sendPasswordResetEmail(email) {
 }
 
 export function updatePassword(password, newPassword) {
-  return async dispatch => {
+  return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.updatePassword.request());
     try {
       const { status } = await api.updatePassword(password, newPassword);
