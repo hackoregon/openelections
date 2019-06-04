@@ -1,0 +1,142 @@
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import * as campaigns from "./campaigns";
+import * as api from "../../api";
+import * as schema from "../../api/schema";
+import { UserRoleEnum } from "../../api";
+import { ADD_ENTITIES } from "./common";
+
+const { actionTypes, actionCreators } = campaigns;
+
+const middlewares = [thunk.withExtraArgument({ api, schema })];
+const mockStore = configureMockStore(middlewares);
+
+const govAdmin = {
+  email: "govadmin@openelectionsportland.org",
+  password: "password"
+};
+
+const invite = {
+  code: "inviteme",
+  email: "campaignStaff+1@openelectionsportland.org",
+  password: "password"
+};
+
+const reset = {
+  code: "resetme",
+  password: "newpassword"
+};
+
+describe("Reducer", () => {
+  const reducer = campaigns.default;
+  it("initial state", () => {
+    expect(reducer(undefined, {})).toEqual({
+      isLoading: false,
+      error: null
+    });
+  });
+
+  it("adds campaign entities", () => {
+    expect(
+      reducer(undefined, {
+        type: ADD_ENTITIES,
+        payload: {
+          campaigns: {
+            "1": {}
+          }
+        }
+      })
+    ).toEqual({
+      "1": {},
+      isLoading: false,
+      error: null
+    });
+  });
+});
+
+describe("Action Creators", () => {
+  it("create campaign request", () => {
+    const expectedAction = {
+      type: actionTypes.CREATE_CAMPAIGN.REQUEST
+    };
+    expect(actionCreators.createCampaign.request()).toEqual(expectedAction);
+  });
+  it("create campaign success", () => {
+    const expectedAction = {
+      type: actionTypes.CREATE_CAMPAIGN.SUCCESS
+    };
+    expect(actionCreators.createCampaign.success()).toEqual(expectedAction);
+  });
+  it("create campaign failure", () => {
+    const expectedAction = {
+      type: actionTypes.CREATE_CAMPAIGN.FAILURE
+    };
+    expect(actionCreators.createCampaign.failure()).toEqual(expectedAction);
+  });
+});
+
+let govAdminToken;
+let campaignAdminToken;
+let campaignStaffToken;
+let governmentId;
+let campaignId;
+describe("Side Effects", () => {
+  beforeAll(async () => {
+    let tokenResponse = await api.login(
+      "govadmin@openelectionsportland.org",
+      "password"
+    );
+    govAdminToken = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+    let decodedToken = api.decodeToken(govAdminToken);
+    governmentId = decodedToken.permissions[0]["id"];
+
+    tokenResponse = await api.login(
+      "campaignadmin@openelectionsportland.org",
+      "password"
+    );
+    campaignAdminToken = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+    decodedToken = api.decodeToken(campaignAdminToken);
+    campaignId = decodedToken.permissions[0]["id"];
+
+    tokenResponse = await api.login(
+      "campaignstaff@openelectionsportland.org",
+      "password"
+    );
+    campaignStaffToken = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+  });
+
+  beforeEach(() => {
+    delete process.env.TOKEN;
+  });
+
+  it("creates campaign for government", async () => {
+    const expectedActions = [
+      { type: actionTypes.CREATE_CAMPAIGN.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.CREATE_CAMPAIGN.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = govAdminToken;
+
+    return store
+      .dispatch(
+        campaigns.createCampaignForGovernment(
+          governmentId,
+          "Test New Gov Campaign"
+        )
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
+});

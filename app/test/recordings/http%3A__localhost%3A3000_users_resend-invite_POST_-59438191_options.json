@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/users/resend-invite","status":422,"statusText":"Unprocessable Entity","ok":false,"headers":{"x-powered-by":["Express"],"content-type":["application/json; charset=utf-8"],"content-length":["74"],"etag":["W/\"4a-hz+b9GkwsChF808zdubzrk0VfeU\""],"date":["Sun, 02 Jun 2019 18:50:03 GMT"],"connection":["close"]}}
