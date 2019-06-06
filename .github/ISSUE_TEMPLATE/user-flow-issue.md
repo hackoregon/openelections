@@ -1,5 +1,5 @@
 ---
-name: Feature Request 🚀
+name: User Flow
 about: Suggest an idea for CIVIC
 title: ""
 labels: ""
