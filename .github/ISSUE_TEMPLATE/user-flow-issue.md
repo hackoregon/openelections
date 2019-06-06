@@ -1,6 +1,6 @@
 ---
 name: User Flow
-about: Suggest an idea for CIVIC
+about: Describe a user flow so that a developer can build it
 title: ""
 labels: ""
 ---
