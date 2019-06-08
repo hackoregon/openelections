@@ -20,45 +20,43 @@ export enum ContributionType {
 }
 
 export enum ContributionSubType {
-CASH= 'cash',
-INKIND_CONTRIBUTION= 'inkind_contribution',
-INKIND_PAID_SUPERVISION= 'inkind_paid_supervision',
-INKIND_FORGIVEN_ACCOUNT= 'inkind_forgiven_account',
-INKIND_FORGIVEN_PERSONAL= 'inkind_forgiven_personal',
-ITEM_SOLD_FAIR_MARKET= 'item_sold_fair_market',
-ITEM_RETURNED_CHECK= 'item_returned_check',
-ITEM_MISC= 'item_misc',
-ITEM_REFUND= 'item_refund'
+    CASH = 'cash',
+    INKIND_CONTRIBUTION = 'inkind_contribution',
+    INKIND_PAID_SUPERVISION = 'inkind_paid_supervision',
+    INKIND_FORGIVEN_ACCOUNT = 'inkind_forgiven_account',
+    INKIND_FORGIVEN_PERSONAL = 'inkind_forgiven_personal',
+    ITEM_SOLD_FAIR_MARKET = 'item_sold_fair_market',
+    ITEM_RETURNED_CHECK = 'item_returned_check',
+    ITEM_MISC = 'item_misc',
+    ITEM_REFUND = 'item_refund'
 }
 
 export enum ContributorType {
-INDIVIDUAL= 'individual',
-BUSINESS= 'business',
-FAMILY= 'family',
-LABOR= 'labor',
-POLITICAL_COMMITTEE= 'political_committee',
-POLITICAL_PARTY= 'political_party',
-UNREGISTERED= 'unregistered',
-OTHER= 'other'
+    INDIVIDUAL = 'individual',
+    BUSINESS = 'business',
+    FAMILY = 'family',
+    LABOR = 'labor',
+    POLITICAL_COMMITTEE = 'political_committee',
+    POLITICAL_PARTY = 'political_party',
+    UNREGISTERED = 'unregistered',
+    OTHER = 'other'
 }
 
 export enum PhoneType {
-MOBILE= 'Mobile',
-WORK= 'Work',
-HOME= 'Home'
+    MOBILE = 'Mobile',
+    WORK = 'Work',
+    HOME = 'Home'
 }
-
 
 export enum ContributionStatus {
-ARCHIVED= 'Archived',
-DRAFT= 'Draft',
-SUBMITTED= 'Submitted',
-PROCESSED= 'Processed'
+    ARCHIVED = 'Archived',
+    DRAFT = 'Draft',
+    SUBMITTED = 'Submitted',
+    PROCESSED = 'Processed'
 }
 
-@Entity({name: 'contributions'})
+@Entity({ name: 'contributions' })
 export class Contribution {
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -92,33 +90,33 @@ export class Contribution {
     @IsDefined()
     contributorType: ContributorType;
 
-    @Column()
-    contrPrefix: string;
+    @Column({ nullable: true })
+    contrPrefix?: string;
 
-    @Column()
-    contrFirst: string;
+    @Column({ nullable: true })
+    contrFirst?: string;
 
-    @Column()
-    contrMiddleInitial: string;
+    @Column({ nullable: true })
+    contrMiddleInitial?: string;
 
-    @Column()
-    contrLast: string;
+    @Column({ nullable: true })
+    contrLast?: string;
 
-    @Column()
-    contrSuffix: string;
+    @Column({ nullable: true })
+    contrSuffix?: string;
 
-    @Column()
-    contrTitle: string;
+    @Column({ nullable: true })
+    contrTitle?: string;
 
-    @Column()
-    contrName: string;
+    @Column({ nullable: true })
+    contrName?: string;
 
     @IsDefined()
     @Column()
     address1: string;
 
-    @Column()
-    address2: string;
+    @Column({ nullable: true })
+    address2?: string;
 
     @IsDefined()
     @Column()
@@ -132,53 +130,54 @@ export class Contribution {
     @Column()
     zip: string;
 
-    @Column()
-    county: string;
+    @Column({ nullable: true })
+    county?: string;
 
-    @Column()
-    email: string;
+    @Column({ nullable: true })
+    email?: string;
 
-    @Column()
-    phone: string;
+    @Column({ nullable: true })
+    phone?: string;
 
     @Column({
         type: 'enum',
-        enum: PhoneType
+        enum: PhoneType,
+        nullable: true
     })
-    phoneType: PhoneType;
+    phoneType?: PhoneType;
 
-    @Column()
-    checkNumber: string;
+    @Column({ nullable: true })
+    checkNumber?: string;
 
     @Column()
     amount: number;
 
-    @Column()
-    calendarYearAggregate: number;
+    @Column({ nullable: true })
+    calendarYearAggregate?: number;
 
-    @Column()
-    inKindDescription: string;
+    @Column({ nullable: true })
+    inKindDescription?: string;
 
-    @Column()
-    occupation: string;
+    @Column({ nullable: true })
+    occupation?: string;
 
-    @Column()
-    employerName: string;
+    @Column({ nullable: true })
+    employerName?: string;
 
-    @Column()
-    employerCity: string;
+    @Column({ nullable: true })
+    employerCity?: string;
 
-    @Column()
-    employerState: string;
+    @Column({ nullable: true })
+    employerState?: string;
 
-    @Column()
-    submitForMatch: boolean;
+    @Column({ nullable: true })
+    submitForMatch?: boolean;
 
-    @Column()
-    compliant: boolean;
+    @Column({ nullable: true })
+    compliant?: boolean;
 
-    @Column()
-    matchAmount: number;
+    @Column({ nullable: true })
+    matchAmount?: number;
 
     @Column({
         type: 'enum',
@@ -230,7 +229,7 @@ export class Contribution {
         if (!g) {
             const error = new ValidationError();
             error.property = 'governmentId';
-            error.constraints = {isDefined: 'governmentId should not be null or undefined'};
+            error.constraints = { isDefined: 'governmentId should not be null or undefined' };
             this.errors.push(error);
         }
     }
@@ -240,7 +239,7 @@ export class Contribution {
         if (!c) {
             const error = new ValidationError();
             error.property = 'campaignId';
-            error.constraints = {isDefined: 'campaignId should not be null or undefined'};
+            error.constraints = { isDefined: 'campaignId should not be null or undefined' };
             this.errors.push(error);
         }
     }
@@ -250,14 +249,14 @@ export class Contribution {
             if (this.subType !== ContributionSubType.CASH) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = {notAllowed: 'Type "contribution" must have a subType of "cash"'};
+                error.constraints = { notAllowed: 'Type "contribution" must have a subType of "cash"' };
                 this.errors.push(error);
             }
         } else {
             if (this.subType === ContributionSubType.CASH) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = {notAllowed: 'Type "other" cannot have a subType of "cash"'};
+                error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash"' };
                 this.errors.push(error);
             }
         }
@@ -268,36 +267,36 @@ export class Contribution {
             if (!this.contrLast || this.contrLast.trim() === '') {
                 const error = new ValidationError();
                 error.property = 'contrLast';
-                error.constraints = {isDefined: 'contrLast should not be null or undefined'};
+                error.constraints = { isDefined: 'contrLast should not be null or undefined' };
                 this.errors.push(error);
             }
 
             if (!this.contrFirst || this.contrFirst.trim() === '') {
                 const error = new ValidationError();
                 error.property = 'contrFirst';
-                error.constraints = {isDefined: 'contrFirst should not be null or undefined'};
+                error.constraints = { isDefined: 'contrFirst should not be null or undefined' };
                 this.errors.push(error);
             }
         } else {
             if (!this.contrName || this.contrName.trim() === '') {
                 const error = new ValidationError();
                 error.property = 'contrName';
-                error.constraints = {isDefined: 'contrName should not be null or undefined'};
+                error.constraints = { isDefined: 'contrName should not be null or undefined' };
                 this.errors.push(error);
             }
         }
     }
 
     validateSubmitForMatch() {
-        if (this.submitForMatch && this.subType !== ContributionSubType.CASH ) {
+        if (this.submitForMatch && this.subType !== ContributionSubType.CASH) {
             const error = new ValidationError();
             error.property = 'submitForMatch';
-            error.constraints = {notAllowed: 'Cannot submit non-cash contribution for match'};
+            error.constraints = { notAllowed: 'Cannot submit non-cash contribution for match' };
             this.errors.push(error);
         } else if (this.submitForMatch && this.contributorType !== ContributorType.INDIVIDUAL) {
             const error = new ValidationError();
             error.property = 'contributorType';
-            error.constraints = {notAllowed: 'Only individual cash contributions can be submitted for match'};
+            error.constraints = { notAllowed: 'Only individual cash contributions can be submitted for match' };
             this.errors.push(error);
         } else {
             this.validateAmount();
@@ -305,26 +304,26 @@ export class Contribution {
     }
 
     validateAmount() {
-        if (this.submitForMatch && ( !this.amount || this.amount === 0)) {
+        if (this.submitForMatch && (!this.amount || this.amount === 0)) {
             const error = new ValidationError();
             error.property = 'amount';
-            error.constraints = {notAllowed: 'Cannot submit 0 amount for match'};
+            error.constraints = { notAllowed: 'Cannot submit 0 amount for match' };
             this.errors.push(error);
         }
     }
 
     validateMatchAmount() {
-        if ((this.submitForMatch && this.matchAmount) && this.matchAmount > this.amount) {
+        if (this.submitForMatch && this.matchAmount && this.matchAmount > this.amount) {
             const error = new ValidationError();
             error.property = 'matchAmount';
-            error.constraints = {notAllowed: 'Cannot match more than contributed amount'};
+            error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
             this.errors.push(error);
         }
     }
 
     toJSON() {
         return {
-            id: this.id,
+            id: this.id
         };
     }
 }
