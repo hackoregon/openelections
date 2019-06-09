@@ -4,7 +4,9 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType
+    ContributorType,
+    IContributionSummary,
+    getContributionsByGovernmentIdAsync
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -86,6 +88,46 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             throw new Error('Contribution is missing one or more required properties.');
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IGetContributionOptions {
+    currentUserId?: number;
+    campaignId?: number;
+    perPage?: number;
+    page?: number;
+    status?: string;
+    from?: string;
+    to?: string;
+}
+
+export interface IGetContributionAttrs extends IGetContributionOptions {
+    governmentId: number;
+}
+
+export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummary[]> {
+    try {
+        const { governmentId, ...options } = contributionAttrs;
+        if (options.campaignId) {
+            const hasCampaignPermissions =
+                (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
+                (await isCampaignStaffAsync(options.currentUserId, options.campaignId));
+            if (hasCampaignPermissions) {
+                return getContributionsByGovernmentIdAsync(governmentId, {
+                    ...options,
+                    page: options.page || 0,
+                    perPage: options.perPage || 100
+                });
+            }
+            throw new Error('User is not permitted to get contributions for this campaign.');
+        }
+        return getContributionsByGovernmentIdAsync(governmentId, {
+            ...options,
+            page: options.page || 0,
+            perPage: options.perPage || 100
+        });
     } catch (e) {
         throw new Error(e.message);
     }
