@@ -7,12 +7,15 @@ import {
     BeforeUpdate,
     OneToMany,
     CreateDateColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
+    getConnection,
+    Between
 } from 'typeorm';
+import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
-import { IsDefined, validate, ValidationError } from 'class-validator';
+import { IGetContributionOptions } from '../../services/contributionService';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -325,5 +328,34 @@ export class Contribution {
         return {
             id: this.id
         };
+    }
+}
+
+const contributionSummaryFields = ['id', 'amount'] as const;
+export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+
+export async function getContributionsByGovernmentIdAsync(
+    governmentId: number,
+    options?: IGetContributionOptions
+): Promise<IContributionSummary[]> {
+    try {
+        const contributionRepository = getConnection('default').getRepository('Contribution');
+        const relations = options.campaignId ? ['government', 'campaign'] : ['government'];
+        const query = {
+            select: contributionSummaryFields,
+            relations,
+            where: {
+                governmentId,
+                campaignId: options.campaignId,
+                createdAt: Between(options.from, options.to),
+                status: options.status
+            },
+            skip: options.page,
+            take: options.perPage
+        };
+
+        return (await contributionRepository.find(query)) as IContributionSummary[];
+    } catch (err) {
+        throw new Error('Error executing get contributions query');
     }
 }
