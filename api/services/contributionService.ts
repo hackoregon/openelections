@@ -10,7 +10,7 @@ import {
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
-import { isCampaignAdminAsync, isCampaignStaffAsync } from './permissionService';
+import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -113,7 +113,8 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         if (options.campaignId) {
             const hasCampaignPermissions =
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
-                (await isCampaignStaffAsync(options.currentUserId, options.campaignId));
+                (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
+                (await isGovernmentAdminAsync(options.currentUserId, governmentId));
             if (hasCampaignPermissions) {
                 return getContributionsByGovernmentIdAsync(governmentId, {
                     ...options,
