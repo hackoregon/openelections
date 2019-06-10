@@ -1,8 +1,8 @@
 // auth.js
+import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
-
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -211,3 +211,14 @@ export function updatePassword(password, newPassword) {
     }
   };
 }
+
+// Selectors
+export const authState = state => state.auth || {};
+export const getMe = createSelector(
+  authState,
+  state => state.auth.me
+);
+
+export const isLoggedIn = state => {
+  return getMe(state.auth) !== null ? true : false;
+};
