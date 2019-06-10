@@ -18,6 +18,7 @@ const ChangePasswordOldPasswordField = props => (
     }
     value={props.formik.values.confirmNewPassword}
     onChange={props.formik.handleChange}
+    onBlur={props.formik.handleBlur}
     fullWidth
   />
 );

@@ -20,6 +20,9 @@ const formTitle = css`
   letter-spacing: -2px;
   margin: 10px 0px;
 `;
+const buttonWrapper = css`
+  margintop: 30px;
+`;
 
 class ChangePassword extends Component {
   render() {
@@ -33,11 +36,32 @@ class ChangePassword extends Component {
             confirmNewPassword: ""
           }}
         >
-          {({ form, isDirty, isSubmitting }) => (
+          {({ form, /* isDirty, isSubmitting */ }) => (
             <div css={formModalWrapper}>
               <Paper elevation={1} css={paper}>
                 <p css={formTitle}>Change Password</p>
                 {form}
+                <div
+                  css={buttonWrapper}
+                >
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={formikProps.handleReset}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={!formikProps.isValid}
+                    onClick={formikProps.handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                </div>
               </Paper>
             </div>
           )}
