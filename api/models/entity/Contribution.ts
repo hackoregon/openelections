@@ -9,7 +9,9 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     getConnection,
-    Between
+    Between,
+    LessThanOrEqual,
+    MoreThanOrEqual
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
@@ -331,7 +333,7 @@ export class Contribution {
     }
 }
 
-const contributionSummaryFields = ['id', 'amount'] as const;
+const contributionSummaryFields = <const>['id', 'amount'];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
 export async function getContributionsByGovernmentIdAsync(
@@ -340,22 +342,38 @@ export async function getContributionsByGovernmentIdAsync(
 ): Promise<IContributionSummary[]> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
-        const relations = options.campaignId ? ['government', 'campaign'] : ['government'];
+        const { page, perPage, campaignId, status, from, to } = options;
+        const relations = campaignId ? ['government', 'campaign'] : ['government'];
         const query = {
             select: contributionSummaryFields,
             relations,
             where: {
-                governmentId,
-                campaignId: options.campaignId,
-                createdAt: Between(options.from, options.to),
-                status: options.status
+                government: {
+                    id: governmentId
+                },
+                campaign: campaignId
+                    ? {
+                          id: campaignId
+                      }
+                    : undefined,
+                status,
+                createdAt:
+                    from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             },
-            skip: options.page,
-            take: options.perPage
+            skip: page,
+            take: perPage
         };
-
-        return (await contributionRepository.find(query)) as IContributionSummary[];
+        const contributions = await contributionRepository.find(removeUndefined(query));
+        return contributions as IContributionSummary[];
     } catch (err) {
         throw new Error('Error executing get contributions query');
     }
 }
+
+const removeUndefined = obj => {
+    Object.keys(obj).forEach(key => {
+        if (obj[key] && typeof obj[key] === 'object') removeUndefined(obj[key]);
+        else if (obj[key] === undefined) delete obj[key];
+    });
+    return obj;
+};
