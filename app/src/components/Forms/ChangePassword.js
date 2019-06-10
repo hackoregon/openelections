@@ -1,101 +1,114 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import { Formik } from "formik";
+import * as Yup from "yup";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 
-export const ChangePasswordForm = props => {
-  const {
-    values: { oldPassword, newPassword, confirmNewPassword },
-    formValues,
-    handleStateChange,
-    errors,
-    touched,
-    handleSubmit,
-    handleChange,
-    isValid,
-    initialValues,
-    setFieldTouched,
-    handleBlur,
-    resetForm,
-    clearState
-    // handleReset
-  } = props;
+import ChangePasswordOldPasswordField from "./ChangePasswordOldPasswordField";
+import ChangePasswordNewPasswordField from "./ChangePasswordNewPasswordField";
+import ChangePasswordConfirmNewPasswordField from "./ChangePasswordConfirmNewPasswordField";
 
-  const change = (name, e) => {
-    e.persist();
-    handleStateChange(name, e);
-    handleChange(e);
-    console.log(errors);
-    setFieldTouched(name, true, false);
+const validationSchema = Yup.object({
+  oldPassword: Yup.string("What was you old password").required(
+    "What was your old password"
+  ),
+  newPassword: Yup.string("Choose a new password").required(
+    "Password is required"
+  ),
+  confirmNewPassword: Yup.string(
+    "Choose a new password that matches the other one"
+  )
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+    .required("Password confirm is required")
+});
+
+export class ChangePasswordForm extends React.Component {
+  static propTypes = {
+    initialValues: PropTypes.shape({
+      oldPassword: PropTypes.string,
+      newPassword: PropTypes.string,
+      confirmNewPassword: PropTypes.string
+    }).isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    children: PropTypes.func.isRequired
   };
 
-  return (
-    <form>
-      {console.log({ props })}
-      <p>
-        To change your password, enter your current password and the new
-        password you want to set.
-      </p>
-      <TextField
-        id="oldPassword"
-        name="oldPassword"
-        label="Old Password"
-        type="password"
-        autoComplete="current-password"
-        helperText={touched.oldPassword ? errors.oldPassword : ""}
-        error={touched.oldPassword && Boolean(errors.oldPassword)}
-        value={oldPassword}
-        onChange={change.bind(null, "oldPassword")}
-        onBlur={e => {
-          handleBlur(e);
-          console.log("blurring", e);
+  render() {
+    return (
+      <Formik
+        initialValues={this.props.initialValues}
+        enableReinitialize={true}
+        validationSchema={validationSchema}
+        onSubmit={(values, formikBag) => {
+          // This is quite detailed and a work around
+          // to be able to encapsulate attaching state handling
+          // upon submission within the form. The details/create
+          // component just `addHandlers` to it's mutation.
+          const addHandlers = promise =>
+            promise.then(
+              result => {
+                formikBag.resetForm();
+                formikBag.setSubmitting(false);
+
+                return result;
+              },
+              error => {
+                formikBag.setSubmitting(false);
+                formikBag.setErrors(error.validationErrors);
+
+                throw error;
+              }
+            );
+
+          return this.props.onSubmit(values, addHandlers);
         }}
-        fullWidth
+        render={formikProps => {
+          const form = (
+            <React.Fragment>
+              <p>
+                To change your password, enter your current password and the new
+                password you want to set.
+              </p>
+              <ChangePasswordOldPasswordField formik={formikProps} />
+              <ChangePasswordNewPasswordField formik={formikProps} />
+              <ChangePasswordConfirmNewPasswordField formik={formikProps} />
+              <div
+                css={css`
+                  margintop: 30px;
+                `}
+              >
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={formikProps.handleReset}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={!formikProps.isValid}
+                  onClick={formikProps.handleSubmit}
+                >
+                  Submit
+                </Button>
+              </div>
+            </React.Fragment>
+          );
+
+          return this.props.children({
+            form,
+            isDirty: formikProps.dirty,
+            isSubmitting: formikProps.isSubmitting,
+            handleSubmit: formikProps.handleSubmit,
+            handleCancel: formikProps.handleReset
+          });
+        }}
       />
-      <TextField
-        id="newPassword"
-        name="newPassword"
-        label="New Password"
-        type="password"
-        helperText={touched.newPassword ? errors.newPassword : ""}
-        error={touched.newPassword && Boolean(errors.newPassword)}
-        value={newPassword}
-        onChange={change.bind(null, "newPassword")}
-        fullWidth
-      />
-      <TextField
-        id="confirmNewPassword"
-        name="confirmNewPassword"
-        label="Confirm New Password"
-        type="password"
-        helperText={touched.confirmNewPassword ? errors.confirmNewPassword : ""}
-        error={touched.confirmNewPassword && Boolean(errors.confirmNewPassword)}
-        value={confirmNewPassword}
-        onChange={change.bind(null, "confirmNewPassword")}
-        fullWidth
-      />
-      <div className="form-submission-options" style={{ marginTop: 30 + "px" }}>
-        <Button
-          type="button"
-          variant="outlined"
-          color="secondary"
-          onClick={e => {
-            console.log("resetting values", formValues, e);
-            resetForm(initialValues);
-            clearState();
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!isValid}
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
-      </div>
-    </form>
-  );
-};
+    );
+  }
+}
