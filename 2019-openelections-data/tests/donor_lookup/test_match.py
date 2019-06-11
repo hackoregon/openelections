@@ -1,0 +1,127 @@
+"""
+Match test module
+"""
+import numpy as np
+from unittest.mock import patch, MagicMock
+
+
+class TestGetMatch():
+    """
+    Test class for get_match
+    """
+
+    @patch('psycopg2.connect')
+    def test_exact_match(self, mock_connect):
+        """
+        Test for exact match
+        """
+        test_data = [('JOHN', 'SMITH', '123 MAIN STREET', '', 'PORTLAND', 'OR', '97202')]
+        mock_cursor = MagicMock()
+        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
+        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+
+        from openelections.donor_lookup.match import get_match
+        matches = get_match(last_name='Smith', first_name='John',
+                            addr1='123 main street', zip_code='97202', city='Portland')
+
+        # No weak or strong matches
+        assert matches['weak'].size == 0 & matches['strong'].size == 0
+
+        # One exact match
+        assert matches['exact'].size == 1
+
+        # Scores correct
+        ematch = matches['exact'][0]
+        assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
+
+        # City match
+        assert ematch['correct_city']
+
+    @patch('psycopg2.connect')
+    def test_exact_match_abr(self, mock_connect):
+        """
+        Test for exact match with abbreviations and words to ignore
+        """
+        test_data = [('JOHN', 'SMITH', '123 NW MAIN ST', '', 'PORTLAND', 'OR', '97202')]
+        mock_cursor = MagicMock()
+        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
+        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+
+        from openelections.donor_lookup.match import get_match
+        matches = get_match(last_name='Smith', first_name='John',
+                            addr1='123 main street', zip_code='97202', city='Portland')
+
+        # No weak or strong matches
+        assert matches['weak'].size == 0 and matches['strong'].size == 0
+
+        # One exact match
+        assert matches['exact'].size == 1
+
+        # Scores correct
+        ematch = matches['exact'][0]
+        assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
+
+        # City match
+        assert ematch['correct_city']
+
+    @patch('psycopg2.connect')
+    def test_strong_match_abr(self, mock_connect):
+        """
+        Test for strong match
+        """
+        test_data = [('JOHN', 'SMITH', '123 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
+        mock_cursor = MagicMock()
+        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
+        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+
+        from openelections.donor_lookup.match import get_match
+        matches = get_match(last_name='Smith', first_name='John',
+                            addr1='123 lumbarr street', zip_code='97202', city='Portland')
+
+        # No weak or exact matches
+        assert matches['weak'].size == 0 and matches['exact'].size == 0
+
+        # One exact match
+        assert matches['strong'].size == 1
+
+        # Scores correct
+        smatch = matches['strong'][0]
+        assert np.isclose(smatch['address_sim'], 0.97435) and \
+               smatch['first_name_sim'] == 1 and \
+               smatch['last_name_sim'] == 1
+
+        # City match
+        assert smatch['correct_city']
+
+
+class TestInPortland():
+    """
+    Test class for in_portland
+    """
+
+    def test_wrong_zip(self):
+        """
+        Ensure that wrong zip code returns false
+        :return:
+        """
+        from openelections.donor_lookup.match import in_portland
+
+        assert not in_portland(city='Portland', zip_code='11209')
+
+    def test_wrong_city(self):
+        """
+        Ensure that wrong city returns true
+        :return:
+        """
+        from openelections.donor_lookup.match import in_portland
+
+        assert not in_portland(city='Brooklyn', zip_code='97202')
+
+    def test_valid_address(self):
+        """
+        Ensure that valid Portland address returns True
+        :return:
+        """
+        from openelections.donor_lookup.match import in_portland
+
+        assert in_portland(city='Portland', zip_code='97202')

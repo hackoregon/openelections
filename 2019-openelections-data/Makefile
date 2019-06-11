@@ -36,7 +36,7 @@ clean:
 
 ## Lint using flake8
 lint:
-	flake8 openelections tests
+	flake8 openelections tests --ignore=E127,W504
 
 ## run tests quickly with the default Python
 test:

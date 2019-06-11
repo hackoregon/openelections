@@ -11,7 +11,7 @@ import Levenshtein as leven
 from typing import Optional, Dict, Set
 import numpy as np
 import openelections.data.database as db
-from psycopg2 import connect
+import psycopg2
 import re
 import json
 
@@ -158,7 +158,7 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
     # Remove leading and
     where_stmt = where_stmt[4:]
 
-    with connect(**db.POSTGRES_LOGIN) as conn:
+    with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             cmd = f"SELECT first_name, last_name, address_1, address_2, city, state, zip_code" \
                   + f" FROM {db.UNIFIED_TABLE} WHERE " \
@@ -230,7 +230,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             first_name_sim = leven.ratio(first_name.upper(), record['first_name'].upper())
             last_name_sim = leven.ratio(last_name.upper(), record['last_name'].upper())
             zip_sim = leven.ratio(zip_code, record['zip'])
-            correct_city = in_portland(record['zip'], record['city'].upper())
+            correct_city = in_portland(zip_code=record['zip'], city=record['city'].upper())
 
             matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
 
@@ -251,10 +251,8 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
                 (matches['zip_sim'] == 1)
 
     is_weak = ~is_exact & ~is_strong & \
-              (((matches['last_name_sim'] == 1) &
-                (matches['first_name_sim'] >= 0.8)) |
-               ((matches['address_sim'] >= 0.9) &
-                (matches['zip_sim'] == 1)))
+              (((matches['last_name_sim'] == 1) & (matches['first_name_sim'] >= 0.8)) |
+               ((matches['address_sim'] >= 0.9) & (matches['zip_sim'] == 1)))
 
     # Do we want to add a flag to indicate the specified address is not in Portland
     return {'exact': matches[is_exact],
