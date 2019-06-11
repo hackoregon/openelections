@@ -4,14 +4,23 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import DashboardPage from "./Dashboard/Dashboard";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 /* @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
 const styles = css`
+
+  &:after {
+    content: '';
+    clear: both;
+    display: table;
+  }
   .sidebar-wrapper {
     width: 20%;
+    position: sticky;
+    top: 0;
+    left: 0;
   }
   
   .content-wrapper {
@@ -32,8 +41,11 @@ const Portal = props => {
       <div css={styles} className={'portal-wrapper'}>
           <aside className={'sidebar-wrapper'}>
               <Sidebar links={[
-                  { url: '/manage', label: 'Manage' },
-                  { url: '/contributions', label: 'Contributions' }
+                  { url: '/dashboard', label: 'Dashboard' },
+                  { url: '/contributions', label: 'Contributions' },
+                  { url: '/expenses', label: 'Expenses' },
+                  { url: '/visualize', label: 'Visualize' },
+                  { url: '/manage', label: 'Manage Portal' }
               ]} />
           </aside>
           <main className={'content-wrapper'}>
@@ -49,11 +61,7 @@ const Portal = props => {
                     >
                       <Switch location={location}>
                         <Route exact path="/dashboard" component={DashboardPage} />
-                        <Route
-                          exact
-                          path="/contributions"
-                          component={ContributionsPage}
-                        />
+                        <Route exact path="/contributions" component={ContributionsPage}/>
                       </Switch>
                     </CSSTransition>
                   </TransitionGroup>

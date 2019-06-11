@@ -17,8 +17,9 @@ import Portal from "./Portal/Portal";
 const Routes = props => {
   return (
     <Route
-      render={({ location }) => (
+      render={({ location, match }) => (
         <>
+          {console.log(match)}
           <TopNavigation />
           <TransitionGroup className="oe-page-container">
             <CSSTransition

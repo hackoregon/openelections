@@ -10,9 +10,10 @@ const styles = css`
   
   .campaign-name {
     font-size: 18px;
-    color: rgba(0,0,0,0.7);
+    color: rgba(0,0,0,0.6);
     font-weight: normal;
     padding: 5px 20px;
+    margin-bottom: 20px;
   }
   
   ul {
@@ -24,7 +25,7 @@ const styles = css`
       a {
         padding: 5px 20px;
         display: block;
-        border-left: 2px solid transparent;
+        border-left: 4px solid transparent;
         color: black;
         
         &.active {
@@ -40,12 +41,12 @@ const styles = css`
   }
 `;
 
-const Sidebar = ({ links }) => {
+const Sidebar = ({ links, campaignName }) => {
   return (
     <div css={styles}>
-        <h2 className={'campaign-name'}>Campaign Name</h2>
+        <h2 className={'campaign-name'}>{campaignName}</h2>
         <ul>
-        {links.map( link => <li><NavLink to={link.url}>{link.label}</NavLink></li> )}
+        {links.map( link => <li key={link.url}><NavLink to={link.url}>{link.label}</NavLink></li> )}
         </ul>
     </div>
   );
