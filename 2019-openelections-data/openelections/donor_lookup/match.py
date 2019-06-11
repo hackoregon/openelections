@@ -8,7 +8,7 @@ Goals:
 """
 
 import Levenshtein as leven
-from typing import Optional
+from typing import Optional, Dict, Set
 import numpy as np
 import openelections.data.database as db
 from psycopg2 import connect
@@ -83,7 +83,7 @@ ADDRESS_MAP = {'DRIVE': 'DR',
                'TWELFTH': '12TH'}
 
 
-def tokenize_address(address):
+def tokenize_address(address: str) -> Set[str]:
     """
     Sanitize and tokenize address
     This may not be necessary
@@ -97,15 +97,15 @@ def tokenize_address(address):
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
 
 
-def in_portland(city, zip):
+def in_portland(city: str, zip_code: str) -> bool:
     """
     Returns true if city and zip are both Portland-esque
 
     :param city:
-    :param zip:
+    :param zip_code:
     :return:
     """
-    return (city.upper() == 'PORTLAND') and (zip in PORTLAND_ZIP_CODES)
+    return (city.upper() == 'PORTLAND') and (zip_code in PORTLAND_ZIP_CODES)
 
 
 def query_name_address(last_name: Optional[str] = None, first_name: Optional[str] = None,
@@ -179,15 +179,20 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 
 def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
               zip_code: Optional[str] = None, addr1: Optional[str] = None,
-              addr2: Optional[str] = None, city: Optional[str] = None, state: Optional[str] = None):
+              addr2: Optional[str] = None, city: Optional[str] = None,
+              state: Optional[str] = None) -> Dict[str, np.ndarray]:
     """
     Find all possible matches for donor: exact, then strong + weak, then none
 
     This is a modification of George's original get_match algorithm
 
-    :param name:
-    :param addr1:
+    :param last_name:
+    :param first_name:
     :param zip_code:
+    :param addr1:
+    :param addr2:
+    :param city:
+    :param state:
     :return:
     """
 
@@ -257,7 +262,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             'weak': matches[is_weak]}
 
 
-def cli():
+def cli() -> None:
     """
     Command line interface for get_match
     :return:
