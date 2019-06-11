@@ -135,6 +135,24 @@ export function createCampaignForGovernment(governmentId, name) {
   return post(`${baseUrl()}/campaigns/new`, { governmentId, name });
 }
 
+// path: '/contributions/:id'
+//   method: 'put',
+export function updateContribution(contributionAttrs) {
+  return put(`${baseUrl()}/contributions/${contributionAttrs.id}`, contributionAttrs);
+}
+
+//   path: '/contributions',
+//   method: 'post',
+export function createContribution(contributionAttrs) {
+  return post(`${baseUrl()}/contributions`, contributionAttrs);
+}
+
+//   path: '/contributions',
+//   method: 'get',
+export function getContributions(contributionSearchAttrs) {
+  return post(`${baseUrl()}/contributions`, contributionSearchAttrs);
+}
+
 export function post(url, data) {
   const headers = {
     "Content-Type": "application/json",
