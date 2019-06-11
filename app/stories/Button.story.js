@@ -10,7 +10,7 @@ export default () =>
     .add("Button", () => {
       const buttonType = select(
         "buttonType",
-        ["submit", "cancel", "default"],
+        ["submit", "cancel", "default", "not a type"],
         "default"
       );
       const buttonText = text("label", "Click Me")
