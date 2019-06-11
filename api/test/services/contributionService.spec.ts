@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
-import { addContributionAsync, IAddContributionAttrs } from '../../services/contributionService';
+import {
+    addContributionAsync,
+    IAddContributionAttrs,
+    getContributionsAsync,
+    IGetContributionAttrs
+} from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
 import {
@@ -13,6 +18,7 @@ import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll }
 
 let campaignAdmin;
 let campaignStaff;
+let govAdmin;
 let campaign1;
 let campaign2;
 let government;
@@ -27,7 +33,8 @@ describe('contributionService', () => {
     });
 
     beforeEach(async () => {
-        [campaignAdmin, campaignStaff, government, campaign1, campaign2] = await Promise.all([
+        [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
+            newActiveUserAsync(),
             newActiveUserAsync(),
             newActiveUserAsync(),
             newGovernmentAsync(),
@@ -47,6 +54,11 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 campaignId: campaign2.id,
                 role: UserRole.CAMPAIGN_STAFF
+            }),
+            addPermissionAsync({
+                userId: govAdmin.id,
+                governmentId: government.id,
+                role: UserRole.GOVERNMENT_ADMIN
             })
         ]);
     });
@@ -133,5 +145,416 @@ describe('contributionService', () => {
             expect(e.message);
         }
         expect(await contributionRepository.count()).equal(0);
+    });
+
+    it('Gets all contribution for a government without specifying options as gov admin', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+        expect(
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).length
+        ).to.equal(2);
+    });
+
+    it('Throw an error getting all contributions for a government as a non gov admin', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+        try {
+            await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id });
+        } catch (e) {
+            expect(e.message);
+        }
+    });
+
+    it('Gets a contribution for a government specifying page options', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        expect(
+            (await getContributionsAsync({
+                governmentId: government.id,
+                currentUserId: govAdmin.id,
+                page: 0,
+                perPage: 1
+            })).length
+        ).to.equal(1);
+    });
+
+    it('Gets a contribution for a government specifying date options', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        expect(
+            (await getContributionsAsync({
+                governmentId: government.id,
+                currentUserId: govAdmin.id,
+                to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()
+            })).length
+        ).to.equal(0);
+
+        expect(
+            (await getContributionsAsync({
+                governmentId: government.id,
+                currentUserId: govAdmin.id,
+                from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                to: new Date().toISOString()
+            })).length
+        ).to.equal(2);
+    });
+
+    it('Gets a contribution for a government specifying status option', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.SUBMITTED,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        expect(
+            (await getContributionsAsync({
+                governmentId: government.id,
+                currentUserId: govAdmin.id,
+                status: ContributionStatus.SUBMITTED
+            })).length
+        ).to.equal(1);
+    });
+
+    it('Gets contributions for a campaign specifying all options', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign1.id,
+                city: 'Portland',
+                currentUserId: campaignAdmin.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        const contributions = await getContributionsAsync({
+            governmentId: government.id,
+            campaignId: campaign2.id,
+            currentUserId: campaignStaff.id,
+            page: 0,
+            perPage: 10,
+            status: ContributionStatus.DRAFT,
+            from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+            to: new Date().toISOString()
+        });
+        expect(contributions.length).to.equal(1);
+    });
+
+    it('Gets contributions for a campaign as gov admin', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        expect(
+            (await getContributionsAsync({
+                governmentId: government.id,
+                campaignId: campaign2.id,
+                currentUserId: govAdmin.id,
+                page: 0,
+                perPage: 10,
+                status: ContributionStatus.DRAFT,
+                from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                to: new Date().toISOString()
+            })).length
+        ).to.equal(2);
+    });
+
+    it('Does not get a contribution if user does not belong to campaign or is not a gov admin', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+
+        try {
+            await getContributionsAsync({
+                governmentId: government.id,
+                campaignId: campaign2.id,
+                currentUserId: campaignStaff.id,
+                page: 0,
+                perPage: 10,
+                status: ContributionStatus.DRAFT,
+                from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                to: new Date().toISOString()
+            });
+        } catch (e) {
+            expect(e.message);
+        }
     });
 });
