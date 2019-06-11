@@ -7,8 +7,6 @@ Goals:
 3. If exact match not true, shunt to different fuzzy matching algo, return list of signals and possible matches
 """
 
-import pickle
-import os
 import Levenshtein as leven
 from typing import Optional
 import numpy as np
@@ -84,46 +82,6 @@ ADDRESS_MAP = {'DRIVE': 'DR',
                'ELEVENTH': '11TH',
                'TWELFTH': '12TH'}
 
-'''
-Will we need the pickles when this is running on a server?
-
-Handled separately as functionality
-'''
-
-def save(obj: object, filename: str):
-    """
-    Save to pickle file
-
-    :param obj:
-    :param filename:
-    :return:
-    """
-    with open(filename, 'wb') as fout:
-        pickle.dump(obj, fout)
-
-
-def load(filename: str) -> object:
-
-    """
-    Load from pickle file
-
-    :param filename:
-    :return:
-    """
-    if not os.path.exists(filename):
-        raise Exception(f"Unable to find file {filename}")
-
-    with open(filename, 'rb') as fin:
-        obj = pickle.load(fin)
-
-    return obj
-
-
-'''
-This is actually the start of the process, when the command line passes in an address
-grab CLI with str(input()) <- note that I cast explicitly to string 
-Note I don't actually know data specs when it's passed to the DS layer
-'''
 
 def tokenize_address(address):
     """
@@ -221,7 +179,7 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 
 def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
               zip_code: Optional[str] = None, addr1: Optional[str] = None,
-              addr2: Optional[str] = None, city: Optional[str] = None):
+              addr2: Optional[str] = None, city: Optional[str] = None, state: Optional[str] = None):
     """
     Find all possible matches for donor: exact, then strong + weak, then none
 
@@ -234,26 +192,16 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     """
 
     data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, address=addr1)
-    found_exact = data.size > 0
 
-    found_name_zip = False
     if data.size == 0:
         data = query_name_address(last_name=last_name, zip_code=zip_code)
-        found_name_zip = data.size > 0
 
-    found_softname_zip = False
     if data.size == 0:
         data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, name_levenshtein=2)
-        found_softname_zip = data.size > 0
 
-    found_softname = False
-    found_softaddress = False
     if data.size == 0:
         data_softname = query_name_address(last_name=last_name, first_name=first_name, name_levenshtein=2)
         data_softaddress = query_name_address(address=addr1, zip_code=zip_code, address_levenshtein=2)
-        found_softaddress = data_softname.size > 0
-        found_softname = data_softaddress.size > 0
-
         data = np.hstack((data_softaddress, data_softname))
 
     matches = []
@@ -263,7 +211,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
         address_tokens = tokenize_address(addr1)
         for record in data:
             rec_address_tokens = tokenize_address(record['res_address_1'])
-            #do we want to tokenize res_address_2 too?
+            # do we want to tokenize res_address_2 too?
 
             if len(address_tokens) <= len(rec_address_tokens):
                 similarities = [np.max([leven.ratio(tkn1, tkn2) for tkn2 in rec_address_tokens])
@@ -279,16 +227,13 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             zip_sim = leven.ratio(zip_code, record['zip'])
             correct_city = in_portland(record['zip'], record['city'].upper())
 
-            if (found_name_zip or found_softname_zip) and addr_sim >= 0.9:
-                matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
-            elif found_softname or found_softaddress:
-                matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
+            matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
 
     matches = np.array(matches, dtype=np.dtype(data.dtype.descr + [('address_sim', np.float),
-                                                         ('zip_sim', np.float),
-                                                         ('first_name_sim', np.float),
-                                                         ('last_name_sim', np.float),
-                                                         ('correct_city', np.float)]))
+                                                                   ('zip_sim', np.float),
+                                                                   ('first_name_sim', np.float),
+                                                                   ('last_name_sim', np.float),
+                                                                   ('correct_city', np.float)]))
     is_exact = (matches['last_name_sim'] == 1) & \
                (matches['first_name_sim'] == 1) & \
                (matches['address_sim'] == 1) & \
@@ -301,21 +246,24 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
                 (matches['zip_sim'] == 1)
 
     is_weak = ~is_exact & ~is_strong & \
-              (((matches['last_name_sim'] == 1) & \
-                (matches['first_name_sim'] >= 0.8)) | \
-               ((matches['address_sim'] >= 0.9) & \
+              (((matches['last_name_sim'] == 1) &
+                (matches['first_name_sim'] >= 0.8)) |
+               ((matches['address_sim'] >= 0.9) &
                 (matches['zip_sim'] == 1)))
 
+    # Do we want to add a flag to indicate the specified address is not in Portland
     return {'exact': matches[is_exact],
             'strong': matches[is_strong],
             'weak': matches[is_weak]}
-##We need something in here that tells me if the zip code is just wrong
 
 
 def cli():
-    from argparse import ArgumentParser
+    """
+    Command line interface for get_match
+    :return:
+    """
 
-    #(last_name="Zhang", first_name="Natasha", zip_code = "97123", addr1="563 SW 201st ST")
+    from argparse import ArgumentParser
 
     aparser = ArgumentParser()
     aparser.add_argument("--last_name", dest="last_name", type=str)
@@ -328,12 +276,8 @@ def cli():
     options = vars(aparser.parse_args())
 
     matches = get_match(last_name=options['last_name'], first_name=options['first_name'],
-                                zip_code = options['zip_code'], addr1=options['addr1'],
-                                addr2=options['addr2'], city = options['city'])
-
-    # for mtype, tmatches in matches.items():
-    #     print(mtype)
-    #     print(tmatches)
+                        zip_code=options['zip_code'], addr1=options['addr1'],
+                        addr2=options['addr2'], city=options['city'])
 
     matches_dict = dict()
     for mtype, tmatches in matches.items():
@@ -344,6 +288,7 @@ def cli():
 
     j = json.dumps(matches_dict)
     print(j)
+
 
 if __name__ == '__main__':
     cli()
