@@ -135,6 +135,14 @@ export function createCampaignForGovernment(governmentId, name) {
   return post(`${baseUrl()}/campaigns/new`, { governmentId, name });
 }
 
+export function addContribution(params) {
+  return post(`${baseUrl()}/contributions`, params);
+}
+
+export function getContributions(params) {
+  return post(`${baseUrl()}/contributions`, params);
+}
+
 export function post(url, data) {
   const headers = {
     "Content-Type": "application/json",
