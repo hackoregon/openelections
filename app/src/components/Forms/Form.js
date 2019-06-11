@@ -37,9 +37,9 @@ class Form extends React.Component {
             <React.Fragment>
               {Object.keys(fields).map(id =>
                 React.createElement(fields[id].component, {
-                  formik: formikProps,
                   id,
-                  label: fields[id].label
+                  label: fields[id].label,
+                  formik: formikProps
                 })
               )}
             </React.Fragment>
