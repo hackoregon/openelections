@@ -1,4 +1,4 @@
-// contributions.js
+// campaigns.js
 import { normalize } from "normalizr";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
@@ -9,7 +9,8 @@ export const STATE_KEY = "contributions";
 
 // Action Types
 export const actionTypes = {
-  ADD_CONTRIBUTION: createActionTypes(STATE_KEY, "ADD_CONTRIBUTION"),
+  CREATE_CONTRIBUTION: createActionTypes(STATE_KEY, "CREATE_CONTRIBUTION"),
+  UPDATE_CONTRIBUTION: createActionTypes(STATE_KEY, "UPDATE_CONTRIBUTION"),
   GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS")
 };
 
@@ -24,73 +25,73 @@ export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, ...action.payload.contributions };
   },
-  [actionTypes.ADD_CONTRIBUTION.REQUEST]: (state, action) => {
+  [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.ADD_CONTRIBUTION.SUCCESS]: (state, action) => {
+  [actionTypes.CREATE_CONTRIBUTION.SUCCESS]: (state, action) => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.ADD_CONTRIBUTION.FAILURE]: (state, action) => {
+  [actionTypes.CREATE_CONTRIBUTION.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  [actionTypes.GET_CONTRIBUTIONS.REQUEST]: (state, action) => {
+  [actionTypes.UPDATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.GET_CONTRIBUTIONS.SUCCESS]: (state, action) => {
+  [actionTypes.UPDATE_CONTRIBUTION.SUCCESS]: (state, action) => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.GET_CONTRIBUTIONS.FAILURE]: (state, action) => {
+  [actionTypes.UPDATE_CONTRIBUTION.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   }
 });
 
 // Action Creators
 export const actionCreators = {
-  addContribution: {
-    request: () => action(actionTypes.ADD_CONTRIBUTION.REQUEST),
-    success: () => action(actionTypes.ADD_CONTRIBUTION.SUCCESS),
-    failure: error => action(actionTypes.ADD_CONTRIBUTION.FAILURE, { error })
+  createContribution: {
+    request: () => action(actionTypes.CREATE_CONTRIBUTION.REQUEST),
+    success: () => action(actionTypes.CREATE_CONTRIBUTION.SUCCESS),
+    failure: error => action(actionTypes.CREATE_CONTRIBUTION.FAILURE, { error })
   },
-  getContributions: {
-    request: () => action(actionTypes.GET_CONTRIBUTIONS.REQUEST),
-    success: () => action(actionTypes.GET_CONTRIBUTIONS.SUCCESS),
-    failure: error => action(actionTypes.GET_CONTRIBUTIONS.FAILURE, { error })
+  updateContribution: {
+    request: () => action(actionTypes.UPDATE_CONTRIBUTION.REQUEST),
+    success: () => action(actionTypes.UPDATE_CONTRIBUTION.SUCCESS),
+    failure: error => action(actionTypes.UPDATE_CONTRIBUTION.FAILURE, { error })
   }
 };
 
 // Side Effects, e.g. thunks
-export function addContribution(params = {}) {
+export function createContribution(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
-    dispatch(actionCreators.addContribution.request());
+    dispatch(actionCreators.createContribution.request());
     try {
-      const response = await api.addContribution(params);
+      const response = await api.createContribution(contributionAttrs);
       if (response.status === 201) {
-        const data = normalize(await response.json(), schema.contribution);
+        const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
-        dispatch(actionCreators.addContribution.success());
+        dispatch(actionCreators.createContribution.success());
       } else {
-        dispatch(actionCreators.addContribution.failure());
+        dispatch(actionCreators.createContribution.failure());
       }
     } catch (error) {
-      dispatch(actionCreators.addContribution.failure(error));
+      dispatch(actionCreators.createContribution.failure(error));
     }
   };
 }
 
-export function getContributions(params = {}) {
+export function updateContribution(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
-    dispatch(actionCreators.getContributions.request());
+    dispatch(actionCreators.updateContribution.request());
     try {
-      const response = await api.getContributions(params);
+      const response = await api.updateContribution(contributionAttrs);
       if (response.status === 201) {
-        const data = normalize(await response.json(), schema.contribution);
+        const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
-        dispatch(actionCreators.getContributions.success());
+        dispatch(actionCreators.updateContribution.success());
       } else {
-        dispatch(actionCreators.getContributions.failure());
+        dispatch(actionCreators.updateContribution.failure());
       }
     } catch (error) {
-      dispatch(actionCreators.getContributions.failure(error));
+      dispatch(actionCreators.updateContribution.failure(error));
     }
   };
 }

@@ -425,6 +425,70 @@ export const AppRoutes = [
         path: '/contributions/:id',
         method: 'put',
         action: contributions.updateContribution
+    },
+
+    /**
+     * @swagger
+     * /contributions/new:
+     *   post:
+     *     summary: Add a contribution
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/AddContributionBody'
+     *     responses:
+     *       204:
+     *         description: add response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/new',
+        method: 'post',
+        action: contributions.addContribution
+    },
+
+    /**
+     * @swagger
+     * /contributions:
+     *   post:
+     *     summary: Get a contribution
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/GetContributionBody'
+     *     responses:
+     *       204:
+     *         description: add response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions',
+        method: 'post',
+        action: contributions.getContributions
     }
 ];
 
