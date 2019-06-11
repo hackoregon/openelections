@@ -154,7 +154,14 @@ export class Contribution {
     @Column({ nullable: true })
     checkNumber?: string;
 
-    @Column()
+    @Column({type: 'decimal', transformer: {
+            to: (value: number) => {
+                return value;
+            },
+            from: (value: string) => {
+                return parseFloat(value);
+            }
+        }})
     amount: number;
 
     @Column({ nullable: true })

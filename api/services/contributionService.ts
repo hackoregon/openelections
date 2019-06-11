@@ -133,3 +133,50 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         throw new Error(e.message);
     }
 }
+
+export interface IUpdateContributionAttrs {
+    currentUserId: number;
+    id: number;
+    address1?: string;
+    address2?: string;
+    amount?: number;
+    city?: string;
+    contributorType?: ContributorType;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    matchAmount?: number;
+    middleInitial?: string;
+    name?: string;
+    prefix?: string;
+    state?: string;
+    status?: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
+    suffix?: string;
+    submitForMatch?: boolean;
+    subType?: ContributionSubType;
+    title?: string;
+    type?: ContributionType;
+    zip?: string;
+}
+
+export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+        const contribution = await contributionRepository.findOneOrFail(contributionAttrs.id, {relations: ['campaign', 'government']}) as Contribution;
+        const attrs = Object.assign({}, contributionAttrs);
+        delete attrs.currentUserId;
+        delete attrs.id;
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
+        if (hasCampaignPermissions) {
+            await contributionRepository.update(contributionAttrs.id, attrs);
+        } else {
+            throw new Error('User does not have permissions');
+        }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}

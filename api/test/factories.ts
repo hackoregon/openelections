@@ -1,8 +1,16 @@
 import * as faker from 'faker';
 import { User, UserStatus } from '../models/entity/User';
-import { getConnection } from 'typeorm';
+import { getConnection, getManager } from 'typeorm';
 import { Government } from '../models/entity/Government';
 import { Campaign } from '../models/entity/Campaign';
+import {
+    Contribution,
+    ContributionStatus,
+    ContributionSubType,
+    ContributionType,
+    ContributorType
+} from '../models/entity/Contribution';
+import { addContributionAsync } from '../services/contributionService';
 
 export async function newActiveUserAsync(): Promise<User> {
     const userRepository = getConnection('default').getRepository('User');
@@ -48,6 +56,28 @@ export async function newCampaignAsync(gov?: Government): Promise<Campaign> {
     campaign = await campaignRepository.save(campaign) as Campaign;
     return campaign;
 }
+
+export async function newContributionAsync(campaign: Campaign, government: Government): Promise<Contribution> {
+    let contribution = new Contribution();
+        contribution.address1 = faker.address.streetAddress();
+        contribution.amount = faker.finance.amount(0, 500, 2);
+        contribution.campaign = campaign;
+        contribution.city = 'Portland';
+        contribution.contrFirst = faker.name.firstName();
+        contribution.contrMiddleInitial = '';
+        contribution.contrLast = faker.name.lastName();
+        contribution.government = government;
+        contribution.type = ContributionType.CONTRIBUTION;
+        contribution.subType = ContributionSubType.CASH;
+        contribution.state = 'OR';
+        contribution.status = ContributionStatus.DRAFT;
+        contribution.zip = '97214';
+        contribution.contributorType = ContributorType.INDIVIDUAL;
+    const contributionRepository = getConnection('default').getRepository('Contribution');
+    contribution = await contributionRepository.save(contribution);
+    return contribution;
+}
+
 
 export async function truncateAll() {
     const connection = getConnection('default');
