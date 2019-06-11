@@ -123,6 +123,8 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
                 });
             }
             throw new Error('User is not permitted to get contributions for this campaign.');
+        } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
+            throw new Error('Must be a government admin to see all contributions');
         }
         return getContributionsByGovernmentIdAsync(governmentId, {
             ...options,

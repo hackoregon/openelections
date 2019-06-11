@@ -147,7 +147,7 @@ describe('contributionService', () => {
         expect(await contributionRepository.count()).equal(0);
     });
 
-    it('Gets a contribution for a government without specifying options', async () => {
+    it('Gets all contribution for a government without specifying options as gov admin', async () => {
         await Promise.all([
             addContributionAsync({
                 address1: '123 ABC ST',
@@ -184,7 +184,53 @@ describe('contributionService', () => {
                 contributorType: ContributorType.INDIVIDUAL
             })
         ]);
-        expect((await getContributionsAsync({ governmentId: government.id })).length).to.equal(2);
+        expect(
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).length
+        ).to.equal(2);
+    });
+
+    it('Throw an error getting all contributions for a government as a non gov admin', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+        ]);
+        try {
+            await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id });
+        } catch (e) {
+            expect(e.message);
+        }
     });
 
     it('Gets a contribution for a government specifying page options', async () => {
@@ -228,6 +274,7 @@ describe('contributionService', () => {
         expect(
             (await getContributionsAsync({
                 governmentId: government.id,
+                currentUserId: govAdmin.id,
                 page: 0,
                 perPage: 1
             })).length
@@ -275,6 +322,7 @@ describe('contributionService', () => {
         expect(
             (await getContributionsAsync({
                 governmentId: government.id,
+                currentUserId: govAdmin.id,
                 to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()
             })).length
         ).to.equal(0);
@@ -282,6 +330,7 @@ describe('contributionService', () => {
         expect(
             (await getContributionsAsync({
                 governmentId: government.id,
+                currentUserId: govAdmin.id,
                 from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
                 to: new Date().toISOString()
             })).length
@@ -346,6 +395,7 @@ describe('contributionService', () => {
         expect(
             (await getContributionsAsync({
                 governmentId: government.id,
+                currentUserId: govAdmin.id,
                 status: ContributionStatus.SUBMITTED
             })).length
         ).to.equal(1);
