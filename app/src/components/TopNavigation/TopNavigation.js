@@ -1,6 +1,6 @@
 import React from "react";
 import Navigation from "../Navigation/Navigation";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Logo } from "@hackoregon/component-library";
 
 /** @jsx jsx */
@@ -37,10 +37,10 @@ const ToNavigaiton = props => {
   return (
     <header css={styles}>
       {console.log(props)}
-      <NavLink to={isLoggedIn ? "/dashboard" : "/"} className="header-icon">
+      <Link to={isLoggedIn ? "/dashboard" : "/"} className="header-icon">
         <Logo type="squareLogoInverted" />
         <p className="logo-text">Open Elections</p>
-      </NavLink>
+      </Link>
       <Navigation />
     </header>
   );
