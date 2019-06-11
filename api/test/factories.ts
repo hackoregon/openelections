@@ -63,9 +63,9 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.amount = faker.finance.amount(0, 500, 2);
         contribution.campaign = campaign;
         contribution.city = 'Portland';
-        contribution.contrFirst = faker.name.firstName();
-        contribution.contrMiddleInitial = '';
-        contribution.contrLast = faker.name.lastName();
+        contribution.firstName = faker.name.firstName();
+        contribution.middleInitial = '';
+        contribution.lastName = faker.name.lastName();
         contribution.government = government;
         contribution.type = ContributionType.CONTRIBUTION;
         contribution.subType = ContributionSubType.CASH;

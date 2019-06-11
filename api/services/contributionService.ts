@@ -64,18 +64,18 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.status = contributionAttrs.status;
 
             contribution.contrPrefix = contributionAttrs.prefix;
-            contribution.contrFirst = contributionAttrs.firstName;
-            contribution.contrMiddleInitial = contributionAttrs.middleInitial;
-            contribution.contrLast = contributionAttrs.lastName;
-            contribution.contrSuffix = contributionAttrs.suffix;
-            contribution.contrTitle = contributionAttrs.title;
+            contribution.firstName = contributionAttrs.firstName;
+            contribution.middleInitial = contributionAttrs.middleInitial;
+            contribution.lastName = contributionAttrs.lastName;
+            contribution.suffix = contributionAttrs.suffix;
+            contribution.title = contributionAttrs.title;
             contribution.email = contributionAttrs.email;
             contribution.address1 = contributionAttrs.address1;
             contribution.address2 = contributionAttrs.address2;
             contribution.city = contributionAttrs.city;
             contribution.state = contributionAttrs.state;
             contribution.zip = contributionAttrs.zip;
-            contribution.contrName = contributionAttrs.name;
+            contribution.name = contributionAttrs.name;
             contribution.contributorType = contributionAttrs.contributorType;
 
             contribution.amount = contributionAttrs.amount;
@@ -150,7 +150,7 @@ export interface IUpdateContributionAttrs {
     name?: string;
     prefix?: string;
     state?: string;
-    status?: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
+    status?: ContributionStatus;
     suffix?: string;
     submitForMatch?: boolean;
     subType?: ContributionSubType;

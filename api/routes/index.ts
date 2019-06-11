@@ -6,6 +6,7 @@ import * as swaggerUI from 'swagger-ui-express';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
+import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
 
 export const AppRoutes = [
@@ -392,6 +393,38 @@ export const AppRoutes = [
         path: '/activities',
         method: 'post',
         action: activities.activities
+    },
+
+    /**
+     * @swagger
+     * /contributions/{id}:
+     *   put:
+     *     summary: Update a contribution
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/UpdateContributionBody'
+     *     responses:
+     *       204:
+     *         description: update response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/:id',
+        method: 'put',
+        action: contributions.updateContribution
     }
 ];
 
