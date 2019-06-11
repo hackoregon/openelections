@@ -1,8 +1,8 @@
 import React from "react";
-import UserInfoBox from "./Sidebar";
+import Sidebar from "./Sidebar";
 
-describe("<UserInfoBox/>", () => {
+describe("<Sidebar/>", () => {
   it("should be defined", () => {
-    expect(UserInfoBox).toMatchSnapshot();
+    expect(Sidebar).toMatchSnapshot();
   });
 });
