@@ -10,7 +10,6 @@ import {
     ContributionType,
     ContributorType
 } from '../models/entity/Contribution';
-import { addContributionAsync } from '../services/contributionService';
 
 export async function newActiveUserAsync(): Promise<User> {
     const userRepository = getConnection('default').getRepository('User');
@@ -75,15 +74,16 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.contributorType = ContributorType.INDIVIDUAL;
     const contributionRepository = getConnection('default').getRepository('Contribution');
     contribution = await contributionRepository.save(contribution);
+    console.log('saving contribution', contribution.id)
     return contribution;
 }
 
 
 export async function truncateAll() {
     const connection = getConnection('default');
-    await connection.query('TRUNCATE "government" CASCADE');
-    await connection.query('TRUNCATE "users" CASCADE');
-    await connection.query('TRUNCATE "campaign" CASCADE');
-    await connection.query('TRUNCATE "permission" CASCADE');
-    await connection.query('TRUNCATE "activity" CASCADE');
+    await connection.query('TRUNCATE "government" RESTART IDENTITY CASCADE');
+    await connection.query('TRUNCATE "users" RESTART IDENTITY CASCADE');
+    await connection.query('TRUNCATE "campaign" RESTART IDENTITY CASCADE');
+    await connection.query('TRUNCATE "permission" RESTART IDENTITY CASCADE');
+    await connection.query('TRUNCATE "activity" RESTART IDENTITY CASCADE');
 }
