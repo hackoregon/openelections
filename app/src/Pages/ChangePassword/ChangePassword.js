@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import PageHoc from "../../components/PageHoc/PageHoc";
-import { ChangePasswordForm } from "../../components/Forms/ChangePassword";
+import ChangePasswordForm from "../../components/Forms/ChangePassword";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -25,50 +25,50 @@ const buttonWrapper = css`
   margintop: 30px;
 `;
 
-class ChangePassword extends Component {
-  render() {
-    return (
-      <PageHoc>
-        <ChangePasswordForm
-          onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
-          initialValues={{
-            oldPassword: "",
-            newPassword: "",
-            confirmNewPassword: ""
-          }}
-        >
-          {({ form, isValid, handleCancel, handleSubmit /* isDirty, isSubmitting */ }) => (
-            <div css={formModalWrapper}>
-              <Paper elevation={1} css={paper}>
-                <p css={formTitle}>Change Password</p>
-                {form}
-                <div
-                  css={buttonWrapper}
-                >
-                  <Button
-                    type="button"
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={!isValid}
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Paper>
+const ChangePassword = () => (
+  <PageHoc>
+    <ChangePasswordForm
+      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      initialValues={{
+        oldPassword: "",
+        newPassword: "",
+        confirmNewPassword: ""
+      }}
+    >
+      {({
+        form,
+        isValid,
+        handleCancel,
+        handleSubmit /* isDirty, isSubmitting */
+      }) => (
+        <div css={formModalWrapper}>
+          <Paper elevation={1} css={paper}>
+            <p css={formTitle}>Change Password</p>
+            {form}
+            <div css={buttonWrapper}>
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
             </div>
-          )}
-        </ChangePasswordForm>
-      </PageHoc>
-    );
-  }
-}
+          </Paper>
+        </div>
+      )}
+    </ChangePasswordForm>
+  </PageHoc>
+);
+
 export default ChangePassword;
