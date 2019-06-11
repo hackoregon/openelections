@@ -219,6 +219,6 @@ export const getMe = createSelector(
   state => state.auth.me
 );
 
-export const isLoggedIn = rootState => {
-  return getMe(rootState) !== null ? true : false;
+export const isLoggedIn = state => {
+  return getMe(state) !== null ? true : false;
 };
