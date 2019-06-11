@@ -1,21 +1,11 @@
-import React, { Component } from "react";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
+import React from "react";
 import PageHoc from "../../components/PageHoc/PageHoc";
+import FormModal from "../../components/FormModal/FormModal"
 import ChangePasswordForm from "../../components/Forms/ChangePassword";
+import Button from "../../components/Button/Button"
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
-const formModalWrapper = css`
-  max-width: 350px;
-`;
-const paper = css`
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 40px;
-`;
 const formTitle = css`
   font-size: 35px;
   letter-spacing: -2px;
@@ -27,47 +17,43 @@ const buttonWrapper = css`
 
 const ChangePassword = () => (
   <PageHoc>
-    <ChangePasswordForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
-      initialValues={{
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: ""
-      }}
-    >
-      {({
-        form,
-        isValid,
-        handleCancel,
-        handleSubmit /* isDirty, isSubmitting */
-      }) => (
-        <div css={formModalWrapper}>
-          <Paper elevation={1} css={paper}>
+    <FormModal>
+      <ChangePasswordForm
+        onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+        initialValues={{
+          oldPassword: "",
+          newPassword: "",
+          confirmNewPassword: ""
+        }}
+      >
+        {({
+          form,
+          isValid,
+          handleCancel,
+          handleSubmit /* isDirty, isSubmitting */
+        }) => (
+          <React.Fragment>
             <p css={formTitle}>Change Password</p>
             {form}
             <div css={buttonWrapper}>
               <Button
-                type="button"
-                variant="outlined"
-                color="secondary"
+                buttonType="cancel"
                 onClick={handleCancel}
               >
                 Cancel
               </Button>
               <Button
-                type="submit"
-                variant="contained"
-                color="primary"
+                buttonType="submit"
                 disabled={!isValid}
                 onClick={handleSubmit}
               >
                 Submit
               </Button>
             </div>
-          </Paper>
-        </div>
-      )}
-    </ChangePasswordForm>
+          </React.Fragment>
+        )}
+      </ChangePasswordForm>
+    </FormModal>
   </PageHoc>
 );
 

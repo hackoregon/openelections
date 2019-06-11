@@ -60,7 +60,13 @@ class Form extends React.Component {
 }
 
 Form.propTypes = {
-  fields: PropTypes.shape({}).isRequired,
+  fields: PropTypes.objectOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      component: PropTypes.component,
+      validation: PropTypes.shape({/* Yup validation */})
+    })
+  ).isRequired,
   initialValues: PropTypes.shape({}).isRequired,
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired

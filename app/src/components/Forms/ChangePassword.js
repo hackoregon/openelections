@@ -1,31 +1,30 @@
 import React from "react";
 import * as Yup from "yup";
 
-import Form from "../Form/Form";
-// import PasswordField from "./fields/PasswordField";
-import ChangePasswordConfirmNewPasswordField from "./ChangePasswordConfirmNewPasswordField";
+import Form from "./Form";
+import PasswordField from "../Fields/PasswordField";
 
 const fields = {
   oldPassword: {
     label: "Old Password",
-    component: ChangePasswordConfirmNewPasswordField,
+    component: PasswordField,
     validation: Yup.string("What was you old password").required(
       "What was your old password"
     )
   },
   newPassword: {
     label: "New Password",
-    component: ChangePasswordConfirmNewPasswordField,
+    component: PasswordField,
     validation: Yup.string("Choose a new password").required(
       "Password is required"
     )
   },
   confirmNewPassword: {
     label: "Confirm New Password",
-    component: ChangePasswordConfirmNewPasswordField,
-    validation: Yup.string("Choose a new password").required(
-      "Password is required"
-    )
+    component: PasswordField,
+    validation: Yup.string("Choose a new password that matches the other one")
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Password confirm is required")
   }
 };
 
