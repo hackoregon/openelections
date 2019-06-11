@@ -4,12 +4,23 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import DashboardPage from "./Dashboard/Dashboard";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
+import Sidebar from "../../components/Sidebar/Sidebar";
+
+/* @jsx jsx */
+import { css, jsx } from '@emotion/core';
+
+const styles = css`
+
+`;
 
 const Portal = props => {
   return (
-    <PageHoc>
+    <PageHoc css={styles}>
       <main>
-        <div>side nav</div>
+          <Sidebar links={[
+              { url: '/manage', label: 'Manage' },
+              { url: '/contributions', label: 'Contributions' }
+          ]} />
         <Route
           render={({ location }) => (
             <>
