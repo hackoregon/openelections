@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import { ChangePasswordForm } from "../../components/Forms/ChangePassword";
 /** @jsx jsx */
@@ -36,7 +37,7 @@ class ChangePassword extends Component {
             confirmNewPassword: ""
           }}
         >
-          {({ form, /* isDirty, isSubmitting */ }) => (
+          {({ form, isValid, handleCancel, handleSubmit /* isDirty, isSubmitting */ }) => (
             <div css={formModalWrapper}>
               <Paper elevation={1} css={paper}>
                 <p css={formTitle}>Change Password</p>
@@ -48,7 +49,7 @@ class ChangePassword extends Component {
                     type="button"
                     variant="outlined"
                     color="secondary"
-                    onClick={formikProps.handleReset}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </Button>
@@ -56,8 +57,8 @@ class ChangePassword extends Component {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    disabled={!formikProps.isValid}
-                    onClick={formikProps.handleSubmit}
+                    disabled={!isValid}
+                    onClick={handleSubmit}
                   >
                     Submit
                   </Button>

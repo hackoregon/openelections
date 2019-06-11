@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import ChangePasswordOldPasswordField from "./ChangePasswordOldPasswordField";
 import ChangePasswordNewPasswordField from "./ChangePasswordNewPasswordField";
 import ChangePasswordConfirmNewPasswordField from "./ChangePasswordConfirmNewPasswordField";
+import { submitHandler } from "./utils";
 
 const validationSchema = Yup.object({
   oldPassword: Yup.string("What was you old password").required(
@@ -38,27 +39,7 @@ export class ChangePasswordForm extends React.Component {
         initialValues={this.props.initialValues}
         enableReinitialize={true}
         validationSchema={validationSchema}
-        onSubmit={(values, formikBag) => {
-          // This is a work around to be able to 
-          // encapsulate attaching state handling
-          // upon submission within the form.
-          
-          /* PULL addHandlers OUT TO COMMON UTILS? */
-          const addHandlers = promise =>
-            promise.then(
-              result => {
-                formikBag.resetForm();
-                formikBag.setSubmitting(false);
-                return result;
-              },
-              error => {
-                formikBag.setSubmitting(false);
-                formikBag.setErrors(error.validationErrors);
-                throw error;
-              }
-            );
-          return this.props.onSubmit(values, addHandlers);
-        }}
+        onSubmit={submitHandler}
         render={formikProps => {
           const form = (
             <React.Fragment>
@@ -70,6 +51,7 @@ export class ChangePasswordForm extends React.Component {
 
           return this.props.children({
             form,
+            isValid: formikProps.isValid,
             // isDirty: formikProps.dirty,
             // isSubmitting: formikProps.isSubmitting,
             handleSubmit: formikProps.handleSubmit,
