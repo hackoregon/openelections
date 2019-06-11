@@ -216,9 +216,9 @@ export function updatePassword(password, newPassword) {
 export const authState = state => state.auth || {};
 export const getMe = createSelector(
   authState,
-  state => state.auth.me
+  state => state
 );
 
-export const isLoggedIn = state => {
-  return getMe(state.auth) !== null ? true : false;
+export const isLoggedIn = authState => {
+  return getMe(authState).me !== null ? true : false;
 };
