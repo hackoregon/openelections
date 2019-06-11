@@ -262,8 +262,12 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
 
 def cli() -> None:
     """
-    Command line interface for get_match
+    Command line interface for get_match.
     :return:
+
+    >>> # Call from top level directory
+    >>> python -m openelections.donor_lookup.match --first_name John --last_name Smith ...
+    >>> --addr1 "123 Main" --zip_code 97202 --city Portland
     """
 
     from argparse import ArgumentParser
