@@ -213,12 +213,12 @@ export function updatePassword(password, newPassword) {
 }
 
 // Selectors
-export const authState = state => state.auth || {};
+export const rootState = state => state || {};
 export const getMe = createSelector(
-  authState,
-  state => state
+  rootState,
+  state => state.auth.me
 );
 
-export const isLoggedIn = authState => {
-  return getMe(authState).me !== null ? true : false;
+export const isLoggedIn = rootState => {
+  return getMe(rootState) !== null ? true : false;
 };
