@@ -1,10 +1,5 @@
 """
-Natalia's attempt at productionizing George's initial match code.
-
-Goals:
-1. This is a flow chart rule diagram
-2. Fire "green" signal if exact match goes
-3. If exact match not true, shunt to different fuzzy matching algo, return list of signals and possible matches
+Donor matching code
 """
 
 import Levenshtein as leven
