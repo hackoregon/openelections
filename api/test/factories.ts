@@ -74,7 +74,7 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.contributorType = ContributorType.INDIVIDUAL;
     const contributionRepository = getConnection('default').getRepository('Contribution');
     contribution = await contributionRepository.save(contribution);
-    console.log('saving contribution', contribution.id)
+    console.log('saving contribution', contribution.id);
     return contribution;
 }
 
