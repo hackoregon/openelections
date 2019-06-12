@@ -3,8 +3,7 @@ import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
     IAddContributionAttrs,
-    getContributionsAsync,
-    IGetContributionAttrs
+    getContributionsAsync, updateContributionAsync,
 } from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
@@ -14,7 +13,13 @@ import {
     ContributorType,
     ContributionStatus
 } from '../../models/entity/Contribution';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
+import {
+    newActiveUserAsync,
+    newCampaignAsync,
+    newContributionAsync,
+    newGovernmentAsync,
+    truncateAll
+} from '../factories';
 
 let campaignAdmin;
 let campaignStaff;
@@ -555,6 +560,69 @@ describe('contributionService', () => {
             });
         } catch (e) {
             expect(e.message);
+        }
+    });
+
+    it('updateContributionAsync campaignStaff ', async () => {
+        let contribution = await newContributionAsync(campaign2, government);
+        await updateContributionAsync({
+            currentUserId: campaignStaff.id,
+            id: contribution.id,
+            amount: 1500
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+        expect(contribution.amount).to.equal(1500);
+    });
+
+    it('updateContributionAsync campaignAdmin ', async () => {
+        let contribution = await newContributionAsync(campaign1, government);
+        await updateContributionAsync({
+            currentUserId: campaignAdmin.id,
+            id: contribution.id,
+            amount: 1550
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+        expect(contribution.amount).to.equal(1550);
+    });
+
+    it('updateContributionAsync governmentAdmin', async () => {
+        let contribution = await newContributionAsync(campaign1, government);
+        await updateContributionAsync({
+            currentUserId: govAdmin.id,
+            id: contribution.id,
+            amount: 150
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+        expect(contribution.amount).to.equal(150);
+    });
+
+    it('updateContributionAsync campaignStaff different campaign fails', async () => {
+        try {
+            let contribution = await newContributionAsync(campaign1, government);
+            await updateContributionAsync({
+                currentUserId: campaignStaff.id,
+                id: contribution.id,
+                amount: 1500
+            });
+            contribution = await contributionRepository.findOne(contribution.id);
+            expect(contribution.amount).to.equal(1500);
+        } catch (error) {
+            expect(error.message).to.equal('User does not have permissions')
+        }
+    });
+
+    it('updateContributionAsync campaignAdmin different campaign fails', async () => {
+        try {
+            let contribution = await newContributionAsync(campaign2, government);
+            await updateContributionAsync({
+                currentUserId: campaignAdmin.id,
+                id: contribution.id,
+                amount: 1550
+            });
+            contribution = await contributionRepository.findOne(contribution.id);
+            expect(contribution.amount).to.equal(1550);
+        } catch (error) {
+            expect(error.message).to.equal('User does not have permissions')
         }
     });
 });

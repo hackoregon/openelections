@@ -1,9 +1,10 @@
 import { getConnection } from 'typeorm';
 import { createUserAsync } from '../../services/userService';
-import { newCampaignAsync, newGovernmentAsync, truncateAll } from '../../test/factories';
+import { newCampaignAsync, newGovernmentAsync, truncateAll, newContributionAsync } from '../../test/factories';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../entity/Permission';
 import { User, UserStatus } from '../../models/entity/User';
+
 
 export default async () => {
     if (process.env.NODE_ENV === 'production') {
@@ -12,6 +13,7 @@ export default async () => {
 
     await truncateAll();
 
+    console.log('Adding a government admin');
     const govAdmin = await createUserAsync({
         email: 'govAdmin@openelectionsportland.org',
         password: 'password',
@@ -19,6 +21,7 @@ export default async () => {
         lastName: 'Admin'
     });
 
+    console.log('Adding a campaign admin');
     const campaignAdmin = await createUserAsync({
         email: 'campaignAdmin@openelectionsportland.org',
         password: 'password',
@@ -26,6 +29,7 @@ export default async () => {
         lastName: 'Admin'
     });
 
+    console.log('Adding a campaign staff');
     const campaignStaff = await createUserAsync({
         email: 'campaignStaff@openelectionsportland.org',
         password: 'password',
@@ -33,6 +37,7 @@ export default async () => {
         lastName: 'Staff'
     });
 
+    console.log('Adding a campaign staff');
     const campaignStaffInvited = await createUserAsync({
         email: 'campaignStaff+1@openelectionsportland.org',
         invitationCode: 'inviteme',
@@ -50,7 +55,10 @@ export default async () => {
     campaignStaffReset.invitationCode = 'resetme';
     campaignStaffReset = await userRepository.save(campaignStaffReset);
 
+    console.log('Adding a government');
     const government = await newGovernmentAsync('City of Portland');
+
+    console.log('Adding a campaign');
     const campaign = await newCampaignAsync(government);
     await newCampaignAsync(government);
     await newCampaignAsync(government);
@@ -85,4 +93,10 @@ export default async () => {
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
     });
+
+    const promises = [];
+    for (let i = 0; i < 101; i++) {
+        promises.push(newContributionAsync(campaign, government));
+    }
+    await Promise.all(promises);
 };

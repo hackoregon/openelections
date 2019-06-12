@@ -40,7 +40,7 @@ describe('Contribution', () => {
                 'status',
                 'campaignId',
                 'governmentId',
-                'contrName',
+                'name',
             ]);
         });
 
@@ -74,8 +74,8 @@ describe('Contribution', () => {
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
             expect(newRecord.errors.length).to.equal(2);
-            expect(newRecord.errors[0].property).to.equal('contrLast');
-            expect(newRecord.errors[1].property).to.equal('contrFirst');
+            expect(newRecord.errors[0].property).to.equal('lastName');
+            expect(newRecord.errors[1].property).to.equal('firstName');
         });
 
         it('validateName not Individual', async () => {
@@ -86,7 +86,7 @@ describe('Contribution', () => {
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
             expect(newRecord.errors.length).to.equal(1);
-            expect(newRecord.errors[0].property).to.equal('contrName');
+            expect(newRecord.errors[0].property).to.equal('name');
         });
 
         it('validateAmount', async () => {

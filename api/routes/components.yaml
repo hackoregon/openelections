@@ -12,7 +12,7 @@ components:
         notes:
           type: string
         activityId:
-          type: number
+          type: integer
         activityType:
           type: string
         campaignId:
@@ -36,11 +36,11 @@ components:
     NewUser:
       type: object
       properties:
-        email: 
+        email:
           type: string
-        firstName: 
+        firstName:
           type: string
-        lastName: 
+        lastName:
           type: string
         role:
           type: string
@@ -58,29 +58,79 @@ components:
       properties:
         id:
           type: integer
-        email: 
+        email:
           type: string
-        firstName: 
+        firstName:
           type: string
-        lastName: 
+        lastName:
           type: string
         permissions:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+    Contribution:
+      type: object
+      properties:
+        id:
+          type: integer
+        governmentId:
+          type: integer
+        campaignId:
+          type: integer
+        address1:
+          type: string
+        address2:
+          type: string
+        amount:
+          type: integer
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+        contributorType:
+          type: string
+          enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleInitial:
+          type: string
+        matchAmount:
+          type: integer
+        name:
+          type: string
+        prefix:
+          type: string
+        suffix:
+          type: string
+        title:
+          type: string
+        status:
+          type: enum[Archived,Draft,Submitted,Processed]
+        submitForMatch:
+          type: boolean
+        subType:
+          type: enum[cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
+        type  :
+          type: enum[contribution,other]
 
 
-    
+
   # Reusable path, query, header and cookie parameters
   parameters:
-    
+
   # Security scheme definitions (see Authentication)
   securitySchemes:
     cookieAuth:
       type: apiKey
       in: cookie
       name: token
-    
+
   # Reusable request bodies
   requestBodies:
     LoginBody:
@@ -138,16 +188,151 @@ components:
               password:
                 type: string
                 format: password
-              firstName: 
+              firstName:
                 type: string
-              lastName: 
+              lastName:
                 type: string
             required:
               - invitationCode
               - password
               - firstName
               - lastName
-    
+    UpdateContributionBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              address1:
+                type: string
+              address2:
+                type: string
+              amount:
+                type: integer
+              city:
+                type: string
+              state:
+                type: string
+              zip:
+                type: string
+              contributorType:
+                type: string
+                enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+              email:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              middleInitial:
+                type: string
+              matchAmount:
+                type: integer
+              name:
+                type: string
+              prefix:
+                type: string
+              suffix:
+                type: string
+              title:
+                type: string
+              status:
+                type: string
+                enum: [Archived,Draft,Submitted,Processed]
+              submitForMatch:
+                type: boolean
+              subType:
+                type: string
+                enum: [cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
+              type:
+                type: string
+                enum: [contribution,other]
+            required:
+              - id
+    AddContributionBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              campaignId:
+                type: integer
+              governmentId:
+                type: integer
+              address1:
+                type: string
+              address2:
+                type: string
+              amount:
+                type: integer
+              city:
+                type: string
+              state:
+                type: string
+              zip:
+                type: string
+              contributorType:
+                type: string
+                enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+              email:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              middleInitial:
+                type: string
+              matchAmount:
+                type: integer
+              name:
+                type: string
+              prefix:
+                type: string
+              suffix:
+                type: string
+              title:
+                type: string
+              status:
+                type: string
+                enum: [Archived,Draft,Submitted,Processed]
+              submitForMatch:
+                type: boolean
+              subType:
+                type: string
+                enum: [cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
+              type:
+                type: string
+                enum: [contribution,other]
+    GetContributionBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              governmentId: 
+                type: integer
+              currentUserId: 
+                type: integer
+              campaignId: 
+                type: integer
+              perPage: 
+                type: integer
+              page: 
+                type: integer
+              status: 
+                type: string
+              from: 
+                type: string
+              to: 
+                type: string
+            required:
+              - governmentId
+
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:
     NotFound:
@@ -168,15 +353,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    
+
   # Reusable response headers
   headers:
-    
+
   # Reusable examples
   examples:
-    
+
   # Reusable links
   links:
-    
+
   # Reusable callbacks
   callbacks:

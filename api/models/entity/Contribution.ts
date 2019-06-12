@@ -99,22 +99,22 @@ export class Contribution {
     contrPrefix?: string;
 
     @Column({ nullable: true })
-    contrFirst?: string;
+    firstName?: string;
 
     @Column({ nullable: true })
-    contrMiddleInitial?: string;
+    middleInitial?: string;
 
     @Column({ nullable: true })
-    contrLast?: string;
+    lastName?: string;
 
     @Column({ nullable: true })
-    contrSuffix?: string;
+    suffix?: string;
 
     @Column({ nullable: true })
-    contrTitle?: string;
+    title?: string;
 
     @Column({ nullable: true })
-    contrName?: string;
+    name?: string;
 
     @IsDefined()
     @Column()
@@ -154,7 +154,14 @@ export class Contribution {
     @Column({ nullable: true })
     checkNumber?: string;
 
-    @Column()
+    @Column({type: 'decimal', transformer: {
+            to: (value: number) => {
+                return value;
+            },
+            from: (value: string) => {
+                return parseFloat(value);
+            }
+        }})
     amount: number;
 
     @Column({ nullable: true })
@@ -269,24 +276,24 @@ export class Contribution {
 
     validateName() {
         if (this.contributorType === ContributorType.INDIVIDUAL) {
-            if (!this.contrLast || this.contrLast.trim() === '') {
+            if (!this.lastName || this.lastName.trim() === '') {
                 const error = new ValidationError();
-                error.property = 'contrLast';
-                error.constraints = { isDefined: 'contrLast should not be null or undefined' };
+                error.property = 'lastName';
+                error.constraints = { isDefined: 'lastName should not be null or undefined' };
                 this.errors.push(error);
             }
 
-            if (!this.contrFirst || this.contrFirst.trim() === '') {
+            if (!this.firstName || this.firstName.trim() === '') {
                 const error = new ValidationError();
-                error.property = 'contrFirst';
-                error.constraints = { isDefined: 'contrFirst should not be null or undefined' };
+                error.property = 'firstName';
+                error.constraints = { isDefined: 'firstName should not be null or undefined' };
                 this.errors.push(error);
             }
         } else {
-            if (!this.contrName || this.contrName.trim() === '') {
+            if (!this.name || this.name.trim() === '') {
                 const error = new ValidationError();
-                error.property = 'contrName';
-                error.constraints = { isDefined: 'contrName should not be null or undefined' };
+                error.property = 'name';
+                error.constraints = { isDefined: 'name should not be null or undefined' };
                 this.errors.push(error);
             }
         }
