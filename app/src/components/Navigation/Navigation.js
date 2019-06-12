@@ -11,6 +11,7 @@ const styles = css`
   flex: 2;
   a {
     margin: 0 15px;
+    color: white;
   }
 `;
 

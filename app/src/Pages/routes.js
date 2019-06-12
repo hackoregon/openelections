@@ -1,7 +1,8 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import Header from "../components/Header/Header";
+// import Header from "../components/Header/Header";
+import TopNavigation from "../components/TopNavigation";
 import HomePage from "./Home/Home";
 import AboutPage from "./About/About";
 import SandboxPage from "./Sandbox/Sandbox";
@@ -18,7 +19,7 @@ const Routes = props => {
     <Route
       render={({ location }) => (
         <>
-          <Header />
+          <TopNavigation />
           <TransitionGroup className="oe-page-container">
             <CSSTransition
               key={location.pathname}

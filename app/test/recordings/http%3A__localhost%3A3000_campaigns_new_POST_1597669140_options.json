@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/campaigns/new","status":422,"statusText":"Unprocessable Entity","ok":false,"headers":{"x-powered-by":["Express"],"content-type":["application/json; charset=utf-8"],"content-length":["66"],"etag":["W/\"42-f0TV4nqv5dQjyoGm+ZQfSBJylsU\""],"date":["Mon, 03 Jun 2019 05:34:51 GMT"],"connection":["close"]}}
