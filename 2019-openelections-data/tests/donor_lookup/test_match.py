@@ -1,8 +1,19 @@
 """
 Match test module
 """
+from typing import List, Tuple
 import numpy as np
 from unittest.mock import patch, MagicMock
+
+
+def setup_mock_connect(mock_connect: MagicMock, test_data: List[Tuple[str]]) -> None:
+    """
+    Setup mock postgres connect to return specified data
+    """
+
+    mock_cursor = MagicMock()
+    mock_cursor.__enter__.return_value.fetchall.return_value = test_data
+    mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
 
 
 class TestGetMatch():
@@ -16,9 +27,7 @@ class TestGetMatch():
         Test for exact match
         """
         test_data = [('JOHN', 'SMITH', '123 MAIN STREET', '', 'PORTLAND', 'OR', '97202')]
-        mock_cursor = MagicMock()
-        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
-        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
         matches = get_match(last_name='Smith', first_name='John',
@@ -43,9 +52,7 @@ class TestGetMatch():
         Test for exact match with abbreviations and words to ignore
         """
         test_data = [('JOHN', 'SMITH', '123 NW MAIN ST', '', 'PORTLAND', 'OR', '97202')]
-        mock_cursor = MagicMock()
-        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
-        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
         matches = get_match(last_name='Smith', first_name='John',
@@ -70,9 +77,7 @@ class TestGetMatch():
         Test for strong match
         """
         test_data = [('JOHN', 'SMITH', '123 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
-        mock_cursor = MagicMock()
-        mock_cursor.__enter__.return_value.fetchall.return_value = test_data
-        mock_connect.return_value.__enter__.return_value.cursor.return_value = mock_cursor
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
         matches = get_match(last_name='Smith', first_name='John',

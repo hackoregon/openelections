@@ -36,11 +36,11 @@ clean:
 
 ## Lint using flake8
 lint:
-	flake8 openelections tests --ignore=E127,W504
+	flake8 openelections tests
 
 ## run tests quickly with the default Python
 test:
-	py.test tests
+	pytest tests
 
 ## Upload Data to S3
 sync_data_to_s3:
