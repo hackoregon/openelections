@@ -4,6 +4,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 const submitHandler = (values, formikBag) => {
+  // This is a work around to be able to encapsulate 
+  // attaching state handling upon submission within the form.
   const addHandlers = promise =>
     promise.then(
       result => {
@@ -48,10 +50,11 @@ class Form extends React.Component {
           return children({
             form,
             isValid: formikProps.isValid,
-            // isDirty: formikProps.dirty,
-            // isSubmitting: formikProps.isSubmitting,
+            isDirty: formikProps.dirty,
+            isSubmitting: formikProps.isSubmitting,
             handleSubmit: formikProps.handleSubmit,
             handleCancel: formikProps.handleReset
+            /* could return more formikProps if needed */
           });
         }}
       />
