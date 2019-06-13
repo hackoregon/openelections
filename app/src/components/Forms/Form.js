@@ -4,11 +4,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 const submitHandler = (values, formikBag) => {
-<<<<<<< Updated upstream
-=======
   // This is a work around to be able to encapsulate
   // attaching state handling upon submission within the form.
->>>>>>> Stashed changes
   const addHandlers = promise =>
     promise.then(
       result => {
