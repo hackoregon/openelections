@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
 const submitHandler = (values, formikBag) => {
   // This is a work around to be able to encapsulate
@@ -59,7 +60,15 @@ class Form extends React.Component {
               ? Object.fromEntries(
                   sections.map(section => [
                     section,
-                    fields.filter(field => field.section == section)
+                    <React.Fragment>
+                      {formFromFields(
+                        _.pickBy(
+                          fields,
+                          field => field.section === section
+                        ),
+                        formikProps
+                      )}
+                    </React.Fragment>
                   ])
                 )
               : {};
@@ -85,7 +94,7 @@ Form.propTypes = {
       component: PropTypes.component,
       validation: PropTypes.shape({
         /* Yup validation */
-      }),
+      })
       // section: PropTypes.arrayOf(PropTypes.string) <- optional
     })
   ).isRequired,
