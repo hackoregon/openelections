@@ -39,9 +39,6 @@ class Form extends React.Component {
     const validations = Object.fromEntries(
       fieldIds.map(id => [id, fields[id].validation])
     );
-    const sectionFields = Object.fromEntries(
-      fieldIds.map(id => [id, fields[id].section])
-    );
     const validationSchema = Yup.object(validations);
     return (
       <Formik
@@ -95,7 +92,7 @@ Form.propTypes = {
       validation: PropTypes.shape({
         /* Yup validation */
       })
-      // section: PropTypes.arrayOf(PropTypes.string) <- optional
+      // sections: PropTypes.arrayOf(PropTypes.string) <- optional
     })
   ).isRequired,
   initialValues: PropTypes.shape({}).isRequired,
