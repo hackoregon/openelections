@@ -27,7 +27,7 @@ describe('Contribution', () => {
         it('isDefined Columns', async () => {
             const newRecord = new Contribution();
             await newRecord.validateAsync();
-            expect(newRecord.errors.length).to.equal(11);
+            expect(newRecord.errors.length).to.equal(12);
             const isDefinedFields = newRecord.errors.map(item => item.property);
             expect(isDefinedFields).to.deep.equal([
                 'type',
@@ -38,6 +38,7 @@ describe('Contribution', () => {
                 'state',
                 'zip',
                 'status',
+                'date',
                 'campaignId',
                 'governmentId',
                 'name',
@@ -52,7 +53,7 @@ describe('Contribution', () => {
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('subType');
-            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a subType of "cash"')
+            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a subType of "cash"');
         });
 
         it('validateType OTHER', async () => {
@@ -63,14 +64,14 @@ describe('Contribution', () => {
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('subType');
-            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "other" cannot have a subType of "cash"')
+            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "other" cannot have a subType of "cash"');
         });
 
         it('validateName Individual', async () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
-            newRecord.contributorType = ContributorType.INDIVIDUAL
+            newRecord.contributorType = ContributorType.INDIVIDUAL;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
             expect(newRecord.errors.length).to.equal(2);

@@ -35,6 +35,7 @@ export interface IAddContributionAttrs {
     subType: ContributionSubType;
     title?: string;
     type: ContributionType;
+    date: number;
     zip: string;
 }
 
@@ -81,6 +82,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.amount = contributionAttrs.amount;
             contribution.matchAmount = contributionAttrs.matchAmount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
+            contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
                 await contributionRepository.save(contribution);
                 return contribution;

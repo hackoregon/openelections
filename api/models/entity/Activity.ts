@@ -13,6 +13,7 @@ import { IUserSummary, User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { IUserPermission, IUserPermissionResult } from './Permission';
 import { Contribution } from './Contribution';
+import {Expenditure} from "./Expenditure";
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -54,6 +55,9 @@ export class Activity {
 
     @ManyToOne(type => Contribution, contribution => contribution.activities, { eager: true })
     contribution: Contribution;
+
+    @ManyToOne(type => Expenditure, expenditure => expenditure.activities, { eager: true })
+    expenditure: Expenditure;
 
     public errors: ValidationError[];
 

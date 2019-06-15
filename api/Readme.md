@@ -123,3 +123,5 @@ To test one method or file, you can use testone:
    > npm testone tests/file/to/test.spec.ts -- -g testme #will the files' test for testme, and just test that one
 ```
 
+If you need to see DB queries, update the models/db.ts file, setting the logging to true.
+

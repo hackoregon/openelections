@@ -90,7 +90,8 @@ describe('contributionService', () => {
             state: 'OR',
             status: ContributionStatus.DRAFT,
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
         };
 
         await addContributionAsync(indvidualContribution);
@@ -115,7 +116,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             };
 
             await addContributionAsync(indvidualContribution);
@@ -169,7 +171,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -186,7 +189,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
         expect(
@@ -211,7 +215,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -228,7 +233,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
         try {
@@ -255,7 +261,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -272,7 +279,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -303,7 +311,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -320,7 +329,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -359,7 +369,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -376,7 +387,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -393,7 +405,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.SUBMITTED,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -423,7 +436,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -440,7 +454,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -474,7 +489,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -491,7 +507,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -526,7 +543,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -543,7 +561,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 status: ContributionStatus.DRAFT,
                 zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
             })
         ]);
 
@@ -607,7 +626,7 @@ describe('contributionService', () => {
             contribution = await contributionRepository.findOne(contribution.id);
             expect(contribution.amount).to.equal(1500);
         } catch (error) {
-            expect(error.message).to.equal('User does not have permissions')
+            expect(error.message).to.equal('User does not have permissions');
         }
     });
 
@@ -622,7 +641,7 @@ describe('contributionService', () => {
             contribution = await contributionRepository.findOne(contribution.id);
             expect(contribution.amount).to.equal(1550);
         } catch (error) {
-            expect(error.message).to.equal('User does not have permissions')
+            expect(error.message).to.equal('User does not have permissions');
         }
     });
 });

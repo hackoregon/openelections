@@ -116,8 +116,10 @@ components:
           type: boolean
         subType:
           type: enum[cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
-        type  :
+        type:
           type: enum[contribution,other]
+        date:
+          type: integer
 
 
 
@@ -250,6 +252,8 @@ components:
               type:
                 type: string
                 enum: [contribution,other]
+              date:
+                type: integer
             required:
               - id
     AddContributionBody:
@@ -307,6 +311,8 @@ components:
               type:
                 type: string
                 enum: [contribution,other]
+              date:
+                type: number
     GetContributionBody:
       required: true
       content:
@@ -314,21 +320,21 @@ components:
           schema:
             type: object
             properties:
-              governmentId: 
+              governmentId:
                 type: integer
-              currentUserId: 
+              currentUserId:
                 type: integer
-              campaignId: 
+              campaignId:
                 type: integer
-              perPage: 
+              perPage:
                 type: integer
-              page: 
+              page:
                 type: integer
-              status: 
+              status:
                 type: string
-              from: 
+              from:
                 type: string
-              to: 
+              to:
                 type: string
             required:
               - governmentId
