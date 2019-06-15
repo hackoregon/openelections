@@ -11,6 +11,7 @@ import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Activity } from './Activity';
 import { Contribution } from './Contribution';
+import {Expenditure} from "./Expenditure";
 
 @Entity()
 export class Government {
@@ -33,6 +34,9 @@ export class Government {
 
     @OneToMany(type => Contribution, contribution => contribution.government)
     contributions: Contribution[];
+
+    @OneToMany(type => Expenditure, expenditure => expenditure.government)
+    expenditures: Expenditure[];
 
     public errors: ValidationError[];
 

@@ -72,6 +72,9 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsOptional()
     matchAmount: number;
 
+    @IsNumber()
+    date: number;
+
     @IsString()
     @IsOptional()
     name: string;
@@ -257,6 +260,9 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsEnum(ContributionType)
     @IsOptional()
     type: ContributionType;
+
+    @IsNumber()
+    date: number;
 }
 
 export async function addContribution(request: IRequest, response: Response, next: Function) {

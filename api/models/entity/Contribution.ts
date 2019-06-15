@@ -199,6 +199,10 @@ export class Contribution {
     @IsDefined()
     status: ContributionStatus;
 
+    @Column()
+    @IsDefined()
+    date: Date;
+
     @ManyToOne(type => Government, government => government.contributions)
     government: Government;
 
@@ -364,7 +368,7 @@ export async function getContributionsByGovernmentIdAsync(
                       }
                     : undefined,
                 status,
-                createdAt:
+                date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             },
             skip: page,
