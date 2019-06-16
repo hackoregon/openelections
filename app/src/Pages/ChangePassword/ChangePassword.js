@@ -27,14 +27,15 @@ const ChangePassword = () => (
         }}
       >
         {({
-          form,
+          formSections,
           isValid,
           handleCancel,
           handleSubmit /* isDirty, isSubmitting */
         }) => (
           <React.Fragment>
             <p css={formTitle}>Change Password</p>
-            {form}
+            {formSections.oldPassword}
+            {formSections.newPassword}
             <div css={buttonWrapper}>
               <Button
                 buttonType="cancel"
