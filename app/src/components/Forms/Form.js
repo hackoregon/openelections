@@ -26,6 +26,7 @@ const submitHandler = (values, formikBag) => {
 const formFromFields = (fields, formikProps) =>
   Object.keys(fields).map(id =>
     React.createElement(fields[id].component, {
+      key: id,
       id,
       label: fields[id].label,
       formik: formikProps
