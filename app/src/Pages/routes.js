@@ -14,16 +14,23 @@ import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
 import Portal from "./Portal/Portal";
 
+const shouldTransition = location => {
+  let transitionPages = ["/", "/about", "/sandbox"];
+  if (transitionPages.includes(location.pathname)) {
+    return true;
+  }
+};
+
 const Routes = props => {
   return (
     <Route
-      render={({ location, match }) => (
+      render={({ location }) => (
         <>
-          {console.log(match)}
+          {console.log("what is:", location)}
           <TopNavigation />
           <TransitionGroup className="oe-page-container">
             <CSSTransition
-              key={location.pathname}
+              key={shouldTransition(location) ? location.pathname : "nope"}
               timeout={{ enter: 500, exit: 300 }}
               classNames="page"
               appear
