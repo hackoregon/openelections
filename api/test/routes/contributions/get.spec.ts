@@ -84,6 +84,16 @@ describe('Routes post /contributions', () => {
             expect(response.body.message).to.be.undefined;
         });
 
+        it('success as campaign admin', async () => {
+            const response = await request(app)
+                .post(`/contributions`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignAdminToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body.message).to.be.undefined;
+        });
+
         it('error permissions', async () => {
             const response = await request(app)
                 .post(`/contributions`)

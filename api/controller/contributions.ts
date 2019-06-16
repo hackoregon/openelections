@@ -73,6 +73,7 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     matchAmount: number;
 
     @IsNumber()
+    @IsOptional()
     date: number;
 
     @IsString()

@@ -83,6 +83,7 @@ describe('Routes post /contributions/new', () => {
                     campaignId: campaign.id,
                     city: 'Portland',
                     currentUserId: campaignStaff.id,
+                    date: Date.now(),
                     firstName: 'John',
                     middleInitial: '',
                     lastName: 'Doe',
