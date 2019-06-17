@@ -121,11 +121,11 @@ def load(filename: str) -> object:
 
 '''
 This is actually the start of the process, when the command line passes in an address
-grab CLI with str(input()) <- note that I cast explicitly to string 
+grab CLI with str(input()) <- note that I : cast explicitly to string 
 Note I don't actually know data specs when it's passed to the DS layer
 '''
 
-def tokenize_address(address):
+def tokenize_address(addr1: Optional[str] = None, addr2: Optional[str]= None):
     """
     Sanitize and tokenize address
     This may not be necessary
@@ -134,8 +134,14 @@ def tokenize_address(address):
     :return:
     """
     regex = re.compile('[^a-zA-Z0-9 ]')
-    address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
-                      for tkn in regex.sub('', address).upper().split(' ')]
+    if addr2 is None:
+        address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
+                      for tkn in regex.sub('', addr1).upper().split(' ')]
+    else:
+        address = addr1 + addr2
+        address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
+                  for tkn in regex.sub('', address).upper().split(' ')]
+
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
 
 
@@ -147,11 +153,11 @@ def in_portland(city, zip):
     :param zip:
     :return:
     """
-    return (city.upper() == 'PORTLAND') and (zip in PORTLAND_ZIP_CODES)
+    return (city == 'PORTLAND') and (zip in PORTLAND_ZIP_CODES)
 
 
 def query_name_address(last_name: Optional[str] = None, first_name: Optional[str] = None,
-                       zip_code: Optional[str] = None, address: Optional[str] = None,
+                       zip_code: Optional[str] = None, addr1: Optional[str] = None, addr2:Optional[str] = None,
                        name_levenshtein: int = 0, address_levenshtein: int = 0,
                        zip_levenshtein: int = 0) -> np.ndarray:
 
@@ -188,11 +194,17 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
         else:
             where_stmt += f" and zip_code = '{zip_code}'"
 
-    if address is not None:
+    if addr1 is not None:
         if address_levenshtein > 0:
-            where_stmt += f" and levenshtein(address_1,'{address.upper()}') <= {address_levenshtein:d}"
+            where_stmt += f" and levenshtein(address_1,'{addr1.upper()}') <= {address_levenshtein:d}"
         else:
-            where_stmt += f" and address_1 = '{address.upper()}'"
+            where_stmt += f" and address_1 = '{addr1.upper()}'"
+
+    if addr2 is not None:
+        if address_levenshtein > 0:
+            where_stmt += f" and levenshtein(address_2,'{addr2.upper()}') <= {address_levenshtein:d}"
+        else:
+            where_stmt += f" and address_2 = '{addr2.upper()}'"
 
     # add zip constraint from George
     zip_list = ', '.join(f"'{tmp}'" for tmp in PORTLAND_ZIP_CODES)
@@ -233,7 +245,12 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     :return:
     """
 
-    data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, address=addr1)
+    if addr2 is None:
+        data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
+    else:
+        data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
+
+
     found_exact = data.size > 0
 
     found_name_zip = False
@@ -250,7 +267,13 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     found_softaddress = False
     if data.size == 0:
         data_softname = query_name_address(last_name=last_name, first_name=first_name, name_levenshtein=2)
-        data_softaddress = query_name_address(address=addr1, zip_code=zip_code, address_levenshtein=2)
+
+        if addr2 is None:
+            data_softaddress = query_name_address(addr1=addr1, zip_code=zip_code, address_levenshtein=2)
+        else:
+            data_softaddress = query_name_address(addr1=addr1, addr2 = addr2, zip_code=zip_code, address_levenshtein=2)
+
+
         found_softaddress = data_softname.size > 0
         found_softname = data_softaddress.size > 0
 
@@ -260,10 +283,9 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     if data.size > 0:
         # may want to integrate addr2 eventually - see ticket #328
 
-        address_tokens = tokenize_address(addr1)
+        address_tokens = tokenize_address(addr1, addr2)
         for record in data:
-            rec_address_tokens = tokenize_address(record['res_address_1'])
-            #do we want to tokenize res_address_2 too?
+            rec_address_tokens = tokenize_address(record['res_address_1'], record['res_address_2'])
 
             if len(address_tokens) <= len(rec_address_tokens):
                 similarities = [np.max([leven.ratio(tkn1, tkn2) for tkn2 in rec_address_tokens])
@@ -277,7 +299,9 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             first_name_sim = leven.ratio(first_name.upper(), record['first_name'].upper())
             last_name_sim = leven.ratio(last_name.upper(), record['last_name'].upper())
             zip_sim = leven.ratio(zip_code, record['zip'])
-            correct_city = in_portland(record['zip'], record['city'].upper())
+            correct_city = in_portland(record['city'].upper(), record['zip'])
+            #this is currently using City as reported in possible matches
+            #we may not need to include city in the function call
 
             if (found_name_zip or found_softname_zip) and addr_sim >= 0.9:
                 matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
