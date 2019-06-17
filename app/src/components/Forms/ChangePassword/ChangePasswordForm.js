@@ -1,8 +1,8 @@
 import React from "react";
 import * as Yup from "yup";
 
-import Form from "./Form";
-import PasswordField from "../Fields/PasswordField";
+import Form from "../../Form/Form";
+import PasswordField from "../../Fields/PasswordField";
 
 const fields = {
   oldPassword: {

@@ -1,8 +1,7 @@
 import React from "react";
-import PageHoc from "../../components/PageHoc/PageHoc";
-import FormModal from "../../components/FormModal/FormModal"
-import ChangePasswordForm from "../../components/Forms/ChangePassword";
-import Button from "../../components/Button/Button"
+import FormModal from "../../FormModal/FormModal";
+import Button from "../../Button/Button";
+import ChangePasswordForm from "./ChangePasswordForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -16,7 +15,6 @@ const buttonWrapper = css`
 `;
 
 const ChangePassword = () => (
-  <PageHoc>
     <FormModal>
       <ChangePasswordForm
         onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
@@ -55,7 +53,6 @@ const ChangePassword = () => (
         )}
       </ChangePasswordForm>
     </FormModal>
-  </PageHoc>
 );
 
 export default ChangePassword;
