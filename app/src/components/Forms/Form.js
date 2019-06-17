@@ -60,10 +60,7 @@ class Form extends React.Component {
                     section,
                     <React.Fragment>
                       {formFromFields(
-                        _.pickBy(
-                          fields,
-                          field => field.section === section
-                        ),
+                        _.pickBy(fields, field => field.section === section),
                         formikProps
                       )}
                     </React.Fragment>
