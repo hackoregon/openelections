@@ -67,6 +67,29 @@ describe('Routes post /contributions', () => {
         campaignStaffToken = await generateJWTokenAsync(campaignStaff.id);
         campaignAdminToken = await generateJWTokenAsync(campaignAdmin.id);
         campaignStaff2Token = await generateJWTokenAsync(campaignStaff2.id);
+
+        contribution1 = await request(app)
+            .post(`/contributions/new`)
+            .send({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                date: Date.now(),
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                status: ContributionStatus.DRAFT,
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL
+            })
+            .set('Accept', 'application/json')
+            .set('Cookie', [`token=${campaignStaffToken}`]);
     });
 
     afterEach(async () => {
@@ -94,6 +117,16 @@ describe('Routes post /contributions', () => {
             expect(response.body.message).to.be.undefined;
         });
 
+        it('success as campaign staff', async () => {
+            const response = await request(app)
+                .post(`/contributions`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignStaff.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignStaffToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body.message).to.be.undefined;
+        });
+
         it('error permissions', async () => {
             const response = await request(app)
                 .post(`/contributions`)
@@ -101,6 +134,58 @@ describe('Routes post /contributions', () => {
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
             expect(response.status).to.equal(422);
+            expect(response.body.message);
+        });
+    });
+
+    context('post /contributions/:id', () => {
+        it('success as gov admin', async () => {
+            const response = await request(app)
+                .post(`/contributions/${contribution1.id}`)
+                .send({ governmentId: government.id, currentUserId: govAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body)
+                .to.be.an.instanceof(Object)
+                .to.have.property('id');
+            expect(response.body.message).to.be.undefined;
+        });
+
+        it('success as campaign admin', async () => {
+            const response = await request(app)
+                .post(`/contributions/${contribution1.id}`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignAdminToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body)
+                .to.be.an.instanceof(Object)
+                .to.have.property('id');
+            expect(response.body.message).to.be.undefined;
+        });
+
+        it('success as campaign staff', async () => {
+            const response = await request(app)
+                .post(`/contributions/${contribution1.id}`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignStaff.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignStaffToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body)
+                .to.be.an.instanceof(Object)
+                .to.have.property('id');
+            expect(response.body.message).to.be.undefined;
+        });
+
+        it('error permissions', async () => {
+            const response = await request(app)
+                .post(`/contributions/${contribution1.id}`)
+                .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignStaff2Token}`]);
+            expect(response.status).to.equal(422);
+            expect(response.body).to.not.have.property('id');
             expect(response.body.message);
         });
     });

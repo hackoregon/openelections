@@ -3,7 +3,9 @@ import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
     IAddContributionAttrs,
-    getContributionsAsync, updateContributionAsync,
+    getContributionsAsync,
+    updateContributionAsync,
+    getContributionByIdAsync
 } from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
@@ -642,6 +644,54 @@ describe('contributionService', () => {
             expect(contribution.amount).to.equal(1550);
         } catch (error) {
             expect(error.message).to.equal('User does not have permissions');
+        }
+    });
+
+    it('gets a contribution by id as gov admin', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        const c = await getContributionByIdAsync({
+            contributionId: contribution.id,
+            governmentId: government.id,
+            currentUserId: govAdmin.id
+        });
+        expect(c.id === contribution.id);
+    });
+
+    it('gets a contribution by id as campaign staff', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        const c = await getContributionByIdAsync({
+            contributionId: contribution.id,
+            governmentId: government.id,
+            campaignId: campaign2.id,
+            currentUserId: campaignStaff.id
+        });
+        expect(c.id === contribution.id);
+    });
+
+    it('gets a contribution by id fails without campaign id as campaign staff', async () => {
+        try {
+            const contribution = await newContributionAsync(campaign2, government);
+            await getContributionByIdAsync({
+                contributionId: contribution.id,
+                governmentId: government.id,
+                currentUserId: campaignStaff.id
+            });
+        } catch (err) {
+            expect(err.message).to.equal('Must be a government admin to query all contributions');
+        }
+    });
+
+    it('gets a contribution by id fails with wrong campaign id as campaign staff', async () => {
+        try {
+            const contribution = await newContributionAsync(campaign2, government);
+            await getContributionByIdAsync({
+                contributionId: contribution.id,
+                campaignId: campaign1.id,
+                governmentId: government.id,
+                currentUserId: campaignStaff.id
+            });
+        } catch (err) {
+            expect(err.message).to.equal('User is not permitted to get contributions for this campaign');
         }
     });
 });
