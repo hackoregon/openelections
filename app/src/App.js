@@ -1,14 +1,16 @@
 import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
 import Routes from "./Pages/routes";
+import { Global, css } from '@emotion/core';
 
-import "./assets/styles/styles.scss";
+import styles from './assets/styles/global.styles';
 
 class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        <Routes />
+          <Global styles={styles}/>
+          <Routes />
       </BrowserRouter>
     );
   }
