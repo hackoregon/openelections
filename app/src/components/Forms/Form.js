@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
 const submitHandler = (values, formikBag) => {
   // This is a work around to be able to encapsulate 
@@ -22,11 +23,23 @@ const submitHandler = (values, formikBag) => {
   return this.props.onSubmit(values, addHandlers);
 };
 
+const formFromFields = (fields, formikProps) =>
+  Object.keys(fields).map(id =>
+    React.createElement(fields[id].component, {
+      key: id,
+      id,
+      label: fields[id].label,
+      formik: formikProps
+    })
+  );
+
 class Form extends React.Component {
   render() {
-    const { fields, initialValues, children } = this.props;
+    const { fields, initialValues, sections, children } = this.props;
     const fieldIds = Object.keys(fields);
-    const validations = Object.fromEntries(fieldIds.map(id => [id, fields[id].validation]));
+    const validations = Object.fromEntries(
+      fieldIds.map(id => [id, fields[id].validation])
+    );
     const validationSchema = Yup.object(validations);
     return (
       <Formik
@@ -37,18 +50,29 @@ class Form extends React.Component {
         render={formikProps => {
           const form = (
             <React.Fragment>
-              {Object.keys(fields).map(id =>
-                React.createElement(fields[id].component, {
-                  id,
-                  label: fields[id].label,
-                  formik: formikProps
-                })
-              )}
+              {formFromFields(fields, formikProps)}
             </React.Fragment>
           );
-
+          const formSections =
+            sections && sections.length > 0
+              ? Object.fromEntries(
+                  sections.map(section => [
+                    section,
+                    <React.Fragment>
+                      {formFromFields(
+                        _.pickBy(
+                          fields,
+                          field => field.section === section
+                        ),
+                        formikProps
+                      )}
+                    </React.Fragment>
+                  ])
+                )
+              : {};
           return children({
             form,
+            formSections,
             isValid: formikProps.isValid,
             isDirty: formikProps.dirty,
             isSubmitting: formikProps.isSubmitting,
@@ -67,7 +91,10 @@ Form.propTypes = {
     PropTypes.shape({
       label: PropTypes.string,
       component: PropTypes.component,
-      validation: PropTypes.shape({/* Yup validation */})
+      validation: PropTypes.shape({
+        /* Yup validation */
+      })
+      // sections: PropTypes.arrayOf(PropTypes.string) <- optional
     })
   ).isRequired,
   initialValues: PropTypes.shape({}).isRequired,

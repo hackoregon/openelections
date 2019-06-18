@@ -35,6 +35,7 @@ export interface IAddContributionAttrs {
     subType: ContributionSubType;
     title?: string;
     type: ContributionType;
+    date: number;
     zip: string;
 }
 
@@ -64,23 +65,24 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.status = contributionAttrs.status;
 
             contribution.contrPrefix = contributionAttrs.prefix;
-            contribution.contrFirst = contributionAttrs.firstName;
-            contribution.contrMiddleInitial = contributionAttrs.middleInitial;
-            contribution.contrLast = contributionAttrs.lastName;
-            contribution.contrSuffix = contributionAttrs.suffix;
-            contribution.contrTitle = contributionAttrs.title;
+            contribution.firstName = contributionAttrs.firstName;
+            contribution.middleInitial = contributionAttrs.middleInitial;
+            contribution.lastName = contributionAttrs.lastName;
+            contribution.suffix = contributionAttrs.suffix;
+            contribution.title = contributionAttrs.title;
             contribution.email = contributionAttrs.email;
             contribution.address1 = contributionAttrs.address1;
             contribution.address2 = contributionAttrs.address2;
             contribution.city = contributionAttrs.city;
             contribution.state = contributionAttrs.state;
             contribution.zip = contributionAttrs.zip;
-            contribution.contrName = contributionAttrs.name;
+            contribution.name = contributionAttrs.name;
             contribution.contributorType = contributionAttrs.contributorType;
 
             contribution.amount = contributionAttrs.amount;
             contribution.matchAmount = contributionAttrs.matchAmount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
+            contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
                 await contributionRepository.save(contribution);
                 return contribution;
@@ -131,6 +133,53 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             page: options.page || 0,
             perPage: options.perPage || 100
         });
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IUpdateContributionAttrs {
+    currentUserId: number;
+    id: number;
+    address1?: string;
+    address2?: string;
+    amount?: number;
+    city?: string;
+    contributorType?: ContributorType;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    matchAmount?: number;
+    middleInitial?: string;
+    name?: string;
+    prefix?: string;
+    state?: string;
+    status?: ContributionStatus;
+    suffix?: string;
+    submitForMatch?: boolean;
+    subType?: ContributionSubType;
+    title?: string;
+    type?: ContributionType;
+    zip?: string;
+}
+
+export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+        const contribution = await contributionRepository.findOneOrFail(contributionAttrs.id, {relations: ['campaign', 'government']}) as Contribution;
+        const attrs = Object.assign({}, contributionAttrs);
+        delete attrs.currentUserId;
+        delete attrs.id;
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
+        if (hasCampaignPermissions) {
+            await contributionRepository.update(contributionAttrs.id, attrs);
+        } else {
+            throw new Error('User does not have permissions');
+        }
     } catch (e) {
         throw new Error(e.message);
     }
