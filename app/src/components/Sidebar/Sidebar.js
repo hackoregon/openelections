@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { accents } from "../../assets/styles/emotion-globals/colors";
+import { accents } from "../../assets/styles/variables";
 
 const styles = css`
   font-size: 20px;
