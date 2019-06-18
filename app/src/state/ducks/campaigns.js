@@ -1,4 +1,5 @@
 // campaigns.js
+import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
@@ -64,3 +65,17 @@ export function createCampaignForGovernment(governmentId, name) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getCampaignInfo = createSelector(
+  rootState,
+  state => state.campaigns
+);
+
+export const getCampaignName = state => {
+  return getCampaignInfo(state).name
+    ? getCampaignInfo(state).name
+    : "No Campaign Name";
+};
