@@ -4,7 +4,9 @@ import {
     IGetContributionAttrs,
     getContributionsAsync,
     IAddContributionAttrs,
-    addContributionAsync
+    addContributionAsync,
+    IGetContributionByIdAttrs,
+    getContributionByIdAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean, IsBooleanString } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -276,6 +278,28 @@ export async function addContribution(request: IRequest, response: Response, nex
         await checkDto(addContributionDto);
         const contribution = await addContributionAsync(addContributionDto);
         return response.status(204).send(contribution);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export class GetContributionByIdDto implements IGetContributionByIdAttrs {
+    governmentId: number;
+    contributionId: number;
+    currentUserId?: number;
+    campaignId?: number;
+}
+
+export async function getContributionById(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const getContributionByIdDto = Object.assign(new GetContributionByIdDto(), {
+            ...request.body,
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(getContributionByIdDto);
+        const contribution = await getContributionByIdAsync(getContributionByIdDto);
+        return response.status(200).send(contribution);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
