@@ -44,7 +44,7 @@ class TestGetMatch():
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
 
         # City match
-        assert ematch['correct_city']
+        assert ematch['eligible_address']
 
     @patch('psycopg2.connect')
     def test_exact_match_abr(self, mock_connect):
@@ -69,7 +69,7 @@ class TestGetMatch():
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
 
         # City match
-        assert ematch['correct_city']
+        assert ematch['eligible_address']
 
     @patch('psycopg2.connect')
     def test_strong_match_abr(self, mock_connect):
@@ -96,7 +96,7 @@ class TestGetMatch():
                smatch['last_name_sim'] == 1
 
         # City match
-        assert smatch['correct_city']
+        assert smatch['eligible_address']
 
 
 class TestInPortland():

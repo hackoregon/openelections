@@ -163,8 +163,8 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 
     data = np.unique(np.array(dbresult, dtype=np.dtype([('first_name', 'U128'),
                                                         ('last_name', 'U128'),
-                                                        ('res_address_1', 'U128'),
-                                                        ('res_address_2', 'U128'),
+                                                        ('address_1', 'U128'),
+                                                        ('address_2', 'U128'),
                                                         ('city', 'U128'),
                                                         ('state', 'U128'),
                                                         ('zip', 'U128')])))
@@ -210,7 +210,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
 
         address_tokens = tokenize_address(addr1)
         for record in data:
-            rec_address_tokens = tokenize_address(record['res_address_1'])
+            rec_address_tokens = tokenize_address(record['address_1'])
             # do we want to tokenize res_address_2 too?
 
             if len(address_tokens) <= len(rec_address_tokens):
@@ -233,7 +233,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
                                                                    ('zip_sim', np.float),
                                                                    ('first_name_sim', np.float),
                                                                    ('last_name_sim', np.float),
-                                                                   ('correct_city', np.float)]))
+                                                                   ('eligible_address', np.float)]))
     is_exact = (matches['last_name_sim'] == 1) & \
                (matches['first_name_sim'] == 1) & \
                (matches['address_sim'] == 1) & \
@@ -257,8 +257,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
 
 def cli() -> None:
     """
-    Command line interface for get_match.
-    :return:
+    Command line interface for get_match. Prints JSON output.
 
     >>> # Call from top level directory
     >>> python -m openelections.donor_lookup.match --first_name John --last_name Smith ...
@@ -283,13 +282,12 @@ def cli() -> None:
 
     matches_dict = dict()
     for mtype, tmatches in matches.items():
-        fields = sorted(tmatches.dtype.names)
+        fields = tmatches.dtype.names
         matches_dict[mtype] = []
         for match in tmatches:
             matches_dict[mtype].append({field: match[field] for field in fields})
 
-    j = json.dumps(matches_dict)
-    print(j)
+    print(json.dumps(matches_dict))
 
 
 if __name__ == '__main__':
