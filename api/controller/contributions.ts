@@ -277,7 +277,7 @@ export async function addContribution(request: IRequest, response: Response, nex
         });
         await checkDto(addContributionDto);
         const contribution = await addContributionAsync(addContributionDto);
-        return response.status(204).send(contribution);
+        return response.status(204).json(contribution);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
@@ -295,11 +295,12 @@ export async function getContributionById(request: IRequest, response: Response,
         checkCurrentUser(request);
         const getContributionByIdDto = Object.assign(new GetContributionByIdDto(), {
             ...request.body,
+            contributionId: request.params.id,
             currentUserId: request.currentUser.id
         });
         await checkDto(getContributionByIdDto);
         const contribution = await getContributionByIdAsync(getContributionByIdDto);
-        return response.status(200).send(contribution);
+        return response.status(200).json(contribution);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }

@@ -16,6 +16,7 @@ import {
     ContributionStatus,
     ContributorType
 } from '../../../models/entity/Contribution';
+import { addContributionAsync } from '../../../services/contributionService';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -68,28 +69,24 @@ describe('Routes post /contributions', () => {
         campaignAdminToken = await generateJWTokenAsync(campaignAdmin.id);
         campaignStaff2Token = await generateJWTokenAsync(campaignStaff2.id);
 
-        contribution1 = await request(app)
-            .post(`/contributions/new`)
-            .send({
-                address1: '123 ABC ST',
-                amount: 250,
-                campaignId: campaign.id,
-                city: 'Portland',
-                currentUserId: campaignStaff.id,
-                date: Date.now(),
-                firstName: 'John',
-                middleInitial: '',
-                lastName: 'Doe',
-                governmentId: government.id,
-                type: ContributionType.CONTRIBUTION,
-                subType: ContributionSubType.CASH,
-                state: 'OR',
-                status: ContributionStatus.DRAFT,
-                zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL
-            })
-            .set('Accept', 'application/json')
-            .set('Cookie', [`token=${campaignStaffToken}`]);
+        contribution1 = await addContributionAsync({
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            date: Date.now(),
+            firstName: 'John',
+            middleInitial: '',
+            lastName: 'Doe',
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            state: 'OR',
+            status: ContributionStatus.DRAFT,
+            zip: '97214',
+            contributorType: ContributorType.INDIVIDUAL
+        });
     });
 
     afterEach(async () => {

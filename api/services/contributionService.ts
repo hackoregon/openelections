@@ -6,7 +6,8 @@ import {
     ContributionType,
     ContributorType,
     IContributionSummary,
-    getContributionsByGovernmentIdAsync
+    getContributionsByGovernmentIdAsync,
+    contributionSummaryFields
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -84,8 +85,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
-                await contributionRepository.save(contribution);
-                return contribution;
+                return await contributionRepository.save(contribution);
             }
             throw new Error('Contribution is missing one or more required properties.');
         }
@@ -209,14 +209,18 @@ export async function getContributionByIdAsync(
                 (await isGovernmentAdminAsync(options.currentUserId, governmentId));
             if (hasCampaignPermissions) {
                 const repository = getConnection('default').getRepository('Contribution');
-                return (await repository.findOne(contributionId)) as IContributionSummary;
+                const query = { select: contributionSummaryFields, where: { id: contributionId } };
+                const contribution = await repository.findOne(query);
+                return (contribution as unknown) as IContributionSummary;
             }
             throw new Error('User is not permitted to get contributions for this campaign');
         } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
             throw new Error('Must be a government admin to query all contributions');
         }
         const repository = getConnection('default').getRepository('Contribution');
-        return (await repository.findOne(contributionId)) as IContributionSummary;
+        const query = { select: contributionSummaryFields, where: { id: contributionId } };
+        const contribution = await repository.findOne(query);
+        return (contribution as unknown) as IContributionSummary;
     } catch (e) {
         throw new Error(e.message);
     }
