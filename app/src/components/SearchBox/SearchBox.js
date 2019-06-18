@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import loader from "../../assets/styles/emotion-globals/loader";
+import loader from "../../assets/styles/elementes/loader";
 
 class SearchBox extends Component {
   constructor(props) {

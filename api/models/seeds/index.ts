@@ -1,4 +1,4 @@
-import UserSeed from './users';
+import Seed from './seeds';
 import db from '../db';
 import { truncateAll } from '../../test/factories';
 
@@ -7,10 +7,11 @@ import { truncateAll } from '../../test/factories';
         console.log('Can only seed in test, qa, or development mode');
         return;
     }
+    console.log('Database seeding');
     await db();
     await truncateAll();
     const promises = [];
-    promises.push(UserSeed());
+    promises.push(Seed());
     await Promise.all(promises);
     console.log('Database seeded');
     process.exit();

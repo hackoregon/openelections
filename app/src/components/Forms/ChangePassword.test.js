@@ -1,5 +1,5 @@
 import React from "react";
-import { ChangePasswordForm } from "./ChangePassword";
+import ChangePasswordForm from "./ChangePassword";
 
 describe("<ChangePasswordForm/>", () => {
   it("should be defined", () => {
