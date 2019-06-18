@@ -167,7 +167,9 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
-        const contribution = await contributionRepository.findOneOrFail(contributionAttrs.id, {relations: ['campaign', 'government']}) as Contribution;
+        const contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
+            relations: ['campaign', 'government']
+        })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
         delete attrs.currentUserId;
         delete attrs.id;
@@ -180,6 +182,41 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         } else {
             throw new Error('User does not have permissions');
         }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IGetContributionByIdOptions {
+    currentUserId?: number;
+    campaignId?: number;
+}
+
+export interface IGetContributionByIdAttrs extends IGetContributionByIdOptions {
+    governmentId: number;
+    contributionId: number;
+}
+
+export async function getContributionByIdAsync(
+    contributionAttrs: IGetContributionByIdAttrs
+): Promise<IContributionSummary> {
+    try {
+        const { contributionId, governmentId, ...options } = contributionAttrs;
+        if (options.campaignId) {
+            const hasCampaignPermissions =
+                (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
+                (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
+                (await isGovernmentAdminAsync(options.currentUserId, governmentId));
+            if (hasCampaignPermissions) {
+                const repository = getConnection('default').getRepository('Contribution');
+                return (await repository.findOne(contributionId)) as IContributionSummary;
+            }
+            throw new Error('User is not permitted to get contributions for this campaign');
+        } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
+            throw new Error('Must be a government admin to query all contributions');
+        }
+        const repository = getConnection('default').getRepository('Contribution');
+        return (await repository.findOne(contributionId)) as IContributionSummary;
     } catch (e) {
         throw new Error(e.message);
     }
