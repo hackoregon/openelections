@@ -2,6 +2,7 @@
 Donor matching code
 """
 
+import traceback
 import Levenshtein as leven
 from typing import Optional, Dict, Set
 import numpy as np
@@ -175,7 +176,7 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
               zip_code: Optional[str] = None, addr1: Optional[str] = None,
               addr2: Optional[str] = None, city: Optional[str] = None,
-              state: Optional[str] = None) -> Dict[str, np.ndarray]:
+              state: Optional[str] = None, max_num_matches: int = 10) -> Dict[str, np.ndarray]:
     """
     Find all possible matches for donor: exact, then strong + weak, then none
 
@@ -225,15 +226,20 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             first_name_sim = leven.ratio(first_name.upper(), record['first_name'].upper())
             last_name_sim = leven.ratio(last_name.upper(), record['last_name'].upper())
             zip_sim = leven.ratio(zip_code, record['zip'])
-            correct_city = in_portland(zip_code=record['zip'], city=record['city'].upper())
+            eligible_address = in_portland(zip_code=record['zip'], city=record['city'])
 
-            matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, correct_city]))
+            matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, eligible_address]))
 
     matches = np.array(matches, dtype=np.dtype(data.dtype.descr + [('address_sim', np.float),
                                                                    ('zip_sim', np.float),
                                                                    ('first_name_sim', np.float),
                                                                    ('last_name_sim', np.float),
-                                                                   ('eligible_address', np.float)]))
+                                                                   ('eligible_address', bool)]))
+
+    # Sort matches
+    index = np.argsort(matches[['last_name_sim', 'zip_sim', 'address_sim', 'first_name_sim']])[::-1]
+    matches = matches[index]
+
     is_exact = (matches['last_name_sim'] == 1) & \
                (matches['first_name_sim'] == 1) & \
                (matches['address_sim'] == 1) & \
@@ -250,9 +256,9 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
                ((matches['address_sim'] >= 0.9) & (matches['zip_sim'] == 1)))
 
     # Do we want to add a flag to indicate the specified address is not in Portland
-    return {'exact': matches[is_exact],
-            'strong': matches[is_strong],
-            'weak': matches[is_weak]}
+    return {'exact': matches[is_exact][:max_num_matches],
+            'strong': matches[is_strong][:max_num_matches],
+            'weak': matches[is_weak][:max_num_matches]}
 
 
 def cli() -> None:
@@ -263,31 +269,42 @@ def cli() -> None:
     >>> python -m openelections.donor_lookup.match --first_name John --last_name Smith ...
     >>> --addr1 "123 Main" --zip_code 97202 --city Portland
     """
+    try:
+        from argparse import ArgumentParser
 
-    from argparse import ArgumentParser
+        aparser = ArgumentParser()
+        aparser.add_argument("--last_name", dest="last_name", type=str)
+        aparser.add_argument("--first_name", dest="first_name", type=str)
+        aparser.add_argument("--zip_code", dest="zip_code", type=str)
+        aparser.add_argument("--addr1", dest="addr1", type=str)
+        aparser.add_argument("--addr2", dest="addr2", default=None, type=str)
+        aparser.add_argument("--city", dest="city", default=None, type=str)
+        aparser.add_argument("--max_matches", dest="max_matches", default=10, type=int)
 
-    aparser = ArgumentParser()
-    aparser.add_argument("--last_name", dest="last_name", type=str)
-    aparser.add_argument("--first_name", dest="first_name", type=str)
-    aparser.add_argument("--zip_code", dest="zip_code", type=str)
-    aparser.add_argument("--addr1", dest="addr1", type=str)
-    aparser.add_argument("--addr2", dest="addr2", default=None, type=str)
-    aparser.add_argument("--city", dest="city", default=None, type=str)
+        options = vars(aparser.parse_args())
 
-    options = vars(aparser.parse_args())
+        matches = get_match(last_name=options['last_name'], first_name=options['first_name'],
+                            zip_code=options['zip_code'], addr1=options['addr1'],
+                            addr2=options['addr2'], city=options['city'], max_num_matches=options['max_matches'])
 
-    matches = get_match(last_name=options['last_name'], first_name=options['first_name'],
-                        zip_code=options['zip_code'], addr1=options['addr1'],
-                        addr2=options['addr2'], city=options['city'])
+        matches_dict = dict()
+        for mtype, tmatches in matches.items():
+            fields = tmatches.dtype.names
+            matches_dict[mtype] = []
+            for match in tmatches:
+                matches_dict[mtype].append({field: str(match[field]) for field in fields})
 
-    matches_dict = dict()
-    for mtype, tmatches in matches.items():
-        fields = tmatches.dtype.names
-        matches_dict[mtype] = []
-        for match in tmatches:
-            matches_dict[mtype].append({field: match[field] for field in fields})
+        # Add donor information to outout
+        donor = {key: str(val).upper() if val is not None else "" for key, val in options.items()}
+        donor['eligible_address'] = str(in_portland(zip_code=options['zip_code'], city=options['city']))
+        matches_dict['donor_info'] = donor
 
-    print(json.dumps(matches_dict))
+        # Print JSON output
+        print(json.dumps(matches_dict))
+
+    except BaseException:
+        # Catch error and print message to stdout
+        print(traceback.format_exc())
 
 
 if __name__ == '__main__':

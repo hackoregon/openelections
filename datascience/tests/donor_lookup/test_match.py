@@ -98,6 +98,31 @@ class TestGetMatch():
         # City match
         assert smatch['eligible_address']
 
+    @patch('psycopg2.connect')
+    def test_max_return(self, mock_connect):
+        """
+        Test for max return
+        """
+        test_data = [('JOHNS', 'SMITH', '523 NE LUMBAR ST', '', 'PORTLAND', 'OR', '97202'),
+                     ('JOHNS', 'SMITH', '153 NW LUMBARR ST', '', 'PORTLAND', 'OR', '97202'),
+                     ('JOHN', 'SMITH', '125 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
+
+        from openelections.donor_lookup.match import get_match
+        matches = get_match(last_name='Smith', first_name='John',
+                            addr1='123 lumbar street', zip_code='97202', city='Portland',
+                            max_num_matches=2)
+
+        # No weak or exact matches
+        assert matches['strong'].size == 0 and matches['exact'].size == 0
+
+        # One exact match
+        assert matches['weak'].size == 2
+
+        # Test right two selected
+        assert matches['weak'][0]['first_name'] == 'JOHN' and matches['weak'][0]['last_name'] == 'SMITH'
+        assert matches['weak'][1]['address_1'] == '523 NE LUMBAR ST'
+
 
 class TestInPortland():
     """
