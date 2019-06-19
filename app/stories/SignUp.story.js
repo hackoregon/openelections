@@ -6,4 +6,4 @@ import { storiesOf } from '@storybook/react';
 import SignUp from "../src/Pages/SignUp/SignUp";
 
 export default () => storiesOf('SignUp', module)
-	.add('Sign Up Form', () => <SignUp />)
+	.add('Sign Up Form', () => <SignUp />);

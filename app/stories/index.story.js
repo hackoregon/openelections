@@ -2,9 +2,9 @@ import React from "react";
 
 import { storiesOf } from "@storybook/react";
 // import { action } from '@storybook/addon-actions';
-import { linkTo } from "@storybook/addon-links";
+//import { linkTo } from "@storybook/addon-links";
 
-import { Welcome } from "@storybook/react/demo";
+//import { Welcome } from "@storybook/react/demo";
 // import Doohicky from '../src/components/Doohicky/index';
 // import Provider from './Provider';
 import Doohicky from "./doohicky.story";
@@ -19,7 +19,7 @@ import SignIn from "./SignIn.story";
 import SignUp from "./SignUp.story";
 // import Provider from './Provider';
 
-import "../src/assets/styles/styles.scss";
+//import "../src/assets/styles/styles.scss";
 
 // storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
