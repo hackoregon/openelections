@@ -6,7 +6,7 @@ import HomePage from "./Home/Home";
 import AboutPage from "./About/About";
 import SandboxPage from "./Sandbox/Sandbox";
 import AddUserPage from "./AddUser/AddUser";
-import ChangePasswordPage from "./ChangePassword/ChangePassword";
+// import ChangePasswordPage from "./ChangePassword/ChangePassword";
 import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
@@ -40,11 +40,11 @@ const Routes = props => {
                 <Route exact path="/add-user" component={AddUserPage} />
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/sandbox" component={SandboxPage} />
-                <Route
+                {/* <Route
                   exact
                   path="/change-password"
                   component={ChangePasswordPage}
-                />
+                /> */}
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
                 <Route
