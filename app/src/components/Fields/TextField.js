@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import TextField from "@material-ui/core/TextField";
 
-const EmailField = ({ id, label, formik }) => (
+const TextFieldCivic = ({ id, label, formik }) => (
   <TextField
     id={id}
     name={id}
@@ -17,10 +17,10 @@ const EmailField = ({ id, label, formik }) => (
   />
 );
 
-EmailField.propTypes = {
+TextFieldCivic.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
   formik: PropTypes.shape({})
 };
 
-export default EmailField;
+export default TextFieldCivic;

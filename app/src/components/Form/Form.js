@@ -29,6 +29,7 @@ const formFromFields = (fields, formikProps) =>
       key: id,
       id,
       label: fields[id].label,
+      valueOptions: fields[id].valueOptions ? fields[id].valueOptions : null,
       formik: formikProps
     })
   );

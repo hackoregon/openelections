@@ -6,6 +6,7 @@ import { AddUserForm } from "../../components/Forms/AddUser";
 import * as Yup from "yup";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import GreenCheck from "../../assets/icons/green-check";
+import AddUserForm2 from "../../components/Forms/AddUser/index";
 
 // import { connect } from 'react-redux'
 
@@ -139,6 +140,7 @@ class AddUser extends React.Component {
             )}
           </Paper>
         </div>
+        <AddUserForm2 />
       </PageHoc>
     );
   }

@@ -2,39 +2,49 @@ import React from "react";
 import * as Yup from "yup";
 
 import Form from "../../Form/Form";
-import PasswordField from "../../Fields/PasswordField";
+import TextField from "../../Fields/TextField";
+import SelectField from "../../Fields/SelectField";
 
 const fields = {
-  oldPassword: {
-    label: "Old Password",
-    section: "oldPassword",
-    component: PasswordField,
-    validation: Yup.string("What was you old password").required(
-      "What was your old password"
+  userRole: {
+    label: "Role",
+    section: "addUserRole",
+    valueOptions: ["Admin", "Staff"],
+    component: SelectField, // new role components
+    validation: Yup.string("Choose a user role").required(
+      "A user role is required"
     )
   },
-  newPassword: {
-    label: "New Password",
-    section: "newPassword",
-    component: PasswordField,
-    validation: Yup.string("Choose a new password").required(
-      "Password is required"
+  email: {
+    label: "Email",
+    section: "addUser",
+    component: TextField, // email component
+    validation: Yup.string("Enter your email")
+      .email("Enter a valid email")
+      .required("Email is required")
+  },
+  firstName: {
+    label: "First Name",
+    section: "addUser",
+    component: TextField, // name component?
+    validation: Yup.string("Enter your first name").required(
+      "First Name is required"
     )
   },
-  confirmNewPassword: {
-    label: "Confirm New Password",
-    section: "newPassword",
-    component: PasswordField,
-    validation: Yup.string("Choose a new password that matches the other one")
-      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-      .required("Password confirm is required")
+  lastName: {
+    label: "Last Name",
+    section: "addUser",
+    component: TextField, // name component?
+    validation: Yup.string("Enter your last name").required(
+      "Last Name is required"
+    )
   }
 };
 
 const AddUserForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={["oldPassword", "newPassword"]}
+    sections={["addUserRole", "addUser"]}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >

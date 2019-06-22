@@ -19,9 +19,10 @@ const AddUser = () => (
     <AddUserForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
       initialValues={{
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: ""
+        userRole: "Staff",
+        email: "",
+        firstName: "",
+        lastName: ""
       }}
     >
       {({
@@ -31,9 +32,13 @@ const AddUser = () => (
         handleSubmit /* isDirty, isSubmitting */
       }) => (
         <React.Fragment>
-          <p css={formTitle}>Change Password</p>
-          {formSections.oldPassword}
-          {formSections.newPassword}
+          <p css={formTitle}>Add a New User</p>
+          {formSections.addUserRole}
+          <p>
+            Enter the user's information and we will send them an email with
+            instructions to join your portal.
+          </p>
+          {formSections.addUser}
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
               Cancel
