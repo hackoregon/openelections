@@ -6,6 +6,47 @@ export const UserRoleEnum = Object.freeze({
   CAMPAIGN_STAFF: "campaign_staff"
 });
 
+export const ContributionTypeEnum = Object.freeze({
+  CONTRIBUTION: "contribution",
+  OTHER: "other"
+});
+
+export const ContributionSubTypeEnum = Object.freeze({
+  CASH: "cash",
+  INKIND_CONTRIBUTION: "inkind_contribution",
+  INKIND_PAID_SUPERVISION: "inkind_paid_supervision",
+  INKIND_FORGIVEN_ACCOUNT: "inkind_forgiven_account",
+  INKIND_FORGIVEN_PERSONAL: "inkind_forgiven_personal",
+  ITEM_SOLD_FAIR_MARKET: "item_sold_fair_market",
+  ITEM_RETURNED_CHECK: "item_returned_check",
+  ITEM_MISC: "item_misc",
+  ITEM_REFUND: "item_refund"
+});
+
+export const ContributorTypeEnum = Object.freeze({
+  INDIVIDUAL: "individual",
+  BUSINESS: "business",
+  FAMILY: "family",
+  LABOR: "labor",
+  POLITICAL_COMMITTEE: "political_committee",
+  POLITICAL_PARTY: "political_party",
+  UNREGISTERED: "unregistered",
+  OTHER: "other"
+});
+
+export const PhoneTypeEnum = Object.freeze({
+  MOBILE: "Mobile",
+  WORK: "Work",
+  HOME: "Home"
+});
+
+export const ContributionStatusEnum = Object.freeze({
+  ARCHIVED: "Archived",
+  DRAFT: "Draft",
+  SUBMITTED: "Submitted",
+  PROCESSED: "Processed"
+});
+
 export function baseUrl() {
   if (process.env.NODE_ENV === "test") {
     return "http://localhost:3000";
@@ -144,16 +185,25 @@ export function updateContribution(contributionAttrs) {
   );
 }
 
-//   path: '/contributions',
+//   path: '/contributions/new',
 //   method: 'post',
 export function createContribution(contributionAttrs) {
-  return post(`${baseUrl()}/contributions`, contributionAttrs);
+  return post(`${baseUrl()}/contributions/new`, contributionAttrs);
 }
 
 //   path: '/contributions',
-//   method: 'get',
+//   method: 'post',
 export function getContributions(contributionSearchAttrs) {
   return post(`${baseUrl()}/contributions`, contributionSearchAttrs);
+}
+
+//   path: '/contributions/{id}',
+//   method: 'post',
+export function getContributionById(contributionByIdAttrs) {
+  return post(
+    `${baseUrl()}/contributions/${contributionByIdAttrs.id}`,
+    contributionByIdAttrs
+  );
 }
 
 export function post(url, data) {
