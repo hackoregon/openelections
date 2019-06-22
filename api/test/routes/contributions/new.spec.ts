@@ -97,7 +97,7 @@ describe('Routes post /contributions/new', () => {
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(204);
+            expect(response.status).to.equal(201);
             expect(response.body.message).to.be.undefined;
         });
 

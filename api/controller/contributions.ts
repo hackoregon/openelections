@@ -277,7 +277,7 @@ export async function addContribution(request: IRequest, response: Response, nex
         });
         await checkDto(addContributionDto);
         const contribution = await addContributionAsync(addContributionDto);
-        return response.status(204).json(contribution);
+        return response.status(201).json(contribution);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
