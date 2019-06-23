@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import _ from "lodash";
 
 const submitHandler = (values, formikBag) => {
-  // This is a work around to be able to encapsulate
+  // This is a work around to be able to encapsulate 
   // attaching state handling upon submission within the form.
   const addHandlers = promise =>
     promise.then(
@@ -74,10 +74,11 @@ class Form extends React.Component {
             form,
             formSections,
             isValid: formikProps.isValid,
-            // isDirty: formikProps.dirty,
-            // isSubmitting: formikProps.isSubmitting,
+            isDirty: formikProps.dirty,
+            isSubmitting: formikProps.isSubmitting,
             handleSubmit: formikProps.handleSubmit,
             handleCancel: formikProps.handleReset
+            /* could return more formikProps if needed */
           });
         }}
       />
