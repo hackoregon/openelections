@@ -10,9 +10,9 @@ const fields = {
     label: "Role",
     section: "addUserRole",
     options: {
-      values: ["Admin", "Staff"]
+      values: ["Admin", "Staff"] // get from Redux state eventually
     },
-    component: SelectField, // new role components
+    component: SelectField,
     validation: Yup.string("Choose a user role").required(
       "A user role is required"
     )
@@ -20,7 +20,7 @@ const fields = {
   email: {
     label: "Email",
     section: "addUser",
-    component: TextField, // email component
+    component: TextField,
     validation: Yup.string("Enter your email")
       .email("Enter a valid email")
       .required("Email is required")
@@ -28,7 +28,7 @@ const fields = {
   firstName: {
     label: "First Name",
     section: "addUser",
-    component: TextField, // name component?
+    component: TextField,
     validation: Yup.string("Enter your first name").required(
       "First Name is required"
     )
@@ -36,7 +36,7 @@ const fields = {
   lastName: {
     label: "Last Name",
     section: "addUser",
-    component: TextField, // name component?
+    component: TextField,
     validation: Yup.string("Enter your last name").required(
       "Last Name is required"
     )
