@@ -29,6 +29,7 @@ const formFromFields = (fields, formikProps) =>
       key: id,
       id,
       label: fields[id].label,
+      options: { ...fields[id].options },
       formik: formikProps
     })
   );

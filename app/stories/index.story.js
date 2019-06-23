@@ -19,8 +19,6 @@ import SignIn from "./SignIn.story";
 import SignUp from "./SignUp.story";
 // import Provider from './Provider';
 
-import "../src/assets/styles/styles.scss";
-
 // storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
 storiesOf("Doohicky", module).add("Intro", () => (
