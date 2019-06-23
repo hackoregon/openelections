@@ -5,19 +5,19 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 
-const SelectField = ({ id, label, valueOptions, formik }) => (
+const SelectField = ({ id, label, options, formik }) => (
   <FormControl>
     <InputLabel htmlFor={id}>{label}</InputLabel>
     <Select
-      value={valueOptions[0]}
-      onChange={formik.handleChange} // this may need updating
+      value={formik.values[id]}
+      onChange={formik.handleChange}
       inputProps={{
         name: id,
         id: id
       }}
       fullWidth
     >
-      {valueOptions.map(role => (
+      {options.values.map(role => (
         <MenuItem value={role} key={role}>
           {role}
         </MenuItem>
@@ -29,7 +29,9 @@ const SelectField = ({ id, label, valueOptions, formik }) => (
 SelectField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
-  valueOptions: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.shape({
+    values: PropTypes.arrayOf(PropTypes.string)
+  }),
   formik: PropTypes.shape({})
 };
 

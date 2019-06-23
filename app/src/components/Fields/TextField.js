@@ -12,7 +12,7 @@ const TextFieldCivic = ({ id, label, formik }) => (
     value={formik.values[id]}
     onChange={formik.handleChange}
     onBlur={formik.handleBlur}
-    autocomplete="on"
+    autoComplete="on"
     fullWidth
   />
 );

@@ -9,7 +9,9 @@ const fields = {
   userRole: {
     label: "Role",
     section: "addUserRole",
-    valueOptions: ["Admin", "Staff"],
+    options: {
+      values: ["Admin", "Staff"]
+    },
     component: SelectField, // new role components
     validation: Yup.string("Choose a user role").required(
       "A user role is required"

@@ -11,7 +11,10 @@ const formTitle = css`
   margin: 10px 0px;
 `;
 const buttonWrapper = css`
-  margintop: 30px;
+  margin-top: 30px;
+`;
+const leftAlign = css`
+  align-self: flex-start;
 `;
 
 const AddUser = () => (
@@ -33,7 +36,7 @@ const AddUser = () => (
       }) => (
         <React.Fragment>
           <p css={formTitle}>Add a New User</p>
-          {formSections.addUserRole}
+          <div css={leftAlign}>{formSections.addUserRole}</div>
           <p>
             Enter the user's information and we will send them an email with
             instructions to join your portal.
