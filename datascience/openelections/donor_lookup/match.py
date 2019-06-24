@@ -79,15 +79,15 @@ ADDRESS_MAP = {'DRIVE': 'DR',
                'TWELFTH': '12TH'}
 
 
-def tokenize_address(address: str) -> Set[str]:
+def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     """
     Sanitize and tokenize address
     This may not be necessary
-
     :param address:
     :return:
     """
     regex = re.compile('[^a-zA-Z0-9 ]')
+    address = addr1 + (addr2 if addr2 else "")
     address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
                       for tkn in regex.sub('', address).upper().split(' ')]
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
@@ -96,7 +96,6 @@ def tokenize_address(address: str) -> Set[str]:
 def in_portland(city: str, zip_code: str) -> bool:
     """
     Returns true if city and zip are both Portland-esque
-
     :param city:
     :param zip_code:
     :return:
@@ -105,13 +104,12 @@ def in_portland(city: str, zip_code: str) -> bool:
 
 
 def query_name_address(last_name: Optional[str] = None, first_name: Optional[str] = None,
-                       zip_code: Optional[str] = None, address: Optional[str] = None,
+                       zip_code: Optional[str] = None, addr1: Optional[str] = None, addr2: Optional[str] = None,
                        name_levenshtein: int = 0, address_levenshtein: int = 0,
                        zip_levenshtein: int = 0) -> np.ndarray:
 
     """
     Query database for donors
-
     :param last_name:
     :param first_name:
     :param zip_code:
@@ -142,11 +140,17 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
         else:
             where_stmt += f" and zip_code = '{zip_code}'"
 
-    if address is not None:
+    if addr1 is not None:
         if address_levenshtein > 0:
-            where_stmt += f" and levenshtein(address_1,'{address.upper()}') <= {address_levenshtein:d}"
+            where_stmt += f" and levenshtein(address_1,'{addr1.upper()}') <= {address_levenshtein:d}"
         else:
-            where_stmt += f" and address_1 = '{address.upper()}'"
+            where_stmt += f" and address_1 = '{addr1.upper()}'"
+
+    if addr2 is not None:
+        if address_levenshtein > 0:
+            where_stmt += f" and levenshtein(address_2,'{addr2.upper()}') <= {address_levenshtein:d}"
+        else:
+            where_stmt += f" and address_2 = '{addr2.upper()}'"
 
     # add zip constraint from George
     zip_list = ', '.join(f"'{tmp}'" for tmp in PORTLAND_ZIP_CODES)
@@ -179,9 +183,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
               state: Optional[str] = None, max_num_matches: int = 10) -> Dict[str, np.ndarray]:
     """
     Find all possible matches for donor: exact, then strong + weak, then none
-
     This is a modification of George's original get_match algorithm
-
     :param last_name:
     :param first_name:
     :param zip_code:
@@ -192,7 +194,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     :return:
     """
 
-    data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, address=addr1)
+    data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
 
     if data.size == 0:
         data = query_name_address(last_name=last_name, zip_code=zip_code)
@@ -209,9 +211,9 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     if data.size > 0:
         # may want to integrate addr2 eventually - see ticket #328
 
-        address_tokens = tokenize_address(addr1)
+        address_tokens = tokenize_address(addr1, addr2)
         for record in data:
-            rec_address_tokens = tokenize_address(record['address_1'])
+            rec_address_tokens = tokenize_address(record['address_1'], record['address_2'])
             # do we want to tokenize res_address_2 too?
 
             if len(address_tokens) <= len(rec_address_tokens):
@@ -264,7 +266,6 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
 def cli() -> None:
     """
     Command line interface for get_match. Prints JSON output.
-
     >>> # Call from top level directory
     >>> python -m openelections.donor_lookup.match --first_name John --last_name Smith ...
     >>> --addr1 "123 Main" --zip_code 97202 --city Portland
