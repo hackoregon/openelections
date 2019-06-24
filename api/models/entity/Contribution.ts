@@ -18,6 +18,7 @@ import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetContributionOptions } from '../../services/contributionService';
+import { removeUndefined } from './helpers';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -154,14 +155,17 @@ export class Contribution {
     @Column({ nullable: true })
     checkNumber?: string;
 
-    @Column({type: 'decimal', transformer: {
+    @Column({
+        type: 'decimal',
+        transformer: {
             to: (value: number) => {
                 return value;
             },
             from: (value: string) => {
                 return parseFloat(value);
             }
-        }})
+        }
+    })
     amount: number;
 
     @Column({ nullable: true })
@@ -344,7 +348,43 @@ export class Contribution {
     }
 }
 
-const contributionSummaryFields = <const>['id', 'amount'];
+export const contributionSummaryFields = <const>[
+    'id',
+    'amount',
+    'createdAt',
+    'updatedAt',
+    'type',
+    'subType',
+    'contributorType',
+    'contrPrefix',
+    'firstName',
+    'middleInitial',
+    'lastName',
+    'suffix',
+    'title',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state',
+    'zip',
+    'county',
+    'email',
+    'phone',
+    'phoneType',
+    'checkNumber',
+    'calendarYearAggregate',
+    'inKindDescription',
+    'occupation',
+    'employerName',
+    'employerCity',
+    'employerState',
+    'submitForMatch',
+    'compliant',
+    'matchAmount',
+    'state',
+    'date'
+];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
 export async function getContributionsByGovernmentIdAsync(
@@ -380,11 +420,3 @@ export async function getContributionsByGovernmentIdAsync(
         throw new Error('Error executing get contributions query');
     }
 }
-
-const removeUndefined = obj => {
-    Object.keys(obj).forEach(key => {
-        if (obj[key] && typeof obj[key] === 'object') removeUndefined(obj[key]);
-        else if (obj[key] === undefined) delete obj[key];
-    });
-    return obj;
-};
