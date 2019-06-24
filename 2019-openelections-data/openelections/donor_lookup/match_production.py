@@ -134,12 +134,9 @@ def tokenize_address(addr1: Optional[str] = None, addr2: Optional[str]= None):
     :return:
     """
     regex = re.compile('[^a-zA-Z0-9 ]')
-    if addr2 is None:
-        address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
-                      for tkn in regex.sub('', addr1).upper().split(' ')]
-    else:
-        address = addr1 + addr2
-        address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
+
+    address = addr1 + (addr2 if addr2 else "")
+    address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
                   for tkn in regex.sub('', address).upper().split(' ')]
 
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
@@ -245,10 +242,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     :return:
     """
 
-    if addr2 is None:
-        data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
-    else:
-        data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
+    data = query_name_address(last_name=last_name, first_name=first_name, zip_code=zip_code, addr1=addr1, addr2=addr2)
 
 
     found_exact = data.size > 0
@@ -268,11 +262,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
     if data.size == 0:
         data_softname = query_name_address(last_name=last_name, first_name=first_name, name_levenshtein=2)
 
-        if addr2 is None:
-            data_softaddress = query_name_address(addr1=addr1, zip_code=zip_code, address_levenshtein=2)
-        else:
-            data_softaddress = query_name_address(addr1=addr1, addr2 = addr2, zip_code=zip_code, address_levenshtein=2)
-
+        data_softaddress = query_name_address(addr1=addr1, addr2 = addr2, zip_code=zip_code, address_levenshtein=2)
 
         found_softaddress = data_softname.size > 0
         found_softname = data_softaddress.size > 0
