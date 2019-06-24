@@ -204,7 +204,7 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
 
     if data.size == 0:
         data_softname = query_name_address(last_name=last_name, first_name=first_name, name_levenshtein=2)
-        data_softaddress = query_name_address(address=addr1, zip_code=zip_code, address_levenshtein=2)
+        data_softaddress = query_name_address(addr1=addr1, addr2=addr2, zip_code=zip_code, address_levenshtein=2)
         data = np.hstack((data_softaddress, data_softname))
 
     matches = []
