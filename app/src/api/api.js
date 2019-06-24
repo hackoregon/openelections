@@ -172,8 +172,8 @@ export function getCampaignsForGovernment(governmentId) {
 
 //   path: '/campaigns/new',
 //   method: 'post',
-export function createCampaignForGovernment(governmentId, name) {
-  return post(`${baseUrl()}/campaigns/new`, { governmentId, name });
+export function createCampaignForGovernment(campaignAttrs) {
+  return post(`${baseUrl()}/campaigns/new`, campaignAttrs);
 }
 
 // path: '/contributions/:id'

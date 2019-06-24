@@ -10,18 +10,21 @@ services:
       - PORT=4000
     depends_on:
       - testdb
+      - api
     ports:
       - 4000:4000
     networks:
       - openelections
+    volumes:
+      - ./app:/app
   api:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-#    volumes:
-#      - ./api:/app
+    volumes:
+      - ./api:/app
     command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "develop"]
     environment:
       - PORT=3000

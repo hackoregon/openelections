@@ -209,8 +209,11 @@ describe("API", () => {
   it("createCampaignForGovernment", async () => {
     process.env.TOKEN = govAdminToken;
     const response = await api.createCampaignForGovernment(
-      governmentId,
-      "Test for Mayor"
+      {
+        governmentId,
+        name: "Test for Mayor",
+        officeSought: 'Mayor',
+      }
     );
     expect(response.status).toEqual(201);
   });
