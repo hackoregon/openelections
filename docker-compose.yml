@@ -77,9 +77,9 @@ services:
       - openelections
   data:
     build:
-      context: ./2019-openelections-data
+      context: ./datascience
     volumes:
-      - ./2019-openelections-data:/project/root
+      - ./datascience:/project/root
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
