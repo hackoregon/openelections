@@ -36,7 +36,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditureAttrs.campaignId));
         if (hasCampaignPermissions) {
             const defaultConn = getConnection('default');
-            const expenditureRepository = defaultConn.getRepository('expenditure');
+            const expenditureRepository = defaultConn.getRepository('Expenditure');
             const governmentRepository = defaultConn.getRepository('Government');
             const campaignRepository = defaultConn.getRepository('Campaign');
 
@@ -53,6 +53,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             expenditure.type = expenditureAttrs.type;
             expenditure.subType = expenditureAttrs.subType;
             expenditure.status = expenditureAttrs.status;
+            expenditure.description = expenditureAttrs.description;
 
             expenditure.address1 = expenditureAttrs.address1;
             expenditure.address2 = expenditureAttrs.address2;
@@ -67,7 +68,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             if (await expenditure.isValidAsync()) {
                 return await expenditureRepository.save(expenditure);
             }
-            throw new Error('expenditure is missing one or more required properties.');
+            throw new Error('Expenditure is missing one or more required properties.');
         }
         throw new Error('User is not permitted to add expenditures for this campaign.');
     } catch (e) {
