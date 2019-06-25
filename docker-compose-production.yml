@@ -1,0 +1,16 @@
+version: '3'
+services:
+  app:
+    tty: true
+    build:
+      context: 'app'
+      dockerfile: 'Dockerfile.production'
+    ports:
+      - 80:80
+  api:
+    tty: true # Enables debugging capabilities when attached to this container.
+    user: root
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.production'
+
