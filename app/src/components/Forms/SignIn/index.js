@@ -4,6 +4,7 @@ import Button from "../../Button/Button";
 import SignInForm from "./SignInForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import { NavLink } from "react-router-dom";
 
 const formTitle = css`
   font-size: 35px;
@@ -13,7 +14,8 @@ const formTitle = css`
 const buttonWrapper = css`
   margin-top: 30px;
 `;
-const leftAlign = css`
+const forgotLink = css`
+  margin-top: 20px;
   align-self: flex-start;
 `;
 
@@ -38,6 +40,9 @@ const SignIn = () => (
               Enter your credentials to sign into the portal.
           </p>
           {formSections.signIn}
+          <div css={forgotLink}>
+              <NavLink to={'/forgotPassword'}>Forgot Password</NavLink>
+          </div>
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
               Cancel
