@@ -6,4 +6,4 @@ import { withKnobs, object } from "@storybook/addon-knobs";
 import AddUser from "../src/components/Forms/AddUser/index";
 
 export default () =>
-  storiesOf("AddUser", module).add("Add User Form", () => <AddUser />);
+  storiesOf("Forms", module).add("Add User Form", () => <AddUser />);

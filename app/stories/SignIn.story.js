@@ -1,9 +1,7 @@
 import * as React from "react";
 
 import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { withKnobs, object } from "@storybook/addon-knobs";
-import SignIn from "../src/Pages/SignIn/SignIn";
+import SignIn from "../src/components/Forms/SignIn/index";
 
 export default () =>
-  storiesOf("SignIn", module).add("Add User Form", () => <SignIn />);
+  storiesOf("Forms", module).add("Sign In Form", () => <SignIn />);

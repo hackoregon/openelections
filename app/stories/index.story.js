@@ -27,20 +27,25 @@ storiesOf("Doohicky", module).add("Intro", () => (
 
 Doohicky();
 
+// Forms
+storiesOf("Forms", module).add("Intro", () => (
+	<p>These are all the form components</p>
+));
+ChangePassword();
+SignIn();
+SignUp();
+ForgotPassword();
+UpdateForgottenPassword();
+AddUser();
+
 storiesOf("Portal", module).add("Intro", () => (
   <p>These are components used within the Dashboard</p>
 ));
 
 // Manage Portal
 UserInfoBox();
-
-AddUser();
 Button();
-ChangePassword();
-SignIn();
-SignUp();
-ForgotPassword();
-UpdateForgottenPassword();
+
 
 storiesOf("UI Components", module).add("Intro", () => (
   <p>These are components used within the Dashboard</p>
