@@ -2,6 +2,7 @@ version: '3'
 services:
   app:
     tty: true
+    image: openelections-app-production
     build:
       context: 'app'
       dockerfile: 'Dockerfile.production'
@@ -10,6 +11,7 @@ services:
   api:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
+    image: openelections-api-production
     build:
       context: 'api'
       dockerfile: 'Dockerfile.production'

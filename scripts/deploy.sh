@@ -12,12 +12,12 @@ if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
         eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
         # tag with branch and travis build number then push
-        TAG=$(git rev-parse --short HEAD)
+        GITTAG=$(git rev-parse --short HEAD)
         echo Tagging with "$TAG"
-        docker tag openelections_api:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$TAG"
-        docker tag  openelections_app:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$TAG"
-        docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$TAG"
-        docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$TAG"
+        docker tag openelections-api-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
+        docker tag  openelections-app-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
+        docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
+        docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
 
         # tag with "latest" then push
         TAG="latest"
@@ -29,11 +29,8 @@ if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 
 
         #echo Running ecs-deploy.sh script...
-        #bin/ecs-deploy.sh  \
-         #  --service-name "$ECS_SERVICE_NAME" \
-          # --cluster "$ECS_CLUSTER"   \
-           #--image "$REMOTE_DOCKER_PATH":latest \
-          # --timeout 300
+        scripts/ecs-deploy.sh  --service-name openelections-staging-app --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG" --timeout 300
+        scripts/ecs-deploy.sh  --service-name openelections-api-staging --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG" --timeout 300
     else
         #echo "Skipping deploy because branch is not master"
         echo "Skipping deploy because tag is not set"
