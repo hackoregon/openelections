@@ -87,7 +87,7 @@ def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     :return:
     """
     regex = re.compile('[^a-zA-Z0-9 ]')
-    address = addr1 + (addr2 if addr2 else "")
+    address = addr1 if addr2 is None else f'{addr1} {addr2}'
     address_tokens = [tkn if tkn.isalpha() else tkn.replace('PH', '').replace('APT', '').replace('NO', '')
                       for tkn in regex.sub('', address).upper().split(' ')]
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
