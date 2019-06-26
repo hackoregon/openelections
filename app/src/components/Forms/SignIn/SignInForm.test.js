@@ -1,7 +1,7 @@
 import React from "react";
-import { SignInForm } from "./SignIn";
+import SignInForm from "./SignInForm";
 
-describe("<SignInForm/>", () => {
+describe("<AddUserForm/>", () => {
   it("should be defined", () => {
     expect(SignInForm).toMatchSnapshot();
   });
