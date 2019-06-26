@@ -4,25 +4,6 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import _ from "lodash";
 
-const submitHandler = (values, formikBag) => {
-  // This is a work around to be able to encapsulate 
-  // attaching state handling upon submission within the form.
-  const addHandlers = promise =>
-    promise.then(
-      result => {
-        formikBag.resetForm();
-        formikBag.setSubmitting(false);
-        return result;
-      },
-      error => {
-        formikBag.setSubmitting(false);
-        formikBag.setErrors(error.validationErrors);
-        throw error;
-      }
-    );
-  return this.props.onSubmit(values, addHandlers);
-};
-
 const formFromFields = (fields, formikProps) =>
   Object.keys(fields).map(id =>
     React.createElement(fields[id].component, {
@@ -47,7 +28,24 @@ class Form extends React.Component {
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
-        onSubmit={submitHandler}
+        onSubmit={(values, formikBag) => {
+          // This is a work around to be able to encapsulate
+          // attaching state handling upon submission within the form.
+          const addHandlers = promise =>
+            promise.then(
+              result => {
+                formikBag.resetForm();
+                formikBag.setSubmitting(false);
+                return result;
+              },
+              error => {
+                formikBag.setSubmitting(false);
+                formikBag.setErrors(error.validationErrors);
+                throw error;
+              }
+            );
+          return this.props.onSubmit(values, addHandlers);
+        }}
         render={formikProps => {
           const form = (
             <React.Fragment>
@@ -61,7 +59,10 @@ class Form extends React.Component {
                     section,
                     <React.Fragment>
                       {formFromFields(
-                        _.pickBy(fields, field => field.section === section),
+                        _.pickBy(
+                          fields,
+                          field => field.section === section
+                        ),
                         formikProps
                       )}
                     </React.Fragment>
