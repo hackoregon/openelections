@@ -6,7 +6,7 @@ import { withKnobs, object } from "@storybook/addon-knobs";
 import UpdateForgottenPassword from "../src/Pages/UpdateForgottenPassword/UpdateForgottenPassword";
 
 export default () =>
-  storiesOf("UpdateForgottenPassword", module).add(
+  storiesOf("Forms", module).add(
     "Change Password Form",
     () => <UpdateForgottenPassword />
   );
