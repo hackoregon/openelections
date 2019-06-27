@@ -160,7 +160,7 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
 
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
   if (process.env.NODE_ENV === 'test') {
-  } else if (process.env.NODE_ENV === 'develop') {
+  } else if (process.env.NODE_ENV === 'development') {
     console.log('In develop mode, this email is not sent ', params);
   } else {
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
