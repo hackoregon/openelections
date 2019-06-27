@@ -8,6 +8,18 @@ import { NavLink } from "react-router-dom";
 import {login } from "../../../state/ducks/auth";
 import { connect } from "react-redux";
 
+const formTitle = css`
+  font-size: 35px;
+  letter-spacing: -2px;
+  margin: 10px 0px;
+`;
+const buttonWrapper = css`
+  margin-top: 30px;
+`;
+const forgotLink = css`
+  margin-top: 20px;
+  align-self: flex-start;
+`;
 
 class SignInConnector extends React.Component {
   render() {
@@ -55,20 +67,6 @@ class SignInConnector extends React.Component {
     );
   }
 }
-
-
-const formTitle = css`
-  font-size: 35px;
-  letter-spacing: -2px;
-  margin: 10px 0px;
-`;
-const buttonWrapper = css`
-  margin-top: 30px;
-`;
-const forgotLink = css`
-  margin-top: 20px;
-  align-self: flex-start;
-`;
 
 const SignIn = (props) => <FormModal {...props} ><SignInConnector {...props}/></FormModal>;
 
