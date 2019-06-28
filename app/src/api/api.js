@@ -50,7 +50,7 @@ export const ContributionStatusEnum = Object.freeze({
 export function baseUrl() {
   if (process.env.NODE_ENV === "test") {
     return "http://localhost:3000";
-  } else if (process.env.NODE_ENV === "develop") {
+  } else if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000";
   } else if (process.env.NODE_ENV === "staging") {
     return "https://api.qa.openelectinosports.org";

@@ -8,7 +8,6 @@ services:
     command: ["npm", "start"]
     environment:
       - PORT=4000
-      - NODE_ENV=develop
     depends_on:
       - db
     ports:
