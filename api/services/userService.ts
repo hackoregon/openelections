@@ -107,7 +107,7 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
 export async function createUserSessionFromLoginAsync(email, password: string): Promise<string> {
     const repository = getConnection('default').getRepository('User');
     try {
-        const user = await repository.findOneOrFail({email}) as User;
+        const user = await repository.findOneOrFail({email: email.toLowerCase()}) as User;
         if (user.validatePassword(password)) {
             const token = generateJWTokenAsync(user.id);
             await createActivityRecordAsync({

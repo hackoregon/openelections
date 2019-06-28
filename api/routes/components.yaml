@@ -338,6 +338,21 @@ components:
                 type: string
             required:
               - governmentId
+    GetContributionByIdBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              governmentId:
+                type: integer
+              currentUserId:
+                type: integer
+              campaignId:
+                type: integer
+            required:
+              - id
 
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:

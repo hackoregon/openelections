@@ -2,6 +2,8 @@
 
 This is the master repo for the Open Elections project.
 
+Check out our [wiki](https://github.com/hackoregon/openelections/wiki) for information.
+
 ### Installation
 
 #### Docker 
