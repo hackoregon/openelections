@@ -5,5 +5,5 @@ import { storiesOf } from '@storybook/react';
 // import { withKnobs, object } from '@storybook/addon-knobs';
 import SignUp from "../src/Pages/SignUp/SignUp";
 
-export default () => storiesOf('Forms', module)
-	.add('Sign Up Form', () => <SignUp />)
+export default () => storiesOf('SignUp', module)
+	.add('Sign Up Form', () => <SignUp />);
