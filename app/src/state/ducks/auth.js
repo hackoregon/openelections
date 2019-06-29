@@ -140,9 +140,10 @@ export function login(email, password) {
        * Make second request to /me or just decode
        * token from login response headers?
        */
-      const token = response.headers
-        .get("set-cookie")
-        .match(/=([a-zA-Z0-9].+); Path/)[1];
+      const token = document.cookie.split('=')[1];
+      // const token = response.headers
+      //   .get("set-cookie")
+      //   .match(/=([a-zA-Z0-9].+); Path/)[1];
       const me = api.decodeToken(token);
       dispatch(actionCreators.login.success(me));
     } catch (error) {
