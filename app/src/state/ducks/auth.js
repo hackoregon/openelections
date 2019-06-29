@@ -136,16 +136,9 @@ export function login(email, password) {
     dispatch(actionCreators.login.request());
     try {
       const response = await api.login(email, password);
-      /**
-       * Make second request to /me or just decode
-       * token from login response headers?
-       */
-      const token = document.cookie.split('=')[1];
-      // const token = response.headers
-      //   .get("set-cookie")
-      //   .match(/=([a-zA-Z0-9].+); Path/)[1];
-      const me = api.decodeToken(token);
-      dispatch(actionCreators.login.success(me));
+      response.status === 204
+        ? dispatch(actionCreators.login.success())
+        : dispatch(actionCreators.login.failure());      
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
     }
