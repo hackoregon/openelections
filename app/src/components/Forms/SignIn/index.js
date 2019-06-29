@@ -6,7 +6,7 @@ import SignInForm from "./SignInForm";
 import { css, jsx } from "@emotion/core";
 import { NavLink } from "react-router-dom";
 import {login } from "../../../state/ducks/auth";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 
 const formTitle = css`
   font-size: 35px;
@@ -21,10 +21,11 @@ const forgotLink = css`
   align-self: flex-start;
 `;
 
-class SignInConnector extends React.Component {
+class SignIn extends React.Component {
   render() {
     return (
-      <SignInForm {...this.props}  
+    <FormModal >
+      <SignInForm   
       onSubmit={
       values => this.props.dispatch(login(values.email, values.password))
       }
@@ -62,12 +63,11 @@ class SignInConnector extends React.Component {
           </div>
         </React.Fragment>
       )}
-    </SignInForm>
+      </SignInForm>
+    </FormModal>
       
     );
   }
 }
 
-const SignIn = (props) => <FormModal {...props} ><SignInConnector {...props}/></FormModal>;
-
-export default connect()(SignIn);
+export default SignIn;
