@@ -122,10 +122,12 @@ export const actionCreators = {
 export function me() {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.me.request());
+    console.log("LOOK HERE")
     try {
       const me = await api.me();
       dispatch(actionCreators.me.success(me));
     } catch (error) {
+      console.log("Me Error", error)
       dispatch(actionCreators.me.failure(error));
     }
   };
@@ -135,11 +137,17 @@ export function login(email, password) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.login.request());
     try {
-      const response = await api.login(email, password);
-      response.status === 204
-        ? dispatch(actionCreators.login.success())
-        : dispatch(actionCreators.login.failure());      
+      await api.login(email, password)
+      .then(response => {
+        if (response.status === 204) {
+          dispatch(actionCreators.login.success())
+          dispatch(me());
+        } else {
+          dispatch(actionCreators.login.failure()); 
+        }
+      })    
     } catch (error) {
+      console.log('LOGIN Error', error)
       dispatch(actionCreators.login.failure(error));
     }
   };
