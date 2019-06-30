@@ -56,7 +56,7 @@ describe("API", () => {
 
   it("baseUrl", async function() {
     expect(api.baseUrl()).toEqual("http://localhost:3000");
-    process.env.NODE_ENV = "develop";
+    process.env.NODE_ENV = "development";
     expect(api.baseUrl()).toEqual("http://localhost:3000");
     process.env.NODE_ENV = "staging";
     expect(api.baseUrl()).toEqual("https://api.qa.openelectinosports.org");
