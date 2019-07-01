@@ -1,11 +1,34 @@
 import React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
 import Button from "../../../components/Button/Button";
+import Table from "../../../components/Table";
 
-const seedUser = [
+const columnInfo = [
   {
-    firstName: "Jonathon",
-    lastName: "Servos",
+    title: "First Name",
+    field: "fname"
+  },
+  {
+    title: "Last Name",
+    field: "lname"
+  },
+  {
+    title: "Title",
+    field: "title"
+  },
+  {
+    title: "Email",
+    field: "email"
+  },
+  {
+    title: "Role",
+    field: "role"
+  }
+];
+const seedUsers = [
+  {
+    fname: "Jonathon",
+    lname: "Servos",
     title: "Treasurer",
     email: "jonservo@gmail.com",
     role: "Admin"
@@ -23,7 +46,9 @@ const ManagePortalPage = props => (
               Add New User
             </Button>
           </div>
-          <div className="manage-users-table-body" />
+          <div className="manage-users-table-body">
+            <Table title="Users" columns={columnInfo} data={seedUsers} />
+          </div>
         </div>
       </div>
       <div className="manage-labels" />
