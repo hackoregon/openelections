@@ -5,6 +5,8 @@ import SignInForm from "./SignInForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 import { NavLink } from "react-router-dom";
+import {login } from "../../../state/ducks/auth";
+//import { connect } from "react-redux";
 
 const formTitle = css`
   font-size: 35px;
@@ -19,13 +21,17 @@ const forgotLink = css`
   align-self: flex-start;
 `;
 
-const SignIn = () => (
-  <FormModal>
-    <SignInForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+class SignIn extends React.Component {
+  render() {
+    return (
+    <FormModal >
+      <SignInForm   
+      onSubmit={
+      values => this.props.dispatch(login(values.email, values.password))
+      }
       initialValues={{
-        email: "",
-        password: ""
+        email: "govadmin@openelectionsportland.org",
+        password: "passwordd" 
       }}
     >
       {({
@@ -57,8 +63,11 @@ const SignIn = () => (
           </div>
         </React.Fragment>
       )}
-    </SignInForm>
-  </FormModal>
-);
+      </SignInForm>
+    </FormModal>
+      
+    );
+  }
+}
 
 export default SignIn;
