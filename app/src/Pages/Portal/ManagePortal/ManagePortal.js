@@ -47,7 +47,21 @@ const ManagePortalPage = props => (
             </Button>
           </div>
           <div className="manage-users-table-body">
-            <Table title="Users" columns={columnInfo} data={seedUsers} />
+            <Table
+              title="Users"
+              columns={columnInfo}
+              data={seedUsers}
+              options={{
+                search: false
+              }}
+              components={{
+                Actions: props => (
+                  <Button onClick={() => console.log("add user")}>
+                    Add New User
+                  </Button>
+                )
+              }}
+            />
           </div>
         </div>
       </div>

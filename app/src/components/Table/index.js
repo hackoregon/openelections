@@ -16,6 +16,15 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
+
+const tableWrapper = css`
+  width: 100%;
+  .MuiPaper-root {
+    box-shadow: none;
+  }
+`;
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -41,23 +50,37 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-//TODO: Build out editable capabilities: https://material-table.com/#/docs/features/editable
-const Table = ({ title, columns, data, editable }) => (
-  // <div>{console.log({ title, columns, data })}</div>
-  <MaterialTable
-    title={title}
-    columns={columns}
-    data={data}
-    editable={editable}
-    icons={tableIcons}
-  />
+const Table = ({
+  title,
+  columns,
+  data,
+  editable,
+  options,
+  actions,
+  components
+}) => (
+  <div css={tableWrapper}>
+    <MaterialTable
+      title={title}
+      columns={columns}
+      data={data}
+      editable={editable}
+      icons={tableIcons}
+      options={options}
+      actions={actions}
+      components={components}
+    />
+  </div>
 );
 
 Table.propTypes = {
   title: PropTypes.string.isRequired,
   columns: PropTypes.array.isRequired,
   data: PropTypes.any,
-  editable: PropTypes.object
+  editable: PropTypes.object,
+  options: PropTypes.object,
+  actions: PropTypes.array,
+  components: PropTypes.object
 };
 
 export default Table;
