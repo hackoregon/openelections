@@ -5,7 +5,7 @@ import SignInForm from "./SignInForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 import { NavLink } from "react-router-dom";
-import {login } from "../../../state/ducks/auth";
+//import {login } from "../../../state/ducks/auth";
 //import { connect } from "react-redux";
 
 const formTitle = css`
@@ -20,15 +20,16 @@ const forgotLink = css`
   margin-top: 20px;
   align-self: flex-start;
 `;
+ const SignIn =(props)=> (
 
-class SignIn extends React.Component {
-  render() {
-    return (
     <FormModal >
-      <SignInForm   
+      <SignInForm 
       onSubmit={
-      values => this.props.dispatch(login(values.email, values.password))
+      values => {
+        props.login(values.email, values.password);
       }
+      
+    }
       initialValues={{
         email: "govadmin@openelectionsportland.org",
         password: "passwordd" 
@@ -67,7 +68,6 @@ class SignIn extends React.Component {
     </FormModal>
       
     );
-  }
-}
+
 
 export default SignIn;
