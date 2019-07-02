@@ -6,11 +6,11 @@ import TextField from "../../Fields/TextField";
 
 const fields = {
   oldPassword: {
-    label: "Password",
+    label: "Current Password",
     section: "resetPassword",
     component: TextField,
     validation: Yup.string("Enter your current password")
-      .required("Current password is required")
+        .required("Current password is required")
   },
   newPassword: {
     label: "New Password",

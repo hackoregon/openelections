@@ -16,10 +16,15 @@ const buttonWrapper = css`
 `;
 
 
-const ResetPassword = () => (
+const ResetPassword = (props) => (
   <FormModal>
     <ResetPasswordForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      onSubmit={
+        values => {
+          console.log(props);
+          props.updatePassword(values.oldPassword, values.newPassword)
+        }
+      }
       initialValues={{
         oldPassword: "",
         newPassword: ""

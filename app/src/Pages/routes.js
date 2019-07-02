@@ -10,7 +10,7 @@ import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
 import Portal from "./Portal/Portal";
-import ResetPassword from "../components/Forms/ResetPassword";
+import ResetPassword from "./ResetPassword/ResetPassword";
 
 const shouldTransition = location => {
   let transitionPages = ["/", "/about", "/sandbox"];
