@@ -28,9 +28,9 @@ const columnInfo = [
 const seedUsers = [
   {
     fname: "Jonathon",
-    lname: "Servos",
+    lname: "LastName",
     title: "Treasurer",
-    email: "jonservo@gmail.com",
+    email: "jonlast@fakeemail.com",
     role: "Admin"
   }
 ];
@@ -40,29 +40,38 @@ const ManagePortalPage = props => (
     <div className="manage-portal-container">
       <div className="manage-users-container">
         <div className="manage-users-table">
-          <div className="manage-users-table-header">
-            <h2>Users (3)</h2>
-            <Button onClick={() => console.log("add user")}>
-              Add New User
-            </Button>
-          </div>
-          <div className="manage-users-table-body">
-            <Table
-              title="Users"
-              columns={columnInfo}
-              data={seedUsers}
-              options={{
-                search: false
-              }}
-              components={{
-                Actions: props => (
-                  <Button onClick={() => console.log("add user")}>
+          <Table
+            title="Users"
+            columns={columnInfo}
+            data={seedUsers}
+            options={{
+              search: false,
+              actionsCellStyle: {},
+              actionsColumnIndex: -1
+            }}
+            actions={[
+              {
+                icon: props => <Button buttonType="manage">Manage</Button>,
+                tooltip: "Manage User",
+                onClick: (event, rowData) =>
+                  console.log("You are editing " + rowData.fname)
+              }
+            ]}
+            components={{
+              Actions: props => (
+                <div>
+                  {console.log({ props })}
+                  <Button
+                    onClick={(event, rowData) =>
+                      console.log("add user", rowData, props)
+                    }
+                  >
                     Add New User
                   </Button>
-                )
-              }}
-            />
-          </div>
+                </div>
+              )
+            }}
+          />
         </div>
       </div>
       <div className="manage-labels" />

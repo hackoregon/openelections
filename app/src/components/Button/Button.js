@@ -4,6 +4,7 @@ import MaterialButton from "@material-ui/core/Button";
 
 const buttonTypes = {
   submit: { type: "submit", variant: "contained", color: "primary" },
+  manage: { type: "button", variant: "outlined", color: "secondary" },
   cancel: { type: "button", variant: "outlined", color: "secondary" },
   default: { type: "button", variant: "contained", color: "primary" }
 };

@@ -26,6 +26,7 @@ const styles = css`
   .content-wrapper {
     width: 80%;
     padding-left: 20px;
+    padding-right: 20px;
     border-left: 1px solid rgba(0, 0, 0, 0.15);
   }
 
