@@ -59,17 +59,23 @@ const ManagePortalPage = props => (
             ]}
             components={{
               Actions: props => (
-                <div>
-                  {console.log({ props })}
-                  <Button
-                    onClick={(event, rowData) =>
-                      console.log("add user", rowData, props)
-                    }
-                  >
-                    Add New User
-                  </Button>
-                </div>
-              )
+                <Button
+                  onClick={(event, rowData) =>
+                    console.log("add user", rowData, props)
+                  }
+                >
+                  Add New User
+                </Button>
+              ),
+              // Action: props => (
+              //   <Button
+              //     onClick={(event, rowData) =>
+              //       console.log("add user", rowData, props)
+              //     }
+              //   >
+              //     manage
+              //   </Button>
+              // )
             }}
           />
         </div>
