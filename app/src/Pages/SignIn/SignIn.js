@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import SignInForm from "../../components/Forms/SignIn/index";
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
-import {login} from "../../state/ducks/auth";
+import { login } from "../../state/ducks/auth";
 
 class SignIn extends Component {
   componentWillUpdate(newprops){
