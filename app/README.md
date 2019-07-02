@@ -32,6 +32,12 @@ This starts up storybook on port 6006.
 
 This will build your storybook app.
 
+## Running the Front-End and Back-End together with seeded data
+
+1. `yarn start`(Allows you to use hot module reloading while developing. Will fail the docker build of app, which is ok)
+2. `docker-compose up -d`
+3. `docker-compose run --rm api npm run seed`
+
 ## Adding Routes
 
 This project will have pages that are public facing that are not considered to be part of the "portal." In other words, pages like the `Home` page and `About` page will not be apart of the app, or Portal functionality. For this reason there are two routes for this project. The higher level router is located in the `./src/Pages/routes.js` file, and the Portal routes (the main part of this app) are located in the `./src/Pages/Portal/Portal.js` file.
