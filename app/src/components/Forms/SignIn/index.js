@@ -4,7 +4,7 @@ import Button from "../../Button/Button";
 import SignInForm from "./SignInForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const formTitle = css`
   font-size: 35px;
@@ -18,14 +18,18 @@ const forgotLink = css`
   margin-top: 20px;
   align-self: flex-start;
 `;
+ const SignIn =(props)=> (
 
-const SignIn = () => (
-  <FormModal>
-    <SignInForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+    <FormModal >
+      <SignInForm 
+      onSubmit={
+      values => {
+        props.login(values.email, values.password);
+      }
+    }
       initialValues={{
-        email: "",
-        password: ""
+        email: "govadmin@openelectionsportland.org",
+        password: "passwordd" 
       }}
     >
       {({
@@ -41,7 +45,8 @@ const SignIn = () => (
           </p>
           {formSections.signIn}
           <div css={forgotLink}>
-              <NavLink to={'/forgotPassword'}>Forgot Password</NavLink>
+          
+              <Link to={'/forgot-password'}>Forgot Password</Link>
           </div>
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
@@ -57,8 +62,8 @@ const SignIn = () => (
           </div>
         </React.Fragment>
       )}
-    </SignInForm>
-  </FormModal>
-);
+      </SignInForm>
+    </FormModal>
+    );
 
 export default SignIn;
