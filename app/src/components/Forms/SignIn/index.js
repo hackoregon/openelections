@@ -4,9 +4,7 @@ import Button from "../../Button/Button";
 import SignInForm from "./SignInForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { NavLink } from "react-router-dom";
-//import {login } from "../../../state/ducks/auth";
-//import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const formTitle = css`
   font-size: 35px;
@@ -28,7 +26,6 @@ const forgotLink = css`
       values => {
         props.login(values.email, values.password);
       }
-      
     }
       initialValues={{
         email: "govadmin@openelectionsportland.org",
@@ -48,7 +45,8 @@ const forgotLink = css`
           </p>
           {formSections.signIn}
           <div css={forgotLink}>
-              <NavLink to={'/forgotPassword'}>Forgot Password</NavLink>
+          
+              <Link to={'/forgot-password'}>Forgot Password</Link>
           </div>
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
@@ -66,8 +64,6 @@ const forgotLink = css`
       )}
       </SignInForm>
     </FormModal>
-      
     );
-
 
 export default SignIn;
