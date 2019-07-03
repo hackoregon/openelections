@@ -7,6 +7,7 @@ import AboutPage from "./About/About";
 import SandboxPage from "./Sandbox/Sandbox";
 import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
+import InvitationConfirmationPage from "./InvitationConfirmation/InvitationConfirmation";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
 import Portal from "./Portal/Portal";
@@ -40,6 +41,7 @@ const Routes = props => {
                 <Route exact path="/sandbox" component={SandboxPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
+                <Route exact path="/invitation-confirmation" component={InvitationConfirmationPage} />
                 <Route
                   exact
                   path="/forgot-password"
