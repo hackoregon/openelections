@@ -46,37 +46,30 @@ const ManagePortalPage = props => (
             data={seedUsers}
             options={{
               search: false,
-              actionsCellStyle: {},
+              actionsCellStyle: {
+                color: "blue"
+              },
               actionsColumnIndex: -1
             }}
             actions={[
               {
                 icon: props => <Button buttonType="manage">Manage</Button>,
-                tooltip: "Manage User",
+                onClick: (event, rowData) =>
+                  console.log("You are editing " + rowData.fname)
+              },
+              {
+                icon: props => <Button
+                onClick={(event, rowData) =>
+                  console.log("add user", rowData, props)
+                }
+              >
+                Add New User
+              </Button>,
+              isFreeAction: true,
                 onClick: (event, rowData) =>
                   console.log("You are editing " + rowData.fname)
               }
             ]}
-            components={{
-              Actions: props => (
-                <Button
-                  onClick={(event, rowData) =>
-                    console.log("add user", rowData, props)
-                  }
-                >
-                  Add New User
-                </Button>
-              ),
-              // Action: props => (
-              //   <Button
-              //     onClick={(event, rowData) =>
-              //       console.log("add user", rowData, props)
-              //     }
-              //   >
-              //     manage
-              //   </Button>
-              // )
-            }}
           />
         </div>
       </div>
