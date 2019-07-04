@@ -41,7 +41,7 @@ const ManagePortalPage = props => (
       <div className="manage-users-container">
         <div className="manage-users-table">
           <Table
-            title="Users"
+            title={"Users " + "(" + seedUsers.length + ")"}
             columns={columnInfo}
             data={seedUsers}
             options={{
@@ -57,8 +57,12 @@ const ManagePortalPage = props => (
                 name: "Manage",
                 buttonType: "manage",
                 onClick: (event, rowData) => {
-                  console.log("You are managing " + rowData.fname, {props}, {event})
-                  props.history.push('/manage-portal/manage-user')
+                  console.log(
+                    "You are managing " + rowData.fname,
+                    { props },
+                    { event }
+                  );
+                  props.history.push("/manage-portal/manage-user");
                 }
               },
               {
@@ -66,24 +70,24 @@ const ManagePortalPage = props => (
                 name: "Add New User",
                 buttonType: "primary",
                 isFreeAction: true,
-                onClick: (event) =>
-                  console.log("You are adding a new user ", {event})
+                onClick: event =>
+                  console.log("You are adding a new user ", { event })
               }
             ]}
             components={{
               Action: props => (
                 <Button
-                  onClick={(event) => props.action.onClick(event, props.data)}
+                  onClick={event => props.action.onClick(event, props.data)}
                   buttonType={props.action.buttonType}
                 >
-                 {props.action.name}
+                  {props.action.name}
                 </Button>
-              ),
+              )
             }}
           />
         </div>
       </div>
-      <div className="manage-labels"></div>
+      <div className="manage-labels" />
     </div>
   </PageHoc>
 );
