@@ -64,7 +64,7 @@ const ManagePortalPage = props => (
               {
                 icon: "none",
                 name: "Add New User",
-                buttonType: "default",
+                buttonType: "primary",
                 isFreeAction: true,
                 onClick: (event) =>
                   console.log("You are adding a new user ", {event})
