@@ -12,7 +12,7 @@
     ]
   },
   "dependencies": {
-    "@hackoregon/component-library": "^3.0.0",
+    "@hackoregon/component-library": "^3.0.0-ci",
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^4.2.1",
     "formik": "^1.5.4",
