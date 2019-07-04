@@ -53,23 +53,35 @@ const ManagePortalPage = props => (
             }}
             actions={[
               {
-                icon: props => <Button buttonType="manage">Manage</Button>,
+                icon: "none",
+                name: "Manage",
+                buttonType: "manage",
                 onClick: (event, rowData) =>
-                  console.log("You are editing " + rowData.fname)
+                  console.log("You are managing " + rowData.fname, {event})
               },
               {
-                icon: props => <Button
-                onClick={(event, rowData) =>
-                  console.log("add user", rowData, props)
-                }
-              >
-                Add New User
-              </Button>,
-              isFreeAction: true,
-                onClick: (event, rowData) =>
-                  console.log("You are editing " + rowData.fname)
+                icon: "none",
+                name: "Add New User",
+                buttonType: "default",
+                isFreeAction: true,
+                onClick: (event) =>
+                  console.log("You are adding a new user ", {event})
               }
             ]}
+            components={{
+              Action: props => (
+                <Button
+                  onClick={(event) => props.action.onClick(event, props.data)}
+                  buttonType={props.action.buttonType}
+                  color="primary"
+                  variant="contained"
+                  style={{textTransform: 'none'}}
+                  size="small"
+                >
+                 {props.action.name}
+                </Button>
+              ),
+            }}
           />
         </div>
       </div>
