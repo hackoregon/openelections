@@ -53,11 +53,13 @@ const ManagePortalPage = props => (
             }}
             actions={[
               {
-                icon: "none",
+                icon: "none", // icon is needed here or it will error.
                 name: "Manage",
                 buttonType: "manage",
-                onClick: (event, rowData) =>
-                  console.log("You are managing " + rowData.fname, {event})
+                onClick: (event, rowData) => {
+                  console.log("You are managing " + rowData.fname, {props}, {event})
+                  props.history.push('/manage-portal/manage-user')
+                }
               },
               {
                 icon: "none",
@@ -73,10 +75,6 @@ const ManagePortalPage = props => (
                 <Button
                   onClick={(event) => props.action.onClick(event, props.data)}
                   buttonType={props.action.buttonType}
-                  color="primary"
-                  variant="contained"
-                  style={{textTransform: 'none'}}
-                  size="small"
                 >
                  {props.action.name}
                 </Button>
@@ -85,7 +83,7 @@ const ManagePortalPage = props => (
           />
         </div>
       </div>
-      <div className="manage-labels" />
+      <div className="manage-labels"></div>
     </div>
   </PageHoc>
 );

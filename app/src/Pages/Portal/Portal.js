@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/ManagePortal";
+import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
@@ -68,6 +69,11 @@ const Portal = props => {
                         exact
                         path="/manage-portal"
                         component={ManagePortalPage}
+                      />
+                      <Route
+                        exact
+                        path="/manage-portal/manage-user"
+                        component={ManageUserPage}
                       />
                       <Route
                         exact
