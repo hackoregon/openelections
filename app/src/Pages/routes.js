@@ -9,6 +9,7 @@ import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
+import AddContributionPage from "./Portal/Contributions/AddContribution/AddContribution";
 import Portal from "./Portal/Portal";
 
 const shouldTransition = location => {
@@ -40,6 +41,7 @@ const Routes = props => {
                 <Route exact path="/sandbox" component={SandboxPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
+                <Route exact path="/add-contribution" component={AddContributionPage} />
                 <Route
                   exact
                   path="/forgot-password"
