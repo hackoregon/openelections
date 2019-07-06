@@ -17,6 +17,8 @@ import permissions, {
 import users, { STATE_KEY as USERS_STATE_KEY } from "./state/ducks/users";
 import * as api from "./api";
 import * as schema from "./api/schema";
+import { middleware as flashMiddleware } from 'redux-flash'
+
 
 export default function configureStore(history) {
   const composeEnhancers =
@@ -36,6 +38,6 @@ export default function configureStore(history) {
       [PERMISSIONS_STATE_KEY]: permissions,
       [USERS_STATE_KEY]: users
     }),
-    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api, schema })))
+    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api, schema }),flashMiddleware(), ))
   );
 }
