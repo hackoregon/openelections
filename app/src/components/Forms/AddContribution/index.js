@@ -4,6 +4,7 @@ import Button from "../../Button/Button";
 import AddContributionForm from "./AddContributionForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import Portal from '../../../Pages/Portal/Portal';
 
 const formTitle = css`
   font-size: 35px;
@@ -18,6 +19,8 @@ const leftAlign = css`
 `;
 
 const AddContribution = () => (
+  <>
+  <Portal/>
   <FormModal>
     <AddContributionForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
@@ -35,13 +38,17 @@ const AddContribution = () => (
         handleSubmit /* isDirty, isSubmitting */
       }) => (
         <React.Fragment>
-          <p css={formTitle}>Add a New User</p>
-          <div css={leftAlign}>{formSections.addUserRole}</div>
-          <p>
-            Enter the user's information and we will send them an email with
-            instructions to join your portal.
-          </p>
-          {formSections.addContribution} {/* !!!!!!!!!KELLY- fix!!!!!!! */ }
+          <p css={formTitle}>Basics</p>
+          <div css={leftAlign}>{formSections.dateOfContribution}</div>
+
+          <div css={leftAlign}>{formSections.typeOfContribution}</div>
+ 
+          {formSections.subTypeOfContribution} 
+          {formSections.typeOfContributor} 
+          {formSections.amountOfContribution} 
+          {formSections.oaeContributionType} 
+          {formSections.paymentMethod} 
+          {formSections.checkNumber} 
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
               Cancel
@@ -58,6 +65,7 @@ const AddContribution = () => (
       )}
     </AddContributionForm>
   </FormModal>
+  </>
 );
 
 export default AddContribution;

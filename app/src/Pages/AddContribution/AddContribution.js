@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import PageHoc from "../../../../components/PageHoc/PageHoc";
-import AddContributionForm from "../../../../components/Forms/AddContribution/index"
+import PageHoc from "../../components/PageHoc/PageHoc";
+import AddContributionForm from "../../components/Forms/AddContribution/index"
 import { connect } from "react-redux";
-import { login } from "../../../../state/ducks/auth";
+import { login } from "../../state/ducks/auth";
 
 class AddContribution extends Component {
   componentWillUpdate(newprops){
