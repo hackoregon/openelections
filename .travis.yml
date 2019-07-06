@@ -4,11 +4,15 @@ language: node_js
 services:
   - docker
 
+cache:
+  directories:
+    - /app/node_modules
+
 before_install:
   - docker-compose -f docker-compose-test.yml pull
   - docker-compose -f docker-compose-test.yml build api
   - cd app && npm install
 
 script:
-  - docker-compose -f docker-compose-test.yml run --rm api npm test
+  - docker-compose -f docker-compose-test.yml run --rm api
   - cd app && npm test
