@@ -346,6 +346,14 @@ export const AppRoutes = [
      *                 type: integer
      *               name:
      *                 type: string
+     *               officeSought:
+     *                 type: string
+     *               firstName:
+     *                 type: string
+     *               lastName:
+     *                 type: string
+     *               email:
+     *                 type: string
      *     responses:
      *       201:
      *         description: newly created campaign

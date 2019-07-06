@@ -38,21 +38,35 @@ We have a set of seed files located in models/seeds, to run them:
 
 > Heads up: Make sure after each test you swipe the dockers or you will probably get `Error: Request failed with status code 403`.
 
-1. In the root directory run the following. Note: `-f docker-compose-test.yml` specifies the test docker.
+##### Install the app:
+
+In the root directory run the following. Note: `-f docker-compose-test.yml` specifies the test docker.
 ```bash
     docker-compose -f docker-compose-test.yml build
 ```
 
-2. Then you can run the testdb:
+In the app directory, you'll have to install the app dependencies (outside of docker)
+
 ```bash
-    docker-compose -f docker-compose-test.yml up -d
+    cd app
+    npm install
 ```
 
-3. Run the test suite:
+##### Then you can run the api in docker:
+```bash
+    docker-compose -f docker-compose-test.yml up api
+```
+
+##### Run the Test Suites
+
+Run the api test suite:
 
 ```bash
+    docker-compose -f docker-compose-test.yml run --rm api npm test
+```
 
-    docker-compose -f docker-compose-test.yml run --rm api bash
-    > npm test
-    > npm test-watch
+Run the app test suite:
+
+```bash
+    cd app && npm run test
 ```

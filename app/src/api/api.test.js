@@ -32,6 +32,8 @@ describe("API", () => {
       "campaignadmin@openelectionsportland.org",
       "password"
     );
+
+
     campaignAdminToken = tokenResponse.headers
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
@@ -209,8 +211,11 @@ describe("API", () => {
   it("createCampaignForGovernment", async () => {
     process.env.TOKEN = govAdminToken;
     const response = await api.createCampaignForGovernment(
-      governmentId,
-      "Test for Mayor"
+      {
+        governmentId,
+        name: "Test for Mayor",
+        officeSought: 'Mayor',
+      }
     );
     expect(response.status).toEqual(201);
   });
@@ -241,7 +246,7 @@ describe("API", () => {
       campaignId: campaignId,
       city: "Portland",
       currentUserId: campaignStaffId,
-      date: Date.now(),
+      date: 1562436237619,
       firstName: "John",
       middleInitial: "",
       lastName: "Doe",
@@ -264,7 +269,7 @@ describe("API", () => {
       campaignId: campaignId,
       city: "Portland",
       currentUserId: campaignAdminId,
-      date: Date.now(),
+      date: 1562436237619,
       firstName: "John",
       middleInitial: "",
       lastName: "Doe",
@@ -303,7 +308,7 @@ describe("API", () => {
       campaignId: campaignId,
       city: "Portland",
       currentUserId: campaignStaffId,
-      date: Date.now(),
+      date: 1562436237619,
       firstName: "John",
       middleInitial: "",
       lastName: "Doe",
