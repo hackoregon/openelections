@@ -14,5 +14,5 @@ before_install:
   - cd app && npm install && cd ..
 
 script:
-  - docker-compose -f docker-compose-test.yml run --rm api
+  - docker-compose -f docker-compose-test.yml run --rm api npm test
   - cd app && npm test
