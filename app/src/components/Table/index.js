@@ -1,4 +1,5 @@
 // Documentaiton for this component can be found at: https://material-table.com
+// eslint-disable-next-line
 import React, { forwardRef } from "react";
 import MaterialTable from "material-table";
 import PropTypes from "prop-types";

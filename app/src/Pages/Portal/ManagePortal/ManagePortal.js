@@ -41,7 +41,7 @@ const ManagePortalPage = props => (
       <div className="manage-users-container">
         <div className="manage-users-table">
           <Table
-            title={"Users " + "(" + seedUsers.length + ")"}
+            title={`Users (${seedUsers.length})`}
             columns={columnInfo}
             data={seedUsers}
             options={{

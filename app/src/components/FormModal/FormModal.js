@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React from "react";
 import Paper from "@material-ui/core/Paper";
 /** @jsx jsx */
@@ -15,11 +16,11 @@ const paper = css`
 `;
 
 const FormModal = ({ children }) => (
-    <div css={formModalWrapper}>
-      <Paper elevation={1} css={paper}>
-        {children}
-      </Paper>
-    </div>
+  <div css={formModalWrapper}>
+    <Paper elevation={1} css={paper}>
+      {children}
+    </Paper>
+  </div>
 );
 
 export default FormModal;
