@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/contributions/new","status":201,"statusText":"Created","ok":true,"headers":{"x-powered-by":["Express"],"vary":["Origin"],"access-control-allow-credentials":["true"],"content-type":["application/json; charset=utf-8"],"content-length":["10"],"etag":["W/\"a-x/rE6dWH9KnIniNiXycPw9rAAfA\""],"date":["Sat, 06 Jul 2019 16:56:45 GMT"],"connection":["close"]}}

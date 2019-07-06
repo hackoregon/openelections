@@ -15,7 +15,7 @@ export default async (): Promise<Connection> => {
             __dirname + '/entity/*.ts'
         ],
         synchronize: true,
-        logging: process.env.NODE_ENV === 'development'
+        logging: true
     });
 
     return connection;

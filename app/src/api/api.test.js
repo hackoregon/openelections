@@ -32,6 +32,8 @@ describe("API", () => {
       "campaignadmin@openelectionsportland.org",
       "password"
     );
+
+
     campaignAdminToken = tokenResponse.headers
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
