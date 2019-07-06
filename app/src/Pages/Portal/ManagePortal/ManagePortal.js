@@ -26,13 +26,13 @@ const columnInfo = [
   }
 ];
 const seedUsers = [
-  {
-    fname: "Jonathon",
-    lname: "LastName",
-    title: "Treasurer",
-    email: "jonlast@fakeemail.com",
-    role: "Admin"
-  }
+  // {
+  //   fname: "Jonathon",
+  //   lname: "LastName",
+  //   title: "Treasurer",
+  //   email: "jonlast@fakeemail.com",
+  //   role: "Admin"
+  // }
 ];
 const ManagePortalPage = props => (
   <PageHoc>
@@ -44,6 +44,11 @@ const ManagePortalPage = props => (
             title={`Users (${seedUsers.length})`}
             columns={columnInfo}
             data={seedUsers}
+            localization={{
+              body: {
+                emptyDataSourceMessage: "No Users"
+              }
+            }}
             options={{
               search: false,
               actionsCellStyle: {

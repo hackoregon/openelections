@@ -59,7 +59,8 @@ const Table = ({
   editable,
   options,
   actions,
-  components
+  components,
+  localization
 }) => (
   <div css={tableWrapper}>
     <MaterialTable
@@ -71,6 +72,7 @@ const Table = ({
       options={options}
       actions={actions}
       components={components}
+      localization={localization}
     />
   </div>
 );
@@ -82,7 +84,8 @@ Table.propTypes = {
   editable: PropTypes.object,
   options: PropTypes.object,
   actions: PropTypes.array,
-  components: PropTypes.object
+  components: PropTypes.object,
+  localization: PropTypes.object
 };
 
 export default Table;
