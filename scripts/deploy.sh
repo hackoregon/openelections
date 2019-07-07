@@ -29,8 +29,8 @@ if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 
 
         #echo Running ecs-deploy.sh script...
-        scripts/ecs-deploy.sh  --service-name openelections-staging-app --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG" --timeout 300
-        scripts/ecs-deploy.sh  --service-name openelections-api-staging --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG" --timeout 300
+        #scripts/ecs-deploy.sh  --service-name openelections-staging-app --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG" --timeout 300
+        #scripts/ecs-deploy.sh  --service-name openelections-api-staging --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG" --timeout 300
     else
         #echo "Skipping deploy because branch is not master"
         echo "Skipping deploy because tag is not set"

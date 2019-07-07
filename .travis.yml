@@ -16,3 +16,11 @@ before_install:
 script:
   - docker-compose -f docker-compose-test.yml run --rm api npm test
   - cd app && npm test
+  - cd ..
+
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  skip_cleanup: true
+  on:
+    branch: develop
