@@ -10,7 +10,7 @@ const fields = {
     label: "Date of Contribution",
     section: "dateOfContribution",
     component: TextField,
-    validation: Yup.date("Enter date of contribution").required(
+    validation: Yup.string("Enter date of contribution").required( // KELLY- change to date validation
       "A contribution date is required"
     )
   },
@@ -19,7 +19,7 @@ const fields = {
     section: "typeOfContribution",
     component: SelectField,
     options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
+      values: ["Contribution", "Other Receipt"] // get from Redux state eventually
     },
     validation: Yup.string("Choose the type of contribution")
       .required("A contribution type is required")
@@ -29,7 +29,13 @@ const fields = {
     section: "subTypeOfContribution",
     component: SelectField,
     options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
+      // if typeOfContribution was 'contribution' subTypes are:
+      // Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, 
+      // In-Kind /Forgiven Personal Expenditure
+      values: ["Cash Contribution", "In-Kind Contribution", "In-Kind Forgiven Accounts Payable",
+    "In-Kind /Forgiven Personal Expenditure"] // get from Redux state eventually
+    // If Other Receipt was selected, drop down says: Items Sold at Fair Market Value, 
+    // Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
     },
     validation: Yup.string("Choose the subtype of contribution")
       .required("The contribution subtype is required") // KELLY - is the subtype required?
@@ -39,7 +45,9 @@ const fields = {
     section: "typeOfContributor",
     component: SelectField,
     options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
+      values: ["Individual", "Business Entity", "Candidate’s Immediate Family", 
+      "Labor Organization", "Political Committee", "Political Party Committee", 
+      "Unregistered Committee", "Other"] // get from Redux state eventually
     },
     validation: Yup.string("Choose the type of contributor")
       .required("A contributor type is required")
@@ -47,11 +55,8 @@ const fields = {
   amountOfContribution: {
     label: "Amount of Contribution",
     section: "amountOfContribution",
-    component: SelectField,
-    options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
-    },
-    validation: Yup.string("Choose the amount of contribution")
+    component: TextField,
+    validation: Yup.number("Choose the amount of contribution") // KELLY - dollar amount entry
       .required("The contribution amount is required") 
   },
   oaeContributionType: {
@@ -59,7 +64,8 @@ const fields = {
     section: "oaeContributionType",
     component: SelectField,
     options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
+      values: ["Seed Money", "Matchable", "Public Matching Contribution", "Qualifying",
+    "Allowable", "In-Kind: Paid Supervision of Volunteers", "In-Kind: Other"] // get from Redux state eventually
     },
     validation: Yup.string("Choose the OAE contribution type")
       .required("The OAE contribution type is required") 
@@ -69,7 +75,7 @@ const fields = {
     section: "paymentMethod",
     component: SelectField,
     options: {
-      values: ["Admin", "Staff"] // get from Redux state eventually
+      values: ["Cash", "Check", "Money Order", "Credit Card (Online)", "Credit Card (Paper Form)"] // get from Redux state eventually
     },
     validation: Yup.string("Choose the payment method")
       .required("The payment method is required") 
@@ -78,7 +84,7 @@ const fields = {
     label: "Check Number",
     section: "checkNumber",
     component: TextField,
-    validation: Yup.string("Enter your check number").required(
+    validation: Yup.number("Enter your check number").required(  // KELLY - numerical entry
       "Check number is required"
     )
   }
