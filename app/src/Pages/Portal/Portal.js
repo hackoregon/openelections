@@ -73,6 +73,10 @@ const Portal = props => {
                       <Route
                         exact
                         path="/manage-portal/manage-user"
+                        // children={(match) => {
+                        //   console.log({ match });
+                        //   return ManageUserPage;
+                        // }}
                         component={ManageUserPage}
                       />
                       <Route
