@@ -11,7 +11,7 @@ eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
 # tag with branch and travis build number then push
 GITTAG=$(git rev-parse --short HEAD)
-echo Tagging with "GITTAG"
+echo Tagging with "$GITTAG"
 docker tag openelections-api-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
 docker tag  openelections-app-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
 docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
