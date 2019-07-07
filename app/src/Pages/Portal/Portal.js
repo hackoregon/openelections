@@ -2,7 +2,7 @@ import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import DashboardPage from "./Dashboard/Dashboard";
-import ManagePortalPage from "./ManagePortal/ManagePortal";
+import ManagePortalPage from "./ManagePortal/index";
 import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";

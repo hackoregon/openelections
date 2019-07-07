@@ -1,5 +1,6 @@
 // users.js
 import { normalize } from "normalizr";
+import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
@@ -164,3 +165,19 @@ export function getCampaignUsers(campaignId) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+const seedUsers = [
+  {
+    fname: "Jonathon",
+    lname: "LastName",
+    title: "Treasurer",
+    email: "jonlast@fakeemail.com",
+    role: "Admin"
+  }
+];
+export const getUsers = createSelector(
+  rootState,
+  state => seedUsers //TODO: actually return the user array
+);

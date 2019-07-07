@@ -25,25 +25,18 @@ const columnInfo = [
     field: "role"
   }
 ];
-const seedUsers = [
-  // {
-  //   fname: "Jonathon",
-  //   lname: "LastName",
-  //   title: "Treasurer",
-  //   email: "jonlast@fakeemail.com",
-  //   role: "Admin"
-  // }
-];
+
 const ManagePortalPage = props => (
   <PageHoc>
+    {console.log({ props })}
     <h1>Manage Campaign Portal</h1>
     <div className="manage-portal-container">
       <div className="manage-users-container">
         <div className="manage-users-table">
           <Table
-            title={`Users (${seedUsers.length})`}
+            title={`Users (${props.userList.length})`}
             columns={columnInfo}
-            data={seedUsers}
+            data={props.userList}
             localization={{
               body: {
                 emptyDataSourceMessage: "No Users"
