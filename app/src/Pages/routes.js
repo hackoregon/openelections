@@ -9,7 +9,7 @@ import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
-import AddContributionPage from "./AddContribution/AddContribution";
+import AddContributionPage from "./Portal/Contributions/Contributions";
 import Portal from "./Portal/Portal";
 
 const shouldTransition = location => {
