@@ -18,6 +18,12 @@ script:
   - cd app && npm test
   - cd ..
 
+before_deploy:
+  - sudo add-apt-repository ppa:eugenesan/ppa
+  - sudo apt-get update
+  - sudo apt-get install jq -y
+  - pip install --user awscli
+
 deploy:
   provider: script
   script: bash scripts/deploy.sh
