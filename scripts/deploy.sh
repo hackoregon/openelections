@@ -2,6 +2,14 @@
 
 set -e
 
+pip install --user awscli
+export PATH=$PATH:$HOME/.local/bin
+
+# install necessary dependency for ecs-deploy
+add-apt-repository ppa:eugenesan/ppa
+apt-get update
+apt-get install jq -y
+
 # Tag, Push and Deploy only if it's not a pull request
 if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 
@@ -27,10 +35,9 @@ if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
         docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$TAG"
         docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$TAG"
 
-
         #echo Running ecs-deploy.sh script...
-        #scripts/ecs-deploy.sh  --service-name openelections-staging-app --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG" --timeout 300
-        #scripts/ecs-deploy.sh  --service-name openelections-api-staging --cluster openelections --image 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG" --timeout 300
+        scripts/ecs-deploy.sh  -n openelections-staging-app -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
+        scripts/ecs-deploy.sh  -n openelections-staging-api -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
     else
         #echo "Skipping deploy because branch is not master"
         echo "Skipping deploy because tag is not set"
