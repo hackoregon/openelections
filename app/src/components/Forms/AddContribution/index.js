@@ -4,7 +4,7 @@ import Button from "../../Button/Button";
 import AddContributionForm from "./AddContributionForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import Portal from '../../../Pages/Portal/Portal';
+// import Portal from '../../../Pages/Portal/Portal';
 
 const formTitle = css`
   font-size: 35px;
@@ -14,21 +14,26 @@ const formTitle = css`
 const buttonWrapper = css`
   margin-top: 30px;
 `;
-const leftAlign = css`
-  align-self: flex-start;
-`;
+
+
+// const leftAlign = css`
+//   align-self: flex-start;
+// `;
 
 const AddContribution = () => (
   <>
-  <Portal/>
-  <FormModal>
+  {/* <Portal/> */}
+  <FormModal style={{width: '90%'}}>
     <AddContributionForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
       initialValues={{
-        userRole: "Staff",
-        email: "",
-        firstName: "",
-        lastName: ""
+        dateOfContribution: '07/04/2019', // KELLY - needs to be a date and validated
+        typeOfContribution: "Contribution",
+        subTypeOfContribution: "Cash Contribution",
+        amountOfContribution: 100.00,
+        oaeContributionType: "Seed Money",
+        paymentMethod: "Cash",
+        checkNumber: 192
       }}
     >
       {({
@@ -38,10 +43,17 @@ const AddContribution = () => (
         handleSubmit /* isDirty, isSubmitting */
       }) => (
         <React.Fragment>
+        <Button
+          buttonType="submit"
+          disabled={!isValid}
+          onClick={handleSubmit}
+          >
+          Submit Contribution
+        </Button>
           <p css={formTitle}>Basics</p>
-          <div css={leftAlign}>{formSections.dateOfContribution}</div>
+          <div>{formSections.dateOfContribution}</div>
 
-          <div css={leftAlign}>{formSections.typeOfContribution}</div>
+          <div>{formSections.typeOfContribution}</div>
  
           {formSections.subTypeOfContribution} 
           {formSections.typeOfContributor} 
@@ -49,18 +61,6 @@ const AddContribution = () => (
           {formSections.oaeContributionType} 
           {formSections.paymentMethod} 
           {formSections.checkNumber} 
-          <div css={buttonWrapper}>
-            <Button buttonType="cancel" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              buttonType="submit"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-          </div>
         </React.Fragment>
       )}
     </AddContributionForm>
