@@ -3,6 +3,7 @@ import PageHoc from "../../../../components/PageHoc/PageHoc";
 import AddHeaderSectionForm from "../../../../components/Forms/AddContribution/Header/index";
 import AddBasicsSectionForm from "../../../../components/Forms/AddContribution/BasicsSection/index";
 import AddContributorSectionForm from "../../../../components/Forms/AddContribution/ContributorSection/index"
+import OtherDetailsSectionForm from "../../../../components/Forms/AddContribution/OtherDetailsSection/index";
 import { connect } from "react-redux";
 import { login } from "../../../../state/ducks/auth";
 
@@ -18,6 +19,7 @@ class AddContribution extends Component {
         <AddHeaderSectionForm {...this.props} />
         <AddBasicsSectionForm {...this.props} />
         <AddContributorSectionForm {...this.props} />
+        <OtherDetailsSectionForm {...this.props} />
       </PageHoc>
     );
   }
