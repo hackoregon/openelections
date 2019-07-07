@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import PageHoc from "../../components/PageHoc/PageHoc";
-import AddContributionForm from "../../components/Forms/AddContribution/index"
+import PageHoc from "../../../../components/PageHoc/PageHoc";
+import AddHeaderSectionForm from "../../../../components/Forms/AddContribution/Header/index";
+import AddBasicsSectionForm from "../../../../components/Forms/AddContribution/BasicsSection/index";
+import AddContributorSectionForm from "../../../../components/Forms/AddContribution/ContributorSection/index"
 import { connect } from "react-redux";
-import { login } from "../../state/ducks/auth";
+import { login } from "../../../../state/ducks/auth";
 
 class AddContribution extends Component {
   componentWillUpdate(newprops){
@@ -13,7 +15,9 @@ class AddContribution extends Component {
   render() {
     return (
       <PageHoc>
-        <AddContributionForm {...this.props} />
+        <AddHeaderSectionForm {...this.props} />
+        <AddBasicsSectionForm {...this.props} />
+        <AddContributorSectionForm {...this.props} />
       </PageHoc>
     );
   }
