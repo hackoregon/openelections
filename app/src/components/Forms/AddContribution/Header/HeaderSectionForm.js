@@ -50,7 +50,7 @@ const fields = {
   }
 };
 
-const AddContributionFormHeader = ({ initialValues, onSubmit, children }) => (
+const HeaderSectionForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
     sections={["invoiceNumber", "campaignName", "lastEdited", "currentStatus", "labelsCount", "addALabel"]}
@@ -61,4 +61,4 @@ const AddContributionFormHeader = ({ initialValues, onSubmit, children }) => (
   </Form>
 );
 
-export default AddContributionFormHeader;
+export default HeaderSectionForm;
