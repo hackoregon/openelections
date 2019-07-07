@@ -30,12 +30,15 @@ const AddContributorSection = () => (
       }) => (
         <React.Fragment>
           <p css={formTitle}>Contributor</p>
-          <div>{formSections.invoiceNumber}</div>
-          <div>{formSections.campaignName}</div>
-          <div>{formSections.lastEdited}</div>
-          <div>{formSections.currentStatus}</div>
-          <div>{formSections.labelsCount}</div>
-          <div>{formSections.addALabel}</div>
+          <div>{formSections.firstName}</div>
+          <div>{formSections.lastName}</div>
+          <div>{formSections.streetAddress}</div>
+          <div>{formSections.addressLine2}</div>
+          <div>{formSections.city}</div>
+          <div>{formSections.state}</div>
+          <div>{formSections.zipcode}</div>
+          <div>{formSections.contactType}</div>
+          <div>{formSections.contactInformation}</div>
         </React.Fragment>
       )}
     </ContributorSectionForm>
