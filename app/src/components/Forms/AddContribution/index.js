@@ -1,5 +1,4 @@
 import React from "react";
-import FormModal from "../../FormModal/FormModal";
 import Button from "../../Button/Button";
 import AddContributionForm from "./AddContributionForm";
 /** @jsx jsx */
@@ -11,19 +10,8 @@ const formTitle = css`
   letter-spacing: -2px;
   margin: 10px 0px;
 `;
-const buttonWrapper = css`
-  margin-top: 30px;
-`;
-
-
-// const leftAlign = css`
-//   align-self: flex-start;
-// `;
 
 const AddContribution = () => (
-  <>
-  {/* <Portal/> */}
-  <FormModal style={{width: '90%'}}>
     <AddContributionForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
       initialValues={{
@@ -39,7 +27,6 @@ const AddContribution = () => (
       {({
         formSections,
         isValid,
-        handleCancel,
         handleSubmit /* isDirty, isSubmitting */
       }) => (
         <React.Fragment>
@@ -64,8 +51,6 @@ const AddContribution = () => (
         </React.Fragment>
       )}
     </AddContributionForm>
-  </FormModal>
-  </>
 );
 
 export default AddContribution;
