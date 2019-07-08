@@ -47,12 +47,14 @@ const AddContribution = () => (
       amountOfContribution: "",
       oaeContributionType: "",
       paymentMethod: "",
+      checkNumber: "",
 
       // CONTRIBUTOR SECTION
       firstName: "",
       lastName: "",
       streetAddress: "",
       addressLine2: "",
+      city: "",
       state: "",
       zipcode: "",
       contactType: "",
