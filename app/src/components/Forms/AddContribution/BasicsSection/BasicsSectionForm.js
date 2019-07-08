@@ -38,7 +38,7 @@ const fields = {
     // Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
     },
     validation: Yup.string("Choose the subtype of contribution")
-      .required("The contribution subtype is required") // KELLY - is the subtype required?
+      .required("The contribution subtype is required")
   },
   typeOfContributor: {
     label: "Type of Contributor",
@@ -93,7 +93,9 @@ const fields = {
 const BasicsSectionForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={["dateOfContribution", "typeOfContribution", "subTypeOfContribution", "typeOfContributor", "amountOfContribution", "oaeContributionType", "paymentMethod", "checkNumber"]}
+    sections={["dateOfContribution", "typeOfContribution", "subTypeOfContribution", 
+    "typeOfContributor", "amountOfContribution", "oaeContributionType", "paymentMethod", 
+    "checkNumber"]}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >
