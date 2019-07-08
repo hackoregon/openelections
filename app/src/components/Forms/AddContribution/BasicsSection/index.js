@@ -14,13 +14,14 @@ const AddContributionBasicsSection = () => (
     <BasicsSectionForm
     onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
     initialValues={{
-      dateOfContribution: '07/04/2019', // KELLY - needs to be a date and validated
-      typeOfContribution: "Contribution",
-      subTypeOfContribution: "Cash Contribution",
-      amountOfContribution: 100.00,
-      oaeContributionType: "Seed Money",
-      paymentMethod: "Cash",
-      checkNumber: 192
+      dateOfContribution: "",
+      typeOfContribution: "",
+      subTypeOfContribution: "",
+      typeOfContributor: "",
+      amountOfContribution: "",
+      oaeContributionType: "",
+      paymentMethod: "",
+      checkNumber: ""
     }}
   >
     {({

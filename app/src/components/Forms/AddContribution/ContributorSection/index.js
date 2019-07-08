@@ -14,13 +14,19 @@ const AddContributorSection = () => (
     <ContributorSectionForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
       initialValues={{
-        dateOfContribution: '07/04/2019', // KELLY - needs to be a date and validated
-        typeOfContribution: "Contribution",
-        subTypeOfContribution: "Cash Contribution",
-        amountOfContribution: 100.00,
-        oaeContributionType: "Seed Money",
-        paymentMethod: "Cash",
-        checkNumber: 192
+        firstName: "", // KELLY - needs to be a date and validated
+        lastName: "",
+        streetAddress: "",
+        addressLine2: "",
+        state: "",
+        zipcode: "",
+        contactType: "",
+        contactInformation: "",
+        occupation: "",
+        employerName: "",
+        employerCity: "",
+        employerState: "", 
+        employerZipcode: ""
       }}
     >
       {({
@@ -39,6 +45,12 @@ const AddContributorSection = () => (
           <div>{formSections.zipcode}</div>
           <div>{formSections.contactType}</div>
           <div>{formSections.contactInformation}</div>
+          <div>{formSections.occupation}</div>
+          <div>{formSections.employerName}</div>
+          <div>{formSections.employerCity}</div>
+          <div>{formSections.employerState}</div>
+          <div>{formSections.employerZipcode}</div>
+
         </React.Fragment>
       )}
     </ContributorSectionForm>

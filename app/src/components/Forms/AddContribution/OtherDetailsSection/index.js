@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "../../../Button/Button";
 import OtherDetailsSectionForm from "./OtherDetailsSectionForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -14,18 +13,16 @@ const OtherDetailsSection = () => (
     <OtherDetailsSectionForm
       onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
       initialValues={{
-        electionAggregate: '07/04/2019', 
-        description: 'some words here',
-        occupationLetterDate: "some date here",
-        linkToDocumentation: "not sure what this will be",
-        notes: "notes about something",
+        electionAggregate: "", 
+        description: "",
+        occupationLetterDate: "",
+        linkToDocumentation: "",
+        notes: "",
 
       }}
     >
       {({
         formSections,
-        isValid,
-        handleSubmit /* isDirty, isSubmitting */
       }) => (
         <React.Fragment>
           <p css={formTitle}>Other Details</p>
