@@ -31,14 +31,6 @@ const AddContribution = () => (
   <AddContributionForm
     onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
     initialValues={{
-      // HEADER SECTION
-      invoiceNumber: "#123456",
-      campaignName: "Fake Campaign Name",
-      lastEdited: "date",
-      currentStatus: "",
-      labelsCount: "",
-      addALabel: "",
-
       // BASICS SECTION
       dateOfContribution: "",
       typeOfContribution: "",
@@ -78,14 +70,12 @@ const AddContribution = () => (
         <Button buttonType="submit" disabled={!isValid} onClick={handleSubmit}>
           Submit Contribution
         </Button>
-
-        <div>{formSections.headerSection}</div>
         <p css={formTitle}>Basics</p>
         <div>{formSections.basicsSection}</div>
         <p css={formTitle}>Contributor</p>
         <div>{formSections.contributorSection}</div>
         <p css={formTitle}>Other Details</p>
-        <div>{formSections.OtherDetailsSection}</div>
+        <div>{formSections.otherDetailsSection}</div>
       </React.Fragment>
     )}
   </AddContributionForm>
