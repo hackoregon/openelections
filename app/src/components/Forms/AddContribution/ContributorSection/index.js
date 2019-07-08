@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "../../../Button/Button";
 import ContributorSectionForm from "./ContributorSectionForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
