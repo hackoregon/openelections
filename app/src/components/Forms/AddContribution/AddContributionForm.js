@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 // import * as Yup from "yup";
 import * as Yup from "yup";
 
@@ -284,28 +284,28 @@ const fields = {
   // OTHER DETAILS SECTION
   electionAggregate: {
     label: "Election Aggregate",
-    section: "otherDetails",
+    section: "otherDetailsSection",
     component: TextField
     // validation: Yup.string("Enter date of contribution").required( // KELLY- change to date validation
     //   "A contribution date is required")
   },
   description: {
     label: "Description",
-    section: "otherDetails",
+    section: "otherDetailsSection",
     component: TextField
     //   validation: Yup.string("Choose the type of contribution")
     //     .required("A contribution type is required")
   },
   occupationLetterDate: {
     label: "Street Address",
-    section: "otherDetails",
+    section: "otherDetailsSection",
     component: TextField // KELLY - should be a date
     //   validation: Yup.string("Choose the type of contribution")
     //     .required("A contribution type is required")
   },
   linkToDocumentation: {
     label: "Link to Documentation?",
-    section: "otherDetails",
+    section: "otherDetailsSection",
     component: SelectField,
     options: {
       values: ["Not", "Sure", "What", "Will", "Fill"] // get from Redux state eventually
@@ -314,27 +314,45 @@ const fields = {
   },
   notes: {
     label: "Notes?",
-    section: "otherDetails",
+    section: "otherDetailsSection",
     component: TextField
     //   validation: Yup.string("Choose the type of contribution")
     //     .required("A contribution type is required")
   }
 };
 
+const invoiceNumber = "#123456";
+const campaignName = "FakeName";
+const lastEdited = "date";
+const currentStatus = "draft";
+const labelsCount = 0;
+const addALabel = "";
+
 const AddContributionForm = ({ initialValues, onSubmit, children }) => (
-  <Form
-    fields={fields}
-    sections={[
-      "headerSection",
-      "basicsSection",
-      "contributorSection",
-      "otherDetails"
-    ]}
-    initialValues={initialValues}
-    onSubmit={onSubmit}
-  >
-    {children}
-  </Form>
+  // SHOULD HAVE A SEPARATE HEADER COMPONENT HERE
+  // that contains all the fields currently in headerSection
+  <React.Fragment>
+    <p>{invoiceNumber}</p>
+    <p>{` ${campaignName} Campaign`}</p>
+    <p>{`Last Edited ${lastEdited}`}</p>
+    <p>{`Current Status ${currentStatus}`}</p>
+    <p>{`labels ${labelsCount}`}</p>
+    <p>{`+ Add Labels ${addALabel}`}</p>
+
+    <Form
+      fields={fields}
+      sections={[
+        "headerSection",
+        "basicsSection",
+        "contributorSection",
+        "otherDetailsSection"
+      ]}
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+    >
+      {children}
+    </Form>
+  </React.Fragment>
 );
 
 export default AddContributionForm;
