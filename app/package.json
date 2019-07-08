@@ -14,10 +14,10 @@
   "dependencies": {
     "@hackoregon/component-library": "^3.0.0-ci",
     "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^4.2.1",
     "formik": "^1.5.4",
     "history": "^4.9.0",
     "jwt-decode": "^2.2.0",
-    "mui-redux-alerts": "^0.2.0",
     "normalizr": "^3.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
