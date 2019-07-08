@@ -80,13 +80,59 @@ const fields = {
     component: TextField, 
   //   validation: Yup.string("Choose the type of contribution")
   //     .required("A contribution type is required")
-  }
+  },
+  // KELLY - add occupation, employer's name, city, state, zipcode ////////////////
+  occupation: {
+    label: "Occupation",
+    section: "occupation",
+    component: TextField,
+  //   validation: Yup.string("Choose the type of contribution")
+  //     .required("A contribution type is required")
+  },
+  employerName: {
+    label: "Employer's Name",
+    section: "employerName",
+    component: TextField, // KELLY - should be a date
+  //   validation: Yup.string("Choose the type of contribution")
+  //     .required("A contribution type is required")
+  },
+  employerCity: {
+    label: "City",
+    section: "employerCity", // KELLY - am I correct that city is the address for the employer?
+    component: SelectField, 
+    options: {
+      values: ["Not", "Sure", "What", "Will", "Fill"
+      ] // get from Redux state eventually
+    },
+  //   validation: Yup.string("Choose the type of contribution")
+  //     .required("A contribution type is required")
+  },
+  employerState: {
+    label: "State",
+    section: "employerState",
+    component: SelectField, 
+    options: {
+      values: ["Not", "Sure", "What", "Will", "Fill"
+      ] // get from Redux state eventually
+    },
+  //   validation: Yup.string("Choose the type of contribution")
+  //     .required("A contribution type is required")
+  },
+  employerZipcode: {
+    label: "Zipcode",
+    section: "employerZipcode",
+    component: TextField, 
+  //   validation: Yup.string("Choose the type of contribution")
+  //     .required("A contribution type is required")
+  },
 };
 
 const ContributorSectionForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={["firstName", "lastName", "streetAddress", "addressLine2", "city", "state", "zipcode", "contactType", "contactInformation"]}
+    sections={["firstName", "lastName", "streetAddress", "addressLine2", "city", 
+    "state", "zipcode", "contactType", "contactInformation", "occupation", 
+    "employerName", "employerCity", "employerState", "employerZipcode"]}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >
