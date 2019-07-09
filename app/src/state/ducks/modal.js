@@ -15,7 +15,7 @@ export const actionTypes = {
 export const initialState = {
   currentModal: null,
   isActive: false,
-  isLoading: true,
+  isLoading: false,
   error: null
 };
 

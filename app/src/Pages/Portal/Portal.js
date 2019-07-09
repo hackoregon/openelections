@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import Modal from "../../components/Modal/Modal";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
 import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
@@ -97,6 +98,8 @@ const Portal = props => {
           />
         </main>
       </div>
+      {/* add modal here */}
+      <Modal stuff="noo" />
     </PageHoc>
   );
 };
