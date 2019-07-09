@@ -60,7 +60,7 @@ const sectionTitle = css`
   color: #000000;
 `;
 
-const formFields = css`
+const sections = css`
   font-family: Rubik;
   font-style: normal;
   font-weight: normal;
@@ -68,6 +68,11 @@ const formFields = css`
   line-height: 25px;
   /* identical to box height */
   color: #333333;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: green;
 `;
 
 // HEADER PIECES
@@ -140,8 +145,10 @@ const AddContribution = () => (
         </div>
         <p>{`Labels (${labelsCount})`}</p>
         <p>{`+ Add Labels ${addALabel}`}</p>
+
+        {/* BASICS SECTION */}
         <h3 css={sectionTitle}>Basics</h3>
-        <div css={formFields}>{formSections.basicsSection}</div>
+        <div css={sections}>{formSections.basicsSection}</div>
         <p css={sectionTitle}>Contributor</p>
         <div>{formSections.contributorSection}</div>
         <p css={sectionTitle}>Other Details</p>
