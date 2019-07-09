@@ -1,14 +1,14 @@
 // modal.js
 import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
-import createActionTypes from "../utils/createActionTypes";
+import createAction from "../utils/createAction";
 import action from "../utils/action";
 export const STATE_KEY = "modal";
 
 // Action Types
 export const actionTypes = {
-  SHOW_MODAL: createActionTypes(STATE_KEY, "SHOW_MODAL"),
-  DISMISS_MODAL: createActionTypes(STATE_KEY, "DISMISS_MODAL")
+  SHOW_MODAL: createAction(STATE_KEY, "SHOW_MODAL"),
+  DISMISS_MODAL: createAction(STATE_KEY, "DISMISS_MODAL")
 };
 
 // Initial State
@@ -22,7 +22,8 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [actionTypes.SHOW_MODAL]: (state, action) => {
-    return { ...state, isActive: true, currentModal: action.payload };
+    console.log("[REDUCER]", state, action);
+    return { ...state, isActive: true, currentModal: action.payload.component };
   },
   [actionTypes.DISMISS_MODAL]: (state, action) => {
     return { ...state, isActive: false, currentModal: null };
@@ -31,9 +32,23 @@ export default createReducer(initialState, {
 
 // Action Creators
 export const actionCreators = {
-  showmodal: payload => action(actionTypes.SHOW_MODAL, { payload }),
-  dismissmodal: payload => action(actionTypes.DISMISS_MODAL, { payload })
+  showmodal: payload => {
+    console.log(
+      "[actionCreator]",
+      payload,
+      action(actionTypes.SHOW_MODAL, { payload })
+    );
+    return action(actionTypes.SHOW_MODAL, { payload });
+  },
+  dismissmodal: () => action(actionTypes.DISMISS_MODAL)
 };
+
+export function showModal(payload) {
+  return (dispatch, getState) => {
+    console.log("[state]", payload);
+    dispatch(actionCreators.showmodal(payload));
+  };
+}
 
 export function clearModal() {
   return (dispatch, getState) => {

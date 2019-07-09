@@ -41,6 +41,7 @@ const Modal = props => (
             aria-label="Back"
             onClick={x => {
               console.log(x);
+              props.clearModal();
             }}
           >
             <Close style={{ fontSize: "26px", color: "black" }} />
