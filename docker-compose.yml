@@ -23,7 +23,7 @@ services:
       context: 'api'
       dockerfile: 'Dockerfile.development'
     # command: npm run development
-    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "develop"]
+    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
     env_file:
       - .env
     environment:
