@@ -35,9 +35,20 @@ export const actionCreators = {
   dismissmodal: payload => action(actionTypes.DISMISS_MODAL, { payload })
 };
 
+export function clearModal() {
+  return (dispatch, getState) => {
+    dispatch(actionCreators.dismissmodal());
+  };
+}
+
 // Selectors
 export const rootState = state => state || {};
 export const getModalState = createSelector(
   rootState,
   state => state.modal
+);
+
+export const modalIsActive = createSelector(
+  rootState,
+  state => state.modal.isActive
 );

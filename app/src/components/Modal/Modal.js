@@ -6,6 +6,13 @@ import Close from "@material-ui/icons/Close";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
+const modalWrapper = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 const modalStyle = css`
   position: absolute;
   width: 350px;
@@ -23,9 +30,10 @@ const Modal = props => (
   <ModalMaterial
     aria-labelledby="simple-modal-title"
     aria-describedby="simple-modal-description"
-    open={true}
+    open={props.modalIsActive}
+    onClose={() => props.clearModal()}
   >
-    <>
+    <div css={modalWrapper}>
       {console.log({ props })}
       <div css={modalStyle}>
         <div css={closeModal}>
@@ -43,7 +51,7 @@ const Modal = props => (
           Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
         </p>
       </div>
-    </>
+    </div>
   </ModalMaterial>
 );
 
