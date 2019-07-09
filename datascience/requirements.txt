@@ -1,4 +1,4 @@
-certifi==2019.3.9
+certifi==2019.6.16
 numpy==1.16.4
 pandas==0.24.2
 psycopg2==2.7.6.1
