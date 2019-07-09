@@ -42,6 +42,10 @@ lint:
 test:
 	pytest tests
 
+coverage: ## check code coverage quickly with the default Python
+	coverage run --source openelections -m pytest tests
+	coverage report -m
+
 ## Upload Data to S3
 sync_data_to_s3:
 ifeq (default,$(PROFILE))

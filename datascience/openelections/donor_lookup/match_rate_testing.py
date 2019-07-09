@@ -13,7 +13,7 @@ from datetime import datetime
 from openelections.donor_lookup.match import get_match, PORTLAND_ZIP_CODES
 
 
-USE_SAVED_FILES = False  # Set to True if you want to use previously saved data
+USE_SAVED_FILES = True  # Set to True if you want to use previously saved data
 
 
 def save(obj: object, filename: str):
