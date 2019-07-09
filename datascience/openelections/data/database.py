@@ -10,6 +10,18 @@ from psycopg2 import connect
 import psycopg2.errors as psqerrors
 import pandas as pd
 
+UNIFIED_TABLE = 'unified'
+UNIFIED_KEY = {'FIRST_NAME': 'VARCHAR(255)',
+               'MIDDLE_NAME': 'VARCHAR(255)',
+               'LAST_NAME': 'VARCHAR(255)',
+               'COUNTY': 'VARCHAR(255)',
+               'ADDRESS_1': 'VARCHAR(255)',
+               'ADDRESS_2': 'VARCHAR(255)',
+               'CITY': 'VARCHAR(255)',
+               'STATE': 'VARCHAR(255)',
+               'ZIP_CODE': 'VARCHAR(255)',
+               'ZIP_PLUS_FOUR': 'VARCHAR(255)'}
+
 VOTER_LIST_TABLE = 'voter_list'
 VOTER_LIST_KEY = {'FIRST_NAME': 'VARCHAR(255)',
                   'MIDDLE_NAME': 'VARCHAR(255)',
@@ -18,14 +30,13 @@ VOTER_LIST_KEY = {'FIRST_NAME': 'VARCHAR(255)',
                   'COUNTY': 'VARCHAR(255)',
                   'EFF_ADDRESS_1': 'VARCHAR(255)',
                   'EFF_ADDRESS_2': 'VARCHAR(255)',
-                  'EFF_ADDRESS_3': 'VARCHAR(255)',
-                  'EFF_ADDRESS_4': 'VARCHAR(255)',
                   'EFF_CITY': 'VARCHAR(255)',
                   'EFF_STATE': 'VARCHAR(255)',
                   'EFF_ZIP_CODE': 'VARCHAR(255)',
                   'EFF_ZIP_PLUS_FOUR': 'VARCHAR(255)',
                   'RES_ADDRESS_1': 'VARCHAR(255)',
                   'RES_ADDRESS_2': 'VARCHAR(255)',
+                  'CITY': 'VARCHAR(255)',
                   'STATE': 'VARCHAR(255)',
                   'ZIP_CODE': 'VARCHAR(255)',
                   'ZIP_PLUS_FOUR': 'VARCHAR(255)'}
@@ -51,30 +62,12 @@ ORESTAR_KEY = {'Tran Id': 'VARCHAR(255)',
                'Tran Date': 'TIMESTAMP'}
 
 
-@lru_cache(1)
-def _get_db_login_info() -> Dict[str, str]:
-    '''
-    Get database login details.  Looks for _POSTGRES_LOGIN_FILE.
-
-    File schema:
-
-        {
-            "host": "xxx",
-            "port": "xxx",
-            "database": "xxx",
-            "user": "xxx",
-            "password": "xxx"
-        }
-
-    :return:
-    '''
-
-    with open(_POSTGRES_LOGIN_FILE, 'r') as f:
-        login_info = json.load(f)
-    return login_info
-
-
-POSTGRES_LOGIN = _get_db_login_info()
+POSTGRES_LOGIN = {"host": os.environ['POSTGRES_HOST'],
+                  "port": os.environ['POSTGRES_PORT'],
+                  "database": os.environ['POSTGRES_DB'],
+                  "user": os.environ['POSTGRES_USER'],
+                  "password": os.environ['POSTGRES_PASSWORD']
+                  }
 
 
 def create_table(table_name: str, field_key: Dict[str, str], drop_if_exists: bool = False):
@@ -156,6 +149,50 @@ def initialize_orestar():
     data.columns = [cname.replace(" ", "_").replace("/", "_") for cname in data.columns]
 
     cmd = f'INSERT INTO {ORESTAR_TABLE} ({",".join(data.keys())}) VALUES ({",".join(["%s" for f in data.keys()])})'
+    with connect(**POSTGRES_LOGIN) as conn:
+        with conn.cursor() as curr:
+            curr.executemany(cmd, data.to_numpy())
+
+
+def initialize_unified(zip_codes: Optional[List[str]] = None):
+    """
+    Initialize unified records table. Currently just sourced from voter list
+
+    :param zip_codes: List of zip codes to load.  Loads all if not specified.
+
+    >>> initialize_unified(zip_codes=['97080'])
+    """
+
+    # Create voter list table
+    create_table(table_name=UNIFIED_TABLE, field_key=UNIFIED_KEY, drop_if_exists=True)
+
+    # Load voter list data from file
+    data = pd.read_csv(_VOTER_LIST, sep='\t', encoding="latin",
+                       usecols=list(VOTER_LIST_KEY.keys()),
+                       dtype={field: str for field in VOTER_LIST_KEY.keys()},
+                       keep_default_na=False)
+    del data['HOUSE_NUM']
+
+    # Rename all columns to remove spaces
+    data.rename(columns={'CITY': 'RES_CITY',
+                         'STATE': 'RES_STATE',
+                         'ZIP_CODE': 'RES_ZIP_CODE',
+                         'ZIP_PLUS_FOUR': 'RES_ZIP_PLUS_FOUR'}, inplace=True)
+
+    # Split eff and res addresses and create separate records for each
+    data_eff = data[data['EFF_ADDRESS_1'] != data['RES_ADDRESS_1']][[field for field in data.columns
+                                                                     if not field.startswith('RES_')]]
+    data = data[[field for field in data.columns if not field.startswith('EFF_')]]
+    data = pd.concat((data_eff.rename(columns={field: field[4:] for field in data_eff.columns if
+                                               field.startswith('EFF_')}),
+                      data.rename(columns={field: field[4:] for field in data.columns if field.startswith('RES_')})),
+                     sort=False)
+
+    # FILTER TO DESIRED ZIP CODES
+    if zip_codes is not None:
+        data = data[data['ZIP_CODE'].isin(zip_codes)]
+
+    cmd = f'INSERT INTO {UNIFIED_TABLE} ({",".join(data.keys())}) VALUES ({",".join(["%s" for f in data.keys()])})'
     with connect(**POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             curr.executemany(cmd, data.to_numpy())

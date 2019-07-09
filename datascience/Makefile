@@ -36,7 +36,15 @@ clean:
 
 ## Lint using flake8
 lint:
-	flake8 openelections
+	flake8 openelections tests
+
+## run tests quickly with the default Python
+test:
+	pytest tests
+
+coverage: ## check code coverage quickly with the default Python
+	coverage run --source openelections -m pytest tests
+	coverage report -m
 
 ## Upload Data to S3
 sync_data_to_s3:

@@ -39,6 +39,17 @@ services:
       - POSTGRES_DB=open_elections_test
     networks:
       - openelections
+  data:
+    build:
+      context: ./datascience
+    volumes:
+      - ./datascience:/app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=open_elections_data
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=data_db
 networks:
   openelections:
 
