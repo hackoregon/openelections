@@ -59,9 +59,22 @@ class Form extends React.Component {
                     section,
                     <React.Fragment>
                       {formFromFields(
-                        _.pickBy(
-                          fields,
-                          field => field.section === section
+                        _.pickBy(fields, field => field.section === section),
+                        formikProps
+                      )}
+                    </React.Fragment>
+                  ])
+                )
+              : {};
+          const formFields =
+            fieldIds && fieldIds.length > 0
+              ? Object.fromEntries(
+                  fieldIds.map(id => [
+                    id,
+                    <React.Fragment>
+                      {formFromFields(
+                        _.pick(
+                          fields,id
                         ),
                         formikProps
                       )}
@@ -72,6 +85,7 @@ class Form extends React.Component {
           return children({
             form,
             formSections,
+            formFields,
             isValid: formikProps.isValid,
             isDirty: formikProps.dirty,
             isSubmitting: formikProps.isSubmitting,
