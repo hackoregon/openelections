@@ -23,7 +23,7 @@ services:
       context: 'api'
       dockerfile: 'Dockerfile.development'
     # command: npm run development
-    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "develop"]
+    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
     env_file:
       - .env
     environment:
@@ -75,17 +75,25 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=open_elections_data
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=data_db
     networks:
       - openelections
   data:
     build:
-      context: ./2019-openelections-data
+      context: ./datascience
     volumes:
-      - ./2019-openelections-data:/project/root
+      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=open_elections_data
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=data_db
+    depends_on:
+      - data_db
+    networks:
+      - openelections
 networks:
   openelections:
 
