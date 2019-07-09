@@ -6,7 +6,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 
 const SelectField = ({ id, label, options, formik }) => (
-  <FormControl>
+  <FormControl fullWidth>
     <InputLabel htmlFor={id}>{label}</InputLabel>
     <Select
       value={formik.values[id]}

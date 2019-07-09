@@ -70,19 +70,19 @@ const sectionFields = css`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  background-color: green;
+  // background-color: green;
 `;
 
 const fieldStyle = css`
-  background-color: red;
-  width: 40%;
-  color: orange;
-  margin: 2px;
+  // background-color: red;
+  width: 45%;
+  // color: orange;
+  margin-right: 5%;
 `;
 
 const basicsStyles = css`
-  background-color: hotpink;
-  margin: 2%;
+  // background-color: hotpink;
+  // margin: 2%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -172,6 +172,7 @@ const AddContribution = () => (
             <h2 css={fieldStyle}>{formFields.dateOfContribution}</h2>
             <h2 css={fieldStyle}>{formFields.typeOfContribution}</h2>
             <h2 css={fieldStyle}>{formFields.subTypeOfContribution}</h2>
+            <h2 css={fieldStyle}>{formFields.typeOfContributor}</h2>
             <h2 css={fieldStyle}>{formFields.amountOfContribution}</h2>
             <h2 css={fieldStyle}>{formFields.oaeContributionType}</h2>
             <h2 css={fieldStyle}>{formFields.paymentMethod}</h2>
