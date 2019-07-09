@@ -7,15 +7,46 @@ import { isLoggedIn } from "../../../state/ducks/auth";
 import { connect } from "react-redux";
 
 const headerStyles = {
+  header: css`
+    display: flex;
+    justify-content: space-between;
+  `,
+  leftColumn: css`
+    color: red;
+  `,
   invoice: css`
     font-family: SofiaProRegular;
     font-size: 32px;
     line-height: 37px;
     color: #333333;
+    margin-bottom: 0px;
+  `,
+  subheading: css`
+    font-family: SofiaProRegular;
+    font-size: 16px;
+    line-height: 19px;
+    color: #333333;
+  `,
+  labels: css`
+    font-family: SofiaProRegular;
+    font-size: 13px;
+    line-height: 15px;
+    color: #979797;
+    margin-bottom: 4px;
+  `,
+  addLabels: css`
+    font-family: SofiaProRegular;
+    font-size: 13px;
+    line-height: 15px;
+    margin-top: 0px;
+    /* Link */
+    color: #5f5fff;
   `,
   rightColumn: css`
     display: flex;
-    justifycontent: right;
+    justify-content: right;
+    flex-direction: column;
+    margin-right: 38px;
   `,
 
   status: css`
@@ -23,6 +54,7 @@ const headerStyles = {
     font-size: 13px;
     line-height: 15px;
     color: #979797;
+    margin-bottom: 4px;
   `,
 
   actualStatus: css`
@@ -30,22 +62,18 @@ const headerStyles = {
     font-size: 21px;
     line-height: 25px;
     color: #000000;
+    margin-top: 0px;
   `,
   submitButton: css`
     background: #d8d8d8;
     border-radius: 5px;
     color: white;
+    width: 243px;
   `,
   statusBlock: css`
     display: flex;
-    flexdirection: column;
-    alignitems: left;
-  `,
-  subheading: css`
-    font-family: SofiaProRegular;
-    font-size: 16px;
-    line-height: 19px;
-    color: #333333;
+    flex-direction: column;
+    align-items: left;
   `
 };
 
@@ -70,42 +98,41 @@ const sectionFields = css`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  // background-color: green;
+  justify-content: space-between;
 `;
 
 const fieldStyle = css`
-  // background-color: red;
   width: 45%;
-  margin-right: 5%;
 `;
 
 const sectionStyles = css`
-  // background-color: hotpink;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   margin-bottom: 50px;
+  margin-right: 38px;
+  margin-top: 60px;
 `;
 
 const cityStateZip = css`
-  // background: hotpink;
   display: flex;
-  flexdirection: row;
+  flex-direction: row;
   width: 100%;
+  justify-content: space-between;
 `;
 
 const stateZip = css`
-  // background: red;
-  width: 47.5%;
+  width: 45%;
   display: flex;
-  flexdirection: row;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 // HEADER PIECES
 const invoiceNumber = "#10000023456";
 const campaignName = "FakeName";
 const lastEdited = "date";
-const currentStatus = "draft";
+const currentStatus = "Draft";
 const labelsCount = 0;
 const addALabel = "";
 
@@ -155,29 +182,33 @@ const AddContribution = () => (
     }) => (
       <React.Fragment>
         {/* HEADER SECTION */}
-        <p css={headerStyles.invoice}>{invoiceNumber}</p>
-        <div css={headerStyles.subheading}>
-          <p>
-            {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
-          </p>
-        </div>
-        <div css={headerStyles.rightColumn}>
-          <div css={headerStyles.statusBlock}>
-            <p css={headerStyles.status}>Current Status</p>
-            <p css={headerStyles.actualStatus}>{currentStatus}</p>
+        <div css={headerStyles.header}>
+          <div css={headerStyles.leftColumn}>
+            <p css={headerStyles.invoice}>{invoiceNumber}</p>
+            <div css={headerStyles.subheading}>
+              <p>
+                {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
+              </p>
+            </div>
+            <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
+            <p css={headerStyles.addLabels}>{`+ Add Labels ${addALabel}`}</p>
           </div>
-          <Button
-            css={headerStyles.submitButton}
-            buttonType="submit"
-            disabled={!isValid}
-            onClick={handleSubmit}
-          >
-            Submit Contribution
-          </Button>
+          <div css={headerStyles.rightColumn}>
+            <div css={headerStyles.statusBlock}>
+              <p css={headerStyles.status}>Current Status</p>
+              <p css={headerStyles.actualStatus}>{currentStatus}</p>
+            </div>
+            <Button
+              css={headerStyles.submitButton}
+              buttonType="submit"
+              disabled={!isValid}
+              onClick={handleSubmit}
+            >
+              Submit Contribution
+            </Button>
+          </div>
         </div>
-        <p>{`Labels (${labelsCount})`}</p>
-        <p>{`+ Add Labels ${addALabel}`}</p>
-
+        <hr style={{ marginRight: "38px" }} />
         {/* BASICS SECTION */}
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Basics</h3>
