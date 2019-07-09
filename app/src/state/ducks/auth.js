@@ -31,16 +31,17 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.ME.SUCCESS]: (state, action) => {
+    console.log(action.me);
     return { ...state, isLoading: false, me: action.me };
   },
   [actionTypes.ME.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true };
+    return { ...state, isLoading: true, error: action.error};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, me: action.me };
+    return { ...state, isLoading: false, error: false, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -93,7 +94,8 @@ export const actionCreators = {
   login: {
     request: () => action(actionTypes.LOGIN.REQUEST),
     success: me => action(actionTypes.LOGIN.SUCCESS, { me }),
-    failure: error => action(actionTypes.LOGIN.FAILURE, { error })
+    failure: error => action(actionTypes.LOGIN.FAILURE, { error }),
+    logout:  () => action(actionTypes.LOGIN.LOGOUT)
   },
   redeemInvite: {
     request: () => action(actionTypes.REDEEM_INVITE.REQUEST),
@@ -133,6 +135,7 @@ export function me() {
 
 export function login(email, password) {
   return async (dispatch, getState, { api }) => {
+   // dispatch(actionCreators.login.failure(true));
     dispatch(actionCreators.login.request());
     try {
       await api.login(email, password)
@@ -141,7 +144,7 @@ export function login(email, password) {
           dispatch(actionCreators.login.success())
           dispatch(me());
         } else {
-          dispatch(actionCreators.login.failure()); 
+          dispatch(actionCreators.login.failure(true)); 
         }
       })    
     } catch (error) {
@@ -149,7 +152,12 @@ export function login(email, password) {
     }
   };
 }
-
+export function logout(dispatch) {
+  return  async (dispatch, getState, { api }) => {
+     document.cookie = 'token=; Max-Age=-99999999;';
+     await dispatch(actionCreators.me.success(null));
+ };
+}
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
