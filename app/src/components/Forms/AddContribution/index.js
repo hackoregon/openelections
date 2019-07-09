@@ -76,16 +76,29 @@ const sectionFields = css`
 const fieldStyle = css`
   // background-color: red;
   width: 45%;
-  // color: orange;
   margin-right: 5%;
 `;
 
-const basicsStyles = css`
+const sectionStyles = css`
   // background-color: hotpink;
-  // margin: 2%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  margin-bottom: 50px;
+`;
+
+const cityStateZip = css`
+  // background: hotpink;
+  display: flex;
+  flexdirection: row;
+  width: 100%;
+`;
+
+const stateZip = css`
+  // background: red;
+  width: 47.5%;
+  display: flex;
+  flexdirection: row;
 `;
 
 // HEADER PIECES
@@ -166,7 +179,7 @@ const AddContribution = () => (
         <p>{`+ Add Labels ${addALabel}`}</p>
 
         {/* BASICS SECTION */}
-        <div css={basicsStyles}>
+        <div css={sectionStyles}>
           <h3 css={sectionTitle}>Basics</h3>
           <div css={sectionFields}>
             <h2 css={fieldStyle}>{formFields.dateOfContribution}</h2>
@@ -180,10 +193,46 @@ const AddContribution = () => (
           </div>
         </div>
 
-        <p css={sectionTitle}>Contributor</p>
-        <div>{formSections.contributorSection}</div>
-        <p css={sectionTitle}>Other Details</p>
-        <div>{formSections.otherDetailsSection}</div>
+        {/* CONTRIBUTOR SECTION */}
+        <div css={sectionStyles}>
+          <h3 css={sectionTitle}>Contributor</h3>
+          <div css={sectionFields}>
+            <h2 css={fieldStyle}>{formFields.firstName}</h2>
+            <h2 css={fieldStyle}>{formFields.lastName}</h2>
+            <h2 css={fieldStyle}>{formFields.streetAddress}</h2>
+            <h2 css={fieldStyle}>{formFields.addressLine2}</h2>
+            <div css={cityStateZip}>
+              <h2 css={fieldStyle}>{formFields.city}</h2>
+              <div css={stateZip}>
+                <h2 css={fieldStyle}>{formFields.state}</h2>
+                <h2 css={fieldStyle}>{formFields.zipcode}</h2>
+              </div>
+            </div>
+            <h2 css={fieldStyle}>{formFields.contactType}</h2>
+            <h2 css={fieldStyle}>{formFields.contactInformation}</h2>
+            <h2 css={fieldStyle}>{formFields.occupation}</h2>
+            <h2 css={fieldStyle}>{formFields.employerName}</h2>
+            <div css={cityStateZip}>
+              <h2 css={fieldStyle}>{formFields.employerCity}</h2>
+              <div css={stateZip}>
+                <h2 css={fieldStyle}>{formFields.employerState}</h2>
+                <h2 css={fieldStyle}>{formFields.employerZipcode}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* OTHER DETAILS SECTION */}
+        <div css={sectionStyles}>
+          <h3 css={sectionTitle}>Other Details</h3>
+          <div css={sectionFields}>
+            <h2 css={fieldStyle}>{formFields.electionAggregate}</h2>
+            <h2 css={fieldStyle}>{formFields.description}</h2>
+            <h2 css={fieldStyle}>{formFields.occupationLetterDate}</h2>
+            <h2 css={fieldStyle}>{formFields.linkToDocumentation}</h2>
+            <h2 css={fieldStyle}>{formFields.notes}</h2>
+          </div>
+        </div>
       </React.Fragment>
     )}
   </AddContributionForm>
