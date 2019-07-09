@@ -6,6 +6,43 @@ import { css, jsx } from "@emotion/core";
 import { isLoggedIn } from "../../../state/ducks/auth";
 import { connect } from "react-redux";
 
+const container = css`
+  width: 96%%;
+  min-height: 100%;
+  // padding: 10px;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+`;
+
+const contributorContainer = css`
+  width: 96%%;
+  min-height: 25px;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+`;
+
+const addressContainer = css`
+  width: 96%%;
+  min-height: 25px;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+`;
+
+const cityStateZip = css`
+  width: 96%%;
+  min-height: 25px;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
+  grid-template-columns: 2fr 22% 24%;
+  grid-gap: 20px;
+`;
+
 const headerStyles = {
   header: css`
     display: flex;
@@ -56,7 +93,6 @@ const headerStyles = {
     color: #979797;
     margin-bottom: 4px;
   `,
-
   actualStatus: css`
     font-family: SofiaProRegular;
     font-size: 21px;
@@ -87,45 +123,10 @@ const sectionTitle = css`
   color: #000000;
 `;
 
-const sectionFields = css`
-  font-family: Rubik;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 21px;
-  line-height: 25px;
-  /* identical to box height */
-  color: #333333;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-
-const fieldStyle = css`
-  width: 45%;
-`;
-
 const sectionStyles = css`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  margin-bottom: 50px;
-  margin-right: 38px;
-  margin-top: 60px;
-`;
-
-const cityStateZip = css`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-between;
-`;
-
-const stateZip = css`
-  width: 45%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  margin-right: 34px;
+  margin-bottom: 34px;
+  margin-top: 34px;
 `;
 
 // HEADER PIECES
@@ -209,59 +210,58 @@ const AddContribution = () => (
           </div>
         </div>
         <hr style={{ marginRight: "38px" }} />
+
         {/* BASICS SECTION */}
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Basics</h3>
-          <div css={sectionFields}>
-            <h2 css={fieldStyle}>{formFields.dateOfContribution}</h2>
-            <h2 css={fieldStyle}>{formFields.typeOfContribution}</h2>
-            <h2 css={fieldStyle}>{formFields.subTypeOfContribution}</h2>
-            <h2 css={fieldStyle}>{formFields.typeOfContributor}</h2>
-            <h2 css={fieldStyle}>{formFields.amountOfContribution}</h2>
-            <h2 css={fieldStyle}>{formFields.oaeContributionType}</h2>
-            <h2 css={fieldStyle}>{formFields.paymentMethod}</h2>
-            <h2 css={fieldStyle}>{formFields.checkNumber}</h2>
+          <div css={container}>
+            <h2>{formFields.dateOfContribution}</h2>
+            <h2>{formFields.typeOfContribution}</h2>
+            <h2>{formFields.subTypeOfContribution}</h2>
+            <h2>{formFields.typeOfContributor}</h2>
+            <h2>{formFields.amountOfContribution}</h2>
+            <h2>{formFields.oaeContributionType}</h2>
+            <h2>{formFields.paymentMethod}</h2>
+            <h2>{formFields.checkNumber}</h2>
           </div>
         </div>
 
         {/* CONTRIBUTOR SECTION */}
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Contributor</h3>
-          <div css={sectionFields}>
-            <h2 css={fieldStyle}>{formFields.firstName}</h2>
-            <h2 css={fieldStyle}>{formFields.lastName}</h2>
-            <h2 css={fieldStyle}>{formFields.streetAddress}</h2>
-            <h2 css={fieldStyle}>{formFields.addressLine2}</h2>
-            <div css={cityStateZip}>
-              <h2 css={fieldStyle}>{formFields.city}</h2>
-              <div css={stateZip}>
-                <h2 css={fieldStyle}>{formFields.state}</h2>
-                <h2 css={fieldStyle}>{formFields.zipcode}</h2>
-              </div>
-            </div>
-            <h2 css={fieldStyle}>{formFields.contactType}</h2>
-            <h2 css={fieldStyle}>{formFields.contactInformation}</h2>
-            <h2 css={fieldStyle}>{formFields.occupation}</h2>
-            <h2 css={fieldStyle}>{formFields.employerName}</h2>
-            <div css={cityStateZip}>
-              <h2 css={fieldStyle}>{formFields.employerCity}</h2>
-              <div css={stateZip}>
-                <h2 css={fieldStyle}>{formFields.employerState}</h2>
-                <h2 css={fieldStyle}>{formFields.employerZipcode}</h2>
-              </div>
-            </div>
+          <div css={contributorContainer}>
+            <h2>{formFields.firstName}</h2>
+            <h2>{formFields.lastName}</h2>
+          </div>
+          <h2 css={addressContainer}>{formFields.streetAddress}</h2>
+          <h2 css={addressContainer}>{formFields.addressLine2}</h2>
+          <div css={cityStateZip}>
+            <h2>{formFields.city}</h2>
+            <h2>{formFields.state}</h2>
+            <h2>{formFields.zipcode}</h2>
+          </div>
+          <div css={contributorContainer}>
+            <h2>{formFields.contactType}</h2>
+            <h2>{formFields.contactInformation}</h2>
+            <h2>{formFields.occupation}</h2>
+            <h2>{formFields.employerName}</h2>
+          </div>
+          <div css={cityStateZip}>
+            <h2>{formFields.employerCity}</h2>
+            <h2>{formFields.employerState}</h2>
+            <h2>{formFields.employerZipcode}</h2>
           </div>
         </div>
 
         {/* OTHER DETAILS SECTION */}
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Other Details</h3>
-          <div css={sectionFields}>
-            <h2 css={fieldStyle}>{formFields.electionAggregate}</h2>
-            <h2 css={fieldStyle}>{formFields.description}</h2>
-            <h2 css={fieldStyle}>{formFields.occupationLetterDate}</h2>
-            <h2 css={fieldStyle}>{formFields.linkToDocumentation}</h2>
-            <h2 css={fieldStyle}>{formFields.notes}</h2>
+          <div css={container}>
+            <h2>{formFields.electionAggregate}</h2>
+            <h2>{formFields.description}</h2>
+            <h2>{formFields.occupationLetterDate}</h2>
+            <h2>{formFields.linkToDocumentation}</h2>
+            <h2>{formFields.notes}</h2>
           </div>
         </div>
       </React.Fragment>
