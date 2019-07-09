@@ -17,6 +17,12 @@ const leftAlign = css`
   align-self: flex-start;
 `;
 
+const hotPink = css`
+  * {
+    color: hotpink !important;
+  }
+`;
+
 const AddUser = () => (
   <FormModal>
     <AddUserForm
@@ -30,6 +36,7 @@ const AddUser = () => (
     >
       {({
         formSections,
+        formFields,
         isValid,
         handleCancel,
         handleSubmit /* isDirty, isSubmitting */
@@ -41,7 +48,9 @@ const AddUser = () => (
             Enter the user's information and we will send them an email with
             instructions to join your portal.
           </p>
-          {formSections.addUser}
+          <div css={hotPink}>{formFields.email}</div>
+          {formFields.firstName}
+          {formFields.lastName}
           <div css={buttonWrapper}>
             <Button buttonType="cancel" onClick={handleCancel}>
               Cancel
