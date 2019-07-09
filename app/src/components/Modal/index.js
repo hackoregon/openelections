@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import Modal from "./Modal";
-import { modalIsActive, clearModal } from "../../state/ducks/modal";
+import { getModalState, clearModal } from "../../state/ducks/modal";
 
 export default connect(
   state => ({
-    modalIsActive: modalIsActive(state)
+    getModalState: getModalState(state)
   }),
   dispatch => {
     return {

@@ -28,9 +28,8 @@ const closeModal = css`
 
 const Modal = props => (
   <ModalMaterial
-    aria-labelledby="simple-modal-title"
-    aria-describedby="simple-modal-description"
-    open={props.modalIsActive}
+    aria-label={props.getModalState.currentModal + " modal"}
+    open={props.getModalState.isActive}
     onClose={() => props.clearModal()}
   >
     <div css={modalWrapper}>
@@ -47,10 +46,11 @@ const Modal = props => (
             <Close style={{ fontSize: "26px", color: "black" }} />
           </IconButton>
         </div>
-        <h2 id="modal-title">Text in a modal</h2>
+
+        {/* <h2 id="modal-title">Text in a modal</h2>
         <p id="simple-modal-description">
           Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </p>
+        </p> */}
       </div>
     </div>
   </ModalMaterial>
