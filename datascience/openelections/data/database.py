@@ -62,30 +62,12 @@ ORESTAR_KEY = {'Tran Id': 'VARCHAR(255)',
                'Tran Date': 'TIMESTAMP'}
 
 
-@lru_cache(1)
-def _get_db_login_info() -> Dict[str, str]:
-    '''
-    Get database login details.  Looks for _POSTGRES_LOGIN_FILE.
-
-    File schema:
-
-        {
-            "host": "xxx",
-            "port": "xxx",
-            "database": "xxx",
-            "user": "xxx",
-            "password": "xxx"
-        }
-
-    :return:
-    '''
-
-    with open(_POSTGRES_LOGIN_FILE, 'r') as f:
-        login_info = json.load(f)
-    return login_info
-
-
-POSTGRES_LOGIN = _get_db_login_info()
+POSTGRES_LOGIN = {"host": os.environ['POSTGRES_HOST'],
+                  "port": os.environ['POSTGRES_PORT'],
+                  "database": os.environ['POSTGRES_DB'],
+                  "user": os.environ['POSTGRES_USER'],
+                  "password": os.environ['POSTGRES_PASSWORD']
+                  }
 
 
 def create_table(table_name: str, field_key: Dict[str, str], drop_if_exists: bool = False):
