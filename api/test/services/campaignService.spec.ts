@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import * as faker from 'faker';
 import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
 import { Government } from '../../models/entity/Government';
@@ -67,9 +68,40 @@ describe('campaignServices', () => {
         await createCampaignAsync({
             name: 'Melton for Mayor',
             governmentId: government.id,
-            currentUserId: govUser.id
+            currentUserId: govUser.id,
+            officeSought: 'Mayor'
         });
         expect(await campaignRepository.count()).equal(1);
+    });
+
+    it('Creates a valid campaign and a new user, if current user is a gov admin', async () => {
+        expect(await campaignRepository.count()).equal(0);
+        const userCount = await userRepository.count();
+        await createCampaignAsync({
+            name: 'Melton for Mayor',
+            governmentId: government.id,
+            currentUserId: govUser.id,
+            officeSought: 'Mayor',
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            email: faker.internet.email()
+        });
+        expect(await campaignRepository.count()).equal(1);
+        expect(await userRepository.count()).to.equal(userCount + 1)
+    });
+
+    it('Creates a valid campaign, but not a new user if fields are missing', async () => {
+        expect(await campaignRepository.count()).equal(0);
+        const userCount = await userRepository.count();
+        await createCampaignAsync({
+            name: 'Melton for Mayor',
+            officeSought: 'Mayor',
+            governmentId: government.id,
+            currentUserId: govUser.id,
+            email: faker.internet.email()
+        });
+        expect(await campaignRepository.count()).equal(1);
+        expect(await userRepository.count()).to.equal(userCount)
     });
 
     it('Does not create a campaign if government does not exist', async () => {
@@ -78,7 +110,8 @@ describe('campaignServices', () => {
             await createCampaignAsync({
                 name: 'Melton for Mayor',
                 governmentId: 100000,
-                currentUserId: govUser.id
+                currentUserId: govUser.id,
+                officeSought: 'Mayor'
             });
         } catch (e) {
             expect(e.message).to.equal('User is not an admin for the provided government');
@@ -92,7 +125,8 @@ describe('campaignServices', () => {
             await createCampaignAsync({
                 name: undefined,
                 governmentId: government.id,
-                currentUserId: govUser.id
+                currentUserId: govUser.id,
+                officeSought: 'Mayor'
             });
         } catch (e) {
             expect(e.message).to.equal('Campaign is not valid');
@@ -105,7 +139,8 @@ describe('campaignServices', () => {
         const campaign = await createCampaignAsync({
             name: 'Melton for Mayor',
             governmentId: government.id,
-            currentUserId: govUser.id
+            currentUserId: govUser.id,
+            officeSought: 'Mayor'
         });
         expect(await campaignRepository.count()).equal(1);
 
@@ -123,7 +158,8 @@ describe('campaignServices', () => {
             await createCampaignAsync({
                 name: 'Melton for Mayor 2',
                 governmentId: government.id,
-                currentUserId: campaignAdminUser.id
+                currentUserId: campaignAdminUser.id,
+                officeSought: 'Mayor'
             });
         } catch (e) {
             expect(e.message).to.equal('User is not an admin for the provided government');
@@ -132,7 +168,8 @@ describe('campaignServices', () => {
             await createCampaignAsync({
                 name: 'Melton for Mayor 3',
                 governmentId: government.id,
-                currentUserId: campaignStaffUser.id
+                currentUserId: campaignStaffUser.id,
+                officeSought: 'Mayor'
             });
         } catch (e) {
             expect(e.message).to.equal('User is not an admin for the provided government');

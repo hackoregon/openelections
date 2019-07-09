@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Sandbox/> should be defined 1`] = `
+<PageHoc>
+  <h1>
+    Sandbox
+  </h1>
+</PageHoc>
+`;

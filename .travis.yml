@@ -1,11 +1,32 @@
-language: bash
+language: node_js
+  - "11.4.0"
 
 services:
   - docker
 
+cache:
+  directories:
+    - app/node_modules
+
 before_install:
   - docker-compose -f docker-compose-test.yml pull
   - docker-compose -f docker-compose-test.yml build api
+  - cd app && npm install && cd ..
 
 script:
   - docker-compose -f docker-compose-test.yml run --rm api npm test
+  - cd app && npm test
+  - cd ..
+
+before_deploy:
+  - sudo add-apt-repository -y ppa:eugenesan/ppa
+  - sudo apt-get update -y
+  - sudo apt-get install jq -y
+  - pip install --user awscli
+
+deploy:
+  provider: script
+  script: bash scripts/deploy.sh
+  skip_cleanup: true
+  on:
+    branch: develop

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<About/> should be defined 1`] = `
+<PageHoc>
+  <h1>
+    About
+  </h1>
+</PageHoc>
+`;

@@ -11,7 +11,8 @@ export const STATE_KEY = "contributions";
 export const actionTypes = {
   CREATE_CONTRIBUTION: createActionTypes(STATE_KEY, "CREATE_CONTRIBUTION"),
   UPDATE_CONTRIBUTION: createActionTypes(STATE_KEY, "UPDATE_CONTRIBUTION"),
-  GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS")
+  GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS"),
+  GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID")
 };
 
 // Initial State
@@ -42,6 +43,24 @@ export default createReducer(initialState, {
   },
   [actionTypes.UPDATE_CONTRIBUTION.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.GET_CONTRIBUTIONS.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.GET_CONTRIBUTIONS.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.GET_CONTRIBUTIONS.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.GET_CONTRIBUTION_BY_ID.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
   }
 });
 
@@ -56,6 +75,17 @@ export const actionCreators = {
     request: () => action(actionTypes.UPDATE_CONTRIBUTION.REQUEST),
     success: () => action(actionTypes.UPDATE_CONTRIBUTION.SUCCESS),
     failure: error => action(actionTypes.UPDATE_CONTRIBUTION.FAILURE, { error })
+  },
+  getContributions: {
+    request: () => action(actionTypes.GET_CONTRIBUTIONS.REQUEST),
+    success: () => action(actionTypes.GET_CONTRIBUTIONS.SUCCESS),
+    failure: error => action(actionTypes.GET_CONTRIBUTIONS.FAILURE, { error })
+  },
+  getContributionById: {
+    request: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.REQUEST),
+    success: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS),
+    failure: error =>
+      action(actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE, { error })
   }
 };
 
@@ -66,7 +96,7 @@ export function createContribution(contributionAttrs) {
     try {
       const response = await api.createContribution(contributionAttrs);
       if (response.status === 201) {
-        const data = normalize(await response.json(), schema.campaign);
+        const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createContribution.success());
       } else {
@@ -83,15 +113,49 @@ export function updateContribution(contributionAttrs) {
     dispatch(actionCreators.updateContribution.request());
     try {
       const response = await api.updateContribution(contributionAttrs);
-      if (response.status === 201) {
-        const data = normalize(await response.json(), schema.campaign);
-        dispatch(addEntities(data.entities));
+      if (response.status === 204) {
         dispatch(actionCreators.updateContribution.success());
       } else {
         dispatch(actionCreators.updateContribution.failure());
       }
     } catch (error) {
       dispatch(actionCreators.updateContribution.failure(error));
+    }
+  };
+}
+
+export function getContributions(contributionSearchAttrs) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.getContributions.request());
+    try {
+      const response = await api.getContributions(contributionSearchAttrs);
+      if (response.status === 200) {
+        const data = normalize(await response.json(), schema.contribution);
+        dispatch(addEntities(data.entities));
+        dispatch(actionCreators.getContributions.success());
+      } else {
+        dispatch(actionCreators.getContributions.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.getContributions.failure(error));
+    }
+  };
+}
+
+export function getContributionById(contributionByIdAttrs) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.getContributionById.request());
+    try {
+      const response = await api.getContributionById(contributionByIdAttrs);
+      if (response.status === 200) {
+        const data = normalize(await response.json(), schema.contribution);
+        dispatch(addEntities(data.entities));
+        dispatch(actionCreators.getContributionById.success());
+      } else {
+        dispatch(actionCreators.getContributionById.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.getContributionById.failure(error));
     }
   };
 }

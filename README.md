@@ -2,6 +2,8 @@
 
 This is the master repo for the Open Elections project.
 
+Check out our [wiki](https://github.com/hackoregon/openelections/wiki) for information.
+
 ### Installation
 
 #### Docker 
@@ -36,21 +38,41 @@ We have a set of seed files located in models/seeds, to run them:
 
 > Heads up: Make sure after each test you swipe the dockers or you will probably get `Error: Request failed with status code 403`.
 
-1. In the root directory run the following. Note: `-f docker-compose-test.yml` specifies the test docker.
+##### Install the app:
+
+In the root directory run the following. Note: `-f docker-compose-test.yml` specifies the test docker.
 ```bash
     docker-compose -f docker-compose-test.yml build
 ```
 
-2. Then you can run the testdb:
-```bash
-    docker-compose -f docker-compose-test.yml up -d
-```
-
-3. Run the test suite:
+In the app directory, you'll have to install the app dependencies (outside of docker)
 
 ```bash
-
-    docker-compose -f docker-compose-test.yml run --rm api bash
-    > npm test
-    > npm test-watch
+    cd app
+    npm install
 ```
+
+##### Then you can run the api in docker:
+```bash
+    docker-compose -f docker-compose-test.yml up api
+```
+
+##### Run the Test Suites
+
+Run the api test suite:
+
+```bash
+    docker-compose -f docker-compose-test.yml run --rm api npm test
+```
+
+Run the app test suite:
+
+```bash
+    cd app && npm run test
+```
+
+### Deployment
+
+This project uses Travis to Continously deploy to qa.openelectionsportland.org on commits to develop. 
+When you open a PR, Travis will run our test suite, and mark it as passing or failing on the PR at Github.
+When the PR is merged into develop, and the test suite is passing, Travis will deploy using scripts/deploy.sh

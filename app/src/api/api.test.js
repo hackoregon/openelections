@@ -1,13 +1,20 @@
 import * as api from "./api";
-import { UserRoleEnum } from "./api";
-import { getCampaignUsers } from "./api";
-import { getGovernmentUsers } from "./api";
+import {
+  UserRoleEnum,
+  ContributionStatusEnum,
+  ContributionSubTypeEnum,
+  ContributionTypeEnum,
+  ContributorTypeEnum,
+  PhoneTypeEnum
+} from "./api";
 
 let govAdminToken;
 let campaignAdminToken;
 let campaignStaffToken;
 let governmentId;
 let campaignId;
+let campaignStaffId;
+let campaignAdminId;
 
 describe("API", () => {
   beforeAll(async () => {
@@ -25,11 +32,14 @@ describe("API", () => {
       "campaignadmin@openelectionsportland.org",
       "password"
     );
+
+
     campaignAdminToken = tokenResponse.headers
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
     campaignId = decodedToken.permissions[0]["id"];
+    campaignAdminId = decodedToken.id;
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
@@ -38,6 +48,8 @@ describe("API", () => {
     campaignStaffToken = tokenResponse.headers
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
+    decodedToken = api.decodeToken(campaignStaffToken);
+    campaignStaffId = decodedToken.id;
   });
 
   beforeEach(() => {
@@ -46,7 +58,7 @@ describe("API", () => {
 
   it("baseUrl", async function() {
     expect(api.baseUrl()).toEqual("http://localhost:3000");
-    process.env.NODE_ENV = "develop";
+    process.env.NODE_ENV = "development";
     expect(api.baseUrl()).toEqual("http://localhost:3000");
     process.env.NODE_ENV = "staging";
     expect(api.baseUrl()).toEqual("https://api.qa.openelectinosports.org");
@@ -166,14 +178,14 @@ describe("API", () => {
 
   it("getCampaignUsers", async () => {
     process.env.TOKEN = campaignAdminToken;
-    const response = await getCampaignUsers(campaignId);
+    const response = await api.getCampaignUsers(campaignId);
     expect(response.length > 1).toBeTruthy();
     process.env.TOKEN = null;
   });
 
   it("getGovernmentUsers", async () => {
     process.env.TOKEN = govAdminToken;
-    const response = await getGovernmentUsers(governmentId);
+    const response = await api.getGovernmentUsers(governmentId);
     expect(response.length > 1).toBeTruthy();
   });
 
@@ -199,8 +211,11 @@ describe("API", () => {
   it("createCampaignForGovernment", async () => {
     process.env.TOKEN = govAdminToken;
     const response = await api.createCampaignForGovernment(
-      governmentId,
-      "Test for Mayor"
+      {
+        governmentId,
+        name: "Test for Mayor",
+        officeSought: 'Mayor',
+      }
     );
     expect(response.status).toEqual(201);
   });
@@ -221,5 +236,97 @@ describe("API", () => {
     process.env.TOKEN = campaignAdminToken;
     const response = await api.getCampaignActivities(campaignId);
     expect(response.length > 1).toBeTruthy();
+  });
+
+  it("createContribution", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const response = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237619,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    expect(response.status).toEqual(201);
+  });
+
+  it("updateContribution", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignAdminId,
+      date: 1562436237619,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    const { id } = await contribution.json();
+    const response = await api.updateContribution({
+      id,
+      firstName: "Ian",
+      currentUserId: campaignStaffId
+    });
+    expect(response.status).toEqual(204);
+  });
+
+  it("getContributions", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const response = await api.getContributions({
+      governmentId: governmentId,
+      campaignId: campaignId,
+      currentUserId: campaignAdminId
+    });
+    expect(response.status).toEqual(200);
+  });
+
+  it("getContributionById", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237619,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    const { id } = await contribution.json();
+    const response = await api.getContributionById({
+      id,
+      governmentId: governmentId,
+      campaignId: campaignId,
+      currentUserId: campaignAdminId
+    });
+    expect(response.status).toEqual(200);
   });
 });

@@ -346,6 +346,14 @@ export const AppRoutes = [
      *                 type: integer
      *               name:
      *                 type: string
+     *               officeSought:
+     *                 type: string
+     *               firstName:
+     *                 type: string
+     *               lastName:
+     *                 type: string
+     *               email:
+     *                 type: string
      *     responses:
      *       201:
      *         description: newly created campaign
@@ -463,7 +471,7 @@ export const AppRoutes = [
      * @swagger
      * /contributions:
      *   post:
-     *     summary: Get a contribution
+     *     summary: Get contributions
      *     tags:
      *       - Contribution
      *     security:
@@ -489,6 +497,36 @@ export const AppRoutes = [
         path: '/contributions',
         method: 'post',
         action: contributions.getContributions
+    },
+
+    /**
+     * @swagger
+     * /contributions/{id}:
+     *   post:
+     *     summary: Get a contribution
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/GetContributionByIdBody'
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/:id',
+        method: 'post',
+        action: contributions.getContributionById
     }
 ];
 

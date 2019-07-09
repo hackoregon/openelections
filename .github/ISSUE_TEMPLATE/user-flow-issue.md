@@ -20,6 +20,7 @@ labels: ""
 
 
 ### Images
+_Check [Figma](https://www.figma.com/file/Ppx9fKcZtVmUHI0eWIGU43xn/civic__elections--ux?node-id=485%3A454) for latest updates_
 
 
 ### API Client

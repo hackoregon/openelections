@@ -32,7 +32,7 @@ const styles = css`
     line-height: 28px;
   }
 `;
-const ToNavigaiton = props => {
+const TopNavigation = props => {
   const { isLoggedIn } = { props };
   return (
     <header css={styles}>
@@ -45,4 +45,4 @@ const ToNavigaiton = props => {
     </header>
   );
 };
-export default ToNavigaiton;
+export default TopNavigation;
