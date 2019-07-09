@@ -16,6 +16,10 @@
         "console": "ts-node"
     },
     "dependencies": {
+        "@types/bcrypt": "^3.0.0",
+        "@types/bcryptjs": "^2.4.2",
+        "@types/express": "^4.16.1",
+        "@types/express-session": "^1.15.12",
         "aws-sdk": "^2.449.0",
         "bcryptjs": "^2.4.3",
         "chai": "^4.2.0",
@@ -37,16 +41,13 @@
         "swagger-jsdoc": "^3.2.9",
         "swagger-ui-express": "^4.0.4",
         "typeorm": "^0.2.16",
-        "typescript": "^3.5.1"
+        "typescript": "^3.5.1",
+        "ts-node": "3.3.0",
+        "tsconfig-paths": "3.8.0"
     },
     "devDependencies": {
-        "@types/bcrypt": "^3.0.0",
-        "@types/bcryptjs": "^2.4.2",
-        "@types/express": "^4.16.1",
-        "@types/express-session": "^1.15.12",
-        "@types/mocha": "^5.2.6",
         "@types/node": "^8.0.29",
-        "@types/passport": "^1.0.0",
+        "@types/mocha": "^5.2.6",
         "chai-as-promised": "^7.1.1",
         "faker": "^4.1.0",
         "ioredis-mock": "^4.9.0",
@@ -54,9 +55,7 @@
         "nodemon": "^1.18.10",
         "sinon": "^7.3.2",
         "supertest": "^4.0.2",
-        "ts-node": "3.3.0",
         "tslint": "^5.14.0",
-        "typeorm-fixtures": "^0.8.5",
-        "typescript": "^3.5.1"
+        "typeorm-fixtures": "^0.8.5"
     }
 }

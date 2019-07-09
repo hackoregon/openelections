@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { IsString, IsNumber } from 'class-validator';
 import { checkDto } from './helpers';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -11,6 +11,11 @@ class CreateCampaignDto implements ICreateCampaign {
     governmentId: number;
     @IsNumber()
     currentUserId: number;
+
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    officeSought: string;
 }
 
 export async function addCampaign(request: IRequest, response: Response, next: Function) {

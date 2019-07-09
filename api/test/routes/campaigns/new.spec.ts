@@ -126,5 +126,24 @@ describe('Routes /campaigns', () => {
                 .to.be.an.instanceof(Object)
                 .that.includes.all.keys(['id', 'name', 'governmentId']);
         });
+
+        it('succeeds, govAdmin creates new campaign with new user', async () => {
+            const response = await request(app)
+                .post('/campaigns/new')
+                .send({
+                    name: `${faker.name.lastName()} for Mayor`,
+                    governmentId: government.id,
+                    firstName: faker.name.firstName(),
+                    officeSought: 'Mayor',
+                    lastName: faker.name.lastName(),
+                    email: faker.internet.email()
+                })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(201);
+            expect(response.body)
+                .to.be.an.instanceof(Object)
+                .that.includes.all.keys(['id', 'name', 'governmentId', 'officeSought']);
+        });
     });
 });

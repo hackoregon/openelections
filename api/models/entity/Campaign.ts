@@ -13,7 +13,7 @@ import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Activity } from './Activity';
 import { Contribution } from './Contribution';
-import {Expenditure} from "./Expenditure";
+import { Expenditure } from './Expenditure';
 
 @Entity()
 export class Campaign {
@@ -23,6 +23,10 @@ export class Campaign {
     @Column()
     @IsDefined()
     name: string;
+
+    @Column()
+    @IsDefined()
+    officeSought: string;
 
     @ManyToOne(type => Government, government => government.campaigns, {
         eager: true
@@ -77,7 +81,8 @@ export class Campaign {
         return {
             id: this.id,
             name: this.name,
-            governmentId: this.government.id
+            governmentId: this.government.id,
+            officeSought: this.officeSought
         };
     }
 }

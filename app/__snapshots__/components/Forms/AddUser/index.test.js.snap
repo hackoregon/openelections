@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AddUser/> should be defined 1`] = `
+<FormModal>
+  <AddUserForm
+    initialValues={
+      Object {
+        "email": "",
+        "firstName": "",
+        "lastName": "",
+        "userRole": "Staff",
+      }
+    }
+    onSubmit={[Function]}
+  >
+    <Component />
+  </AddUserForm>
+</FormModal>
+`;

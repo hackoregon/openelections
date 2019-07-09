@@ -45,13 +45,12 @@ export const actionCreators = {
 };
 
 // Side Effects, e.g. thunks
-export function createCampaignForGovernment(governmentId, name) {
+export function createCampaignForGovernment(campaignAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createCampaign.request());
     try {
       const response = await api.createCampaignForGovernment(
-        governmentId,
-        name
+        campaignAttrs
       );
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);

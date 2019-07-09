@@ -3,7 +3,14 @@ import { createConnection, Connection } from 'typeorm';
 
 export default async (): Promise<Connection> => {
     let connection: Connection;
-
+    let entities = [
+        __dirname + '/entity/*.ts'
+    ];
+    if (process.env.NODE_ENV === 'production') {
+        entities = [
+            __dirname + '/entity/*.js'
+        ];
+    }
     connection = await createConnection({
         type: 'postgres',
         host: process.env.DB_HOST,
@@ -11,9 +18,7 @@ export default async (): Promise<Connection> => {
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
-        entities: [
-            __dirname + '/entity/*.ts'
-        ],
+        entities,
         synchronize: true,
         logging: process.env.NODE_ENV === 'development'
     });
