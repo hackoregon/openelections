@@ -5,7 +5,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
 import CloseIcon from '@material-ui/icons/Close';
-import { amber, green, yellow } from '@material-ui/core/colors';
+import { red, green, yellow, grey } from '@material-ui/core/colors';
 import IconButton from '@material-ui/core/IconButton';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -23,10 +23,10 @@ const useStyles1 = makeStyles(theme => ({
     backgroundColor: green[600],
   },
   error: {
-    backgroundColor: amber[600],
+    backgroundColor: red[600],
   },
   info: {
-    backgroundColor: green[600],
+    backgroundColor: grey[600],
   },
   warning: {
     backgroundColor: yellow[700],

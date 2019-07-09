@@ -5,6 +5,31 @@ import { getLatestMessage } from 'redux-flash';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from "./FlashMessageWrapper";
 
+/*
+To use on a connected component
+import { flashMessage } from 'redux-flash';
+
+const options = {
+  props: {
+    variant: 'success',         //one of: success, warning, error, info
+    someOtherProp: 'someValue'  //Pipe in other MUI snackbar props. See: https://material-ui.com/api/snackbar/
+  }
+
+}
+
+props.flashMessage('Signin Success', options);
+
+ ...
+// mapDispatchToProps: 
+dispatch => {
+    return {
+      flashMessage: (message, options) => dispatch(flashMessage(message, options))
+    }
+  }
+*/
+
+
+
 function FlashMessage ({ flash }) {
   return (
     <div  >
@@ -13,8 +38,8 @@ function FlashMessage ({ flash }) {
       <div>
       <Snackbar open={true}  >  
         <SnackbarContentWrapper 
-          variant={flash.isError ? "error" : "success"} 
-          message={flash.message}
+           variant = {flash.props.variant ? flash.props.variant : "success"}  
+           message = {flash.message}
         />
         </Snackbar> 
      </div>
