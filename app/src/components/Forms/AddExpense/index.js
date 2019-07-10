@@ -24,7 +24,7 @@ const contributorContainer = css`
   grid-gap: 20px;
 `;
 
-const addressContainer = css`
+const fullWidthContainer = css`
   width: 96%%;
   min-height: 25px;
   display: grid;
@@ -51,11 +51,13 @@ const headerStyles = {
     color: red;
   `,
   invoice: css`
-    font-family: SofiaProRegular;
-    font-size: 32px;
-    line-height: 37px;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 48px;
+    line-height: 57px;
+    /* identical to box height */
     color: #333333;
-    margin-bottom: 0px;
   `,
   subheading: css`
     font-family: SofiaProRegular;
@@ -142,36 +144,26 @@ const AddExpense = () => (
     onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
     initialValues={{
       // BASICS SECTION
-      dateOfContribution: "", // Date.now(), // FORMAT?
-      typeOfContribution: "",
-      subTypeOfContribution: "",
-      typeOfContributor: "",
-      amountOfContribution: undefined,
-      oaeContributionType: "",
+      amount: undefined,
+      dateOfExpenditure: "", // Date.now(), // FORMAT?
+      typeOfExpenditure: "",
+      subTypeOfExpenditure: "",
       paymentMethod: "",
       checkNumber: undefined,
 
       // CONTRIBUTOR SECTION
-      firstName: "",
-      lastName: "",
+      payeeType: "",
+      payeeName: "",
       streetAddress: "",
       addressLine2: "",
+      countryRegion: "",
       city: "Portland",
       state: "OR",
       zipcode: "97201",
-      contactType: "",
-      contactInformation: "",
-      occupation: "",
-      employerName: "",
-      employerCity: "Portland",
-      employerState: "OR",
-      employerZipcode: "97201",
+      county: "Multnomah",
 
       // OTHER DETAILS SECTION
-      electionAggregate: "",
-      description: "",
-      occupationLetterDate: "",
-      linkToDocumentation: "",
+      purposeOfExpenditure: "",
       notes: ""
     }}
   >
@@ -215,12 +207,10 @@ const AddExpense = () => (
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Basics</h3>
           <div css={container}>
-            <h2>{formFields.dateOfContribution}</h2>
-            <h2>{formFields.typeOfContribution}</h2>
-            <h2>{formFields.subTypeOfContribution}</h2>
-            <h2>{formFields.typeOfContributor}</h2>
-            <h2>{formFields.amountOfContribution}</h2>
-            <h2>{formFields.oaeContributionType}</h2>
+            <h2>{formFields.amount}</h2>
+            <h2>{formFields.dateOfExpenditure}</h2>
+            <h2>{formFields.typeOfExpenditure}</h2>
+            <h2>{formFields.subTypeOfExpenditure}</h2>
             <h2>{formFields.paymentMethod}</h2>
             <h2>{formFields.checkNumber}</h2>
           </div>
@@ -230,39 +220,27 @@ const AddExpense = () => (
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Contributor</h3>
           <div css={contributorContainer}>
-            <h2>{formFields.firstName}</h2>
-            <h2>{formFields.lastName}</h2>
+            <h2>{formFields.payeeType}</h2>
+            <h2>{formFields.payeeName}</h2>
           </div>
-          <h2 css={addressContainer}>{formFields.streetAddress}</h2>
-          <h2 css={addressContainer}>{formFields.addressLine2}</h2>
+          <h2 css={fullWidthContainer}>{formFields.streetAddress}</h2>
+          <h2 css={fullWidthContainer}>{formFields.addressLine2}</h2>
           <div css={cityStateZip}>
+            <h2>{formFields.countryRegion}</h2>
             <h2>{formFields.city}</h2>
             <h2>{formFields.state}</h2>
-            <h2>{formFields.zipcode}</h2>
           </div>
           <div css={contributorContainer}>
-            <h2>{formFields.contactType}</h2>
-            <h2>{formFields.contactInformation}</h2>
-            <h2>{formFields.occupation}</h2>
-            <h2>{formFields.employerName}</h2>
-          </div>
-          <div css={cityStateZip}>
-            <h2>{formFields.employerCity}</h2>
-            <h2>{formFields.employerState}</h2>
-            <h2>{formFields.employerZipcode}</h2>
+            <h2>{formFields.zipcode}</h2>
+            <h2>{formFields.county}</h2>
           </div>
         </div>
 
         {/* OTHER DETAILS SECTION */}
         <div css={sectionStyles}>
           <h3 css={sectionTitle}>Other Details</h3>
-          <div css={container}>
-            <h2>{formFields.electionAggregate}</h2>
-            <h2>{formFields.description}</h2>
-            <h2>{formFields.occupationLetterDate}</h2>
-            <h2>{formFields.linkToDocumentation}</h2>
-            <h2>{formFields.notes}</h2>
-          </div>
+          <h2 css={fullWidthContainer}>{formFields.purposeOfExpenditure}</h2>
+          <h2 css={fullWidthContainer}>{formFields.notes}</h2>
         </div>
       </React.Fragment>
     )}
