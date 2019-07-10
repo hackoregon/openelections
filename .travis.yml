@@ -11,10 +11,12 @@ cache:
 before_install:
   - docker-compose -f docker-compose-test.yml pull
   - docker-compose -f docker-compose-test.yml build api
+  - docker-compose -f docker-compose-test.yml build data
   - cd app && npm install && cd ..
 
 script:
   - docker-compose -f docker-compose-test.yml run --rm api npm test
+  - docker-compose -f docker-compose-test.yml run --rm data make test
   - cd app && npm test
   - cd ..
 
