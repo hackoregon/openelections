@@ -31,7 +31,6 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.ME.SUCCESS]: (state, action) => {
-    console.log(action.me);
     return { ...state, isLoading: false, me: action.me };
   },
   [actionTypes.ME.FAILURE]: (state, action) => {
@@ -94,8 +93,7 @@ export const actionCreators = {
   login: {
     request: () => action(actionTypes.LOGIN.REQUEST),
     success: me => action(actionTypes.LOGIN.SUCCESS, { me }),
-    failure: error => action(actionTypes.LOGIN.FAILURE, { error }),
-    logout:  () => action(actionTypes.LOGIN.LOGOUT)
+    failure: error => action(actionTypes.LOGIN.FAILURE, { error })
   },
   redeemInvite: {
     request: () => action(actionTypes.REDEEM_INVITE.REQUEST),
@@ -152,10 +150,10 @@ export function login(email, password) {
     }
   };
 }
-export function logout(dispatch) {
-  return  async (dispatch, getState, { api }) => {
-     document.cookie = 'token=; Max-Age=-99999999;';
-     await dispatch(actionCreators.me.success(null));
+export function logout() {
+  return (dispatch) => {
+    dispatch(actionCreators.me.success(null));
+    document.cookie = 'token=; Max-Age=-99999999;';     
  };
 }
 export function redeemInvite(invitationCode, password, firstName, lastName) {
