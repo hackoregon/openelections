@@ -2,15 +2,14 @@ import React, { Fragment } from "react";
 import * as Yup from "yup";
 
 import Form from "../../Form/Form";
-import TextField from "../../Fields/TextField";
-import SelectField from "../../Fields/SelectField";
+import FieldValue from "../../Fields/FieldValue";
 
 const fields = {
   // BASICS SECTION
   dateOfContribution: {
     label: "Date of Contribution",
     section: "basicsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("Enter date of contribution").required(
       // date format? validate specifically?
       "A contribution date is required"
@@ -19,7 +18,7 @@ const fields = {
   typeOfContribution: {
     label: "Type of Contribution",
     section: "basicsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: ["Contribution", "Other Receipt"]
     },
@@ -30,7 +29,7 @@ const fields = {
   subTypeOfContribution: {
     label: "Subtype of Contribution",
     section: "basicsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       // if typeOfContribution was 'contribution' subTypes are:
       // Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable,
@@ -51,7 +50,7 @@ const fields = {
   typeOfContributor: {
     label: "Type of Contributor",
     section: "basicsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "Individual",
@@ -71,7 +70,7 @@ const fields = {
   amountOfContribution: {
     label: "Amount of Contribution",
     section: "basicsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("Choose the amount of contribution")
       // NEEDS TO BE FORMATTED AS CURRENCY
       .required("The contribution amount is required")
@@ -79,7 +78,7 @@ const fields = {
   oaeContributionType: {
     label: "OAE Contribution Type",
     section: "basicsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "Seed Money",
@@ -98,7 +97,7 @@ const fields = {
   paymentMethod: {
     label: "Payment Method",
     section: "basicsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "Cash",
@@ -115,7 +114,7 @@ const fields = {
   checkNumber: {
     label: "Check Number",
     section: "basicsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("Enter your check number").required(
       "Check number is required"
     )
@@ -126,7 +125,7 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Contributor's First Name",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your first name").required(
       "Your first name is required"
     )
@@ -135,7 +134,7 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Contributor's Last Name",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your last name").required(
       "Your last name is required"
     )
@@ -143,7 +142,7 @@ const fields = {
   streetAddress: {
     label: "Street Address",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your street address").required(
       "Your street address is required"
     )
@@ -151,20 +150,20 @@ const fields = {
   addressLine2: {
     label: "Address Line 2",
     section: "contributorSection",
-    component: TextField
+    component: FieldValue
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   city: {
     label: "City",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
 
     validation: Yup.string("Select your city").required("Your city is required")
   },
   state: {
     label: "State",
     section: "contributorSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "AK",
@@ -231,7 +230,7 @@ const fields = {
   zipcode: {
     label: "Zipcode",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("Enter your zipcode").required(
       "A zipcode is required"
     )
@@ -239,7 +238,7 @@ const fields = {
   contactType: {
     label: "Contact Type",
     section: "contributorSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"] // get from Redux state eventually
     },
@@ -248,13 +247,13 @@ const fields = {
   contactInformation: {
     label: "Contact Information",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your contact information")
   },
   occupation: {
     label: "Occupation",
     section: "contributorSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: ["Not Employed", "Self Employed", "Other"]
     },
@@ -264,19 +263,19 @@ const fields = {
   employerName: {
     label: "Employer's Name",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your employer's name")
   },
   employerCity: {
     label: "Employer City",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your employer's city")
   },
   employerState: {
     label: "Employer State",
     section: "contributorSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "AK",
@@ -341,7 +340,7 @@ const fields = {
   employerZipcode: {
     label: "Employer Zipcode",
     section: "contributorSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter your employer's zipcode")
   },
 
@@ -349,13 +348,13 @@ const fields = {
   electionAggregate: {
     label: "Election Aggregate",
     section: "otherDetailsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("?????").required("????? is required")
   },
   description: {
     label: "Description",
     section: "otherDetailsSection",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "Broadcast Advertising",
@@ -385,13 +384,13 @@ const fields = {
   occupationLetterDate: {
     label: "Occupation Letter Date",
     section: "otherDetailsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.date("???").required("Occupation letter date is required") // NOT REQUIRED IF OCCUPATION & EMPLOYER NAME/ADDRESS FILLED IN
   },
   linkToDocumentation: {
     label: "Link to Documentation?",
     section: "otherDetailsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string(
       "Provide a link to documentation of your contribution"
     ).required("A link to documentation of your contribution is required")
@@ -401,7 +400,7 @@ const fields = {
   notes: {
     label: "Notes?",
     section: "otherDetailsSection",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Add any additional notes")
   }
 };

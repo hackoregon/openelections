@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../../Button/Button";
-// import ContributionSubmittedForm from "./ContributionSubmittedForm.js";
+import ContributionSubmittedForm from "./ContributionSubmittedForm.js";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 import { isLoggedIn } from "../../../state/ducks/auth";
@@ -161,231 +161,151 @@ const currentStatus = "Submitted";
 const labelsCount = 0;
 const addALabel = "";
 
-// BASICS INITIAL VALUES
-const basicsValues = {
-  dateOfContribution: "09/09/2019", // Date.now(), // FORMAT?
-  typeOfContribution: "Contribution",
-  subTypeOfContribution: "In-Kind Contribution",
-  typeOfContributor: "Individual",
-  amountOfContribution: undefined,
-  oaeContributionType: "Matchable",
-  paymentMethod: "Check",
-  checkNumber: undefined
-};
-
-// CONTRIBUTOR INITIAL VALUES
-const contributorValues = {
-  firstName: "Helen",
-  lastName: "Troy",
-  streetAddress: "2526 Race Street",
-  addressLine2: "",
-  city: "Portland",
-  state: "OR",
-  zipcode: "97212",
-  contactType: "Email",
-  contactInformation: "s.helen@example.com",
-  occupation: "Program Manager",
-  employerName: "Self Employed",
-  employerCity: "Portland",
-  employerState: "OR",
-  employerZipcode: "97212"
-};
-
-// OTHER DETAILS INITIAL VALUES
-const otherDetailsValues = {
-  electionAggregate: "2019",
-  description: "Some Description",
-  occupationLetterDate: "",
-  linkToDocumentation: "",
-  notes: ""
-};
 const ContributionSubmitted = () => (
-  <React.Fragment>
-    {/* HEADER SECTION */}
-    <div css={headerStyles.header}>
-      <div css={headerStyles.leftColumn}>
-        <div style={{ display: "flex" }}>
-          <p css={headerStyles.invoice}>←</p>
-          <div style={{ marginLeft: "20px" }}>
-            <p css={headerStyles.invoice}> {invoiceNumber}</p>
-            {/* placeholder for arrow ^ */}
-            <div css={headerStyles.subheading}>
-              <p style={{ marginTop: "0px" }}>
-                {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
+  <>
+    <React.Fragment>
+      {/* HEADER SECTION */}
+      <div css={headerStyles.header}>
+        <div css={headerStyles.leftColumn}>
+          <div style={{ display: "flex" }}>
+            <p css={headerStyles.invoice}>←</p>
+            <div style={{ marginLeft: "20px" }}>
+              <p css={headerStyles.invoice}> {invoiceNumber}</p>
+              {/* placeholder for arrow ^ */}
+              <div css={headerStyles.subheading}>
+                <p style={{ marginTop: "0px" }}>
+                  {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex" }}>
+            <div style={{ flexDirection: "column", marginRight: "40px" }}>
+              <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
+              <p style={{ fontSize: "7px" }}>()()()</p>
+              {/* placeholder for icon ^ */}
+              <p css={headerStyles.addLabels}>Manage</p>
+            </div>
+            <div css={headerStyles.statusBlock}>
+              <p css={headerStyles.status}>Current Status</p>
+              <p css={headerStyles.actualStatus}>{currentStatus}</p>
+              <p
+                style={{
+                  marginTop: "0px",
+                  fontSize: "9px",
+                  color: "#5f5fff"
+                }}
+              >
+                Jump to Activity ↓
               </p>
             </div>
           </div>
         </div>
-        <div style={{ display: "flex" }}>
-          <div style={{ flexDirection: "column", marginRight: "40px" }}>
-            <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
-            <p style={{ fontSize: "7px" }}>()()()</p>
-            {/* placeholder for icon ^ */}
-            <p css={headerStyles.addLabels}>Manage</p>
-          </div>
-          <div css={headerStyles.statusBlock}>
-            <p css={headerStyles.status}>Current Status</p>
-            <p css={headerStyles.actualStatus}>{currentStatus}</p>
-            <p
-              style={{
-                marginTop: "0px",
-                fontSize: "9px",
-                color: "#5f5fff"
-              }}
-            >
-              Jump to Activity ↓
-            </p>
-          </div>
+        <div css={headerStyles.rightColumn}>
+          <Button css={headerStyles.submitButton} buttonType="submit">
+            Submitted
+          </Button>
         </div>
       </div>
-      <div css={headerStyles.rightColumn}>
-        <Button css={headerStyles.submitButton} buttonType="submit">
-          Submitted
-        </Button>
-      </div>
-    </div>
-    <hr style={{ marginRight: "38px" }} />
+    </React.Fragment>
+    <ContributionSubmittedForm
+      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      initialValues={{
+        // basics values
+        dateOfContribution: "09/09/2019", // Date.now(), // FORMAT?
+        typeOfContribution: "Contribution",
+        subTypeOfContribution: "In-Kind Contribution",
+        typeOfContributor: "Individual",
+        amountOfContribution: undefined,
+        oaeContributionType: "Matchable",
+        paymentMethod: "Check",
+        checkNumber: undefined,
 
-    {/* BASICS SECTION */}
-    <div css={sectionStyles}>
-      <h3 css={sectionTitle}>Basics</h3>
-      <div css={container}>
-        <div>
-          <p css={fieldLabels}>Date of Contribution</p>
-          <p css={sectionValues}>{basicsValues.dateOfContribution}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Contribution Type</p>
-          <p css={sectionValues}>{basicsValues.typeOfContribution}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Contribution Sub Type</p>
-          <p css={sectionValues}>{basicsValues.subTypeOfContribution}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Type of Contributor</p>
-          <p css={sectionValues}>{basicsValues.typeOfContributor}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Amount of Contribution</p>
-          <p css={sectionValues}>{basicsValues.amountOfContribution}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>OAE Contribution Type</p>
-          <p css={sectionValues}>{basicsValues.oaeContributionType}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Payment Method</p>
-          <p css={sectionValues}>{basicsValues.paymentMethod}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Check Number</p>
-          <p css={sectionValues}>{basicsValues.checkNumber}</p>
-        </div>
-      </div>
-    </div>
+        // contributor alues
+        firstName: "Helen",
+        lastName: "Troy",
+        streetAddress: "2526 Race Street",
+        addressLine2: "",
+        city: "Portland",
+        state: "OR",
+        zipcode: "97212",
+        contactType: "Email",
+        contactInformation: "s.helen@example.com",
+        occupation: "Program Manager",
+        employerName: "Self Employed",
+        employerCity: "Portland",
+        employerState: "OR",
+        employerZipcode: "97212",
 
-    {/* CONTRIBUTOR SECTION */}
-    <div css={sectionStyles}>
-      <h3 css={sectionTitle}>Contributor</h3>
-      <div css={contributorContainer}>
-        <div>
-          <p css={fieldLabels}>First Name</p>
-          <p css={sectionValues}>{contributorValues.firstName}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Last Name</p>
-          <p css={sectionValues}>{contributorValues.lastName}</p>
-        </div>
-        <div css={addressContainer}>
-          <div>
-            <p css={fieldLabels}>Address Line</p>
-            <p css={sectionValues}>{contributorValues.streetAddress}</p>
-          </div>
-          <div>
-            <p css={fieldLabels}>Address Line 2</p>
-            <p css={sectionValues}>{contributorValues.addressLine2}</p>
-          </div>
-        </div>
-      </div>
-      <div css={cityStateZip}>
-        <div>
-          <p css={fieldLabels}>City</p>
-          <p css={sectionValues}>{contributorValues.city}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>State</p>
-          <p css={sectionValues}>{contributorValues.state}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Zipcode</p>
-          <p css={sectionValues}>{contributorValues.zipcode}</p>
-        </div>
-      </div>
-      <div css={contributorContainer}>
-        <div>
-          <p css={fieldLabels}>Contact Type</p>
-          <p css={sectionValues}>{contributorValues.contactType}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Contact Information</p>
-          <p css={sectionValues}>{contributorValues.contactInformation}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Occupation</p>
-          <p css={sectionValues}>{contributorValues.occupation}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Employer</p>
-          <p css={sectionValues}>{contributorValues.employerName}</p>
-        </div>
-      </div>
-      <div css={addressContainer}>
-        <div css={cityStateZip}>
-          <div>
-            <p css={fieldLabels}>Employer City</p>
-            <p css={sectionValues}>{contributorValues.employerCity}</p>
-          </div>
-          <div>
-            <p css={fieldLabels}>Employer State</p>
-            <p css={sectionValues}>{contributorValues.employerState}</p>
-          </div>
-          <div>
-            <p css={fieldLabels}>Employer Zipcode</p>
-            <p css={sectionValues}>{contributorValues.employerZipcode}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+        // other details values
+        electionAggregate: "2019",
+        description: "Some Description",
+        occupationLetterDate: "",
+        linkToDocumentation: "",
+        notes: ""
+      }}
+    >
+      {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
+        <React.Fragment>
+          <hr style={{ marginRight: "38px" }} />
 
-    {/* OTHER DETAILS SECTION */}
-    <div css={sectionStyles}>
-      <h3 css={sectionTitle}>Other Details</h3>
-      <div css={container}>
-        <div>
-          <p css={fieldLabels}>Election Aggregate</p>
+          {/* BASICS SECTION */}
+          <div css={sectionStyles}>
+            <h3 css={sectionTitle}>Basics</h3>
+            <div css={container}>
+              <h2>{formFields.dateOfContribution}</h2>
+              <h2>{formFields.typeOfContribution}</h2>
+              <h2>{formFields.subTypeOfContribution}</h2>
+              <h2>{formFields.typeOfContributor}</h2>
+              <h2>{formFields.amountOfContribution}</h2>
+              <h2>{formFields.oaeContributionType}</h2>
+              <h2>{formFields.paymentMethod}</h2>
+              <h2>{formFields.checkNumber}</h2>
+            </div>
+          </div>
 
-          <p css={sectionValues}>{otherDetailsValues.electionAggregate}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Description</p>
-          <p css={sectionValues}>{otherDetailsValues.description}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Occupation Letter Date</p>
-          <p css={sectionValues}>{otherDetailsValues.occupationLetterDate}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Link to Documentation</p>
-          <p css={sectionValues}>{otherDetailsValues.linkToDocumentation}</p>
-        </div>
-        <div>
-          <p css={fieldLabels}>Notes</p>
-          <p css={sectionValues}>{otherDetailsValues.notes}</p>
-        </div>
-      </div>
-    </div>
-  </React.Fragment>
+          {/* CONTRIBUTOR SECTION */}
+          <div css={sectionStyles}>
+            <h3 css={sectionTitle}>Contributor</h3>
+            <div css={contributorContainer}>
+              <h2>{formFields.firstName}</h2>
+              <h2>{formFields.lastName}</h2>
+            </div>
+            <h2 css={addressContainer}>{formFields.streetAddress}</h2>
+            <h2 css={addressContainer}>{formFields.addressLine2}</h2>
+            <div css={cityStateZip}>
+              <h2>{formFields.city}</h2>
+              <h2>{formFields.state}</h2>
+              <h2>{formFields.zipcode}</h2>
+            </div>
+            <div css={contributorContainer}>
+              <h2>{formFields.contactType}</h2>
+              <h2>{formFields.contactInformation}</h2>
+              <h2>{formFields.occupation}</h2>
+              <h2>{formFields.employerName}</h2>
+            </div>
+            <div css={cityStateZip}>
+              <h2>{formFields.employerCity}</h2>
+              <h2>{formFields.employerState}</h2>
+              <h2>{formFields.employerZipcode}</h2>
+            </div>
+          </div>
+
+          {/* OTHER DETAILS SECTION */}
+          <div css={sectionStyles}>
+            <h3 css={sectionTitle}>Other Details</h3>
+            <div css={container}>
+              <h2>{formFields.electionAggregate}</h2>
+              <h2>{formFields.description}</h2>
+              <h2>{formFields.occupationLetterDate}</h2>
+              <h2>{formFields.linkToDocumentation}</h2>
+              <h2>{formFields.notes}</h2>
+            </div>
+          </div>
+        </React.Fragment>
+      )}
+    </ContributionSubmittedForm>
+  </>
 );
 export default connect(state => ({
   isLoggedIn: isLoggedIn(state) || false

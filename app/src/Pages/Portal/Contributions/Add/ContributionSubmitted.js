@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import ContributionSubmittedPage from "../../../../components/Forms/ContributionSubmitted/index";
+import ContributionSubmittedForm from "../../../../components/Forms/ContributionSubmitted/index";
 import { connect } from "react-redux";
 import { login } from "../../../../state/ducks/auth";
 
@@ -13,7 +13,7 @@ class ContributionSubmitted extends Component {
   render() {
     return (
       <PageHoc>
-        <ContributionSubmittedPage {...this.props} />
+        <ContributionSubmittedForm {...this.props} />
       </PageHoc>
     );
   }
