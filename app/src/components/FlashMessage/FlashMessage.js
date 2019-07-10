@@ -42,7 +42,7 @@ function FlashMessage ({ flash }) {
     <div  >
     {
       flash && 
-      <div x={console.log(flash)}>
+      <div>
       <Snackbar open={true}  >  
         <SnackbarContentWrapper 
            variant = {flash.props.variant ? flash.props.variant : "success"}  
