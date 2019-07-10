@@ -5,19 +5,19 @@ import { getLatestMessage } from 'redux-flash';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContentWrapper from "./FlashMessageWrapper";
 
-/***
+/*
  
   Use on a connected component like so:
   import { flashMessage } from 'redux-flash';
 
-  # Set variant, it takes: success, warning, error, or info. Defaults to success.
+   //Set variant, it takes: success, warning, error, or info. Defaults to success.
    const options = {
     props: {
       variant: 'success',         
     }
   }
 
-  # Dispatch flashMessage(message, [options])
+  //Dispatch flashMessage(message, [options])
   flashMessage('Wow so successful', options);
 
     - variant is only the option currently being passed
@@ -35,7 +35,7 @@ import SnackbarContentWrapper from "./FlashMessageWrapper";
       }
     }
 
-***/
+*/
 
 function FlashMessage ({ flash }) {
   return (
