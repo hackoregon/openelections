@@ -1,11 +1,14 @@
 import * as React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
-import AddContribution from "./Add/AddContribution";
+// import AddContribution from "./Add/AddContribution";
+import ContributionSubmitted from "./Add/ContributionSubmitted";
 
 const ContributionsPage = props => {
   return (
     <PageHoc>
-      <AddContribution />
+      // Switch statement for routing
+      {/* <AddContribution /> */}
+      <ContributionSubmitted />
     </PageHoc>
   );
 };
