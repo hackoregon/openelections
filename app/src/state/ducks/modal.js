@@ -22,7 +22,6 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [actionTypes.SHOW_MODAL]: (state, action) => {
-    console.log("[REDUCER]", state, action);
     return { ...state, isActive: true, currentModal: action.payload.component };
   },
   [actionTypes.DISMISS_MODAL]: (state, action) => {
@@ -33,11 +32,6 @@ export default createReducer(initialState, {
 // Action Creators
 export const actionCreators = {
   showmodal: payload => {
-    console.log(
-      "[actionCreator]",
-      payload,
-      action(actionTypes.SHOW_MODAL, { payload })
-    );
     return action(actionTypes.SHOW_MODAL, { payload });
   },
   dismissmodal: () => action(actionTypes.DISMISS_MODAL)
@@ -45,7 +39,6 @@ export const actionCreators = {
 
 export function showModal(payload) {
   return (dispatch, getState) => {
-    console.log("[state]", payload);
     dispatch(actionCreators.showmodal(payload));
   };
 }

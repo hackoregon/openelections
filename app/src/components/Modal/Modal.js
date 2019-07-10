@@ -37,26 +37,21 @@ const Modal = props => {
       onClose={() => handleClose()}
     >
       <div>
-        {console.log({ props })}
-        <div>
-          <div css={modalStyle}>
-            <div css={closeModal}>
-              <IconButton aria-label="Back" onClick={() => handleClose()}>
-                <Close style={{ fontSize: "26px", color: "black" }} />
-              </IconButton>
-            </div>
-            {ModalOptions[props.getModalState.currentModal] != undefined ? (
-              React.createElement(
-                ModalOptions[props.getModalState.currentModal]
-              )
-            ) : (
-              <div css={errorStyle}>
-                <br />
-                <br />
-                <h2>Error loading modal</h2>
-              </div>
-            )}
+        <div css={modalStyle}>
+          <div css={closeModal}>
+            <IconButton aria-label="Back" onClick={() => handleClose()}>
+              <Close style={{ fontSize: "26px", color: "black" }} />
+            </IconButton>
           </div>
+          {ModalOptions[props.getModalState.currentModal] != undefined ? (
+            React.createElement(ModalOptions[props.getModalState.currentModal])
+          ) : (
+            <div css={errorStyle}>
+              <br />
+              <br />
+              <h2>Error loading modal</h2>
+            </div>
+          )}
         </div>
       </div>
     </ModalMaterial>
