@@ -15,9 +15,16 @@ const container = css`
   grid-gap: 20px;
 `;
 
+const contributorContainer = css`
+  width: 96%%;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+`;
+
 const addressContainer = css`
   width: 96%%;
-  min-height: 25px;
   display: grid;
   grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
   grid-template-columns: 1fr;
@@ -47,11 +54,13 @@ const headerStyles = {
     line-height: 37px;
     color: #333333;
     margin-bottom: 0px;
+    margin-top: 0px;
   `,
   subheading: css`
     font-family: SofiaProRegular;
     font-size: 16px;
     line-height: 19px;
+    margin-top: 0px;
     color: #333333;
   `,
   labels: css`
@@ -71,9 +80,10 @@ const headerStyles = {
   `,
   rightColumn: css`
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     flex-direction: column;
     margin-right: 38px;
+    margin-bottom: 13px;
   `,
   status: css`
     font-family: SofiaProRegular;
@@ -111,7 +121,7 @@ const sectionTitle = css`
   line-height: 28px;
   width: 100%;
   color: #000000;
-  margin-top: 55px;
+  margin-top: 65px;
 `;
 
 const sectionStyles = css`
@@ -126,6 +136,7 @@ const fieldLabels = css`
   font-weight: normal;
   font-size: 13px;
   line-height: 15px;
+  margin-bottom: 4px;
   color: rgba(0, 0, 0, 0.65);
 `;
 
@@ -135,9 +146,11 @@ const sectionValues = css`
   font-weight: normal;
   font-size: 21px;
   line-height: 25px;
+  height: 25px;
   /* identical to box height */
   color: #333333;
-  margin: 0px;
+  margin-top: 14px;
+  margin-bottom: 22px;
 `;
 
 // HEADER PIECES
@@ -191,11 +204,17 @@ const ContributionSubmitted = () => (
     {/* HEADER SECTION */}
     <div css={headerStyles.header}>
       <div css={headerStyles.leftColumn}>
-        <p css={headerStyles.invoice}>{invoiceNumber}</p>
-        <div css={headerStyles.subheading}>
-          <p>
-            {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
-          </p>
+        <div style={{ display: "flex" }}>
+          <p css={headerStyles.invoice}>←</p>
+          <div style={{ marginLeft: "20px" }}>
+            <p css={headerStyles.invoice}> {invoiceNumber}</p>
+            {/* placeholder for arrow ^ */}
+            <div css={headerStyles.subheading}>
+              <p style={{ marginTop: "0px" }}>
+                {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
+              </p>
+            </div>
+          </div>
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ flexDirection: "column", marginRight: "40px" }}>
@@ -214,7 +233,7 @@ const ContributionSubmitted = () => (
                 color: "#5f5fff"
               }}
             >
-              Jump to Activity ꜜ
+              Jump to Activity ↓
             </p>
           </div>
         </div>
@@ -269,7 +288,7 @@ const ContributionSubmitted = () => (
     {/* CONTRIBUTOR SECTION */}
     <div css={sectionStyles}>
       <h3 css={sectionTitle}>Contributor</h3>
-      <div css={container}>
+      <div css={contributorContainer}>
         <div>
           <p css={fieldLabels}>First Name</p>
           <p css={sectionValues}>{contributorValues.firstName}</p>
@@ -278,28 +297,32 @@ const ContributionSubmitted = () => (
           <p css={fieldLabels}>Last Name</p>
           <p css={sectionValues}>{contributorValues.lastName}</p>
         </div>
+        <div css={addressContainer}>
+          <div>
+            <p css={fieldLabels}>Address Line</p>
+            <p css={sectionValues}>{contributorValues.streetAddress}</p>
+          </div>
+          <div>
+            <p css={fieldLabels}>Address Line 2</p>
+            <p css={sectionValues}>{contributorValues.addressLine2}</p>
+          </div>
+        </div>
+      </div>
+      <div css={cityStateZip}>
         <div>
-          <p css={fieldLabels}>Address Line</p>
-          <p css={sectionValues}>{contributorValues.streetAddress}</p>
+          <p css={fieldLabels}>City</p>
+          <p css={sectionValues}>{contributorValues.city}</p>
         </div>
         <div>
-          <p css={fieldLabels}>Address Line 2</p>
-          <p css={sectionValues}>{contributorValues.addressLine2}</p>
+          <p css={fieldLabels}>State</p>
+          <p css={sectionValues}>{contributorValues.state}</p>
         </div>
-        <div css={cityStateZip}>
-          <div>
-            <p css={fieldLabels}>City</p>
-            <p css={sectionValues}>{contributorValues.city}</p>
-          </div>
-          <div>
-            <p css={fieldLabels}>State</p>
-            <p css={sectionValues}>{contributorValues.state}</p>
-          </div>
-          <div>
-            <p css={fieldLabels}>Zipcode</p>
-            <p css={sectionValues}>{contributorValues.zipcode}</p>
-          </div>
+        <div>
+          <p css={fieldLabels}>Zipcode</p>
+          <p css={sectionValues}>{contributorValues.zipcode}</p>
         </div>
+      </div>
+      <div css={contributorContainer}>
         <div>
           <p css={fieldLabels}>Contact Type</p>
           <p css={sectionValues}>{contributorValues.contactType}</p>
@@ -316,6 +339,8 @@ const ContributionSubmitted = () => (
           <p css={fieldLabels}>Employer</p>
           <p css={sectionValues}>{contributorValues.employerName}</p>
         </div>
+      </div>
+      <div css={addressContainer}>
         <div css={cityStateZip}>
           <div>
             <p css={fieldLabels}>Employer City</p>
