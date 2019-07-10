@@ -3,13 +3,11 @@ import PageHoc from "../../components/PageHoc/PageHoc";
 import SignInForm from "../../components/Forms/SignIn/index";
 import { connect } from "react-redux";
 import { login, isLoggedIn } from "../../state/ducks/auth";
-//import { login, isLoggedIn, logout } from "../../state/ducks/auth";
 import { flashMessage } from "redux-flash";
 
 class SignIn extends Component {
   constructor(props) {
     super(props);
-   // this.props.logout();
   }
   componentDidUpdate(){
     const { isLoggedIn, authError, flashMessage, history } = this.props;
@@ -38,7 +36,6 @@ export default connect(
   dispatch => {
     return {
       login: (email,password) => dispatch(login(email,password)),
-    //  logout: () => dispatch(logout()),
       flashMessage: (message, options) => dispatch(flashMessage(message, options)),
       dispatch
     }
