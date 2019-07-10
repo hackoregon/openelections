@@ -6,7 +6,6 @@ import { reducer as flashReducer } from "redux-flash";
 // the reducer acts on the corresponding ApplicationState property type.
 export const createReducer = asyncReducers => {
   return combineReducers({
-    test: testReducer,
     flash: flashReducer,
     ...asyncReducers
   });

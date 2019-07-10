@@ -3,21 +3,16 @@ import React from "react";
 import ModalMaterial from "@material-ui/core/Modal";
 import IconButton from "@material-ui/core/IconButton";
 import Close from "@material-ui/icons/Close";
+import * as ModalOptions from "../Forms/ModalForms";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-
-const modalWrapper = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
 
 const modalStyle = css`
   position: absolute;
   width: 350px;
   background: white;
-  padding: 50px;
+  top: 8vh;
+  left: calc(50vw - 175px);
 `;
 
 const closeModal = css`
@@ -26,34 +21,46 @@ const closeModal = css`
   right: 0;
 `;
 
-const Modal = props => (
-  <ModalMaterial
-    aria-label={props.getModalState.currentModal + " modal"}
-    open={props.getModalState.isActive}
-    onClose={() => props.clearModal()}
-  >
-    <div css={modalWrapper}>
-      {console.log({ props })}
-      <div css={modalStyle}>
-        <div css={closeModal}>
-          <IconButton
-            aria-label="Back"
-            onClick={x => {
-              console.log(x);
-              props.clearModal();
-            }}
-          >
-            <Close style={{ fontSize: "26px", color: "black" }} />
-          </IconButton>
-        </div>
+const errorStyle = css`
+  text-align: center;
+`;
 
-        {/* <h2 id="modal-title">Text in a modal</h2>
-        <p id="simple-modal-description">
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </p> */}
+const Modal = props => {
+  const handleClose = x => {
+    console.log("me here", x);
+    props.clearModal();
+  };
+  return (
+    <ModalMaterial
+      aria-label={props.getModalState.currentModal + " modal"}
+      open={props.getModalState.isActive}
+      onClose={() => handleClose()}
+    >
+      <div>
+        {console.log({ props })}
+        <div>
+          <div css={modalStyle}>
+            <div css={closeModal}>
+              <IconButton aria-label="Back" onClick={() => handleClose()}>
+                <Close style={{ fontSize: "26px", color: "black" }} />
+              </IconButton>
+            </div>
+            {ModalOptions[props.getModalState.currentModal] != undefined ? (
+              React.createElement(
+                ModalOptions[props.getModalState.currentModal]
+              )
+            ) : (
+              <div css={errorStyle}>
+                <br />
+                <br />
+                <h2>Error loading modal</h2>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  </ModalMaterial>
-);
+    </ModalMaterial>
+  );
+};
 
 export default Modal;

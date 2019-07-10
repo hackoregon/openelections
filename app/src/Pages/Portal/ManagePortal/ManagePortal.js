@@ -70,7 +70,7 @@ const ManagePortalPage = props => (
                 isFreeAction: true,
                 onClick: () => {
                   console.log(props);
-                  props.showModal("modal");
+                  props.showModal("AddUse");
                 }
               }
             ]}
