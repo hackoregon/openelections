@@ -4,13 +4,14 @@ import * as Yup from "yup";
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
+import DateField from "../../Fields/DateField";
 
 const fields = {
   // BASICS SECTION
   dateOfContribution: {
     label: "Date of Contribution",
     section: "basicsSection",
-    component: TextField,
+    component: DateField,
     validation: Yup.number("Enter date of contribution").required(
       // date format? validate specifically?
       "A contribution date is required"
