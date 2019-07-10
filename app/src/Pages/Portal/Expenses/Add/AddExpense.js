@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import AddContributionForm from "../../../../components/Forms/AddContribution/index";
+import AddExpenseForm from "../../../../components/Forms/AddExpense/index";
 import { connect } from "react-redux";
 import { login } from "../../../../state/ducks/auth";
 
-class AddContribution extends Component {
+class AddExpense extends Component {
   componentWillUpdate(newprops) {
     if (!(typeof newprops.state.me == "undefined" || !newprops.state.me)) {
       this.props.history.push("/dashboard");
@@ -13,7 +13,7 @@ class AddContribution extends Component {
   render() {
     return (
       <PageHoc>
-        <AddContributionForm {...this.props} />
+        <AddExpenseForm {...this.props} />
       </PageHoc>
     );
   }
@@ -29,4 +29,4 @@ export default connect(
       dispatch
     };
   }
-)(AddContribution);
+)(AddExpense);
