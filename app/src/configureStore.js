@@ -18,6 +18,8 @@ import users, { STATE_KEY as USERS_STATE_KEY } from "./state/ducks/users";
 import modal, { STATE_KEY as MODAL_STATE_KEY } from "./state/ducks/modal";
 import * as api from "./api";
 import * as schema from "./api/schema";
+import { middleware as flashMiddleware } from 'redux-flash'
+
 
 export default function configureStore(history) {
   const composeEnhancers =
@@ -38,6 +40,6 @@ export default function configureStore(history) {
       [USERS_STATE_KEY]: users,
       [MODAL_STATE_KEY]: modal
     }),
-    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api, schema })))
+    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api, schema }),flashMiddleware(), ))
   );
 }
