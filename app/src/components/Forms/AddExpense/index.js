@@ -101,11 +101,20 @@ const headerStyles = {
     color: #000000;
     margin-top: 0px;
   `,
+  buttonDiv: css`
+    display: flex;
+    justify-content: space-between;
+  `,
   submitButton: css`
-    background: #d8d8d8;
+    background-color: #d8d8d8;
     border-radius: 5px;
     color: white;
-    width: 243px;
+    width: 165px;
+  `,
+  draftButton: css`
+    background-color: #5f5fff;
+    border-radius: 5px;
+    width: 165px;
   `,
   statusBlock: css`
     display: flex;
@@ -191,14 +200,24 @@ const AddExpense = () => (
               <p css={headerStyles.status}>Current Status</p>
               <p css={headerStyles.actualStatus}>{currentStatus}</p>
             </div>
-            <Button
-              css={headerStyles.submitButton}
-              buttonType="submit"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Submit Contribution
-            </Button>
+            <div css={headerStyles.buttonDiv}>
+              <Button
+                css={headerStyles.draftButton}
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Save as Draft
+              </Button>
+              <Button
+                css={headerStyles.submitButton}
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Submit Expense
+              </Button>
+            </div>
           </div>
         </div>
         <hr style={{ marginRight: "38px" }} />
