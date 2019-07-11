@@ -250,6 +250,7 @@ const AddContribution = () => (
             <h2>{formFields.employerCity}</h2>
             <h2>{formFields.employerState}</h2>
             <h2>{formFields.employerZipcode}</h2>
+            <h2>{formFields.occupationLetterDate}</h2>
           </div>
         </div>
 
@@ -259,7 +260,6 @@ const AddContribution = () => (
           <div css={container}>
             <h2>{formFields.electionAggregate}</h2>
             <h2>{formFields.description}</h2>
-            <h2>{formFields.occupationLetterDate}</h2>
             <h2>{formFields.linkToDocumentation}</h2>
             <h2>{formFields.notes}</h2>
           </div>
