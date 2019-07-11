@@ -10,7 +10,7 @@ const fields = {
   // BASICS SECTION
   amount: {
     label: "Amount of Expenditure",
-    section: "basicsSection",
+    section: "sectionOne",
     component: TextField,
     validation: Yup.number("Choose the amount of expenditure")
       // NEEDS TO BE FORMATTED AS CURRENCY
@@ -18,7 +18,7 @@ const fields = {
   },
   dateOfExpenditure: {
     label: "Date of Expenditure",
-    section: "basicsSection",
+    section: "sectionOne",
     component: DateField,
     validation: Yup.number("Enter date of expenditure").required(
       // date format? validate specifically?
@@ -27,7 +27,7 @@ const fields = {
   },
   typeOfExpenditure: {
     label: "Type of Expenditure",
-    section: "basicsSection",
+    section: "sectionOne",
     component: SelectField,
     options: {
       values: ["Expenditure", "Other", "Other Disbursement"]
@@ -38,7 +38,7 @@ const fields = {
   },
   subTypeOfExpenditure: {
     label: "Subtype of Expenditure",
-    section: "basicsSection",
+    section: "sectionOne",
     component: SelectField,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
@@ -62,7 +62,7 @@ const fields = {
   },
   paymentMethod: {
     label: "Payment Method",
-    section: "basicsSection",
+    section: "sectionOne",
     component: SelectField,
     options: {
       values: [
@@ -79,10 +79,39 @@ const fields = {
   },
   checkNumber: {
     label: "Check Number",
-    section: "basicsSection",
+    section: "sectionOne",
     component: TextField,
     validation: Yup.number("Enter your check number").required(
       "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
+    )
+  },
+  purposeOfExpenditure: {
+    label: "Purpose of Expenditure",
+    section: "sectionOne",
+    component: SelectField,
+    options: {
+      values: [
+        "Broadcast Advertising",
+        "Cash Contribution",
+        "Fundraising Event Expenses",
+        "General Operating Expenses",
+        "Literature/Brochures/Printing",
+        "Management Services",
+        "Newspaper and Other Periodical Advertising",
+        "Other Advertising",
+        "Petition Circulators",
+        "Postage",
+        "Preparation and Production of Advertising",
+        "Surveys and Polls",
+        "Travel Expenses",
+        "Utilities",
+        "Wages/Salaries/Benefits",
+        "Reimbursement for Personal Expenditures"
+      ]
+    },
+    validation: Yup.string("Choose the purpose of the expenditure").required(
+      "A description of the purpose is required"
+      // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
     )
   },
 
@@ -90,7 +119,7 @@ const fields = {
   payeeType: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee Type",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: SelectField,
     options: {
       values: ["Individual", "Business Entity", "Candidate"]
@@ -102,7 +131,7 @@ const fields = {
   payeeName: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: TextField,
     validation: Yup.string("Enter the payee's name").required(
       "The payee's name is required"
@@ -110,7 +139,7 @@ const fields = {
   },
   streetAddress: {
     label: "Street Address/PO Box",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: TextField,
     validation: Yup.string("Enter the payee's street address").required(
       "The payee's street address is required"
@@ -118,13 +147,13 @@ const fields = {
   },
   addressLine2: {
     label: "Address Line 2",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: TextField
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   countryRegion: {
     label: "Country/Region",
-    setion: "contributorSection",
+    setion: "sectionTwo",
     component: TextField,
     validation: Yup.string("Enter the payee's country or region").required(
       "The payee's country or region is required"
@@ -132,7 +161,7 @@ const fields = {
   },
   city: {
     label: "City",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: TextField,
     validation: Yup.string("Select the payee's city").required(
       "The payee's city is required"
@@ -140,7 +169,7 @@ const fields = {
   },
   state: {
     label: "State",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: SelectField,
     options: {
       values: [
@@ -207,7 +236,7 @@ const fields = {
   },
   zipcode: {
     label: "Zipcode",
-    section: "contributorSection",
+    section: "sectionTwo",
     component: TextField,
     validation: Yup.number("Enter your zipcode").required(
       "A zipcode is required"
@@ -215,46 +244,16 @@ const fields = {
   },
   county: {
     label: "County",
-    setion: "contributorSection",
+    setion: "sectionTwo",
     component: TextField,
     validation: Yup.string("Enter the payee's county").required(
       "The payee's county is required"
     )
   },
 
-  // OTHER DETAILS SECTION
-  purposeOfExpenditure: {
-    label: "Purpose of Expenditure",
-    section: "otherDetailsSection",
-    component: SelectField,
-    options: {
-      values: [
-        "Broadcast Advertising",
-        "Cash Contribution",
-        "Fundraising Event Expenses",
-        "General Operating Expenses",
-        "Literature/Brochures/Printing",
-        "Management Services",
-        "Newspaper and Other Periodical Advertising",
-        "Other Advertising",
-        "Petition Circulators",
-        "Postage",
-        "Preparation and Production of Advertising",
-        "Surveys and Polls",
-        "Travel Expenses",
-        "Utilities",
-        "Wages/Salaries/Benefits",
-        "Reimbursement for Personal Expenditures"
-      ]
-    },
-    validation: Yup.string("Choose the purpose of the expenditure").required(
-      "A description of the purpose is required"
-      // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
-    )
-  },
   notes: {
     label: "Notes",
-    section: "otherDetailsSection",
+    section: "sectionThree",
     component: TextField,
     validation: Yup.string("Add any additional notes")
   }
@@ -264,7 +263,7 @@ const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
   <React.Fragment>
     <Form
       fields={fields}
-      sections={["basicsSection", "contributorSection", "otherDetailsSection"]}
+      sections={["sectionOne", "sectionTwo", "sectionThree"]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >
