@@ -195,7 +195,7 @@ const AddContribution = () => (
   <AddContributionForm
     onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
     initialValues={{
-      // BASICS SECTION
+      // BASICS VALUES
       dateOfContribution: "", // Date.now(), // FORMAT?
       typeOfContribution: "",
       subTypeOfContribution: "",
@@ -205,7 +205,7 @@ const AddContribution = () => (
       paymentMethod: "",
       checkNumber: undefined,
 
-      // CONTRIBUTOR SECTION
+      // CONTRIBUTOR VALUES
       firstName: "",
       lastName: "",
       streetAddress: "",
@@ -221,7 +221,7 @@ const AddContribution = () => (
       employerState: "OR",
       employerZipcode: "97201",
 
-      // OTHER DETAILS SECTION
+      // OTHER DETAILS VALUES
       electionAggregate: "",
       description: "",
       occupationLetterDate: "",
