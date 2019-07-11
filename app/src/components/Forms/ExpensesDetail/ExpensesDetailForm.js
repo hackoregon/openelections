@@ -2,44 +2,42 @@ import React, { Fragment } from "react";
 import * as Yup from "yup";
 
 import Form from "../../Form/Form";
-import TextField from "../../Fields/TextField";
-import SelectField from "../../Fields/SelectField";
-import DateField from "../../Fields/DateField";
+import FieldValue from "../../Fields/FieldValue";
 
 const fields = {
   // BASICS SECTION
   amount: {
     label: "Amount of Expenditure",
-    section: "sectionOne",
-    component: TextField,
+    section: "basicsSection",
+    component: FieldValue,
     validation: Yup.number("Choose the amount of expenditure")
       // NEEDS TO BE FORMATTED AS CURRENCY
       .required("The expenditure amount is required")
   },
   dateOfExpenditure: {
     label: "Date of Expenditure",
-    section: "sectionOne",
-    component: DateField,
+    section: "basicsSection",
+    component: FieldValue,
     validation: Yup.number("Enter date of expenditure").required(
       // date format? validate specifically?
-      "A expenditure date is required"
+      "An expenditure date is required"
     )
   },
   typeOfExpenditure: {
     label: "Type of Expenditure",
-    section: "sectionOne",
-    component: SelectField,
+    section: "basicsSection",
+    component: FieldValue,
     options: {
       values: ["Expenditure", "Other", "Other Disbursement"]
     },
-    validation: Yup.string("Choose the type of contribution").required(
-      "A contribution type is required"
+    validation: Yup.string("Choose the type of Expenditure").required(
+      "An expenditure type is required"
     )
   },
   subTypeOfExpenditure: {
     label: "Subtype of Expenditure",
-    section: "sectionOne",
-    component: SelectField,
+    section: "basicsSection",
+    component: FieldValue,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
       values: [
@@ -49,28 +47,32 @@ const fields = {
       ]
       // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
       // values: [
-      //   "Accounts Payable Rescinded", "Cash Balance Adjustment"
+      //   "Accounts Payable Rescinded",
+      //   "Cash Balance Adjustment"  // maybe
       // ]
+
       // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
       // values: [
-      //   "Miscellaneous Other Disbursement", "Return or Refund of Contribution"
+      //   "Miscellaneous",
+      //   "Other Disbursement",
+      //   "Return or Refund of Contribution"
       // ]
     },
-    validation: Yup.string("Choose the subtype of expenditure").required(
-      "The expenditure subtype is required"
+    validation: Yup.string("Choose the subtype of Expenditure").required(
+      "The Expenditure subtype is required"
     )
   },
   paymentMethod: {
     label: "Payment Method",
-    section: "sectionOne",
-    component: SelectField,
+    section: "basicsSection",
+    component: FieldValue,
     options: {
       values: [
+        "Cash",
         "Check",
-        "Credit Card",
-        "Debit Card",
-        "Electronic Check",
-        "Electronic Funds Transfer"
+        "Money Order",
+        "Credit Card (Online)",
+        "Credit Card (Paper Form)"
       ]
     },
     validation: Yup.string("Choose the payment method").required(
@@ -79,16 +81,16 @@ const fields = {
   },
   checkNumber: {
     label: "Check Number",
-    section: "sectionOne",
-    component: TextField,
+    section: "basicsSection",
+    component: FieldValue,
     validation: Yup.number("Enter your check number").required(
-      "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
+      "Check number is required"
     )
   },
   purposeOfExpenditure: {
     label: "Purpose of Expenditure",
     section: "sectionOne",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "Broadcast Advertising",
@@ -120,7 +122,7 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee Type",
     section: "sectionTwo",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: ["Individual", "Business Entity", "Candidate"]
     },
@@ -132,7 +134,7 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
     section: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter the payee's name").required(
       "The payee's name is required"
     )
@@ -140,7 +142,7 @@ const fields = {
   streetAddress: {
     label: "Street Address/PO Box",
     section: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter the payee's street address").required(
       "The payee's street address is required"
     )
@@ -148,13 +150,13 @@ const fields = {
   addressLine2: {
     label: "Address Line 2",
     section: "sectionTwo",
-    component: TextField
+    component: FieldValue
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   countryRegion: {
     label: "Country/Region",
     setion: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter the payee's country or region").required(
       "The payee's country or region is required"
     )
@@ -162,7 +164,7 @@ const fields = {
   city: {
     label: "City",
     section: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Select the payee's city").required(
       "The payee's city is required"
     )
@@ -170,7 +172,7 @@ const fields = {
   state: {
     label: "State",
     section: "sectionTwo",
-    component: SelectField,
+    component: FieldValue,
     options: {
       values: [
         "AK",
@@ -237,7 +239,7 @@ const fields = {
   zipcode: {
     label: "Zipcode",
     section: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.number("Enter your zipcode").required(
       "A zipcode is required"
     )
@@ -245,7 +247,7 @@ const fields = {
   county: {
     label: "County",
     setion: "sectionTwo",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Enter the payee's county").required(
       "The payee's county is required"
     )
@@ -254,16 +256,16 @@ const fields = {
   notes: {
     label: "Notes",
     section: "sectionThree",
-    component: TextField,
+    component: FieldValue,
     validation: Yup.string("Add any additional notes")
   }
 };
 
-const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
+const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
   <React.Fragment>
     <Form
       fields={fields}
-      sections={["sectionOne", "sectionTwo", "sectionThree"]}
+      sections={["basicsSection", "contributorSection", "otherDetailsSection"]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >
@@ -272,4 +274,4 @@ const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
   </React.Fragment>
 );
 
-export default AddExpenseForm;
+export default ExpensesDetailForm;
