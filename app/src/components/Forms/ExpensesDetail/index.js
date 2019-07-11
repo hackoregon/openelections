@@ -211,7 +211,10 @@ const ExpensesDetail = () => (
         <div css={headerStyles.rightColumn}>
           <div>
             <Button css={headerStyles.submitButton} buttonType="submit">
-              Select Compliance
+              Edit
+            </Button>
+            <Button css={headerStyles.submitButton} buttonType="submit">
+              Submit Expense
             </Button>
           </div>
         </div>

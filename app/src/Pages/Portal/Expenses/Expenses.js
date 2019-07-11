@@ -1,7 +1,7 @@
 import * as React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
-// import AddExpense from "./Add/AddExpense";
-import ExpensesDetail from "./Add/ExpensesDetail";
+// import AddExpense from "./AddExpense/AddExpense";
+import ExpensesDetail from "./ExpensesDetail/ExpensesDetail";
 
 // Switch statement for routing
 
