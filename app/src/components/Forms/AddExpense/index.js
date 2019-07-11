@@ -143,7 +143,7 @@ const sectionStyles = {
     margin-top: 34px;
   `,
   dividerLine: css`
-    margin-right: 38px;
+    margin-left: -20px;
   `,
   title: css`
     font-family: Rubik;
