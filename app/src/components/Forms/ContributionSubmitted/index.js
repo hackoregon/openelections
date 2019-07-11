@@ -64,6 +64,7 @@ const headerStyles = {
   rightColumn: css`
     display: flex;
     flex-direction: row-reverse;
+    align-items: flex-end;
   `,
   invoice: css`
     font-size: 48px;
@@ -76,6 +77,7 @@ const headerStyles = {
     font-size: 16px;
     line-height: 19px;
     margin-top: 0px;
+    width: 360px;
   `,
   labelBlock: css`
     margin-right: 40px;
