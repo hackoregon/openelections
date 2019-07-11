@@ -91,30 +91,31 @@ export const actionCreators = {
 };
 
 // Side Effects, e.g. thunks
-export function inviteUser(
+export function inviteUser (
   email,
   firstName,
   lastName,
   campaignOrGovernmentId,
   role = null
 ) {
+  console.log("[invideUser working!]")
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.inviteUser.request());
     try {
       const { status } = role
         ? await api.inviteUsertoCampaign(
-            email,
-            firstName,
-            lastName,
-            campaignOrGovernmentId,
-            role
-          )
+          email,
+          firstName,
+          lastName,
+          campaignOrGovernmentId,
+          role
+        )
         : await api.inviteUsertoGovernment(
-            email,
-            firstName,
-            lastName,
-            campaignOrGovernmentId
-          );
+          email,
+          firstName,
+          lastName,
+          campaignOrGovernmentId
+        );
       status === 201
         ? dispatch(actionCreators.inviteUser.success())
         : dispatch(actionCreators.inviteUser.failure());
@@ -124,7 +125,7 @@ export function inviteUser(
   };
 }
 
-export function resendUserInvite(userId) {
+export function resendUserInvite (userId) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.resendUserInvite.request());
     try {
@@ -138,7 +139,7 @@ export function resendUserInvite(userId) {
   };
 }
 
-export function getGovernmentUsers(governmentId) {
+export function getGovernmentUsers (governmentId) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getGovernmentUsers.request());
     try {
@@ -152,7 +153,7 @@ export function getGovernmentUsers(governmentId) {
   };
 }
 
-export function getCampaignUsers(campaignId) {
+export function getCampaignUsers (campaignId) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getCampaignUsers.request());
     try {

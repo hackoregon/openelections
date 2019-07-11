@@ -25,7 +25,7 @@ Start application by running:
 ```
 
 
-### Seeding the Databse
+### Seeding the Database
 
 We have a set of seed files located in models/seeds, to run them:
 
@@ -73,6 +73,6 @@ Run the app test suite:
 
 ### Deployment
 
-This project uses Travis to Continously deploy to qa.openelectionsportland.org on commits to develop. 
+This project uses Travis to Continuously deploy to qa.openelectionsportland.org on commits to develop. 
 When you open a PR, Travis will run our test suite, and mark it as passing or failing on the PR at Github.
 When the PR is merged into develop, and the test suite is passing, Travis will deploy using scripts/deploy.sh
