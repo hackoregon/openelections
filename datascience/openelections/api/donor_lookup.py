@@ -9,7 +9,9 @@ curl http://127.0.0.1:8080/donor_match -d "last_name=Smith&first_name=John&addr1
 """
 
 import traceback
-from flask import Flask
+
+import os
+from fastapi import FastAPI
 from flask_restful import Resource, Api, reqparse
 from openelections.donor_lookup.match import get_match, in_portland
 
@@ -65,5 +67,6 @@ class DonorMatch(Resource):
 
 api.add_resource(DonorMatch, '/donor_match')
 
+
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    app.run(host='0.0.0.0', port=8080, processes=10)
