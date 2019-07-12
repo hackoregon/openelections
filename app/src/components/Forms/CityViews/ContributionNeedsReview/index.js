@@ -137,6 +137,18 @@ const headerStyles = {
     border-radius: 5px;
     width: 165px;
     height: 50px;
+  `,
+  checkButtonContainer: css`
+    display: flex;
+    flex-direction: column-reverse;
+  `,
+  checkButtonCombo: css`
+    display: flex;
+    flex-direction: row;
+  `,
+  checkIcon: css`
+    padding-right: 10px;
+    align-self: center;
   `
 };
 
@@ -168,7 +180,7 @@ const sectionStyles = {
 const invoiceNumber = "#1030090212";
 const campaignName = "FakeName";
 const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
-const currentStatus = "Submitted";
+const currentStatus = "Needs Review";
 const labelsCount = 0;
 
 const invoiceNumberBlock = (
@@ -210,10 +222,24 @@ const ContributionNeedsReview = () => (
           </div>
         </div>
         <div css={headerStyles.rightColumn}>
-          <div style={{ display: "flex", flexDirection: "column-reverse" }}>
-            <Button css={headerStyles.submitButton} buttonType="submit">
-              Submitted
-            </Button>
+          <div
+            css={headerStyles.checkButtonContainer}
+            style={{ display: "flex", flexDirection: "column-reverse" }}
+          >
+            <div
+              css={headerStyles.checkButtonCombo}
+              style={{ display: "flex", flexDirection: "row" }}
+            >
+              <div
+                css={headerStyles.checkIcon}
+                style={{ paddingRight: "10px", alignSelf: "center" }}
+              >
+                √
+              </div>
+              <Button css={headerStyles.submitButton} buttonType="submit">
+                Select Match
+              </Button>
+            </div>
           </div>
         </div>
       </div>
