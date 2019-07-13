@@ -37,7 +37,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true, error: action.error};
+    return { ...state, isLoading: true, error: null};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
     return { ...state, isLoading: false, error: false, me: action.me };
