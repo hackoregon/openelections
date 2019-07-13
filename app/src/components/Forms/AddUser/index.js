@@ -25,7 +25,7 @@ const AddUser = props => (
     <AddUserForm
       onSubmit={({ email, firstName, lastName, userRole }) => {
         //TODO: find gov id
-        props.inviteUser(email, firstName, lastName, /*temp gov id */ 1, userRole);
+        props.inviteUser(email, firstName, lastName, 1, userRole);
         props.clearModal();
       }}
       initialValues={{
