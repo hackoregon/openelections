@@ -37,10 +37,10 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true };
+    return { ...state, isLoading: true, error: action.error};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, me: action.me };
+    return { ...state, isLoading: false, error: false, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -133,6 +133,7 @@ export function me() {
 
 export function login(email, password) {
   return async (dispatch, getState, { api }) => {
+   // dispatch(actionCreators.login.failure(true));
     dispatch(actionCreators.login.request());
     try {
       await api.login(email, password)
@@ -141,7 +142,7 @@ export function login(email, password) {
           dispatch(actionCreators.login.success())
           dispatch(me());
         } else {
-          dispatch(actionCreators.login.failure()); 
+          dispatch(actionCreators.login.failure(true)); 
         }
       })    
     } catch (error) {
@@ -149,7 +150,12 @@ export function login(email, password) {
     }
   };
 }
-
+export function logout() {
+  return (dispatch) => {
+    dispatch(actionCreators.me.success(null));
+    document.cookie = 'token=; Max-Age=-99999999;';     
+ };
+}
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
