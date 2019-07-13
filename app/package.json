@@ -37,7 +37,7 @@
     "start": "PORT=4000 react-scripts start",
     "start-windows": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest -u",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
