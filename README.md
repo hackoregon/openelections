@@ -71,6 +71,13 @@ Run the app test suite:
     cd app && npm run test
 ```
 
+Run the datascience api test suite:
+
+```bash
+    docker-compose -f docker-compose-test.yml run --rm data make test
+```
+
+
 ### Deployment
 
 This project uses Travis to Continously deploy to qa.openelectionsportland.org on commits to develop. 
