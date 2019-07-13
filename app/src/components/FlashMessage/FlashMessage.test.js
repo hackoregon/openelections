@@ -1,5 +1,5 @@
 import React from "react";
-import FlashMessages from "./FlashMessages";
+import FlashMessages from "./FlashMessage";
 
 describe("<FlashMessages/>", () => {
   it("should be defined", () => {
