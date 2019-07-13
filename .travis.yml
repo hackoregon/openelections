@@ -16,7 +16,7 @@ before_install:
   # - cd app && yarn && cd ..
 
 script:
-  - docker-compose -f docker-compose-test.yml run --rm api yarn test
+  - docker-compose -f docker-compose-test.yml run --rm api npm test
   - docker-compose -f docker-compose-test.yml run --rm data make test
   - docker-compose -f docker-compose-test.yml run --rm app yarn test
   # - cd app && yarn test
