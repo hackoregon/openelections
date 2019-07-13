@@ -5,8 +5,10 @@ To Launch RESTful Server (will run on Port 8080)
 >>> python -m openelections.api.donor_lookup
 
 Example Request:
-curl http://127.0.0.1:8080/donor_match -d "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland"
+curl http://127.0.0.1:8080/match -d "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland"
 """
+import sys
+sys.path.insert(0, "/app")
 
 import traceback
 from flask import Flask
@@ -63,7 +65,7 @@ class DonorMatch(Resource):
             print(traceback.format_exc())
 
 
-api.add_resource(DonorMatch, '/donor_match')
+api.add_resource(DonorMatch, '/match')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    app.run(host='0.0.0.0', port=8080)

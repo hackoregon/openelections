@@ -9,3 +9,4 @@ RUN pip install -r requirements_dev.txt
 RUN apt-get update -y && apt-get install -y nginx
 COPY openelections/api/nginx.conf /etc/nginx/nginx.conf
 ADD . .
+WORKDIR /app/openelections/api
