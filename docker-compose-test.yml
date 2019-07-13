@@ -9,7 +9,7 @@ services:
       dockerfile: 'Dockerfile.development'
 #    volumes:
 #      - ./api:/app
-    command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "seedandrun"]
+    command: ["./wait-for-it.sh", "testdb:5433", "--", "npm", "run", "seedandrun"]
     environment:
       - PORT=3000
       - NODE_ENV=test
