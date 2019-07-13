@@ -5,7 +5,7 @@ services:
     build:
       context: 'app'
       dockerfile: 'Dockerfile'
-    command: ["npm", "start"]
+    command: ["yarn", "start"]
     environment:
       - PORT=4000
     depends_on:

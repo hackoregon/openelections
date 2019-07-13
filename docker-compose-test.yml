@@ -1,5 +1,19 @@
 version: '3'
 services:
+  app:
+    tty: true
+    build:
+      context: 'app'
+      dockerfile: 'Dockerfile'
+    command: ["yarn", "start"]
+    environment:
+      - PORT=4000
+    depends_on:
+      - testdb
+    ports:
+      - 4000:4000
+    networks:
+      - openelections
   api:
     container_name: apitest
     tty: true # Enables debugging capabilities when attached to this container.
