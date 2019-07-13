@@ -84,12 +84,15 @@ services:
       context: ./datascience
     volumes:
       - ./datascience:/app
+    ports: ["8080:80"]
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=open_elections_data
       - POSTGRES_PORT=5432
       - POSTGRES_HOST=data_db
+      - FLASK_ENV=development
+    command: ["sh", "/app/openelections/api/start.sh"]
     depends_on:
       - data_db
     networks:

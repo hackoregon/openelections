@@ -7,6 +7,5 @@ COPY requirements_dev.txt .
 RUN pip install -r requirements.txt
 RUN pip install -r requirements_dev.txt
 RUN apt-get update -y && apt-get install -y nginx
-COPY openelections/api/nginx.conf /etc/nginx/conf.d/
-COPY openelections/api/api.service /etc/systemd/system/api.service
+COPY openelections/api/nginx.conf /etc/nginx/nginx.conf
 ADD . .
