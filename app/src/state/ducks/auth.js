@@ -40,7 +40,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true, error: null};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, error: false, me: action.me };
+    return { ...state, isLoading: false, error: null, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
