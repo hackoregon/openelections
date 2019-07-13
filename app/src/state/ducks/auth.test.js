@@ -54,7 +54,7 @@ describe("Reducer", () => {
     ).toEqual({
       me: {},
       isLoading: false,
-      error: null
+      error: false
     });
 
     expect(
