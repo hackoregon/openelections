@@ -28,7 +28,6 @@ const columnInfo = [
 
 const ManagePortalPage = props => (
   <PageHoc>
-    {console.log({ props })}
     <h1>Manage Campaign Portal</h1>
     <div className="manage-portal-container">
       <div className="manage-users-container">
@@ -55,11 +54,6 @@ const ManagePortalPage = props => (
                 name: "Manage",
                 buttonType: "manage",
                 onClick: (event, rowData) => {
-                  console.log(
-                    "You are managing " + rowData.fname,
-                    { props },
-                    { event }
-                  );
                   props.history.push("/manage-portal/manage-user");
                 }
               },
@@ -69,7 +63,6 @@ const ManagePortalPage = props => (
                 buttonType: "primary",
                 isFreeAction: true,
                 onClick: () => {
-                  console.log(props);
                   props.showModal("AddUser");
                 }
               }
