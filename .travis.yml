@@ -9,18 +9,12 @@ cache:
     - app/node_modules
 
 before_install:
-  - docker-compose -f docker-compose-test.yml build api
-  - docker-compose -f docker-compose-test.yml build data
-  - cd /home/travis/build/hackoregon/openelections/app
-  - npm install
+  - docker-compose -f docker-compose-test.yml build api app data
 
 script:
-  - cd /home/travis/build/hackoregon/openelections
-  - docker-compose -f docker-compose-test.yml run --rm api npm test
+  - docker-compose -f docker-compose-test.yml run --rm app npm run test
+  - docker-compose -f docker-compose-test.yml run --rm api npm run test
   - docker-compose -f docker-compose-test.yml run --rm data make test
-  - cd /home/travis/build/hackoregon/openelections/app
-  - npm run test
-  - cd /home/travis/build/hackoregon/openelections
 
 before_deploy:
   - sudo add-apt-repository -y ppa:eugenesan/ppa
