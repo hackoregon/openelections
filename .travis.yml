@@ -12,14 +12,14 @@ before_install:
   - docker-compose -f docker-compose-test.yml build api
   - docker-compose -f docker-compose-test.yml build data
   - cd /home/travis/build/hackoregon/openelections/app
-  - yarn install
+  - npm install
 
 script:
   - cd /home/travis/build/hackoregon/openelections
   - docker-compose -f docker-compose-test.yml run --rm api npm test
   - docker-compose -f docker-compose-test.yml run --rm data make test
   - cd /home/travis/build/hackoregon/openelections/app
-  - yarn test
+  - npm run test
   - cd /home/travis/build/hackoregon/openelections
 
 before_deploy:
