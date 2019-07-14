@@ -1,7 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import FormModal from "../../FormModal/FormModal";
 import Button from "../../Button/Button";
 import AddUserForm from "./AddUserForm";
+import { inviteUser } from "../../../state/ducks/users";
+import { clearModal } from "../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -17,10 +20,14 @@ const leftAlign = css`
   align-self: flex-start;
 `;
 
-const AddUser = () => (
+const AddUser = props => (
   <FormModal>
     <AddUserForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      onSubmit={({ email, firstName, lastName, userRole }) => {
+        //TODO: find gov id
+        props.inviteUser(email, firstName, lastName, 1, userRole);
+        props.clearModal();
+      }}
       initialValues={{
         userRole: "Staff",
         email: "",
@@ -34,30 +41,39 @@ const AddUser = () => (
         handleCancel,
         handleSubmit /* isDirty, isSubmitting */
       }) => (
-        <React.Fragment>
-          <p css={formTitle}>Add a New User</p>
-          <div css={leftAlign}>{formSections.addUserRole}</div>
-          <p>
-            Enter the user's information and we will send them an email with
-            instructions to join your portal.
+          <React.Fragment>
+            <p css={formTitle}>Add a New User</p>
+            <div css={leftAlign}>{formSections.addUserRole}</div>
+            <p>
+              Enter the user's information and we will send them an email with
+              instructions to join your portal.
           </p>
-          {formSections.addUser}
-          <div css={buttonWrapper}>
-            <Button buttonType="cancel" onClick={handleCancel}>
-              Cancel
+            {formSections.addUser}
+            <div css={buttonWrapper}>
+              <Button buttonType="cancel" onClick={handleCancel}>
+                Cancel
             </Button>
-            <Button
-              buttonType="submit"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Submit
+              <Button
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Submit
             </Button>
-          </div>
-        </React.Fragment>
-      )}
+            </div>
+          </React.Fragment>
+        )}
     </AddUserForm>
   </FormModal>
 );
 
-export default AddUser;
+// export default AddUser;
+export default connect(
+  state => ({}),
+  dispatch => {
+    return {
+      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+      clearModal: () => dispatch(clearModal())
+    };
+  }
+)(AddUser);

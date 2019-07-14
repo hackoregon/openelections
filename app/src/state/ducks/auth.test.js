@@ -43,7 +43,7 @@ describe("Reducer", () => {
     ).toEqual({
       me: null,
       isLoading: true,
-      error: null
+      error: undefined
     });
 
     expect(
@@ -54,7 +54,7 @@ describe("Reducer", () => {
     ).toEqual({
       me: {},
       isLoading: false,
-      error: null
+      error: false
     });
 
     expect(

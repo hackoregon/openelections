@@ -2,6 +2,7 @@
 
 exports[`<App/> should be defined 1`] = `
 <BrowserRouter>
+  <Connect(FlashMessage) />
   <ForwardRef(render)
     styles={
       Object {
