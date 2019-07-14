@@ -5,6 +5,7 @@ import { createBrowserHistory } from "history";
 
 import App from "./App";
 import { default as configureStore } from "./configureStore";
+import FlashMessage from './components/FlashMessage/FlashMessage';
 
 const history = createBrowserHistory();
 const store = configureStore(history);
@@ -12,6 +13,7 @@ const store = configureStore(history);
 ReactDOM.render(
   <Provider store={store}>
     <App />
+    <FlashMessage />
   </Provider>,
   document.getElementById("root")
 );

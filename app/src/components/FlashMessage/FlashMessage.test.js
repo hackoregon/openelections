@@ -1,8 +1,8 @@
 import React from "react";
-import FlashMessages from "./FlashMessages";
+import FlashMessage from "./FlashMessage";
 
-describe("<FlashMessages/>", () => {
+describe("<FlashMessage/>", () => {
   it("should be defined", () => {
-    expect(FlashMessages).toMatchSnapshot();
+    expect(FlashMessage).toMatchSnapshot();
   });
-});
+})
