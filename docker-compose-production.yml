@@ -15,4 +15,16 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.production'
+    ports:
+    - "3000:3000"
+    environment:
+      - "DB_HOST="
+      - "DB_NAME="
+      - "DB_PORT=5432"
+      - "DB_USERNAME="
+      - "HOST_URL=openelectionsportland.org"
+      - "NODE_ENV=production"
+      - "PORT=3000"
+      - "DB_PASSWORD="
+      - "SECRET_KEY=bananas"
 
