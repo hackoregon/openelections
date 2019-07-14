@@ -22,7 +22,6 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-    # command: npm run development
     command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
     env_file:
       - .env
@@ -48,7 +47,15 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./api:/app
+      - ./api/controller:/app/controller
+      - ./api/models:/app/models
+      - ./api/routes:/app/routes
+      - ./api/services:/app/services
+      - ./api/test:/app/test
+      - ./api/types:/app/types
+      - ./api/.nvmrc:/app/.nvmrc
+      - ./api/app.ts:/app/app.ts
+      - ./api/tsconfig.json:/app/tsconfig.json
     networks:
       - openelections
   redis:
