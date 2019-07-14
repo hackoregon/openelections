@@ -2,8 +2,8 @@ import * as express from 'express';
 import { getCurrentUser, IRequest } from './helpers';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as swaggerUI from 'swagger-ui-express';
-import * as swaggerJSDoc from 'swagger-jsdoc';
+// import * as swaggerUI from 'swagger-ui-express';
+// import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
@@ -534,22 +534,22 @@ export const setupRoutes = (app: express.Express) => {
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(getCurrentUser);
-    app.use(
-        '/api-docs',
-        swaggerUI.serve,
-        swaggerUI.setup(
-            swaggerJSDoc({
-                definition: {
-                    openapi: '3.0.0',
-                    info: {
-                        title: 'Open Elections',
-                        version: '1.0.0'
-                    }
-                },
-                apis: ['routes/*']
-            })
-        )
-    );
+    // app.use(
+    //     '/api-docs',
+    //     swaggerUI.serve,
+    //     swaggerUI.setup(
+    //         swaggerJSDoc({
+    //             definition: {
+    //                 openapi: '3.0.0',
+    //                 info: {
+    //                     title: 'Open Elections',
+    //                     version: '1.0.0'
+    //                 }
+    //             },
+    //             apis: ['routes/*']
+    //         })
+    //     )
+    // );
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: IRequest, response: express.Response, next: Function) => {
             route
