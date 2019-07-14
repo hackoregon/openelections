@@ -41,28 +41,34 @@ const AddUser = props => (
         handleCancel,
         handleSubmit /* isDirty, isSubmitting */
       }) => (
-          <React.Fragment>
-            <p css={formTitle}>Add a New User</p>
-            <div css={leftAlign}>{formSections.addUserRole}</div>
-            <p>
-              Enter the user's information and we will send them an email with
-              instructions to join your portal.
+        <React.Fragment>
+          <p css={formTitle}>Add a New User</p>
+          <div css={leftAlign}>{formSections.addUserRole}</div>
+          <p>
+            Enter the user's information and we will send them an email with
+            instructions to join your portal.
           </p>
-            {formSections.addUser}
-            <div css={buttonWrapper}>
-              <Button buttonType="cancel" onClick={handleCancel}>
-                Cancel
+          {formSections.addUser}
+          <div css={buttonWrapper}>
+            <Button
+              buttonType="cancel"
+              onClick={() => {
+                handleCancel();
+                props.clearModal();
+              }}
+            >
+              Cancel
             </Button>
-              <Button
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Submit
+            <Button
+              buttonType="submit"
+              disabled={!isValid}
+              onClick={handleSubmit}
+            >
+              Submit
             </Button>
-            </div>
-          </React.Fragment>
-        )}
+          </div>
+        </React.Fragment>
+      )}
     </AddUserForm>
   </FormModal>
 );
