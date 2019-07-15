@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from "react-redux";
 import Button from '../../Button/Button'
-import { getModalState } from "../../../state/ducks/modal";
+import { getModalState, clearModal } from "../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -27,7 +27,7 @@ const RemoveUser = (props) => {
       <p>{props.getModalState.state.email} will no longer have access to the portal.</p>
       <p>Are you sure you want to remove them?</p>
       <div css={buttonContainer}>
-        <Button buttonType="formDefaultOutlined" onClick={() => console.log()}>
+        <Button buttonType="formDefaultOutlined" onClick={() => props.clearModal()}>
           Cancel
             </Button>
         <Button
@@ -42,5 +42,10 @@ const RemoveUser = (props) => {
 export default connect(
   state => ({
     getModalState: getModalState(state)
-  })
+  }),
+  dispatch => {
+    return {
+      clearModal: () => dispatch(clearModal())
+    };
+  }
 )(RemoveUser);
