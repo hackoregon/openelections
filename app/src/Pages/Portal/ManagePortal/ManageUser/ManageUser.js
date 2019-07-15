@@ -15,7 +15,7 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
-const ManageUserPage = props => (
+export const ManageUserPage = props => (
   <PageHoc>
     {console.log(props)}
     <h1>
