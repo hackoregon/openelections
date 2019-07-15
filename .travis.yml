@@ -23,4 +23,4 @@ deploy:
   script: bash scripts/deploy.sh
   skip_cleanup: true
   on:
-    branch: ecs-work
+    branch: develop
