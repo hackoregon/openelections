@@ -37,10 +37,10 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true, error: action.error};
+    return { ...state, isLoading: true, error: null};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, error: false, me: action.me };
+    return { ...state, isLoading: false, error: null, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -76,7 +76,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.UPDATE_PASSWORD.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return { ...state, isLoading: false, error: null };
   },
   [actionTypes.UPDATE_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -194,11 +194,16 @@ export function sendPasswordResetEmail(email) {
     dispatch(actionCreators.sendPasswordResetEmail.request());
     try {
       const { status } = await api.sendPasswordResetEmail(email);
-      status === 204
-        ? dispatch(actionCreators.sendPasswordResetEmail.success())
-        : dispatch(actionCreators.sendPasswordResetEmail.failure());
+      if(status === 204){
+        dispatch(actionCreators.sendPasswordResetEmail.success());
+        return true;
+      }else{
+        dispatch(actionCreators.sendPasswordResetEmail.failure());
+        return false;
+      }
     } catch (error) {
       dispatch(actionCreators.sendPasswordResetEmail.failure(error));
+      return false;
     }
   };
 }
@@ -210,7 +215,7 @@ export function updatePassword(password, newPassword) {
       const { status } = await api.updatePassword(password, newPassword);
       status === 204
         ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure());
+        : dispatch(actionCreators.updatePassword.failure('Update password request failed'));
     } catch (error) {
       dispatch(actionCreators.updatePassword.failure(error));
     }

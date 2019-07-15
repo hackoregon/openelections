@@ -527,7 +527,14 @@ export const AppRoutes = [
         path: '/contributions/:id',
         method: 'post',
         action: contributions.getContributionById
-    }
+    },
+    {
+        path: '/status',
+        method: 'get',
+        action: async (request: IRequest, response: express.Response) => {
+            return response.status(200).json({message: 'running'});
+        }
+    },
 ];
 
 export const setupRoutes = (app: express.Express) => {

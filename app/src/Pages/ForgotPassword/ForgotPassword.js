@@ -5,14 +5,19 @@ import Paper from "@material-ui/core/Paper";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import GreenCheck from "../../assets/icons/green-check";
 import { ForgotPasswordForm } from "../../components/Forms/ForgotPassword";
+import { connect } from "react-redux";
+import { sendPasswordResetEmail } from "../../state/ducks/auth";
+import { flashMessage } from "redux-flash";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import Button from "@material-ui/core/Button";
 
 const validationSchema = Yup.object({
   email: Yup.string("Enter your email")
     .email("Enter a valid email")
     .required("Email is required")
 });
+//TODO Refactor this page and form!
 
 const styles = css`
   max-width: 350px;
@@ -69,7 +74,17 @@ class ForgotPassword extends Component {
               <Formik
                 onSubmit={(values, actions) => {
                   console.log("Submitting: ", values, actions);
-                  this.formIsSubmitted(true);
+                  this.props.dispatch(sendPasswordResetEmail(values.email))
+                  .then(submitted=>{
+                    if(submitted){
+                      this.formIsSubmitted(true);
+                      this.props.dispatch(flashMessage("Email sent", {props:{variant:'success'}}));
+                    }else{
+                      this.props.dispatch(flashMessage("Email not found", {props:{variant:'error'}}));
+                    }
+                  }
+                    
+                  );
                 }}
                 onReset={(values, bag) => {
                   console.log("on reset", { values }, { bag });
@@ -100,14 +115,17 @@ class ForgotPassword extends Component {
                   An email was sent to {this.state.formValues.email} to reset
                   your password.
                 </p>
-                <button
+                <Button
+                  variant="contained"
+                  color="primary"
                   onClick={() => {
                     this.formIsSubmitted(false);
                     this.clearState();
+                    this.props.history.push('/sign-in');
                   }}
                 >
-                  close
-                </button>
+                  Sign in
+                </Button>
               </div>
             )}
           </Paper>
@@ -116,4 +134,4 @@ class ForgotPassword extends Component {
     );
   }
 }
-export default ForgotPassword;
+export default connect()(ForgotPassword);
