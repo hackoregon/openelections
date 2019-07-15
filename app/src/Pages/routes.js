@@ -40,7 +40,7 @@ const Routes = props => {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/sandbox" component={SandboxPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
-                <Route exact path="/invitation" component={InvitationPage} />
+                <Route path="/invitation" component={InvitationPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
                 <Route
                   exact
