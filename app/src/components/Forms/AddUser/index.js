@@ -24,6 +24,7 @@ const USER_ROLES = {
   "Admin": "campaign_admin",
   "Staff": "campaign_staff"
 }
+// Todo: get from API
 
 const AddUser = props => (
   <FormModal>
