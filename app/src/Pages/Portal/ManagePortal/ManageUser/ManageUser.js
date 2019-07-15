@@ -45,7 +45,10 @@ const ManageUserPage = props => (
         <h2>Mangage Role</h2>
       </div>
       <div className="remove-user">
-        <Button buttonType="remove" onClick={() => console.log("Remove User")}>
+        <Button buttonType="remove" onClick={() => {
+          console.log("Remove User");
+          props.showModal("RemoveUser");
+        }}>
           Remove User
         </Button>
       </div>
