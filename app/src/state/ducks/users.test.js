@@ -235,7 +235,8 @@ describe("Side Effects", () => {
   it("invite user to gov", async () => {
     const expectedActions = [
       { type: actionTypes.INVITE_USER.REQUEST },
-      { type: actionTypes.INVITE_USER.SUCCESS }
+      { type: actionTypes.INVITE_USER.SUCCESS },
+      { type: actionTypes.GET_GOVERNMENT_USERS.REQUEST }
     ];
     const store = mockStore({});
 
@@ -281,7 +282,8 @@ describe("Side Effects", () => {
   it("invite user to campaign", async () => {
     const expectedActions = [
       { type: actionTypes.INVITE_USER.REQUEST },
-      { type: actionTypes.INVITE_USER.SUCCESS }
+      { type: actionTypes.INVITE_USER.SUCCESS },
+      { type: actionTypes.GET_CAMPAIGN_USERS.REQUEST }
     ];
     const store = mockStore({});
 
