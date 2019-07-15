@@ -1,19 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<SignUp/> should be defined 1`] = `
-<PageHoc>
-  <FormModal>
-    <SignupForm
-      initialValues={
-        Object {
-          "confirmNewPassword": "",
-          "newPassword": "",
-        }
-      }
-      onSubmit={[Function]}
-    >
-      <Component />
-    </SignupForm>
-  </FormModal>
-</PageHoc>
+<ContextConsumer>
+  <Component />
+</ContextConsumer>
 `;
