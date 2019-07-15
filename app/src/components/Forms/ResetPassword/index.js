@@ -15,14 +15,13 @@ const buttonWrapper = css`
   margin-top: 30px;
 `;
 
-
 const ResetPassword = (props) => (
   <FormModal>
     <ResetPasswordForm
       onSubmit={
-        values => {
-          console.log(props);
+        values => {         
           props.updatePassword(values.oldPassword, values.newPassword)
+          .then(props.submitted(true))
         }
       }
       initialValues={{
