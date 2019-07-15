@@ -20,12 +20,17 @@ const leftAlign = css`
   align-self: flex-start;
 `;
 
+const USER_ROLES = {
+  "Admin": "campaign_admin",
+  "Staff": "campaign_staff"
+}
+
 const AddUser = props => (
   <FormModal>
     <AddUserForm
       onSubmit={({ email, firstName, lastName, userRole }) => {
-        //TODO: find gov id
-        props.inviteUser(email, firstName, lastName, 1, userRole);
+        const role = USER_ROLES[userRole];
+        props.inviteUser(email, firstName, lastName, 1, role);
         props.clearModal();
       }}
       initialValues={{

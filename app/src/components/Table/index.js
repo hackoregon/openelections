@@ -60,7 +60,8 @@ const Table = ({
   options,
   actions,
   components,
-  localization
+  localization,
+  isLoading
 }) => (
   <div css={tableWrapper}>
     <MaterialTable
@@ -73,6 +74,7 @@ const Table = ({
       actions={actions}
       components={components}
       localization={localization}
+      isLoading={isLoading}
     />
   </div>
 );
