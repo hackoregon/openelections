@@ -26,5 +26,5 @@ docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$TAG
 docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$TAG"
 
 #echo Running ecs-deploy.sh script...
-scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-staging-app -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
+scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-app-staging -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-app:"$GITTAG"
 scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-api-staging -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
