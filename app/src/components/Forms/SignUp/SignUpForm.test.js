@@ -1,5 +1,5 @@
 import React from "react";
-import { SignUpForm } from "./Signup";
+import { SignUpForm } from "./SignUpForm";
 
 describe("<SignUpForm/>", () => {
 	it("should be defined", () => {

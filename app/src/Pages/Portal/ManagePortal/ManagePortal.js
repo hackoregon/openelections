@@ -6,11 +6,11 @@ import Table from "../../../components/Table";
 const columnInfo = [
   {
     title: "First Name",
-    field: "fname"
+    field: "firstName"
   },
   {
     title: "Last Name",
-    field: "lname"
+    field: "lastName"
   },
   {
     title: "Title",
@@ -23,65 +23,73 @@ const columnInfo = [
   {
     title: "Role",
     field: "role"
+  },  
+  {
+    title: "Status",
+    field: "userStatus"
   }
 ];
 
-const ManagePortalPage = props => (
-  <PageHoc>
-    <h1>Manage Campaign Portal</h1>
-    <div className="manage-portal-container">
-      <div className="manage-users-container">
-        <div className="manage-users-table">
-          <Table
-            title={`Users (${props.userList.length})`}
-            columns={columnInfo}
-            data={props.userList}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "No Users"
-              }
-            }}
-            options={{
-              search: false,
-              actionsCellStyle: {
-                color: "blue"
-              },
-              actionsColumnIndex: -1
-            }}
-            actions={[
-              {
-                icon: "none", // icon is needed here or it will error.
-                name: "Manage",
-                buttonType: "manage",
-                onClick: (event, rowData) => {
-                  props.history.push("/manage-portal/manage-user");
+const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
+  const isLoading = isUserListLoading && !(Array.isArray(userList) && userList.length > 0)
+  return (
+    <PageHoc>
+      <h1>Manage Campaign Portal</h1>
+      <div className="manage-portal-container">
+        <div className="manage-users-container">
+          <div className="manage-users-table">
+            <Table
+              isLoading={isLoading}
+              title={`Users (${isLoading ? 'Loading' : userList.length})`}
+              columns={columnInfo}
+              data={isLoading ? [{}] : userList}
+              localization={{
+                body: {
+                  emptyDataSourceMessage: "No Users"
                 }
-              },
-              {
-                icon: "none",
-                name: "Add New User",
-                buttonType: "primary",
-                isFreeAction: true,
-                onClick: () => {
-                  props.showModal("AddUser");
+              }}
+              options={{
+                search: false,
+                actionsCellStyle: {
+                  color: "blue"
+                },
+                actionsColumnIndex: -1
+              }}
+              actions={[
+                {
+                  icon: "none", // icon is needed here or it will error.
+                  name: "Manage",
+                  buttonType: "manage",
+                  onClick: (event, rowData) => {
+                    props.history.push("/manage-portal/manage-user");
+                  }
+                },
+                {
+                  icon: "none",
+                  name: "Add New User",
+                  buttonType: "primary",
+                  isFreeAction: true,
+                  onClick: () => {
+                    props.showModal("AddUser");
+                  }
                 }
-              }
-            ]}
-            components={{
-              Action: props => (
-                <Button
-                  onClick={event => props.action.onClick(event, props.data)}
-                  buttonType={props.action.buttonType}
-                >
-                  {props.action.name}
-                </Button>
-              )
-            }}
-          />
+              ]}
+              components={{
+                Action: props => (
+                  <Button
+                    onClick={event => props.action.onClick(event, props.data)}
+                    buttonType={props.action.buttonType}
+                  >
+                    {props.action.name}
+                  </Button>
+                )
+              }}
+            />
+          </div>
         </div>
+        <div className="manage-labels" />
       </div>
-      <div className="manage-labels" />
-    </div>
-  </PageHoc>
-);
+    </PageHoc>
+  );
+};
 export default ManagePortalPage;
