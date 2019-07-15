@@ -74,7 +74,6 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   }
                 }
               ]}
-
               components={{
                 Action: props => (
                   <Button

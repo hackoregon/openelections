@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import ManageUser from "./ManageUser";
+import { ManageUser } from "./ManageUser";
 
 describe("<ManageUser/>", () => {
   it("should be defined", () => {
