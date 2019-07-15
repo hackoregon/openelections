@@ -194,11 +194,16 @@ export function sendPasswordResetEmail(email) {
     dispatch(actionCreators.sendPasswordResetEmail.request());
     try {
       const { status } = await api.sendPasswordResetEmail(email);
-      status === 204
-        ? dispatch(actionCreators.sendPasswordResetEmail.success())
-        : dispatch(actionCreators.sendPasswordResetEmail.failure());
+      if(status === 204){
+        dispatch(actionCreators.sendPasswordResetEmail.success());
+        return true;
+      }else{
+        dispatch(actionCreators.sendPasswordResetEmail.failure());
+        return false;
+      }
     } catch (error) {
       dispatch(actionCreators.sendPasswordResetEmail.failure(error));
+      return false;
     }
   };
 }
