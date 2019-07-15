@@ -11,7 +11,7 @@ export default connect(
     return {
       showModal: payload => {
         console.log(payload);
-        dispatch(showModal({ component: payload }));
+        dispatch(showModal(payload));
       }
     };
   }

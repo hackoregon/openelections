@@ -54,7 +54,7 @@ const ManagePortalPage = props => (
                 name: "Manage",
                 buttonType: "manage",
                 onClick: (event, rowData) => {
-                  props.history.push("/manage-portal/manage-user");
+                  props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
                 }
               },
               {
@@ -62,8 +62,9 @@ const ManagePortalPage = props => (
                 name: "Add New User",
                 buttonType: "primary",
                 isFreeAction: true,
-                onClick: () => {
-                  props.showModal("AddUser");
+                onClick: (event, rowData) => {
+                  console.log({ event, rowData })
+                  props.showModal({ component: "AddUser" });
                 }
               }
             ]}

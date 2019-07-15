@@ -16,16 +16,17 @@ export const initialState = {
   currentModal: null,
   isActive: false,
   isLoading: false,
+  state: null,
   error: null
 };
 
 // Reducer
 export default createReducer(initialState, {
   [actionTypes.SHOW_MODAL]: (state, action) => {
-    return { ...state, isActive: true, currentModal: action.payload.component };
+    return { ...state, isActive: true, currentModal: action.payload.component, state: action.payload.state };
   },
   [actionTypes.DISMISS_MODAL]: (state, action) => {
-    return { ...state, isActive: false, currentModal: null };
+    return { ...state, isActive: false, currentModal: null, state: null };
   }
 });
 
@@ -37,13 +38,14 @@ export const actionCreators = {
   dismissmodal: () => action(actionTypes.DISMISS_MODAL)
 };
 
-export function showModal(payload) {
+export function showModal (payload) {
   return (dispatch, getState) => {
+    console.log({ payload })
     dispatch(actionCreators.showmodal(payload));
   };
 }
 
-export function clearModal() {
+export function clearModal () {
   return (dispatch, getState) => {
     dispatch(actionCreators.dismissmodal());
   };

@@ -17,6 +17,7 @@ const divSpacer = css`
 
 const ManageUserPage = props => (
   <PageHoc>
+    {console.log(props)}
     <h1>
       <IconButton
         aria-label="Back"
@@ -28,14 +29,14 @@ const ManageUserPage = props => (
     </h1>
     <div className="manage-user-container">
       <div className="manage-user-intro">
-        <h1>User Name</h1>
-        <p>username@email.com</p>
+        <h1>{props.location.state.fname} {props.location.state.lname}</h1>
+        <p>{props.location.state.email}</p>
         {/* if this user's account is not complete */}
         <p className="fine-print" css={finePrint}>
           This user hasn't finished creating their account.
         </p>
         <Button
-          buttonType="primary"
+          buttonType="default"
           onClick={() => console.log("Resend Invitation")}
         >
           Resend Invitation
@@ -47,7 +48,7 @@ const ManageUserPage = props => (
       <div className="remove-user">
         <Button buttonType="remove" onClick={() => {
           console.log("Remove User");
-          props.showModal("RemoveUser");
+          props.showModal({ component: "RemoveUser", state: props.location.state });
         }}>
           Remove User
         </Button>
