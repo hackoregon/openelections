@@ -7,6 +7,7 @@ import { login, isLoggedIn } from "../../state/ducks/auth";
 import { flashMessage } from "redux-flash";
 
 class InvitationPage extends Component {
+// TODO: Connect flash messaging
   componentDidUpdate() {
     const { isLoggedIn, authError, flashMessage, history } = this.props;
     if (isLoggedIn) {
