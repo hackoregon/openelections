@@ -1,7 +1,7 @@
 // users.js
 import { normalize } from "normalizr";
 import { createSelector } from "reselect";
-import { get } from "lodash";
+import { get, startCase } from "lodash";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
@@ -183,7 +183,7 @@ export const getUsers = createSelector(
       .filter(perm => !!get(perm, "id"))
       .map(perm => {
         const userAndRole = { ...state.users[perm.user] };
-        userAndRole.role = perm.role;
+        userAndRole.role = startCase(perm.role);
         return userAndRole;
       })
 );

@@ -21,6 +21,10 @@ const columnInfo = [
     field: "email"
   },
   {
+    title: "Role",
+    field: "role"
+  },  
+  {
     title: "Status",
     field: "userStatus"
   }
