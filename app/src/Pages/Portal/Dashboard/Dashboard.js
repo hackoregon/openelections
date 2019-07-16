@@ -55,6 +55,7 @@ const DashboardPage = props => {
                     <ContributionsCard/>
                 </div>
                 <div className="card">
+                    {/* Jaron links go here */}
                     <LinksCard links={[
                         { path: '/sign-in', label: 'Sign In' }
                     ]} />
