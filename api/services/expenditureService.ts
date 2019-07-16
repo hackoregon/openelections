@@ -77,7 +77,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
     }
 }
 
-export interface IGetExpenditureOptions {
+export interface IGetExpenditureAttrs {
     currentUserId?: number;
     governmentId?: number;
     campaignId?: number;
@@ -88,7 +88,7 @@ export interface IGetExpenditureOptions {
     to?: string;
 }
 
-export async function getExpenditureAsync(expendituresAttrs: IGetExpenditureOptions) {
+export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs) {
     try {
         const { governmentId, ...options } = expendituresAttrs;
         if (options.campaignId) {
