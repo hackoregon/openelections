@@ -156,10 +156,10 @@ export function removeUser(
     dispatch(actionCreators.removeUser.request());
     const user = getState().users[userId];
     try {
-      await api.removePermission(
+      const response = await api.removePermission(
         permissionId
       );
-      if (status === 200) {
+      if (response.status === 200) {
         dispatch(actionCreators.removeUser.success(userId));
         dispatch(removePermission(permissionId));
       } else {
