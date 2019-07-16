@@ -4,6 +4,9 @@ import { newCampaignAsync, newGovernmentAsync, truncateAll, newContributionAsync
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../entity/Permission';
 import { User, UserStatus } from '../../models/entity/User';
+import { Address } from '../../models/entity/Address';
+import * as fs from 'fs';
+import * as parse from 'csv-parse/lib/sync'
 
 
 export default async () => {
@@ -98,5 +101,20 @@ export default async () => {
     for (let i = 0; i < 101; i++) {
         promises.push(newContributionAsync(campaign, government));
     }
+
+    console.log('Adding address data');
+    const data = fs.readFileSync('/app/models/seeds/addresses.csv', 'utf8');
+    const parsed = parse(data, {
+        columns: true,
+        skip_empty_lines: true
+    });
+
+    await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Address)
+        .values(parsed)
+        .execute();
+
     await Promise.all(promises);
 };

@@ -17,7 +17,7 @@ import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
-import { IGetExpenditureOptions } from '../../services/expenditureService';
+import { IGetExpenditureAttrs } from '../../services/expenditureService';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',
@@ -119,14 +119,17 @@ export class Expenditure {
     @Column({ nullable: true })
     checkNumber?: string;
 
-    @Column({type: 'decimal', transformer: {
+    @Column({
+        type: 'decimal',
+        transformer: {
             to: (value: number) => {
                 return value;
             },
             from: (value: string) => {
                 return parseFloat(value);
             }
-        }})
+        }
+    })
     @IsDefined()
     amount: number;
 
@@ -199,34 +202,47 @@ export class Expenditure {
 
     validateType() {
         if (this.type === ExpenditureType.EXPENDITURE) {
-            if (![
-                ExpenditureSubType.ACCOUNTS_PAYABLE,
-                ExpenditureSubType.CASH_EXPENDITURE,
-                ExpenditureSubType.PERSONAL_EXPENDITURE
-            ].includes(this.subType)) {
+            if (
+                ![
+                    ExpenditureSubType.ACCOUNTS_PAYABLE,
+                    ExpenditureSubType.CASH_EXPENDITURE,
+                    ExpenditureSubType.PERSONAL_EXPENDITURE
+                ].includes(this.subType)
+            ) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "expenditure" must have a subType of "accounts_payable, cash_expenditure or personal_expenditure"' };
+                error.constraints = {
+                    notAllowed:
+                        'Type "expenditure" must have a subType of "accounts_payable, cash_expenditure or personal_expenditure"'
+                };
                 this.errors.push(error);
             }
         } else if (this.type === ExpenditureType.OTHER) {
-            if (![
-                ExpenditureSubType.ACCOUNTS_PAYABLE_RESCINDED,
-                ExpenditureSubType.CASH_BALANCE_ADJUSTMENT,
-            ].includes(this.subType)) {
+            if (
+                ![ExpenditureSubType.ACCOUNTS_PAYABLE_RESCINDED, ExpenditureSubType.CASH_BALANCE_ADJUSTMENT].includes(
+                    this.subType
+                )
+            ) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "other"  must have a subType of "accounts_payable or cash_balance_adjustment"' };
+                error.constraints = {
+                    notAllowed: 'Type "other"  must have a subType of "accounts_payable or cash_balance_adjustment"'
+                };
                 this.errors.push(error);
             }
         } else if (this.type === ExpenditureType.OTHER_DISBURSEMENT) {
-            if (![
-                ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT,
-                ExpenditureSubType.REFUND_OF_CONTRIBUTION,
-            ].includes(this.subType)) {
+            if (
+                ![
+                    ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT,
+                    ExpenditureSubType.REFUND_OF_CONTRIBUTION
+                ].includes(this.subType)
+            ) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "other_disbursement"  must have a subType of "miscellaneous_other_disbursement or refund_of_expenditure"' };
+                error.constraints = {
+                    notAllowed:
+                        'Type "other_disbursement"  must have a subType of "miscellaneous_other_disbursement or refund_of_expenditure"'
+                };
                 this.errors.push(error);
             }
         }
@@ -253,7 +269,7 @@ export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFie
 
 export async function getExpendituresByGovernmentIdAsync(
     governmentId: number,
-    options?: IGetExpenditureOptions
+    options?: IGetExpenditureAttrs
 ): Promise<IExpenditureSummary[]> {
     try {
         const expenditureRepository = getConnection('default').getRepository('Expenditure');
