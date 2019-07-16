@@ -98,5 +98,8 @@ export default async () => {
     for (let i = 0; i < 101; i++) {
         promises.push(newContributionAsync(campaign, government));
     }
+
+    console.log('Adding address data');
+
     await Promise.all(promises);
 };
