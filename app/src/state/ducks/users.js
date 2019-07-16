@@ -67,11 +67,11 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.REMOVE_USER.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true, error: action.error };
+    return { ...state, isLoading: true, error: action.error || null };
   },
   [actionTypes.REMOVE_USER.SUCCESS]: (state, action) => {
     const newState = {...state, isLoading: false};
-    delete newState.users[action.userId];
+    delete newState[action.userId];
     return newState;
   },
   [actionTypes.REMOVE_USER.FAILURE]: (state, action) => {
@@ -104,7 +104,7 @@ export const actionCreators = {
   },
   removeUser: {
     request: () => action(actionTypes.REMOVE_USER.REQUEST),
-    success: () => action(actionTypes.REMOVE_USER.SUCCESS),
+    success: (userId) => action(actionTypes.REMOVE_USER.SUCCESS, { userId }),
     failure: error => action(actionTypes.REMOVE_USER.FAILURE, { error })
   }
 };
@@ -154,7 +154,6 @@ export function removeUser(
 ) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.removeUser.request());
-    const user = getState().users[userId];
     try {
       const response = await api.removePermission(
         permissionId

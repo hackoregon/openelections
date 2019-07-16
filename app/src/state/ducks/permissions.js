@@ -26,7 +26,7 @@ export default createReducer(initialState, {
   },
   [actionTypes.REMOVE_PERMISSION.SUCCESS]: (state, action) => {
     const newState = {...state, isLoading: false};
-    delete newState.permissions[action.permissionId];
+    delete newState[action.permissionId];
     return newState;
   },
 });
@@ -35,7 +35,7 @@ export default createReducer(initialState, {
 
 export const actionCreators = {
   removePermission: {
-    success: () => action(actionTypes.REMOVE_USER.SUCCESS)
+    success: (permissionId) => action(actionTypes.REMOVE_PERMISSION.SUCCESS, { permissionId })
   }
 }
 
