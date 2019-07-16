@@ -61,7 +61,8 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   name: "Manage",
                   buttonType: "manage",
                   onClick: (event, rowData) => {
-                    props.history.push(`/manage-portal/manage-user?email=${rowData.email}&status=${rowData.userStatus}`);
+                    props.history.push(`/manage-portal/manage-user?email=${rowData.email}&status=${rowData.userStatus}&firstName=${rowData.firstName}&lastName=${rowData.lastName}&role=${rowData.role}`);
+                    console.log({rowData});
                   }
                 },
                 {

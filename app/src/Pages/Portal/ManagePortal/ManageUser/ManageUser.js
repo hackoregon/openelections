@@ -1,9 +1,11 @@
 import * as React from "react";
+import { connect } from "react-redux";
 import queryString from "query-string";
 import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
+import { inviteUser } from "../../../../state/ducks/users";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -16,9 +18,16 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
+const USER_ROLES = {
+  "Admin": "campaign_admin",
+  "Staff": "campaign_staff"
+}
+// Todo: get from API
+
 const ManageUserPage = props => { 
   const params = queryString.parse(props.location.search);
-  const { email, status } = params;
+  const { email, status, firstName, lastName, role } = params;
+  const userRole = USER_ROLES[role];
 
   return (
     <PageHoc>
@@ -42,7 +51,7 @@ const ManageUserPage = props => {
               </p>
               <Button
                 buttonType="primary"
-                onClick={() => console.log("Resend Invitation")}
+                onClick={() => props.inviteUser(email, firstName, lastName, 1, userRole)} // TODO: set campaign id dynamically
               >
                 Resend Invitation
               </Button>
@@ -63,4 +72,12 @@ const ManageUserPage = props => {
       </div>
     </PageHoc>
   );};
-export default ManageUserPage;
+
+export default connect(
+  state => ({}),
+  dispatch => {
+    return {
+      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+    };
+  }
+)(ManageUserPage);
