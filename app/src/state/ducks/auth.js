@@ -3,6 +3,8 @@ import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
+import history from "../../history";
+import { flashMessage } from "redux-flash";
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -219,10 +221,18 @@ export function updatePassword(password, newPassword) {
     dispatch(actionCreators.updatePassword.request());
     try {
       const { status } = await api.updatePassword(password, newPassword);
-      status === 204
-        ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+      if(status === 204){
+        dispatch(logout());
+        history.push('/sign-in');
+        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+        dispatch(actionCreators.updatePassword.success('yes'));
+      }else{
+        dispatch(flashMessage("Current password invalid", {props:{variant:'error'}}));
+        dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+      }
+
     } catch (error) {
+      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
       dispatch(actionCreators.updatePassword.failure(error));
     }
   };

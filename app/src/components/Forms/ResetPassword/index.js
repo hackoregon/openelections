@@ -21,12 +21,11 @@ const ResetPassword = (props) => (
       onSubmit={
         values => {         
           props.updatePassword(values.oldPassword, values.newPassword)
-          .then(props.submitted(true))
         }
       }
       initialValues={{
-        oldPassword: "",
-        newPassword: ""
+        oldPassword: "password",
+        newPassword: "password"
       }}
     >
       {({
