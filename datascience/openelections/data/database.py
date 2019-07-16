@@ -8,7 +8,7 @@ from psycopg2 import connect
 import psycopg2.errors as psqerrors
 import pandas as pd
 
-UNIFIED_TABLE = 'unified'
+UNIFIED_TABLE = 'addresses'
 UNIFIED_KEY = {'FIRST_NAME': 'VARCHAR(255)',
                'MIDDLE_NAME': 'VARCHAR(255)',
                'LAST_NAME': 'VARCHAR(255)',
