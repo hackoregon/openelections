@@ -180,11 +180,17 @@ export function resetPassword(invitationCode, password) {
     dispatch(actionCreators.resetPassword.request());
     try {
       const { status } = await api.resetPassword(invitationCode, password);
-      status === 204
-        ? dispatch(actionCreators.resetPassword.success())
-        : dispatch(actionCreators.resetPassword.failure());
+      if(status === 204){
+        dispatch(actionCreators.resetPassword.success());
+        return true;
+      }else{
+        dispatch(actionCreators.resetPassword.failure());
+        return false;
+      }
+
     } catch (error) {
       dispatch(actionCreators.resetPassword.failure(error));
+      return false;
     }
   };
 }
