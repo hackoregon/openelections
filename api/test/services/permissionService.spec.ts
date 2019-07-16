@@ -191,7 +191,7 @@ describe('Permission', () => {
             const newUser = await newActiveUserAsync();
             const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, governmentId: government.id, campaignId: campaign.id});
             expect(await permissionRepository.count()).equal(count + 1);
-            expect(await removePermissionAsync({permissionId: permission.id, userId: govUser.id})).to.be.true;
+            await removePermissionAsync({permissionId: permission.id, userId: govUser.id});
             expect(await permissionRepository.count()).equal(count);
         });
 
@@ -200,7 +200,7 @@ describe('Permission', () => {
             const newUser = await newActiveUserAsync();
             const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id, governmentId: government.id});
             expect(await permissionRepository.count()).equal(count + 1);
-            expect(await removePermissionAsync({permissionId: permission.id, userId: campaignAdminUser.id})).to.be.true;
+            await removePermissionAsync({permissionId: permission.id, userId: campaignAdminUser.id});
             expect(await permissionRepository.count()).equal(count);
         });
     });
