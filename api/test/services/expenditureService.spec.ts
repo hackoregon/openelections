@@ -7,7 +7,9 @@ import {
     IAddExpenditureAttrs,
     addExpenditureAsync,
     getExpendituresAsync,
-    IGetExpenditureAttrs
+    IGetExpenditureAttrs,
+    updateExpenditureAsync,
+    IUpdateExpenditureAttrs
 } from '../../services/expenditureService';
 import { PayeeType, ExpenditureSubType, ExpenditureType, ExpenditureStatus } from '../../models/entity/Expenditure';
 
@@ -336,6 +338,167 @@ describe('expenditureService', () => {
             await addExpenditureAsync(addExpenditureAttrs);
         } catch (e) {
             expect(e.message).equal('User is not permitted to add expenditures for this campaign.');
+        }
+    });
+
+    it('Updates an expenditure for a campaign as staff or admin, or as gov admin', async () => {
+        const addExpenditureAttrs1: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            description: 'Test description',
+            payeeType: PayeeType.INDIVIDUAL,
+            status: ExpenditureStatus.DRAFT,
+            date: Date.now()
+        };
+
+        const addExpenditureAttrs2: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign1.id,
+            city: 'Portland',
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            description: 'Test description',
+            payeeType: PayeeType.INDIVIDUAL,
+            status: ExpenditureStatus.DRAFT,
+            date: Date.now()
+        };
+
+        const [expenditure1, expenditure2] = await Promise.all([
+            addExpenditureAsync(addExpenditureAttrs1),
+            addExpenditureAsync(addExpenditureAttrs2)
+        ]);
+
+        const updateExpenditure1 = {
+            ...expenditure1,
+            amount: 500,
+            campaignId: campaign2.id,
+            currentUserId: campaignStaff.id,
+            governmentId: government.id
+        };
+
+        const updateExpenditure2 = {
+            ...expenditure2,
+            name: 'foo',
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id
+        };
+
+        const updateExpenditure1Gov = {
+            ...updateExpenditure1,
+            name: 'bar',
+            campaignId: campaign2.id,
+            currentUserId: govAdmin.id,
+            governmentId: government.id
+        };
+
+        const updateExpenditure2Gov = {
+            ...updateExpenditure2,
+            amount: 100,
+            campaignId: campaign1.id,
+            currentUserId: govAdmin.id,
+            governmentId: government.id
+        };
+
+        const [updatedOne, updatedTwo, updatedOneGov, updatedTwoGov] = await Promise.all([
+            updateExpenditureAsync(updateExpenditure1),
+            updateExpenditureAsync(updateExpenditure2),
+            updateExpenditureAsync(updateExpenditure1Gov),
+            updateExpenditureAsync(updateExpenditure2Gov)
+        ]);
+
+        expect(updatedOne.amount === 500);
+        expect(updatedTwo.name === 'foo');
+        expect(updatedOneGov.name === 'bar');
+        expect(updatedTwoGov.amount === 100);
+    });
+
+    it('Does not update an invalid expenditure for a campaign', async () => {
+        const addExpenditureAttrs: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            description: 'Test description',
+            payeeType: PayeeType.INDIVIDUAL,
+            status: ExpenditureStatus.SUBMITTED,
+            date: Date.now()
+        };
+
+        const expenditure = await addExpenditureAsync(addExpenditureAttrs);
+
+        const updateExpenditure = {
+            ...expenditure,
+            amount: 750,
+            status: ExpenditureStatus.DRAFT,
+            campaignId: campaign2.id,
+            currentUserId: campaignStaff.id,
+            governmentId: government.id
+        };
+
+        try {
+            await updateExpenditureAsync(updateExpenditure);
+        } catch (e) {
+            expect(e.message).equal(
+                'User is not permitted to update expenditures in a non-draft state for this campaign.'
+            );
+        }
+    });
+
+    it('Does not update an expenditure for a campaign if the user lacks perms', async () => {
+        const addExpenditureAttrs: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            description: 'Test description',
+            payeeType: PayeeType.INDIVIDUAL,
+            status: ExpenditureStatus.DRAFT,
+            date: Date.now()
+        };
+
+        const expenditure = await addExpenditureAsync(addExpenditureAttrs);
+
+        const updateExpenditure = {
+            ...expenditure,
+            amount: 750,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id
+        };
+        try {
+            await updateExpenditureAsync(updateExpenditure);
+        } catch (e) {
+            expect(e.message).equal('User is not permitted to update expenditures for this campaign.');
         }
     });
 });
