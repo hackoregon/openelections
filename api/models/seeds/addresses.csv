@@ -1,4 +1,4 @@
-first_name,middle_name,last_name,county,address_1,address_2,city,state,zip_code,zip_plus_four
+firstName,middleName,lastName,county,address1,address2,city,state,zip,zipPlusFour
 DANIELLE,,BARBARA,MULTNOMAH,1631 NE BROADWAY PMB 437,,PORTLAND,OR,97232,1425
 SUSAN,,JONATHAN,MULTNOMAH,PO BOX 12041,,PORTLAND,OR,97212,0041
 ALEXANDER,,TRAVIS,MULTNOMAH,31 NW 22ND PL 29,,PORTLAND,OR,97210,
