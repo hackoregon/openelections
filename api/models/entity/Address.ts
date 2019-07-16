@@ -54,6 +54,6 @@ export class Address {
     })
     zipPlusFour: string;
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 }
