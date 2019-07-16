@@ -8,6 +8,10 @@ import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
+import { connect } from "react-redux";
+import { isLoggedIn, logout } from "../../state/ducks/auth";
+import { flashMessage } from "redux-flash";
+import ResetPassword from "../ResetPassword/ResetPassword";
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -40,6 +44,13 @@ const styles = css`
 `;
 
 const Portal = props => {
+  let search = new URLSearchParams(props.location.search);
+
+  if(!props.isLoggedIn){
+    //TODO Check if they are a gov admin
+    props.dispatch(flashMessage("Please sign in", {props:{variant:'warning'}}));
+    props.history.push('/sign-in');
+  } 
   return (
     <PageHoc>
       <div css={styles} className={"portal-wrapper"}>
@@ -50,7 +61,8 @@ const Portal = props => {
               { url: "/contributions", label: "Contributions" },
               { url: "/expenses", label: "Expenses" },
               { url: "/visualize", label: "Visualize" },
-              { url: "/manage-portal", label: "Manage Portal" }
+              { url: "/manage-portal", label: "Manage Portal" },
+              { url: "/reset-password", label: "Reset Password" }
             ]}
           />
         </aside>
@@ -90,6 +102,16 @@ const Portal = props => {
                         path="/contributions"
                         component={ContributionsPage}
                       />
+                      <Route
+                        exact
+                        path="/contributions"
+                        component={ContributionsPage}
+                      />                                     
+                      <Route
+                        exact
+                        path="/reset-password"
+                        component={ResetPassword}
+                      />
                     </Switch>
                   </CSSTransition>
                 </TransitionGroup>
@@ -105,4 +127,8 @@ const Portal = props => {
     </PageHoc>
   );
 };
-export default Portal;
+export default connect(
+  state => ({
+  isLoggedIn: isLoggedIn(state)
+}
+))(Portal);
