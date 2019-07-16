@@ -56,8 +56,8 @@ services:
   data:
     build:
       context: ./datascience
-    volumes:
-      - ./datascience:/app
+#    volumes:
+#      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
