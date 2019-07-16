@@ -43,11 +43,11 @@ export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationE
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName}</p><p><a href="${host}/invitation?invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
+          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName}</p><p><a href="${host}/invitation?email=${params.to}&campaign=${params.campaignName}&government=${params.governmentName}&invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
         },
         Text: {
           Charset: 'UTF-8',
-          Data: `You've been invited to join the ${params.campaignName || params.governmentName}. Please visit ${host}/invitation?invitationCode=${params.invitationCode} to accept the invitation`
+          Data: `You've been invited to join the ${params.campaignName || params.governmentName}. Please visit ${host}/invitation?email=${params.to}&campaign=${params.campaignName}&government=${params.governmentName}&invitationCode=${params.invitationCode} to accept the invitation`
         },
       },
       Subject: {

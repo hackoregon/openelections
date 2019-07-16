@@ -1,5 +1,7 @@
 // users.js
 import { normalize } from "normalizr";
+import { createSelector } from "reselect";
+import { get, startCase } from "lodash";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
@@ -97,6 +99,7 @@ export function inviteUser(
   campaignOrGovernmentId,
   role = null
 ) {
+  console.log("[inviteUser working!]");
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.inviteUser.request());
     try {
@@ -114,9 +117,14 @@ export function inviteUser(
             lastName,
             campaignOrGovernmentId
           );
-      status === 201
-        ? dispatch(actionCreators.inviteUser.success())
-        : dispatch(actionCreators.inviteUser.failure());
+      if (status === 201) {
+        dispatch(actionCreators.inviteUser.success());
+        role
+          ? dispatch(getCampaignUsers(campaignOrGovernmentId))
+          : dispatch(getGovernmentUsers(campaignOrGovernmentId));
+      } else {
+        dispatch(actionCreators.inviteUser.failure());
+      }
     } catch (error) {
       dispatch(actionCreators.inviteUser.failure(error));
     }
@@ -164,3 +172,23 @@ export function getCampaignUsers(campaignId) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getUsers = createSelector(
+  rootState,
+  state =>
+    Object.values(state.permissions)
+      .filter(perm => !!get(perm, "id"))
+      .map(perm => {
+        const userAndRole = { ...state.users[perm.user] };
+        userAndRole.role = startCase(perm.role);
+        return userAndRole;
+      })
+);
+
+export const isUsersLoading = createSelector(
+  rootState,
+  state => state.users.isLoading
+);

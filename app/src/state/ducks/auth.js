@@ -37,10 +37,10 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true };
+    return { ...state, isLoading: true, error: null};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, me: action.me };
+    return { ...state, isLoading: false, error: null, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -76,7 +76,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.UPDATE_PASSWORD.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return { ...state, isLoading: false, error: null };
   },
   [actionTypes.UPDATE_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -133,6 +133,7 @@ export function me() {
 
 export function login(email, password) {
   return async (dispatch, getState, { api }) => {
+   // dispatch(actionCreators.login.failure(true));
     dispatch(actionCreators.login.request());
     try {
       await api.login(email, password)
@@ -141,7 +142,7 @@ export function login(email, password) {
           dispatch(actionCreators.login.success())
           dispatch(me());
         } else {
-          dispatch(actionCreators.login.failure()); 
+          dispatch(actionCreators.login.failure(true)); 
         }
       })    
     } catch (error) {
@@ -149,7 +150,12 @@ export function login(email, password) {
     }
   };
 }
-
+export function logout() {
+  return (dispatch) => {
+    dispatch(actionCreators.me.success(null));
+    document.cookie = 'token=; Max-Age=-99999999;';     
+ };
+}
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
@@ -174,11 +180,17 @@ export function resetPassword(invitationCode, password) {
     dispatch(actionCreators.resetPassword.request());
     try {
       const { status } = await api.resetPassword(invitationCode, password);
-      status === 204
-        ? dispatch(actionCreators.resetPassword.success())
-        : dispatch(actionCreators.resetPassword.failure());
+      if(status === 204){
+        dispatch(actionCreators.resetPassword.success());
+        return true;
+      }else{
+        dispatch(actionCreators.resetPassword.failure());
+        return false;
+      }
+
     } catch (error) {
       dispatch(actionCreators.resetPassword.failure(error));
+      return false;
     }
   };
 }
@@ -188,11 +200,16 @@ export function sendPasswordResetEmail(email) {
     dispatch(actionCreators.sendPasswordResetEmail.request());
     try {
       const { status } = await api.sendPasswordResetEmail(email);
-      status === 204
-        ? dispatch(actionCreators.sendPasswordResetEmail.success())
-        : dispatch(actionCreators.sendPasswordResetEmail.failure());
+      if(status === 204){
+        dispatch(actionCreators.sendPasswordResetEmail.success());
+        return true;
+      }else{
+        dispatch(actionCreators.sendPasswordResetEmail.failure());
+        return false;
+      }
     } catch (error) {
       dispatch(actionCreators.sendPasswordResetEmail.failure(error));
+      return false;
     }
   };
 }
@@ -204,7 +221,7 @@ export function updatePassword(password, newPassword) {
       const { status } = await api.updatePassword(password, newPassword);
       status === 204
         ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure());
+        : dispatch(actionCreators.updatePassword.failure('Update password request failed'));
     } catch (error) {
       dispatch(actionCreators.updatePassword.failure(error));
     }

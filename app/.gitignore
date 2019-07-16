@@ -1,5 +1,6 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
-
+/__mocks__
+/__snapshots__
 # dependencies
 /node_modules
 
@@ -8,9 +9,6 @@
 
 # production
 /build
-
-# tests
-__snapshots__/
 
 # misc
 .DS_Store

@@ -4,8 +4,8 @@ services:
     tty: true
     build:
       context: 'app'
-      dockerfile: 'Dockerfile.development'
-    command: ["npm", "start"]
+      dockerfile: 'Dockerfile'
+    command: ["yarn", "start"]
     environment:
       - PORT=4000
     depends_on:
@@ -15,6 +15,7 @@ services:
     networks:
       - openelections
   api:
+    container_name: apitest
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:
@@ -22,7 +23,7 @@ services:
       dockerfile: 'Dockerfile.development'
 #    volumes:
 #      - ./api:/app
-    command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "develop"]
+    command: ["./wait-for-it.sh", "testdb:5433", "--", "npm", "run", "seedandrun"]
     environment:
       - PORT=3000
       - NODE_ENV=test
@@ -43,6 +44,7 @@ services:
     networks:
       - openelections
   testdb:
+    container_name: testdb
     image: mdillon/postgis
     ports: ['5434:5432']
     environment:
@@ -51,6 +53,17 @@ services:
       - POSTGRES_DB=open_elections_test
     networks:
       - openelections
+  data:
+    build:
+      context: ./datascience
+    volumes:
+      - ./datascience:/app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=open_elections_data
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=data_db
 networks:
   openelections:
 

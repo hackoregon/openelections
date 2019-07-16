@@ -1,7 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import FormModal from "../../FormModal/FormModal";
 import Button from "../../Button/Button";
 import AddUserForm from "./AddUserForm";
+import { inviteUser } from "../../../state/ducks/users";
+import { clearModal } from "../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -17,10 +20,20 @@ const leftAlign = css`
   align-self: flex-start;
 `;
 
-const AddUser = () => (
+const USER_ROLES = {
+  "Admin": "campaign_admin",
+  "Staff": "campaign_staff"
+}
+// Todo: get from API
+
+const AddUser = props => (
   <FormModal>
     <AddUserForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      onSubmit={({ email, firstName, lastName, userRole }) => {
+        const role = USER_ROLES[userRole];
+        props.inviteUser(email, firstName, lastName, 1, role);
+        props.clearModal();
+      }}
       initialValues={{
         userRole: "Staff",
         email: "",
@@ -43,7 +56,13 @@ const AddUser = () => (
           </p>
           {formSections.addUser}
           <div css={buttonWrapper}>
-            <Button buttonType="cancel" onClick={handleCancel}>
+            <Button
+              buttonType="cancel"
+              onClick={() => {
+                handleCancel();
+                props.clearModal();
+              }}
+            >
               Cancel
             </Button>
             <Button
@@ -60,4 +79,13 @@ const AddUser = () => (
   </FormModal>
 );
 
-export default AddUser;
+// export default AddUser;
+export default connect(
+  state => ({}),
+  dispatch => {
+    return {
+      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+      clearModal: () => dispatch(clearModal())
+    };
+  }
+)(AddUser);

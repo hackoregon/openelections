@@ -59,6 +59,7 @@ export async function newCampaignAsync(gov?: Government): Promise<Campaign> {
     let campaign = new Campaign();
     campaign.name = `${faker.name.lastName()} for Mayor`;
     campaign.government = gov || government;
+    campaign.officeSought = 'Mayor';
     campaign = await campaignRepository.save(campaign) as Campaign;
     return campaign;
 }

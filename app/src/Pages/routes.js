@@ -5,11 +5,13 @@ import TopNavigation from "../components/TopNavigation";
 import HomePage from "./Home/Home";
 import AboutPage from "./About/About";
 import SandboxPage from "./Sandbox/Sandbox";
+import InvitationPage from "./Invitation/Invitation";
 import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
 import Portal from "./Portal/Portal";
+import ResetPassword from "./ResetPassword/ResetPassword";
 
 const shouldTransition = location => {
   let transitionPages = ["/", "/about", "/sandbox"];
@@ -35,11 +37,16 @@ const Routes = props => {
             >
               <Switch location={location}>
                 <Route exact path="/" component={HomePage} />
-
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/sandbox" component={SandboxPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
+                <Route path="/invitation" component={InvitationPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
+                <Route
+                  exact
+                  path="/reset-password"
+                  component={ResetPassword}
+                />
                 <Route
                   exact
                   path="/forgot-password"

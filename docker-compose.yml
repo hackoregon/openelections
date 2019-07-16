@@ -5,7 +5,7 @@ services:
     build:
       context: 'app'
       dockerfile: 'Dockerfile'
-    command: ["npm", "start"]
+    command: ["yarn", "start"]
     environment:
       - PORT=4000
     depends_on:
@@ -22,8 +22,7 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-    # command: npm run development
-    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "develop"]
+    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
     env_file:
       - .env
     environment:
@@ -40,13 +39,23 @@ services:
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
       - REDIS_URL=redis://redis:6379/0
+      - HOST_URL=openelectionsportland.org
     depends_on:
       - db
       - redis
+      - data
     ports:
       - 3000:3000
     volumes:
-      - ./api:/app
+      - ./api/controller:/app/controller
+      - ./api/models:/app/models
+      - ./api/routes:/app/routes
+      - ./api/services:/app/services
+      - ./api/test:/app/test
+      - ./api/types:/app/types
+      - ./api/.nvmrc:/app/.nvmrc
+      - ./api/app.ts:/app/app.ts
+      - ./api/tsconfig.json:/app/tsconfig.json
     networks:
       - openelections
   redis:
@@ -65,26 +74,24 @@ services:
       - POSTGRES_DB=open_elections_dev
     networks:
       - openelections
-  data_db:
-    image: mdillon/postgis
-    ports: ['5433:5432']
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=open_elections_data
-    networks:
-      - openelections
   data:
     build:
-      context: ./2019-openelections-data
+      context: ./datascience
     volumes:
-      - ./2019-openelections-data:/project/root
+      - ./datascience:/app
+    ports: ["8080:80"]
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=open_elections_data
+      - POSTGRES_DB=open_elections_dev
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+      - FLASK_ENV=development
+    command: ["sh", "/app/openelections/api/start.sh"]
+    depends_on:
+      - db
+    networks:
+      - openelections
 networks:
   openelections:
 
