@@ -177,21 +177,30 @@ describe('Permission', () => {
         });
     });
 
-    context('removePermissionsAsync', () => {
+    context('removePermissionsAsync testme', () => {
         it('fails id not found', async () => {
             try {
-                await removePermissionAsync(1100);
+                await removePermissionAsync({permissionId: 1200, userId: 100});
             } catch (e) {
-                expect(e.message).to.equal('Could not find any entity of type "Permission" matching: 1100');
+                expect(e.message).to.equal('Could not find any entity of type "Permission" matching: 1200');
             }
         });
 
-        it('succeeds', async () => {
+        it('govUser succeeds', async () => {
             const count = await permissionRepository.count();
             const newUser = await newActiveUserAsync();
-            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
+            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, governmentId: government.id, campaignId: campaign.id});
             expect(await permissionRepository.count()).equal(count + 1);
-            expect(await removePermissionAsync(permission.id)).to.be.true;
+            expect(await removePermissionAsync({permissionId: permission.id, userId: govUser.id})).to.be.true;
+            expect(await permissionRepository.count()).equal(count);
+        });
+
+        it('campaignAdmin succeeds', async () => {
+            const count = await permissionRepository.count();
+            const newUser = await newActiveUserAsync();
+            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id, governmentId: government.id});
+            expect(await permissionRepository.count()).equal(count + 1);
+            expect(await removePermissionAsync({permissionId: permission.id, userId: campaignAdminUser.id})).to.be.true;
             expect(await permissionRepository.count()).equal(count);
         });
     });

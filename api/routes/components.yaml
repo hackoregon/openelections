@@ -134,9 +134,6 @@ components:
       type: apiKey
       in: cookie
       name: token
-
-  # Reusable request bodies
-  requestBodies:
     LoginBody:
       required: true
       content:
