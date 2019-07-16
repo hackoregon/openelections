@@ -1,4 +1,5 @@
 import * as React from "react";
+import queryString from "query-string";
 import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
@@ -15,41 +16,51 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
-const ManageUserPage = props => (
-  <PageHoc>
-    <h1>
-      <IconButton
-        aria-label="Back"
-        onClick={() => props.history.push("/manage-portal")}
-      >
-        <ArrowBack style={{ fontSize: "36px", color: "black" }} />
-      </IconButton>
-      Manage User
-    </h1>
-    <div className="manage-user-container">
-      <div className="manage-user-intro">
-        <h1>User Name</h1>
-        <p>username@email.com</p>
-        {/* if this user's account is not complete */}
-        <p className="fine-print" css={finePrint}>
-          This user hasn't finished creating their account.
-        </p>
-        <Button
-          buttonType="primary"
-          onClick={() => console.log("Resend Invitation")}
+const ManageUserPage = props => { 
+  const params = queryString.parse(props.location.search);
+  const { email, status } = params;
+
+  return (
+    <PageHoc>
+      <h1>
+        <IconButton
+          aria-label="Back"
+          onClick={() => props.history.push("/manage-portal")}
         >
-          Resend Invitation
-        </Button>
+          <ArrowBack style={{ fontSize: "36px", color: "black" }} />
+        </IconButton>
+        Manage User
+      </h1>
+      <div className="manage-user-container">
+        <div className="manage-user-intro">
+          <h1>User Name</h1>
+          <p>{email}</p>
+          {status === "invited" && (
+            <React.Fragment>
+              <p className="fine-print" css={finePrint}>
+                This user hasn't finished creating their account.
+              </p>
+              <Button
+                buttonType="primary"
+                onClick={() => console.log("Resend Invitation")}
+              >
+                Resend Invitation
+              </Button>
+            </React.Fragment>
+          )}
+        </div>
+        <div className="manage-user-role" css={divSpacer}>
+          <h2>Mangage Role</h2>
+        </div>
+        <div className="remove-user">
+          <Button
+            buttonType="remove"
+            onClick={() => console.log("Remove User")}
+          >
+            Remove User
+          </Button>
+        </div>
       </div>
-      <div className="manage-user-role" css={divSpacer}>
-        <h2>Mangage Role</h2>
-      </div>
-      <div className="remove-user">
-        <Button buttonType="remove" onClick={() => console.log("Remove User")}>
-          Remove User
-        </Button>
-      </div>
-    </div>
-  </PageHoc>
-);
+    </PageHoc>
+  );};
 export default ManageUserPage;
