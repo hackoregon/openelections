@@ -24,8 +24,8 @@ const ResetPassword = (props) => (
         }
       }
       initialValues={{
-        oldPassword: "password",
-        newPassword: "password"
+        oldPassword: "",
+        newPassword: ""
       }}
     >
       {({
