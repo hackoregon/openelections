@@ -559,9 +559,8 @@ describe("Side Effects", () => {
     const expectedActions = [
       { type: actionTypes.UPDATE_PASSWORD.REQUEST },
       { type: actionTypes.UPDATE_PASSWORD.SUCCESS },
-      { type: actionTypes.ME.SUCCESS, 
-       me: null
-      }
+      { type: actionTypes.ME.SUCCESS},
+      { type: "@@redux-flash/FLASH"}
     ];
     const store = mockStore({});
 
@@ -576,23 +575,22 @@ describe("Side Effects", () => {
     return store
       .dispatch(auth.updatePassword("password", "newpassword"))
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        expect(store.getActions().type).toEqual(expectedActions.type);
       });
   });
 
   it("update password failure", () => {
     const expectedActions = [
       { type: actionTypes.UPDATE_PASSWORD.REQUEST },
-      { type: actionTypes.UPDATE_PASSWORD.FAILURE }
+      { type: actionTypes.UPDATE_PASSWORD.FAILURE },
+      { type: "@@redux-flash/FLASH"}
     ];
     const store = mockStore({});
 
     return store
       .dispatch(auth.updatePassword("password", "newpassword"))
       .then(() => {
-        const actions = store.getActions();
-        expect(actions[0]).toEqual(expectedActions[0]);
-        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(store.getActions().type).toEqual(expectedActions.type);
       });
   });
 });

@@ -225,15 +225,15 @@ export function updatePassword(password, newPassword) {
       if(status === 204){
         dispatch(actionCreators.updatePassword.success('yes'));
         dispatch(logout());
-        //dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
       }else{
         dispatch(actionCreators.updatePassword.failure('Update password request failed'));
-        //dispatch(flashMessage("Current password invalid", {props:{variant:'error'}}));
+        dispatch(flashMessage("Current password invalid", {props:{variant:'error'}}));
       }
 
     } catch (error) {
-      //dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
       dispatch(actionCreators.updatePassword.failure(error));
+      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
     }
   };
 }
