@@ -35,8 +35,8 @@ services:
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
       - DB_PORT=5432
-#    depends_on:
-#      - testdb
+    depends_on:
+      - testdb
     ports:
       - 3000:3000
     networks:
