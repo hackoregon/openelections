@@ -222,17 +222,17 @@ export function updatePassword(password, newPassword) {
     try {
       const { status } = await api.updatePassword(password, newPassword);
       if(status === 204){
+        dispatch(actionCreators.updatePassword.success('yes'));
         dispatch(logout());
         history.push('/sign-in');
-        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
-        dispatch(actionCreators.updatePassword.success('yes'));
+        //dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
       }else{
-        dispatch(flashMessage("Current password invalid", {props:{variant:'error'}}));
         dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+        //dispatch(flashMessage("Current password invalid", {props:{variant:'error'}}));
       }
 
     } catch (error) {
-      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
+      //dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
       dispatch(actionCreators.updatePassword.failure(error));
     }
   };

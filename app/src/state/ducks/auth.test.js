@@ -558,7 +558,10 @@ describe("Side Effects", () => {
   it("update password", async () => {
     const expectedActions = [
       { type: actionTypes.UPDATE_PASSWORD.REQUEST },
-      { type: actionTypes.UPDATE_PASSWORD.SUCCESS }
+      { type: actionTypes.UPDATE_PASSWORD.SUCCESS },
+      { type: actionTypes.ME.SUCCESS, 
+       me: null
+      }
     ];
     const store = mockStore({});
 
