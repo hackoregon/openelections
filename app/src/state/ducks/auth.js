@@ -126,10 +126,19 @@ export function me() {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
-
       if (me && me.permissions) {
-        dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].campaignId))
-        dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].governmentId))
+        const govPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'government'
+        })
+        if (govPermission.length) {
+          dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].id))
+        }
+        const campaignPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'campaign'
+        })
+        if (campaignPermission.length) {
+          dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].id))
+        }
       }
       dispatch(actionCreators.me.success(me));
     } catch (error) {
