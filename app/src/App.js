@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { me } from "./state/ducks/auth";
 
 class App extends React.Component {
-  componentDidMount(): void {
+  componentDidMount() {
     this.props.loadAuth()
   }
 
