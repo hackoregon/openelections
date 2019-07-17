@@ -142,9 +142,9 @@ export function login(email, password) {
           dispatch(actionCreators.login.success())
           dispatch(me());
         } else {
-          dispatch(actionCreators.login.failure(true)); 
+          dispatch(actionCreators.login.failure(true));
         }
-      })    
+      })
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
     }
@@ -153,7 +153,7 @@ export function login(email, password) {
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = 'token=; Max-Age=-99999999;';     
+    document.cookie = 'token=; Max-Age=-99999999;';
  };
 }
 export function redeemInvite(invitationCode, password, firstName, lastName) {
