@@ -12,7 +12,7 @@ cache:
 
 before_install:
 #  - docker-compose -f docker-compose-test.yml build api data
-  - - app && yarn install && cd ..
+  - cd app && yarn install && cd ..
 
 script:
 #  - docker-compose -f docker-compose-test.yml run --rm api npm run test
