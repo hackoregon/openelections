@@ -3,6 +3,8 @@ import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
+import * as campaigns from './campaigns'
+import * as governments from './governments'
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -124,6 +126,11 @@ export function me() {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
+
+      if (me && me.permissions) {
+        dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].campaignId))
+        dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].governmentId))
+      }
       dispatch(actionCreators.me.success(me));
     } catch (error) {
       dispatch(actionCreators.me.failure(error));
