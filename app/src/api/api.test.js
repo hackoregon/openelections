@@ -63,6 +63,7 @@ describe("API", () => {
     process.env.NODE_ENV = "staging";
     expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
     process.env.NODE_ENV = "production";
+    
     //Todo: Change for production
     expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
     //expect(api.baseUrl()).toEqual("https://api.openelectionsportland.org");
