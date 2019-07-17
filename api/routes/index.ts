@@ -8,6 +8,7 @@ import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
+import * as permissions from '../controller/permissions';
 
 export const AppRoutes = [
     /**
@@ -90,6 +91,30 @@ export const AppRoutes = [
         path: '/users/invite',
         method: 'post',
         action: users.invite
+    },
+
+    /**
+     * @swagger
+     * /permissions/{id}:
+     *   delete:
+     *     summary: Delete a user access to a campaign or government
+     *     tags:
+     *       - Permissions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: permission removed
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/permissions/:id',
+        method: 'delete',
+        action: permissions.removePermission
     },
 
     /**

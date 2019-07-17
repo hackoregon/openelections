@@ -329,4 +329,12 @@ describe("API", () => {
     });
     expect(response.status).toEqual(200);
   });
+
+  it("removePermission", async () => {
+    process.env.TOKEN = govAdminToken;
+    const user = api.decodeToken(campaignStaffToken);
+    const permissionId = user.permissions[0].id;
+    const response = await api.removePermission(permissionId);
+    expect(response.status).toEqual(200);
+  })
 });
