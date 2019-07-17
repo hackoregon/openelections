@@ -56,6 +56,7 @@ services:
   data:
     build:
       context: ./datascience
+      dockerfile: 'Dockerfile.test'
 #    volumes:
 #      - ./datascience:/app
     environment:
