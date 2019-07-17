@@ -155,7 +155,8 @@ export function login(email, password) {
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = 'token=; Max-Age=-99999999;';     
+    document.cookie = 'token=; Max-Age=-99999999;'; 
+    history.push('/sign-in');    
  };
 }
 export function redeemInvite(invitationCode, password, firstName, lastName) {
@@ -224,7 +225,6 @@ export function updatePassword(password, newPassword) {
       if(status === 204){
         dispatch(actionCreators.updatePassword.success('yes'));
         dispatch(logout());
-        history.push('/sign-in');
         //dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
       }else{
         dispatch(actionCreators.updatePassword.failure('Update password request failed'));
