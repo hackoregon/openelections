@@ -15,9 +15,15 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
+// Todo: get from API
+const USER_ROLES = {
+  "Admin": "campaign_admin",
+  "Staff": "campaign_staff"
+}
+
 export const ManageUserPage = props => (
   <PageHoc>
-    {console.log(props)}
+
     <h1>
       <IconButton
         aria-label="Back"
@@ -31,29 +37,31 @@ export const ManageUserPage = props => (
       <div className="manage-user-intro">
         <h1>{props.location.state.fname} {props.location.state.lname}</h1>
         <p>{props.location.state.email}</p>
-        {/* if this user's account is not complete */}
-        <p className="fine-print" css={finePrint}>
-          This user hasn't finished creating their account.
-        </p>
-        <Button
-          buttonType="default"
-          onClick={() => console.log("Resend Invitation")}
-        >
-          Resend Invitation
-        </Button>
-      </div>
-      <div className="manage-user-role" css={divSpacer}>
-        <h2>Mangage Role</h2>
-      </div>
-      <div className="remove-user">
-        <Button buttonType="remove" onClick={() => {
-          console.log("Remove User");
-          props.showModal({ component: "RemoveUser", state: props.location.state });
-        }}>
-          Remove User
-        </Button>
+        {props.location.state.status === "invited" && (
+          <>
+            <p className="fine-print" css={finePrint}>This user hasn't finished creating their account.</p>
+            <Button
+              buttonType="default"
+              onClick={() => props.inviteUser(props.location.state.email, props.location.state.firstName, props.location.state.lastName, 1, props.location.state.userRole)}
+
+            >
+              Resend Invitation
+            </Button>
+          </>
+        )}
       </div>
     </div>
-  </PageHoc>
+    <div className="manage-user-role" css={divSpacer}>
+      <h2>Mangage Role</h2>
+    </div>
+    <div className="remove-user">
+      <Button buttonType="remove" onClick={() => {
+        console.log("Remove User");
+        props.showModal({ component: "RemoveUser", state: props.location.state });
+      }}>
+        Remove User
+        </Button>
+    </div>
+  </PageHoc >
 );
 export default ManageUserPage;

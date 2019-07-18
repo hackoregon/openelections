@@ -8,8 +8,6 @@ services:
     command: ["yarn", "start"]
     environment:
       - PORT=4000
-    depends_on:
-      - testdb
     ports:
       - 4000:4000
     networks:
@@ -56,8 +54,9 @@ services:
   data:
     build:
       context: ./datascience
-    volumes:
-      - ./datascience:/app
+      dockerfile: 'Dockerfile.test'
+#    volumes:
+#      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password

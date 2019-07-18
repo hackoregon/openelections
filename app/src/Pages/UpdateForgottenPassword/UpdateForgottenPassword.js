@@ -7,6 +7,11 @@ import PageHoc from "../../components/PageHoc/PageHoc";
 import { css, jsx } from "@emotion/core";
 import { UpdateForgottenPasswordForm } from "../../components/Forms/UpdateForgottenPassword";
 import GreenCheck from "../../assets/icons/green-check";
+import { connect } from "react-redux";
+import { resetPassword } from "../../state/ducks/auth";
+import { flashMessage } from "redux-flash";
+
+//TODO Refactor to current page/form format
 
 const validationSchema = Yup.object({
   newPassword: Yup.string("Choose a new password")
@@ -63,9 +68,18 @@ class UpdateForgottenPassword extends Component {
       newPassword: "",
       confirmNewPassword: ""
     },
-    isSubmitted: false
+    isSubmitted: false,
+    updateCode: ""
   };
+  componentDidMount(){
+    let search = new URLSearchParams(this.props.location.search);
+    let update_code = search.get("invitationCode");
+    if(update_code){
+      this.setState({updateCode: update_code});
+    }
 
+    console.log(update_code);
+  }
   handleStateChange(name, event) {
     this.setState({
       formValues: {
@@ -98,7 +112,16 @@ class UpdateForgottenPassword extends Component {
               <Formik
                 onSubmit={(values, actions) => {
                   console.log("Submitting: ", values, actions);
-                  this.formIsSubmitted(true);
+                  this.props.dispatch(resetPassword(this.state.updateCode,values.newPassword))
+                  .then(submitted=>{
+                    if(submitted){
+                      this.formIsSubmitted(true);
+                      this.props.dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+                    }else{
+                      this.props.dispatch(flashMessage("Invalid code", {props:{variant:'error'}}));
+                    }
+                  }
+                  );
                 }}
                 onReset={(values, bag) => {
                   console.log("on reset", { values }, { bag });
@@ -120,7 +143,7 @@ class UpdateForgottenPassword extends Component {
                 <GreenCheck width={50} className={"checkMark"} />
                 <p>
                   Your password is updated.
-                  <span> s.helen@example.com </span>
+                  <span> </span>
                 </p>
               </div>
             )}
@@ -130,4 +153,4 @@ class UpdateForgottenPassword extends Component {
     );
   }
 }
-export default UpdateForgottenPassword;
+export default connect()(UpdateForgottenPassword);

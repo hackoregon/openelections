@@ -68,7 +68,7 @@ Run the api test suite:
 Run the app test suite:
 
 ```bash
-    cd app && npm run test
+    docker-compose -f docker-compose-test.yml run --rm app yarn test
 ```
 
 Run the datascience api test suite:

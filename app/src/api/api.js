@@ -104,6 +104,10 @@ export function resendInvite(userId) {
   return post(`${baseUrl()}/users/resend-invite`, { userId });
 }
 
+export function removePermission(permissionId) {
+  return deletRequest(`${baseUrl()}/permissions/${permissionId}`);
+}
+
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   const data = {
     invitationCode,
@@ -218,6 +222,21 @@ export function post(url, data) {
     method: "POST",
     headers,
     body: JSON.stringify(data),
+    credentials: "include"
+  });
+}
+
+export function deletRequest(url) {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
+    headers["Cookie"] = `token=${process.env.TOKEN}`;
+  }
+  return fetch(url, {
+    method: "DELETE",
+    headers,
     credentials: "include"
   });
 }

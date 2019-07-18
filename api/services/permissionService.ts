@@ -48,13 +48,24 @@ export async function addPermissionAsync(attrs: IAddPermissionAsyncAttrs): Promi
     return permission;
 }
 
-export async function removePermissionAsync(permissionId: number): Promise<boolean> {
+export interface IRemovePermissionAsyncAttrs {
+    userId: number;
+    permissionId: number;
+}
+
+export async function removePermissionAsync(attrs: IRemovePermissionAsyncAttrs): Promise<void> {
     const permissionRepository = getConnection('default').getRepository('Permission');
-    const permission = await permissionRepository.findOneOrFail(permissionId) as Permission;
+    const permission = await permissionRepository.findOneOrFail(attrs.permissionId) as Permission;
     if (permission) {
-        return (await permissionRepository.delete(permissionId)).affected === 1;
+        if (await isGovernmentAdminAsync(attrs.userId, permission.government.id) ||
+            await isCampaignAdminAsync(attrs.userId, permission.government.id) ) {
+            await permissionRepository.delete(attrs.permissionId);
+        } else {
+            throw new Error('User must be an admin');
+        }
+    } else {
+        throw new Error('Supply a valid permission id');
     }
-    return false;
 }
 
 export async function isGovernmentAdminAsync(userId, governmentId: number): Promise<boolean> {
