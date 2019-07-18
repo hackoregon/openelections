@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from "redux";
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import thunk from "redux-thunk";
 import { createReducer } from "./state";
 import activities, {
@@ -32,6 +33,7 @@ export default function configureStore(history) {
   }
   return createStore(
     createReducer({
+      router: connectRouter(history),
       [ACTIVITIES_STATE_KEY]: activities,
       [AUTH_STATE_KEY]: auth,
       [CAMPAIGNS_STATE_KEY]: campaigns,
@@ -40,6 +42,10 @@ export default function configureStore(history) {
       [USERS_STATE_KEY]: users,
       [MODAL_STATE_KEY]: modal
     }),
-    composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api, schema }),flashMiddleware(), ))
+    composeEnhancers(
+      applyMiddleware(
+        routerMiddleware(history),
+        thunk.withExtraArgument({ api, schema }),
+        flashMiddleware(), ))
   );
 }
