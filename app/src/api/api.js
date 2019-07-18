@@ -53,9 +53,11 @@ export function baseUrl() {
   } else if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000";
   } else if (process.env.NODE_ENV === "staging") {
-    return "https://api.qa.openelectinosports.org";
+    return "https://api-qa.openelectionsportland.org";
   } else if (process.env.NODE_ENV === "production") {
-    return "https://api.openelectinosports.org";
+    //Todo: Change for production
+    //return "https://api.openelectionsportland.org";
+    return "https://api-qa.openelectionsportland.org";
   }
 }
 
