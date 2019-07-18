@@ -5,7 +5,7 @@ import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import { inviteUser } from "../../../../state/ducks/users";
+import { inviteUser, removeUser } from "../../../../state/ducks/users";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -78,6 +78,7 @@ export default connect(
   dispatch => {
     return {
       inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+      
     };
   }
 )(ManageUserPage);
