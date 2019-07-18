@@ -17,6 +17,7 @@
     "@material-ui/icons": "^4.2.1",
     "@material-ui/styles": "^4.2.0",
     "clsx": "^1.0.4",
+    "connected-react-router": "^6.5.2",
     "formik": "^1.5.4",
     "history": "^4.9.0",
     "jwt-decode": "^2.2.0",
