@@ -3,5 +3,5 @@ import TopNavigation from "./TopNavigation";
 import { isLoggedIn } from "../../state/ducks/auth";
 
 export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false
-}))(TopNavigation);
+  isLoggedIn: isLoggedIn(state)
+}), {})(TopNavigation);
