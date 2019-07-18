@@ -22,7 +22,7 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [actionTypes.SHOW_MODAL]: (state, action) => {
-    return { ...state, isActive: true, currentModal: action.payload.component };
+    return { ...state, isActive: true, currentModal: action.payload.component, _props: action.payload.props };
   },
   [actionTypes.DISMISS_MODAL]: (state, action) => {
     return { ...state, isActive: false, currentModal: null };

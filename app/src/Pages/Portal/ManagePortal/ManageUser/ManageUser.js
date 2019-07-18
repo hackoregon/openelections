@@ -64,7 +64,7 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-            onClick={() => console.log("Remove User")}
+            onClick={() => props.removeUser(userId, permissionId)}
           >
             Remove User
           </Button>
@@ -78,7 +78,7 @@ export default connect(
   dispatch => {
     return {
       inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
-      
+      removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId))
     };
   }
 )(ManageUserPage);
