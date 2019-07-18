@@ -1,11 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import queryString from "query-string";
+//import queryString from "query-string";
 import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
 import { inviteUser, removeUser } from "../../../../state/ducks/users";
+import { showModal } from "../../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -25,8 +26,9 @@ const USER_ROLES = {
 // Todo: get from API
 
 const ManageUserPage = props => { 
-  const params = queryString.parse(props.location.search);
-  const { email, status, firstName, lastName, role } = params;
+  //const params = queryString.parse(props.location.search);
+  console.log("DD",props.location);
+  const { id, email, status, firstName, lastName, role, roleId } = props.location.state;
   const userRole = USER_ROLES[role];
 
   return (
@@ -64,7 +66,9 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-           // onClick={() => props.removeUser(userId, permissionId)}
+            onClick={() => props.removeUser(id, roleId)}
+            //onClick={() => props.dispatch(showModal("RemoveUser"))}
+
           >
             Remove User
           </Button>
@@ -78,7 +82,8 @@ export default connect(
   dispatch => {
     return {
       inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
-      removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId))
+      removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId)),
+      dispatch
     };
   }
 )(ManageUserPage);

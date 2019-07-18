@@ -223,6 +223,7 @@ export const getUsers = createSelector(
       .map(perm => {
         const userAndRole = { ...state.users[perm.user] };
         userAndRole.role = startCase(perm.role);
+        userAndRole.roleId = perm.id;
         return userAndRole;
       })
 );

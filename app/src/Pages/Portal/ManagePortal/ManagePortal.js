@@ -39,6 +39,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
         <div className="manage-users-container">
           <div className="manage-users-table">
             <Table
+            dasdsad={console.log(userList)}
               isLoading={isLoading}
               title={`Users (${isLoading ? 'Loading' : userList.length})`}
               columns={columnInfo}
@@ -61,7 +62,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   name: "Manage",
                   buttonType: "manage",
                   onClick: (event, rowData) => {
-                    props.history.push(`/manage-portal/manage-user?email=${rowData.email}&status=${rowData.userStatus}&firstName=${rowData.firstName}&lastName=${rowData.lastName}&role=${rowData.role}`);
+                    props.history.push(`/manage-portal/manage-user`, rowData);
                     console.log({rowData});
                   }
                 },
