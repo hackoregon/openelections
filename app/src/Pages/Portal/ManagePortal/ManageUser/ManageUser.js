@@ -66,8 +66,8 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-            onClick={() => props.removeUser(id, roleId)}
-            //onClick={() => props.dispatch(showModal("RemoveUser"))}
+            //onClick={() => props.removeUser(id, roleId)}
+            onClick={() => props.dispatch(showModal("RemoveUser"))}
 
           >
             Remove User

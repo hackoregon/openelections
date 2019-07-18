@@ -23,7 +23,7 @@ const columnInfo = [
   {
     title: "Role",
     field: "role"
-  },  
+  },
   {
     title: "Status",
     field: "userStatus"
@@ -62,8 +62,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   name: "Manage",
                   buttonType: "manage",
                   onClick: (event, rowData) => {
-                    props.history.push(`/manage-portal/manage-user`, rowData);
-                    console.log({rowData});
+                    props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
                   }
                 },
                 {
@@ -72,7 +71,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   buttonType: "primary",
                   isFreeAction: true,
                   onClick: () => {
-                    props.showModal("AddUser");
+                    props.showModal({ component: "AddUser" });
                   }
                 }
               ]}

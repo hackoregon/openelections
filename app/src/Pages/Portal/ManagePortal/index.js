@@ -10,11 +10,11 @@ class ManagePortalPage extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
+  componentDidMount () {
     this.props.getCampaignUsers(campaignID);
   }
 
-  render() {
+  render () {
     return <ManagePortal {...this.props} />;
   }
 }
