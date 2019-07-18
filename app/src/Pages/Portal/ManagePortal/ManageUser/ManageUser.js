@@ -28,7 +28,7 @@ const USER_ROLES = {
 const ManageUserPage = props => { 
   //const params = queryString.parse(props.location.search);
   console.log("DD",props.location);
-  const { id, email, status, firstName, lastName, role, roleId } = props.location.state;
+  const { id, email, userStatus, firstName, lastName, role, roleId } = props.location.state;
   const userRole = USER_ROLES[role];
 
   return (
@@ -46,7 +46,8 @@ const ManageUserPage = props => {
         <div className="manage-user-intro">
           <h1>User Name</h1>
           <p>{email}</p>
-          {status === "invited" && (
+          {console.log("userStatus", userStatus)}
+          {userStatus === "invited" && (
             <React.Fragment>
               <p className="fine-print" css={finePrint}>
                 This user hasn't finished creating their account.
@@ -66,8 +67,8 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-            //onClick={() => props.removeUser(id, roleId)}
-            onClick={() => props.dispatch(showModal("RemoveUser"))}
+            
+            onClick={() => props.dispatch(showModal({component: "RemoveUser", props: props }))}
 
           >
             Remove User

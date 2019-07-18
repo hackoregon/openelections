@@ -27,8 +27,8 @@ export default connect(
   dispatch => {
     return {
       getCampaignUsers: (id) => dispatch(getCampaignUsers(id)),
-      showModal: (component, props={}) => {
-        dispatch(showModal({ component: component, props}));
+      showModal: (payload) => {
+        dispatch(showModal( payload));
       }
     };
   }
