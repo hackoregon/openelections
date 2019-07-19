@@ -16,14 +16,17 @@ const styles = css`
   }
 `;
 
-const Navigation = (isLoggedIn, logOut) => {
+const Navigation = ({isLoggedIn, logOut}) => {
+  const logOutClick = event => {
+    event.preventDefault(); logOut();
+  };
   return (
     <nav css={styles}>
       <NavLink to="/about">About</NavLink>
       <NavLink to="/sandbox">Sandbox</NavLink>
       <NavLink to="/portal">Portal</NavLink>
       {!isLoggedIn && <NavLink to="/sign-in">Sign in</NavLink>}
-      {isLoggedIn && <a href="" onClick={logOut}>Log out</a>}
+      {isLoggedIn && <a href="" onClick={logOutClick}>Log out</a>}
     </nav>
   );
 };

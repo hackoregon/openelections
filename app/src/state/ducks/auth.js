@@ -172,8 +172,7 @@ export function login(email, password) {
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = 'token=; Max-Age=-99999999;';
-    console.log('yes')
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     dispatch(push('/sign-in'))
  };
 }

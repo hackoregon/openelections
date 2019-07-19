@@ -6,6 +6,6 @@ export default connect(state => ({
   isLoggedIn: isLoggedIn(state)
 }), dispatch => {
   return {
-    logOut: () => dispatch(logout())
+    logOut: () => { dispatch(logout())}
   };
 })(Navigation);
