@@ -1,5 +1,4 @@
 import * as React from "react";
-import { BrowserRouter } from "react-router-dom";
 import Routes from "./Pages/routes";
 import { Global, css } from "@emotion/core";
 import FlashMessage from "./components/FlashMessage/FlashMessage";
@@ -14,11 +13,11 @@ class App extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <div>
         <FlashMessage />
         <Global styles={styles} />
         <Routes />
-      </BrowserRouter>
+      </div>
     );
   }
 }

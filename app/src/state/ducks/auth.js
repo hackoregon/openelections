@@ -3,8 +3,9 @@ import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
-import * as campaigns from './campaigns'
-import * as governments from './governments'
+import * as campaigns from './campaigns';
+import * as governments from './governments';
+import { push } from 'connected-react-router';
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -167,12 +168,15 @@ export function login(email, password) {
     }
   };
 }
+
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = 'token=; Max-Age=-99999999;';
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    dispatch(push('/sign-in'))
  };
 }
+
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
@@ -245,13 +249,15 @@ export function updatePassword(password, newPassword) {
   };
 }
 
+export function redirectToLogin() {
+  return async (dispatch, getState, { api }) => {
+    dispatch(push('/sign-in'))
+  }
+}
+
 // Selectors
 export const rootState = state => state || {};
-export const getMe = createSelector(
-  rootState,
-  state => state.auth.me
-);
 
 export const isLoggedIn = state => {
-  return getMe(state) !== null ? true : false;
+  return state.auth.me !== null ? true : false;
 };

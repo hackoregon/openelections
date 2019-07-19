@@ -8,6 +8,7 @@ import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
+import WithPermissions from "../../components/WithPermissions"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -55,6 +56,7 @@ const Portal = props => {
           />
         </aside>
         <main className={"content-wrapper"}>
+          <WithPermissions>
           <Route
             render={({ location }) => (
               <>
@@ -96,9 +98,10 @@ const Portal = props => {
               </>
             )}
           />
+          </WithPermissions>
         </main>
       </div>
-      {/* add modal here 
+      {/* add modal here
         TODO: pass open handler and closing through connector
       */}
       <Modal />
