@@ -37,7 +37,7 @@
     "yup": "^0.27.0"
   },
   "scripts": {
-    "start": "PORT=4000 react-scripts start",
+    "start": "PORT=4000 ./node_modules/react-scripts/bin/react-scripts.js start",
     "start-windows": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest --updateSnapshot",
