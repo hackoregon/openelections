@@ -1,12 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-//import queryString from "query-string";
 import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
 import { resendUserInvite, removeUser } from "../../../../state/ducks/users";
 import { showModal } from "../../../../state/ducks/modal";
+import { flashMessage } from "redux-flash";
+
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -19,17 +20,13 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
-const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
-// Todo: get from API
-
 const ManageUserPage = props => { 
-  //const params = queryString.parse(props.location.search);
-  console.log("DD",props.location);
-  const { id, email, userStatus, firstName, lastName, role, roleId } = props.location.state;
-  const userRole = USER_ROLES[role];
+  const { id, email, userStatus} = props.location.state;
+ 
+  const handleReSendEmail = () => {
+    props.resendUserInvite(id);
+    props.flashMessage("Email Resent", {props:{variant:'success'}});
+  };
 
   return (
     <PageHoc>
@@ -54,7 +51,9 @@ const ManageUserPage = props => {
               </p>
               <Button
                 buttonType="primary"
-                onClick={() => props.resendUserInvite(id)}
+                onClick={
+                  () => handleReSendEmail()
+                }
               >
                 Resend Invitation
               </Button>
@@ -84,6 +83,7 @@ export default connect(
     return {
       resendUserInvite: (id) => dispatch(resendUserInvite(id)),
       removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId)),
+      flashMessage: (message, options) => dispatch(flashMessage(message, options)),    
       dispatch
     };
   }
