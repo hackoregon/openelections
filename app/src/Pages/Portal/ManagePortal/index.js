@@ -4,14 +4,12 @@ import ManagePortal from "./ManagePortal";
 import { getUsers, getCampaignUsers, isUsersLoading } from "../../../state/ducks/users";
 import { showModal } from "../../../state/ducks/modal";
 
-const campaignID = 1; // TODO: dynamically set campaign id
-
 class ManagePortalPage extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount () {
-    this.props.getCampaignUsers(campaignID);
+  componentDidMount() {
+    this.props.getCampaignUsers(this.props.campaignId);
   }
 
   render () {
@@ -23,6 +21,7 @@ export default connect(
   state => ({
     isUserListLoading: isUsersLoading(state),
     userList: getUsers(state),
+    campaignId: state.campaigns.currentCampaignId
   }),
   dispatch => {
     return {
