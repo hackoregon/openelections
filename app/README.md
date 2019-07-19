@@ -34,9 +34,9 @@ This will build your storybook app.
 
 ## Running the Front-End and Back-End together with seeded data
 
-1. `yarn start`(Allows you to use hot module reloading while developing. Will fail the docker build of app, which is ok)
-2. `docker-compose up -d` (`-d` for daemon)
-3. `docker-compose run --rm api npm run seed`
+`docker-compose up -d` (`-d` for daemon)
+
+For this command to work properly, you will need the node_modules installed locally in the `app` directory.
 
 ## Adding Routes
 
