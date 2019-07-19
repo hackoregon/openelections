@@ -5,7 +5,7 @@ import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import { inviteUser, removeUser } from "../../../../state/ducks/users";
+import { resendUserInvite, removeUser } from "../../../../state/ducks/users";
 import { showModal } from "../../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -54,7 +54,7 @@ const ManageUserPage = props => {
               </p>
               <Button
                 buttonType="primary"
-                onClick={() => props.inviteUser(email, firstName, lastName, 1, userRole)} // TODO: set campaign id dynamically
+                onClick={() => props.resendUserInvite(id)}
               >
                 Resend Invitation
               </Button>
@@ -67,9 +67,9 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-            
-            onClick={() => props.dispatch(showModal({component: "RemoveUser", props: props }))}
-
+            onClick={
+              () => props.dispatch(showModal({component: "RemoveUser", props: props }))
+            }
           >
             Remove User
           </Button>
@@ -82,7 +82,7 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+      resendUserInvite: (id) => dispatch(resendUserInvite(id)),
       removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId)),
       dispatch
     };

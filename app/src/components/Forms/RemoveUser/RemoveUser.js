@@ -25,7 +25,6 @@ const RemoveUser = (props) => {
   return (
     <FormModal>
     <div css={removeUserStyle}>
-      {console.log({ props })}
       <p>{props.location.state.email} will no longer have access to the portal.</p>
       <p>Are you sure you want to remove them?</p>
       <div css={buttonContainer}>
