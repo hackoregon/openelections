@@ -4,7 +4,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
-import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
+import ManageUserPage from "./ManagePortal/ManageUser/index";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";

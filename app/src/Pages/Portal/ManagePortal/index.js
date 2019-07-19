@@ -12,7 +12,7 @@ class ManagePortalPage extends Component {
     this.props.getCampaignUsers(this.props.campaignId);
   }
 
-  render() {
+  render () {
     return <ManagePortal {...this.props} />;
   }
 }
@@ -26,8 +26,8 @@ export default connect(
   dispatch => {
     return {
       getCampaignUsers: (id) => dispatch(getCampaignUsers(id)),
-      showModal: payload => {
-        dispatch(showModal({ component: payload }));
+      showModal: (payload) => {
+        dispatch(showModal( payload));
       }
     };
   }
