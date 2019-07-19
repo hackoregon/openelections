@@ -31,6 +31,7 @@ describe("Reducer", () => {
   const reducer = campaigns.default;
   it("initial state", () => {
     expect(reducer(undefined, {})).toEqual({
+      currentCampaignId: null,
       isLoading: false,
       error: null
     });
@@ -48,6 +49,24 @@ describe("Reducer", () => {
       })
     ).toEqual({
       "1": {},
+      currentCampaignId: null,
+      isLoading: false,
+      error: null
+    });
+  });
+
+  it("sets current campaign", () => {
+    expect(
+      reducer({
+        currentCampaignId: null,
+        isLoading: false,
+        error: null
+      }, {
+        type: actionTypes.SET_CAMPAIGN.SUCCESS,
+        campaignId: 1
+      })
+    ).toEqual({
+      currentCampaignId: 1,
       isLoading: false,
       error: null
     });
@@ -72,6 +91,13 @@ describe("Action Creators", () => {
       type: actionTypes.CREATE_CAMPAIGN.FAILURE
     };
     expect(actionCreators.createCampaign.failure()).toEqual(expectedAction);
+  });
+  it("set campaign success", () => {
+    const expectedAction = {
+      type: actionTypes.SET_CAMPAIGN.SUCCESS,
+      campaignId: 1
+    };
+    expect(actionCreators.setCampaign.success(1)).toEqual(expectedAction);
   });
 });
 
