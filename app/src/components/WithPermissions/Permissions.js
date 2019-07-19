@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 
 export class WithPermissions extends React.Component {
 
-  componentDidMount(): void {
+  componentDidMount() {
     if (!this.props.isLoggedIn) {
       this.props.redirectToLogin()
     }
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate() {
     if (!this.props.isLoggedIn) {
       this.props.redirectToLogin()
     }
