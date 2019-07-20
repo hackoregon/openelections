@@ -14,7 +14,14 @@ export function createHash(password: string): IPasswordHash  {
         throw new Error('must supply a password');
     }
     const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 2048, 32, 'sha512').toString('hex');
+
+    let iterations = 2048;
+    if (process.env.NODE_ENV === 'production') {
+        // prevent derivation attacks
+        iterations = 872791;
+    }
+    const hash = crypto.pbkdf2Sync(password, salt, iterations, 32, 'sha512').toString('hex');
+
     return {
         salt,
         hash
@@ -122,7 +129,12 @@ export class User {
             throw new Error('must set a password');
         }
         const validHash = crypto.pbkdf2Sync(password, this.salt, 2048, 32, 'sha512').toString('hex');
-        return this.passwordHash === validHash;
+        // prevent timing attacks
+        let mismatch = 0;
+        for (let i = 0; i < validHash.length; ++i) {
+            mismatch |= (validHash.charCodeAt(i) ^ this.passwordHash.charCodeAt(i));
+        }
+        return mismatch === 0;
     }
 
     setPassword(password) {
