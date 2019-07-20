@@ -15,6 +15,7 @@ const DateField = ({ id, label, formik }) => (
     onBlur={formik.handleBlur}
     autoComplete="on"
     fullWidth
+    InputLabelProps={{ shrink: true }}
   />
 );
 

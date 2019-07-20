@@ -61,9 +61,12 @@ describe("API", () => {
     process.env.NODE_ENV = "development";
     expect(api.baseUrl()).toEqual("http://localhost:3000");
     process.env.NODE_ENV = "staging";
-    expect(api.baseUrl()).toEqual("https://api.qa.openelectinosports.org");
+    expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
     process.env.NODE_ENV = "production";
-    expect(api.baseUrl()).toEqual("https://api.openelectinosports.org");
+    
+    //Todo: Change for production
+    expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
+    //expect(api.baseUrl()).toEqual("https://api.openelectionsportland.org");
     process.env.NODE_ENV = "test";
   });
 
@@ -329,4 +332,12 @@ describe("API", () => {
     });
     expect(response.status).toEqual(200);
   });
+
+  it("removePermission", async () => {
+    process.env.TOKEN = govAdminToken;
+    const user = api.decodeToken(campaignStaffToken);
+    const permissionId = user.permissions[0].id;
+    const response = await api.removePermission(permissionId);
+    expect(response.status).toEqual(200);
+  })
 });

@@ -6,6 +6,8 @@ services:
     build:
       context: 'app'
       dockerfile: 'Dockerfile.production'
+    ports:
+      - "4000:4000"
   api:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
@@ -13,4 +15,27 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.production'
-
+    ports:
+    - "3000:3000"
+    environment:
+      - "DB_HOST="
+      - "DB_NAME="
+      - "DB_PORT=5432"
+      - "DB_USERNAME="
+      - "HOST_URL=openelectionsportland.org"
+      - "NODE_ENV=production"
+      - "PORT=3000"
+      - "DB_PASSWORD="
+      - "SECRET_KEY=bananas"
+  data:
+    image: openelections-datascience-production
+    build:
+      context: ./datascience
+      dockerfile: 'Dockerfile.production'
+    ports: ["8080:80"]
+    environment:
+      - "POSTGRES_USER="
+      - "POSTGRES_PASSWORD="
+      - "POSTGRES_DB="
+      - "POSTGRES_PORT=5432"
+      - "POSTGRES_HOST="

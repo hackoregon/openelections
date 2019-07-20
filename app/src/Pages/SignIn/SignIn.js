@@ -2,14 +2,23 @@ import React, { Component } from "react";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import SignInForm from "../../components/Forms/SignIn/index";
 import { connect } from "react-redux";
-import { login } from "../../state/ducks/auth";
+import { login, isLoggedIn } from "../../state/ducks/auth";
+import { flashMessage } from "redux-flash";
 
 class SignIn extends Component {
-  componentWillUpdate(newprops){
-    if (!(typeof newprops.state.me == 'undefined' || !newprops.state.me)) {
-      this.props.history.push('/dashboard')
+  constructor(props) {
+    super(props);
+  }
+  componentDidUpdate(){
+    const { isLoggedIn, authError, flashMessage, history } = this.props;
+    if(isLoggedIn){
+      flashMessage('Signin Success', {props:{variant:'success'}});
+      history.push('/dashboard');
+    }else if(authError){
+     flashMessage("Signin Error", {props:{variant:'error'}});
     }
   }
+  
   render() {
     return (
       <PageHoc>
@@ -20,13 +29,15 @@ class SignIn extends Component {
 }
 
 export default connect(
-  state => { 
-    return {state: state.auth}
-  }, 
+  state => ({
+    isLoggedIn: isLoggedIn(state) || false,
+    authError: state.auth.error
+  }), 
   dispatch => {
     return {
       login: (email,password) => dispatch(login(email,password)),
+      flashMessage: (message, options) => dispatch(flashMessage(message, options)),
       dispatch
-      }
     }
-  )(SignIn);
+  }
+)(SignIn);

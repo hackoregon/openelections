@@ -3,14 +3,12 @@ Database module
 """
 import os
 from typing import Dict, List, Optional
-import json
-from functools import lru_cache
-from openelections import _POSTGRES_LOGIN_FILE, _VOTER_LIST, _ORESTAR_PATH
+from openelections import _VOTER_LIST, _ORESTAR_PATH
 from psycopg2 import connect
 import psycopg2.errors as psqerrors
 import pandas as pd
 
-UNIFIED_TABLE = 'unified'
+UNIFIED_TABLE = 'addresses'
 UNIFIED_KEY = {'FIRST_NAME': 'VARCHAR(255)',
                'MIDDLE_NAME': 'VARCHAR(255)',
                'LAST_NAME': 'VARCHAR(255)',

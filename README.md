@@ -25,7 +25,7 @@ Start application by running:
 ```
 
 
-### Seeding the Databse
+### Seeding the Database
 
 We have a set of seed files located in models/seeds, to run them:
 
@@ -68,11 +68,18 @@ Run the api test suite:
 Run the app test suite:
 
 ```bash
-    cd app && npm run test
+    docker-compose -f docker-compose-test.yml run --rm app yarn test
 ```
+
+Run the datascience api test suite:
+
+```bash
+    docker-compose -f docker-compose-test.yml run --rm data make test
+```
+
 
 ### Deployment
 
-This project uses Travis to Continously deploy to qa.openelectionsportland.org on commits to develop. 
+This project uses Travis to Continuously deploy to qa.openelectionsportland.org on commits to develop. 
 When you open a PR, Travis will run our test suite, and mark it as passing or failing on the PR at Github.
 When the PR is merged into develop, and the test suite is passing, Travis will deploy using scripts/deploy.sh

@@ -3,6 +3,13 @@ import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
+import * as campaigns from './campaigns';
+import * as governments from './governments';
+import { push } from 'connected-react-router';
+import { flashMessage } from "redux-flash";
+
+
+// Export State Key
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -37,10 +44,10 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.LOGIN.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true };
+    return { ...state, isLoading: true, error: null};
   },
   [actionTypes.LOGIN.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, me: action.me };
+    return { ...state, isLoading: false, error: null, me: action.me };
   },
   [actionTypes.LOGIN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -76,7 +83,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.UPDATE_PASSWORD.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return { ...state, isLoading: false, error: null };
   },
   [actionTypes.UPDATE_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -124,6 +131,21 @@ export function me() {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
+      if (me && me.permissions) {
+        const campaignPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'campaign'
+        })
+        if (campaignPermission.length) {
+          dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].id))
+        }
+
+        const govPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'government'
+        })
+        if (govPermission.length) {
+          dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].id))
+        }
+      }
       dispatch(actionCreators.me.success(me));
     } catch (error) {
       dispatch(actionCreators.me.failure(error));
@@ -133,6 +155,7 @@ export function me() {
 
 export function login(email, password) {
   return async (dispatch, getState, { api }) => {
+   // dispatch(actionCreators.login.failure(true));
     dispatch(actionCreators.login.request());
     try {
       await api.login(email, password)
@@ -141,13 +164,21 @@ export function login(email, password) {
           dispatch(actionCreators.login.success())
           dispatch(me());
         } else {
-          dispatch(actionCreators.login.failure()); 
+          dispatch(actionCreators.login.failure(true));
         }
-      })    
+      })
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
     }
   };
+}
+
+export function logout() {
+  return (dispatch) => {
+    dispatch(actionCreators.me.success(null));
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    dispatch(push('/sign-in'))
+ };
 }
 
 export function redeemInvite(invitationCode, password, firstName, lastName) {
@@ -174,11 +205,17 @@ export function resetPassword(invitationCode, password) {
     dispatch(actionCreators.resetPassword.request());
     try {
       const { status } = await api.resetPassword(invitationCode, password);
-      status === 204
-        ? dispatch(actionCreators.resetPassword.success())
-        : dispatch(actionCreators.resetPassword.failure());
+      if(status === 204){
+        dispatch(actionCreators.resetPassword.success());
+        return true;
+      }else{
+        dispatch(actionCreators.resetPassword.failure());
+        return false;
+      }
+
     } catch (error) {
       dispatch(actionCreators.resetPassword.failure(error));
+      return false;
     }
   };
 }
@@ -188,11 +225,16 @@ export function sendPasswordResetEmail(email) {
     dispatch(actionCreators.sendPasswordResetEmail.request());
     try {
       const { status } = await api.sendPasswordResetEmail(email);
-      status === 204
-        ? dispatch(actionCreators.sendPasswordResetEmail.success())
-        : dispatch(actionCreators.sendPasswordResetEmail.failure());
+      if(status === 204){
+        dispatch(actionCreators.sendPasswordResetEmail.success());
+        return true;
+      }else{
+        dispatch(actionCreators.sendPasswordResetEmail.failure());
+        return false;
+      }
     } catch (error) {
       dispatch(actionCreators.sendPasswordResetEmail.failure(error));
+      return false;
     }
   };
 }
@@ -202,22 +244,31 @@ export function updatePassword(password, newPassword) {
     dispatch(actionCreators.updatePassword.request());
     try {
       const { status } = await api.updatePassword(password, newPassword);
-      status === 204
-        ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure());
+      if(status === 204) {
+        dispatch(actionCreators.updatePassword.success());
+        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+        dispatch(logout());
+      }else{
+        dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+        dispatch(flashMessage("Password update failed", {props:{variant:'error'}}));
+      }
+
     } catch (error) {
       dispatch(actionCreators.updatePassword.failure(error));
+      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
     }
   };
 }
 
+export function redirectToLogin() {
+  return async (dispatch, getState, { api }) => {
+    dispatch(push('/sign-in'))
+  }
+}
+
 // Selectors
 export const rootState = state => state || {};
-export const getMe = createSelector(
-  rootState,
-  state => state.auth.me
-);
 
 export const isLoggedIn = state => {
-  return getMe(state) !== null ? true : false;
+  return state.auth.me !== null ? true : false;
 };

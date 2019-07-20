@@ -17,6 +17,7 @@ import ForgotPassword from "./ForgotPassword.story";
 import UpdateForgottenPassword from "./UpdateForgottenPassword.story";
 import SignIn from "./SignIn.story";
 import SignUp from "./SignUp.story";
+import Invitation from "./Invitation.story";
 // import Provider from './Provider';
 
 // storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
@@ -37,6 +38,7 @@ SignUp();
 ForgotPassword();
 UpdateForgottenPassword();
 AddUser();
+Invitation();
 
 storiesOf("Portal", module).add("Intro", () => (
   <p>These are components used within the Dashboard</p>

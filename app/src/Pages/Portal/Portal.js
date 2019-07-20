@@ -1,11 +1,15 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
+import ManagePortalPage from "./ManagePortal/index";
+import ManageUserPage from "./ManagePortal/ManageUser/index";
 import ContributionsPage from "./Contributions/Contributions";
 import ExpensesPage from "./Expenses/Expenses";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
+import WithPermissions from "../../components/WithPermissions"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -26,6 +30,7 @@ const styles = css`
   .content-wrapper {
     width: 80%;
     padding-left: 20px;
+    padding-right: 20px;
     border-left: 1px solid rgba(0, 0, 0, 0.15);
   }
 
@@ -47,11 +52,12 @@ const Portal = props => {
               { url: "/contributions", label: "Contributions" },
               { url: "/expenses", label: "Expenses" },
               { url: "/visualize", label: "Visualize" },
-              { url: "/manage", label: "Manage Portal" }
+              { url: "/manage-portal", label: "Manage Portal" }
             ]}
           />
         </aside>
         <main className={"content-wrapper"}>
+          <WithPermissions>
           <Route
             render={({ location }) => (
               <>
@@ -68,6 +74,23 @@ const Portal = props => {
                         path="/dashboard"
                         component={DashboardPage}
                       />
+                        path="/manage-portal"
+                        component={ManagePortalPage}
+                      />
+                      <Route
+                        exact
+                        path="/manage-portal/manage-user"
+                        // children={(match) => {
+                        //   console.log({ match });
+                        //   return ManageUserPage;
+                        // }}
+                        component={ManageUserPage}
+                      />
+                      <Route
+                        exact
+                        path="/dashboard"
+                        component={DashboardPage}
+                      />{" "}
                       <Route
                         exact
                         path="/contributions"
@@ -80,8 +103,13 @@ const Portal = props => {
               </>
             )}
           />
+          </WithPermissions>
         </main>
       </div>
+      {/* add modal here
+        TODO: pass open handler and closing through connector
+      */}
+      <Modal />
     </PageHoc>
   );
 };

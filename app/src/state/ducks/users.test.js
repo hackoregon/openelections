@@ -1,6 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as users from "./users";
+import * as permissions from "./permissions";
 import * as api from "../../api";
 import * as schema from "../../api/schema";
 import { UserRoleEnum } from "../../api";
@@ -112,6 +113,72 @@ describe("Reducer", () => {
       error: null
     });
   });
+
+  it("removeUser success", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        }
+      }, {
+        type: actionTypes.REMOVE_USER.SUCCESS,
+        userId: 1
+      })
+    ).toEqual({
+      isLoading: false
+    });
+  })
+
+  it("removeUser fail", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        },
+        isLoading: true,
+        error: null
+      }, {
+        type: actionTypes.REMOVE_USER.FAILURE,
+        error: 'an error'
+      })
+    ).toEqual({
+      1: {
+        firstName: 'Dan',
+        lastName: 'Melton',
+        email: 'dan@civicsoftwarefoundation.org',
+      },
+      isLoading: false,
+      error: 'an error'
+    });
+  })
+
+  it("removeUser request", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        },
+        isLoading: false,
+        error: null
+      }, {
+        type: actionTypes.REMOVE_USER.REQUEST
+      })
+    ).toEqual({
+      1: {
+        firstName: 'Dan',
+        lastName: 'Melton',
+        email: 'dan@civicsoftwarefoundation.org',
+      },
+      isLoading: true,
+      error: null
+    });
+  })
 });
 
 describe("Action Creators", () => {
@@ -190,6 +257,29 @@ describe("Action Creators", () => {
     };
     expect(actionCreators.getCampaignUsers.failure()).toEqual(expectedAction);
   });
+
+  it("removeUser Request", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.REQUEST
+    };
+    expect(actionCreators.removeUser.request()).toEqual(expectedAction);
+  })
+
+  it("removeUser Success", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.SUCCESS,
+      userId: 1
+    };
+    expect(actionCreators.removeUser.success(1)).toEqual(expectedAction);
+  });
+
+  it("removeUser Failure", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.FAILURE,
+      error: 'an error message'
+    };
+    expect(actionCreators.removeUser.failure('an error message')).toEqual(expectedAction);
+  });
 });
 
 let govAdminToken;
@@ -197,6 +287,7 @@ let campaignAdminToken;
 let campaignStaffToken;
 let governmentId;
 let campaignId;
+
 describe("Side Effects", () => {
   beforeAll(async () => {
     let tokenResponse = await api.login(
@@ -235,7 +326,8 @@ describe("Side Effects", () => {
   it("invite user to gov", async () => {
     const expectedActions = [
       { type: actionTypes.INVITE_USER.REQUEST },
-      { type: actionTypes.INVITE_USER.SUCCESS }
+      { type: actionTypes.INVITE_USER.SUCCESS },
+      { type: actionTypes.GET_GOVERNMENT_USERS.REQUEST }
     ];
     const store = mockStore({});
 
@@ -281,7 +373,8 @@ describe("Side Effects", () => {
   it("invite user to campaign", async () => {
     const expectedActions = [
       { type: actionTypes.INVITE_USER.REQUEST },
-      { type: actionTypes.INVITE_USER.SUCCESS }
+      { type: actionTypes.INVITE_USER.SUCCESS },
+      { type: actionTypes.GET_CAMPAIGN_USERS.REQUEST }
     ];
     const store = mockStore({});
 
@@ -318,6 +411,46 @@ describe("Side Effects", () => {
           campaignId,
           UserRoleEnum.CAMPAIGN_STAFF
         )
+      )
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("remove user failure", async () => {
+    const expectedActions = [
+      { type: actionTypes.REMOVE_USER.REQUEST },
+      { type: actionTypes.REMOVE_USER.FAILURE }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignStaffToken;
+    const token = api.decodeToken(campaignStaffToken);
+    return store
+      .dispatch(
+        users.removeUser(token.id, token.permissions[0].id)
+      )
+      .then(() => {
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("remove user success", async () => {
+    process.env.TOKEN = govAdminToken;
+    const token = api.decodeToken(campaignStaffToken);
+    const userId = token.id
+    const permissionId = token.permissions[0].id
+    const expectedActions = [
+      { type: actionTypes.REMOVE_USER.REQUEST },
+      { type: actionTypes.REMOVE_USER.SUCCESS, userId  },
+      { type: permissions.actionTypes.REMOVE_PERMISSION.SUCCESS, permissionId }
+    ];
+    const store = mockStore({});
+
+
+    return store
+      .dispatch(
+        users.removeUser(userId, permissionId)
       )
       .then(() => {
         expect(store.getActions()).toEqual(expectedActions);

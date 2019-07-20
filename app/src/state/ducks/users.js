@@ -1,9 +1,12 @@
 // users.js
 import { normalize } from "normalizr";
+import { createSelector } from "reselect";
+import { get, startCase } from "lodash";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
+import { removePermission } from "./permissions";
 
 export const STATE_KEY = "users";
 
@@ -12,7 +15,8 @@ export const actionTypes = {
   INVITE_USER: createActionTypes(STATE_KEY, "INVITE_USER"),
   RESEND_USER_INVITE: createActionTypes(STATE_KEY, "RESEND_USER_INVITE"),
   GET_GOVERNMENT_USERS: createActionTypes(STATE_KEY, "GET_GOVERNMENT_USERS"),
-  GET_CAMPAIGN_USERS: createActionTypes(STATE_KEY, "GET_CAMPAIGN_USERS")
+  GET_CAMPAIGN_USERS: createActionTypes(STATE_KEY, "GET_CAMPAIGN_USERS"),
+  REMOVE_USER: createActionTypes(STATE_KEY, "REMOVE_USER")
 };
 
 // Initial State
@@ -61,7 +65,18 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_CAMPAIGN_USERS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
+  [actionTypes.REMOVE_USER.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true, error: action.error || null };
+  },
+  [actionTypes.REMOVE_USER.SUCCESS]: (state, action) => {
+    const newState = {...state, isLoading: false};
+    delete newState[action.userId];
+    return newState;
+  },
+  [actionTypes.REMOVE_USER.FAILURE]: (state, action) => {
+  return { ...state, isLoading: false, error: action.error };
+}
 });
 
 // Action Creators
@@ -86,6 +101,11 @@ export const actionCreators = {
     request: () => action(actionTypes.GET_CAMPAIGN_USERS.REQUEST),
     success: () => action(actionTypes.GET_CAMPAIGN_USERS.SUCCESS),
     failure: error => action(actionTypes.GET_CAMPAIGN_USERS.FAILURE, { error })
+  },
+  removeUser: {
+    request: () => action(actionTypes.REMOVE_USER.REQUEST),
+    success: (userId) => action(actionTypes.REMOVE_USER.SUCCESS, { userId }),
+    failure: error => action(actionTypes.REMOVE_USER.FAILURE, { error })
   }
 };
 
@@ -97,6 +117,7 @@ export function inviteUser(
   campaignOrGovernmentId,
   role = null
 ) {
+  console.log("[inviteUser working!]");
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.inviteUser.request());
     try {
@@ -114,11 +135,37 @@ export function inviteUser(
             lastName,
             campaignOrGovernmentId
           );
-      status === 201
-        ? dispatch(actionCreators.inviteUser.success())
-        : dispatch(actionCreators.inviteUser.failure());
+      if (status === 201) {
+        dispatch(actionCreators.inviteUser.success());
+        role
+          ? dispatch(getCampaignUsers(campaignOrGovernmentId))
+          : dispatch(getGovernmentUsers(campaignOrGovernmentId));
+      } else {
+        dispatch(actionCreators.inviteUser.failure());
+      }
     } catch (error) {
       dispatch(actionCreators.inviteUser.failure(error));
+    }
+  };
+}
+
+export function removeUser(
+  userId, permissionId
+) {
+  return async (dispatch, getState, { api }) => {
+    dispatch(actionCreators.removeUser.request());
+    try {
+      const response = await api.removePermission(
+        permissionId
+      );
+      if (response.status === 200) {
+        dispatch(actionCreators.removeUser.success(userId));
+        dispatch(removePermission(permissionId));
+      } else {
+        dispatch(actionCreators.removeUser.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.removeUser.failure(error));
     }
   };
 }
@@ -164,3 +211,24 @@ export function getCampaignUsers(campaignId) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getUsers = createSelector(
+  rootState,
+  state =>
+    Object.values(state.permissions)
+      .filter(perm => !!get(perm, "id"))
+      .map(perm => {
+        const userAndRole = { ...state.users[perm.user] };
+        userAndRole.role = startCase(perm.role);
+        userAndRole.roleId = perm.id;
+        return userAndRole;
+      })
+);
+
+export const isUsersLoading = createSelector(
+  rootState,
+  state => state.users.isLoading
+);

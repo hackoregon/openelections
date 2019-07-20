@@ -2,12 +2,13 @@ import * as express from 'express';
 import { getCurrentUser, IRequest } from './helpers';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as swaggerUI from 'swagger-ui-express';
-import * as swaggerJSDoc from 'swagger-jsdoc';
+// import * as swaggerUI from 'swagger-ui-express';
+// import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
+import * as permissions from '../controller/permissions';
 
 export const AppRoutes = [
     /**
@@ -90,6 +91,30 @@ export const AppRoutes = [
         path: '/users/invite',
         method: 'post',
         action: users.invite
+    },
+
+    /**
+     * @swagger
+     * /permissions/{id}:
+     *   delete:
+     *     summary: Delete a user access to a campaign or government
+     *     tags:
+     *       - Permissions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: permission removed
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/permissions/:id',
+        method: 'delete',
+        action: permissions.removePermission
     },
 
     /**
@@ -527,29 +552,36 @@ export const AppRoutes = [
         path: '/contributions/:id',
         method: 'post',
         action: contributions.getContributionById
-    }
+    },
+    {
+        path: '/status',
+        method: 'get',
+        action: async (request: IRequest, response: express.Response) => {
+            return response.status(200).json({message: 'running'});
+        }
+    },
 ];
 
 export const setupRoutes = (app: express.Express) => {
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(getCurrentUser);
-    app.use(
-        '/api-docs',
-        swaggerUI.serve,
-        swaggerUI.setup(
-            swaggerJSDoc({
-                definition: {
-                    openapi: '3.0.0',
-                    info: {
-                        title: 'Open Elections',
-                        version: '1.0.0'
-                    }
-                },
-                apis: ['routes/*']
-            })
-        )
-    );
+    // app.use(
+    //     '/api-docs',
+    //     swaggerUI.serve,
+    //     swaggerUI.setup(
+    //         swaggerJSDoc({
+    //             definition: {
+    //                 openapi: '3.0.0',
+    //                 info: {
+    //                     title: 'Open Elections',
+    //                     version: '1.0.0'
+    //                 }
+    //             },
+    //             apis: ['routes/*']
+    //         })
+    //     )
+    // );
     AppRoutes.forEach(route => {
         app[route.method](route.path, (request: IRequest, response: express.Response, next: Function) => {
             route

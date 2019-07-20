@@ -1,6 +1,8 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as auth from "./auth";
+import * as campaigns from './campaigns'
+import * as governments from './governments'
 import * as api from "../../api";
 import * as schema from "../../api/schema";
 
@@ -68,7 +70,20 @@ describe("Reducer", () => {
       error: ""
     });
   });
-
+  
+  // it("logout", () => {
+  //   expect(
+  //     reducer(undefined, {
+  //       type: actionTypes.LOGIN.SUCCESS,
+  //       me: null
+  //     })
+  //   ).toEqual({
+  //     me: null,
+  //     isLoading: false,
+  //     error: null
+  //   });
+  // });
+  
   it("me", () => {
     expect(
       reducer(undefined, {
@@ -396,6 +411,8 @@ describe("Side Effects", () => {
   it("me", async () => {
     const expectedActions = [
       { type: actionTypes.ME.REQUEST },
+      { type: campaigns.actionTypes.SET_CAMPAIGN.SUCCESS, campaignId: 1 },
+      { type: governments.actionTypes.SET_GOVERNMENT.SUCCESS, governmentId: 1 },
       { type: actionTypes.ME.SUCCESS }
     ];
     const store = mockStore({});
@@ -412,7 +429,8 @@ describe("Side Effects", () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(expectedActions[0]);
       expect(actions[1].type).toEqual(expectedActions[1].type);
-      expect(actions[1].me).toMatchObject({
+      expect(actions[2].type).toEqual(expectedActions[2].type);
+      expect(actions[3].me).toMatchObject({
         id: expect.any(Number),
         email: expect.any(String)
       });
@@ -447,6 +465,16 @@ describe("Side Effects", () => {
         expect(actions[0]).toEqual(expectedActions[0]);
         expect(actions[1].type).toEqual(expectedActions[1].type);
       });
+  });
+
+  it("logout", () => {
+    const expectedActions = [
+      { type: actionTypes.ME.SUCCESS, me: null },
+    ];
+    const store = mockStore({});
+    store.dispatch(auth.logout());
+    const actions = store.getActions();
+    expect(actions[0]).toEqual(expectedActions[0]);
   });
 
   it("login failure", () => {
@@ -573,7 +601,9 @@ describe("Side Effects", () => {
     return store
       .dispatch(auth.updatePassword("password", "newpassword"))
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
       });
   });
 

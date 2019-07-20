@@ -1,5 +1,17 @@
 version: '3'
 services:
+  app:
+    tty: true
+    build:
+      context: 'app'
+      dockerfile: 'Dockerfile'
+    command: ["yarn", "start"]
+    environment:
+      - PORT=4000
+    ports:
+      - 4000:4000
+    networks:
+      - openelections
   api:
     container_name: apitest
     tty: true # Enables debugging capabilities when attached to this container.
@@ -9,7 +21,7 @@ services:
       dockerfile: 'Dockerfile.development'
 #    volumes:
 #      - ./api:/app
-    command: ["./wait-for-it.sh", "db:5433", "--", "npm", "run", "seedandrun"]
+    command: ["./wait-for-it.sh", "testdb:5433", "--", "npm", "run", "seedandrun"]
     environment:
       - PORT=3000
       - NODE_ENV=test
@@ -42,8 +54,9 @@ services:
   data:
     build:
       context: ./datascience
-    volumes:
-      - ./datascience:/app
+      dockerfile: 'Dockerfile.test'
+#    volumes:
+#      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
