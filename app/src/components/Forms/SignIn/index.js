@@ -28,8 +28,8 @@ const forgotLink = css`
       }
     }
       initialValues={{
-        email: "govadmin@openelectionsportland.org",
-        password: "passwordd" 
+        email: "",
+        password: "" 
       }}
     >
       {({
