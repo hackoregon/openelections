@@ -27,4 +27,15 @@ services:
       - "PORT=3000"
       - "DB_PASSWORD="
       - "SECRET_KEY=bananas"
-
+  data:
+    image: openelections-datascience-production
+    build:
+      context: ./datascience
+      dockerfile: 'Dockerfile.production'
+    ports: ["8080:80"]
+    environment:
+      - "POSTGRES_USER="
+      - "POSTGRES_PASSWORD="
+      - "POSTGRES_DB="
+      - "POSTGRES_PORT=5432"
+      - "POSTGRES_HOST="
