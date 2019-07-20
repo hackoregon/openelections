@@ -7,6 +7,8 @@ import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
 import { removePermission } from "./permissions";
+import { flashMessage } from "redux-flash";
+import { push } from 'connected-react-router';
 
 export const STATE_KEY = "users";
 
@@ -161,11 +163,16 @@ export function removeUser(
       if (response.status === 200) {
         dispatch(actionCreators.removeUser.success(userId));
         dispatch(removePermission(permissionId));
+        dispatch(flashMessage("User Removed", {props:{variant:'success'}}));
+        dispatch(push('/manage-portal'));
       } else {
         dispatch(actionCreators.removeUser.failure());
+        dispatch(flashMessage("Unable to remove user", {props:{variant:'error'}}));
+        dispatch(push('/manage-portal'));
       }
     } catch (error) {
       dispatch(actionCreators.removeUser.failure(error));
+      dispatch(flashMessage("Unable to remove user - "+ error, {props:{variant:'error'}}));
     }
   };
 }
