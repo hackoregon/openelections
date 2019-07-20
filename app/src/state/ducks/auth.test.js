@@ -70,7 +70,20 @@ describe("Reducer", () => {
       error: ""
     });
   });
-
+  
+  // it("logout", () => {
+  //   expect(
+  //     reducer(undefined, {
+  //       type: actionTypes.LOGIN.SUCCESS,
+  //       me: null
+  //     })
+  //   ).toEqual({
+  //     me: null,
+  //     isLoading: false,
+  //     error: null
+  //   });
+  // });
+  
   it("me", () => {
     expect(
       reducer(undefined, {
@@ -454,6 +467,16 @@ describe("Side Effects", () => {
       });
   });
 
+  it("logout", () => {
+    const expectedActions = [
+      { type: actionTypes.ME.SUCCESS, me: null },
+    ];
+    const store = mockStore({});
+    store.dispatch(auth.logout());
+    const actions = store.getActions();
+    expect(actions[0]).toEqual(expectedActions[0]);
+  });
+
   it("login failure", () => {
     const expectedActions = [
       { type: actionTypes.LOGIN.REQUEST },
@@ -578,7 +601,9 @@ describe("Side Effects", () => {
     return store
       .dispatch(auth.updatePassword("password", "newpassword"))
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
       });
   });
 
