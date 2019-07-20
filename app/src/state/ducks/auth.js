@@ -6,6 +6,10 @@ import action from "../utils/action";
 import * as campaigns from './campaigns';
 import * as governments from './governments';
 import { push } from 'connected-react-router';
+import { flashMessage } from "redux-flash";
+
+
+// Export State Key
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -240,11 +244,18 @@ export function updatePassword(password, newPassword) {
     dispatch(actionCreators.updatePassword.request());
     try {
       const { status } = await api.updatePassword(password, newPassword);
-      status === 204
-        ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+      if(status === 204) {
+        dispatch(actionCreators.updatePassword.success());
+        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+        dispatch(logout());
+      }else{
+        dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+        dispatch(flashMessage("Password update failed", {props:{variant:'error'}}));
+      }
+
     } catch (error) {
       dispatch(actionCreators.updatePassword.failure(error));
+      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
     }
   };
 }
