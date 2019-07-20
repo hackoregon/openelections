@@ -65,7 +65,15 @@ class DonorMatch(Resource):
             print(traceback.format_exc())
 
 
+class Status(Resource):
+
+    def get(self) -> dict:
+        return "healthy"
+
+
 api.add_resource(DonorMatch, '/match')
+
+api.add_resource(Status, '/status')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
