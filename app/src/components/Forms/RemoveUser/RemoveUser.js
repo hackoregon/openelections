@@ -7,7 +7,8 @@ import FormModal from "../../FormModal/FormModal";
 import { css, jsx } from "@emotion/core";
 
 const removeUserStyle = css`
-  padding: 40px;
+  word-break: break-word;
+  max-width:300px;
 `;
 const buttonContainer = css`
   display: flex;
@@ -17,7 +18,7 @@ const buttonContainer = css`
   }
 `;
 const removeUserTitle = css`
-  font-size: 20px;
+  font-size: 36px;
 `;
 
 const RemoveUser = (props) => {
