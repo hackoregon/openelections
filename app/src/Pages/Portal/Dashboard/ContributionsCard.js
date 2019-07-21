@@ -24,7 +24,7 @@ const styles = css`
 	@media ${ mediaQueryRanges.mediumAndUp } {
 		display: flex;
 
-		.panel:first-child {
+		.panel:first-of-type {
 			flex: 3;
 		}
 		
