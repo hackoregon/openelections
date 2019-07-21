@@ -61,7 +61,7 @@ const ManageUserPage = props => {
           )}
         </div>
         <div className="manage-user-role" css={divSpacer}>
-          <h2>Mangage Role</h2>
+          <h2>Manage Role</h2>
         </div>
         <div className="remove-user">
           <Button
