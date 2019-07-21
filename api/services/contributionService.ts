@@ -3,11 +3,11 @@ import {
     Contribution,
     ContributionStatus,
     ContributionSubType,
+    contributionSummaryFields,
     ContributionType,
     ContributorType,
-    IContributionSummary,
     getContributionsByGovernmentIdAsync,
-    contributionSummaryFields
+    IContributionSummary
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -187,13 +187,8 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
     }
 }
 
-export interface IGetContributionByIdOptions {
-    currentUserId?: number;
-    campaignId?: number;
-}
-
-export interface IGetContributionByIdAttrs extends IGetContributionByIdOptions {
-    governmentId: number;
+export interface IGetContributionByIdAttrs {
+    currentUserId: number;
     contributionId: number;
 }
 
@@ -201,27 +196,54 @@ export async function getContributionByIdAsync(
     contributionAttrs: IGetContributionByIdAttrs
 ): Promise<IContributionSummary> {
     try {
-        const { contributionId, governmentId, ...options } = contributionAttrs;
-        if (options.campaignId) {
-            const hasCampaignPermissions =
-                (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
-                (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
-                (await isGovernmentAdminAsync(options.currentUserId, governmentId));
-            if (hasCampaignPermissions) {
-                const repository = getConnection('default').getRepository('Contribution');
-                const query = { select: contributionSummaryFields, where: { id: contributionId } };
-                const contribution = await repository.findOne(query);
-                return (contribution as unknown) as IContributionSummary;
-            }
-            throw new Error('User is not permitted to get contributions for this campaign');
-        } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
-            throw new Error('Must be a government admin to query all contributions');
+        const { contributionId, currentUserId } = contributionAttrs;
+        const contributionRepository = getConnection('default').getRepository('Contribution');
+        let contribution = (await contributionRepository.findOneOrFail(contributionId, {
+            relations: ['campaign', 'government']
+        })) as Contribution;
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(currentUserId, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(currentUserId, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(currentUserId, contribution.government.id));
+        if (hasCampaignPermissions) {
+            contribution = (await contributionRepository.findOne({
+                select: contributionSummaryFields,
+                where: {id: contributionId},
+                relations: ['campaign', 'government']
+            })) as Contribution;
+        } else {
+            throw new Error('User does not have permissions');
         }
-        const repository = getConnection('default').getRepository('Contribution');
-        const query = { select: contributionSummaryFields, where: { id: contributionId } };
-        const contribution = await repository.findOne(query);
-        return (contribution as unknown) as IContributionSummary;
+        return (contribution as IContributionSummary);
     } catch (e) {
         throw new Error(e.message);
+    }
+}
+
+export interface IArchiveContributionByIdOptions {
+    currentUserId: number;
+    contributionId: number;
+}
+
+export async function archiveContributionAsync(contrAttrs: IArchiveContributionByIdOptions) {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+        const contribution = (await contributionRepository.findOneOrFail(contrAttrs.contributionId, {
+            relations: ['campaign', 'government']
+        })) as Contribution;
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(contrAttrs.currentUserId, contribution.government.id));
+        if (hasCampaignPermissions && contribution.status === ContributionStatus.DRAFT) {
+            contribution.status = ContributionStatus.ARCHIVED;
+            await contributionRepository.save(contribution);
+            return getContributionByIdAsync(contrAttrs);
+        } else {
+            throw new Error('Contribution must have status of Draft to be Archived');
+        }
+    } catch (error) {
+        throw new Error(error.message);
     }
 }
