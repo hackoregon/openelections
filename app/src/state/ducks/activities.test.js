@@ -96,7 +96,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
@@ -106,7 +106,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",

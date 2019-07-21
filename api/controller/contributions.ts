@@ -6,7 +6,7 @@ import {
     IAddContributionAttrs,
     addContributionAsync,
     IGetContributionByIdAttrs,
-    getContributionByIdAsync
+    getContributionByIdAsync, archiveContributionAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean, IsBooleanString } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -283,19 +283,20 @@ export async function addContribution(request: IRequest, response: Response, nex
     }
 }
 
-export class GetContributionByIdDto implements IGetContributionByIdAttrs {
-    governmentId: number;
+export class GetContributionByIdDto {
+
+    @IsNumber()
     contributionId: number;
-    currentUserId?: number;
-    campaignId?: number;
+
+    @IsNumber()
+    currentUserId: number;
 }
 
 export async function getContributionById(request: IRequest, response: Response, next: Function) {
     try {
         checkCurrentUser(request);
         const getContributionByIdDto = Object.assign(new GetContributionByIdDto(), {
-            ...request.body,
-            contributionId: request.params.id,
+            contributionId: parseInt(request.params.id),
             currentUserId: request.currentUser.id
         });
         await checkDto(getContributionByIdDto);
@@ -305,3 +306,29 @@ export async function getContributionById(request: IRequest, response: Response,
         return response.status(422).json({ message: err.message });
     }
 }
+
+export class ArchiveContributionDto {
+
+    @IsNumber()
+    currentUserId: number;
+
+    @IsNumber()
+    contributionId: number;
+
+}
+
+export async function archiveContribution(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const archiveContributionDto = Object.assign(new ArchiveContributionDto(), {
+            contributionId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(archiveContributionDto);
+        const contribution = await archiveContributionAsync(archiveContributionDto);
+        return response.status(200).json(contribution);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+

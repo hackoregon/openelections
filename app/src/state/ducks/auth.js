@@ -134,16 +134,16 @@ export function me() {
       if (me && me.permissions) {
         const campaignPermission = me.permissions.filter( (permission) => {
           return permission.type = 'campaign'
-        })
+        });
         if (campaignPermission.length) {
-          dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].id))
+          dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].campaignId))
         }
 
         const govPermission = me.permissions.filter( (permission) => {
           return permission.type = 'government'
-        })
+        });
         if (govPermission.length) {
-          dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].id))
+          dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].governmentId))
         }
       }
       dispatch(actionCreators.me.success(me));
@@ -161,7 +161,7 @@ export function login(email, password) {
       await api.login(email, password)
       .then(response => {
         if (response.status === 204) {
-          dispatch(actionCreators.login.success())
+          dispatch(actionCreators.login.success());
           dispatch(me());
         } else {
           dispatch(actionCreators.login.failure(true));

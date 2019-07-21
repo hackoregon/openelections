@@ -525,7 +525,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.GOVERNMENT_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.GOVERNMENT);
-            expect(decodedToken.permissions[0].id).to.equal(government.id);
+            expect(decodedToken.permissions[0].governmentId).to.equal(government.id);
         });
 
         it('campaign admin', async () => {
@@ -539,7 +539,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
-            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
         });
 
         it('campaign staff', async () => {
@@ -553,7 +553,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_STAFF);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
-            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
         });
     });
 

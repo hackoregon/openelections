@@ -12,7 +12,8 @@ export const actionTypes = {
   CREATE_CONTRIBUTION: createActionTypes(STATE_KEY, "CREATE_CONTRIBUTION"),
   UPDATE_CONTRIBUTION: createActionTypes(STATE_KEY, "UPDATE_CONTRIBUTION"),
   GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS"),
-  GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID")
+  GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID"),
+  ARCHIVE_CONTRIBUTION: createActionTypes(STATE_KEY, "ARCHIVE_CONTRIBUTION"),
 };
 
 // Initial State
@@ -61,7 +62,16 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
+  [actionTypes.ARCHIVE_CONTRIBUTION.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true};
+  },
+  [actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS]: (state) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.ARCHIVE_CONTRIBUTION.FAILURE]: (state) => {
+  return { ...state, isLoading: false , error: action.error };
+}
 });
 
 // Action Creators
@@ -86,6 +96,12 @@ export const actionCreators = {
     success: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS),
     failure: error =>
       action(actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE, { error })
+  },
+  archiveContribution: {
+    request: () => action(actionTypes.ARCHIVE_CONTRIBUTION.REQUEST),
+    success: () => action(actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS),
+    failure: error =>
+      action(actionTypes.ARCHIVE_CONTRIBUTION.FAILURE, { error })
   }
 };
 
@@ -142,11 +158,11 @@ export function getContributions(contributionSearchAttrs) {
   };
 }
 
-export function getContributionById(contributionByIdAttrs) {
+export function getContributionById(id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributionById.request());
     try {
-      const response = await api.getContributionById(contributionByIdAttrs);
+      const response = await api.getContributionById(id);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
@@ -156,6 +172,24 @@ export function getContributionById(contributionByIdAttrs) {
       }
     } catch (error) {
       dispatch(actionCreators.getContributionById.failure(error));
+    }
+  };
+}
+
+export function archiveContribution(id) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.archiveContribution.request());
+    try {
+      const response = await api.archiveContribution(id);
+      if (response.status === 200) {
+        const data = normalize(await response.json(), schema.contribution);
+        dispatch(addEntities(data.entities));
+        dispatch(actionCreators.archiveContribution.success());
+      } else {
+        dispatch(actionCreators.archiveContribution.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.archiveContribution.failure(error));
     }
   };
 }

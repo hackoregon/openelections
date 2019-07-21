@@ -298,7 +298,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
@@ -308,7 +308,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
@@ -439,12 +439,22 @@ describe("Side Effects", () => {
 
   it("remove user success", async () => {
     process.env.TOKEN = govAdminToken;
-    const token = api.decodeToken(campaignStaffToken);
-    const userId = token.id
-    const permissionId = token.permissions[0].id
+    const tokenResponse = await api.login(
+      "campaignstaff+removeme2@openelectionsportland.org",
+      "password"
+    );
+
+    const token = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+
+    const user = api.decodeToken(token);
+
+    const permissionId = user.permissions[0].id;
+
     const expectedActions = [
       { type: actionTypes.REMOVE_USER.REQUEST },
-      { type: actionTypes.REMOVE_USER.SUCCESS, userId  },
+      { type: actionTypes.REMOVE_USER.SUCCESS, userId: user.id  },
       { type: permissions.actionTypes.REMOVE_PERMISSION.SUCCESS, permissionId }
     ];
     const store = mockStore({});
@@ -452,7 +462,7 @@ describe("Side Effects", () => {
 
     return store
       .dispatch(
-        users.removeUser(userId, permissionId)
+        users.removeUser(user.id, permissionId)
       )
       .then(() => {
         const actions = store.getActions();
