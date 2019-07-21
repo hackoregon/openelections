@@ -431,7 +431,9 @@ describe("Side Effects", () => {
         users.removeUser(token.id, token.permissions[0].id)
       )
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
       });
   });
 
@@ -453,7 +455,10 @@ describe("Side Effects", () => {
         users.removeUser(userId, permissionId)
       )
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
+        expect(actions[2]).toEqual(expectedActions[2]);
       });
   });
 
