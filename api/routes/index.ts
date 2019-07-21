@@ -462,6 +462,34 @@ export const AppRoutes = [
 
     /**
      * @swagger
+     * /contributions/{id}:
+     *   delete:
+     *     summary: Archive a contribution
+     *     tags:
+     *       - Contributions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/:id',
+        method: 'delete',
+        action: contributions.archiveContribution
+    },
+
+    /**
+     * @swagger
      * /contributions/new:
      *   post:
      *     summary: Add a contribution
@@ -527,7 +555,7 @@ export const AppRoutes = [
     /**
      * @swagger
      * /contributions/{id}:
-     *   post:
+     *   get:
      *     summary: Get a contribution
      *     tags:
      *       - Contribution
@@ -535,8 +563,6 @@ export const AppRoutes = [
      *       - cookieAuth: []
      *     produces:
      *       - application/json
-     *     requestBody:
-     *       $ref: '#/components/requestBodies/GetContributionByIdBody'
      *     responses:
      *       200:
      *         description: get response
@@ -550,7 +576,7 @@ export const AppRoutes = [
      */
     {
         path: '/contributions/:id',
-        method: 'post',
+        method: 'get',
         action: contributions.getContributionById
     },
     {

@@ -107,7 +107,7 @@ export function resendInvite(userId) {
 }
 
 export function removePermission(permissionId) {
-  return deletRequest(`${baseUrl()}/permissions/${permissionId}`);
+  return deleteRequest(`${baseUrl()}/permissions/${permissionId}`);
 }
 
 export function redeemInvite(invitationCode, password, firstName, lastName) {
@@ -205,10 +205,17 @@ export function getContributions(contributionSearchAttrs) {
 
 //   path: '/contributions/{id}',
 //   method: 'post',
-export function getContributionById(contributionByIdAttrs) {
-  return post(
-    `${baseUrl()}/contributions/${contributionByIdAttrs.id}`,
-    contributionByIdAttrs
+export function getContributionById(id) {
+  return get(
+    `${baseUrl()}/contributions/${id}`
+  );
+}
+
+//   path: '/contributions/{id}',
+//   method: 'delete',
+export function archiveContribution(id) {
+  return deleteRequest(
+    `${baseUrl()}/contributions/${id}`
   );
 }
 
@@ -228,7 +235,7 @@ export function post(url, data) {
   });
 }
 
-export function deletRequest(url) {
+export function deleteRequest(url) {
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json"

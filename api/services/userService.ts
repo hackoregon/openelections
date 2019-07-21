@@ -24,7 +24,7 @@ export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
     const user = new User();
     user.firstName = userAttrs.firstName;
     user.lastName = userAttrs.lastName;
-    user.email = userAttrs.email;
+    user.email = userAttrs.email.toLowerCase();
     if (userAttrs.password) {
         user.setPassword(userAttrs.password);
         user.userStatus = UserStatus.ACTIVE;

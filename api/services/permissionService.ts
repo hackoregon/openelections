@@ -227,7 +227,9 @@ export interface IToken {
     permissions: {
         id: number,
         type: PermissionEntity,
-        role: UserRole
+        role: UserRole,
+        campaignId?: number,
+        governmentId?: number
     }[];
 }
 
@@ -257,13 +259,15 @@ export async function createTokenObjectAsync(userId: number): Promise<IToken> {
                 return {
                     role: item.permission_role,
                     type: PermissionEntity.CAMPAIGN,
-                    id: item.permission_campaignId
+                    id: item.permission_id,
+                    campaignId: item.permission_campaignId
                 };
             } else if (item.permission_governmentId) {
                 return {
                     role: item.permission_role,
                     type: PermissionEntity.GOVERNMENT,
-                    id: item.permission_governmentId
+                    id: item.permission_id,
+                    governmentId: item.permission_governmentId
                 };
             }
         })
