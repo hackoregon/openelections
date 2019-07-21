@@ -7,7 +7,6 @@ export default connect(
   dispatch => {
     return {
       showModal: payload => {
-        console.log(payload);
         dispatch(showModal(payload));
       }
     };

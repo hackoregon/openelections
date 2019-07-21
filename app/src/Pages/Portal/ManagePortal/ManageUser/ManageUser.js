@@ -43,7 +43,6 @@ const ManageUserPage = props => {
         <div className="manage-user-intro">
           <h1>User Name</h1>
           <p>{email}</p>
-          {console.log("userStatus", userStatus)}
           {userStatus === "invited" && (
             <React.Fragment>
               <p className="fine-print" css={finePrint}>
