@@ -149,6 +149,7 @@ export function me() {
       dispatch(actionCreators.me.success(me));
     } catch (error) {
       dispatch(actionCreators.me.failure(error));
+      dispatch(push('/sign-in'));
     }
   };
 }
@@ -163,12 +164,16 @@ export function login(email, password) {
         if (response.status === 204) {
           dispatch(actionCreators.login.success())
           dispatch(me());
+          dispatch(flashMessage('Signin Success', {props:{variant:'success'}}));
+          dispatch(push('/dashboard'));
         } else {
           dispatch(actionCreators.login.failure(true));
+          dispatch(flashMessage("Signin Error", {props:{variant:'error'}}));
         }
       })
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
+      dispatch(flashMessage("Signin Error - " + error, {props:{variant:'error'}}));
     }
   };
 }
@@ -262,7 +267,7 @@ export function updatePassword(password, newPassword) {
 
 export function redirectToLogin() {
   return async (dispatch, getState, { api }) => {
-    dispatch(push('/sign-in'))
+    dispatch(me());
   }
 }
 
