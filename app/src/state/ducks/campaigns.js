@@ -83,7 +83,7 @@ export const getCampaignInfo = createSelector(
 );
 
 export const getCampaignName = state => {
-  return getCampaignInfo(state).name
-    ? getCampaignInfo(state).name
-    : "No Campaign Name";
+  return getCampaignInfo(state).currentCampaignId
+    ? getCampaignInfo(state).currentCampaignId
+    : null;
 };
