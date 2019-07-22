@@ -39,7 +39,6 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
         <div className="manage-users-container">
           <div className="manage-users-table">
             <Table
-            dasdsad={console.log(userList)}
               isLoading={isLoading}
               title={`Users (${isLoading ? 'Loading' : userList.length})`}
               columns={columnInfo}

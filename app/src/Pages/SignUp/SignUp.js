@@ -1,21 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import queryString from "query-string";
-import { flashMessage } from "redux-flash";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import SignUpForm from "../../components/Forms/SignUp/index";
 import { connect } from "react-redux";
-import { redeemInvite, isLoggedIn } from "../../state/ducks/auth";
+import { redeemInvite } from "../../state/ducks/auth";
 
-class SignUp extends Component {
-  componentDidUpdate() {
-    const { isLoggedIn, authError, flashMessage, history } = this.props;
-    if (isLoggedIn) {
-      flashMessage("Signup Success", { props: { variant: "success" } }); // Todo, implement success
-      history.push("/dashboard");
-    } else if (authError) {
-      flashMessage("Signup Error", { props: { variant: "error" } }); //Todo, implement failure
-    }
-  }
+class SignUp extends React.Component {
 
   render() {
     const { location } = this.props;
@@ -30,17 +20,10 @@ class SignUp extends Component {
 }
 
 export default connect(
-  state => ({
-    isLoggedIn: isLoggedIn(state) || false,
-    authError: state.auth.error
-  }),
+  state => ({}),
   dispatch => {
     return {
-      redeemInvite: (invitationCode, password) =>
-        dispatch(redeemInvite(invitationCode, password)),
-      flashMessage: (message, options) =>
-        dispatch(flashMessage(message, options)),
-      dispatch
+      redeemInvite: (invitationCode, password) => dispatch(redeemInvite(invitationCode, password))
     };
   }
 )(SignUp);
