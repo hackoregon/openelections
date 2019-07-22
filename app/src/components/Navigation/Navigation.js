@@ -22,8 +22,7 @@ const Navigation = ({isLoggedIn, logOut}) => {
   };
   return (
     <nav css={styles}>
-      <NavLink to="/about">About</NavLink>
-      <NavLink to="/sandbox">Sandbox</NavLink>
+      {/*<NavLink to="/sandbox">Sandbox</NavLink>*/}
       <NavLink to="/portal">Portal</NavLink>
       {!isLoggedIn && <NavLink to="/sign-in">Sign in</NavLink>}
       {isLoggedIn && <a href="" onClick={logOutClick}>Log out</a>}
