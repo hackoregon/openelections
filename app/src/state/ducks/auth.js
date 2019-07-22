@@ -163,12 +163,16 @@ export function login(email, password) {
         if (response.status === 204) {
           dispatch(actionCreators.login.success());
           dispatch(me());
+          dispatch(flashMessage('Signin Success', {props:{variant:'success'}}));
+          dispatch(push('/dashboard'));
         } else {
           dispatch(actionCreators.login.failure(true));
+          dispatch(flashMessage("Signin Error", {props:{variant:'error'}}));
         }
       })
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
+      dispatch(flashMessage("Signin Error - " + error, {props:{variant:'error'}}));
     }
   };
 }
@@ -191,11 +195,17 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
         firstName,
         lastName
       );
-      status === 204
-        ? dispatch(actionCreators.redeemInvite.success())
-        : dispatch(actionCreators.redeemInvite.failure());
+      if (status === 204){
+        dispatch(actionCreators.redeemInvite.success());
+        dispatch(flashMessage("Signup Success", { props: { variant: "success" } }));
+        dispatch(push("/sign-in"));
+      }else{
+        dispatch(actionCreators.redeemInvite.failure());
+        dispatch(flashMessage("Signup Error", { props: { variant: "error" } })); 
+      }
     } catch (error) {
-      dispatch(actionCreators.redeemInvite.failure(error));
+        dispatch(actionCreators.redeemInvite.failure(error));
+        dispatch(flashMessage("Signup Error - " + error, { props: { variant: "error" } })); 
     }
   };
 }
@@ -262,7 +272,7 @@ export function updatePassword(password, newPassword) {
 
 export function redirectToLogin() {
   return async (dispatch, getState, { api }) => {
-    dispatch(push('/sign-in'))
+    dispatch(push('/sign-in'));
   }
 }
 
