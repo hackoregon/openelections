@@ -46,7 +46,8 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "flow": "flow"
+    "flow": "flow",
+    "lint": "eslint"
   },
   "jest": {
     "setupFiles": [
@@ -81,6 +82,8 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.0",
     "enzyme-to-json": "^3.3.5",
+    "eslint": "^6.1.0",
+    "eslint-plugin-react": "^7.14.2",
     "fetch-vcr": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
     "react-test-renderer": "^16.8.6",
