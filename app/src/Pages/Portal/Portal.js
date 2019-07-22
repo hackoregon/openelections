@@ -45,15 +45,7 @@ const Portal = props => {
     <PageHoc>
       <div css={styles} className={"portal-wrapper"}>
         <aside className={"sidebar-wrapper"}>
-          <Sidebar
-            links={[
-              { url: "/dashboard", label: "Dashboard" },
-              { url: "/contributions", label: "Contributions" },
-              { url: "/expenses", label: "Expenses" },
-              { url: "/visualize", label: "Visualize" },
-              { url: "/manage-portal", label: "Manage Portal" }
-            ]}
-          />
+          <Sidebar />
         </aside>
         <main className={"content-wrapper"}>
           <WithPermissions>

@@ -42,10 +42,19 @@ const styles = css`
   }
 `;
 
-const Sidebar = ({ links, campaignName }) => {
+const Sidebar = ({ governmentId, campaignName }) => {
+    const links = [
+        { url: "/dashboard", label: "Dashboard" },
+        { url: "/contributions", label: "Contributions" },
+        { url: "/expenses", label: "Expenses" },
+        { url: "/visualize", label: "Visualize" },
+        { url: "/visualize", label: "Visualize" },
+        ...((governmentId) ? [{ url: "/campaigns", label: "Campaigns" }] : []),
+        { url: "/manage-portal", label: "Manage Portal" }
+    ];
   return (
     <div css={styles}>
-      <h2 className={"campaign-name"}>{campaignName}</h2>
+      <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : campaignName}</h2>
       <ul>
         {links.map(link => (
           <li key={link.url}>
