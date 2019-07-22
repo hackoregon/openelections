@@ -199,7 +199,7 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
       if (status === 204){
         dispatch(actionCreators.redeemInvite.success());
         dispatch(flashMessage("Signup Success", { props: { variant: "success" } }));
-        dispatch(push("/dashboard"));
+        dispatch(push("/sign-in"));
       }else{
         dispatch(actionCreators.redeemInvite.failure());
         dispatch(flashMessage("Signup Error", { props: { variant: "error" } })); 
