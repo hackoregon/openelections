@@ -149,7 +149,6 @@ export function me() {
       dispatch(actionCreators.me.success(me));
     } catch (error) {
       dispatch(actionCreators.me.failure(error));
-      dispatch(push('/sign-in'));
     }
   };
 }
@@ -273,7 +272,7 @@ export function updatePassword(password, newPassword) {
 
 export function redirectToLogin() {
   return async (dispatch, getState, { api }) => {
-    dispatch(me());
+    dispatch(push('/sign-in'));
   }
 }
 
