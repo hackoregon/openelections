@@ -56,14 +56,17 @@ describe("Reducer", () => {
 
   it("sets current campaign", () => {
     expect(
-      reducer({
-        currentCampaignId: null,
-        isLoading: false,
-        error: null
-      }, {
-        type: actionTypes.SET_CAMPAIGN.SUCCESS,
-        campaignId: 1
-      })
+      reducer(
+        {
+          currentCampaignId: null,
+          isLoading: false,
+          error: null
+        },
+        {
+          type: actionTypes.SET_CAMPAIGN.SUCCESS,
+          campaignId: 1
+        }
+      )
     ).toEqual({
       currentCampaignId: 1,
       isLoading: false,
@@ -153,9 +156,9 @@ describe("Side Effects", () => {
     return store
       .dispatch(
         campaigns.createCampaignForGovernment({
-            governmentId,
-            name: "Test New Gov Campaign",
-            officeSought: 'Mayor'
+          governmentId,
+          name: "Test New Gov Campaign",
+          officeSought: "Mayor"
         })
       )
       .then(() => {
@@ -164,5 +167,23 @@ describe("Side Effects", () => {
         expect(actions[1].type).toEqual(expectedActions[1].type);
         expect(actions[2].type).toEqual(expectedActions[2].type);
       });
+  });
+
+  it("gets campaigns", async () => {
+    const expectedActions = [
+      { type: actionTypes.GET_CAMPAIGNS.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.GET_CAMPAIGNS.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = govAdminToken;
+
+    return store.dispatch(campaigns.getCampaigns(governmentId)).then(() => {
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual(expectedActions[0].type);
+      expect(actions[1].type).toEqual(expectedActions[1].type);
+      expect(actions[2].type).toEqual(expectedActions[2].type);
+    });
   });
 });

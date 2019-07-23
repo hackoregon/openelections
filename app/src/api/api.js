@@ -206,17 +206,13 @@ export function getContributions(contributionSearchAttrs) {
 //   path: '/contributions/{id}',
 //   method: 'post',
 export function getContributionById(id) {
-  return get(
-    `${baseUrl()}/contributions/${id}`
-  );
+  return get(`${baseUrl()}/contributions/${id}`);
 }
 
 //   path: '/contributions/{id}',
 //   method: 'delete',
 export function archiveContribution(id) {
-  return deleteRequest(
-    `${baseUrl()}/contributions/${id}`
-  );
+  return deleteRequest(`${baseUrl()}/contributions/${id}`);
 }
 
 export function post(url, data) {
