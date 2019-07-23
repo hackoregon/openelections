@@ -6,6 +6,10 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
+import { removePermission } from "./permissions";
+import { flashMessage } from "redux-flash";
+import { push } from 'connected-react-router';
+import { clearModal } from "./modal";
 
 export const STATE_KEY = "users";
 
@@ -14,7 +18,8 @@ export const actionTypes = {
   INVITE_USER: createActionTypes(STATE_KEY, "INVITE_USER"),
   RESEND_USER_INVITE: createActionTypes(STATE_KEY, "RESEND_USER_INVITE"),
   GET_GOVERNMENT_USERS: createActionTypes(STATE_KEY, "GET_GOVERNMENT_USERS"),
-  GET_CAMPAIGN_USERS: createActionTypes(STATE_KEY, "GET_CAMPAIGN_USERS")
+  GET_CAMPAIGN_USERS: createActionTypes(STATE_KEY, "GET_CAMPAIGN_USERS"),
+  REMOVE_USER: createActionTypes(STATE_KEY, "REMOVE_USER")
 };
 
 // Initial State
@@ -63,7 +68,18 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_CAMPAIGN_USERS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
+  [actionTypes.REMOVE_USER.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true, error: action.error || null };
+  },
+  [actionTypes.REMOVE_USER.SUCCESS]: (state, action) => {
+    const newState = {...state, isLoading: false};
+    delete newState[action.userId];
+    return newState;
+  },
+  [actionTypes.REMOVE_USER.FAILURE]: (state, action) => {
+  return { ...state, isLoading: false, error: action.error };
+}
 });
 
 // Action Creators
@@ -88,6 +104,11 @@ export const actionCreators = {
     request: () => action(actionTypes.GET_CAMPAIGN_USERS.REQUEST),
     success: () => action(actionTypes.GET_CAMPAIGN_USERS.SUCCESS),
     failure: error => action(actionTypes.GET_CAMPAIGN_USERS.FAILURE, { error })
+  },
+  removeUser: {
+    request: () => action(actionTypes.REMOVE_USER.REQUEST),
+    success: (userId) => action(actionTypes.REMOVE_USER.SUCCESS, { userId }),
+    failure: error => action(actionTypes.REMOVE_USER.FAILURE, { error })
   }
 };
 
@@ -127,6 +148,34 @@ export function inviteUser(
       }
     } catch (error) {
       dispatch(actionCreators.inviteUser.failure(error));
+    }
+  };
+}
+
+export function removeUser(
+  userId, permissionId
+) {
+  return async (dispatch, getState, { api }) => {
+    dispatch(actionCreators.removeUser.request());
+    try {
+      const response = await api.removePermission(
+        permissionId
+      );
+      if (response.status === 200) {
+        dispatch(actionCreators.removeUser.success(userId));
+        dispatch(removePermission(permissionId));
+        dispatch(flashMessage("User Removed", {props:{variant:'success'}}));
+        dispatch(push('/manage-portal'));
+        dispatch(clearModal());
+      } else {
+        dispatch(actionCreators.removeUser.failure());
+        dispatch(flashMessage("Unable to remove user", {props:{variant:'error'}}));
+        dispatch(clearModal());
+      }
+    } catch (error) {
+      dispatch(actionCreators.removeUser.failure(error));
+      dispatch(flashMessage("Unable to remove user - "+ error, {props:{variant:'error'}}));
+      dispatch(clearModal());
     }
   };
 }
@@ -184,6 +233,7 @@ export const getUsers = createSelector(
       .map(perm => {
         const userAndRole = { ...state.users[perm.user] };
         userAndRole.role = startCase(perm.role);
+        userAndRole.roleId = perm.id;
         return userAndRole;
       })
 );

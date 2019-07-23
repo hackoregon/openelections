@@ -3,7 +3,6 @@ import thunk from "redux-thunk";
 import * as campaigns from "./campaigns";
 import * as api from "../../api";
 import * as schema from "../../api/schema";
-import { UserRoleEnum } from "../../api";
 import { ADD_ENTITIES } from "./common";
 
 const { actionTypes, actionCreators } = campaigns;
@@ -31,6 +30,7 @@ describe("Reducer", () => {
   const reducer = campaigns.default;
   it("initial state", () => {
     expect(reducer(undefined, {})).toEqual({
+      currentCampaignId: null,
       isLoading: false,
       error: null
     });
@@ -48,6 +48,24 @@ describe("Reducer", () => {
       })
     ).toEqual({
       "1": {},
+      currentCampaignId: null,
+      isLoading: false,
+      error: null
+    });
+  });
+
+  it("sets current campaign", () => {
+    expect(
+      reducer({
+        currentCampaignId: null,
+        isLoading: false,
+        error: null
+      }, {
+        type: actionTypes.SET_CAMPAIGN.SUCCESS,
+        campaignId: 1
+      })
+    ).toEqual({
+      currentCampaignId: 1,
       isLoading: false,
       error: null
     });
@@ -73,6 +91,13 @@ describe("Action Creators", () => {
     };
     expect(actionCreators.createCampaign.failure()).toEqual(expectedAction);
   });
+  it("set campaign success", () => {
+    const expectedAction = {
+      type: actionTypes.SET_CAMPAIGN.SUCCESS,
+      campaignId: 1
+    };
+    expect(actionCreators.setCampaign.success(1)).toEqual(expectedAction);
+  });
 });
 
 let govAdminToken;
@@ -90,7 +115,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
@@ -100,7 +125,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
@@ -115,7 +140,7 @@ describe("Side Effects", () => {
     delete process.env.TOKEN;
   });
 
-  it("creates campaign for government", async () => {
+  it("creates campaign for government testme", async () => {
     const expectedActions = [
       { type: actionTypes.CREATE_CAMPAIGN.REQUEST },
       { type: ADD_ENTITIES },

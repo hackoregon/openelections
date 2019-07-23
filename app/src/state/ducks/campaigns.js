@@ -10,13 +10,15 @@ export const STATE_KEY = "campaigns";
 
 // Action Types
 export const actionTypes = {
-  CREATE_CAMPAIGN: createActionTypes(STATE_KEY, "CREATE_CAMPAIGN")
+  CREATE_CAMPAIGN: createActionTypes(STATE_KEY, "CREATE_CAMPAIGN"),
+  SET_CAMPAIGN: createActionTypes(STATE_KEY, "SET_CAMPAIGN")
 };
 
 // Initial State
 export const initialState = {
   isLoading: false,
-  error: null
+  error: null,
+  currentCampaignId: null
 };
 
 // Reducer
@@ -32,6 +34,9 @@ export default createReducer(initialState, {
   },
   [actionTypes.CREATE_CAMPAIGN.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.SET_CAMPAIGN.SUCCESS]: (state, action) => {
+    return { ...state, currentCampaignId: action.campaignId };
   }
 });
 
@@ -41,6 +46,9 @@ export const actionCreators = {
     request: () => action(actionTypes.CREATE_CAMPAIGN.REQUEST),
     success: () => action(actionTypes.CREATE_CAMPAIGN.SUCCESS),
     failure: error => action(actionTypes.CREATE_CAMPAIGN.FAILURE, { error })
+  },
+  setCampaign: {
+    success: campaignId => action(actionTypes.SET_CAMPAIGN.SUCCESS, { campaignId }),
   }
 };
 
@@ -52,6 +60,7 @@ export function createCampaignForGovernment(campaignAttrs) {
       const response = await api.createCampaignForGovernment(
         campaignAttrs
       );
+      console.log('eys')
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));

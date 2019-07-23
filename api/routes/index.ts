@@ -8,6 +8,7 @@ import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
+import * as permissions from '../controller/permissions';
 
 export const AppRoutes = [
     /**
@@ -90,6 +91,30 @@ export const AppRoutes = [
         path: '/users/invite',
         method: 'post',
         action: users.invite
+    },
+
+    /**
+     * @swagger
+     * /permissions/{id}:
+     *   delete:
+     *     summary: Delete a user access to a campaign or government
+     *     tags:
+     *       - Permissions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: permission removed
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/permissions/:id',
+        method: 'delete',
+        action: permissions.removePermission
     },
 
     /**
@@ -437,6 +462,34 @@ export const AppRoutes = [
 
     /**
      * @swagger
+     * /contributions/{id}:
+     *   delete:
+     *     summary: Archive a contribution
+     *     tags:
+     *       - Contributions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/:id',
+        method: 'delete',
+        action: contributions.archiveContribution
+    },
+
+    /**
+     * @swagger
      * /contributions/new:
      *   post:
      *     summary: Add a contribution
@@ -502,7 +555,7 @@ export const AppRoutes = [
     /**
      * @swagger
      * /contributions/{id}:
-     *   post:
+     *   get:
      *     summary: Get a contribution
      *     tags:
      *       - Contribution
@@ -510,8 +563,6 @@ export const AppRoutes = [
      *       - cookieAuth: []
      *     produces:
      *       - application/json
-     *     requestBody:
-     *       $ref: '#/components/requestBodies/GetContributionByIdBody'
      *     responses:
      *       200:
      *         description: get response
@@ -525,7 +576,7 @@ export const AppRoutes = [
      */
     {
         path: '/contributions/:id',
-        method: 'post',
+        method: 'get',
         action: contributions.getContributionById
     },
     {

@@ -4,10 +4,11 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
-import ManageUserPage from "./ManagePortal/ManageUser/ManageUser";
+import ManageUserPage from "./ManagePortal/ManageUser/index";
 import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
+import WithPermissions from "../../components/WithPermissions"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -55,6 +56,7 @@ const Portal = props => {
           />
         </aside>
         <main className={"content-wrapper"}>
+          <WithPermissions>
           <Route
             render={({ location }) => (
               <>
@@ -96,9 +98,10 @@ const Portal = props => {
               </>
             )}
           />
+          </WithPermissions>
         </main>
       </div>
-      {/* add modal here 
+      {/* add modal here
         TODO: pass open handler and closing through connector
       */}
       <Modal />

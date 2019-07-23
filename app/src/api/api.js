@@ -53,9 +53,11 @@ export function baseUrl() {
   } else if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000";
   } else if (process.env.NODE_ENV === "staging") {
-    return "https://api.qa.openelectinosports.org";
+    return "https://api-qa.openelectionsportland.org";
   } else if (process.env.NODE_ENV === "production") {
-    return "https://api.openelectinosports.org";
+    //Todo: Change for production
+    //return "https://api.openelectionsportland.org";
+    return "https://api-qa.openelectionsportland.org";
   }
 }
 
@@ -102,6 +104,10 @@ export function inviteUsertoCampaign(
 
 export function resendInvite(userId) {
   return post(`${baseUrl()}/users/resend-invite`, { userId });
+}
+
+export function removePermission(permissionId) {
+  return deleteRequest(`${baseUrl()}/permissions/${permissionId}`);
 }
 
 export function redeemInvite(invitationCode, password, firstName, lastName) {
@@ -199,10 +205,17 @@ export function getContributions(contributionSearchAttrs) {
 
 //   path: '/contributions/{id}',
 //   method: 'post',
-export function getContributionById(contributionByIdAttrs) {
-  return post(
-    `${baseUrl()}/contributions/${contributionByIdAttrs.id}`,
-    contributionByIdAttrs
+export function getContributionById(id) {
+  return get(
+    `${baseUrl()}/contributions/${id}`
+  );
+}
+
+//   path: '/contributions/{id}',
+//   method: 'delete',
+export function archiveContribution(id) {
+  return deleteRequest(
+    `${baseUrl()}/contributions/${id}`
   );
 }
 
@@ -218,6 +231,21 @@ export function post(url, data) {
     method: "POST",
     headers,
     body: JSON.stringify(data),
+    credentials: "include"
+  });
+}
+
+export function deleteRequest(url) {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
+  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
+    headers["Cookie"] = `token=${process.env.TOKEN}`;
+  }
+  return fetch(url, {
+    method: "DELETE",
+    headers,
     credentials: "include"
   });
 }

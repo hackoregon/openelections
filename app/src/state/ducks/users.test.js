@@ -1,6 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as users from "./users";
+import * as permissions from "./permissions";
 import * as api from "../../api";
 import * as schema from "../../api/schema";
 import { UserRoleEnum } from "../../api";
@@ -112,6 +113,72 @@ describe("Reducer", () => {
       error: null
     });
   });
+
+  it("removeUser success", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        }
+      }, {
+        type: actionTypes.REMOVE_USER.SUCCESS,
+        userId: 1
+      })
+    ).toEqual({
+      isLoading: false
+    });
+  })
+
+  it("removeUser fail", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        },
+        isLoading: true,
+        error: null
+      }, {
+        type: actionTypes.REMOVE_USER.FAILURE,
+        error: 'an error'
+      })
+    ).toEqual({
+      1: {
+        firstName: 'Dan',
+        lastName: 'Melton',
+        email: 'dan@civicsoftwarefoundation.org',
+      },
+      isLoading: false,
+      error: 'an error'
+    });
+  })
+
+  it("removeUser request", () => {
+    expect(
+      reducer({
+        1: {
+          firstName: 'Dan',
+          lastName: 'Melton',
+          email: 'dan@civicsoftwarefoundation.org',
+        },
+        isLoading: false,
+        error: null
+      }, {
+        type: actionTypes.REMOVE_USER.REQUEST
+      })
+    ).toEqual({
+      1: {
+        firstName: 'Dan',
+        lastName: 'Melton',
+        email: 'dan@civicsoftwarefoundation.org',
+      },
+      isLoading: true,
+      error: null
+    });
+  })
 });
 
 describe("Action Creators", () => {
@@ -190,6 +257,29 @@ describe("Action Creators", () => {
     };
     expect(actionCreators.getCampaignUsers.failure()).toEqual(expectedAction);
   });
+
+  it("removeUser Request", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.REQUEST
+    };
+    expect(actionCreators.removeUser.request()).toEqual(expectedAction);
+  })
+
+  it("removeUser Success", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.SUCCESS,
+      userId: 1
+    };
+    expect(actionCreators.removeUser.success(1)).toEqual(expectedAction);
+  });
+
+  it("removeUser Failure", () => {
+    const expectedAction = {
+      type: actionTypes.REMOVE_USER.FAILURE,
+      error: 'an error message'
+    };
+    expect(actionCreators.removeUser.failure('an error message')).toEqual(expectedAction);
+  });
 });
 
 let govAdminToken;
@@ -197,6 +287,7 @@ let campaignAdminToken;
 let campaignStaffToken;
 let governmentId;
 let campaignId;
+
 describe("Side Effects", () => {
   beforeAll(async () => {
     let tokenResponse = await api.login(
@@ -207,7 +298,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
@@ -217,7 +308,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
@@ -323,6 +414,61 @@ describe("Side Effects", () => {
       )
       .then(() => {
         expect(store.getActions()).toEqual(expectedActions);
+      });
+  });
+
+  it("remove user failure", async () => {
+    const expectedActions = [
+      { type: actionTypes.REMOVE_USER.REQUEST },
+      { type: actionTypes.REMOVE_USER.FAILURE }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignStaffToken;
+    const token = api.decodeToken(campaignStaffToken);
+    return store
+      .dispatch(
+        users.removeUser(token.id, token.permissions[0].id)
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
+      });
+  });
+
+  it("remove user success", async () => {
+    process.env.TOKEN = govAdminToken;
+    const tokenResponse = await api.login(
+      "campaignstaff+removeme2@openelectionsportland.org",
+      "password"
+    );
+
+    const token = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+
+    const user = api.decodeToken(token);
+
+    const permissionId = user.permissions[0].id;
+
+    const expectedActions = [
+      { type: actionTypes.REMOVE_USER.REQUEST },
+      { type: actionTypes.REMOVE_USER.SUCCESS, userId: user.id  },
+      { type: permissions.actionTypes.REMOVE_PERMISSION.SUCCESS, permissionId }
+    ];
+    const store = mockStore({});
+
+
+    return store
+      .dispatch(
+        users.removeUser(user.id, permissionId)
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
+        expect(actions[2]).toEqual(expectedActions[2]);
       });
   });
 

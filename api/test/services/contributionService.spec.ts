@@ -2,18 +2,20 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
-    IAddContributionAttrs,
+    archiveContributionAsync,
+    getContributionByIdAsync,
     getContributionsAsync,
-    updateContributionAsync,
-    getContributionByIdAsync
+    IAddContributionAttrs,
+    updateContributionAsync
 } from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
 import {
+    Contribution,
+    ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType,
-    ContributionStatus
+    ContributorType
 } from '../../models/entity/Contribution';
 import {
     newActiveUserAsync,
@@ -651,7 +653,6 @@ describe('contributionService', () => {
         const contribution = await newContributionAsync(campaign2, government);
         const c = await getContributionByIdAsync({
             contributionId: contribution.id,
-            governmentId: government.id,
             currentUserId: govAdmin.id
         });
         expect(c.id === contribution.id);
@@ -661,8 +662,6 @@ describe('contributionService', () => {
         const contribution = await newContributionAsync(campaign2, government);
         const c = await getContributionByIdAsync({
             contributionId: contribution.id,
-            governmentId: government.id,
-            campaignId: campaign2.id,
             currentUserId: campaignStaff.id
         });
         expect(c.id === contribution.id);
@@ -673,7 +672,6 @@ describe('contributionService', () => {
             const contribution = await newContributionAsync(campaign2, government);
             await getContributionByIdAsync({
                 contributionId: contribution.id,
-                governmentId: government.id,
                 currentUserId: campaignStaff.id
             });
         } catch (err) {
@@ -686,12 +684,64 @@ describe('contributionService', () => {
             const contribution = await newContributionAsync(campaign2, government);
             await getContributionByIdAsync({
                 contributionId: contribution.id,
-                campaignId: campaign1.id,
-                governmentId: government.id,
                 currentUserId: campaignStaff.id
             });
         } catch (err) {
             expect(err.message).to.equal('User is not permitted to get contributions for this campaign');
         }
+    });
+
+    it('archiveContributionAsync success if draft, campaign staff', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        await archiveContributionAsync({currentUserId: campaignStaff.id, contributionId: contribution.id});
+        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+    });
+
+    it('archiveContributionAsync success if draft, government staff', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+    });
+
+    it('archiveContributionAsync success if draft, campaign admin staff', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+    });
+
+    it('archiveContributionAsync fails if processed', async () => {
+        let contribution = await newContributionAsync(campaign2, government);
+        contribution.status = ContributionStatus.PROCESSED;
+        await contributionRepository.save(contribution);
+        contribution = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
+        try {
+            await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+        } catch (error) {
+            expect(error.message).to.equal('Contribution must have status of Draft to be Archived')
+        }
+        const notUpdated = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(notUpdated.status).to.equal(ContributionStatus.PROCESSED);
+    });
+
+    it('archiveContributionAsync fails if submitted', async () => {
+        let contribution = await newContributionAsync(campaign2, government);
+        contribution.status = ContributionStatus.SUBMITTED;
+        await contributionRepository.save(contribution);
+        contribution = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(contribution.status).to.equal(ContributionStatus.SUBMITTED);
+        try {
+            await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+        } catch (error) {
+            expect(error.message).to.equal('Contribution must have status of Draft to be Archived')
+        }
+        const notUpdated = await contributionRepository.findOne(contribution.id) as Contribution;
+        expect(notUpdated.status).to.equal(ContributionStatus.SUBMITTED);
     });
 });

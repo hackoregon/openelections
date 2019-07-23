@@ -49,7 +49,7 @@ In the app directory, you'll have to install the app dependencies (outside of do
 
 ```bash
     cd app
-    npm install
+    yarn install
 ```
 
 ##### Then you can run the api in docker:
@@ -68,7 +68,7 @@ Run the api test suite:
 Run the app test suite:
 
 ```bash
-    cd app && npm run test
+    docker-compose -f docker-compose-test.yml run --rm app yarn test
 ```
 
 Run the datascience api test suite:

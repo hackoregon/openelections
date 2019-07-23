@@ -177,21 +177,30 @@ describe('Permission', () => {
         });
     });
 
-    context('removePermissionsAsync', () => {
+    context('removePermissionsAsync testme', () => {
         it('fails id not found', async () => {
             try {
-                await removePermissionAsync(1100);
+                await removePermissionAsync({permissionId: 1200, userId: 100});
             } catch (e) {
-                expect(e.message).to.equal('Could not find any entity of type "Permission" matching: 1100');
+                expect(e.message).to.equal('Could not find any entity of type "Permission" matching: 1200');
             }
         });
 
-        it('succeeds', async () => {
+        it('govUser succeeds', async () => {
             const count = await permissionRepository.count();
             const newUser = await newActiveUserAsync();
-            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: government.id});
+            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, governmentId: government.id, campaignId: campaign.id});
             expect(await permissionRepository.count()).equal(count + 1);
-            expect(await removePermissionAsync(permission.id)).to.be.true;
+            await removePermissionAsync({permissionId: permission.id, userId: govUser.id});
+            expect(await permissionRepository.count()).equal(count);
+        });
+
+        it('campaignAdmin succeeds', async () => {
+            const count = await permissionRepository.count();
+            const newUser = await newActiveUserAsync();
+            const permission = await addPermissionAsync({userId: newUser.id, role: UserRole.CAMPAIGN_STAFF, campaignId: campaign.id, governmentId: government.id});
+            expect(await permissionRepository.count()).equal(count + 1);
+            await removePermissionAsync({permissionId: permission.id, userId: campaignAdminUser.id});
             expect(await permissionRepository.count()).equal(count);
         });
     });
@@ -516,7 +525,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.GOVERNMENT_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.GOVERNMENT);
-            expect(decodedToken.permissions[0].id).to.equal(government.id);
+            expect(decodedToken.permissions[0].governmentId).to.equal(government.id);
         });
 
         it('campaign admin', async () => {
@@ -530,7 +539,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
-            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
         });
 
         it('campaign staff', async () => {
@@ -544,7 +553,7 @@ describe('Permission', () => {
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_STAFF);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
-            expect(decodedToken.permissions[0].id).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
         });
     });
 

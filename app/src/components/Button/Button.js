@@ -8,7 +8,7 @@ const manageStyle = {
   color: "#5F5FFF"
 };
 
-const primaryOverrides = {
+const formDefaultStyle = {
   backgroundColor: "#5F5FFF",
   textTransform: "none",
   color: "#fff",
@@ -17,6 +17,26 @@ const primaryOverrides = {
   fontWeight: "normal",
   fontSize: "16px",
   lineHeight: "19px"
+}
+
+const formDefaultOutlinedStyle = {
+  border: "1px solid #5F5FFF",
+  color: "#5F5FFF",
+  padding: "10px 20px",
+  textTransform: "none"
+
+};
+
+const primaryOverrides = {
+  backgroundColor: "#5F5FFF",
+  textTransform: "none",
+  color: "#fff",
+  fontFamily: "Rubik",
+  fontStyle: "normal",
+  fontWeight: "normal",
+  fontSize: "16px",
+  lineHeight: "19px",
+  padding: "10px 20px !important"
 };
 
 const remove = {
@@ -36,6 +56,8 @@ const buttonTypes = {
   manage: { type: "button", variant: "outlined", style: manageStyle },
   cancel: { type: "button", variant: "outlined", color: "secondary" },
   default: { type: "button", variant: "contained", color: "primary" },
+  formDefault: { type: "button", variant: "contained", fullWidth: true, style: formDefaultStyle },
+  formDefaultOutlined: { type: "button", variant: "outlined", fullWidth: true, style: formDefaultOutlinedStyle },
   remove: { type: "button", variant: "contained", style: remove, size: "large" }
 };
 

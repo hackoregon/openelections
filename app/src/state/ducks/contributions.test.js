@@ -4,12 +4,10 @@ import * as contributions from "./contributions";
 import * as api from "../../api";
 import * as schema from "../../api/schema";
 import {
-  UserRoleEnum,
   ContributionStatusEnum,
   ContributionSubTypeEnum,
   ContributionTypeEnum,
   ContributorTypeEnum,
-  PhoneTypeEnum
 } from "../../api";
 import { ADD_ENTITIES } from "./common";
 
@@ -43,6 +41,7 @@ describe("Reducer", () => {
       error: null
     });
   });
+
 });
 
 describe("Action Creators", () => {
@@ -64,6 +63,8 @@ describe("Action Creators", () => {
     };
     expect(actionCreators.createContribution.failure()).toEqual(expectedAction);
   });
+
+
 });
 
 let govAdminToken;
@@ -83,7 +84,7 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
@@ -93,7 +94,8 @@ describe("Side Effects", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
+
     campaignAdminId = decodedToken.id;
 
     tokenResponse = await api.login(
@@ -251,12 +253,49 @@ describe("Side Effects", () => {
 
     return store
       .dispatch(
-        contributions.getContributionById({
-          id,
-          governmentId: governmentId,
-          campaignId: campaignId,
-          currentUserId: campaignAdminId
-        })
+        contributions.getContributionById(id)
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
+
+  it("archives contribution by id", async () => {
+    const expectedActions = [
+      { type: actionTypes.ARCHIVE_CONTRIBUTION.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    const contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignAdminId,
+      date: 1562436237619,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    const { id } = await contribution.json();
+
+    return store
+      .dispatch(
+        contributions.archiveContribution(id)
       )
       .then(() => {
         const actions = store.getActions();

@@ -3,6 +3,13 @@ import { createSelector } from "reselect";
 import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
+import * as campaigns from './campaigns';
+import * as governments from './governments';
+import { push } from 'connected-react-router';
+import { flashMessage } from "redux-flash";
+
+
+// Export State Key
 export const STATE_KEY = "auth";
 
 // Action Types
@@ -124,6 +131,21 @@ export function me() {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
+      if (me && me.permissions) {
+        const campaignPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'campaign'
+        });
+        if (campaignPermission.length) {
+          dispatch(campaigns.actionCreators.setCampaign.success(me.permissions[0].campaignId))
+        }
+
+        const govPermission = me.permissions.filter( (permission) => {
+          return permission.type = 'government'
+        });
+        if (govPermission.length) {
+          dispatch(governments.actionCreators.setGovernment.success(me.permissions[0].governmentId))
+        }
+      }
       dispatch(actionCreators.me.success(me));
     } catch (error) {
       dispatch(actionCreators.me.failure(error));
@@ -139,23 +161,30 @@ export function login(email, password) {
       await api.login(email, password)
       .then(response => {
         if (response.status === 204) {
-          dispatch(actionCreators.login.success())
+          dispatch(actionCreators.login.success());
           dispatch(me());
+          dispatch(flashMessage('Signin Success', {props:{variant:'success'}}));
+          dispatch(push('/dashboard'));
         } else {
-          dispatch(actionCreators.login.failure(true)); 
+          dispatch(actionCreators.login.failure(true));
+          dispatch(flashMessage("Signin Error", {props:{variant:'error'}}));
         }
-      })    
+      })
     } catch (error) {
       dispatch(actionCreators.login.failure(error));
+      dispatch(flashMessage("Signin Error - " + error, {props:{variant:'error'}}));
     }
   };
 }
+
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = 'token=; Max-Age=-99999999;';     
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    dispatch(push('/sign-in'))
  };
 }
+
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
@@ -166,11 +195,17 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
         firstName,
         lastName
       );
-      status === 204
-        ? dispatch(actionCreators.redeemInvite.success())
-        : dispatch(actionCreators.redeemInvite.failure());
+      if (status === 204){
+        dispatch(actionCreators.redeemInvite.success());
+        dispatch(flashMessage("Signup Success", { props: { variant: "success" } }));
+        dispatch(push("/sign-in"));
+      }else{
+        dispatch(actionCreators.redeemInvite.failure());
+        dispatch(flashMessage("Signup Error", { props: { variant: "error" } })); 
+      }
     } catch (error) {
-      dispatch(actionCreators.redeemInvite.failure(error));
+        dispatch(actionCreators.redeemInvite.failure(error));
+        dispatch(flashMessage("Signup Error - " + error, { props: { variant: "error" } })); 
     }
   };
 }
@@ -219,22 +254,31 @@ export function updatePassword(password, newPassword) {
     dispatch(actionCreators.updatePassword.request());
     try {
       const { status } = await api.updatePassword(password, newPassword);
-      status === 204
-        ? dispatch(actionCreators.updatePassword.success())
-        : dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+      if(status === 204) {
+        dispatch(actionCreators.updatePassword.success());
+        dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
+        dispatch(logout());
+      }else{
+        dispatch(actionCreators.updatePassword.failure('Update password request failed'));
+        dispatch(flashMessage("Password update failed", {props:{variant:'error'}}));
+      }
+
     } catch (error) {
       dispatch(actionCreators.updatePassword.failure(error));
+      dispatch(flashMessage("Password update failed - " + error, {props:{variant:'error'}}));
     }
   };
 }
 
+export function redirectToLogin() {
+  return async (dispatch, getState, { api }) => {
+    dispatch(push('/sign-in'));
+  }
+}
+
 // Selectors
 export const rootState = state => state || {};
-export const getMe = createSelector(
-  rootState,
-  state => state.auth.me
-);
 
 export const isLoggedIn = state => {
-  return getMe(state) !== null ? true : false;
+  return state.auth.me !== null ? true : false;
 };

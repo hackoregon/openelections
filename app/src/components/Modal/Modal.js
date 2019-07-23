@@ -44,7 +44,8 @@ const Modal = props => {
             </IconButton>
           </div>
           {ModalOptions[props.getModalState.currentModal] != undefined ? (
-            React.createElement(ModalOptions[props.getModalState.currentModal])
+           // console.log(props.getModalState)
+            React.createElement(ModalOptions[props.getModalState.currentModal], props.getModalState._props)
           ) : (
             <div css={errorStyle}>
               <br />

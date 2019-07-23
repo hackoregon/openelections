@@ -1,11 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import queryString from "query-string";
 import Button from "../../../../components/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import { inviteUser } from "../../../../state/ducks/users";
+import { resendUserInvite, removeUser } from "../../../../state/ducks/users";
+import { showModal } from "../../../../state/ducks/modal";
+import { flashMessage } from "redux-flash";
+
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -18,16 +20,13 @@ const divSpacer = css`
   margin-top: 60px;
 `;
 
-const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
-// Todo: get from API
-
 const ManageUserPage = props => { 
-  const params = queryString.parse(props.location.search);
-  const { email, status, firstName, lastName, role } = params;
-  const userRole = USER_ROLES[role];
+  const { id, email, userStatus} = props.location.state;
+ 
+  const handleReSendEmail = () => {
+    props.resendUserInvite(id);
+    props.flashMessage("Email Resent", {props:{variant:'success'}});
+  };
 
   return (
     <PageHoc>
@@ -44,14 +43,16 @@ const ManageUserPage = props => {
         <div className="manage-user-intro">
           <h1>User Name</h1>
           <p>{email}</p>
-          {status === "invited" && (
+          {userStatus === "invited" && (
             <React.Fragment>
               <p className="fine-print" css={finePrint}>
                 This user hasn't finished creating their account.
               </p>
               <Button
                 buttonType="primary"
-                onClick={() => props.inviteUser(email, firstName, lastName, 1, userRole)} // TODO: set campaign id dynamically
+                onClick={
+                  () => handleReSendEmail()
+                }
               >
                 Resend Invitation
               </Button>
@@ -59,12 +60,14 @@ const ManageUserPage = props => {
           )}
         </div>
         <div className="manage-user-role" css={divSpacer}>
-          <h2>Mangage Role</h2>
+          <h2>Manage Role</h2>
         </div>
         <div className="remove-user">
           <Button
             buttonType="remove"
-            onClick={() => console.log("Remove User")}
+            onClick={
+              () => props.dispatch(showModal({component: "RemoveUser", props: props }))
+            }
           >
             Remove User
           </Button>
@@ -77,7 +80,10 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
+      resendUserInvite: (id) => dispatch(resendUserInvite(id)),
+      removeUser: (userId, permissionId) => dispatch(removeUser(userId, permissionId)),
+      flashMessage: (message, options) => dispatch(flashMessage(message, options)),    
+      dispatch
     };
   }
 )(ManageUserPage);
