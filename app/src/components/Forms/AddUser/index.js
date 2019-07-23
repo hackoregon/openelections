@@ -84,7 +84,6 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)),
       clearModal: () => dispatch(clearModal())
     };
   }

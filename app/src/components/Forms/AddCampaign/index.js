@@ -28,11 +28,16 @@ const USER_ROLES = {
 
 const AddCampaign = props => (
   <FormModal>
-    <AddCampaignForm
-      onSubmit={({ name, email, firstName, lastName }) => {
-        props.createCampaignForGovernment({
-          name: name, email: email, firstName: firstName, lastName: lastName
-        });
+    <AddCampaignForm 
+      onSubmit={({ name, email, firstName, lastName, governmentId=1,officeSought = 'mayor' }) => {
+        props.createCampaignForGovernment(
+            governmentId,
+            name,
+            officeSought,
+            email, 
+            firstName, 
+            lastName  
+        );
         props.clearModal();
       }}
       initialValues={{
@@ -85,7 +90,21 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      createCampaignForGovernment: (values) => dispatch(createCampaignForGovernment(values)),
+      createCampaignForGovernment: (
+        governmentId,
+        name,
+        officeSought,
+        email,
+        firstName,
+        lastName
+        ) => dispatch(createCampaignForGovernment(
+        governmentId,
+        name,
+        officeSought,
+        email,
+        firstName, 
+        lastName
+        )),
       clearModal: () => dispatch(clearModal())
     };
   }
