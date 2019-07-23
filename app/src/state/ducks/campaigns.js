@@ -56,13 +56,13 @@ export const actionCreators = {
 
 // Side Effects, e.g. thunks
 export function createCampaignForGovernment(
-  governmentId,
-  campaignName,
-  officeSought,
-  email, 
-  firstName, 
-  lastName  
-) {
+    governmentId,
+    campaignName,
+    officeSought,
+    email, 
+    firstName, 
+    lastName  
+  ) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createCampaign.request());
     const campaignAttrs = { 
@@ -78,6 +78,7 @@ export function createCampaignForGovernment(
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
+        dispatch(actionCreators.createCampaign.success());
         dispatch(
           inviteUser(
           email, 
@@ -86,7 +87,6 @@ export function createCampaignForGovernment(
           data.result, 
           api.UserRoleEnum.CAMPAIGN_ADMIN
         ));
-        dispatch(actionCreators.createCampaign.success());
         dispatch(flashMessage('Campaign created', {props:{variant:'success'}}));
       } else {
         dispatch(actionCreators.createCampaign.failure());

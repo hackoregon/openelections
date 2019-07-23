@@ -152,11 +152,14 @@ describe("Side Effects", () => {
 
     return store
       .dispatch(
-        campaigns.createCampaignForGovernment({
+        campaigns.createCampaignForGovernment(
             governmentId,
-            name: "Test New Gov Campaign",
-            officeSought: 'Mayor'
-        })
+            "Test New Gov Campaign",
+            "Mayor",
+            "campaignadminbygov@openelectionsportland.org", 
+            "CampaignAdmin", 
+            "InvitedByGov" 
+        )
       )
       .then(() => {
         const actions = store.getActions();
