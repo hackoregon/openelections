@@ -82,8 +82,12 @@ export const getCampaignInfo = createSelector(
   state => state.campaigns
 );
 
+//Assumes one campaign
 export const getCampaignName = state => {
-  return getCampaignInfo(state).name
-    ? getCampaignInfo(state).name
-    : "No Campaign Name";
+  const id = (getCampaignInfo(state).currentCampaignId)
+    ? getCampaignInfo(state).currentCampaignId
+    : 0;
+  return getCampaignInfo(state)[id]
+    ? getCampaignInfo(state)[id].name
+    : "Campaign";
 };

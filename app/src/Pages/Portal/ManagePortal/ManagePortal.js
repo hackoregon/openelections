@@ -2,6 +2,7 @@ import React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
 import Button from "../../../components/Button/Button";
 import Table from "../../../components/Table";
+import WithAdminPermissions from "../../../components/WithAdminPermissions/";
 
 const columnInfo = [
   {
@@ -40,7 +41,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
           <div className="manage-users-table">
             <Table
               isLoading={isLoading}
-              title={`Users (${isLoading ? 'Loading' : userList.length})`}
+              title={`Users (${isLoading ? "Loading" : userList.length})`}
               columns={columnInfo}
               data={isLoading ? [{}] : userList}
               localization={{
@@ -61,7 +62,10 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   name: "Manage",
                   buttonType: "manage",
                   onClick: (event, rowData) => {
-                    props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
+                    props.history.push({
+                      pathname: "/manage-portal/manage-user",
+                      state: rowData
+                    });
                   }
                 },
                 {
@@ -76,12 +80,16 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
               ]}
               components={{
                 Action: props => (
-                  <Button
-                    onClick={event => props.action.onClick(event, props.data)}
-                    buttonType={props.action.buttonType}
-                  >
-                    {props.action.name}
-                  </Button>
+                  <WithAdminPermissions>
+                    <Button
+                      onClick={event =>
+                        props.action.onClick(event, props.data)
+                      }
+                      buttonType={props.action.buttonType}
+                    >
+                      {props.action.name}
+                    </Button>
+                  </WithAdminPermissions>
                 )
               }}
             />
