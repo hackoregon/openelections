@@ -54,7 +54,8 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                 actionsCellStyle: {
                   color: "blue"
                 },
-                actionsColumnIndex: -1
+                actionsColumnIndex: -1,
+                pageSize: 10
               }}
               actions={[
                 {
