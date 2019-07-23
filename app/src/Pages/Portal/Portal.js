@@ -99,7 +99,7 @@ const Portal = props => {
                       />
                       <Route
                         exact
-                        path="/manage-campaign"
+                        path="/campaigns"
                         component={ManageCampaignPage}
                       />
                     </Switch>
