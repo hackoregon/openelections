@@ -122,6 +122,37 @@ components:
           type: enum[contribution,other]
         date:
           type: integer
+    Expenditure:
+      type: object
+      properties:
+        id:
+          type: integer
+        governmentId:
+          type: integer
+        campaignId:
+          type: integer
+        address1:
+          type: string
+        address2:
+          type: string
+        amount:
+          type: integer
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+        name:
+          type: string
+        status:
+          type: enum[Archived,Draft,Submitted,Processed]
+        subType:
+          type: enum[accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
+        type:
+          type: enum[expenditure,other,other_disbursement]
+        date:
+          type: integer
 
 
 
@@ -134,6 +165,8 @@ components:
       type: apiKey
       in: cookie
       name: token
+
+  requestBodies:
     LoginBody:
       required: true
       content:
@@ -352,6 +385,39 @@ components:
                 type: integer
             required:
               - id
+    AddExpenditureBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              campaignId:
+                type: integer
+              governmentId:
+                type: integer
+              address1:
+                type: string
+              address2:
+                type: string
+              amount:
+                type: integer
+              city:
+                type: string
+              state:
+                type: string
+              zip:
+                type: string
+              name:
+                type: string
+              status:
+                type: enum[Archived,Draft,Submitted,Processed]
+              subType:
+                type: enum[accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
+              type:
+                type: enum[expenditure,other,other_disbursement]
+              date:
+                type: integer
 
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:
