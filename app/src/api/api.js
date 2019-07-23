@@ -47,6 +47,41 @@ export const ContributionStatusEnum = Object.freeze({
   PROCESSED: "Processed"
 });
 
+export const ExpenditureTypeEnum = Object.freeze({
+  EXPENDITURE: "expenditure",
+  OTHER: "other",
+  OTHER_DISBURSEMENT: "other_disbursement"
+});
+
+export const ExpenditureSubTypeEnum = Object.freeze({
+  ACCOUNTS_PAYABLE: "accounts_payable",
+  CASH_EXPENDITURE: "cash_expenditure",
+  PERSONAL_EXPENDITURE: "personal_expenditure",
+  ACCOUNTS_PAYABLE_RESCINDED: "accounts_payable_rescinded",
+  CASH_BALANCE_ADJUSTMENT: "cash_balance_adjustment",
+  MISCELLANEOUS_OTHER_DISBURSEMENT: "miscellaneous_other_disbursement",
+  REFUND_OF_CONTRIBUTION: "refund_of_expenditure"
+});
+
+export const PayeeTypeEnum = Object.freeze({
+  INDIVIDUAL: "individual",
+  BUSINESS: "business",
+  FAMILY: "family",
+  LABOR: "labor",
+  POLITICAL_COMMITTEE: "political_committee",
+  POLITICAL_PARTY: "political_party",
+  UNREGISTERED: "unregistered",
+  OTHER: "other"
+});
+
+export const ExpenditureStatusEnum = Object.freeze({
+  ARCHIVED: "archived",
+  DRAFT: "draft",
+  SUBMITTED: "submitted",
+  OUT_OF_COMPLIANCE: "out_of_compliance",
+  IN_COMPLIANCE: "in_compliance"
+});
+
 export function baseUrl() {
   if (process.env.NODE_ENV === "test") {
     return "http://localhost:3000";
@@ -213,6 +248,12 @@ export function getContributionById(id) {
 //   method: 'delete',
 export function archiveContribution(id) {
   return deleteRequest(`${baseUrl()}/contributions/${id}`);
+}
+
+//   path: '/expenditures/new',
+//   method: 'post',
+export function createExpenditure(expenditureAttrs) {
+  return post(`${baseUrl()}/expenditures/new`, expenditureAttrs);
 }
 
 export function post(url, data) {
