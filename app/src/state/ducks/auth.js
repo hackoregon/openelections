@@ -282,3 +282,13 @@ export const rootState = state => state || {};
 export const isLoggedIn = state => {
   return state.auth.me !== null ? true : false;
 };
+
+export const isAdmin = state => {
+  return (
+    state.auth.me !==
+    null ? (
+      state.auth.me.permissions[0].role === "government_admin" ||
+        state.auth.me.permissions[0].role === "campaign_admin"
+    ) : false
+  );
+}
