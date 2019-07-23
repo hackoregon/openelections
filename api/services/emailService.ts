@@ -159,7 +159,7 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
   if (process.env.NODE_ENV === 'test') {
   } else if (process.env.NODE_ENV === 'development') {
-    console.log('In develop mode, this email is not sent ', params);
+    console.log('In develop mode, this email is not sent ', JSON.stringify(params));
   } else {
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
       throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
