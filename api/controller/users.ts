@@ -19,7 +19,13 @@ export async function login(request: IRequest, response: Response, next: Functio
     try {
         const token = await createUserSessionFromLoginAsync(request.body.email, request.body.password);
         const tokenObj = await decipherJWTokenAsync(token);
-        response.cookie('token', token, { expires: new Date(tokenObj.exp)} );
+        let domain = process.env.NODE_ENV === 'production' ? 'openelectionsportland.org' : 'localhost';
+        if (process.env.COOKIE_URL_TEST) {
+            // for testsuite
+            domain = process.env.COOKIE_URL_TEST;
+        }
+
+        response.cookie('token', token, { expires: new Date(tokenObj.exp), domain} );
         return response.status(204).json({});
     } catch (err) {
         return response.status(401).json({message: 'No user found with email or password'});
