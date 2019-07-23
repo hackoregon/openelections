@@ -40,7 +40,6 @@ describe("API", () => {
     campaignId = decodedToken.permissions[0]["campaignId"];
     campaignAdminId = decodedToken.id;
 
-
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
       "password"
@@ -213,13 +212,11 @@ describe("API", () => {
 
   it("createCampaignForGovernment", async () => {
     process.env.TOKEN = govAdminToken;
-    const response = await api.createCampaignForGovernment(
-      {
-        governmentId,
-        name: "Test for Mayor",
-        officeSought: 'Mayor',
-      }
-    );
+    const response = await api.createCampaignForGovernment({
+      governmentId,
+      name: "Test for Mayor",
+      officeSought: "Mayor"
+    });
     expect(response.status).toEqual(201);
   });
 
@@ -377,4 +374,25 @@ describe("API", () => {
     expect(contribution.status).toEqual(ContributionStatusEnum.ARCHIVED);
   });
 
+  it("createExpenditure", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const response = await api.createExpenditure({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: Date.now(),
+      governmentId: governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: "OR",
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: "97214",
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: "Test Expenditure",
+      description: "This is a test"
+    });
+    expect(response.status).toEqual(201);
+  });
 });

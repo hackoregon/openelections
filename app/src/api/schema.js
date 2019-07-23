@@ -15,3 +15,5 @@ export const permission = new schema.Entity("permissions", {
 export const activity = new schema.Entity("activities");
 
 export const contribution = new schema.Entity("contributions");
+
+export const expenditure = new schema.Entity("expenditures");
