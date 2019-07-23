@@ -18,15 +18,10 @@ const forgotLink = css`
   margin-top: 20px;
   align-self: flex-start;
 `;
-const center = css`
-  left: calc(50vw - 175px);
-  position: absolute;
-`;
 
  const SignIn =(props)=> (
 
     <FormModal >
-      <div css={center}>
       <SignInForm 
       onSubmit={
       values => {
@@ -69,7 +64,6 @@ const center = css`
         </React.Fragment>
       )}
       </SignInForm>
-      </div>
     </FormModal>
     );
 

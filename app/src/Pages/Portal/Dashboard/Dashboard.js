@@ -56,7 +56,7 @@ const DashboardPage = props => {
                 </div>
                 <div className="card">
                     {/* Jaron links go here */}
-                    <LinksCard links={[]} />
+                    <LinksCard links={[{path: "/reset-password", label: "Reset Password"}]} />
                 </div>
             </div>
         </div>
