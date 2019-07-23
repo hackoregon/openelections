@@ -106,11 +106,11 @@ export async function sendPasswordResetEmail(params: ISendPasswordResetEmailAttr
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: `<html><head><body><p>A password reset has been requested</p><p><a href="${host}/passwordReset?invitationCode=${params.invitationCode}">Click here to reset your password.</a></p></body></head>`
+          Data: `<html><head><body><p>A password reset has been requested</p><p><a href="${host}/update-forgotten-password?invitationCode=${params.invitationCode}">Click here to reset your password.</a></p></body></head>`
         },
         Text: {
           Charset: 'UTF-8',
-          Data: `A password reset has been requested. Please visit ${host}/passwordReset?invitationCode=${params.invitationCode} to reset your password`
+          Data: `A password reset has been requested. Please visit ${host}/update-forgotten-password?invitationCode=${params.invitationCode} to reset your password`
         },
       },
       Subject: {
