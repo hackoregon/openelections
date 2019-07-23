@@ -1,10 +1,10 @@
 // eslint-disable-next-line
-import React from "react";
+import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { accents } from "../../assets/styles/variables";
+import { accents, mediaQueryRanges } from "../../assets/styles/variables";
 
 const styles = css`
   font-size: 20px;
@@ -40,30 +40,62 @@ const styles = css`
       }
     }
   }
+  
+  button.toggle {
+    float: right;
+  }
+  
+  @media ${mediaQueryRanges.mediumAndDown} {
+    button.toggle {
+      display: none;
+    }
+    
+    ul:not(.active) {
+      display: none;
+    }
+  }
 `;
 
-const Sidebar = ({ governmentId, campaignName }) => {
-    const links = [
-        { url: "/dashboard", label: "Dashboard" },
-        { url: "/contributions", label: "Contributions" },
-        { url: "/expenses", label: "Expenses" },
-        { url: "/visualize", label: "Visualize" },
-        { url: "/visualize", label: "Visualize" },
-        ...((governmentId) ? [{ url: "/campaigns", label: "Campaigns" }] : []),
-        { url: "/manage-portal", label: "Manage Portal" }
-    ];
-  return (
-    <div css={styles}>
-      <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : campaignName}</h2>
-      <ul>
-        {links.map(link => (
-          <li key={link.url}>
-            <NavLink to={link.url}>{link.label}</NavLink>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+export default class Sidebar extends Component {
+
+    state = {
+      isToggledOn: false
+    };
+
+    constructor (props) {
+        super(props);
+
+        this.links = [
+            {url: "/dashboard", label: "Dashboard"},
+            {url: "/contributions", label: "Contributions"},
+            {url: "/expenses", label: "Expenses"},
+            {url: "/visualize", label: "Visualize"},
+            {url: "/visualize", label: "Visualize"},
+            ...((props.governmentId) ? [{url: "/campaigns", label: "Campaigns"}] : []),
+            {url: "/manage-portal", label: "Manage Portal"}
+        ];
+    }
+
+    toggleSidebar () {
+        this.setState({isToggledOn: !this.state.isToggledOn});
+    }
+
+    render () {
+        const {governmentId, campaignName} = this.props;
+
+        return (
+            <div css={styles}>
+                <button onClick={this.toggleSidebar.bind(this)} className="toggle" aria-hidden={true}>toggle</button>
+                <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : campaignName}</h2>
+                <ul className={(this.state.isToggledOn) ? 'active' : ''}>
+                    {this.links.map(link => (
+                        <li key={link.url}>
+                            <NavLink to={link.url}>{link.label}</NavLink>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
 };
 
-export default Sidebar;

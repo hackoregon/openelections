@@ -12,31 +12,42 @@ import WithPermissions from "../../components/WithPermissions"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import { mediaQueryRanges } from "../../assets/styles/variables";
 
 const styles = css`
-  &:after {
-    content: "";
-    clear: both;
-    display: table;
-  }
-  .sidebar-wrapper {
-    width: 20%;
-    position: sticky;
-    top: 0;
-    left: 0;
-  }
-
   .content-wrapper {
-    width: 80%;
     padding-left: 20px;
     padding-right: 20px;
-    border-left: 1px solid rgba(0, 0, 0, 0.15);
   }
 
   .content-wrapper,
   .sidebar-wrapper {
-    float: left;
     padding-top: 20px;
+  }
+  
+  @media ${mediaQueryRanges.largeAndUp} {
+    &:after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    .sidebar-wrapper {
+      width: 20%;
+      position: sticky;
+      top: 0;
+      left: 0;
+    }
+    
+    .content-wrapper { 
+      width: 80%;
+      border-left: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    
+    .content-wrapper,
+    .sidebar-wrapper {
+      float: left;
+    }
   }
 `;
 
