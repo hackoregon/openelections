@@ -166,14 +166,14 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
-    data = np.unique(np.array(dbresult, dtype=np.dtype([('id', 'U128'),
-                                                        ('first_name', 'U128'),
-                                                        ('last_name', 'U128'),
-                                                        ('address_1', 'U128'),
-                                                        ('address_2', 'U128'),
-                                                        ('city', 'U128'),
-                                                        ('state', 'U128'),
-                                                        ('zip', 'U128')])))
+    data = np.unique(np.array(dbresult, dtype=np.dtype([('id', 'U256'),
+                                                        ('first_name', 'U256'),
+                                                        ('last_name', 'U256'),
+                                                        ('address_1', 'U2556'),
+                                                        ('address_2', 'U256'),
+                                                        ('city', 'U256'),
+                                                        ('state', 'U256'),
+                                                        ('zip', 'U256')])))
 
     return data
 
