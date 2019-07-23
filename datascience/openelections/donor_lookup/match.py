@@ -160,19 +160,20 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
 
     with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
-            cmd = f"SELECT first_name, last_name, address_1, address_2, city, state, zip_code" \
+            cmd = f"SELECT id, first_name, last_name, address_1, address_2, city, state, zip_code" \
                   + f" FROM {db.UNIFIED_TABLE} WHERE " \
                   + where_stmt
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
-    data = np.unique(np.array(dbresult, dtype=np.dtype([('first_name', 'U128'),
-                                                        ('last_name', 'U128'),
-                                                        ('address_1', 'U128'),
-                                                        ('address_2', 'U128'),
-                                                        ('city', 'U128'),
-                                                        ('state', 'U128'),
-                                                        ('zip', 'U128')])))
+    data = np.unique(np.array(dbresult, dtype=np.dtype([('id', 'U256'),
+                                                        ('first_name', 'U256'),
+                                                        ('last_name', 'U256'),
+                                                        ('address_1', 'U2556'),
+                                                        ('address_2', 'U256'),
+                                                        ('city', 'U256'),
+                                                        ('state', 'U256'),
+                                                        ('zip', 'U256')])))
 
     return data
 

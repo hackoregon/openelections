@@ -26,7 +26,7 @@ class TestGetMatch():
         """
         Test for exact match
         """
-        test_data = [('JOHN', 'SMITH', '123 MAIN STREET', '', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 MAIN STREET', '', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -51,8 +51,8 @@ class TestGetMatch():
         """
         Test for exact match with address line 2
         """
-        test_data = [('JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 102', 'PORTLAND', 'OR', '97202'),
-                     ('JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 102', 'PORTLAND', 'OR', '97202'),
+                     ('XX3Y', 'JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -81,7 +81,7 @@ class TestGetMatch():
         """
         Test for exact match when address line 2 concatenated with address line 1 in DB
         """
-        test_data = [('JOHN', 'SMITH', '123 MAIN STREET UNIT 10', '', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 MAIN STREET UNIT 10', '', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -106,7 +106,7 @@ class TestGetMatch():
         """
         Test for exact match when address line 2 missing
         """
-        test_data = [('JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -131,7 +131,7 @@ class TestGetMatch():
         """
         Test for strong match in address line 2 mismatch
         """
-        test_data = [('JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 MAIN STREET', 'UNIT 10', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -158,7 +158,7 @@ class TestGetMatch():
         """
         Test for exact match with abbreviations and words to ignore
         """
-        test_data = [('JOHN', 'SMITH', '123 NW MAIN ST', '', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 NW MAIN ST', '', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -183,7 +183,7 @@ class TestGetMatch():
         """
         Test for strong match
         """
-        test_data = [('JOHN', 'SMITH', '123 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHN', 'SMITH', '123 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
@@ -210,9 +210,9 @@ class TestGetMatch():
         """
         Test for max return
         """
-        test_data = [('JOHNS', 'SMITH', '523 NE LUMBAR ST', '', 'PORTLAND', 'OR', '97202'),
-                     ('JOHNS', 'SMITH', '153 NW LUMBARR ST', '', 'PORTLAND', 'OR', '97202'),
-                     ('JOHN', 'SMITH', '125 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
+        test_data = [('XX3X', 'JOHNS', 'SMITH', '523 NE LUMBAR ST', '', 'PORTLAND', 'OR', '97202'),
+                     ('XX3Y', 'JOHNS', 'SMITH', '153 NW LUMBARR ST', '', 'PORTLAND', 'OR', '97202'),
+                     ('XX3Z', 'JOHN', 'SMITH', '125 NW LUMBAR ST', '', 'PORTLAND', 'OR', '97202')]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import get_match
