@@ -6,7 +6,7 @@ import Table from "../../../components/Table";
 const columnInfo = [
   {
     title: "Campaign",
-    field: "NotSet"
+    field: "name"
   },
   {
     title: "In-Kind Total",
@@ -18,14 +18,13 @@ const columnInfo = [
   },
   {
     title: "Email",
-    field: "NotSet"
+    field: "email"
   }
 ];
 
-const ManageCampaign = ({ isUserListLoading, userList, ...props }) => {
-  const isLoading = false;
-  //isUserListLoading && !(Array.isArray(userList) && userList.length > 0)
-  userList =[{}];
+const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
+  const isLoading = isCampaignListLoading && !(Array.isArray(campaignList));
+  campaignList =[{}];
 
   return (
     <PageHoc>
@@ -35,9 +34,9 @@ const ManageCampaign = ({ isUserListLoading, userList, ...props }) => {
           <div className="manage-users-table">
             <Table
               isLoading={isLoading}
-              title={`Users (${isLoading ? 'Loading' : userList.length})`}
+              title={`Campaigns (${isLoading ? 'Loading' : campaignList.length})`}
               columns={columnInfo}
-              data={isLoading ? [{}] : userList}
+              data={isLoading ? [{}] : campaignList}
               localization={{
                 body: {
                   emptyDataSourceMessage: "No Users"

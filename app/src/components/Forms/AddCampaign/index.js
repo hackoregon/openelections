@@ -21,9 +21,9 @@ const leftAlign = css`
 `;
 
 const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
+  Admin: "campaign_admin",
+  Staff: "campaign_staff"
+};
 // Todo: get from API
 
 const AddCampaign = props => (
