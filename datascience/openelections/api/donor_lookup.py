@@ -10,10 +10,10 @@ curl http://127.0.0.1:8080/match -d "last_name=Smith&first_name=John&addr1=123 M
 import sys
 sys.path.insert(0, "/app")
 
-import traceback
-from flask import Flask
-from flask_restful import Resource, Api, reqparse
-from openelections.donor_lookup.match import get_match, in_portland
+import traceback  # noqa: E402
+from flask import Flask  # noqa: E402
+from flask_restful import Resource, Api, reqparse  # noqa: E402
+from openelections.donor_lookup.match import get_match, in_portland  # noqa: E402
 
 app = Flask(__name__)
 api = Api(app)

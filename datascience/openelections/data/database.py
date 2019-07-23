@@ -9,7 +9,8 @@ import psycopg2.errors as psqerrors
 import pandas as pd
 
 UNIFIED_TABLE = 'addresses'
-UNIFIED_KEY = {'FIRST_NAME': 'VARCHAR(255)',
+UNIFIED_KEY = {'id': 'uuid DEFAULT uuid_generate_v4 ()',
+               'FIRST_NAME': 'VARCHAR(255)',
                'MIDDLE_NAME': 'VARCHAR(255)',
                'LAST_NAME': 'VARCHAR(255)',
                'COUNTY': 'VARCHAR(255)',
