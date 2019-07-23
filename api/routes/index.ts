@@ -9,6 +9,7 @@ import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
+import * as expenditures from '../controller/expenditures';
 
 
 
@@ -583,13 +584,20 @@ export const AppRoutes = [
         method: 'get',
         action: contributions.getContributionById
     },
+
     {
         path: '/status',
         method: 'get',
         action: async (request: IRequest, response: express.Response) => {
-            return response.status(200).json({message: 'running'});
+            return response.status(200).json({ message: 'running' });
         }
     },
+
+    {
+        path: '/expenditures/new',
+        method: 'post',
+        action: expenditures.addExpenditure
+    }
 ];
 
 export const setupRoutes = (app: express.Express) => {
