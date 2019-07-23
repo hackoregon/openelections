@@ -272,7 +272,7 @@ export function updatePassword(password, newPassword) {
 
 export function redirectToLogin() {
   return async (dispatch, getState, { api }) => {
-    //dispatch(push('/sign-in'));
+    dispatch(push('/sign-in'));
   }
 }
 
