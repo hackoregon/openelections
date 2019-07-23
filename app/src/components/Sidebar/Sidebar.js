@@ -110,7 +110,7 @@ export default class Sidebar extends Component {
             <div css={styles} onClick={this.toggleSidebar.bind(this)} className={(this.state.isToggledOn) ? 'dropdown-active' : ''}>
                 <div className="sidebar-top">
                     <ArrowDropDown className={'arrow'} />
-                    <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : 'Campaign Name'}</h2>
+                    <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : campaignName}</h2>
                 </div>
                 <ul>
                     {this.links.map(link => (
