@@ -13,7 +13,7 @@ const styles = css`
   .cards-wrapper {
     margin-top: calc(2vw + 10px);
     
-    .card:first-child {
+    .card:first-of-type {
       padding: 20px;
     }
     
@@ -31,7 +31,7 @@ const styles = css`
     .cards-wrapper {
         display: flex;
         
-        .card:first-child {
+        .card:first-of-type {
             flex: 3;
             margin-right: 10px;
         }

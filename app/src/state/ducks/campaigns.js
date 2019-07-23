@@ -60,6 +60,7 @@ export function createCampaignForGovernment(campaignAttrs) {
       const response = await api.createCampaignForGovernment(
         campaignAttrs
       );
+      console.log('eys')
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));

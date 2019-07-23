@@ -342,9 +342,11 @@ export class Contribution {
     }
 
     toJSON() {
-        return {
-            id: this.id
-        };
+        const json: any = {};
+        contributionSummaryFields.forEach(( (key: string): void => {
+            json[key] = this[key];
+        }));
+        return json as IContributionSummary;
     }
 }
 
@@ -382,7 +384,7 @@ export const contributionSummaryFields = <const>[
     'submitForMatch',
     'compliant',
     'matchAmount',
-    'state',
+    'status',
     'date'
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;

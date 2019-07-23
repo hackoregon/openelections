@@ -1,5 +1,3 @@
-import { UserRole } from '../models/entity/Permission';
-
 const AWS = require('aws-sdk');
 
 export interface ISESEmailParams {
@@ -43,11 +41,11 @@ export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationE
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName}</p><p><a href="${host}/invitation?email=${params.to}&campaign=${params.campaignName}&government=${params.governmentName}&invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
+          Data: `<html><head><body><p>You've been invited to join the ${params.campaignName || params.governmentName || 'Open Elections Program'}</p><p><a href="${host}/invitation?email=${params.to}${params.campaignName ? '&campaign=' + params.campaignName : ''}${params.governmentName ? '&government=' + params.governmentName : ''}&invitationCode=${params.invitationCode}">Click here to accept invitation.</a></p></body></head>`
         },
         Text: {
           Charset: 'UTF-8',
-          Data: `You've been invited to join the ${params.campaignName || params.governmentName}. Please visit ${host}/invitation?email=${params.to}&campaign=${params.campaignName}&government=${params.governmentName}&invitationCode=${params.invitationCode} to accept the invitation`
+          Data: `You've been invited to join the ${params.campaignName || params.governmentName || 'Open Elections Program'}. Please visit ${host}/invitation?email=${params.to}${params.campaignName ? '&campaign=' + params.campaignName : ''}${params.governmentName ? '&government=' + params.governmentName : ''}&invitationCode=${params.invitationCode} to accept the invitation`
         },
       },
       Subject: {
@@ -55,7 +53,7 @@ export async function sendNewUserInvitationEmail(params: ISendNewUserInvitationE
         Data: `You've been invited to ${params.campaignName || params.governmentName}`,
       }
     },
-    Source: 'no-reply@openelectionsprojecg.org',
+    Source: 'no-reply@openelectionsportland.org',
   };
   return sendEmail(email);
 }
@@ -87,7 +85,7 @@ export async function resendInvitationEmail(params: IResendInvitationEmailAttrs)
         Data: `You've been invited to the OpenElections Program.`,
       }
     },
-    Source: 'no-reply@openelectionsprojecg.org',
+    Source: 'no-reply@openelectionsportland.org',
   };
   return sendEmail(email);
 }
@@ -120,7 +118,7 @@ export async function sendPasswordResetEmail(params: ISendPasswordResetEmailAttr
         Data: `Reset your password`,
       }
     },
-    Source: 'no-reply@openelectionsprojecg.org',
+    Source: 'no-reply@openelectionsportland.org',
   };
   return sendEmail(email);
 }
@@ -153,7 +151,7 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
         Data: `You've been invited to ${params.campaignName || params.governmentName}`,
       }
     },
-    Source: 'no-reply@openelectionsprojecg.org',
+    Source: 'no-reply@openelectionsprojec.org',
   };
   return sendEmail(email);
 }
@@ -163,14 +161,19 @@ export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParam
   } else if (process.env.NODE_ENV === 'development') {
     console.log('In develop mode, this email is not sent ', params);
   } else {
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
       throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
     }
-    const sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(params).promise();
+    const sendPromise = new AWS.SES({
+      apiVersion: '2010-12-01',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_DEFAULT_REGION
+    }).sendEmail(params).promise();
     await sendPromise.then(
         (data) => {
           console.log('sent email to ', params.Destination.ToAddresses, 'with aws ses message id of ', data.MessageId);
-        });
+        }).catch(error => console.log(error));
   }
   return Promise.resolve(params);
 }

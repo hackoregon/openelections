@@ -6,7 +6,7 @@ import { UserRole } from '../entity/Permission';
 import { User, UserStatus } from '../../models/entity/User';
 import { Address } from '../../models/entity/Address';
 import * as fs from 'fs';
-import * as parse from 'csv-parse/lib/sync'
+import * as parse from 'csv-parse/lib/sync';
 
 
 export default async () => {
@@ -18,7 +18,7 @@ export default async () => {
 
     console.log('Adding a government admin');
     const govAdmin = await createUserAsync({
-        email: 'govAdmin@openelectionsportland.org',
+        email: 'govadmin@openelectionsportland.org',
         password: 'password',
         firstName: 'Government',
         lastName: 'Admin'
@@ -26,7 +26,7 @@ export default async () => {
 
     console.log('Adding a campaign admin');
     const campaignAdmin = await createUserAsync({
-        email: 'campaignAdmin@openelectionsportland.org',
+        email: 'campaignadmin@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
         lastName: 'Admin'
@@ -34,7 +34,7 @@ export default async () => {
 
     console.log('Adding a campaign staff');
     const campaignStaff = await createUserAsync({
-        email: 'campaignStaff@openelectionsportland.org',
+        email: 'campaignstaff@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
         lastName: 'Staff'
@@ -42,15 +42,31 @@ export default async () => {
 
     console.log('Adding a campaign staff');
     const campaignStaffInvited = await createUserAsync({
-        email: 'campaignStaff+1@openelectionsportland.org',
+        email: 'campaignstaff+1@openelectionsportland.org',
         invitationCode: 'inviteme',
+        firstName: 'Campaign',
+        lastName: 'Staff'
+    });
+
+    console.log('Adding a campaign staff');
+    const campaignStaffRemoved = await createUserAsync({
+        email: 'campaignstaff+removeme@openelectionsportland.org',
+        password: 'password',
+        firstName: 'Campaign',
+        lastName: 'Staff'
+    });
+
+    console.log('Adding a campaign staff');
+    const campaignStaffRemoved2 = await createUserAsync({
+        email: 'campaignstaff+removeme2@openelectionsportland.org',
+        password: 'password',
         firstName: 'Campaign',
         lastName: 'Staff'
     });
 
     const userRepository = getConnection('default').getRepository('User');
     let campaignStaffReset = new User();
-    campaignStaffReset.email = 'campaignStaff+2@openelectionsportland.org';
+    campaignStaffReset.email = 'campaignstaff+2@openelectionsportland.org';
     campaignStaffReset.firstName = 'Campaign';
     campaignStaffReset.lastName = 'Staff';
     campaignStaffReset.userStatus = UserStatus.ACTIVE;
@@ -93,6 +109,18 @@ export default async () => {
 
     await addPermissionAsync({
         userId: campaignStaffReset.id,
+        role: UserRole.CAMPAIGN_STAFF,
+        campaignId: campaign.id
+    });
+
+    await addPermissionAsync({
+        userId: campaignStaffRemoved.id,
+        role: UserRole.CAMPAIGN_STAFF,
+        campaignId: campaign.id
+    });
+
+    await addPermissionAsync({
+        userId: campaignStaffRemoved2.id,
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
     });

@@ -26,20 +26,20 @@ describe("API", () => {
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     let decodedToken = api.decodeToken(govAdminToken);
-    governmentId = decodedToken.permissions[0]["id"];
+    governmentId = decodedToken.permissions[0]["governmentId"];
 
     tokenResponse = await api.login(
       "campaignadmin@openelectionsportland.org",
       "password"
     );
 
-
     campaignAdminToken = tokenResponse.headers
       .get("set-cookie")
       .match(/=([a-zA-Z0-9].+); Path/)[1];
     decodedToken = api.decodeToken(campaignAdminToken);
-    campaignId = decodedToken.permissions[0]["id"];
+    campaignId = decodedToken.permissions[0]["campaignId"];
     campaignAdminId = decodedToken.id;
+
 
     tokenResponse = await api.login(
       "campaignstaff@openelectionsportland.org",
@@ -63,7 +63,7 @@ describe("API", () => {
     process.env.NODE_ENV = "staging";
     expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
     process.env.NODE_ENV = "production";
-    
+
     //Todo: Change for production
     expect(api.baseUrl()).toEqual("https://api-qa.openelectionsportland.org");
     //expect(api.baseUrl()).toEqual("https://api.openelectionsportland.org");
@@ -264,9 +264,10 @@ describe("API", () => {
     expect(response.status).toEqual(201);
   });
 
-  it("updateContribution", async () => {
+  it("updateContribution testme", async () => {
     process.env.TOKEN = campaignStaffToken;
-    const contribution = await api.createContribution({
+
+    let response = await api.createContribution({
       address1: "123 ABC ST",
       amount: 250,
       campaignId: campaignId,
@@ -284,9 +285,10 @@ describe("API", () => {
       zip: "97214",
       contributorType: ContributorTypeEnum.INDIVIDUAL
     });
-    const { id } = await contribution.json();
-    const response = await api.updateContribution({
-      id,
+    const contribution = await response.json();
+
+    response = await api.updateContribution({
+      id: contribution.id,
       firstName: "Ian",
       currentUserId: campaignStaffId
     });
@@ -324,20 +326,55 @@ describe("API", () => {
       contributorType: ContributorTypeEnum.INDIVIDUAL
     });
     const { id } = await contribution.json();
-    const response = await api.getContributionById({
-      id,
-      governmentId: governmentId,
-      campaignId: campaignId,
-      currentUserId: campaignAdminId
-    });
+    const response = await api.getContributionById(id);
     expect(response.status).toEqual(200);
   });
 
   it("removePermission", async () => {
-    process.env.TOKEN = govAdminToken;
-    const user = api.decodeToken(campaignStaffToken);
+    process.env.TOKEN = campaignAdminToken;
+    const tokenResponse = await api.login(
+      "campaignstaff+removeme@openelectionsportland.org",
+      "password"
+    );
+
+    const token = tokenResponse.headers
+      .get("set-cookie")
+      .match(/=([a-zA-Z0-9].+); Path/)[1];
+
+    const user = api.decodeToken(token);
+
     const permissionId = user.permissions[0].id;
     const response = await api.removePermission(permissionId);
     expect(response.status).toEqual(200);
-  })
+  });
+
+  it("archiveContribution", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    let contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    contribution = await contribution.json();
+
+    let response = await api.archiveContribution(contribution.id);
+    expect(response.status).toEqual(200);
+    response = await api.getContributionById(contribution.id);
+    contribution = await response.json();
+    expect(contribution.status).toEqual(ContributionStatusEnum.ARCHIVED);
+  });
+
 });

@@ -1,17 +1,21 @@
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import ManagePortal from "./ManagePortal";
 import { getUsers, getCampaignUsers, isUsersLoading } from "../../../state/ducks/users";
 import { showModal } from "../../../state/ducks/modal";
 
-class ManagePortalPage extends Component {
+class ManagePortalPage extends React.Component {
   constructor(props) {
     super(props);
   }
   componentDidMount() {
     this.props.getCampaignUsers(this.props.campaignId);
   }
-
+  componentDidUpdate(prevProps) {
+    if (this.props.campaignId !== prevProps.campaignId) {
+      this.props.getCampaignUsers(this.props.campaignId);
+    }
+  }
   render () {
     return <ManagePortal {...this.props} />;
   }

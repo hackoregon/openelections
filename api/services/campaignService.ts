@@ -16,6 +16,7 @@ export interface ICreateCampaign {
 
 export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promise<Campaign> {
     try {
+
         if (await isGovernmentAdminAsync(campaignAttrs.currentUserId, campaignAttrs.governmentId)) {
             const campaignRepository = getConnection('default').getRepository('Campaign');
             const governmentRepository = getConnection('default').getRepository('Government');

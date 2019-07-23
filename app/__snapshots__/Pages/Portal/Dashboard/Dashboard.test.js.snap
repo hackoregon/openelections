@@ -8,14 +8,14 @@ exports[`<Dashboard/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "1gsexpo",
+        "name": "gkkade",
         "next": undefined,
         "styles": "   
 
   .cards-wrapper {
     margin-top: calc(2vw + 10px);
     
-    .card:first-child {
+    .card:first-of-type {
       padding: 20px;
     }
     
@@ -33,7 +33,7 @@ exports[`<Dashboard/> should be defined 1`] = `
     .cards-wrapper {
         display: flex;
         
-        .card:first-child {
+        .card:first-of-type {
             flex: 3;
             margin-right: 10px;
         }

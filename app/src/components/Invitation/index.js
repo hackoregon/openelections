@@ -12,9 +12,14 @@ const formTitle = css`
 const buttonWrapper = css`
   margin-top: 30px;
 `;
-
+const center = css`
+  left: calc(50vw - 175px);
+  position: absolute;
+  max-width: 350px;
+`;
 const Invitation = ({ campaign, government, code /* email */ }) => (
   <FormModal>
+    <div css={center}>
     <p>
       You've been invited to join the following portal on Open Election by
       Civic:
@@ -32,6 +37,7 @@ const Invitation = ({ campaign, government, code /* email */ }) => (
       <Link to={`/sign-up?invitationCode=${code}`}>
         <Button buttonType="signup">Sign up</Button>
       </Link>
+    </div>
     </div>
   </FormModal>
 );
