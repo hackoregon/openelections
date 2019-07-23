@@ -21,9 +21,9 @@ const leftAlign = css`
 `;
 
 const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
+  Admin: "campaign_admin",
+  Staff: "campaign_staff"
+};
 // Todo: get from API
 
 const AddCampaign = props => (
@@ -31,7 +31,13 @@ const AddCampaign = props => (
     <AddCampaignForm
       onSubmit={({ name, email, firstName, lastName }) => {
         props.createCampaignForGovernment({
-          name: name, email: email, firstName: firstName, lastName: lastName
+          governmentId: 1, // auth.me.id
+          currentUserId: 1, // auth.me.permission[0].governmentId
+          officeSought: "Mayor",
+          name: name,
+          email: email,
+          firstName: firstName,
+          lastName: lastName
         });
         props.clearModal();
       }}
@@ -85,7 +91,8 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      createCampaignForGovernment: (values) => dispatch(createCampaignForGovernment(values)),
+      createCampaignForGovernment: values =>
+        dispatch(createCampaignForGovernment(values)),
       clearModal: () => dispatch(clearModal())
     };
   }

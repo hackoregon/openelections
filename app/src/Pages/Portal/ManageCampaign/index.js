@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import ManageCampaign from "./ManageCampaign";
-import { getUsers, getCampaignUsers, isUsersLoading } from "../../../state/ducks/users";
+//import { getCampaigns, getCampaignList, isCampaignsLoading } from "../../../state/ducks/users";
 import { showModal } from "../../../state/ducks/modal";
 
 class ManageCampaignPage extends React.Component {
@@ -9,11 +9,11 @@ class ManageCampaignPage extends React.Component {
     super(props);
   }
   componentDidMount() {
-   // this.props.getCampaignUsers(this.props.campaignId);
+   // this.props.getCampaigns(this.props.governmentId);
   }
   componentDidUpdate(prevProps) {
-    //if (this.props.campaignId !== prevProps.campaignId) {
-   //   this.props.getCampaignUsers(this.props.campaignId);
+    //if (this.props.governmentId !== prevProps.governmentId) {
+   //   this.props.getCampaigns(this.props.governmentId);
    // }
   }
   render () {
@@ -23,13 +23,13 @@ class ManageCampaignPage extends React.Component {
 
 export default connect(
   state => ({
-   // isUserListLoading: isUsersLoading(state),
-   // userList: getUsers(state),
+   // isCampaignListLoading: isCampaignsLoading(state),
+   // campaignList: getCampaignList(state),
     campaignId: state.campaigns.currentCampaignId
   }),
   dispatch => {
     return {
-     // getCampaignUsers: (id) => dispatch(getCampaignUsers(id)),
+      // getCampaigns: (governmentId) => dispatch(getCampaigns(governmentId)),
       showModal: (payload) => {
         dispatch(showModal( payload));
       }
