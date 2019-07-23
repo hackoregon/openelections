@@ -3,6 +3,7 @@ import * as Yup from "yup";
 
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
+import PasswordField from "../../Fields/PasswordField";
 
 const fields = {
   email: {
@@ -16,7 +17,7 @@ const fields = {
   password: {
     label: "Password",
     section: "signIn",
-    component: TextField,
+    component: PasswordField,
     validation: Yup.string("Enter your password")
         .required("Password is required")
   },
