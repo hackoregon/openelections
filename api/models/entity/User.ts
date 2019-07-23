@@ -128,7 +128,12 @@ export class User {
         if (!password) {
             throw new Error('must set a password');
         }
-        const validHash = crypto.pbkdf2Sync(password, this.salt, 2048, 32, 'sha512').toString('hex');
+        let iterations = 2048;
+        if (process.env.NODE_ENV === 'production') {
+            // prevent derivation attacks
+            iterations = 872791;
+        }
+        const validHash = crypto.pbkdf2Sync(password, this.salt, iterations, 32, 'sha512').toString('hex');
         // prevent timing attacks
         let mismatch = 0;
         for (let i = 0; i < validHash.length; ++i) {
