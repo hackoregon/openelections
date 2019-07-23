@@ -18,8 +18,8 @@ export const mediaSizes = {
 export const mediaQueryRanges = {
 	mediumAndUp: `only screen and (min-width : ${mediaSizes.smallScreenUp}px)`,
 	largeAndUp: `only screen and (min-width : ${mediaSizes.mediumScreenUp}px)`,
-	extraLargeAndUp: `only screen and (minWidth : ${mediaSizes.largeScreenUp})`,
-	smallAndDown: `only screen and (maxWidth : ${mediaSizes.smallScreen})`,
-	mediumAndDown: `only screen and (maxWidth : ${mediaSizes.mediumScreen})`,
-	mediumOnly: `only screen and (min-width : ${mediaSizes.smallScreenUp}) and (max-width : ${mediaSizes.mediumScreen})`
+	extraLargeAndUp: `only screen and (min-width : ${mediaSizes.largeScreenUp}px)`,
+	smallAndDown: `only screen and (max-width : ${mediaSizes.smallScreen}px)`,
+	mediumAndDown: `only screen and (max-width : ${mediaSizes.mediumScreen}px)`,
+	mediumOnly: `only screen and (min-width : ${mediaSizes.smallScreenUp}px) and (max-width : ${mediaSizes.mediumScreen}px)`
 };

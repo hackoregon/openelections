@@ -106,11 +106,11 @@ export async function sendPasswordResetEmail(params: ISendPasswordResetEmailAttr
       Body: {
         Html: {
           Charset: 'UTF-8',
-          Data: `<html><head><body><p>A password reset has been requested</p><p><a href="${host}/passwordReset?invitationCode=${params.invitationCode}">Click here to reset your password.</a></p></body></head>`
+          Data: `<html><head><body><p>A password reset has been requested</p><p><a href="${host}/update-forgotten-password?invitationCode=${params.invitationCode}">Click here to reset your password.</a></p></body></head>`
         },
         Text: {
           Charset: 'UTF-8',
-          Data: `A password reset has been requested. Please visit ${host}/passwordReset?invitationCode=${params.invitationCode} to reset your password`
+          Data: `A password reset has been requested. Please visit ${host}/update-forgotten-password?invitationCode=${params.invitationCode} to reset your password`
         },
       },
       Subject: {
@@ -159,7 +159,7 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
   if (process.env.NODE_ENV === 'test') {
   } else if (process.env.NODE_ENV === 'development') {
-    console.log('In develop mode, this email is not sent ', params);
+    console.log('In develop mode, this email is not sent ', JSON.stringify(params));
   } else {
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
       throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');

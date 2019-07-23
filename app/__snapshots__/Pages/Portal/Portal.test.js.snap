@@ -9,32 +9,43 @@ exports[`<Portal/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "16cx78l",
+        "name": "1j037t",
         "next": undefined,
         "styles": "
-  &:after {
-    content: \\"\\";
-    clear: both;
-    display: table;
-  }
-  .sidebar-wrapper {
-    width: 20%;
-    position: sticky;
-    top: 0;
-    left: 0;
+  .content-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .content-wrapper {
-    width: 80%;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-left: 1px solid rgba(0, 0, 0, 0.15);
-  }
-
-  .content-wrapper,
-  .sidebar-wrapper {
-    float: left;
     padding-top: 20px;
+  }
+  
+  @media only screen and (min-width : 993px) {
+    
+    .sidebar-wrapper {
+      padding-top: 20px;
+    }
+  
+    &.portal-wrapper {
+      display: flex;
+    }
+    
+    .sidebar-wrapper {
+      width: 20%;
+      
+      > div {
+        position: sticky;
+        top: 10px;
+        left: 0;
+      }
+    }
+    
+    
+    .content-wrapper { 
+      width: 80%;
+      border-left: 1px solid rgba(0, 0, 0, 0.15);
+    }
   }
 ",
       }
@@ -43,36 +54,7 @@ exports[`<Portal/> should be defined 1`] = `
     <aside
       className="sidebar-wrapper"
     >
-      <Connect(Sidebar)
-        links={
-          Array [
-            Object {
-              "label": "Dashboard",
-              "url": "/dashboard",
-            },
-            Object {
-              "label": "Contributions",
-              "url": "/contributions",
-            },
-            Object {
-              "label": "Expenses",
-              "url": "/expenses",
-            },
-            Object {
-              "label": "Visualize",
-              "url": "/visualize",
-            },
-            Object {
-              "label": "Manage Portal",
-              "url": "/manage-portal",
-            },
-            Object {
-              "label": "Manage Campaign",
-              "url": "/manage-campaign",
-            },
-          ]
-        }
-      />
+      <Connect(Sidebar) />
     </aside>
     <main
       className="content-wrapper"

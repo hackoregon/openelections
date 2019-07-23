@@ -96,7 +96,29 @@ describe('Routes /users', () => {
                 matches.push(match[1]);
                 match = regex.exec(response.header['set-cookie']);
             }
-            expect(matches).to.deep.equal([ 'token', ' Path', ' Expires' ]);
+            expect(matches).to.deep.equal([ 'token', ' Domain', ' Path', ' Expires' ]);
+            expect(response.header['set-cookie'][0].includes('localhost')).to.be.true;
+        });
+
+        it('success, sets token in cookie production', async () => {
+            process.env.COOKIE_URL_TEST = 'openelectionsportland.org';
+            const response = await request(app)
+                .post('/users/login')
+                .send({password: 'password'})
+                .send({email: campaignStaff.email})
+                .set('Accept', 'application/json');
+            expect(response.status).to.equal(204);
+
+            const regex = /(.*?)=(.*?)($|;|,(?! ))/g;
+            const matches = [];
+            let match = regex.exec(response.header['set-cookie']);
+            while (match != undefined) {
+                matches.push(match[1]);
+                match = regex.exec(response.header['set-cookie']);
+            }
+            expect(matches).to.deep.equal([ 'token', ' Domain', ' Path', ' Expires' ]);
+            expect(response.header['set-cookie'][0].includes('openelectionsportland.org')).to.be.true;
+            delete process.env.COOKIE_URL_TEST;
         });
     });
 

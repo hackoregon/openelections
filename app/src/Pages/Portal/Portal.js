@@ -13,31 +13,43 @@ import ManageCampaignPage from "./ManageCampaign";
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import { mediaQueryRanges } from "../../assets/styles/variables";
 
 const styles = css`
-  &:after {
-    content: "";
-    clear: both;
-    display: table;
-  }
-  .sidebar-wrapper {
-    width: 20%;
-    position: sticky;
-    top: 0;
-    left: 0;
+  .content-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .content-wrapper {
-    width: 80%;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-left: 1px solid rgba(0, 0, 0, 0.15);
-  }
-
-  .content-wrapper,
-  .sidebar-wrapper {
-    float: left;
     padding-top: 20px;
+  }
+  
+  @media ${mediaQueryRanges.largeAndUp} {
+    
+    .sidebar-wrapper {
+      padding-top: 20px;
+    }
+  
+    &.portal-wrapper {
+      display: flex;
+    }
+    
+    .sidebar-wrapper {
+      width: 20%;
+      
+      > div {
+        position: sticky;
+        top: 10px;
+        left: 0;
+      }
+    }
+    
+    
+    .content-wrapper { 
+      width: 80%;
+      border-left: 1px solid rgba(0, 0, 0, 0.15);
+    }
   }
 `;
 
@@ -46,16 +58,7 @@ const Portal = props => {
     <PageHoc>
       <div css={styles} className={"portal-wrapper"}>
         <aside className={"sidebar-wrapper"}>
-          <Sidebar
-            links={[
-              { url: "/dashboard", label: "Dashboard" },
-              { url: "/contributions", label: "Contributions" },
-              { url: "/expenses", label: "Expenses" },
-              { url: "/visualize", label: "Visualize" },
-              { url: "/manage-portal", label: "Manage Portal" },
-              { url: "/manage-campaign", label: "Manage Campaign" }
-            ]}
-          />
+          <Sidebar />
         </aside>
         <main className={"content-wrapper"}>
           <WithPermissions>

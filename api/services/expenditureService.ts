@@ -7,7 +7,7 @@ import {
     getExpendituresByGovernmentIdAsync
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { getConnection } from 'typeorm';
+import { getConnection, UpdateResult } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 
@@ -112,6 +112,54 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
             page: options.page || 0,
             perPage: options.perPage || 100
         });
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IUpdateExpenditureAttrs {
+    id: number;
+    currentUserId: number;
+    campaignId: number;
+    governmentId: number;
+    type?: ExpenditureType;
+    subType?: ExpenditureSubType;
+    payeeType?: PayeeType;
+    name?: string;
+    address1?: string;
+    address2?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    amount?: number;
+    description?: string;
+    status?: ExpenditureStatus;
+}
+
+export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {
+    try {
+        const defaultConn = getConnection('default');
+        const expenditureRepository = defaultConn.getRepository('Expenditure');
+        const expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
+            relations: ['campaign', 'government']
+        })) as Expenditure;
+        const attrs = Object.assign({}, expenditureAttrs);
+        delete attrs.currentUserId;
+        delete attrs.id;
+        if (expenditure.status === ExpenditureStatus.DRAFT) {
+            const hasCampaignPermissions =
+                (await isCampaignAdminAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
+                (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
+                (await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id));
+            if (hasCampaignPermissions) {
+                return expenditureRepository.save(expenditure);
+            } else {
+                throw new Error('User is not permitted to update expenditures for this campaign.');
+            }
+        } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
+            throw new Error('User is not permitted to update expenditures in a non-draft state for this campaign.');
+        }
+        return expenditureRepository.save(expenditure);
     } catch (e) {
         throw new Error(e.message);
     }
