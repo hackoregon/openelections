@@ -32,7 +32,7 @@ const columnInfo = [
 ];
 
 const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
-  const isLoading = isUserListLoading && !(Array.isArray(userList) && userList.length > 0)
+  const isLoading = isUserListLoading && !Array.isArray(userList)
   return (
     <PageHoc>
       <h1>Manage Campaign Portal</h1>
