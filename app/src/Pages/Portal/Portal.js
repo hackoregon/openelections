@@ -20,33 +20,34 @@ const styles = css`
     padding-right: 20px;
   }
 
-  .content-wrapper,
-  .sidebar-wrapper {
+  .content-wrapper {
     padding-top: 20px;
   }
   
   @media ${mediaQueryRanges.largeAndUp} {
-    &:after {
-      content: "";
-      clear: both;
-      display: table;
+    
+    .sidebar-wrapper {
+      padding-top: 20px;
+    }
+  
+    &.portal-wrapper {
+      display: flex;
     }
     
     .sidebar-wrapper {
       width: 20%;
-      position: sticky;
-      top: 0;
-      left: 0;
+      
+      > div {
+        position: sticky;
+        top: 10px;
+        left: 0;
+      }
     }
+    
     
     .content-wrapper { 
       width: 80%;
       border-left: 1px solid rgba(0, 0, 0, 0.15);
-    }
-    
-    .content-wrapper,
-    .sidebar-wrapper {
-      float: left;
     }
   }
 `;

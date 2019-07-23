@@ -1,6 +1,8 @@
 // eslint-disable-next-line
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
+import { ArrowDropDown } from '@material-ui/icons';
+import { IconButton } from '@material-ui/core';
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -8,13 +10,16 @@ import { accents, mediaQueryRanges } from "../../assets/styles/variables";
 
 const styles = css`
   font-size: 20px;
-
+  
+  .sidebar-top {
+    padding: 20px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
   .campaign-name {
     font-size: 18px;
-    color: rgba(0, 0, 0, 0.6);
     font-weight: normal;
-    padding: 5px 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
 
   ul {
@@ -41,16 +46,35 @@ const styles = css`
     }
   }
   
-  button.toggle {
+  .arrow {
+    display: none;
     float: right;
+    transform: translateX(-10px);
+    transition: transform 0.2s;
   }
   
   @media ${mediaQueryRanges.mediumAndDown} {
-    button.toggle {
-      display: none;
+    background-color: rgba(0,0,0,0.04);
+    
+    .sidebar-top {
+      cursor: pointer;
     }
     
-    ul:not(.active) {
+    ul {
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .arrow {
+      display: block;
+      font-size: 1.5em;
+    }
+    
+    &.dropdown-active .arrow {
+      transform: rotateZ(180deg) translateX(10px);
+    }
+    
+    
+    &:not(.dropdown-active) ul {
       display: none;
     }
   }
@@ -70,7 +94,6 @@ export default class Sidebar extends Component {
             {url: "/contributions", label: "Contributions"},
             {url: "/expenses", label: "Expenses"},
             {url: "/visualize", label: "Visualize"},
-            {url: "/visualize", label: "Visualize"},
             ...((props.governmentId) ? [{url: "/campaigns", label: "Campaigns"}] : []),
             {url: "/manage-portal", label: "Manage Portal"}
         ];
@@ -84,10 +107,12 @@ export default class Sidebar extends Component {
         const {governmentId, campaignName} = this.props;
 
         return (
-            <div css={styles}>
-                <button onClick={this.toggleSidebar.bind(this)} className="toggle" aria-hidden={true}>toggle</button>
-                <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : campaignName}</h2>
-                <ul className={(this.state.isToggledOn) ? 'active' : ''}>
+            <div css={styles} onClick={this.toggleSidebar.bind(this)} className={(this.state.isToggledOn) ? 'dropdown-active' : ''}>
+                <div className="sidebar-top">
+                    <ArrowDropDown className={'arrow'} />
+                    <h2 className={"campaign-name"}>{governmentId ? 'City Portal' : 'Campaign Name'}</h2>
+                </div>
+                <ul>
                     {this.links.map(link => (
                         <li key={link.url}>
                             <NavLink to={link.url}>{link.label}</NavLink>
