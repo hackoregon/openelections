@@ -66,6 +66,10 @@ exports[`<Portal/> should be defined 1`] = `
               "label": "Manage Portal",
               "url": "/manage-portal",
             },
+            Object {
+              "label": "Manage Campaign",
+              "url": "/manage-campaign",
+            },
           ]
         }
       />

@@ -9,6 +9,7 @@ import ContributionsPage from "./Contributions/Contributions";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"
+import ManageCampaignPage from "./ManageCampaign";
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -51,7 +52,8 @@ const Portal = props => {
               { url: "/contributions", label: "Contributions" },
               { url: "/expenses", label: "Expenses" },
               { url: "/visualize", label: "Visualize" },
-              { url: "/manage-portal", label: "Manage Portal" }
+              { url: "/manage-portal", label: "Manage Portal" },
+              { url: "/manage-campaign", label: "Manage Campaign" }
             ]}
           />
         </aside>
@@ -91,6 +93,11 @@ const Portal = props => {
                         exact
                         path="/contributions"
                         component={ContributionsPage}
+                      />
+                      <Route
+                        exact
+                        path="/manage-campaign"
+                        component={ManageCampaignPage}
                       />
                     </Switch>
                   </CSSTransition>

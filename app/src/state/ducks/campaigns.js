@@ -5,6 +5,7 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
+import { flashMessage } from "redux-flash";
 
 export const STATE_KEY = "campaigns";
 
@@ -65,11 +66,14 @@ export function createCampaignForGovernment(campaignAttrs) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createCampaign.success());
+        dispatch(flashMessage('Campaign created', {props:{variant:'success'}}));
       } else {
         dispatch(actionCreators.createCampaign.failure());
+        dispatch(flashMessage('Unable to create Campaign', {props:{variant:'error'}}));        
       }
     } catch (error) {
       dispatch(actionCreators.createCampaign.failure(error));
+      dispatch(flashMessage('Unable to create Campaign - ' + error, {props:{variant:'error'}}));
     }
   };
 }
