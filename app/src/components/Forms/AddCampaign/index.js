@@ -30,8 +30,10 @@ const AddCampaign = props => (
   <FormModal>
     <AddCampaignForm 
       onSubmit={({ name, email, firstName, lastName, governmentId, officeSought }) => {
+        console.log(name, email, firstName, lastName)
         console.log("goverment ID", governmentId)
         console.log("office sought", officeSought) 
+        console.log(props)
         props.createCampaignForGovernment(
             governmentId,
             name,
@@ -88,7 +90,9 @@ const AddCampaign = props => (
 );
 
 export default connect(
-  state => ({}),
+  state => ({ 
+    governmentId: state.auth.me.permissions[0]
+  }),
   dispatch => {
     return {
       createCampaignForGovernment: (

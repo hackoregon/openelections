@@ -40,7 +40,7 @@ const fields = {
 const AddCampaignForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={["AddCampaign"]}
+    sections={["AddCampaign", "test"]}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >
