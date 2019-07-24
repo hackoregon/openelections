@@ -64,7 +64,14 @@ exports[`<Dashboard/> should be defined 1`] = `
         className="card"
       >
         <LinksCard
-          links={Array []}
+          links={
+            Array [
+              Object {
+                "label": "Reset Password",
+                "path": "/reset-password",
+              },
+            ]
+          }
         />
       </div>
     </div>

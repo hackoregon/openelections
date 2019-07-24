@@ -102,13 +102,15 @@ const Portal = props => {
                         component={ContributionsPage}
                       />
                       <Route 
-			exact 
-			path="/expenses" 
-			component={ExpensesPage} />
+                        exact 
+                        path="/expenses" 
+                        component={ExpensesPage} 
+                      />
                       <Route 
-			exact 
-			path="/campaigns" 
-			component={ManageCampaignPage} />
+                        exact 
+                        path="/campaigns" 
+                        component={ManageCampaignPage} 
+                      />
                     </Switch>
                   </CSSTransition>
                 </TransitionGroup>
