@@ -9,43 +9,32 @@ exports[`<Portal/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "1j037t",
+        "name": "16cx78l",
         "next": undefined,
         "styles": "
-  .content-wrapper {
-    padding-left: 20px;
-    padding-right: 20px;
+  &:after {
+    content: \\"\\";
+    clear: both;
+    display: table;
+  }
+  .sidebar-wrapper {
+    width: 20%;
+    position: sticky;
+    top: 0;
+    left: 0;
   }
 
   .content-wrapper {
-    padding-top: 20px;
+    width: 80%;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
   }
-  
-  @media only screen and (min-width : 993px) {
-    
-    .sidebar-wrapper {
-      padding-top: 20px;
-    }
-  
-    &.portal-wrapper {
-      display: flex;
-    }
-    
-    .sidebar-wrapper {
-      width: 20%;
-      
-      > div {
-        position: sticky;
-        top: 10px;
-        left: 0;
-      }
-    }
-    
-    
-    .content-wrapper { 
-      width: 80%;
-      border-left: 1px solid rgba(0, 0, 0, 0.15);
-    }
+
+  .content-wrapper,
+  .sidebar-wrapper {
+    float: left;
+    padding-top: 20px;
   }
 ",
       }
@@ -54,7 +43,32 @@ exports[`<Portal/> should be defined 1`] = `
     <aside
       className="sidebar-wrapper"
     >
-      <Connect(Sidebar) />
+      <Connect(Sidebar)
+        links={
+          Array [
+            Object {
+              "label": "Dashboard",
+              "url": "/dashboard",
+            },
+            Object {
+              "label": "Contributions",
+              "url": "/contributions",
+            },
+            Object {
+              "label": "Expenses",
+              "url": "/expenses",
+            },
+            Object {
+              "label": "Visualize",
+              "url": "/visualize",
+            },
+            Object {
+              "label": "Manage Portal",
+              "url": "/manage-portal",
+            },
+          ]
+        }
+      />
     </aside>
     <main
       className="content-wrapper"
