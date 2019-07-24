@@ -101,14 +101,15 @@ const Portal = props => {
                         path="/contributions"
                         component={ContributionsPage}
                       />
-                      <Route 
-			exact 
-			path="/expenses" 
-			component={ExpensesPage} />
-                      <Route 
-			exact 
-			path="/campaigns" 
-			component={ManageCampaignPage} />
+<<<<<<< HEAD
+                      <Route exact path="/expenses" component={ExpensesPage} />
+=======
+                      <Route
+                        exact
+                        path="/campaigns"
+                        component={ManageCampaignPage}
+                      />
+>>>>>>> parent of 8f2e50c... Merge pull request #495 from hackoregon/revert-473-feature/Add-New-Campaign-Flow-GH-294
                     </Switch>
                   </CSSTransition>
                 </TransitionGroup>
