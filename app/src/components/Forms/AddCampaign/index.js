@@ -29,7 +29,9 @@ const USER_ROLES = {
 const AddCampaign = props => (
   <FormModal>
     <AddCampaignForm 
-      onSubmit={({ name, email, firstName, lastName, governmentId=1,officeSought = 'mayor' }) => {
+      onSubmit={({ name, email, firstName, lastName, governmentId, officeSought }) => {
+        console.log("goverment ID", governmentId)
+        console.log("office sought", officeSought) 
         props.createCampaignForGovernment(
             governmentId,
             name,
@@ -85,7 +87,6 @@ const AddCampaign = props => (
   </FormModal>
 );
 
-// export default AddCampaign;
 export default connect(
   state => ({}),
   dispatch => {

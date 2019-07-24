@@ -12,9 +12,9 @@ const formModalWrapper = css`
   padding: 40px 40px;
 `;
 
+// TODO: need to fix position, absolute causes other form styling to fail
 const center = css`
   left: calc(50vw - 175px);
-  position: absolute;
 `;
 
 const FormModal = ({ children }) => (

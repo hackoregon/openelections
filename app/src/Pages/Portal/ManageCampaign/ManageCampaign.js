@@ -63,9 +63,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   name: "Add New Campaign",
                   buttonType: "primary",
                   isFreeAction: true,
-                  onClick: () => {
-                    props.showModal({ component: "AddCampaign" });
-                  }
+                  onClick: () => props.showModal({ component: "AddCampaign" })
                 }
               ]}
               components={{
