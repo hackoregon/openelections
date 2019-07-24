@@ -109,7 +109,7 @@ const ActivityStream = () => {
   return (
     <div css={styles}>
       <hr css={styles.divider} />
-      <h2 css={styles.title}>Activity Stream</h2>
+      <h2 css={styles.title}>Transaction History</h2>
       <div css={styles.timelineGroup}>
         <p css={styles.timestamp}>{created.timestamp}</p>
         <div css={styles.timeline} />
