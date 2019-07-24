@@ -6,6 +6,7 @@ import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
 import ManageUserPage from "./ManagePortal/ManageUser/index";
 import ContributionsPage from "./Contributions/Contributions";
+import ExpensesPage from "./Expenses/Expenses";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"
@@ -74,6 +75,9 @@ const Portal = props => {
                     <Switch location={location}>
                       <Route
                         exact
+                        path="/dashboard"
+                        component={DashboardPage}
+                      />
                         path="/manage-portal"
                         component={ManagePortalPage}
                       />
@@ -96,6 +100,7 @@ const Portal = props => {
                         path="/contributions"
                         component={ContributionsPage}
                       />
+                      <Route exact path="/expenses" component={ExpensesPage} />
                     </Switch>
                   </CSSTransition>
                 </TransitionGroup>

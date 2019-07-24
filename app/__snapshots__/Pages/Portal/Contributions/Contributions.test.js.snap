@@ -2,8 +2,6 @@
 
 exports[`<Contributions/> should be defined 1`] = `
 <PageHoc>
-  <h1>
-    Contributions
-  </h1>
+  <Connect(ContributionNeedsReview) />
 </PageHoc>
 `;
