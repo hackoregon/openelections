@@ -134,10 +134,10 @@ const ActivityStream = () => {
       <p css={styles.reply}>Reply</p>
       <div css={styles.boxAndButton}>
         <p css={styles.messageBox}>
-          <span css={styles.message}>Message</span>
+          <span css={styles.message}>Message to Campaign</span>
         </p>
         <Link to={"#"} css={styles.sendToCampaignButton}>
-          Submit and send back to the Campaign
+          Submit Message to Campaign
         </Link>
       </div>
     </div>
