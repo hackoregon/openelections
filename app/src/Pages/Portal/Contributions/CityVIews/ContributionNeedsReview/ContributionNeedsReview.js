@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import PageHoc from "../../../../components/PageHoc/PageHoc";
-import ContributionNeedsReviewForm from "../../../../../components/Forms/CityViews/ContributionNeedsReview/index";
 import { connect } from "react-redux";
-import { login } from "../../../../state/ducks/auth";
+import { login } from "../../../../../state/ducks/auth";
+import PageHoc from '../../../../../components/PageHoc/PageHoc';
+import ContributionNeedsReviewForm from '../../../../../components/Forms/CityViews/ContributionNeedsReview/ContributionNeedsReviewForm';
 
 class ContributionNeedsReview extends Component {
   componentWillUpdate(newprops) {

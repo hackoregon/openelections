@@ -1,5 +1,5 @@
 import React from "react";
-import ContributionNeedsReview from "./ContributionNeedsReview";
+import ContributionNeedsReview from "./index";
 
 describe("<ContributionNeedsReview/>", () => {
   it("should be defined", () => {
