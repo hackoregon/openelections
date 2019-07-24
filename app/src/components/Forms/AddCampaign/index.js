@@ -29,7 +29,7 @@ const USER_ROLES = {
 const AddCampaign = props => (
   <FormModal>
     <AddCampaignForm 
-      onSubmit={({ name, email, firstName, lastName, governmentId=1,officeSought = 'mayor' }) => {
+      onSubmit={({ name, email, firstName, lastName, governmentId, officeSought}) => {
         props.createCampaignForGovernment(
             governmentId,
             name,
