@@ -61,7 +61,8 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   icon: "none", // icon is needed here or it will error.
                   name: "Manage",
                   buttonType: "manage",
-                  onClick: (event, rowData) => props.history.push({ pathname: "/manage-portal/manage-user", state: rowData })
+                  onClick: (event, rowData) => {
+                    // props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
                 }
               ]}
               components={{
