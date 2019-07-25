@@ -40,6 +40,8 @@
         "pg-hstore": "^2.3.2",
         "reflect-metadata": "^0.1.13",
         "request": "^2.88.0",
+        "swagger-jsdoc": "^3.3.0",
+        "swagger-ui-express": "^4.0.7",
         "ts-node": "3.3.0",
         "tsconfig-paths": "3.8.0",
         "typeorm": "^0.2.16",
