@@ -25,7 +25,7 @@ const columnInfo = [
 const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const isLoading = isCampaignListLoading && !(Array.isArray(campaignList));
   // Check if campaign list has loaded, if not, return an empty list.
-  campaignList = campaignList ? campaignList : []
+  campaignList = campaignList || []
 
   return (
     <PageHoc>
