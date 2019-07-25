@@ -63,6 +63,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   buttonType: "manage",
                   onClick: (event, rowData) => {
                     // props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
+                  }
                 }
               ]}
               components={{
