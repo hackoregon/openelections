@@ -147,3 +147,8 @@ export const getCampaignName = state => {
     ? getCampaignInfo(state)[id].name
     : "Campaign";
 };
+
+export const isCampaignsLoading = createSelector(
+  rootState,
+  state => state.campaigns.isLoading
+)

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import ManageCampaign from "./ManageCampaign";
 //import { getCampaigns, getCampaignList, isCampaignsLoading } from "../../../state/ducks/users";
 import { showModal } from "../../../state/ducks/modal";
+import { isCampaignsLoading } from "../../../state/ducks/campaigns";
 
 class ManageCampaignPage extends React.Component {
   constructor(props) {
@@ -17,22 +18,22 @@ class ManageCampaignPage extends React.Component {
    // }
   }
   render () {
+    console.log(this.props)
     return <ManageCampaign {...this.props} />;
   }
 }
 
 export default connect(
   state => ({
-   // isCampaignListLoading: isCampaignsLoading(state),
-   // campaignList: getCampaignList(state),
-    campaignId: state.campaigns.currentCampaignId
+    // campaignList: getCampaignList(state),
+    isCampaignListLoading: isCampaignsLoading(state),
+    campaignId: state.campaigns.currentCampaignId,
+    state
   }),
   dispatch => {
     return {
       // getCampaigns: (governmentId) => dispatch(getCampaigns(governmentId)),
-      showModal: (payload) => {
-        dispatch(showModal( payload));
-      }
+      showModal: (payload) => dispatch(showModal( payload))
     };
   }
 )(ManageCampaignPage);

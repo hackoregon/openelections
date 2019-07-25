@@ -51,9 +51,8 @@ const AddCampaign = props => (
         formSections,
         isValid,
         handleCancel,
-        handleSubmit /* isDirty, isSubmitting */
+        handleSubmit 
       }) => {
-        console.log(handleSubmit())
         return (
         <React.Fragment>
           <p css={formTitle}>Add New Campaign</p>

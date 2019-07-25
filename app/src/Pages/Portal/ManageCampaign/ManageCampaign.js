@@ -24,8 +24,7 @@ const columnInfo = [
 
 const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const isLoading = isCampaignListLoading && !(Array.isArray(campaignList));
-  campaignList =[{}];
-  console.log(isCampaignListLoading, campaignList)
+  campaignList =[];
 
   return (
     <PageHoc>
@@ -37,7 +36,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
               isLoading={isLoading}
               title={`Campaigns (${isLoading ? 'Loading' : campaignList.length})`}
               columns={columnInfo}
-              data={isLoading ? [{}] : campaignList}
+              data={isLoading ? [] : campaignList}
               localization={{
                 body: {
                   emptyDataSourceMessage: "No Users"
