@@ -17,7 +17,7 @@ const columnInfo = [
     field: "NotSet"
   },
   {
-    title: "Email",
+    title: "Contact Email",
     field: "email"
   }
 ];
