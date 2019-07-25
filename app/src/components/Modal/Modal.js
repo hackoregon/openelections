@@ -26,10 +26,16 @@ const errorStyle = css`
 `;
 
 const Modal = props => {
-  const handleClose = x => {
-    console.log("me here", x);
-    props.clearModal();
-  };
+  const handleClose = x => props.clearModal()
+  const currentModalOptions = ModalOptions[props.getModalState.currentModal]
+  const ModalContent = () => React.createElement(currentModalOptions, props.getModalState._props)
+  const ErrorMessage = () =>
+    <div css={errorStyle}>
+      <br />
+      <br />
+      <h2>Error loading modal</h2>
+    </div>
+
   return (
     <ModalMaterial
       aria-label={props.getModalState.currentModal + " modal"}
@@ -43,20 +49,10 @@ const Modal = props => {
               <Close style={{ fontSize: "26px", color: "black" }} />
             </IconButton>
           </div>
-          {ModalOptions[props.getModalState.currentModal] != undefined ? (
-           // console.log(props.getModalState)
-            React.createElement(ModalOptions[props.getModalState.currentModal], props.getModalState._props)
-          ) : (
-            <div css={errorStyle}>
-              <br />
-              <br />
-              <h2>Error loading modal</h2>
-            </div>
-          )}
+          {currentModalOptions != undefined ? <ModalContent /> : <ErrorMessage />}
         </div>
       </div>
     </ModalMaterial>
   );
 };
-
 export default Modal;

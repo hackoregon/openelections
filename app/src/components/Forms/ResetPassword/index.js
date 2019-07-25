@@ -14,8 +14,16 @@ const formTitle = css`
 const buttonWrapper = css`
   margin-top: 30px;
 `;
+const modalStyle = css`
+  position: absolute;
+  width: 350px;
+  background: white;
+  top: 8vh;
+  left: calc(50vw - 175px);
+`;
 
 const ResetPassword = (props) => (
+  <div css={modalStyle}>
   <FormModal>
     <ResetPasswordForm
       onSubmit={
@@ -57,6 +65,7 @@ const ResetPassword = (props) => (
       )}
     </ResetPasswordForm>
   </FormModal>
+  </div>
 );
 
 export default ResetPassword;

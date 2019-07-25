@@ -19,7 +19,7 @@ const LinksCard = props => {
 		<div css={styles}>
 			<h3>Quick Links</h3>
 			<ul>
-				{props.links.map(link => <li><NavLink to={link.path}>{link.label}</NavLink></li>)}
+				{props.links.map((link, key) => <li key={key}><NavLink to={link.path}>{link.label}</NavLink></li>)}
 			</ul>
 		</div>
 	);

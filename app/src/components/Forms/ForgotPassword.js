@@ -23,7 +23,6 @@ export const ForgotPasswordForm = props => {
 
   return (
     <form>
-      {console.log({ props })}
       <p>Enter your credentials to sign into the portal.</p>
       <TextField
         id="email"
@@ -36,7 +35,6 @@ export const ForgotPasswordForm = props => {
         onChange={change.bind(null, "email")}
         onBlur={e => {
           handleBlur(e);
-          console.log("blurring", e);
         }}
         fullWidth
       />

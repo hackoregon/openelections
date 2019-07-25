@@ -50,6 +50,8 @@ const Routes = props => {
                   component={AddContributionPage}
                 />
                 <Route exact path="/add-expense" component={AddExpensePage} />
+                <Route
+                  exact 
                   path="/reset-password"
                   component={ResetPassword}
                 />
