@@ -79,6 +79,8 @@ const Portal = props => {
                         path="/dashboard"
                         component={DashboardPage}
                       />
+                      <Route
+                        exact
                         path="/manage-portal"
                         component={ManagePortalPage}
                       />
