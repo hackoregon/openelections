@@ -52,10 +52,11 @@ const AddCampaign = props => (
         isValid,
         handleCancel,
         handleSubmit /* isDirty, isSubmitting */
-      }) => (
+      }) => {
+        console.log(handleSubmit())
+        return (
         <React.Fragment>
           <p css={formTitle}>Add New Campaign</p>
-          <div css={leftAlign}>{formSections.AddCampaignRole}</div>
           <p>
             Enter the user's information and we will send them an email with
             instructions to join your portal.
@@ -80,7 +81,7 @@ const AddCampaign = props => (
             </Button>
           </div>
         </React.Fragment>
-      )}
+      )}}
     </AddCampaignForm>
   </FormModal>
 );
