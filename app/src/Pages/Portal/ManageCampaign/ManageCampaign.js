@@ -24,7 +24,6 @@ const columnInfo = [
 
 const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const isLoading = isCampaignListLoading && !(Array.isArray(campaignList));
-  console.log(campaignList)
 
   return (
     <PageHoc>
@@ -62,6 +61,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   name: "Manage",
                   buttonType: "manage",
                   onClick: (event, rowData) => {
+                    console.log(rowData)
                     // props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
                   }
                 }
