@@ -87,7 +87,7 @@ export function createCampaignForGovernment(
       officeSought
     }
     try {
-      const response = await api.createCampaignForGovernment(campaignAttrs);
+    const response = await api.createCampaignForGovernment(campaignAttrs);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
@@ -115,10 +115,11 @@ export function createCampaignForGovernment(
 export function getCampaigns(governmentId) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getCampaigns.request());
+
     try {
       const response = await api.getCampaignsForGovernment(governmentId);
       if (Array.isArray(response)) {
-        const data = normalize(response, schema.campaign);
+        const data = normalize(response, [schema.campaign]);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getCampaigns.success());
       } else {
@@ -147,6 +148,11 @@ export const getCampaignName = state => {
     ? getCampaignInfo(state)[id].name
     : "Campaign";
 };
+
+export const getCampaignList = createSelector(
+  rootState,
+  state => Object.keys(state.campaigns).filter(k => !isNaN(k)).map(k => state.campaigns[k])
+)
 
 export const isCampaignsLoading = createSelector(
   rootState,

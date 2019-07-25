@@ -24,7 +24,7 @@ const columnInfo = [
 
 const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const isLoading = isCampaignListLoading && !(Array.isArray(campaignList));
-  campaignList =[];
+  console.log(campaignList)
 
   return (
     <PageHoc>
@@ -61,9 +61,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   icon: "none", // icon is needed here or it will error.
                   name: "Manage",
                   buttonType: "manage",
-                  onClick: (event, rowData) => {
-                    // props.history.push({ pathname: "/manage-portal/manage-user", state: rowData });
-                  }
+                  onClick: (event, rowData) => props.history.push({ pathname: "/manage-portal/manage-user", state: rowData })
                 }
               ]}
               components={{
