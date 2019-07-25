@@ -19,7 +19,16 @@ const forgotLink = css`
   align-self: flex-start;
 `;
 
+// TODO: Re-think <FormModal > wrapper centralize modalStyle CSS
+const modalStyle = css`
+  position: absolute;
+  width: 350px;
+  background: white;
+  top: 8vh;
+  left: calc(50vw - 175px);
+`;
  const SignIn =(props)=> (
+  <div css={modalStyle}>
     <FormModal >
       <SignInForm 
       onSubmit={
@@ -64,6 +73,7 @@ const forgotLink = css`
       )}
       </SignInForm>
     </FormModal>
-    );
+  </div>
+ );
 
 export default SignIn;
