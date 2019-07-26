@@ -6,22 +6,13 @@ import ContributionReady from "../../../components/Forms/ContributionReady";
 import ContributionSubmitted from "./ContributionSubmitted/ContributionSubmitted";
 import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
-// Switch statement for routing
-{/* CAMPAIGN PAGES */}
-{/* <AddContribution /> */}
-{/* <ContributionReady /> */}
-{/* <ContributionSubmitted /> */}
-
-{/* CITY PAGES */}
-{/* <ContributionNeedsReview /> */}
-
-{/* <h1>Contributions</h1> */}
 const ContributionsPage = props => {
   return (
     <PageHoc>
       <Route 
         render={({ location }) => (
           <Switch location={location}>
+            {/* CAMPAIGN PAGES */}
             <Route 
               path="/"
               component={() => <h1>Contributions</h1>}
@@ -41,6 +32,7 @@ const ContributionsPage = props => {
               path="/submitted"
               component={ContributionSubmitted}
             />
+            {/* TODO: CITY PAGES */}
           </Switch>
         )}
       />
