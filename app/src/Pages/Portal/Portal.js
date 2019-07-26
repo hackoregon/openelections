@@ -103,7 +103,11 @@ const Portal = props => {
                         path="/contributions"
                         component={ContributionsPage}
                       />
-                      <Route exact path="/expenses" component={ExpensesPage} />
+                      <Route 
+                        exact 
+                        path="/expenses" 
+                        component={ExpensesPage} 
+                      />
                       <Route
                         exact
                         path="/campaigns"
