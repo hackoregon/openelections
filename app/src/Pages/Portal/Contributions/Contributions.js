@@ -14,7 +14,7 @@ const ContributionsPage = props => {
           {/* CAMPAIGN PAGES */}
           <Route 
             exact 
-            path="/add"
+            path="/contributions/add"
             component={AddContribution}
           />
           <Route 
