@@ -5,9 +5,6 @@ import { showModal } from "../../../state/ducks/modal";
 import { isCampaignsLoading, getCampaigns, getCampaignList } from "../../../state/ducks/campaigns";
 
 class ManageCampaignPage extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount() {
     this.props.getCampaigns(this.props.governmentId);
   }
