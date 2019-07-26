@@ -7,7 +7,7 @@ import { login } from "../../../../state/ducks/auth";
 class AddContribution extends Component {
   componentWillUpdate(newprops) {
     if (!(typeof newprops.state.me == "undefined" || !newprops.state.me)) {
-      this.props.history.push("/dashboard");
+      // this.props.history.push("/dashboard");
     }
   }
   render() {

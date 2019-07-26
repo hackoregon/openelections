@@ -1,15 +1,17 @@
+import React from "react";
 import { connect } from "react-redux";
-import Contributions from "./Contributions";
-// import { isLoggedIn } from "../../state/ducks/auth";
+import Contributions from './Contributions';
 
-export default connect(
-state => { 
-    return {state: state.auth}
-  }, 
-  dispatch => {
-    return {
-      login: (email,password) => dispatch(login(email,password)),
-      dispatch
-      }
-    }
-)(Contributions);
+class ContributionsPage extends React.Component {
+  render() {
+    return <Contributions {...this.props}/>
+  }
+}
+
+/*
+{
+  location: state.location, 
+  match: state.match
+}
+*/
+export default connect(state => state)(ContributionsPage);

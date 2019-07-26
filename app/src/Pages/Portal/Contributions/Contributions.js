@@ -6,15 +6,23 @@ import ContributionSubmitted from "./ContributionSubmitted/ContributionSubmitted
 import ContributionsTable from "./ContributionsTable/ContributionsTable";
 // import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
-const ContributionsPage = props => {
+const Contributions = props => {
+  console.log(props)
+  const { match } = props
   return (
     <Route 
-      render={({ location }) => (
+      render={({ location }) => {
+        return (
         <Switch location={location}>
           {/* CAMPAIGN PAGES */}
           <Route 
             exact 
-            path="/contributions/add"
+            path={`${match.url}/`}
+            component={ContributionsTable} 
+          />
+          <Route 
+            exact 
+            path={`${match.url}/add`}
             component={AddContribution}
           />
           <Route 
@@ -27,11 +35,10 @@ const ContributionsPage = props => {
             path="/submitted"
             component={ContributionSubmitted}
           />
-          <Route component={ContributionsTable} />
           {/* TODO: CITY PAGES */}
         </Switch>
-      )}
+      )}}
     />
   );
 };
-export default ContributionsPage;
+export default Contributions;

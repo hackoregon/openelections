@@ -42,9 +42,7 @@ const ContributionsTable = ({ ...props }) => {
 		Action: props => (
 			<WithAdminPermissions>
 				<Button
-					onClick={event =>
-						props.action.onClick(event, props.data)
-					}
+					onClick={event => props.action.onClick(event, props.data)}
 					buttonType={props.action.buttonType}
 				>
 					{props.action.name}
