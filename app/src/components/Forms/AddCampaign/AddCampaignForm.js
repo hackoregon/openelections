@@ -2,6 +2,7 @@ import React from "react";
 import * as Yup from "yup";
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
+import SelectField from "../../Fields/SelectField";
 
 const fields = {
   name: {
@@ -13,7 +14,14 @@ const fields = {
   officeSought: {
     label: "Office Sought",
     section: "AddCampaign",
-    component: TextField,
+    component: SelectField,
+    options: {
+      values: [
+        "Mayor",
+        "Commissioner 1",
+        "Commissioner 4",
+      ]
+    },
     validation: Yup.string("Enter office sought").required("Office is required")
   },
   email: {
