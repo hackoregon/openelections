@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Contributions/> should be defined 1`] = `
-<PageHoc>
-  <Connect(ContributionNeedsReview) />
-</PageHoc>
+<Route
+  render={[Function]}
+/>
 `;
