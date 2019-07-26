@@ -12,13 +12,13 @@ const formModalWrapper = css`
   padding: 40px 40px;
 `;
 
-const center = css`
-  left: calc(50vw - 175px);
-  position: absolute;
-`;
+// TODO: need to fix position, absolute causes other form styling to fail
+// const center = css`
+//   left: calc(50vw - 175px);
+// `;
 
 const FormModal = ({ children }) => (
-  <div css={[formModalWrapper, center]}>
+  <div css={[formModalWrapper]}>
     {/* <Paper elevation={1} css={paper}> */}
     {children}
     {/* </Paper> */}

@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import FormModal from "../../FormModal/FormModal";
 import Button from "../../Button/Button";
-import AddUserForm from "./AddUserForm";
-import { inviteUser } from "../../../state/ducks/users";
+import AddCampaignForm from "./AddCampaignForm";
+import { createCampaignForGovernment } from "../../../state/ducks/campaigns";
 import { clearModal } from "../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -21,21 +21,27 @@ const leftAlign = css`
 `;
 
 const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
+  Admin: "campaign_admin",
+  Staff: "campaign_staff"
+};
 // Todo: get from API
 
-const AddUser = props => (
+const AddCampaign = props => (
   <FormModal>
-    <AddUserForm
-      onSubmit={({ email, firstName, lastName, userRole }) => {
-        const role = USER_ROLES[userRole];
-        props.inviteUser(email, firstName, lastName, 1, role);
+    <AddCampaignForm 
+      onSubmit={({ name, email, firstName, lastName, officeSought }) => {
+        props.createCampaignForGovernment(
+            props.governmentId,
+            name,
+            officeSought,
+            email, 
+            firstName, 
+            lastName  
+        );
         props.clearModal();
       }}
       initialValues={{
-        userRole: "Staff",
+        name: "",
         email: "",
         firstName: "",
         lastName: ""
@@ -45,16 +51,16 @@ const AddUser = props => (
         formSections,
         isValid,
         handleCancel,
-        handleSubmit /* isDirty, isSubmitting */
-      }) => (
+        handleSubmit 
+      }) => {
+        return (
         <React.Fragment>
-          <p css={formTitle}>Add a New User</p>
-          <div css={leftAlign}>{formSections.addUserRole}</div>
+          <p css={formTitle}>Add New Campaign</p>
           <p>
             Enter the user's information and we will send them an email with
             instructions to join your portal.
           </p>
-          {formSections.addUser}
+          {formSections.AddCampaign}
           <div css={buttonWrapper}>
             <Button
               buttonType="cancel"
@@ -74,17 +80,33 @@ const AddUser = props => (
             </Button>
           </div>
         </React.Fragment>
-      )}
-    </AddUserForm>
+      )}}
+    </AddCampaignForm>
   </FormModal>
 );
 
-// export default AddUser;
 export default connect(
-  state => ({}),
+  state => ({ 
+    governmentId: state.auth.me.permissions[0].governmentId
+  }),
   dispatch => {
     return {
+      createCampaignForGovernment: (
+        governmentId,
+        name,
+        officeSought,
+        email,
+        firstName,
+        lastName
+        ) => dispatch(createCampaignForGovernment(
+        governmentId,
+        name,
+        officeSought,
+        email,
+        firstName, 
+        lastName
+        )),
       clearModal: () => dispatch(clearModal())
     };
   }
-)(AddUser);
+)(AddCampaign);

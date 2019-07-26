@@ -11,6 +11,8 @@
 The following commands are available in this project:
 `yarn install` or `yarn --ignore-engines` if you get a node engine incompatability
 
+Install the necessary dependencies by running `yarn` in this directory.
+
 ### `yarn start`
 
 This runs the app in development mode on port 4000.
@@ -34,9 +36,11 @@ This will build your storybook app.
 
 ## Running the Front-End and Back-End together with seeded data
 
-1. `yarn start`(Allows you to use hot module reloading while developing. Will fail the docker build of app, which is ok)
-2. `docker-compose up -d` (`-d` for daemon)
-3. `docker-compose run --rm api npm run seed`
+Run the following command: `docker-compose up -d` (`-d` for daemon)
+
+- You will need to use `sudo` with this command as well, if you are developing with Linux
+
+Make sure node_modules are installed locally for the project to properly build.
 
 ## Adding Routes
 

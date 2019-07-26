@@ -10,6 +10,7 @@ import ExpensesPage from "./Expenses/Expenses";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"
+import ManageCampaignPage from "./ManageCampaign";
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -78,6 +79,8 @@ const Portal = props => {
                         path="/dashboard"
                         component={DashboardPage}
                       />
+                      <Route
+                        exact
                         path="/manage-portal"
                         component={ManagePortalPage}
                       />
@@ -101,6 +104,11 @@ const Portal = props => {
                         component={ContributionsPage}
                       />
                       <Route exact path="/expenses" component={ExpensesPage} />
+                      <Route
+                        exact
+                        path="/campaigns"
+                        component={ManageCampaignPage}
+                      />
                     </Switch>
                   </CSSTransition>
                 </TransitionGroup>
