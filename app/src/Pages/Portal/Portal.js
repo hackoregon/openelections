@@ -99,7 +99,6 @@ const Portal = props => {
                         component={DashboardPage}
                       />{" "}
                       <Route
-                        exact
                         path="/contributions"
                         component={ContributionsPage}
                       />

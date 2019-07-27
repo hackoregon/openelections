@@ -7,11 +7,4 @@ class ContributionsPage extends React.Component {
     return <Contributions {...this.props}/>
   }
 }
-
-/*
-{
-  location: state.location, 
-  match: state.match
-}
-*/
-export default connect(state => state)(ContributionsPage);
+export default connect(state => ({}))(ContributionsPage);

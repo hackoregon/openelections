@@ -7,7 +7,6 @@ import ContributionsTable from "./ContributionsTable/ContributionsTable";
 // import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
 const Contributions = props => {
-  console.log(props)
   const { match } = props
   return (
     <Route 
@@ -17,24 +16,25 @@ const Contributions = props => {
           {/* CAMPAIGN PAGES */}
           <Route 
             exact 
-            path={`${match.url}/`}
-            component={ContributionsTable} 
-          />
-          <Route 
-            exact 
             path={`${match.url}/add`}
             component={AddContribution}
           />
           <Route 
             exact 
-            path="/ready"
+            path={`${match.url}/ready`}
             component={ContributionReady}
           />
           <Route 
             exact
-            path="/submitted"
+            path={`${match.url}/submitted`}
             component={ContributionSubmitted}
           />
+          <Route 
+            exact 
+            path={`${match.url}/`}
+            component={ContributionsTable} 
+          />
+
           {/* TODO: CITY PAGES */}
         </Switch>
       )}}
