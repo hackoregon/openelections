@@ -145,6 +145,7 @@ export function getContributions(contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
+      console.log(response)
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
+import { getContributions } from "../../../../state/ducks/contributions"
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }
@@ -20,6 +21,7 @@ const columns = [
 ]
 
 const ContributionsTable = ({ ...props }) => {
+	console.log(props.getContributions({governmentId: 1, campaignId: 1, currentUserId: 1}))
 	// TODO add loading logic
 	const isLoading = false
 	// TODO Display count of submitted contributions
@@ -65,4 +67,9 @@ const ContributionsTable = ({ ...props }) => {
 	)
 }
 
-export default connect()(ContributionsTable);
+export default connect(
+	state => ({}),
+	dispatch => ({
+		getContributions: (data) => dispatch(getContributions(data))
+	})
+)(ContributionsTable);
