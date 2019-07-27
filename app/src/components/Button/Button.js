@@ -50,6 +50,11 @@ const remove = {
   lineHeight: "19px"
 };
 
+const greenStyle = {
+  backgroundColor: "#42B44A",
+  color: "#fff"
+};
+
 const buttonTypes = {
   submit: { type: "submit", variant: "contained", color: "primary" },
   primary: { type: "submit", variant: "contained", style: primaryOverrides },
@@ -58,7 +63,8 @@ const buttonTypes = {
   default: { type: "button", variant: "contained", color: "primary" },
   formDefault: { type: "button", variant: "contained", fullWidth: true, style: formDefaultStyle },
   formDefaultOutlined: { type: "button", variant: "outlined", fullWidth: true, style: formDefaultOutlinedStyle },
-  remove: { type: "button", variant: "contained", style: remove, size: "large" }
+  remove: { type: "button", variant: "contained", style: remove, size: "large" },
+  green: { type: "button", variant: "contained", style: greenStyle}
 };
 
 const Button = ({ buttonType, onClick, disabled, children }) => {

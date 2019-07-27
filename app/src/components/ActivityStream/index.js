@@ -109,7 +109,7 @@ const ActivityStream = () => {
   return (
     <div css={styles}>
       <hr css={styles.divider} />
-      <h2 css={styles.title}>Activity Stream</h2>
+      <h2 css={styles.title}>Transaction History</h2>
       <div css={styles.timelineGroup}>
         <p css={styles.timestamp}>{created.timestamp}</p>
         <div css={styles.timeline} />
@@ -134,10 +134,10 @@ const ActivityStream = () => {
       <p css={styles.reply}>Reply</p>
       <div css={styles.boxAndButton}>
         <p css={styles.messageBox}>
-          <span css={styles.message}>Message</span>
+          <span css={styles.message}>Message to Campaign</span>
         </p>
         <Link to={"#"} css={styles.sendToCampaignButton}>
-          Submit and send back to the Campaign
+          Submit Message to Campaign
         </Link>
       </div>
     </div>

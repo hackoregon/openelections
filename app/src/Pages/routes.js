@@ -10,8 +10,8 @@ import SignInPage from "./SignIn/SignIn";
 import SignUpPage from "./SignUp/SignUp";
 import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
 import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
-import AddContributionPage from "./Portal/Contributions/Contributions";
-import AddExpensePage from "./Portal/Expenses/Expenses";
+import ContributionPage from "./Portal/Contributions/Contributions";
+import ExpensePage from "./Portal/Expenses/Expenses";
 import Portal from "./Portal/Portal";
 import ResetPassword from "./ResetPassword/ResetPassword";
 
@@ -47,11 +47,11 @@ const Routes = props => {
                 <Route
                   exact
                   path="/add-contribution"
-                  component={AddContributionPage}
+                  component={ContributionPage}
                 />
-                <Route exact path="/add-expense" component={AddExpensePage} />
+                <Route exact path="/add-expense" component={ExpensePage} />
                 <Route
-                  exact 
+                  exact
                   path="/reset-password"
                   component={ResetPassword}
                 />
