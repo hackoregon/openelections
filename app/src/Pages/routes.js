@@ -46,10 +46,10 @@ const Routes = props => {
                 <Route exact path="/sign-up" component={SignUpPage} />
                 <Route
                   exact
-                  path="/contributions"
+                  path="/add-contribution"
                   component={ContributionPage}
                 />
-                <Route exact path="/expenses" component={ExpensePage} />
+                <Route exact path="/add-expense" component={ExpensePage} />
                 <Route
                   exact
                   path="/reset-password"
