@@ -204,81 +204,21 @@ const fields = {
     Yup.string("Select your city"),
     "Your city is required"
   ),
-  state: {
-    label: "State",
-    section: "contributorSection",
-    component: SelectField,
-    options: {
-      values: [
-        "AK",
-        "AL",
-        "AR",
-        "AS",
-        "AZ",
-        "CA",
-        "CO",
-        "CT",
-        "DC",
-        "DE",
-        "FL",
-        "GA",
-        "GU",
-        "HI",
-        "IA",
-        "ID",
-        "IL",
-        "IN",
-        "KS",
-        "KY",
-        "LA",
-        "MA",
-        "MD",
-        "ME",
-        "MI",
-        "MN",
-        "MO",
-        "MS",
-        "MT",
-        "ND",
-        "NC",
-        "NE",
-        "NH",
-        "NJ",
-        "NM",
-        "NV",
-        "NY",
-        "OH",
-        "OK",
-        "OR",
-        "PA",
-        "PR",
-        "RI",
-        "SC",
-        "SD",
-        "TN",
-        "TX",
-        "UT",
-        "VA",
-        "VI",
-        "VT",
-        "WA",
-        "WI",
-        "WV",
-        "WY"
-      ]
-    },
-    validation: Yup.string("Select your state").required(
-      "Your state is required"
-    )
-  },
-  zipcode: {
-    label: "Zipcode",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.number("Enter your zipcode").required(
-      "A zipcode is required"
-    )
-  },
+  state: requiredFormField(
+    "State",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Select your state"),
+    "Your state is required",
+    stateList
+  ),
+  zipcode: requiredFormField(
+    "Zip Code",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.number("Enter your zipcode"),
+    "A zipcode is required"
+  ),
   contactType: {
     label: "Contact Type",
     section: "contributorSection",
