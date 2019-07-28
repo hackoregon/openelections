@@ -2,6 +2,11 @@ import React, { Component } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import loader from "../../assets/styles/elementes/loader";
+import PropTypes from "prop-types";
+import Button from "../Button/Button";
+import Invitation from "../Invitation";
+import { TextField, InputAdornment } from "@material-ui/core";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 class SearchBox extends Component {
   constructor(props) {
@@ -80,7 +85,7 @@ class SearchBox extends Component {
 
   // Render Functions
   renderGuessesList(guesses) {
-    if (guesses.length) {
+    if (guesses && guesses.length) {
       return guesses.map((item, i) => (
         <li
           key={i}
@@ -114,12 +119,24 @@ class SearchBox extends Component {
         ) : (
           ""
         )}
-        <input
+        <TextField
           placeholder={this.props.placeholder}
           type="text"
           value={this.state.searchString}
           onChange={this.onInputChange}
           onKeyDown={this.onUpDownNavigation}
+          fullWidth
+          InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">
+                  {this.props.isLoading ?
+                      <div className={"loader"} css={loader(20, "#000")}>
+                        Loading...
+                      </div> :
+                      <SearchIcon />}
+                </InputAdornment>
+            ),
+          }}
         />
 
         {!this.props.isLoading && this.state.searchString.trim().length ? (
@@ -134,7 +151,7 @@ class SearchBox extends Component {
   // Styles
   styles() {
     return css`
-      display: inline-block;
+      display: block;
       position: relative;
 
       &:focus-within .guesses-list {
@@ -142,12 +159,7 @@ class SearchBox extends Component {
         display: block;
       }
 
-      input {
-        font-size: 20px;
-        padding-right: 30px;
-      }
-
-      input + .guesses-list {
+      .guesses-list {
         display: none;
         padding: 0;
         margin: 0;
@@ -205,5 +217,23 @@ class SearchBox extends Component {
     `;
   }
 }
+
+Invitation.defaultProps = {
+  guesses: [],
+  onSearchQueryChange: () => {},
+  onSearchResultSelected: () => {},
+  placeholder: "Search"
+};
+
+
+SearchBox.propTypes = {
+  onSearchQueryChange: PropTypes.func,
+  onSearchResultSelected: PropTypes.func,
+  guesses: PropTypes.shape({
+    label: PropTypes.string, value: PropTypes.string
+  }),
+  isLoading: PropTypes.bool,
+  placeholder: PropTypes.string
+};
 
 export default SearchBox;

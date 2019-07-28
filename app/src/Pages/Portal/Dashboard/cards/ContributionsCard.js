@@ -38,6 +38,11 @@ const styles = css`
 	.top-expenses {
 		margin-top: 20px;
 		
+		.VictoryContainer {
+			max-width: 300px;
+			margin: auto;
+		}
+		
 		.VictoryContainer text {
 			font-size: 14px;
 		}
