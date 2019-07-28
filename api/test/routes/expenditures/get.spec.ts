@@ -66,55 +66,43 @@ describe('Routes post /expenditures/new', () => {
         await truncateAll();
     });
 
-    context('post /expenditures/new', () => {
-        it('success', async () => {
-            const validExpenditurePostBody: IAddExpenditureAttrs = {
-                address1: '123 ABC ST',
-                amount: 250,
-                campaignId: campaign.id,
-                city: 'Portland',
-                currentUserId: campaignStaff.id,
-                date: Date.now(),
-                governmentId: government.id,
-                type: ExpenditureType.EXPENDITURE,
-                subType: ExpenditureSubType.CASH_EXPENDITURE,
-                state: 'OR',
-                status: ExpenditureStatus.DRAFT,
-                zip: '97214',
-                payeeType: PayeeType.INDIVIDUAL,
-                name: 'Test Expenditure',
-                description: 'This is a test'
-            };
+    context('post /expenditures', () => {
+        it('success as gov admin', async () => {
             const response = await request(app)
-                .post(`/expenditures/new`)
-                .send(validExpenditurePostBody)
+                .post(`/expenditures`)
+                .send({ governmentId: government.id, currentUserId: govAdmin.id })
                 .set('Accept', 'application/json')
-                .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(201);
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(200);
             expect(response.body.message).to.be.undefined;
         });
 
-        it('error on missing required properties', async () => {
-            const invalidExpenditurePostBody = {
-                address1: '123 ABC ST',
-                campaignId: campaign.id,
-                city: 'Portland',
-                currentUserId: campaignStaff.id,
-                date: Date.now(),
-                governmentId: government.id,
-                type: ExpenditureType.EXPENDITURE,
-                subType: ExpenditureSubType.CASH_EXPENDITURE,
-                state: 'OR',
-                zip: '97214',
-                payeeType: PayeeType.INDIVIDUAL,
-                name: 'Test Expenditure',
-                description: 'This is a test'
-            };
+        it('success as campaign admin', async () => {
             const response = await request(app)
-                .post(`/expenditures/new`)
-                .send(invalidExpenditurePostBody)
+                .post(`/expenditures`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignAdminToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body.message).to.be.undefined;
+        });
+
+        it('success as campaign staff', async () => {
+            const response = await request(app)
+                .post(`/expenditures`)
+                .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignStaff.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.body.message).to.be.undefined;
+        });
+
+        it('error permissions', async () => {
+            const response = await request(app)
+                .post(`/expenditures`)
+                .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${campaignAdminToken}`]);
             expect(response.status).to.equal(422);
             expect(response.body.message);
         });
