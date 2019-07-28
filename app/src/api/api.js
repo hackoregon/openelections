@@ -262,6 +262,15 @@ export function getExpenditures(expenditureSearchAttrs) {
   return post(`${baseUrl()}/expenditures`, expenditureSearchAttrs);
 }
 
+// path: '/expenditures/:id'
+//   method: 'put',
+export function updateExpenditure(expenditureAttrs) {
+  return put(
+    `${baseUrl()}/expenditures/${expenditureAttrs.id}`,
+    expenditureAttrs
+  );
+}
+
 export function post(url, data) {
   const headers = {
     "Content-Type": "application/json",

@@ -120,8 +120,6 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
 export interface IUpdateExpenditureAttrs {
     id: number;
     currentUserId: number;
-    campaignId: number;
-    governmentId: number;
     type?: ExpenditureType;
     subType?: ExpenditureSubType;
     payeeType?: PayeeType;

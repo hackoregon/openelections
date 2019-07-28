@@ -4,7 +4,9 @@ import {
     IAddExpenditureAttrs,
     addExpenditureAsync,
     IGetExpenditureAttrs,
-    getExpendituresAsync
+    getExpendituresAsync,
+    IUpdateExpenditureAttrs,
+    updateExpenditureAsync
 } from '../services/expenditureService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { checkDto } from './helpers';
@@ -131,6 +133,82 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         const expenditures = await getExpendituresAsync(getExpendituresDto);
         return response.status(200).send(expenditures);
     } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export class UpdateExpenditureDto implements IUpdateExpenditureAttrs {
+    @IsNumber()
+    id: number;
+
+    @IsNumber()
+    currentUserId: number;
+
+    @IsString()
+    @IsOptional()
+    address1: string;
+
+    @IsString()
+    @IsOptional()
+    address2: string;
+
+    @IsNumber()
+    @IsOptional()
+    amount: number;
+
+    @IsString()
+    @IsOptional()
+    city: string;
+
+    @IsString()
+    @IsOptional()
+    description: string;
+
+    @IsString()
+    @IsOptional()
+    state: string;
+
+    @IsString()
+    @IsOptional()
+    zip: string;
+
+    @IsString()
+    @IsOptional()
+    name: string;
+
+    @IsEnum(PayeeType)
+    @IsOptional()
+    payeeType: PayeeType;
+
+    @IsEnum(ExpenditureSubType)
+    @IsOptional()
+    subType: ExpenditureSubType;
+
+    @IsEnum(ExpenditureStatus)
+    @IsOptional()
+    status: ExpenditureStatus;
+
+    @IsEnum(ExpenditureType)
+    @IsOptional()
+    type: ExpenditureType;
+
+    @IsNumber()
+    @IsOptional()
+    date: number;
+}
+
+export async function updateExpenditure(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const updateExpenditureDto = Object.assign(new UpdateExpenditureDto(), {
+            ...request.body,
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(updateExpenditureDto);
+        const expenditure = await updateExpenditureAsync(updateExpenditureDto);
+        return response.status(204).send(expenditure);
+    } catch (err) {
+        console.log(err);
         return response.status(422).json({ message: err.message });
     }
 }

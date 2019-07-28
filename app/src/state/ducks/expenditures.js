@@ -10,7 +10,7 @@ export const STATE_KEY = "expenditures";
 // Action Types
 export const actionTypes = {
   CREATE_EXPENDITURE: createActionTypes(STATE_KEY, "CREATE_EXPENDITURE"),
-  // UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, "UPDATE_EXPENDITURE"),
+  UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, "UPDATE_EXPENDITURE"),
   GET_EXPENDITURES: createActionTypes(STATE_KEY, "GET_EXPENDITURES")
   // GET_EXPENDITURE_BY_ID: createActionTypes(STATE_KEY, "GET_EXPENDITURE_BY_ID")
 };
@@ -35,15 +35,15 @@ export default createReducer(initialState, {
   [actionTypes.CREATE_EXPENDITURE.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  // [actionTypes.UPDATE_EXPENDITURE.REQUEST]: (state, action) => {
-  //   return { ...state, isLoading: true };
-  // },
-  // [actionTypes.UPDATE_EXPENDITURE.SUCCESS]: (state, action) => {
-  //   return { ...state, isLoading: false };
-  // },
-  // [actionTypes.UPDATE_EXPENDITURE.FAILURE]: (state, action) => {
-  //   return { ...state, isLoading: false, error: action.error };
-  // },
+  [actionTypes.UPDATE_EXPENDITURE.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.UPDATE_EXPENDITURE.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.UPDATE_EXPENDITURE.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  },
   [actionTypes.GET_EXPENDITURES.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
@@ -71,11 +71,11 @@ export const actionCreators = {
     success: () => action(actionTypes.CREATE_EXPENDITURE.SUCCESS),
     failure: error => action(actionTypes.CREATE_EXPENDITURE.FAILURE, { error })
   },
-  // updateExpenditure: {
-  //   request: () => action(actionTypes.UPDATE_EXPENDITURE.REQUEST),
-  //   success: () => action(actionTypes.UPDATE_EXPENDITURE.SUCCESS),
-  //   failure: error => action(actionTypes.UPDATE_EXPENDITURE.FAILURE, { error })
-  // },
+  updateExpenditure: {
+    request: () => action(actionTypes.UPDATE_EXPENDITURE.REQUEST),
+    success: () => action(actionTypes.UPDATE_EXPENDITURE.SUCCESS),
+    failure: error => action(actionTypes.UPDATE_EXPENDITURE.FAILURE, { error })
+  },
   getExpenditures: {
     request: () => action(actionTypes.GET_EXPENDITURES.REQUEST),
     success: () => action(actionTypes.GET_EXPENDITURES.SUCCESS),
@@ -108,21 +108,21 @@ export function createExpenditure(expenditureAttrs) {
   };
 }
 
-// export function updateExpenditure(expenditureAttrs) {
-//   return async (dispatch, getState, { api, schema }) => {
-//     dispatch(actionCreators.updateExpenditure.request());
-//     try {
-//       const response = await api.updateExpenditure(expenditureAttrs);
-//       if (response.status === 204) {
-//         dispatch(actionCreators.updateExpenditure.success());
-//       } else {
-//         dispatch(actionCreators.updateExpenditure.failure());
-//       }
-//     } catch (error) {
-//       dispatch(actionCreators.updateExpenditure.failure(error));
-//     }
-//   };
-// }
+export function updateExpenditure(expenditureAttrs) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.updateExpenditure.request());
+    try {
+      const response = await api.updateExpenditure(expenditureAttrs);
+      if (response.status === 204) {
+        dispatch(actionCreators.updateExpenditure.success());
+      } else {
+        dispatch(actionCreators.updateExpenditure.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.updateExpenditure.failure(error));
+    }
+  };
+}
 
 export function getExpenditures(expenditureSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
