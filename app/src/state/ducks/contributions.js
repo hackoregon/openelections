@@ -143,11 +143,10 @@ export function updateContribution(contributionAttrs) {
 export function getContributions(contributionSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
-    console.log(schema)
     try {
       const response = await api.getContributions(contributionSearchAttrs);
       if (response.status === 200) {
-        const data = normalize(await response.json(), schema.contribution);
+        const data = normalize(await response.json(), [schema.contribution]);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
