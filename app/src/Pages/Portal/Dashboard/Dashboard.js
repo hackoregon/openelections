@@ -1,7 +1,7 @@
 import * as React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
-import ContributionsCard from "./ContributionsCard";
-import LinksCard from "./LinksCard";
+import ContributionsCard from "./cards/ContributionsCard";
+import LinksCard from "./cards/LinksCard";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
