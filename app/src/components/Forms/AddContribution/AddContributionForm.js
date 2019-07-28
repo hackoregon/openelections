@@ -1,167 +1,209 @@
 import React, { Fragment } from "react";
 import * as Yup from "yup";
-
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
 import DateField from "../../Fields/DateField";
 
+const FormSectionEnum = Object.freeze({
+  BASIC: "basicsSection",
+  CONTRIBUTOR: "contributorSection"
+})
+
+const stateList = [
+  "AK",
+  "AL",
+  "AR",
+  "AS",
+  "AZ",
+  "CA",
+  "CO",
+  "CT",
+  "DC",
+  "DE",
+  "FL",
+  "GA",
+  "GU",
+  "HI",
+  "IA",
+  "ID",
+  "IL",
+  "IN",
+  "KS",
+  "KY",
+  "LA",
+  "MA",
+  "MD",
+  "ME",
+  "MI",
+  "MN",
+  "MO",
+  "MS",
+  "MT",
+  "ND",
+  "NC",
+  "NE",
+  "NH",
+  "NJ",
+  "NM",
+  "NV",
+  "NY",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "PR",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VA",
+  "VI",
+  "VT",
+  "WA",
+  "WI",
+  "WV",
+  "WY"
+]
+
+const formField = (label, section, component, validation, values = undefined) =>
+  values ? { label, section, component, validation } : { label, section, component, validation, options: { values } }
+
+const requiredFormField = (label, section, component, validation, requiredMessage, values = undefined) => {
+  const required = validation.required(requiredMessage)
+  return values ? { label, section, component, required, options: { values } } : { label, section, component, required }
+}
+
 const fields = {
   // BASICS SECTION
-  dateOfContribution: {
-    label: "Date of Contribution",
-    section: "basicsSection",
-    component: DateField,
-    validation: Yup.number("Enter date of contribution").required(
-      // date format? validate specifically?
-      "A contribution date is required"
-    )
-  },
-  typeOfContribution: {
-    label: "Type of Contribution",
-    section: "basicsSection",
-    component: SelectField,
-    options: {
-      values: ["Contribution", "Other Receipt"]
-    },
-    validation: Yup.string("Choose the type of contribution").required(
-      "A contribution type is required"
-    )
-  },
-  subTypeOfContribution: {
-    label: "Subtype of Contribution",
-    section: "basicsSection",
-    component: SelectField,
-    options: {
-      // if typeOfContribution was 'contribution' subTypes are:
-      // Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable,
-      // In-Kind /Forgiven Personal Expenditure
-      values: [
-        "Cash Contribution",
-        "In-Kind Contribution",
-        "In-Kind Forgiven Accounts Payable",
-        "In-Kind /Forgiven Personal Expenditure"
-      ] // get from Redux state eventually
-      // If Other Receipt was selected, drop down says: Items Sold at Fair Market Value,
-      // Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
-    },
-    validation: Yup.string("Choose the subtype of contribution").required(
-      "The contribution subtype is required"
-    )
-  },
-  typeOfContributor: {
-    label: "Type of Contributor",
-    section: "basicsSection",
-    component: SelectField,
-    options: {
-      values: [
-        "Individual",
-        "Business Entity",
-        "Candidate’s Immediate Family",
-        "Labor Organization",
-        "Political Committee",
-        "Political Party Committee",
-        "Unregistered Committee",
-        "Other"
-      ]
-    },
-    validation: Yup.string("Choose the type of contributor").required(
-      "A contributor type is required"
-    )
-  },
-  amountOfContribution: {
-    label: "Amount of Contribution",
-    section: "basicsSection",
-    component: TextField,
-    validation: Yup.number("Choose the amount of contribution")
-      // NEEDS TO BE FORMATTED AS CURRENCY
-      .required("The contribution amount is required")
-  },
-  oaeContributionType: {
-    label: "OAE Contribution Type",
-    section: "basicsSection",
-    component: SelectField,
-    options: {
-      values: [
-        "Seed Money",
-        "Matchable",
-        "Public Matching Contribution",
-        "Qualifying",
-        "Allowable",
-        "In-Kind: Paid Supervision of Volunteers",
-        "In-Kind: Other"
-      ]
-    },
-    validation: Yup.string("Choose the OAE contribution type").required(
-      "The OAE contribution type is required"
-    )
-  },
-  paymentMethod: {
-    label: "Payment Method",
-    section: "basicsSection",
-    component: SelectField,
-    options: {
-      values: [
-        "Cash",
-        "Check",
-        "Money Order",
-        "Credit Card (Online)",
-        "Credit Card (Paper Form)"
-      ]
-    },
-    validation: Yup.string("Choose the payment method").required(
-      "The payment method is required"
-    )
-  },
-  checkNumber: {
-    label: "Check Number",
-    section: "basicsSection",
-    component: TextField,
-    validation: Yup.number("Enter your check number").required(
-      "Check number is required"
-    )
-  },
+  dateOfContribution: requiredFormField(
+    "Date of Contribution",
+    FormSectionEnum.BASIC,
+    DateField,
+    Yup.string("Enter data of contribution"),
+    "Contribution date is required"
+  ),
+  typeOfContribution: requiredFormField(
+    "Type of Contribution",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the type of contribution"),
+    "A contribution type is required",
+    ["Contribution", "Other Receipt"]
+  ),
+  subTypeOfContribution: requiredFormField(
+    "Subtype of Contribution",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the subtype of contribution"),
+    "The contribution subtype is required",
+    // if typeOfContribution was 'contribution' subTypes are:
+    // Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, In-Kind /Forgiven Personal Expenditure
+    ["Cash Contribution", "In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"]
+    // If Other Receipt was selected, drop down says: 
+    // Items Sold at Fair Market Value, Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
+  ),
+  typeOfContributor: requiredFormField(
+    "Type of Contributor",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the type of contributor"),
+    "A contributor type is required",
+    [
+      "Individual",
+      "Business Entity",
+      "Candidate’s Immediate Family",
+      "Labor Organization",
+      "Political Committee",
+      "Political Party Committee",
+      "Unregistered Committee",
+      "Other"
+    ]
+  ),
+  // NEEDS TO BE FORMATTED AS CURRENCY
+  amountOfContribution: requiredFormField(
+    "Amount of Contribution",
+    FormSectionEnum.BASIC,
+    TextField,
+    Yup.number("Choose the amount of contribution"),
+    "The contribution amount is required"
+  ),
+  oaeContributionType: requiredFormField(
+    "OAE Contribution Type",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the OAE contribution type"),
+    "The OAE contribution type is required",
+    [
+      "Seed Money",
+      "Matchable",
+      "Public Matching Contribution",
+      "Qualifying",
+      "Allowable",
+      "In-Kind: Paid Supervision of Volunteers",
+      "In-Kind: Other"
+    ]
+  ),
+  paymentMethod: requiredFormField(
+    "Payment Method",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the payment method"),
+    "The payment method is required",
+    [
+      "Cash",
+      "Check",
+      "Money Order",
+      "Credit Card (Online)",
+      "Credit Card (Paper Form)"
+    ]
+  ),
+  checkNumber: requiredFormField(
+    "Check Number",
+    FormSectionEnum.BASIC,
+    TextField,
+    Yup.number("Enter your check number"),
+    "Check number is required",
+  ),
 
   // CONTRIBUTOR SECTION
-  firstName: {
-    // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
-    label: "Contributor's First Name",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your first name").required(
-      "Your first name is required"
-    )
-  },
-  lastName: {
-    // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
-    label: "Contributor's Last Name",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your last name").required(
-      "Your last name is required"
-    )
-  },
-  streetAddress: {
-    label: "Street Address",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your street address").required(
-      "Your street address is required"
-    )
-  },
-  addressLine2: {
-    label: "Address Line 2",
-    section: "contributorSection",
-    component: TextField
-    // NO VALIDATION BECAUSE NOT REQUIRED?
-  },
-  city: {
-    label: "City",
-    section: "contributorSection",
-    component: TextField,
-
-    validation: Yup.string("Select your city").required("Your city is required")
-  },
+  firstName: requiredFormField(
+    "Contributor's First Name",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your first name"),
+    "Your first name is required"
+  ),
+  // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
+  lastName: requiredFormField(
+    "Contributor's Last Name",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField, 
+    Yup.string("Enter your last name"), 
+    "Your last name is required"
+  ),
+  streetAddress: requiredFormField(
+    "Street Address",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your street address"),
+    "Your street address is required"
+  ),
+  addressLine2: formField(
+    "Address Line 2",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter second address line")
+  ),
+  city: requiredFormField(
+    "City",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Select your city"),
+    "Your city is required"
+  ),
   state: {
     label: "State",
     section: "contributorSection",

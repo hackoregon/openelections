@@ -195,10 +195,10 @@ const labelBlock = (
 
 const AddContribution = () => (
   <AddContributionForm
-    onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+    onSubmit={x => console.log(x)}
     initialValues={{
       // BASICS VALUES
-      dateOfContribution: "", // Date.now(), // FORMAT?
+      dateOfContribution: "", 
       typeOfContribution: "",
       subTypeOfContribution: "",
       typeOfContributor: "",
