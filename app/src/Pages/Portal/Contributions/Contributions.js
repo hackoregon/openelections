@@ -34,7 +34,6 @@ const Contributions = props => {
             path={`${match.url}/`}
             component={ContributionsTable} 
           />
-
           {/* TODO: CITY PAGES */}
         </Switch>
       )}}

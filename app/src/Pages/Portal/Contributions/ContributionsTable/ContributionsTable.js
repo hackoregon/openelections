@@ -67,6 +67,8 @@ const ContributionsTable = ({ ...props }) => {
 	)
 }
 
+
+
 export default connect(
 	state => ({}),
 	dispatch => ({
