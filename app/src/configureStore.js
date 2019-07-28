@@ -2,6 +2,9 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import thunk from "redux-thunk";
 import { createReducer } from "./state";
+import contributions, {
+  STATE_KEY as CONTRIBUTIONS_STATE_KEY
+} from "./state/ducks/contributions"
 import activities, {
   STATE_KEY as ACTIVITIES_STATE_KEY
 } from "./state/ducks/activities";
@@ -13,8 +16,8 @@ import governments, {
   STATE_KEY as GOVERNMENTS_STATE_KEY
 } from "./state/ducks/governments";
 import permissions, {
-  STATE_KEY as PERMISSIONS_STATE_KEY
-} from "./state/ducks/permissions";
+    STATE_KEY as PERMISSIONS_STATE_KEY 
+} from './state/ducks/permissions';
 import users, { STATE_KEY as USERS_STATE_KEY } from "./state/ducks/users";
 import modal, { STATE_KEY as MODAL_STATE_KEY } from "./state/ducks/modal";
 import * as api from "./api";
@@ -37,6 +40,7 @@ export default function configureStore(history) {
       [ACTIVITIES_STATE_KEY]: activities,
       [AUTH_STATE_KEY]: auth,
       [CAMPAIGNS_STATE_KEY]: campaigns,
+      [CONTRIBUTIONS_STATE_KEY]: contributions,
       [GOVERNMENTS_STATE_KEY]: governments,
       [PERMISSIONS_STATE_KEY]: permissions,
       [USERS_STATE_KEY]: users,
