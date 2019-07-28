@@ -621,6 +621,36 @@ export const AppRoutes = [
         path: '/expenditures/new',
         method: 'post',
         action: expenditures.addExpenditure
+    },
+
+    /**
+     * @swagger
+     * /expenditures/new:
+     *   post:
+     *     summary: Gets expenditures
+     *     tags:
+     *       - Expenditure
+     *     security:
+     *       - cookieAuth: []
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/GetExpenditureBody'
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       201:
+     *         description: post response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Expenditure'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/expenditures',
+        method: 'post',
+        action: expenditures.getExpenditures
     }
 ];
 
