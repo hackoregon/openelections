@@ -1,6 +1,8 @@
 /* global google */
 import React from 'react'
 import PropTypes from "prop-types";
+import TextFieldMaterial from "@material-ui/core/TextField";
+import parseGooglePlace from "parse-google-place";
 
 /***
  *  Usage
@@ -8,7 +10,7 @@ import PropTypes from "prop-types";
  *  updateFields prop maps formik fields to address parts
  *  
  *  const fields = {
- *    myStreetField: {
+ *    myStateField: {
  *      label: "My State",
  *      component: TextField
  *    },
@@ -22,7 +24,8 @@ import PropTypes from "prop-types";
           <AddressLookupField
             {...props.field} {...props}
             updateFields = {{
-                street_address: "myStreetField",  
+                street: "myAddressLookupField",  //Set street to lookup field to update after address is selected  
+                stateShort: "myStateField", 
                 city: "myCityField",     
               }}
           />
@@ -30,6 +33,7 @@ import PropTypes from "prop-types";
  *  };
  *
  **/
+
 
 class AddressLookupField extends React.Component {
   constructor (props) {
@@ -48,33 +52,45 @@ class AddressLookupField extends React.Component {
   }
 
   handlePlaceChanged () {
-    const place = this.autocomplete.getPlace()
-    const address = place.address_components
-    const addressFields = {
-      street_address: `${address[0].long_name} ${address[1].long_name}`,
-      city: address[3].long_name,
-      state: address[6].short_name,
-      zip_code: address[8].short_name
-    }
-    const updateFields = this.props.updateFields
+    const place = this.autocomplete.getPlace();
+    const addressFields = parseGooglePlace(place);
+    addressFields.street = addressFields.address;
+    const updateFields = this.props.updateFields;
     for (var updateField in updateFields) {
       if (updateFields[updateField]) {
-        this.props.formik.setFieldValue(
-          updateFields[updateField],
-          addressFields[updateField],
-          false
-        )
+        //If the update field is the lookup field update though the ref
+        if(updateFields[updateField]===this.props.id){
+          this.autocompleteInput.current.value = addressFields[updateField]
+        //Otherwise update through formik
+        }else{
+          this.props.formik.setFieldValue(
+            updateFields[updateField],
+            addressFields[updateField],
+            false
+          )
+        }
       }
     }
   }
   render () {
     const { id, label, formik } = this.props
     return (
-      <input
-        ref={this.autocompleteInput}
-        id='autocomplete'
-        placeholder='Enter your address'
-        type='text'
+      <TextFieldMaterial 
+          id={id}
+          name={id}
+          label={label}
+          helperText={formik.touched[id] ? formik.errors[id] : ""}
+          error={formik.touched[id] && Boolean(formik.errors[id])}
+          value={formik.values[id]}
+          fullWidth
+          InputProps={{
+            inputProps: {
+              ref: this.autocompleteInput,
+              id: 'autocomplete',
+              placeholder: 'Enter your address',
+              type: 'text'
+            }
+          }}
       />
     )
   }
@@ -87,9 +103,15 @@ AddressLookupField.propTypes = {
   updateFields: PropTypes.shape({
     street: PropTypes.string,
     city: PropTypes.string,
-    state: PropTypes.string,
-    zip: PropTypes.string
-  })
+    stateLong: PropTypes.string,
+    stateShort: PropTypes.string,
+    zipCode: PropTypes.string,
+    countryLong: PropTypes.string,
+    countryShort: PropTypes.string,
+    county: PropTypes.string,
+    streetName: PropTypes.string,
+    streetNumber: PropTypes.string
+  }),
 };
 
-export default AddressLookupField
+export default AddressLookupField;
