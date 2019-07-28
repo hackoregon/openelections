@@ -642,7 +642,7 @@ describe('contributionService', () => {
         expect(activity[0].notes).to.equal(
             `amount changed from ${originalAmount} to ${contribution.amount}. zip changed from ${originalZip} to ${
                 contribution.zip
-            }`
+            }.`
         );
     });
 
