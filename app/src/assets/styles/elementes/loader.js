@@ -15,10 +15,10 @@ export default (radius, color) => {
       font-size: 10px;
       position: relative;
       text-indent: -9999px;
-      border-top: ${radius / 6}px solid ${convertHex(color, 20)};
-      border-right: ${radius / 6}px solid ${convertHex(color, 20)};
-      border-bottom: ${radius / 6}px solid ${convertHex(color, 20)};
-      border-left: ${radius / 6}px solid ${color};
+      border-top: ${radius / 10}px solid ${convertHex(color, 20)};
+      border-right: ${radius / 10}px solid ${convertHex(color, 20)};
+      border-bottom: ${radius / 10}px solid ${convertHex(color, 20)};
+      border-left: ${radius / 10}px solid ${color};
       -webkit-transform: translateZ(0);
       -ms-transform: translateZ(0);
       transform: translateZ(0);

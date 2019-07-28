@@ -4,30 +4,47 @@ import { Global, css } from "@emotion/core";
 import FlashMessage from "./components/FlashMessage/FlashMessage";
 import styles from "./assets/styles/global.styles";
 import { connect } from "react-redux";
-import { me } from "./state/ducks/auth";
+import { isLoggedIn, me } from "./state/ducks/auth";
+import LoadingCircle from './assets/icons/loading-circle'
 
 class App extends React.Component {
-  componentDidMount() {
-    this.props.loadAuth()
-  }
 
-  render() {
-    return (
-      <div>
-        <FlashMessage />
-        <Global styles={styles} />
-        <Routes />
-      </div>
-    );
-  }
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isLoading: true
+		}
+	}
+
+	componentDidMount() {
+		this.props.loadAuth().then(() => {
+			this.setState({isLoading: false})
+		});
+	}
+
+	render() {
+		return (
+			<div>
+				<Global styles={styles}/>
+				<FlashMessage/>
+				{this.state.isLoading ?
+					<div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+						<LoadingCircle radius={100}/>
+					</div> : <Routes/> }
+			</div>
+		);
+	}
 }
 
 export default connect(
-  state => ({}),
-  dispatch => {
-    return {
-      loadAuth: () => dispatch(me())
-    }
-  }
+	state => ({
+		isLoggedIn: isLoggedIn(state)
+	}),
+	dispatch => {
+		return {
+			loadAuth: () => dispatch(me())
+		}
+	}
 )(App);
 
