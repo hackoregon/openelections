@@ -10399,6 +10399,11 @@ parse-entities@^1.1.2:
     is-decimal "^1.0.0"
     is-hexadecimal "^1.0.0"
 
+parse-google-place@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/parse-google-place/-/parse-google-place-1.2.0.tgz#658bd23a6946d346ab0ec314377435df5827dc06"
+  integrity sha512-WixZCqfLiRRnV8Rjl56WzbWAoY0KJegjLOft/q53HFGiTaIf+Nrutho0QX5jZsg+Yq12Ej5npWYn1sin+1vPvg==
+
 parse-json@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/parse-json/-/parse-json-2.2.0.tgz#f480f40434ef80741f8469099f8dea18f55a4dc9"
