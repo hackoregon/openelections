@@ -1,1 +1,0 @@
-{"url":"http://localhost:3000/expenditures/new","status":201,"statusText":"Created","ok":true,"headers":{"x-powered-by":["Express"],"vary":["Origin"],"access-control-allow-credentials":["true"],"content-type":["application/json; charset=utf-8"],"content-length":["8"],"etag":["W/\"8-0rVkPUSjKXvAXSnOiVTQsEptELY\""],"date":["Tue, 23 Jul 2019 02:42:21 GMT"],"connection":["close"]}}

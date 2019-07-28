@@ -9,9 +9,9 @@ export const STATE_KEY = "expenditures";
 
 // Action Types
 export const actionTypes = {
-  CREATE_EXPENDITURE: createActionTypes(STATE_KEY, "CREATE_EXPENDITURE")
+  CREATE_EXPENDITURE: createActionTypes(STATE_KEY, "CREATE_EXPENDITURE"),
   // UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, "UPDATE_EXPENDITURE"),
-  // GET_EXPENDITURES: createActionTypes(STATE_KEY, "GET_EXPENDITURES"),
+  GET_EXPENDITURES: createActionTypes(STATE_KEY, "GET_EXPENDITURES")
   // GET_EXPENDITURE_BY_ID: createActionTypes(STATE_KEY, "GET_EXPENDITURE_BY_ID")
 };
 
@@ -34,7 +34,7 @@ export default createReducer(initialState, {
   },
   [actionTypes.CREATE_EXPENDITURE.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
   // [actionTypes.UPDATE_EXPENDITURE.REQUEST]: (state, action) => {
   //   return { ...state, isLoading: true };
   // },
@@ -44,15 +44,15 @@ export default createReducer(initialState, {
   // [actionTypes.UPDATE_EXPENDITURE.FAILURE]: (state, action) => {
   //   return { ...state, isLoading: false, error: action.error };
   // },
-  // [actionTypes.GET_EXPENDITURES.REQUEST]: (state, action) => {
-  //   return { ...state, isLoading: true };
-  // },
-  // [actionTypes.GET_EXPENDITURES.SUCCESS]: (state, action) => {
-  //   return { ...state, isLoading: false };
-  // },
-  // [actionTypes.GET_EXPENDITURES.FAILURE]: (state, action) => {
-  //   return { ...state, isLoading: false, error: action.error };
-  // },
+  [actionTypes.GET_EXPENDITURES.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.GET_EXPENDITURES.SUCCESS]: (state, action) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.GET_EXPENDITURES.FAILURE]: (state, action) => {
+    return { ...state, isLoading: false, error: action.error };
+  }
   // [actionTypes.GET_EXPENDITURE_BY_ID.REQUEST]: (state, action) => {
   //   return { ...state, isLoading: true };
   // },
@@ -70,17 +70,17 @@ export const actionCreators = {
     request: () => action(actionTypes.CREATE_EXPENDITURE.REQUEST),
     success: () => action(actionTypes.CREATE_EXPENDITURE.SUCCESS),
     failure: error => action(actionTypes.CREATE_EXPENDITURE.FAILURE, { error })
-  }
+  },
   // updateExpenditure: {
   //   request: () => action(actionTypes.UPDATE_EXPENDITURE.REQUEST),
   //   success: () => action(actionTypes.UPDATE_EXPENDITURE.SUCCESS),
   //   failure: error => action(actionTypes.UPDATE_EXPENDITURE.FAILURE, { error })
   // },
-  // getExpenditures: {
-  //   request: () => action(actionTypes.GET_EXPENDITURES.REQUEST),
-  //   success: () => action(actionTypes.GET_EXPENDITURES.SUCCESS),
-  //   failure: error => action(actionTypes.GET_EXPENDITURES.FAILURE, { error })
-  // },
+  getExpenditures: {
+    request: () => action(actionTypes.GET_EXPENDITURES.REQUEST),
+    success: () => action(actionTypes.GET_EXPENDITURES.SUCCESS),
+    failure: error => action(actionTypes.GET_EXPENDITURES.FAILURE, { error })
+  }
   // getExpenditureById: {
   //   request: () => action(actionTypes.GET_EXPENDITURE_BY_ID.REQUEST),
   //   success: () => action(actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS),
@@ -124,23 +124,23 @@ export function createExpenditure(expenditureAttrs) {
 //   };
 // }
 
-// export function getExpenditures(expenditureSearchAttrs) {
-//   return async (dispatch, getState, { api, schema }) => {
-//     dispatch(actionCreators.getExpenditures.request());
-//     try {
-//       const response = await api.getExpenditures(expenditureSearchAttrs);
-//       if (response.status === 200) {
-//         const data = normalize(await response.json(), schema.expenditure);
-//         dispatch(addEntities(data.entities));
-//         dispatch(actionCreators.getExpenditures.success());
-//       } else {
-//         dispatch(actionCreators.getExpenditures.failure());
-//       }
-//     } catch (error) {
-//       dispatch(actionCreators.getExpenditures.failure(error));
-//     }
-//   };
-// }
+export function getExpenditures(expenditureSearchAttrs) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.getExpenditures.request());
+    try {
+      const response = await api.getExpenditures(expenditureSearchAttrs);
+      if (response.status === 200) {
+        const data = normalize(await response.json(), schema.expenditure);
+        dispatch(addEntities(data.entities));
+        dispatch(actionCreators.getExpenditures.success());
+      } else {
+        dispatch(actionCreators.getExpenditures.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.getExpenditures.failure(error));
+    }
+  };
+}
 
 // export function getExpenditureById(id) {
 //   return async (dispatch, getState, { api, schema }) => {

@@ -395,4 +395,14 @@ describe("API", () => {
     });
     expect(response.status).toEqual(201);
   });
+
+  it("getExpenditures", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    const response = await api.getExpenditures({
+      governmentId: governmentId,
+      campaignId: campaignId,
+      currentUserId: campaignStaffId
+    });
+    expect(response.status).toEqual(200);
+  });
 });
