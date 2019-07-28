@@ -140,4 +140,30 @@ describe("Side Effects", () => {
         expect(actions[2].type).toEqual(expectedActions[2].type);
       });
   });
+
+  it("gets expenditures", async () => {
+    const expectedActions = [
+      { type: actionTypes.GET_EXPENDITURES.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.GET_EXPENDITURES.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    return store
+      .dispatch(
+        expenditures.getExpenditures({
+          governmentId: governmentId,
+          campaignId: campaignId,
+          currentUserId: campaignAdminId
+        })
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
 });

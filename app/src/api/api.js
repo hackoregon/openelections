@@ -256,6 +256,12 @@ export function createExpenditure(expenditureAttrs) {
   return post(`${baseUrl()}/expenditures/new`, expenditureAttrs);
 }
 
+//   path: '/expenditures',
+//   method: 'post',
+export function getExpenditures(expenditureSearchAttrs) {
+  return post(`${baseUrl()}/expenditures`, expenditureSearchAttrs);
+}
+
 export function post(url, data) {
   const headers = {
     "Content-Type": "application/json",
