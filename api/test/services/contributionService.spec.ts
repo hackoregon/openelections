@@ -24,6 +24,7 @@ import {
     newGovernmentAsync,
     truncateAll
 } from '../factories';
+import { getAllActivityRecordsforGovernmentOrCampaignAsync } from '../../services/activityService';
 
 let campaignAdmin;
 let campaignStaff;
@@ -591,7 +592,8 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: campaignStaff.id,
             id: contribution.id,
-            amount: 1500
+            amount: 1500,
+            zip: '98101'
         });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.amount).to.equal(1500);
@@ -617,6 +619,31 @@ describe('contributionService', () => {
         });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.amount).to.equal(150);
+    });
+
+    it('updateContributionAsync creates activity record ', async () => {
+        let contribution = await newContributionAsync(campaign2, government);
+        const { zip: originalZip, amount: originalAmount } = contribution;
+        await updateContributionAsync({
+            currentUserId: campaignStaff.id,
+            id: contribution.id,
+            amount: 1500,
+            zip: '98101'
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            campaignId: campaign2.id
+        });
+        expect(contribution.amount).to.equal(1500);
+        expect(contribution.zip).to.equal('98101');
+        expect(activity).to.have.length(1);
+        expect(activity[0].notes).to.equal(
+            `amount changed from ${originalAmount} to ${contribution.amount}. zip changed from ${originalZip} to ${
+                contribution.zip
+            }`
+        );
     });
 
     it('updateContributionAsync campaignStaff different campaign fails', async () => {
@@ -694,24 +721,24 @@ describe('contributionService', () => {
     it('archiveContributionAsync success if draft, campaign staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
         expect(contribution.status).to.equal(ContributionStatus.DRAFT);
-        await archiveContributionAsync({currentUserId: campaignStaff.id, contributionId: contribution.id});
-        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        await archiveContributionAsync({ currentUserId: campaignStaff.id, contributionId: contribution.id });
+        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
     });
 
     it('archiveContributionAsync success if draft, government staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
         expect(contribution.status).to.equal(ContributionStatus.DRAFT);
-        await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
-        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
+        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
     });
 
     it('archiveContributionAsync success if draft, campaign admin staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
         expect(contribution.status).to.equal(ContributionStatus.DRAFT);
-        await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
-        const updated = await contributionRepository.findOne(contribution.id) as Contribution;
+        await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
+        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
     });
 
@@ -719,14 +746,14 @@ describe('contributionService', () => {
         let contribution = await newContributionAsync(campaign2, government);
         contribution.status = ContributionStatus.PROCESSED;
         await contributionRepository.save(contribution);
-        contribution = await contributionRepository.findOne(contribution.id) as Contribution;
+        contribution = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
         try {
-            await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+            await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
         } catch (error) {
-            expect(error.message).to.equal('Contribution must have status of Draft to be Archived')
+            expect(error.message).to.equal('Contribution must have status of Draft to be Archived');
         }
-        const notUpdated = await contributionRepository.findOne(contribution.id) as Contribution;
+        const notUpdated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(notUpdated.status).to.equal(ContributionStatus.PROCESSED);
     });
 
@@ -734,14 +761,14 @@ describe('contributionService', () => {
         let contribution = await newContributionAsync(campaign2, government);
         contribution.status = ContributionStatus.SUBMITTED;
         await contributionRepository.save(contribution);
-        contribution = await contributionRepository.findOne(contribution.id) as Contribution;
+        contribution = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(contribution.status).to.equal(ContributionStatus.SUBMITTED);
         try {
-            await archiveContributionAsync({currentUserId: govAdmin.id, contributionId: contribution.id});
+            await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
         } catch (error) {
-            expect(error.message).to.equal('Contribution must have status of Draft to be Archived')
+            expect(error.message).to.equal('Contribution must have status of Draft to be Archived');
         }
-        const notUpdated = await contributionRepository.findOne(contribution.id) as Contribution;
+        const notUpdated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(notUpdated.status).to.equal(ContributionStatus.SUBMITTED);
     });
 });

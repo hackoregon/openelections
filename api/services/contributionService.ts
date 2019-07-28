@@ -1,4 +1,4 @@
-import { getConnection } from 'typeorm';
+import { getConnection, UpdateResult } from 'typeorm';
 import {
     Contribution,
     ContributionStatus,
@@ -12,6 +12,9 @@ import {
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
+import { createActivityRecordAsync } from './activityService';
+import { User } from '../models/entity/User';
+import { ActivityTypeEnum } from '../models/entity/Activity';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -167,6 +170,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
+        const userRepository = defaultConn.getRepository('User');
         const contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
             relations: ['campaign', 'government']
         })) as Contribution;
@@ -178,7 +182,21 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
             (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
         if (hasCampaignPermissions) {
-            await contributionRepository.update(contributionAttrs.id, attrs);
+            const [_, user, changeNotes] = await Promise.all([
+                contributionRepository.update(contributionAttrs.id, attrs),
+                (userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown) as User,
+                Object.keys(attrs)
+                    .map(k => `${k} changed from ${contribution[k]} to ${attrs[k]}.`)
+                    .join(' ')
+            ]);
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: changeNotes,
+                campaign: contribution.campaign,
+                government: contribution.government,
+                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityId: user.id
+            });
         } else {
             throw new Error('User does not have permissions');
         }
@@ -208,13 +226,13 @@ export async function getContributionByIdAsync(
         if (hasCampaignPermissions) {
             contribution = (await contributionRepository.findOne({
                 select: contributionSummaryFields,
-                where: {id: contributionId},
+                where: { id: contributionId },
                 relations: ['campaign', 'government']
             })) as Contribution;
         } else {
             throw new Error('User does not have permissions');
         }
-        return (contribution as IContributionSummary);
+        return contribution as IContributionSummary;
     } catch (e) {
         throw new Error(e.message);
     }
