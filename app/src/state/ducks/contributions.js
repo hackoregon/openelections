@@ -143,9 +143,9 @@ export function updateContribution(contributionAttrs) {
 export function getContributions(contributionSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
+    console.log(schema)
     try {
       const response = await api.getContributions(contributionSearchAttrs);
-      console.log(response)
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
@@ -194,3 +194,7 @@ export function archiveContribution(id) {
     }
   };
 }
+
+// Selectors
+
+// export const getContributionsList;
