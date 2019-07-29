@@ -238,9 +238,9 @@ Invitation.defaultProps = {
 SearchBox.propTypes = {
   onSearchQueryChange: PropTypes.func,
   onSearchResultSelected: PropTypes.func,
-  guesses: PropTypes.shape({
+  guesses: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string, value: PropTypes.string
-  }),
+  })),
   isLoading: PropTypes.bool,
   placeholder: PropTypes.string
 };

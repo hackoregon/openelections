@@ -160,8 +160,8 @@ class ContributionsCard extends React.Component {
 							<div className="panel">
 								<h4>Top 5 Largest Expenses</h4>
 								<ul>
-									{data.topExpenses.map(ex =>
-										<li><a href="#">#{ex.id} ({this.money(ex.amount)})</a></li>
+									{data.topExpenses.map((ex, i) =>
+										<li key={i}><a href="#">#{ex.id} ({this.money(ex.amount)})</a></li>
 									)}
 								</ul>
 							</div>
