@@ -7,11 +7,8 @@ import Form from "../../../../components/Form/Form";
 import SearchBox from "../../../../components/SearchBox/SearchBox";
 
 const styles = css`
-		
-	ul {
-		list-style: none;
-		padding: 0;
-		font-size: 20px;
+	.search-box {
+		font-size: 16px;	
 	}
 		
 `;
@@ -50,6 +47,7 @@ class SearchCard extends React.Component {
 				<h3>Search</h3>
 				<p>Search across all contributions and expenses</p>
 				<SearchBox
+					className='search-box'
 					placeholder='Contribution #, Expenses #'
 					onSearchQueryChange={(value) => {
 						if (this.queryTimeout) clearTimeout(this.queryTimeout);

@@ -111,7 +111,7 @@ class SearchBox extends Component {
     const guessesList = this.renderGuessesList(this.props.guesses);
 
     return (
-      <div css={this.styles()}>
+      <div css={this.styles()} className={this.props.className}>
         {this.props.isLoading ? (
           <div className={"loader"} css={loader(20, "#000")}>
             Loading...
@@ -163,17 +163,22 @@ class SearchBox extends Component {
         display: none;
         padding: 0;
         margin: 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         animation: enterResults 0.2s;
         background-color: white;
         position: absolute;
         width: 100%;
+        list-style: none;
+        font-size: inherit;
     
         .guess-item {
+                font-size: inherit;
           a {
+            font-size: inherit;
             display: block;
             padding: 10px;
             color: inherit;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
           }
 
           //> a:hover,
@@ -186,12 +191,12 @@ class SearchBox extends Component {
           }
 
           .item-label {
-            font-size: 0.5em;
+            font-size: 0.6em;
             display: inline-block;
             background: rgba(0, 0, 0, 0.2);
             margin: 0px 5px 0px -5px;
             padding: 2px 4px;
-            border-radius: 5px;
+            border-radius: 3px;
             color: #444;
             text-transform: uppercase;
           }
