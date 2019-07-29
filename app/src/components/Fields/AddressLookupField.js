@@ -41,6 +41,7 @@ class AddressLookupField extends React.Component {
     this.autocompleteInput = React.createRef()
     this.autocomplete = null
     this.handlePlaceChanged = this.handlePlaceChanged.bind(this)
+    this.handleFieldChange = this.handleFieldChange.bind(this)
   }
 
   componentDidMount () {
@@ -50,7 +51,10 @@ class AddressLookupField extends React.Component {
     )
     this.autocomplete.addListener('place_changed', this.handlePlaceChanged)
   }
-
+  handleFieldChange (e) {
+    //Ensure that any changes mad by hand are reflected in posted values
+    this.props.formik.values[this.props.id] = e.currentTarget.value;
+  }
   handlePlaceChanged () {
     const place = this.autocomplete.getPlace();
     const addressFields = parseGooglePlace(place);
@@ -81,7 +85,7 @@ class AddressLookupField extends React.Component {
           label={label}
           helperText={formik.touched[id] ? formik.errors[id] : ""}
           error={formik.touched[id] && Boolean(formik.errors[id])}
-          value={formik.values[id]}
+          onChange={this.handleFieldChange}
           fullWidth
           InputProps={{
             inputProps: {
