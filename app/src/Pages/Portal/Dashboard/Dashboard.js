@@ -73,7 +73,12 @@ const DashboardPage = props => {
                     </div>
                     <div className="card small">
                         {/* Jaron links go here */}
-                        <LinksCard links={[{path: "/reset-password", label: "Reset Password"}]} />
+                        <LinksCard links={[
+                            {path: "/contributions", label: "Add Contribution"},
+                            {path: "/expenses", label: "Add Expense"},
+                            {path: "/manage-portal", label: "Invite User"},
+                            {path: "/reset-password", label: "Reset Password"}
+                        ]} />
                     </div>
                 </div>
             </div>
