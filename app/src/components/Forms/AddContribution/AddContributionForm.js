@@ -337,9 +337,14 @@ const fields = {
   )
 };
 
+const validate = (values) => {
+  console.log(values)
+}
+
 const AddContributionForm = ({ initialValues, onSubmit, children }) => (
   <>
     <Form
+      validate={validate}
       fields={fields}
       sections={[FormSectionEnum.BASIC, FormSectionEnum.CONTRIBUTOR, FormSectionEnum.OTHER_DETAILS]}
       initialValues={initialValues}

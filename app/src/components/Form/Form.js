@@ -17,7 +17,7 @@ const formFromFields = (fields, formikProps) =>
 
 class Form extends React.Component {
   render() {
-    const { fields, initialValues, sections, children } = this.props;
+    const { fields, initialValues, sections, children, validate } = this.props;
     const fieldIds = Object.keys(fields);
     const validations = Object.fromEntries(
       fieldIds.map(id => [id, fields[id].validation])
@@ -25,6 +25,7 @@ class Form extends React.Component {
     const validationSchema = Yup.object(validations);
     return (
       <Formik
+        validate={validate || null}
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
@@ -113,7 +114,8 @@ Form.propTypes = {
   ).isRequired,
   initialValues: PropTypes.shape({}).isRequired,
   onSubmit: PropTypes.func.isRequired,
-  children: PropTypes.func.isRequired
+  children: PropTypes.func.isRequired,
+  validate: PropTypes.func
 };
 
 export default Form;
