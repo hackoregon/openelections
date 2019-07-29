@@ -4,6 +4,8 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
+import { createSelector } from "reselect";
+import { get } from "lodash";
 
 export const STATE_KEY = "contributions";
 
@@ -195,5 +197,11 @@ export function archiveContribution(id) {
 }
 
 // Selectors
+export const rootState = state => state || {};
 
-// export const getContributionsList;
+export const getContributionsList = createSelector(
+  rootState,
+  state =>
+    Object.values(state.contributions)
+      .filter(withId => !!get(withId, "id"))
+);

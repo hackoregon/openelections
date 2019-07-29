@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
+import {getContributions, getContributionsList } from "../../../../state/ducks/contributions";
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }
@@ -12,18 +13,29 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 	isFreeAction ? { icon: "none", name, buttonType, onClick, isFreeAction } : { icon: "none", name, buttonType, onClick }
 
 const columns = [
-	columnInfo("Date", "date", "date"),
-	columnInfo("Name", "name"),
+	{
+        field: 'date',
+        title: 'Date',
+		render: rowData => new Date(rowData.date)
+			.toLocaleString(
+				'en-US', 
+				{
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+				  }).split(', ')[0]
+      },
+	//columnInfo("Date", "date", "date"),
+	columnInfo("Name", "lastName"),
 	columnInfo("Amount", "amount", "currency"),
 	columnInfo("Status", "status"),
 	columnInfo("Labels", "NotSet")
 ]
 
 const ContributionsTable = ({ ...props }) => {	
-	// TODO add loading logic
-	const isLoading = false
-	// TODO Display count of submitted contributions
-	const title = `Submitted Contributions`
+	const isLoading = props.isListLoading && !Array.isArray(props.contributionList);
+	const rowCount = Array.isArray(props.contributionList) ? props.contributionList.length : 0;
+	const title = rowCount + ` Submitted Contributions` 
 	const options = {
 		search: false,
 		actionCellStyle: {
@@ -34,7 +46,6 @@ const ContributionsTable = ({ ...props }) => {
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
 			// TODO add prop that goes to details page
-			console.log(rowData)
 		}),
 		actionInfo("Add New Contribution", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
 	]
@@ -60,11 +71,13 @@ const ContributionsTable = ({ ...props }) => {
 				options={options}
 				actions={actions}
 				components={components}
+				data={isLoading ? [{}] : props.contributionList}
 			/>
 		</PageHoc>
 	)
 }
 
-
-
-export default connect()(ContributionsTable);
+export default connect(state => ({
+	isListLoading: state.campaigns.isLoading,
+	contributionList: getContributionsList(state)
+}))(ContributionsTable);
