@@ -77,6 +77,12 @@ const requiredFormField = (label, section, component, validation, requiredMessag
   return values ? { label, section, component, validation, options: { values } } : { label, section, component, validation }
 }
 
+const optionalRequiredFormField = () => { }
+
+const DynamicOptionField = ({ Component, props, check, trueOptions, falseOptions }) => (
+  <Component {...props} options={check ? trueOptions : falseOptions} />
+)
+
 const fields = {
   // BASICS SECTION
   dateOfContribution: requiredFormField(
@@ -94,17 +100,24 @@ const fields = {
     "A contribution type is required",
     ["Contribution", "Other Receipt"]
   ),
+  // if typeOfContribution was 'contribution' subTypes are:
+  //  - Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, In-Kind /Forgiven Personal Expenditure
+  // If Other Receipt was selected, drop down says: 
+  //  -  Items Sold at Fair Market Value, Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
   subTypeOfContribution: requiredFormField(
     "Subtype of Contribution",
     FormSectionEnum.BASIC,
-    SelectField,
+    (props) => (
+      <DynamicOptionField
+        Component={SelectField}
+        props={props}
+        check={props.formik.values.typeOfContribution === 'Contribution'}
+        trueOptions={{ values: ["Cash Contribution", "In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"] }}
+        falseOptions={{ values: ["Items Sold at Fair Market Value", "Lost or Returned Check", "Miscellaneous Other Receipt", "Refunds and Rebates"] }}
+      />
+    ),
     Yup.string("Choose the subtype of contribution"),
-    "The contribution subtype is required",
-    // if typeOfContribution was 'contribution' subTypes are:
-    // Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, In-Kind /Forgiven Personal Expenditure
-    ["Cash Contribution", "In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"]
-    // If Other Receipt was selected, drop down says: 
-    // Items Sold at Fair Market Value, Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
+    "The contribution subtype is required"
   ),
   typeOfContributor: requiredFormField(
     "Type of Contributor",
@@ -325,7 +338,7 @@ const fields = {
 };
 
 const AddContributionForm = ({ initialValues, onSubmit, children }) => (
-  <React.Fragment>
+  <>
     <Form
       fields={fields}
       sections={[FormSectionEnum.BASIC, FormSectionEnum.CONTRIBUTOR, FormSectionEnum.OTHER_DETAILS]}
@@ -334,7 +347,6 @@ const AddContributionForm = ({ initialValues, onSubmit, children }) => (
     >
       {children}
     </Form>
-  </React.Fragment>
+  </>
 );
-
 export default AddContributionForm;
