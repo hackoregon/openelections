@@ -170,35 +170,121 @@ const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
 const currentStatus = "Draft";
 const labelsCount = 0;
 
-const invoiceNumberBlock = (
-  <React.Fragment>
+const InvoiceNumberBlock = () => (
+  <>
     <p css={headerStyles.invoice}>{invoiceNumber}</p>
     <p css={headerStyles.subheading}>
       {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
     </p>
-  </React.Fragment>
+  </>
 );
 
-const statusBlock = (
+const StatusBlock = () => (
   <div css={headerStyles.statusBlock}>
     <p css={headerStyles.status}>Current Status</p>
     <p css={headerStyles.actualStatus}>{currentStatus}</p>
   </div>
 );
 
-const labelBlock = (
+const LabelBlock = () => (
   <div css={headerStyles.labelBlock}>
     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
     <p css={headerStyles.smallBlueText}>+ Add Labels</p>
   </div>
 );
 
+const HeaderSection = ({ isValid, handleSubmit }) => (
+  <>
+    <div css={containers.header}>
+      <div css={headerStyles.leftColumn}>
+        <InvoiceNumberBlock />
+        <div style={{ display: "flex" }}><LabelBlock /></div>
+      </div>
+      <div css={headerStyles.rightColumn}>
+        <div style={{ flexDirection: "column" }}>
+          <StatusBlock />
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Submit Contribution
+        </Button>
+        </div>
+      </div>
+    </div>
+    <hr css={sectionStyles.dividerLine} />
+  </>
+)
+
+const BasicsSection = ({ formFields }) => (
+  <div css={sectionStyles.main}>
+    <h3 css={sectionStyles.title}>Basics</h3>
+    <div css={containers.main}>
+      <h2>{formFields.dateOfContribution}</h2>
+      <h2>{formFields.typeOfContribution}</h2>
+      <h2>{formFields.subTypeOfContribution}</h2>
+      <h2>{formFields.typeOfContributor}</h2>
+      <h2>{formFields.amountOfContribution}</h2>
+      <h2>{formFields.oaeContributionType}</h2>
+      <h2>{formFields.paymentMethod}</h2>
+      <h2>{formFields.checkNumber}</h2>
+    </div>
+  </div>
+)
+
+const ContributorSection = ({ formFields }) => (
+  <div css={sectionStyles.main}>
+    <h3 css={sectionStyles.title}>Contributor</h3>
+    <div css={containers.sectionTwo}>
+      <h2>{formFields.firstName}</h2>
+      <h2>{formFields.lastName}</h2>
+    </div>
+    <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
+    <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
+    <div css={containers.cityStateZip}>
+      <h2>{formFields.city}</h2>
+      <h2>{formFields.state}</h2>
+      <h2>{formFields.zipcode}</h2>
+    </div>
+    <div css={containers.sectionTwo}>
+      <h2>{formFields.contactType}</h2>
+      <h2>{formFields.contactInformation}</h2>
+      <h2>{formFields.occupation}</h2>
+      <h2>{formFields.employerName}</h2>
+    </div>
+    <div css={containers.cityStateZip}>
+      <h2>{formFields.employerCity}</h2>
+      <h2>{formFields.employerState}</h2>
+      <h2>{formFields.employerZipcode}</h2>
+    </div>
+    <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
+  </div>
+)
+
+const OtherDetailsSection = ({ formFields }) => (
+  <div css={sectionStyles.main}>
+    <h3 css={sectionStyles.title}>Other Details</h3>
+    <div css={containers.main}>
+      <h2>{formFields.electionAggregate}</h2>
+      <h2>{formFields.description}</h2>
+      <h2>{formFields.linkToDocumentation}</h2>
+      <h2>{formFields.notes}</h2>
+    </div>
+  </div>
+)
+
+const onSubmit = (data) => {
+  console.log(data)
+}
+
 const AddContribution = () => (
   <AddContributionForm
-    onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+    onSubmit={onSubmit}
     initialValues={{
       // BASICS VALUES
-      dateOfContribution: "", // Date.now(), // FORMAT?
+      dateOfContribution: "",
       typeOfContribution: "",
       subTypeOfContribution: "",
       typeOfContributor: "",
@@ -235,86 +321,18 @@ const AddContribution = () => (
       formSections,
       formFields,
       isValid,
-      handleSubmit /* isDirty, isSubmitting */
-    }) => (
-      <React.Fragment>
-        {/* HEADER SECTION */}
-        <div css={containers.header}>
-          <div css={headerStyles.leftColumn}>
-            {invoiceNumberBlock}
-            <div style={{ display: "flex" }}>{labelBlock}</div>
-          </div>
-          <div css={headerStyles.rightColumn}>
-            <div style={{ flexDirection: "column" }}>
-              {statusBlock}
-              <Button
-                css={headerStyles.submitButton}
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Submit Contribution
-              </Button>
-            </div>
-          </div>
-        </div>
-        <hr css={sectionStyles.dividerLine} />
-
-        {/* BASICS SECTION */}
-        <div css={sectionStyles.main}>
-          <h3 css={sectionStyles.title}>Basics</h3>
-          <div css={containers.main}>
-            <h2>{formFields.dateOfContribution}</h2>
-            <h2>{formFields.typeOfContribution}</h2>
-            <h2>{formFields.subTypeOfContribution}</h2>
-            <h2>{formFields.typeOfContributor}</h2>
-            <h2>{formFields.amountOfContribution}</h2>
-            <h2>{formFields.oaeContributionType}</h2>
-            <h2>{formFields.paymentMethod}</h2>
-            <h2>{formFields.checkNumber}</h2>
-          </div>
-        </div>
-
-        {/* CONTRIBUTOR SECTION */}
-        <div css={sectionStyles.main}>
-          <h3 css={sectionStyles.title}>Contributor</h3>
-          <div css={containers.sectionTwo}>
-            <h2>{formFields.firstName}</h2>
-            <h2>{formFields.lastName}</h2>
-          </div>
-          <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
-          <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
-          <div css={containers.cityStateZip}>
-            <h2>{formFields.city}</h2>
-            <h2>{formFields.state}</h2>
-            <h2>{formFields.zipcode}</h2>
-          </div>
-          <div css={containers.sectionTwo}>
-            <h2>{formFields.contactType}</h2>
-            <h2>{formFields.contactInformation}</h2>
-            <h2>{formFields.occupation}</h2>
-            <h2>{formFields.employerName}</h2>
-          </div>
-          <div css={containers.cityStateZip}>
-            <h2>{formFields.employerCity}</h2>
-            <h2>{formFields.employerState}</h2>
-            <h2>{formFields.employerZipcode}</h2>
-          </div>
-          <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
-        </div>
-
-        {/* OTHER DETAILS SECTION */}
-        <div css={sectionStyles.main}>
-          <h3 css={sectionStyles.title}>Other Details</h3>
-          <div css={containers.main}>
-            <h2>{formFields.electionAggregate}</h2>
-            <h2>{formFields.description}</h2>
-            <h2>{formFields.linkToDocumentation}</h2>
-            <h2>{formFields.notes}</h2>
-          </div>
-        </div>
-      </React.Fragment>
-    )}
+      handleSubmit,
+      values
+    }) => {
+      return (
+        <>
+          <HeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+          <BasicsSection formFields={formFields} />
+          <ContributorSection formFields={formFields} />
+          <OtherDetailsSection formFields={formFields} />
+        </>
+      )
+    }}
   </AddContributionForm>
 );
 export default connect(state => ({

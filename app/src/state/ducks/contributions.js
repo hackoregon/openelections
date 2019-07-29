@@ -4,6 +4,8 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
+import { createSelector } from "reselect";
+import { get } from "lodash";
 
 export const STATE_KEY = "contributions";
 
@@ -146,7 +148,7 @@ export function getContributions(contributionSearchAttrs) {
     try {
       const response = await api.getContributions(contributionSearchAttrs);
       if (response.status === 200) {
-        const data = normalize(await response.json(), schema.contribution);
+        const data = normalize(await response.json(), [schema.contribution]);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
@@ -193,3 +195,13 @@ export function archiveContribution(id) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getContributionsList = createSelector(
+  rootState,
+  state =>
+    Object.values(state.contributions)
+      .filter(withId => !!get(withId, "id"))
+);

@@ -5,12 +5,12 @@ import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
 import ManageUserPage from "./ManagePortal/ManageUser/index";
-import ContributionsPage from "./Contributions/Contributions";
 import ExpensesPage from "./Expenses/Expenses";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"
 import ManageCampaignPage from "./ManageCampaign";
+import ContributionsPage from "./Contributions"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -99,11 +99,14 @@ const Portal = props => {
                         component={DashboardPage}
                       />{" "}
                       <Route
-                        exact
                         path="/contributions"
                         component={ContributionsPage}
                       />
-                      <Route exact path="/expenses" component={ExpensesPage} />
+                      <Route 
+                        exact 
+                        path="/expenses" 
+                        component={ExpensesPage} 
+                      />
                       <Route
                         exact
                         path="/campaigns"
