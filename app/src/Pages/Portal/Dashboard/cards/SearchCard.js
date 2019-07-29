@@ -18,12 +18,30 @@ const styles = css`
 
 class SearchCard extends React.Component {
 
+	queryTimeout = null;
+
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			isLoading: false
+			isLoading: false,
+			searchResults: null
 		}
+	}
+
+	performSearch (query) {
+		this.setState({isLoading: true});
+
+		setTimeout(() => {
+			this.setState({
+				isLoading: false,
+				searchResults: [
+					{ label: 'Expense', value: 'Example' },
+					{ label: 'Contribution', value: 'Example contribution' },
+					{ label: 'Other', value: 'Other type of content' }
+				]
+			});
+		}, 2000)
 	}
 
 	render() {
@@ -34,16 +52,15 @@ class SearchCard extends React.Component {
 				<SearchBox
 					placeholder='Contribution #, Expenses #'
 					onSearchQueryChange={(value) => {
+						if (this.queryTimeout) clearTimeout(this.queryTimeout);
 						if (value) {
-							this.setState({isLoading: true});
-
-							// Pretending to search
-							setTimeout(() => {
-								this.setState({isLoading: false});
-							}, 2000);
+							this.queryTimeout = setTimeout( () => {
+								this.performSearch(value);
+							}, 1000);
 						}
 					}}
 					isLoading={this.state.isLoading}
+					guesses={this.state.searchResults}
 				/>
 			</div>
 		);

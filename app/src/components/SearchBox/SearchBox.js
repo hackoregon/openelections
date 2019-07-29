@@ -102,7 +102,7 @@ class SearchBox extends Component {
           </a>
         </li>
       ));
-    } else {
+    } else if (guesses && guesses.length === 0) {
       return <li className={"no-guess-item"}>No Result</li>;
     }
   }
@@ -165,7 +165,10 @@ class SearchBox extends Component {
         margin: 0;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         animation: enterResults 0.2s;
-
+        background-color: white;
+        position: absolute;
+        width: 100%;
+    
         .guess-item {
           a {
             display: block;
@@ -183,13 +186,14 @@ class SearchBox extends Component {
           }
 
           .item-label {
-            font-size: 0.8em;
+            font-size: 0.5em;
             display: inline-block;
             background: rgba(0, 0, 0, 0.2);
             margin: 0px 5px 0px -5px;
             padding: 2px 4px;
             border-radius: 5px;
             color: #444;
+            text-transform: uppercase;
           }
         }
 
