@@ -103,6 +103,40 @@ describe('contributionService', () => {
         expect(await contributionRepository.count()).equal(1);
     });
 
+    it('Creates an activity record when adding a contribution', async () => {
+        expect(await contributionRepository.count()).equal(0);
+
+        indvidualContribution = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            firstName: 'John',
+            middleInitial: '',
+            lastName: 'Doe',
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            state: 'OR',
+            status: ContributionStatus.DRAFT,
+            zip: '97214',
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        };
+
+        const contribution = await addContributionAsync(indvidualContribution);
+        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            campaignId: campaign2.id
+        });
+
+        expect(await contributionRepository.count()).equal(1);
+        expect(activity).to.have.length(1);
+        expect(activity[0].notes).to.include(`created ${contribution.id}.`);
+    });
+
     it('Does not add a contribution if the user does not belong to the campaign', async () => {
         try {
             expect(await contributionRepository.count()).equal(0);
@@ -639,7 +673,7 @@ describe('contributionService', () => {
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
         expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.equal(
+        expect(activity[0].notes).to.include(
             `amount changed from ${originalAmount} to ${contribution.amount}. zip changed from ${originalZip} to ${
                 contribution.zip
             }.`
@@ -740,6 +774,22 @@ describe('contributionService', () => {
         await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
         const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+    });
+
+    it('archiveContributionAsync creates an activity record', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
+        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
+        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+
+        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            campaignId: campaign2.id
+        });
+        expect(activity).to.have.length(1);
+        expect(activity[0].notes).to.include(`archived ${contribution.id}.`);
     });
 
     it('archiveContributionAsync fails if processed', async () => {

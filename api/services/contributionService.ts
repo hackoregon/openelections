@@ -53,12 +53,14 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             const contributionRepository = defaultConn.getRepository('Contribution');
             const governmentRepository = defaultConn.getRepository('Government');
             const campaignRepository = defaultConn.getRepository('Campaign');
+            const userRepository = defaultConn.getRepository('User');
 
             const contribution = new Contribution();
 
-            const [campaign, government] = await Promise.all([
+            const [campaign, government, user] = await Promise.all([
                 campaignRepository.findOne(contributionAttrs.campaignId),
-                governmentRepository.findOne(contributionAttrs.governmentId)
+                governmentRepository.findOne(contributionAttrs.governmentId),
+                (userRepository.findOneOrFail(contributionAttrs.currentUserId) as unknown) as User
             ]);
 
             contribution.campaign = campaign as Campaign;
@@ -88,7 +90,16 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
-                return await contributionRepository.save(contribution);
+                const saved = await contributionRepository.save(contribution);
+                await createActivityRecordAsync({
+                    currentUser: user,
+                    notes: `${user.email} created ${saved.id}.`,
+                    campaign: contribution.campaign,
+                    government: contribution.government,
+                    activityType: ActivityTypeEnum.CONTRIBUTION,
+                    activityId: user.id
+                });
+                return saved;
             }
             throw new Error('Contribution is missing one or more required properties.');
         }
@@ -191,7 +202,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             ]);
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: changeNotes,
+                notes: `${user.email} updated ${contributionAttrs.id} fields. ${changeNotes}`,
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
@@ -247,9 +258,13 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
-        const contribution = (await contributionRepository.findOneOrFail(contrAttrs.contributionId, {
-            relations: ['campaign', 'government']
-        })) as Contribution;
+        const userRepository = defaultConn.getRepository('User');
+        const [contribution, user] = await Promise.all([
+            (contributionRepository.findOneOrFail(contrAttrs.contributionId, {
+                relations: ['campaign', 'government']
+            }) as unknown) as Contribution,
+            (userRepository.findOneOrFail(contrAttrs.currentUserId) as unknown) as User
+        ]);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
             (await isCampaignStaffAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
@@ -257,6 +272,14 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
         if (hasCampaignPermissions && contribution.status === ContributionStatus.DRAFT) {
             contribution.status = ContributionStatus.ARCHIVED;
             await contributionRepository.save(contribution);
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.email} archived ${contribution.id}.`,
+                campaign: contribution.campaign,
+                government: contribution.government,
+                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityId: user.id
+            });
             return getContributionByIdAsync(contrAttrs);
         } else {
             throw new Error('Contribution must have status of Draft to be Archived');
