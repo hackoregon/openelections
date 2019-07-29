@@ -197,8 +197,6 @@ export function archiveContribution(id) {
 }
 
 // Selectors
-
-// export const getContributionsList;
 export const rootState = state => state || {};
 
 export const getContributionsList = createSelector(
@@ -206,10 +204,4 @@ export const getContributionsList = createSelector(
   state =>
     Object.values(state.contributions)
       .filter(withId => !!get(withId, "id"))
-      // .map(perm => {
-      //   const userAndRole = { ...state.users[perm.user] };
-      //   userAndRole.role = startCase(perm.role);
-      //   userAndRole.roleId = perm.id;
-      //   return userAndRole;
-      // })
 );
