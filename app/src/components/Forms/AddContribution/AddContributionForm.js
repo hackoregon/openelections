@@ -7,7 +7,8 @@ import DateField from "../../Fields/DateField";
 
 const FormSectionEnum = Object.freeze({
   BASIC: "basicsSection",
-  CONTRIBUTOR: "contributorSection"
+  CONTRIBUTOR: "contributorSection",
+  OTHER_DETAILS: "otherDetailsSection"
 })
 
 const stateList = [
@@ -69,11 +70,11 @@ const stateList = [
 ]
 
 const formField = (label, section, component, validation, values = undefined) =>
-  values ? { label, section, component, validation } : { label, section, component, validation, options: { values } }
+  values ? { label, section, component, validation, options: { values } } : { label, section, component, validation }
 
 const requiredFormField = (label, section, component, validation, requiredMessage, values = undefined) => {
-  const required = validation.required(requiredMessage)
-  return values ? { label, section, component, required, options: { values } } : { label, section, component, required }
+  validation = validation.required(requiredMessage)
+  return values ? { label, section, component, validation, options: { values } } : { label, section, component, validation }
 }
 
 const fields = {
@@ -180,8 +181,8 @@ const fields = {
   lastName: requiredFormField(
     "Contributor's Last Name",
     FormSectionEnum.CONTRIBUTOR,
-    TextField, 
-    Yup.string("Enter your last name"), 
+    TextField,
+    Yup.string("Enter your last name"),
     "Your last name is required"
   ),
   streetAddress: requiredFormField(
@@ -219,181 +220,115 @@ const fields = {
     Yup.number("Enter your zipcode"),
     "A zipcode is required"
   ),
-  contactType: {
-    label: "Contact Type",
-    section: "contributorSection",
-    component: SelectField,
-    options: {
-      values: ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"] // get from Redux state eventually
-    },
-    validation: Yup.string("Select the best way to contact you")
-  },
-  contactInformation: {
-    label: "Contact Information",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your contact information")
-  },
-  occupation: {
-    label: "Occupation",
-    section: "contributorSection",
-    component: SelectField,
-    options: {
-      values: ["Not Employed", "Self Employed", "Other"]
-    },
-    validation: Yup.string("Select your occupation")
-    // If "Other" selected, provide option to write free form text
-  },
-  employerName: {
-    label: "Employer's Name",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your employer's name")
-  },
-  employerCity: {
-    label: "Employer City",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your employer's city")
-  },
-  employerState: {
-    label: "Employer State",
-    section: "contributorSection",
-    component: SelectField,
-    options: {
-      values: [
-        "AK",
-        "AL",
-        "AR",
-        "AS",
-        "AZ",
-        "CA",
-        "CO",
-        "CT",
-        "DC",
-        "DE",
-        "FL",
-        "GA",
-        "GU",
-        "HI",
-        "IA",
-        "ID",
-        "IL",
-        "IN",
-        "KS",
-        "KY",
-        "LA",
-        "MA",
-        "MD",
-        "ME",
-        "MI",
-        "MN",
-        "MO",
-        "MS",
-        "MT",
-        "ND",
-        "NC",
-        "NE",
-        "NH",
-        "NJ",
-        "NM",
-        "NV",
-        "NY",
-        "OH",
-        "OK",
-        "OR",
-        "PA",
-        "PR",
-        "RI",
-        "SC",
-        "SD",
-        "TN",
-        "TX",
-        "UT",
-        "VA",
-        "VI",
-        "VT",
-        "WA",
-        "WI",
-        "WV",
-        "WY"
-      ]
-    },
-    validation: Yup.string("Enter your employer's state")
-  },
-  employerZipcode: {
-    label: "Employer Zipcode",
-    section: "contributorSection",
-    component: TextField,
-    validation: Yup.string("Enter your employer's zipcode")
-  },
+  contactType: formField(
+    "Contact Type",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Select the best way to contact you"),
+    ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"] // get from Redux state eventually
+  ),
+  contactInformation: formField(
+    "Contact Information",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your contact information")
+  ),
+  occupation: formField(
+    "Occupation",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Select your occupation"),
+    ["Not Employed", "Self Employed", "Other"]
+  ),
+  employerName: formField(
+    "Employer's Name",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your employer's name")
+  ),
+  employerCity: formField(
+    "Employer City",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your employer's city")
+  ),
+  employerState: formField(
+    "Employer State",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Enter your employer's state"),
+    stateList
+  ),
+  employerZipcode: formField(
+    "Employer Zip Code",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your employer's zipcode")
+  ),
 
   // OTHER DETAILS SECTION
-  electionAggregate: {
-    label: "Election Aggregate",
-    section: "otherDetailsSection",
-    component: TextField,
-    validation: Yup.number("?????").required("????? is required")
-  },
-  description: {
-    label: "Description",
-    section: "otherDetailsSection",
-    component: SelectField,
-    options: {
-      values: [
-        "Broadcast Advertising",
-        "Fundraising Event Expenses",
-        "General Operating Expenses",
-        "Literature/Brochures/Printing",
-        "Management Services",
-        "Newspaper and Other Periodical Advertising",
-        "Other Advertising",
-        "Petition Circulators",
-        "Postage",
-        "Preparation and Production of Advertising",
-        "Surveys and Polls",
-        "Travel Expenses",
-        "Utilities",
-        "Wages/Salaries/Benefits"
-      ]
-    },
-    validation: Yup.string(
-      "Choose the description of the contribution"
-    ).required(
-      "A description is required"
-      // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
-      // or In-Kind Forgiven Personal Expenditure was selection.
-    )
-  },
-  occupationLetterDate: {
-    label: "Occupation Letter Date",
-    section: "otherDetailsSection",
-    component: TextField,
-    validation: Yup.date("???").required("Occupation letter date is required") // NOT REQUIRED IF OCCUPATION & EMPLOYER NAME/ADDRESS FILLED IN
-  },
-  linkToDocumentation: {
-    label: "Link to Documentation?",
-    section: "otherDetailsSection",
-    component: TextField,
-    validation: Yup.string(
-      "Provide a link to documentation of your contribution"
-    ).required("A link to documentation of your contribution is required")
+  electionAggregate: requiredFormField(
+    "Election Aggregate",
+    FormSectionEnum.OTHER_DETAILS,
+    TextField,
+    Yup.number("Enter your election aggregate"),
+    "Election aggregate is required"
+  ),
+  description: requiredFormField(
+    "Description",
+    FormSectionEnum.OTHER_DETAILS,
+    SelectField,
+    Yup.string("Choose the description of the contribution"),
+    // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
+    // or In-Kind Forgiven Personal Expenditure was selection.
+    "A description is required",
+    [
+      "Broadcast Advertising",
+      "Fundraising Event Expenses",
+      "General Operating Expenses",
+      "Literature/Brochures/Printing",
+      "Management Services",
+      "Newspaper and Other Periodical Advertising",
+      "Other Advertising",
+      "Petition Circulators",
+      "Postage",
+      "Preparation and Production of Advertising",
+      "Surveys and Polls",
+      "Travel Expenses",
+      "Utilities",
+      "Wages/Salaries/Benefits"
+    ]
+  ),
+  occupationLetterDate: requiredFormField(
+    "Occupation Letter Date",
+    FormSectionEnum.OTHER_DETAILS,
+    TextField,
+    Yup.date("Enter occupation letter date"),
+    // NOT REQUIRED IF OCCUPATION & EMPLOYER NAME/ADDRESS FILLED IN
+    "Occupation letter date is required"
+  ),
+  linkToDocumentation: requiredFormField(
+    "Link to Documentation?",
+    FormSectionEnum.OTHER_DETAILS,
+    TextField,
+    Yup.string("Provide a link to documentation of your contribution"),
+    "A link to documentation of your contribution is required"
     // Required UNLESS the payment method is Credit Card (Online).
     // or if there is a donor portal where donors can attest digitally, that may affect this
-  },
-  notes: {
-    label: "Notes?",
-    section: "otherDetailsSection",
-    component: TextField,
-    validation: Yup.string("Add any additional notes")
-  }
+  ),
+  notes: formField(
+    "Notes?",
+    FormSectionEnum.OTHER_DETAILS,
+    TextField,
+    Yup.string("Add any additional notes")
+  )
 };
 
 const AddContributionForm = ({ initialValues, onSubmit, children }) => (
   <React.Fragment>
     <Form
       fields={fields}
-      sections={["basicsSection", "contributorSection", "otherDetailsSection"]}
+      sections={[FormSectionEnum.BASIC, FormSectionEnum.CONTRIBUTOR, FormSectionEnum.OTHER_DETAILS]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >
