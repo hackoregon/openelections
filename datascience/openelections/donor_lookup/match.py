@@ -93,14 +93,23 @@ def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
 
 
-def in_portland(city: str, zip_code: str) -> bool:
+def in_portland(longitude: str, latitude: str) -> bool:
     """
-    Returns true if city and zip are both Portland-esque
+    Returns true if lat/long are within city limits
+    NB PostGIS places longitude first!
     :param city:
     :param zip_code:
     :return:
     """
-    return (city.upper() == 'PORTLAND') and (zip_code in PORTLAND_ZIP_CODES)
+
+    with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
+        with conn.cursor() as curr:
+            cmd = f"SELECT ST_Contains(the_geom, ST_Transform(ST_GeomFromText('Point({longitude} {latitude})',4326)," \
+                + f" 900914)) FROM city_limits WHERE cityname='Portland'"
+            curr.execute(cmd)
+            dbresult = curr.fetchall()
+
+    return (dbresult == 't')
 
 
 def query_name_address(last_name: Optional[str] = None, first_name: Optional[str] = None,
@@ -229,15 +238,13 @@ def get_match(last_name: Optional[str] = None, first_name: Optional[str] = None,
             first_name_sim = leven.ratio(first_name.upper(), record['first_name'].upper())
             last_name_sim = leven.ratio(last_name.upper(), record['last_name'].upper())
             zip_sim = leven.ratio(zip_code, record['zip'])
-            eligible_address = in_portland(zip_code=record['zip'], city=record['city'])
 
-            matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim, eligible_address]))
+            matches.append(tuple(list(record) + [addr_sim, zip_sim, first_name_sim, last_name_sim]))
 
     matches = np.array(matches, dtype=np.dtype(data.dtype.descr + [('address_sim', np.float),
                                                                    ('zip_sim', np.float),
                                                                    ('first_name_sim', np.float),
-                                                                   ('last_name_sim', np.float),
-                                                                   ('eligible_address', bool)]))
+                                                                   ('last_name_sim', np.float)]))
 
     # Sort matches
     index = np.argsort(matches[['last_name_sim', 'zip_sim', 'address_sim', 'first_name_sim']])[::-1]
@@ -281,6 +288,9 @@ def cli() -> None:
         aparser.add_argument("--addr1", dest="addr1", type=str)
         aparser.add_argument("--addr2", dest="addr2", default=None, type=str)
         aparser.add_argument("--city", dest="city", default=None, type=str)
+        #we are assuming that this is called from the command line. TBD if not
+        aparser.add_argument("--latitude", dest="latitude", type=str)
+        aparser.add_argument("--longitude", dest="longitude", type=str)
         aparser.add_argument("--max_matches", dest="max_matches", default=10, type=int)
 
         options = vars(aparser.parse_args())
@@ -298,7 +308,7 @@ def cli() -> None:
 
         # Add donor information to outout
         donor = {key: str(val).upper() if val is not None else "" for key, val in options.items()}
-        donor['eligible_address'] = str(in_portland(zip_code=options['zip_code'], city=options['city']))
+        donor['eligible_address'] = str(in_portland(longitude=options['longitude'], latitude=options['latitude']))
         matches_dict['donor_info'] = donor
 
         # Print JSON output

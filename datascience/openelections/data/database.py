@@ -195,3 +195,13 @@ def initialize_unified(zip_codes: Optional[List[str]] = None):
     with connect(**POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             curr.executemany(cmd, data.to_numpy())
+
+def initialize_citylimits():
+    '''
+    Provides the CLI for importing a table of city polygons to the active open_data_db
+    Needs: .shp and .shx files in proper folders (currently api->models->seeds->geometry)
+    :return:
+    '''
+
+    my_cmd = 'ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres password=password dbname=open_elections_dev" "api/models/seeds/cty_line.shp" -lco GEOMETRY_NAME=the_geom -lco FID=gid -nlt PROMOTE_TO_MULTI -nln city_limits -overwrite'
+    os.system(my_cmd)
