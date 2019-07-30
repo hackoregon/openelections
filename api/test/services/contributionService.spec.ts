@@ -673,11 +673,8 @@ describe('contributionService', () => {
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
         expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include(
-            `amount changed from ${originalAmount} to ${contribution.amount}. zip changed from ${originalZip} to ${
-                contribution.zip
-            }.`
-        );
+        expect(activity[0].notes).to.include('amount changed');
+        expect(activity[0].notes).to.include('zip changed');
     });
 
     it('updateContributionAsync campaignStaff different campaign fails', async () => {
