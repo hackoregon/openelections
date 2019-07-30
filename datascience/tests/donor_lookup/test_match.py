@@ -215,29 +215,16 @@ class TestInPortland():
     Test class for in_portland
     """
 
-    def test_wrong_zip(self):
+    @patch('psycopg2.connect')
+    def test_wrong_zip(self, mock_connect):
         """
         Ensure that wrong zip code returns false
         :return:
         """
+        test_data = [('t')]
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
+
         from openelections.donor_lookup.match import in_portland
 
-        assert not in_portland(city='Portland', zip_code='11209')
+        assert not in_portland(latitude='45.51179', longitude='-122.67563')
 
-    def test_wrong_city(self):
-        """
-        Ensure that wrong city returns true
-        :return:
-        """
-        from openelections.donor_lookup.match import in_portland
-
-        assert not in_portland(city='Brooklyn', zip_code='97202')
-
-    def test_valid_address(self):
-        """
-        Ensure that valid Portland address returns True
-        :return:
-        """
-        from openelections.donor_lookup.match import in_portland
-
-        assert in_portland(city='Portland', zip_code='97202')

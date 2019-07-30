@@ -276,7 +276,7 @@ def cli() -> None:
     Command line interface for get_match. Prints JSON output.
     >>> # Call from top level directory
     >>> python -m openelections.donor_lookup.match --first_name John --last_name Smith ...
-    >>> --addr1 "123 Main" --zip_code 97202 --city Portland
+    >>> --addr1 "123 Main" --zip_code 97202 --city Portland --latitude 45.51179 --longitude -122.67563
     """
     try:
         from argparse import ArgumentParser

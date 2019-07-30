@@ -5,7 +5,8 @@ To Launch RESTful Server (will run on Port 8080)
 >>> python -m openelections.api.donor_lookup
 
 Example Request:
-curl http://127.0.0.1:8080/match -d "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland"
+curl http://127.0.0.1:8080/match -d
+"last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland&latitude=45.51179&longitude=-122.67563"
 """
 import sys
 sys.path.insert(0, "/app")
