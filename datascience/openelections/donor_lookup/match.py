@@ -76,7 +76,7 @@ def in_portland(longitude: str, latitude: str) -> bool:
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
-    return (dbresult == 't')
+    return dbresult[0][0]
 
 
 def query_name_address(last_name: Optional[str] = None, first_name: Optional[str] = None,

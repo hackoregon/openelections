@@ -60,7 +60,6 @@ ORESTAR_KEY = {'Tran Id': 'VARCHAR(255)',
                'Attest Date': 'TIMESTAMP',
                'Tran Date': 'TIMESTAMP'}
 
-
 POSTGRES_LOGIN = {"host": os.environ['POSTGRES_HOST'],
                   "port": os.environ['POSTGRES_PORT'],
                   "database": os.environ['POSTGRES_DB'],
@@ -204,7 +203,8 @@ def initialize_citylimits():
     :return:
     '''
 
-    my_cmd = 'ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres password=password dbname=open_elections_dev"' \
-             + '"api/models/seeds/cty_line.shp" -lco GEOMETRY_NAME=the_geom' \
+    my_cmd = f'ogr2ogr -f "PostgreSQL" PG:"host={POSTGRES_LOGIN["host"]} user={POSTGRES_LOGIN["user"]} ' \
+             + f'password={POSTGRES_LOGIN["password"]} dbname={POSTGRES_LOGIN["database"]} ' \
+             + '"api/models/seeds/geometry/cty_line.shp" -lco GEOMETRY_NAME=the_geom' \
              + ' -lco FID=gid -nlt PROMOTE_TO_MULTI -nln city_limits -overwrite'
     os.system(my_cmd)
