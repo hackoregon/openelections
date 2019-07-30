@@ -27,8 +27,11 @@ class SearchCard extends React.Component {
 	}
 
 	performSearch (query) {
-		this.setState({isLoading: true});
+		if ( !this.state.isLoading ) {
+			this.setState({isLoading: true});
+		}
 
+		// Pretend to search
 		setTimeout(() => {
 			this.setState({
 				isLoading: false,
@@ -50,10 +53,12 @@ class SearchCard extends React.Component {
 					className='search-box'
 					placeholder='Contribution #, Expenses #'
 					onSearchQueryChange={(value) => {
-						if (this.queryTimeout) clearTimeout(this.queryTimeout);
 						if (value) {
+							if (this.queryTimeout) clearTimeout(this.queryTimeout);
+
 							this.queryTimeout = setTimeout( () => {
 								this.performSearch(value);
+								this.queryTimeout = null;
 							}, 1000);
 						}
 					}}

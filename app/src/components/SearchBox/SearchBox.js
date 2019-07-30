@@ -19,7 +19,8 @@ class SearchBox extends Component {
         { label: "Name", value: "Hola" },
         { label: "sup", value: "Hola2" },
         { label: "sup", value: "Hola4" }
-      ]
+      ],
+      showGuessesList: false
     };
 
     this.onSearchQueryChange = props.onSearchQueryChange || (value => {});
@@ -76,10 +77,17 @@ class SearchBox extends Component {
     this.selectGuessItem(this.props.guesses[itemIndex]);
   }
 
+  onTextBoxFocus() {
+    this.setState({ showGuessesList: true });
+  }
+
+  onTextBoxBlur() {
+    this.setState({ showGuessesList: false });
+  }
+
   // Helper Functions
   selectGuessItem(item) {
     this.setState({ searchString: item.value });
-
     this.onSearchResultSelected(item);
   }
 
@@ -126,6 +134,8 @@ class SearchBox extends Component {
           onChange={this.onInputChange}
           onKeyDown={this.onUpDownNavigation}
           fullWidth
+          onFocus={this.onTextBoxFocus.bind(this)}
+          onBlur={this.onTextBoxBlur.bind(this)}
           InputProps={{
             endAdornment: (
                 <InputAdornment position="end">
@@ -140,7 +150,7 @@ class SearchBox extends Component {
         />
 
         {!this.props.isLoading && this.state.searchString.trim().length ? (
-          <ul className={"guesses-list"}>{guessesList}</ul>
+          <ul className={"guesses-list" + ((this.state.showGuessesList) ? ' active' : '')}>{guessesList}</ul>
         ) : (
           ""
         )}
@@ -154,7 +164,7 @@ class SearchBox extends Component {
       display: block;
       position: relative;
 
-      &:focus-within .guesses-list {
+      .guesses-list.active {
         //input:focus + .guesses-list {
         display: block;
       }
