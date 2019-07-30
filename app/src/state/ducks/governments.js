@@ -38,3 +38,11 @@ export const actionCreators = {
 };
 
 // Side Effects, e.g. thunks
+
+// Selectors
+export const rootState = state => state || {};
+
+//TODO: Remove default gov id to 1
+export const getCurrentGovernmentId = state => {
+  return state.governments.currentGovernmentId !== null ? state.governments.currentGovernmentId : 1;
+};
