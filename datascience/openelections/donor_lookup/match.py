@@ -11,39 +11,6 @@ import psycopg2
 import re
 import json
 
-PORTLAND_ZIP_CODES = ['97201',
-                      '97202',
-                      '97203',
-                      '97204',
-                      '97205',
-                      '97206',
-                      '97209',
-                      '97210',
-                      '97211',
-                      '97212',
-                      '97213',
-                      '97214',
-                      '97215',
-                      '97216',
-                      '97217',
-                      '97218',
-                      '97219',
-                      '97220',
-                      '97221',
-                      '97222',
-                      '97223',
-                      '97225',
-                      '97227',
-                      '97229',
-                      '97230',
-                      '97231',
-                      '97232',
-                      '97233',
-                      '97236',
-                      '97239',
-                      '97258',
-                      '97266']
-
 ADDRESS_IGNORE = {'SW', 'SE', 'NE', 'NW', 'NE', 'N', 'E', 'S', 'W',
                   'APT', 'APARTMENT', 'UNIT', 'PENTHOUSE', 'PH', 'NO'}
 
@@ -161,9 +128,6 @@ def query_name_address(last_name: Optional[str] = None, first_name: Optional[str
         else:
             where_stmt += f" and address_2 = '{addr2.upper()}'"
 
-    # add zip constraint from George
-    zip_list = ', '.join(f"'{tmp}'" for tmp in PORTLAND_ZIP_CODES)
-    where_stmt += f" and zip_code in ({zip_list})"
     # Remove leading and
     where_stmt = where_stmt[4:]
 
