@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
-import {getContributions, getContributionsList } from "../../../../state/ducks/contributions";
+import { getContributionsList } from "../../../../state/ducks/contributions";
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }
@@ -42,6 +42,8 @@ const ContributionsTable = ({ ...props }) => {
 			color: "blue"
 		},
 		actionsColumnIndex: -1,
+		pageSizeOptions: [20, 50, 100],
+		pageSize: 50
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
