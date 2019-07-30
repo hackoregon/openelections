@@ -5,7 +5,8 @@ import FlashMessage from "./components/FlashMessage/FlashMessage";
 import styles from "./assets/styles/global.styles";
 import { connect } from "react-redux";
 import { isLoggedIn, me } from "./state/ducks/auth";
-import LoadingCircle from './assets/icons/loading-circle'
+
+import { ReactComponent as Logo } from '@hackoregon/component-library/assets/civic-logo-animated.svg';
 
 class App extends React.Component {
 
@@ -29,9 +30,8 @@ class App extends React.Component {
 				<Global styles={styles}/>
 				<FlashMessage/>
 				{this.state.isLoading ?
-					<div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-						<LoadingCircle radius={100}/>
-					</div> : <Routes/> }
+					<Logo width={150} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}} />
+					: <Routes/> }
 			</div>
 		);
 	}
