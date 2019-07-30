@@ -227,4 +227,3 @@ class TestInPortland():
         from openelections.donor_lookup.match import in_portland
 
         assert not in_portland(latitude='45.51179', longitude='-122.67563')
-
