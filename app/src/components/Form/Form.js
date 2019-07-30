@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import _ from "lodash";
 
-const formFromFields = (fields, formikProps) =>
+export const formFromFields = (fields, formikProps) =>
   Object.keys(fields).map(id =>
     React.createElement(fields[id].component, {
       key: id,

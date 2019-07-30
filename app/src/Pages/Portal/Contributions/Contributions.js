@@ -21,12 +21,12 @@ const Contributions = props => {
           />
           <Route 
             exact 
-            path={`${match.url}/ready`}
+            path={`${match.url}/ready/:id`}
             component={ContributionReady}
           />
           <Route 
             exact
-            path={`${match.url}/submitted`}
+            path={`${match.url}/submitted/:id`}
             component={ContributionSubmitted}
           />
           <Route 
