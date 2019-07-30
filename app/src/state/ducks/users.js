@@ -120,7 +120,6 @@ export function inviteUser(
   campaignOrGovernmentId,
   role = null
 ) {
-  console.log("[inviteUser working!]");
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.inviteUser.request());
     try {

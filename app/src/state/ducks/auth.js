@@ -128,6 +128,10 @@ export const actionCreators = {
 // Side Effects, e.g. thunks
 export function me() {
   return async (dispatch, getState, { api }) => {
+    if (!document.cookie.includes('token') && !process.env.TOKEN) {
+      // dont attempt if there is no token.
+      return
+    }
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
