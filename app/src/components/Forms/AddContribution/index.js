@@ -3,8 +3,14 @@ import Button from "../../../components/Button/Button";
 import AddContributionForm from "./AddContributionForm";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { isLoggedIn } from "../../../state/ducks/auth";
 import { connect } from "react-redux";
+import { createContribution, getContributionsList } from "../../../state/ducks/contributions"
+import {
+  ContributionStatusEnum,
+  ContributionTypeEnum,
+  ContributionSubTypeEnum,
+  ContributorTypeEnum
+} from '../../../api/api';
 
 const containers = {
   header: css`
@@ -275,13 +281,44 @@ const OtherDetailsSection = ({ formFields }) => (
   </div>
 )
 
-const onSubmit = (data) => {
-  console.log(data)
+const onSubmit = (data, props) => {
+  console.log(props)
+  const { currentUserId, governmentId, campaignId, createContribution } = props
+  const {
+    streetAddress,
+    amountOfContribution,
+    city,
+    dateOfContribution,
+    firstName,
+    lastNameOrEntity,
+    state,
+    zipcode
+  } = data
+  
+  // TODO: need to fix some of the fields here.
+  createContribution({
+    status: ContributionStatusEnum.DRAFT,
+    governmentId,
+    campaignId,
+    city,
+    currentUserId,
+    firstName,
+    state,
+    address1: streetAddress,
+    amount: parseFloat(amountOfContribution),
+    date: new Date(dateOfContribution).getTime() / 1000,
+    middleInitial: "",
+    lastName: lastNameOrEntity,
+    type: ContributionTypeEnum.CONTRIBUTION,
+    subType: ContributionSubTypeEnum.CASH,
+    zip: zipcode,
+    contributorType: ContributorTypeEnum.INDIVIDUAL
+  }).then(data => console.log(data))
 }
 
-const AddContribution = () => (
+const AddContribution = ({ ...props }) => (
   <AddContributionForm
-    onSubmit={onSubmit}
+    onSubmit={data => onSubmit(data, props)}
     initialValues={{
       // BASICS VALUES
       dateOfContribution: "",
@@ -317,12 +354,7 @@ const AddContribution = () => (
       notes: ""
     }}
   >
-    {({
-      formSections,
-      formFields,
-      isValid,
-      handleSubmit
-    }) => {
+    {({ formFields, isValid, handleSubmit }) => {
       return (
         <>
           <HeaderSection isValid={isValid} handleSubmit={handleSubmit} />
@@ -334,6 +366,14 @@ const AddContribution = () => (
     }}
   </AddContributionForm>
 );
-export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false
-}))(AddContribution);
+
+export default connect(
+  state => ({
+    currentUserId: state.auth.me.id,
+    governmentId: state.auth.me.permissions[0].id,
+    campaignId: state.auth.me.permissions[0].campaignId
+  }),
+  dispatch => ({
+    createContribution: (data) => dispatch(createContribution(data))
+  })
+)(AddContribution);
