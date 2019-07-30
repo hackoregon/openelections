@@ -239,7 +239,7 @@ const ContributorSection = ({ formFields }) => (
     <h3 css={sectionStyles.title}>Contributor</h3>
     <div css={containers.sectionTwo}>
       <h2>{formFields.firstName}</h2>
-      <h2>{formFields.lastName}</h2>
+      <h2>{formFields.lastNameOrEntity}</h2>
     </div>
     <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
     <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
@@ -295,7 +295,7 @@ const AddContribution = () => (
 
       // CONTRIBUTOR VALUES
       firstName: "",
-      lastName: "",
+      lastNameOrEntity: "",
       streetAddress: "",
       addressLine2: "",
       city: "Portland",
@@ -321,8 +321,7 @@ const AddContribution = () => (
       formSections,
       formFields,
       isValid,
-      handleSubmit,
-      values
+      handleSubmit
     }) => {
       return (
         <>

@@ -77,7 +77,13 @@ const requiredFormField = (label, section, component, validation, requiredMessag
   return values ? { label, section, component, validation, options: { values } } : { label, section, component, validation }
 }
 
-const optionalRequiredFormField = () => { }
+/**
+ * Returns a function that checks all passed in params against a function.
+ * @param {*} func 
+ */
+const checkAllParams = (func) => (...args) => args.every(x => func(x))
+
+const checkNoEmptyString = checkAllParams(x => x !== "")
 
 const DynamicOptionField = ({ Component, props, check, trueOptions, falseOptions }) => (
   <Component {...props} options={check ? trueOptions : falseOptions} />
@@ -136,7 +142,7 @@ const fields = {
       "Other"
     ]
   ),
-  // NEEDS TO BE FORMATTED AS CURRENCY
+  // TODO: Needs to be formatted as currency
   amountOfContribution: requiredFormField(
     "Amount of Contribution",
     FormSectionEnum.BASIC,
@@ -183,20 +189,18 @@ const fields = {
   ),
 
   // CONTRIBUTOR SECTION
-  firstName: requiredFormField(
+  firstName: formField(
     "Contributor's First Name",
     FormSectionEnum.CONTRIBUTOR,
     TextField,
-    Yup.string("Enter your first name"),
-    "Your first name is required"
+    Yup.string("Enter first name")
   ),
-  // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
-  lastName: requiredFormField(
-    "Contributor's Last Name",
+  // If entity selected, will require entity instead of first/last name
+  lastNameOrEntity: formField(
+    "Contributor's Last Name / Entity Name",
     FormSectionEnum.CONTRIBUTOR,
     TextField,
-    Yup.string("Enter your last name"),
-    "Your last name is required"
+    Yup.string("Enter last name or entity name")
   ),
   streetAddress: requiredFormField(
     "Street Address",
@@ -238,7 +242,7 @@ const fields = {
     FormSectionEnum.CONTRIBUTOR,
     SelectField,
     Yup.string("Select the best way to contact you"),
-    ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"] // get from Redux state eventually
+    ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"]
   ),
   contactInformation: formField(
     "Contact Information",
@@ -287,14 +291,13 @@ const fields = {
     Yup.number("Enter your election aggregate"),
     "Election aggregate is required"
   ),
-  description: requiredFormField(
+  // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
+  // or In-Kind Forgiven Personal Expenditure was selection.
+  description: formField(
     "Description",
     FormSectionEnum.OTHER_DETAILS,
     SelectField,
     Yup.string("Choose the description of the contribution"),
-    // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
-    // or In-Kind Forgiven Personal Expenditure was selection.
-    "A description is required",
     [
       "Broadcast Advertising",
       "Fundraising Event Expenses",
@@ -312,22 +315,20 @@ const fields = {
       "Wages/Salaries/Benefits"
     ]
   ),
-  occupationLetterDate: requiredFormField(
+  // Not required if occupation & employer name/address filled in
+  occupationLetterDate: formField(
     "Occupation Letter Date",
     FormSectionEnum.OTHER_DETAILS,
     TextField,
-    Yup.date("Enter occupation letter date"),
-    // NOT REQUIRED IF OCCUPATION & EMPLOYER NAME/ADDRESS FILLED IN
-    "Occupation letter date is required"
+    Yup.date("Enter occupation letter date")
   ),
-  linkToDocumentation: requiredFormField(
+  // Required UNLESS the payment method is Credit Card (Online).
+  // or if there is a donor portal where donors can attest digitally, that may affect this
+  linkToDocumentation: formField(
     "Link to Documentation?",
     FormSectionEnum.OTHER_DETAILS,
     TextField,
-    Yup.string("Provide a link to documentation of your contribution"),
-    "A link to documentation of your contribution is required"
-    // Required UNLESS the payment method is Credit Card (Online).
-    // or if there is a donor portal where donors can attest digitally, that may affect this
+    Yup.string("Provide a link to documentation of your contribution")
   ),
   notes: formField(
     "Notes?",
@@ -338,7 +339,46 @@ const fields = {
 };
 
 const validate = (values) => {
-  console.log(values)
+  const {
+    paymentMethod,
+    linkToDocumentation,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    employerZipcode,
+    subTypeOfContribution,
+    description,
+    lastNameOrEntity,
+    firstName,
+    typeOfContributor
+  } = values
+  const error = {}
+
+  if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
+    error.linkToDocumentation = "A link to documentation of your contribution is required"
+  }
+
+  if (!checkNoEmptyString(occupation, employerCity, employerName, employerState, employerZipcode)) {
+    error.occupationLetterDate = "Occupation letter date is required"
+  }
+
+  if (["In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"].includes(subTypeOfContribution) && !checkNoEmptyString(description)) {
+    error.description = "A description is required"
+  }
+
+  if (!["Individual", "Candidate’s Immediate Family"].includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
+    error.lastNameOrEntity = "Name of entity is required."
+  } else {
+    if (!checkNoEmptyString(firstName)) {
+      error.firstName = "First name is required."
+    }
+    if (!checkNoEmptyString(lastNameOrEntity)) {
+      error.lastNameOrEntity = "Last name is required."
+    }
+  }
+  console.log(error)
+  return error
 }
 
 const AddContributionForm = ({ initialValues, onSubmit, children }) => (
