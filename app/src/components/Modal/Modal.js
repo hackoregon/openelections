@@ -13,6 +13,7 @@ const modalStyle = css`
   background: white;
   top: 8vh;
   left: calc(50vw - 175px);
+  margin-bottom: 20px;
 `;
 
 const closeModal = css`
@@ -38,6 +39,7 @@ const Modal = props => {
 
   return (
     <ModalMaterial
+        style={{ overflowY: 'scroll' }}
       aria-label={props.getModalState.currentModal + " modal"}
       open={props.getModalState.isActive}
       onClose={() => handleClose()}

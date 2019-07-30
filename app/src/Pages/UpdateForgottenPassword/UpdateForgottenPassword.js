@@ -26,6 +26,8 @@ const validationSchema = Yup.object({
 
 const styles = css`
   max-width: 350px;
+  margin: 40px auto;
+  
   .paper {
     margin-top: 30px,
     display: flex;
