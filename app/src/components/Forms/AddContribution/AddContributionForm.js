@@ -69,6 +69,27 @@ const stateList = [
   "WY"
 ]
 
+const entityContributorValues = [
+  "Business Entity",
+  "Labor Organization",
+  "Political Committee",
+  "Political Party Committee",
+  "Unregistered Committee",
+  "Other"
+]
+
+const individualContributorValues = [
+  "Individual",
+  "Candidate’s Immediate Family"
+]
+
+const inKindContributionValues = [
+  "In-Kind Contribution",
+  "In-Kind Forgiven Accounts Payable",
+  "In-Kind /Forgiven Personal Expenditure"
+]
+
+
 const formField = (label, section, component, validation, values = undefined) =>
   values ? { label, section, component, validation, options: { values } } : { label, section, component, validation }
 
@@ -118,7 +139,7 @@ const fields = {
         Component={SelectField}
         props={props}
         check={props.formik.values.typeOfContribution === 'Contribution'}
-        trueOptions={{ values: ["Cash Contribution", "In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"] }}
+        trueOptions={{ values: inKindContributionValues.concat(["Cash Contribution"]) }}
         falseOptions={{ values: ["Items Sold at Fair Market Value", "Lost or Returned Check", "Miscellaneous Other Receipt", "Refunds and Rebates"] }}
       />
     ),
@@ -131,16 +152,7 @@ const fields = {
     SelectField,
     Yup.string("Choose the type of contributor"),
     "A contributor type is required",
-    [
-      "Individual",
-      "Business Entity",
-      "Candidate’s Immediate Family",
-      "Labor Organization",
-      "Political Committee",
-      "Political Party Committee",
-      "Unregistered Committee",
-      "Other"
-    ]
+    individualContributorValues.concat(entityContributorValues)
   ),
   // TODO: Needs to be formatted as currency
   amountOfContribution: requiredFormField(
@@ -363,21 +375,24 @@ const validate = (values) => {
     error.occupationLetterDate = "Occupation letter date is required"
   }
 
-  if (["In-Kind Contribution", "In-Kind Forgiven Accounts Payable", "In-Kind /Forgiven Personal Expenditure"].includes(subTypeOfContribution) && !checkNoEmptyString(description)) {
+  if (inKindContributionValues.includes(subTypeOfContribution) && !checkNoEmptyString(description)) {
     error.description = "A description is required"
   }
 
-  if (!["Individual", "Candidate’s Immediate Family"].includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
-    error.lastNameOrEntity = "Name of entity is required."
-  } else {
+  if (entityContributorValues.includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
+    error.lastNameOrEntity = "Name of entity is required"
+  }
+
+  if (individualContributorValues.includes(typeOfContributor)) {
     if (!checkNoEmptyString(firstName)) {
       error.firstName = "First name is required."
     }
+
     if (!checkNoEmptyString(lastNameOrEntity)) {
       error.lastNameOrEntity = "Last name is required."
     }
   }
-  console.log(error)
+
   return error
 }
 
