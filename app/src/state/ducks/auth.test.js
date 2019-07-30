@@ -70,7 +70,7 @@ describe("Reducer", () => {
       error: ""
     });
   });
-  
+
   // it("logout", () => {
   //   expect(
   //     reducer(undefined, {
@@ -83,7 +83,7 @@ describe("Reducer", () => {
   //     error: null
   //   });
   // });
-  
+
   it("me", () => {
     expect(
       reducer(undefined, {
@@ -437,17 +437,13 @@ describe("Side Effects", () => {
     });
   });
 
-  it("me failure", () => {
-    const expectedActions = [
-      { type: actionTypes.ME.REQUEST },
-      { type: actionTypes.ME.FAILURE }
-    ];
+  it("me no token", () => {
+    const expectedActions = [];
     const store = mockStore({});
 
     return store.dispatch(auth.me()).then(() => {
       const actions = store.getActions();
-      expect(actions[0]).toEqual(expectedActions[0]);
-      expect(actions[1].type).toEqual(expectedActions[1].type);
+      expect(actions).toHaveLength(0);
     });
   });
 
