@@ -4,6 +4,7 @@ import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
 import DateField from "../../Fields/DateField";
+import AddressLookupField from '../../Fields/AddressLookupField';
 
 const FormSectionEnum = Object.freeze({
   BASIC: "basicsSection",
@@ -74,13 +75,13 @@ const entityContributorValues = [
   "Labor Organization",
   "Political Committee",
   "Political Party Committee",
-  "Unregistered Committee",
-  "Other"
+  "Unregistered Committee"
 ]
 
 const individualContributorValues = [
   "Individual",
-  "Candidate’s Immediate Family"
+  "Candidate’s Immediate Family",
+  "Other"
 ]
 
 const inKindContributionValues = [
@@ -192,12 +193,11 @@ const fields = {
       "Credit Card (Paper Form)"
     ]
   ),
-  checkNumber: requiredFormField(
+  checkNumber: formField(
     "Check Number",
     FormSectionEnum.BASIC,
     TextField,
-    Yup.number("Enter your check number"),
-    "Check number is required",
+    Yup.number("Enter your check number")
   ),
 
   // CONTRIBUTOR SECTION
@@ -214,12 +214,19 @@ const fields = {
     TextField,
     Yup.string("Enter last name or entity name")
   ),
-  streetAddress: requiredFormField(
+  streetAddress: formField(
     "Street Address",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
-    Yup.string("Enter your street address"),
-    "Your street address is required"
+    (props) =>
+      <AddressLookupField
+        {...props.field} {...props}
+        updateFields={{
+          street: "streetAddress",
+          stateShort: "state",
+          city: "city",
+          zipCode: "zipcode"
+        }}
+      />,
   ),
   addressLine2: formField(
     "Address Line 2",

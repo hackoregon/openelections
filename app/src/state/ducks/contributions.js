@@ -117,6 +117,7 @@ export function createContribution(contributionAttrs) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createContribution.success());
+        return data.result
       } else {
         dispatch(actionCreators.createContribution.failure());
       }
