@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import ManageCampaign from "./ManageCampaign";
 import { showModal } from "../../../state/ducks/modal";
 import { isCampaignsLoading, getCampaigns, getCampaignList } from "../../../state/ducks/campaigns";
+import { getCurrentGovernmentId } from "../../../state/ducks/governments";
+import { isGovAdmin } from "../../../state/ducks/auth";
 
 class ManageCampaignPage extends React.Component {
   constructor(props) {
@@ -19,9 +21,10 @@ class ManageCampaignPage extends React.Component {
 
 export default connect(
   state => ({
-    governmentId: state.governments.currentGovernmentId,
+    governmentId: getCurrentGovernmentId(state),
     isCampaignListLoading: isCampaignsLoading(state),
-    campaignList: getCampaignList(state)
+    campaignList: getCampaignList(state),
+    isGovAdmin: isGovAdmin(state)
   }),
   dispatch => {
     return {

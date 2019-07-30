@@ -44,5 +44,10 @@ export const rootState = state => state || {};
 
 //TODO: Remove default gov id to 1
 export const getCurrentGovernmentId = state => {
-  return state.governments.currentGovernmentId !== null ? state.governments.currentGovernmentId : 1;
+  if(state.governments && state.governments.currentGovernmentId){
+    return state.governments.currentGovernmentId !== null ? state.governments.currentGovernmentId : 1;
+  }else{
+    return 1
+  }
+  
 };

@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import Sidebar from "./Sidebar";
 import { getCampaignName } from "../../state/ducks/campaigns";
-import { getCurrentGovernmentId } from "../../state/ducks/governments";
+import { isGovAdmin } from "../../state/ducks/auth";
 
 export default connect(state => ({
   campaignName: getCampaignName(state),
-  governmentId: getCurrentGovernmentId(state)
+  isGovAdmin: isGovAdmin(state)
 }))(Sidebar);

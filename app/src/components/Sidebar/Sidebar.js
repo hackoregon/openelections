@@ -87,15 +87,25 @@ export default class Sidebar extends Component {
     };
 
     constructor (props) {
-        super(props);
-        this.links = [
-            {url: "/dashboard", label: "Dashboard"},
-            {url: "/contributions", label: "Contributions"},
-            {url: "/expenses", label: "Expenses"},
-            {url: "/visualize", label: "Visualize"},
-            ...((props.governmentId) ? [{url: "/campaigns", label: "Campaigns"}] : []),
-            {url: "/manage-portal", label: "Manage Portal"}
-        ];
+      super(props);
+    }
+
+    setLinks(){
+      this.links = [
+        {url: "/dashboard", label: "Dashboard"},
+        {url: "/contributions", label: "Contributions"},
+        {url: "/expenses", label: "Expenses"},
+        {url: "/visualize", label: "Visualize"},
+        ...((this.props.isGovAdmin) ? [{url: "/campaigns", label: "Campaigns"}] : []),
+        {url: "/manage-portal", label: "Manage Portal"}
+      ];
+
+    }
+    componentDidUpdate(prevProps) {
+      if(prevProps.isGovAdmin !== this.props.isGovAdmin) {
+        this.setLinks();
+        this.setState({is_gov_admin: this.props.isGovAdmin});
+      }
     }
 
     toggleSidebar () {
@@ -122,4 +132,3 @@ export default class Sidebar extends Component {
         );
     }
 };
-
