@@ -49,6 +49,7 @@ class AddressLookupField extends React.Component {
       this.autocompleteInput.current,
       { types: ['geocode'] }
     )
+    this.autocomplete.getFields("address_components");
     this.autocomplete.addListener('place_changed', this.handlePlaceChanged)
   }
   handleFieldChange (e) {
