@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/activities","status":200,"statusText":"OK","ok":true,"headers":{"x-powered-by":["Express"],"vary":["Origin"],"access-control-allow-credentials":["true"],"content-type":["application/json; charset=utf-8"],"content-length":["928"],"etag":["W/\"3a0-A3NjagNuSYeoj5gRnfsNs5wlP3I\""],"date":["Tue, 30 Jul 2019 03:15:31 GMT"],"connection":["close"]}}
