@@ -302,13 +302,13 @@ export const isAdmin = state => {
   );
 }
 
-const getMeRole = (state, role="campaign_admin") => {
+export const getMeRole = (state, role="campaign_admin") => {
   if(state.auth.me){
     return state.auth.me.permissions.find(permission => {
-      return permission.role === role
-    }) ? true: false
+      return permission.role === role;
+    }) ? true: false;
   }
-  return false
+  return false;
 }
 
 export const isGovAdmin = state => {
