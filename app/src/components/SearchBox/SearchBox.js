@@ -47,23 +47,27 @@ class SearchBox extends Component {
     // Make sure no Alt, Ctrl, Cmmd key pressed with this
     const withModifierKey = e.altKey || e.ctrlKey || e.shiftKey || e.metaKey;
 
-    // Down Key
-    if (e.keyCode === 40 && !withModifierKey) {
-      const newSelectedItem = Math.min(
-        this.props.guesses.length - 1,
-        this.state.selectedItem + 1
-      );
-      this.setState({ selectedItem: newSelectedItem });
+    try {
+      // Down Key
+      if (e.keyCode === 40 && !withModifierKey) {
+        const newSelectedItem = Math.min(
+          this.props.guesses.length - 1,
+          this.state.selectedItem + 1
+        );
+        this.setState({ selectedItem: newSelectedItem });
 
-      // Up Key
-    } else if (e.keyCode === 38 && !withModifierKey) {
-      const newSelectedItem = Math.max(0, this.state.selectedItem - 1);
-      this.setState({ selectedItem: newSelectedItem });
+        // Up Key
+      } else if (e.keyCode === 38 && !withModifierKey) {
+        const newSelectedItem = Math.max(0, this.state.selectedItem - 1);
+        this.setState({ selectedItem: newSelectedItem });
 
-      // Enter Key
-    } else if (e.keyCode === 13) {
-      this.selectGuessItem(this.props.guesses[this.state.selectedItem]);
-      e.target.blur();
+        // Enter Key
+      } else if (e.keyCode === 13) {
+        this.selectGuessItem(this.props.guesses[this.state.selectedItem]);
+        e.target.blur();
+      }
+    } catch (e) {
+      // No need to do anything
     }
   }
 
