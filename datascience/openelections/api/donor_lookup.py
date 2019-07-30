@@ -38,6 +38,8 @@ class DonorMatch(Resource):
             aparser.add_argument("addr1", type=str, required=True)
             aparser.add_argument("addr2", default=None, type=str)
             aparser.add_argument("city", default=None, type=str)
+            aparser.add_argument("latitude", dest="latitude", type=str)
+            aparser.add_argument("longitude", dest="longitude", type=str)
             aparser.add_argument("max_matches", default=10, type=int)
 
             options = aparser.parse_args()
@@ -54,7 +56,7 @@ class DonorMatch(Resource):
 
             # Add donor information to outout
             donor = {key: str(val).upper() if val is not None else "" for key, val in options.items()}
-            donor['eligible_address'] = str(in_portland(zip_code=options['zip_code'], city=options['city']))
+            donor['eligible_address'] = str(in_portland(longitude=options['longitude'], latitude=options['latitude']))
             matches_dict['donor_info'] = donor
 
             # Print JSON output

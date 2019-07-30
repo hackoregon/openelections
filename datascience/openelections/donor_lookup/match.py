@@ -288,7 +288,6 @@ def cli() -> None:
         aparser.add_argument("--addr1", dest="addr1", type=str)
         aparser.add_argument("--addr2", dest="addr2", default=None, type=str)
         aparser.add_argument("--city", dest="city", default=None, type=str)
-        #we are assuming that this is called from the command line. TBD if not
         aparser.add_argument("--latitude", dest="latitude", type=str)
         aparser.add_argument("--longitude", dest="longitude", type=str)
         aparser.add_argument("--max_matches", dest="max_matches", default=10, type=int)
