@@ -11,14 +11,13 @@ import {
   ContributorTypeEnum
 } from '../../../api/api';
 import {
-    HeaderSection,
+    AddHeaderSection,
     BasicsSection,
     ContributorSection,
     OtherDetailsSection
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 
 const onSubmit = (data, props) => {
-  console.log(props)
   const { currentUserId, governmentId, campaignId, createContribution } = props
   const {
     streetAddress,
@@ -49,7 +48,7 @@ const onSubmit = (data, props) => {
     subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
     contributorType: ContributorTypeEnum.INDIVIDUAL
-  }).then(data => console.log(data))
+  }).then(data => props.history.push(`/contributions/ready/${data}`))
 }
 
 const AddContribution = ({ ...props }) => (
@@ -93,7 +92,7 @@ const AddContribution = ({ ...props }) => (
     {({ formFields, isValid, handleSubmit }) => {
       return (
         <>
-          <HeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+          <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection formFields={formFields} />
           <ContributorSection formFields={formFields} />
           <OtherDetailsSection formFields={formFields} />
