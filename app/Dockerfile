@@ -2,7 +2,7 @@ FROM node:11.4.0
 
 WORKDIR /app
 COPY package.json .
-RUN yarn
+RUN yarn install --check-files
 
 COPY . /app
 
