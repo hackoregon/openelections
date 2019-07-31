@@ -53,6 +53,9 @@
       "<rootDir>/node_modules/regenerator-runtime/runtime",
       "./test/jestsetup.js"
     ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@material-ui)/)"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
