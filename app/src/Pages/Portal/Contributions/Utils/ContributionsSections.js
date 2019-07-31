@@ -5,7 +5,7 @@ import { css, jsx } from "@emotion/core";
 
 const containers = {
   header: css`
-    width: 96%%;
+    width: 96%;
     min-height: 100%;
     display: grid;
     grid-template-rows: repeat(auto-fit(15px, 1fr));
@@ -35,7 +35,7 @@ const containers = {
     margin-bottom: 20px;
   `,
   cityStateZip: css`
-    width: 96%%;
+    width: 96%;
     min-height: 25px;
     display: grid;
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
@@ -190,7 +190,52 @@ const LabelBlock = () => (
   </div>
 );
 
-export const HeaderSection = ({ isValid, handleSubmit }) => (
+// TODO: need more handleSubmit functions.
+export const ReadyHeaderSection = ({ isValid, handleSubmit }) => (
+  <>
+    <div css={containers.header}>
+      <div css={headerStyles.leftColumn}>
+        <InvoiceNumberBlock />
+        <div style={{ display: "flex" }}>
+          <LabelBlock />
+          <StatusBlock />
+        </div>
+      </div>
+      <div css={headerStyles.rightColumn}>
+        <div style={{ display: "flex", height: "50px", width: "600px" }}>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Move to Trash
+        </Button>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Save as Draft
+        </Button>
+          <p> ✅</p>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Submit Contribution
+        </Button>
+        </div>
+      </div>
+    </div>
+    <hr css={sectionStyles.dividerLine} />
+  </>
+)
+
+export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
     <div css={containers.header}>
       <div css={headerStyles.leftColumn}>

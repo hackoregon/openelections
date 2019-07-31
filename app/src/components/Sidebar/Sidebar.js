@@ -91,6 +91,7 @@ export default class Sidebar extends Component {
       this.setLinks();
     }
 
+
     setLinks(){
       this.links = [
         {url: "/dashboard", label: "Dashboard"},
