@@ -83,3 +83,4 @@ Run the datascience api test suite:
 This project uses Travis to Continuously deploy to qa.openelectionsportland.org on commits to develop. 
 When you open a PR, Travis will run our test suite, and mark it as passing or failing on the PR at Github.
 When the PR is merged into develop, and the test suite is passing, Travis will deploy using scripts/deploy.sh
+
