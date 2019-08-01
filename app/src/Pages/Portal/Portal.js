@@ -63,61 +63,57 @@ const Portal = props => {
         </aside>
         <main className={"content-wrapper"}>
           <WithPermissions>
-          <Route
-            render={({ location }) => (
-              <>
-                <TransitionGroup className="oe-portal-container">
-                  <CSSTransition
-                    key={location.pathname}
-                    timeout={{ enter: 500, exit: 300 }}
-                    classNames="page"
-                    appear
-                  >
-                    <Switch location={location}>
-                      <Route
-                        exact
-                        path="/dashboard"
-                        component={DashboardPage}
-                      />
-                      <Route
-                        exact
-                        path="/manage-portal"
-                        component={ManagePortalPage}
-                      />
-                      <Route
-                        exact
-                        path="/manage-portal/manage-user"
-                        // children={(match) => {
-                        //   console.log({ match });
-                        //   return ManageUserPage;
-                        // }}
-                        component={ManageUserPage}
-                      />
-                      <Route
-                        exact
-                        path="/dashboard"
-                        component={DashboardPage}
-                      />{" "}
-                      <Route
-                        path="/contributions"
-                        component={ContributionsPage}
-                      />
-                      <Route 
-                        exact 
-                        path="/expenses" 
-                        component={ExpensesPage} 
-                      />
-                      <Route
-                        exact
-                        path="/campaigns"
-                        component={ManageCampaignPage}
-                      />
-                    </Switch>
-                  </CSSTransition>
-                </TransitionGroup>
-              </>
-            )}
-          />
+            <Route
+              render={({ location }) => (
+                <>
+                  <TransitionGroup className="oe-portal-container">
+                    <CSSTransition
+                      key={location.pathname}
+                      timeout={{ enter: 500, exit: 300 }}
+                      classNames="page"
+                      appear
+                    >
+                      <Switch location={location}>
+                        <Route
+                          exact
+                          path="/dashboard"
+                          component={DashboardPage}
+                        />
+                        <Route
+                          exact
+                          path="/manage-portal"
+                          component={ManagePortalPage}
+                        />
+                        <Route
+                          exact
+                          path="/manage-portal/manage-user"
+                          component={ManageUserPage}
+                        />
+                        <Route
+                          exact
+                          path="/dashboard"
+                          component={DashboardPage}
+                        />{" "}
+                        <Route
+                          path="/contributions"
+                          component={ContributionsPage}
+                        />
+                        <Route
+                          exact
+                          path="/expenses"
+                          component={ExpensesPage}
+                        />
+                        <Route
+                          exact
+                          path="/campaigns"
+                          component={ManageCampaignPage}
+                        />
+                      </Switch>
+                    </CSSTransition>
+                  </TransitionGroup>
+                </>
+              )}
+            />
           </WithPermissions>
         </main>
       </div>
