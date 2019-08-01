@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
@@ -74,6 +74,11 @@ const Portal = props => {
                     appear
                   >
                     <Switch location={location}>
+                      <Route
+                          exact
+                          path="/portal"
+                          render={() => <Redirect to='/dashboard'/>}
+                      />
                       <Route
                         exact
                         path="/dashboard"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import TopNavigation from "../components/TopNavigation";
 import HomePage from "./Home/Home";
@@ -14,6 +14,8 @@ import AddContributionPage from "./Portal/Contributions/Contributions";
 import AddExpensePage from "./Portal/Expenses/Expenses";
 import Portal from "./Portal/Portal";
 import ResetPassword from "./ResetPassword/ResetPassword";
+import { isLoggedIn } from "../state/ducks/auth";
+import { connect } from "react-redux";
 
 const shouldTransition = location => {
   let transitionPages = ["/", "/about", "/sandbox"];
@@ -25,6 +27,8 @@ const shouldTransition = location => {
 };
 
 const Routes = props => {
+  const { isLoggedIn } = props;
+
   return (
     <Route
       render={({ location }) => (
@@ -41,7 +45,8 @@ const Routes = props => {
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/sandbox" component={SandboxPage} />
-                <Route exact path="/sign-in" component={SignInPage} />
+                <Route exact path="/sign-in" render={() =>
+                    isLoggedIn ? <Redirect to='/portal' /> : <SignInPage />} />
                 <Route path="/invitation" component={InvitationPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
                 <Route
@@ -74,4 +79,7 @@ const Routes = props => {
     />
   );
 };
-export default Routes;
+
+export default connect( state => ({
+  isLoggedIn: isLoggedIn(state)
+}))(Routes);
