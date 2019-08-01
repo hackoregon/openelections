@@ -6,6 +6,8 @@ import { css, jsx } from "@emotion/core";
 
 const formModalWrapper = css`
   max-width: 350px;
+  height: 100%;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

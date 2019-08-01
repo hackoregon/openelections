@@ -10,6 +10,8 @@ import { css, jsx } from "@emotion/core";
 const modalStyle = css`
   position: absolute;
   width: 350px;
+  height: 85%;
+  max-height: calc(60vw + 20px);
   background: white;
   top: 8vh;
   left: calc(50vw - 175px);
