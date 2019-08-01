@@ -41,8 +41,9 @@ const ContributionsTable = ({ ...props }) => {
 		actionCellStyle: {
 			color: "blue"
 		},
-    actionsColumnIndex: -1,
-    pageSize: 50
+		actionsColumnIndex: -1,
+		pageSizeOptions: [20, 50, 100],
+		pageSize: 50
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
