@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
-import {getContributions, getContributionsList } from "../../../../state/ducks/contributions";
+import { getContributionsList } from "../../../../state/ducks/contributions";
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }
@@ -14,17 +14,17 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 
 const columns = [
 	{
-        field: 'date',
-        title: 'Date',
+		field: 'date',
+		title: 'Date',
 		render: rowData => new Date(rowData.date)
 			.toLocaleString(
-				'en-US', 
+				'en-US',
 				{
 					year: "numeric",
 					month: "2-digit",
 					day: "2-digit",
-				  }).split(', ')[0]
-      },
+				}).split(', ')[0]
+	},
 	//columnInfo("Date", "date", "date"),
 	columnInfo("Name", "lastName"),
 	columnInfo("Amount", "amount", "currency"),
@@ -32,20 +32,21 @@ const columns = [
 	columnInfo("Labels", "NotSet")
 ]
 
-const ContributionsTable = ({ ...props }) => {	
+const ContributionsTable = ({ ...props }) => {
 	const isLoading = props.isListLoading && !Array.isArray(props.contributionList);
 	const rowCount = Array.isArray(props.contributionList) ? props.contributionList.length : 0;
-	const title = rowCount + ` Submitted Contributions` 
+	const title = rowCount + ` Submitted Contributions`
 	const options = {
 		search: false,
 		actionCellStyle: {
 			color: "blue"
 		},
-		actionsColumnIndex: -1,
+    actionsColumnIndex: -1,
+    pageSize: 50
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
-			// TODO add prop that goes to details page
+			props.history.push(`/contributions/ready/${rowData.id}`)
 		}),
 		actionInfo("Add New Contribution", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
 	]
