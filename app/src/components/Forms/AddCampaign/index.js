@@ -28,20 +28,21 @@ const USER_ROLES = {
 
 const AddCampaign = props => (
   <FormModal>
-    <AddCampaignForm 
+    <AddCampaignForm
       onSubmit={({ name, email, firstName, lastName, officeSought }) => {
         props.createCampaignForGovernment(
-            props.governmentId,
-            name,
-            officeSought,
-            email, 
-            firstName, 
-            lastName  
+          props.governmentId,
+          name,
+          officeSought,
+          email,
+          firstName,
+          lastName
         );
         props.clearModal();
       }}
       initialValues={{
         name: "",
+        officeSought: "",
         email: "",
         firstName: "",
         lastName: ""
@@ -51,42 +52,43 @@ const AddCampaign = props => (
         formSections,
         isValid,
         handleCancel,
-        handleSubmit 
+        handleSubmit
       }) => {
         return (
-        <React.Fragment>
-          <p css={formTitle}>Add New Campaign</p>
-          <p>
-            Enter the user's information and we will send them an email with
-            instructions to join your portal.
+          <React.Fragment>
+            <p css={formTitle}>Add New Campaign</p>
+            <p>
+              Enter the user's information and we will send them an email with
+              instructions to join your portal.
           </p>
-          {formSections.AddCampaign}
-          <div css={buttonWrapper}>
-            <Button
-              buttonType="cancel"
-              onClick={() => {
-                handleCancel();
-                props.clearModal();
-              }}
-            >
-              Cancel
+            {formSections.AddCampaign}
+            <div css={buttonWrapper}>
+              <Button
+                buttonType="cancel"
+                onClick={() => {
+                  handleCancel();
+                  props.clearModal();
+                }}
+              >
+                Cancel
             </Button>
-            <Button
-              buttonType="submit"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Submit
+              <Button
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Submit
             </Button>
-          </div>
-        </React.Fragment>
-      )}}
+            </div>
+          </React.Fragment>
+        )
+      }}
     </AddCampaignForm>
   </FormModal>
 );
 
 export default connect(
-  state => ({ 
+  state => ({
     governmentId: state.auth.me.permissions[0].governmentId
   }),
   dispatch => {
@@ -98,14 +100,14 @@ export default connect(
         email,
         firstName,
         lastName
-        ) => dispatch(createCampaignForGovernment(
+      ) => dispatch(createCampaignForGovernment(
         governmentId,
         name,
         officeSought,
         email,
-        firstName, 
+        firstName,
         lastName
-        )),
+      )),
       clearModal: () => dispatch(clearModal())
     };
   }
