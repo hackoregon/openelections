@@ -13,26 +13,12 @@ import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
-
-const entityContributorValues = [
-  "Business Entity",
-  "Labor Organization",
-  "Political Committee",
-  "Political Party Committee",
-  "Unregistered Committee"
-]
-
-const individualContributorValues = [
-  "Individual",
-  "Candidate’s Immediate Family",
-  "Other"
-]
-
-const inKindContributionValues = [
-  "In-Kind Contribution",
-  "In-Kind Forgiven Accounts Payable",
-  "In-Kind /Forgiven Personal Expenditure"
-]
+import {
+    ContributorTypeFieldEnum,
+    ContributionSubTypeFieldEnum,
+    ContactTypeFieldEnum,
+    ContributionTypeFieldEnum
+} from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
   BASIC: "basicsSection",
@@ -40,51 +26,25 @@ export const FormSectionEnum = Object.freeze({
   OTHER_DETAILS: "otherDetailsSection"
 })
 
-export const validate = (values) => {
-  const {
-    paymentMethod,
-    linkToDocumentation,
-    occupation,
-    employerName,
-    employerCity,
-    employerState,
-    employerZipcode,
-    subTypeOfContribution,
-    description,
-    lastNameOrEntity,
-    firstName,
-    typeOfContributor
-  } = values
-  const error = {}
+const entityContributorValues = [
+  ContributorTypeFieldEnum.BUSINESS_ENTITY,
+  ContributorTypeFieldEnum.LABOR_ORGANIZATION,
+  ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
+  ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
+  ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE
+]
 
-  if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
-    error.linkToDocumentation = "A link to documentation of your contribution is required"
-  }
+const individualContributorValues = [
+  ContributorTypeFieldEnum.INDIVIDUAL,
+  ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
+  ContributorTypeFieldEnum.OTHER
+]
 
-  if (!checkNoEmptyString(occupation, employerCity, employerName, employerState, employerZipcode)) {
-    error.occupationLetterDate = "Occupation letter date is required"
-  }
-
-  if (inKindContributionValues.includes(subTypeOfContribution) && !checkNoEmptyString(description)) {
-    error.description = "A description is required"
-  }
-
-  if (entityContributorValues.includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
-    error.lastNameOrEntity = "Name of entity is required"
-  }
-
-  if (individualContributorValues.includes(typeOfContributor)) {
-    if (!checkNoEmptyString(firstName)) {
-      error.firstName = "First name is required."
-    }
-
-    if (!checkNoEmptyString(lastNameOrEntity)) {
-      error.lastNameOrEntity = "Last name is required."
-    }
-  }
-
-  return error
-}
+const inKindContributionValues = [
+  ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
+  ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
+  ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL
+]
 
 export const fields = {
   // BASICS SECTION
@@ -101,7 +61,7 @@ export const fields = {
     SelectField,
     Yup.string("Choose the type of contribution"),
     "A contribution type is required",
-    ["Contribution", "Other Receipt"]
+    [ContributionTypeFieldEnum.CONTRIBUTION, ContributionTypeFieldEnum.OTHER]
   ),
   // if typeOfContribution was 'contribution' subTypes are:
   //  - Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, In-Kind /Forgiven Personal Expenditure
@@ -115,8 +75,13 @@ export const fields = {
         Component={SelectField}
         props={props}
         check={props.formik.values.typeOfContribution === 'Contribution'}
-        trueOptions={{ values: inKindContributionValues.concat(["Cash Contribution"]) }}
-        falseOptions={{ values: ["Items Sold at Fair Market Value", "Lost or Returned Check", "Miscellaneous Other Receipt", "Refunds and Rebates"] }}
+        trueOptions={{ values: inKindContributionValues.concat([ContributionSubTypeFieldEnum.CASH_CONTRIBUTION]) }}
+        falseOptions={{ values: [
+          ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET, 
+          ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
+          ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
+          ContributionSubTypeFieldEnum.REFUND_REBATES
+        ] }}
       />
     ),
     Yup.string("Choose the subtype of contribution"),
@@ -236,7 +201,14 @@ export const fields = {
     FormSectionEnum.CONTRIBUTOR,
     SelectField,
     Yup.string("Select the best way to contact you"),
-    ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"]
+    [
+      ContactTypeFieldEnum.MOBILE_PHONE,
+      ContactTypeFieldEnum.WORK_PHONE, 
+      ContactTypeFieldEnum.EXTENSION,
+      ContactTypeFieldEnum.HOME_PHONE,
+      ContactTypeFieldEnum.FAX,
+      ContactTypeFieldEnum.EMAIL
+    ]
   ),
   contactInformation: formField(
     "Contact Information",
@@ -331,3 +303,49 @@ export const fields = {
     Yup.string("Add any additional notes")
   )
 };
+
+export const validate = (values) => {
+  const {
+    paymentMethod,
+    linkToDocumentation,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    employerZipcode,
+    subTypeOfContribution,
+    description,
+    lastNameOrEntity,
+    firstName,
+    typeOfContributor
+  } = values
+  const error = {}
+
+  if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
+    error.linkToDocumentation = "A link to documentation of your contribution is required"
+  }
+
+  if (!checkNoEmptyString(occupation, employerCity, employerName, employerState, employerZipcode)) {
+    error.occupationLetterDate = "Occupation letter date is required"
+  }
+
+  if (inKindContributionValues.includes(subTypeOfContribution) && !checkNoEmptyString(description)) {
+    error.description = "A description is required"
+  }
+
+  if (entityContributorValues.includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
+    error.lastNameOrEntity = "Name of entity is required"
+  }
+
+  if (individualContributorValues.includes(typeOfContributor)) {
+    if (!checkNoEmptyString(firstName)) {
+      error.firstName = "First name is required."
+    }
+
+    if (!checkNoEmptyString(lastNameOrEntity)) {
+      error.lastNameOrEntity = "Last name is required."
+    }
+  }
+
+  return error
+}

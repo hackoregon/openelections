@@ -4,48 +4,79 @@ import ContributionReadyForm from "./ContributionReadyForm";
 import { jsx } from "@emotion/core";
 import { connect } from "react-redux";
 import { ReadyHeaderSection, BasicsSection, ContributorSection, OtherDetailsSection } from "../../../Pages/Portal/Contributions/Utils/ContributionsSections";
-import { contribution } from '../../../api/schema';
+import { format } from "date-fns"
+import {
+    DataToContributionTypeFieldMap,
+    DataToContributionSubTypeFieldMap,
+    DataToContributorTypeFieldEnum,
+    ContactTypeFieldEnum,
+    DataToContactTypeFieldMap
+} from '../../../api/api';
 
 const onSubmit = (data) => {
   console.log(data)
 }
 
-// TODO: need to form data
+// TODO: need to get data for the following:
+// - oaeContributionType
+// - paymentMethod
+// - employerZipcode
+// - occupationLetterDate
+// - linkToDocumentation
+// - notes
 const mapDataToForm = (contribution) => {
   console.log(contribution)
+  const {
+    createdAt,
+    type, 
+    subtype,
+    contributorType,
+    amount, 
+    checkNumber,
+    firstName, 
+    lastName, 
+    address1,
+    address2, 
+    city, 
+    state,
+    zip,
+    email,
+    phone,
+    phoneType, 
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    calendarYearAggregate,
+    inKindDescription,
+  } = contribution
   return {
     // BASICS VALUES
-    dateOfContribution: "09/09/2019", // Date.now(), // FORMAT?
-    typeOfContribution: "Contribution",
-    subTypeOfContribution: "In-Kind Contribution",
-    typeOfContributor: "Individual",
-    amountOfContribution: `$ ${100}`,
-    oaeContributionType: "Matchable",
-    paymentMethod: "Check",
-    checkNumber: "#1027",
+    dateOfContribution: format(new Date(createdAt), "YYYY-MM-DD"),
+    typeOfContribution: DataToContributionTypeFieldMap.get(type),
+    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype),
+    typeOfContributor: DataToContributorTypeFieldEnum.get(contributorType),
+    amountOfContribution: amount,
+    checkNumber: checkNumber,
 
     // CONTRIBUTOR VALUES
-    firstName: "Helen",
-    lastName: "Troy",
-    streetAddress: "2526 Race Street",
-    addressLine2: "",
-    city: "Portland",
-    state: "OR",
-    zipcode: "97212",
-    contactType: "Email",
-    contactInformation: "s.helen@example.com",
-    occupation: "Program Manager",
-    employerName: "Self Employed",
-    employerCity: "Portland",
-    employerState: "OR",
-    employerZipcode: "97212",
+    firstName,
+    lastName,
+    streetAddress: address1,
+    addressLine2: address2,
+    city,
+    state,
+    zipcode: zip,
+    contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
+    contactInformation: email || phone,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
 
     // OTHER DETAILS VALUES
-    electionAggregate: "2019",
-    description: "Some Description",
-    occupationLetterDate: "",
-    linkToDocumentation: "",
-    notes: ""
+    electionAggregate: calendarYearAggregate,
+    description: inKindDescription,
   }
 }
 
