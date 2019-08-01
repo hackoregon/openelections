@@ -91,7 +91,7 @@ export default class Sidebar extends Component {
 
         this.links = [
             {url: "/dashboard", label: "Dashboard"},
-            {url: "/contributions/add", label: "Contributions"},
+            {url: "/contributions", label: "Contributions"},
             {url: "/expenses", label: "Expenses"},
             {url: "/visualize", label: "Visualize"},
             ...((props.governmentId) ? [{url: "/campaigns", label: "Campaigns"}] : []),
