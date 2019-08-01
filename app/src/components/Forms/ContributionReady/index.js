@@ -27,6 +27,7 @@ const onSubmit = (data) => {
 const mapDataToForm = (contribution) => {
   console.log(contribution)
   const {
+    date,
     createdAt,
     type, 
     subtype,
@@ -52,7 +53,7 @@ const mapDataToForm = (contribution) => {
   } = contribution
   return {
     // BASICS VALUES
-    dateOfContribution: format(new Date(createdAt), "YYYY-MM-DD"),
+    dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype),
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
