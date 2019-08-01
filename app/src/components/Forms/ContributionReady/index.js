@@ -8,7 +8,7 @@ import { format } from "date-fns"
 import {
     DataToContributionTypeFieldMap,
     DataToContributionSubTypeFieldMap,
-    DataToContributorTypeFieldEnum,
+    DataToContributorTypeFieldMap,
     ContactTypeFieldEnum,
     DataToContactTypeFieldMap
 } from '../../../api/api';
@@ -55,7 +55,7 @@ const mapDataToForm = (contribution) => {
     dateOfContribution: format(new Date(createdAt), "YYYY-MM-DD"),
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype),
-    typeOfContributor: DataToContributorTypeFieldEnum.get(contributorType),
+    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
     amountOfContribution: amount,
     checkNumber: checkNumber,
 

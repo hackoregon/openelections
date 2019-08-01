@@ -21,7 +21,7 @@ export const DataToContributionTypeFieldMap = new Map([
   [ContributionTypeEnum.OTHER, ContributionTypeFieldEnum.OTHER]
 ])
 
-export const ContributionTypeFieldToDateMap = new Map([
+export const ContributionTypeFieldToDataMap = new Map([
   [ContributionTypeFieldEnum.CONTRIBUTION, ContributionTypeEnum.CONTRIBUTION],
   [ContributionTypeFieldEnum.OTHER, ContributionTypeEnum.OTHER]
 ])
@@ -93,7 +93,7 @@ export const ContributorTypeFieldEnum = Object.freeze({
   OTHER: "Other"
 })
 
-export const DataToContributorTypeFieldEnum = new Map([
+export const DataToContributorTypeFieldMap = new Map([
   [ContributorTypeEnum.INDIVIDUAL, ContributorTypeFieldEnum.INDIVIDUAL],
   [ContributorTypeEnum.BUSINESS, ContributorTypeFieldEnum.BUSINESS_ENTITY],
   [ContributorTypeEnum.FAMILY, ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY],
@@ -104,7 +104,7 @@ export const DataToContributorTypeFieldEnum = new Map([
   [ContributorTypeEnum.OTHER, ContributorTypeFieldEnum.OTHER],
 ])
 
-export const ContributorTypeFieldEnumToDataMap = new Map([
+export const ContributorTypeFieldToDataMap = new Map([
   [ContributorTypeFieldEnum.INDIVIDUAL, ContributorTypeEnum.INDIVIDUAL],
   [ContributorTypeFieldEnum.BUSINESS_ENTITY, ContributorTypeEnum.BUSINESS],
   [ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY, ContributorTypeEnum.FAMILY],

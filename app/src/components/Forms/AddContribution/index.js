@@ -5,10 +5,14 @@ import { jsx } from "@emotion/core";
 import { connect } from "react-redux";
 import { createContribution } from "../../../state/ducks/contributions"
 import {
-  ContributionStatusEnum,
-  ContributionTypeEnum,
-  ContributionSubTypeEnum,
-  ContributorTypeEnum
+    ContributionStatusEnum,
+    ContributionTypeEnum,
+    ContributionSubTypeEnum,
+    ContributorTypeEnum,
+    ContactTypeFieldEnum,
+    ContributorTypeFieldToDataMap,
+    ContributionSubTypeFieldToDataMap,
+    ContributionTypeFieldToDataMap
 } from '../../../api/api';
 import {
     AddHeaderSection,
@@ -24,10 +28,23 @@ const onSubmit = (data, props) => {
     amountOfContribution,
     city,
     dateOfContribution,
+    addressLine2,
     firstName,
     lastNameOrEntity,
     state,
-    zipcode
+    zipcode,
+    employerName,
+    employerCity,
+    employerState,
+    occupation,
+    description,
+    electionAggregate,
+    contactInformation,
+    contactType,
+    checkNumber,
+    typeOfContributor,
+    subTypeOfContribution,
+    typeOfContribution
   } = data
   
   // TODO: need to fix some of the fields here.
@@ -39,7 +56,19 @@ const onSubmit = (data, props) => {
     currentUserId,
     firstName,
     state,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    checkNumber,
+    contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
+    subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
+    type: ContributionTypeFieldToDataMap.get(typeOfContribution),
     address1: streetAddress,
+    address2: addressLine2,
+    email: contactType === ContactTypeFieldEnum.EMAIL ? contactInformation : null,
+    phone: contactType !== ContactTypeFieldEnum.EMAIL ? contactInformation : null,
+    phoneType: contactType !== ContactTypeFieldEnum.EMAIL ? contactType : null,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime() / 1000,
     middleInitial: "",
@@ -47,7 +76,9 @@ const onSubmit = (data, props) => {
     type: ContributionTypeEnum.CONTRIBUTION,
     subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
-    contributorType: ContributorTypeEnum.INDIVIDUAL
+    contributorType: ContributorTypeEnum.INDIVIDUAL,
+    inKindDescription: description, 
+    calendarYearAggregate: electionAggregate,
   }).then(data => props.history.push(`/contributions/ready/${data}`))
 }
 
