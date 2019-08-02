@@ -103,7 +103,6 @@ let submissionResponse = {
 };
 
 let pretendActivities = [created, submitted, submissionResponse];
-console.log({ pretendActivities });
 
 const ActivityStream = () => {
   return (

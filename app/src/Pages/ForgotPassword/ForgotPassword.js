@@ -46,7 +46,6 @@ class ForgotPassword extends Component {
   };
 
   handleStateChange(name, event) {
-    console.log("change", name);
     this.setState({
       formValues: {
         ...this.state.formValues,
@@ -59,7 +58,6 @@ class ForgotPassword extends Component {
   }
   clearState(e) {
     // e.preventDefault();
-    console.log("clearing state");
     this.setState({
       formValues: {
         email: ""
@@ -75,7 +73,6 @@ class ForgotPassword extends Component {
             {!this.state.isSubmitted ? (
               <Formik
                 onSubmit={(values, actions) => {
-                  console.log("Submitting: ", values, actions);
                   this.props.dispatch(sendPasswordResetEmail(values.email))
                   .then(submitted=>{
                     if(submitted){
@@ -89,7 +86,6 @@ class ForgotPassword extends Component {
                   );
                 }}
                 onReset={(values, bag) => {
-                  console.log("on reset", { values }, { bag });
                   this.clearState();
                   bag.resetForm(this.state.formValues);
                 }}
