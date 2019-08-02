@@ -285,7 +285,7 @@ export const fields = {
   occupationLetterDate: formField(
     "Occupation Letter Date",
     FormSectionEnum.OTHER_DETAILS,
-    TextField,
+    DateField,
     Yup.date("Enter occupation letter date")
   ),
   // Required UNLESS the payment method is Credit Card (Online).

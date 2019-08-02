@@ -9,8 +9,8 @@ import {
     DataToContributionTypeFieldMap,
     DataToContributionSubTypeFieldMap,
     DataToContributorTypeFieldMap,
-    ContactTypeFieldEnum,
-    DataToContactTypeFieldMap
+    // ContactTypeFieldEnum,
+    // DataToContactTypeFieldMap
 } from '../../../api/api';
 
 const onSubmit = (data) => {
@@ -25,10 +25,9 @@ const onSubmit = (data) => {
 // - linkToDocumentation
 // - notes
 const mapDataToForm = (contribution) => {
-  console.log(contribution)
   const {
     date,
-    createdAt,
+    // createdAt,
     type, 
     subtype,
     contributorType,
@@ -43,7 +42,7 @@ const mapDataToForm = (contribution) => {
     zip,
     email,
     phone,
-    phoneType, 
+    // phoneType, 
     occupation,
     employerName,
     employerCity,
@@ -55,7 +54,7 @@ const mapDataToForm = (contribution) => {
     // BASICS VALUES
     dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
-    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype),
+    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
     amountOfContribution: amount,
     checkNumber: checkNumber,
@@ -68,16 +67,21 @@ const mapDataToForm = (contribution) => {
     city,
     state,
     zipcode: zip,
-    contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
+    // TODO: contact type can return null for users
+    // contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
+    contactType: "",
     contactInformation: email || phone,
-    occupation,
+    occupation: occupation || "",
     employerName,
     employerCity,
-    employerState,
+    employerState: employerState || "",
 
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
-    description: inKindDescription,
+    description: inKindDescription || "",
+    oaeContributionType: "",
+    paymentMethod: "", 
+    
   }
 }
 
