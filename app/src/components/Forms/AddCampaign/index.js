@@ -45,6 +45,7 @@ const AddCampaign = props => (
       }}
       initialValues={{
         name: "",
+        officeSought: "",
         email: "",
         firstName: "",
         lastName: ""
