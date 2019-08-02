@@ -148,7 +148,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
             governmentId: campaign.government.id
         });
         await createActivityRecordAsync({
-            currentUser,
+            currentUser: user,
             notes: `${currentUser.name} added ${user.name()} to ${campaign.name} as a ${permission.role}`,
             government: await campaign.government,
             campaign: campaign,
@@ -202,7 +202,7 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
         }
         const permission =  await addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
         await createActivityRecordAsync({
-            currentUser,
+            currentUser: user,
             notes: `${currentUser.name} added ${user.name()} to ${government.name} as a ${permission.role}`,
             government: government,
             activityType: ActivityTypeEnum.PERMISSION,

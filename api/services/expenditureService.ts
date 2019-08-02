@@ -1,15 +1,18 @@
 import {
-    ExpenditureType,
-    ExpenditureSubType,
-    PayeeType,
-    ExpenditureStatus,
     Expenditure,
-    getExpendituresByGovernmentIdAsync
+    ExpenditureStatus,
+    ExpenditureSubType,
+    ExpenditureType,
+    getExpendituresByGovernmentIdAsync,
+    PayeeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { getConnection, UpdateResult } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
+import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
+import { createActivityRecordAsync } from './activityService';
+import { User } from '../models/entity/User';
 
 export interface IAddExpenditureAttrs {
     date: number;
@@ -158,6 +161,41 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
             throw new Error('User is not permitted to update expenditures in a non-draft state for this campaign.');
         }
         return expenditureRepository.save(expenditure);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IExpenditureCommentAttrs {
+    currentUser: User;
+    expenditureId: number;
+    comment: string;
+}
+
+export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAttrs): Promise<Activity> {
+    try {
+        const defaultConn = getConnection('default');
+        const expenditureRepository = defaultConn.getRepository('Expenditure');
+        const expenditure = (await expenditureRepository.findOneOrFail(attrs.expenditureId, {
+            relations: ['campaign', 'government']
+        })) as Expenditure;
+
+        const hasPermissions =
+            (await isCampaignAdminAsync(attrs.currentUser.id, expenditure.campaign.id)) ||
+            (await isCampaignStaffAsync(attrs.currentUser.id, expenditure.campaign.id)) ||
+            (await isGovernmentAdminAsync(attrs.currentUser.id, expenditure.government.id));
+        if (hasPermissions) {
+            return createActivityRecordAsync({
+                currentUser: attrs.currentUser,
+                campaign: expenditure.campaign,
+                government: expenditure.government,
+                notes: `${attrs.currentUser.name()}: ${attrs.comment}`,
+                activityId: expenditure.id,
+                activityType: ActivityTypeEnum.COMMENT_EXP
+            });
+        } else {
+            throw new Error('User does not have permission');
+        }
     } catch (e) {
         throw new Error(e.message);
     }

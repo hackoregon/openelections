@@ -2,16 +2,23 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
+import {
+    newActiveUserAsync,
+    newCampaignAsync,
+    newExpenditureAsync,
+    newGovernmentAsync,
+    truncateAll
+} from '../factories';
 import {
     IAddExpenditureAttrs,
     addExpenditureAsync,
     getExpendituresAsync,
     IGetExpenditureAttrs,
     updateExpenditureAsync,
-    IUpdateExpenditureAttrs
+    createExpenditureCommentAsync
 } from '../../services/expenditureService';
 import { PayeeType, ExpenditureSubType, ExpenditureType, ExpenditureStatus } from '../../models/entity/Expenditure';
+import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
 
 let campaignAdmin;
 let campaignStaff;
@@ -500,5 +507,53 @@ describe('expenditureService', () => {
         } catch (e) {
             expect(e.message).equal('User is not permitted to update expenditures for this campaign.');
         }
+    });
+
+    it('createExpenditureCommentAsync fails no user permission', async () => {
+        const expenditure = await newExpenditureAsync(campaign2, government);
+        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        expect(activities.length).to.equal(0);
+        const user = await newActiveUserAsync();
+        try {
+            await createExpenditureCommentAsync({
+                expenditureId: expenditure.id,
+                currentUser: user,
+                comment: 'This is a comment'
+            });
+        } catch (e) {
+            expect(e.message).to.equal('User does not have permission');
+        }
+        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        expect(activities.length).to.equal(0);
+    });
+
+    it('createExpenditureCommentAsync success', async () => {
+        const expenditure = await newExpenditureAsync(campaign1, government);
+        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        expect(activities.length).to.equal(0);
+        await createExpenditureCommentAsync({
+            expenditureId: expenditure.id,
+            currentUser: campaignAdmin,
+            comment: 'This is a comment'
+        });
+        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        expect(activities.length).to.equal(1);
+    });
+
+    it('createExpenditureCommentAsync fails cant find expenditure', async () => {
+        let activities = await getActivityByExpenditureAsync(1000, 100, 0);
+        expect(activities.length).to.equal(0);
+        const user = await newActiveUserAsync();
+        try {
+            await createExpenditureCommentAsync({
+                expenditureId: 1000,
+                currentUser: user,
+                comment: 'This is a comment'
+            });
+        } catch (e) {
+            expect(e.message).to.equal('Could not find any entity of type "Expenditure" matching: 1000');
+        }
+        activities = await getActivityByExpenditureAsync(1000, 100, 0);
+        expect(activities.length).to.equal(0);
     });
 });

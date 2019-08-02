@@ -6,7 +6,7 @@ import {
     IAddContributionAttrs,
     addContributionAsync,
     IGetContributionByIdAttrs,
-    getContributionByIdAsync, archiveContributionAsync
+    getContributionByIdAsync, archiveContributionAsync, createContributionCommentAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean, IsBooleanString } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -18,6 +18,7 @@ import {
     ContributionType,
     ContributorType
 } from '../models/entity/Contribution';
+import { User } from '../models/entity/User';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -327,6 +328,34 @@ export async function archiveContribution(request: IRequest, response: Response,
         await checkDto(archiveContributionDto);
         const contribution = await archiveContributionAsync(archiveContributionDto);
         return response.status(200).json(contribution);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export class ContributionCommentDto {
+
+    currentUser: User;
+
+    @IsNumber()
+    contributionId: number;
+
+    @IsString()
+    comment: string;
+
+}
+
+export async function createContributionComment(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const contributionCommentDto = Object.assign(new ContributionCommentDto(), {
+            contributionId: parseInt(request.params.id),
+            currentUser: request.currentUser,
+            comment: request.body.comment
+        });
+        await checkDto(contributionCommentDto);
+        const comment = await createContributionCommentAsync(contributionCommentDto);
+        return response.status(200).json(comment);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }

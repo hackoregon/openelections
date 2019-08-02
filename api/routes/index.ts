@@ -11,10 +11,6 @@ import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
 import * as expenditures from '../controller/expenditures';
 
-
-
-
-
 export const AppRoutes = [
     /**
      * @swagger
@@ -523,6 +519,70 @@ export const AppRoutes = [
         path: '/contributions/new',
         method: 'post',
         action: contributions.addContribution
+    },
+
+    /**
+     * @swagger
+     * /contributions/:id/comments:
+     *   post:
+     *     summary: Adds a new comment on a contribution
+     *     tags:
+     *       - Activity
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/AddCommentBody'
+     *     responses:
+     *       204:
+     *         description: add response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Activity'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/:id/comments',
+        method: 'post',
+        action: contributions.createContributionComment
+    },
+
+    /**
+     * @swagger
+     * /expenditures/:id/comments:
+     *   post:
+     *     summary: Adds a new comment on an expenditure
+     *     tags:
+     *       - Activity
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/AddCommentBody'
+     *     responses:
+     *       204:
+     *         description: add response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Activity'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/expenditures/:id/comments',
+        method: 'post',
+        action: expenditures.createExpenditureComment
     },
 
     /**

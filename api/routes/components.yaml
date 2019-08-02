@@ -231,6 +231,14 @@ components:
               - password
               - firstName
               - lastName
+    AddCommentBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: onbject
+            properties:
+              comment: string
     UpdateContributionBody:
       required: true
       content:
