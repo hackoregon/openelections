@@ -4,7 +4,7 @@ import {
     OtherDetailsSection,
     ContributorSection,
     BasicsSection,
-    HeaderSection
+    AddHeaderSection
 } from './ContributionsSections';
 import { formField } from '../../../../components/Forms/Utils/FormsUtils';
 
@@ -36,7 +36,7 @@ describe("<BasicsSection />", () => {
 
 describe("<HeaderSection />", () => {
   it("should be defined", () => {
-    const wrapper = shallow(<HeaderSection isValid={false} handleSubmit={() => {}} />)
+    const wrapper = shallow(<AddHeaderSection isValid={false} handleSubmit={() => {}} />)
     expect(wrapper).toBeDefined()
     expect(wrapper).toMatchSnapshot()
   })
