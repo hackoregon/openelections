@@ -18,7 +18,6 @@ export const ForgotPasswordForm = props => {
     e.persist();
     handleStateChange(name, e);
     handleChange(e);
-    console.log(errors);
   };
 
   return (
