@@ -26,6 +26,8 @@ const validationSchema = Yup.object({
 
 const styles = css`
   max-width: 350px;
+  margin: 40px auto;
+  
   .paper {
     margin-top: 30px,
     display: flex;
@@ -77,8 +79,6 @@ class UpdateForgottenPassword extends Component {
     if(update_code){
       this.setState({updateCode: update_code});
     }
-
-    console.log(update_code);
   }
   handleStateChange(name, event) {
     this.setState({
@@ -93,7 +93,6 @@ class UpdateForgottenPassword extends Component {
   }
   clearState(e) {
     // e.preventDefault();
-    console.log("clearing state");
     this.setState({
       formValues: {
         newPassword: "",
@@ -111,7 +110,6 @@ class UpdateForgottenPassword extends Component {
             {!this.state.isSubmitted ? (
               <Formik
                 onSubmit={(values, actions) => {
-                  console.log("Submitting: ", values, actions);
                   this.props.dispatch(resetPassword(this.state.updateCode,values.newPassword))
                   .then(submitted=>{
                     if(submitted){
@@ -124,7 +122,6 @@ class UpdateForgottenPassword extends Component {
                   );
                 }}
                 onReset={(values, bag) => {
-                  console.log("on reset", { values }, { bag });
                   this.clearState();
                   bag.resetForm(this.state.formValues);
                 }}

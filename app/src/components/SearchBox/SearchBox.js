@@ -2,6 +2,11 @@ import React, { Component } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import loader from "../../assets/styles/elementes/loader";
+import PropTypes from "prop-types";
+import Button from "../Button/Button";
+import Invitation from "../Invitation";
+import { TextField, InputAdornment } from "@material-ui/core";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 class SearchBox extends Component {
   constructor(props) {
@@ -14,7 +19,8 @@ class SearchBox extends Component {
         { label: "Name", value: "Hola" },
         { label: "sup", value: "Hola2" },
         { label: "sup", value: "Hola4" }
-      ]
+      ],
+      showGuessesList: false
     };
 
     this.onSearchQueryChange = props.onSearchQueryChange || (value => {});
@@ -41,23 +47,27 @@ class SearchBox extends Component {
     // Make sure no Alt, Ctrl, Cmmd key pressed with this
     const withModifierKey = e.altKey || e.ctrlKey || e.shiftKey || e.metaKey;
 
-    // Down Key
-    if (e.keyCode === 40 && !withModifierKey) {
-      const newSelectedItem = Math.min(
-        this.props.guesses.length - 1,
-        this.state.selectedItem + 1
-      );
-      this.setState({ selectedItem: newSelectedItem });
+    try {
+      // Down Key
+      if (e.keyCode === 40 && !withModifierKey) {
+        const newSelectedItem = Math.min(
+          this.props.guesses.length - 1,
+          this.state.selectedItem + 1
+        );
+        this.setState({ selectedItem: newSelectedItem });
 
-      // Up Key
-    } else if (e.keyCode === 38 && !withModifierKey) {
-      const newSelectedItem = Math.max(0, this.state.selectedItem - 1);
-      this.setState({ selectedItem: newSelectedItem });
+        // Up Key
+      } else if (e.keyCode === 38 && !withModifierKey) {
+        const newSelectedItem = Math.max(0, this.state.selectedItem - 1);
+        this.setState({ selectedItem: newSelectedItem });
 
-      // Enter Key
-    } else if (e.keyCode === 13) {
-      this.selectGuessItem(this.props.guesses[this.state.selectedItem]);
-      e.target.blur();
+        // Enter Key
+      } else if (e.keyCode === 13) {
+        this.selectGuessItem(this.props.guesses[this.state.selectedItem]);
+        e.target.blur();
+      }
+    } catch (e) {
+      // No need to do anything
     }
   }
 
@@ -71,16 +81,23 @@ class SearchBox extends Component {
     this.selectGuessItem(this.props.guesses[itemIndex]);
   }
 
+  onTextBoxFocus() {
+    this.setState({ showGuessesList: true });
+  }
+
+  onTextBoxBlur() {
+    this.setState({ showGuessesList: false });
+  }
+
   // Helper Functions
   selectGuessItem(item) {
     this.setState({ searchString: item.value });
-
     this.onSearchResultSelected(item);
   }
 
   // Render Functions
   renderGuessesList(guesses) {
-    if (guesses.length) {
+    if (guesses && guesses.length) {
       return guesses.map((item, i) => (
         <li
           key={i}
@@ -97,7 +114,7 @@ class SearchBox extends Component {
           </a>
         </li>
       ));
-    } else {
+    } else if (guesses && guesses.length === 0) {
       return <li className={"no-guess-item"}>No Result</li>;
     }
   }
@@ -106,7 +123,7 @@ class SearchBox extends Component {
     const guessesList = this.renderGuessesList(this.props.guesses);
 
     return (
-      <div css={this.styles()}>
+      <div css={this.styles()} className={this.props.className}>
         {this.props.isLoading ? (
           <div className={"loader"} css={loader(20, "#000")}>
             Loading...
@@ -114,16 +131,30 @@ class SearchBox extends Component {
         ) : (
           ""
         )}
-        <input
+        <TextField
           placeholder={this.props.placeholder}
           type="text"
           value={this.state.searchString}
           onChange={this.onInputChange}
           onKeyDown={this.onUpDownNavigation}
+          fullWidth
+          onFocus={this.onTextBoxFocus.bind(this)}
+          onBlur={this.onTextBoxBlur.bind(this)}
+          InputProps={{
+            endAdornment: (
+                <InputAdornment position="end">
+                  {this.props.isLoading ?
+                      <div className={"loader"} css={loader(20, "#000")}>
+                        Loading...
+                      </div> :
+                      <SearchIcon />}
+                </InputAdornment>
+            ),
+          }}
         />
 
         {!this.props.isLoading && this.state.searchString.trim().length ? (
-          <ul className={"guesses-list"}>{guessesList}</ul>
+          <ul className={"guesses-list" + ((this.state.showGuessesList) ? ' active' : '')}>{guessesList}</ul>
         ) : (
           ""
         )}
@@ -134,31 +165,34 @@ class SearchBox extends Component {
   // Styles
   styles() {
     return css`
-      display: inline-block;
+      display: block;
       position: relative;
 
-      &:focus-within .guesses-list {
+      .guesses-list.active {
         //input:focus + .guesses-list {
         display: block;
       }
 
-      input {
-        font-size: 20px;
-        padding-right: 30px;
-      }
-
-      input + .guesses-list {
+      .guesses-list {
         display: none;
         padding: 0;
         margin: 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         animation: enterResults 0.2s;
-
+        background-color: white;
+        position: absolute;
+        width: 100%;
+        list-style: none;
+        font-size: inherit;
+    
         .guess-item {
+                font-size: inherit;
           a {
+            font-size: inherit;
             display: block;
             padding: 10px;
             color: inherit;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
           }
 
           //> a:hover,
@@ -171,13 +205,14 @@ class SearchBox extends Component {
           }
 
           .item-label {
-            font-size: 0.8em;
+            font-size: 0.6em;
             display: inline-block;
             background: rgba(0, 0, 0, 0.2);
             margin: 0px 5px 0px -5px;
             padding: 2px 4px;
-            border-radius: 5px;
+            border-radius: 3px;
             color: #444;
+            text-transform: uppercase;
           }
         }
 
@@ -205,5 +240,23 @@ class SearchBox extends Component {
     `;
   }
 }
+
+Invitation.defaultProps = {
+  guesses: [],
+  onSearchQueryChange: () => {},
+  onSearchResultSelected: () => {},
+  placeholder: "Search"
+};
+
+
+SearchBox.propTypes = {
+  onSearchQueryChange: PropTypes.func,
+  onSearchResultSelected: PropTypes.func,
+  guesses: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string, value: PropTypes.string
+  })),
+  isLoading: PropTypes.bool,
+  placeholder: PropTypes.string
+};
 
 export default SearchBox;

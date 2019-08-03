@@ -2,7 +2,8 @@ FROM node:11.4.0
 
 WORKDIR /app
 COPY package.json .
-RUN yarn
+COPY yarn.lock .
+RUN yarn install
 
 COPY . /app
 

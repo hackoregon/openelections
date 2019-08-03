@@ -88,7 +88,6 @@ export default class Sidebar extends Component {
 
     constructor (props) {
         super(props);
-
         this.links = [
             {url: "/dashboard", label: "Dashboard"},
             {url: "/contributions", label: "Contributions"},

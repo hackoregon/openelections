@@ -1,7 +1,8 @@
 import * as React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
-import ContributionsCard from "./ContributionsCard";
-import LinksCard from "./LinksCard";
+import ContributionsCard from "./cards/ContributionsCard";
+import LinksCard from "./cards/LinksCard";
+import SearchCard from "./cards/SearchCard";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -30,17 +31,27 @@ const styles = css`
   @media ${mediaQueryRanges.mediumAndUp} {
     .cards-wrapper {
         display: flex;
+        flex-wrap: wrap;
         
-        .card:first-of-type {
+        .left-cards:first-of-type {
             flex: 3;
             margin-right: 10px;
         }
             
-        .card:nth-child(2) {
+        .right-cards:nth-child(2) { 
           flex: 2;
           margin-left: 10px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
-      }  
+        
+        .card.small {
+          height: 48%;
+        }  
+        
+        
+     }  
   }
   
 `;
@@ -51,12 +62,24 @@ const DashboardPage = props => {
         <div css={styles}>
             <h1>Dashboard</h1>
             <div className="cards-wrapper">
-                <div className="card">
-                    <ContributionsCard/>
+                <div className="left-cards">
+                    <div className="card large">
+                        <ContributionsCard/>
+                    </div>
                 </div>
-                <div className="card">
-                    {/* Jaron links go here */}
-                    <LinksCard links={[{path: "/reset-password", label: "Reset Password"}]} />
+                <div className="right-cards">
+                    <div className="card small">
+                        <SearchCard />
+                    </div>
+                    <div className="card small">
+                        {/* Jaron links go here */}
+                        <LinksCard links={[
+                            {path: "/contributions", label: "Add Contribution"},
+                            {path: "/expenses", label: "Add Expense"},
+                            {path: "/manage-portal", label: "Invite User"},
+                            {path: "/reset-password", label: "Reset Password"}
+                        ]} />
+                    </div>
                 </div>
             </div>
         </div>

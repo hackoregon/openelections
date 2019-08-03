@@ -128,6 +128,10 @@ export const actionCreators = {
 // Side Effects, e.g. thunks
 export function me() {
   return async (dispatch, getState, { api }) => {
+    if (!document.cookie.includes('token') && !process.env.TOKEN) {
+      // dont attempt if there is no token.
+      return
+    }
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
@@ -180,7 +184,12 @@ export function login(email, password) {
 export function logout() {
   return (dispatch) => {
     dispatch(actionCreators.me.success(null));
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    if (!window.location.hostname.includes('localhost')) {
+      document.cookie = "token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    } else {
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    }
+
     dispatch(push('/sign-in'))
  };
 }
@@ -201,11 +210,11 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
         dispatch(push("/sign-in"));
       }else{
         dispatch(actionCreators.redeemInvite.failure());
-        dispatch(flashMessage("Signup Error", { props: { variant: "error" } })); 
+        dispatch(flashMessage("Signup Error", { props: { variant: "error" } }));
       }
     } catch (error) {
         dispatch(actionCreators.redeemInvite.failure(error));
-        dispatch(flashMessage("Signup Error - " + error, { props: { variant: "error" } })); 
+        dispatch(flashMessage("Signup Error - " + error, { props: { variant: "error" } }));
     }
   };
 }
