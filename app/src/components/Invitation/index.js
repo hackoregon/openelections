@@ -25,8 +25,8 @@ const Invitation = ({ campaign, government, code /* email */ }) => (
       Civic:
     </p>
     <p css={formTitle}>
-      {`${campaign}${government} ${campaign.length > 0 ? "Campaign" : ""}${
-        government.length > 0 ? "Government" : ""
+      {`${campaign}${government} ${campaign && campaign.length > 0 ? "Campaign" : ""}${
+        government && government.length > 0 ? "Government" : ""
       } Portal`}
     </p>
     <p>
