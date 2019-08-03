@@ -301,3 +301,22 @@ export const isAdmin = state => {
     ) : false
   );
 }
+
+export const getMeRole = (state, role="campaign_admin") => {
+  if(state.auth.me){
+    return state.auth.me.permissions.find(permission => {
+      return permission.role === role;
+    }) ? true: false;
+  }
+  return false;
+}
+
+export const isGovAdmin = state => {
+  return getMeRole(state, "government_admin");
+}
+export const isCampAdmin = state => {
+  return getMeRole(state, "campaign_admin");
+}
+export const isCampStaff = state => {
+  return getMeRole(state, "campaign_staff");
+}

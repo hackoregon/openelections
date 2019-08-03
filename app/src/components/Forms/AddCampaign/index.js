@@ -7,6 +7,7 @@ import { createCampaignForGovernment } from "../../../state/ducks/campaigns";
 import { clearModal } from "../../../state/ducks/modal";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import { getCurrentGovernmentId } from "../../../state/ducks/governments";
 
 const formTitle = css`
   font-size: 35px;
@@ -92,7 +93,7 @@ const AddCampaign = props => (
 
 export default connect(
   state => ({
-    governmentId: state.auth.me.permissions[0].governmentId
+    governmentId: getCurrentGovernmentId(state)
   }),
   dispatch => {
     return {
