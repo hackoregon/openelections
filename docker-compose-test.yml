@@ -12,6 +12,9 @@ services:
       - 4000:4000
     networks:
       - openelections
+#    volumes:
+#      - ./app/src:/app/src
+#      - ./app/yarn.lock:/app/yarn.lock
   api:
     container_name: apitest
     tty: true # Enables debugging capabilities when attached to this container.
