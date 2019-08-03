@@ -88,6 +88,7 @@ export default class Sidebar extends Component {
 
     constructor (props) {
       super(props);
+      this.setLinks();
     }
 
     setLinks(){
@@ -99,8 +100,8 @@ export default class Sidebar extends Component {
         ...((this.props.isGovAdmin) ? [{url: "/campaigns", label: "Campaigns"}] : []),
         {url: "/manage-portal", label: "Manage Portal"}
       ];
-
     }
+
     componentDidUpdate(prevProps) {
       if(prevProps.isGovAdmin !== this.props.isGovAdmin) {
         this.setLinks();
