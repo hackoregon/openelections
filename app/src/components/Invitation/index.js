@@ -26,7 +26,7 @@ const Invitation = ({ campaign, government, code /* email */ }) => (
     <p css={formTitle}>
       {`${campaign && campaign.length > 0 ? campaign : ""}${
         government && government.length > 0 ? government : ""
-      } Portal`}
+      } ${!campaign && !government ? 'Open Elections Portland' : ' Portal'}`}
     </p>
     <p>
       in the Open and Accountable Elections Portland program. Click below to complete your registration.
