@@ -426,7 +426,7 @@ export const AppRoutes = [
     {
         path: '/activities',
         method: 'post',
-        action: activities.activities
+        action: activities.getActivities
     },
 
     /**

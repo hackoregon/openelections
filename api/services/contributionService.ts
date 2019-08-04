@@ -295,7 +295,7 @@ export interface IArchiveContributionByIdOptions {
 }
 
 export interface IContributionCommentAttrs {
-    currentUser: User;
+    currentUserId: number;
     contributionId: number;
     comment: string;
 }
@@ -304,25 +304,28 @@ export async function createContributionCommentAsync(attrs: IContributionComment
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
+        const userRepository = defaultConn.getRepository('User');
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['campaign', 'government']
         })) as Contribution;
 
+        const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
+        
         const hasPermissions =
-            (await isCampaignAdminAsync(attrs.currentUser.id, contribution.campaign.id)) ||
-            (await isCampaignStaffAsync(attrs.currentUser.id, contribution.campaign.id)) ||
-            (await isGovernmentAdminAsync(attrs.currentUser.id, contribution.government.id));
+            (await isCampaignAdminAsync(user.id, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(user.id, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(user.id, contribution.government.id));
         if (hasPermissions) {
             return createActivityRecordAsync({
-                currentUser: attrs.currentUser,
+                currentUser: user,
                 campaign: contribution.campaign,
                 government: contribution.government,
-                notes: `${attrs.currentUser.name()}: ${attrs.comment}`,
+                notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR
             });
         } else {
-            throw new Error('User does not have permission');
+            throw new Error('User does not have permissions');
         }
     } catch (e) {
         throw new Error(e.message);

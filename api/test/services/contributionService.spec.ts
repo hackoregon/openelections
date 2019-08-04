@@ -827,7 +827,7 @@ describe('contributionService', () => {
         try {
             await createContributionCommentAsync({
                 contributionId: contribution.id,
-                currentUser: user,
+                currentUserId: user.id,
                 comment: 'This is a comment'
             });
         } catch (e) {
@@ -844,7 +844,7 @@ describe('contributionService', () => {
         try {
             await createContributionCommentAsync({
                 contributionId: 1000,
-                currentUser: user,
+                currentUserId: user.id,
                 comment: 'This is a comment'
             });
         } catch (e) {
@@ -855,13 +855,13 @@ describe('contributionService', () => {
     });
 
 
-    it('createContributionCommentAsync success', async () => {
+    it('getActivityByContributionAsync success', async () => {
         const contribution = await newContributionAsync(campaign1, government);
         let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
         expect(activities.length).to.equal(0);
         await createContributionCommentAsync({
             contributionId: contribution.id,
-            currentUser: campaignAdmin,
+            currentUserId: campaignAdmin.id,
             comment: 'This is a comment'
         });
         activities = await getActivityByContributionAsync(contribution.id, 100, 0);

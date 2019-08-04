@@ -517,7 +517,7 @@ describe('expenditureService', () => {
         try {
             await createExpenditureCommentAsync({
                 expenditureId: expenditure.id,
-                currentUser: user,
+                currentUserId: user.id,
                 comment: 'This is a comment'
             });
         } catch (e) {
@@ -527,27 +527,27 @@ describe('expenditureService', () => {
         expect(activities.length).to.equal(0);
     });
 
-    it('createExpenditureCommentAsync success', async () => {
+    it('getActivityByExpenditureAsync success', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
         let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
         expect(activities.length).to.equal(0);
         await createExpenditureCommentAsync({
             expenditureId: expenditure.id,
-            currentUser: campaignAdmin,
+            currentUserId: campaignAdmin.id,
             comment: 'This is a comment'
         });
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
         expect(activities.length).to.equal(1);
     });
 
-    it('createExpenditureCommentAsync fails cant find expenditure', async () => {
+    it('etActivityByExpenditureAsync fails cant find expenditure', async () => {
         let activities = await getActivityByExpenditureAsync(1000, 100, 0);
         expect(activities.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
                 expenditureId: 1000,
-                currentUser: user,
+                currentUserId: user.id,
                 comment: 'This is a comment'
             });
         } catch (e) {

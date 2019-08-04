@@ -6,11 +6,12 @@ import {
     IGetExpenditureAttrs,
     getExpendituresAsync,
     IUpdateExpenditureAttrs,
-    updateExpenditureAsync
+    updateExpenditureAsync, createExpenditureCommentAsync
 } from '../services/expenditureService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { checkDto } from './helpers';
 import { ExpenditureStatus, ExpenditureType, ExpenditureSubType, PayeeType } from '../models/entity/Expenditure';
+import { User } from '../models/entity/User';
 
 export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsNumber()
@@ -86,7 +87,7 @@ export async function addExpenditure(request: IRequest, response: Response, next
         const expenditure = await addExpenditureAsync(addExpenditureDto);
         return response.status(201).json(expenditure);
     } catch (err) {
-        return response.status(422).json({ message: err.message });
+        return response.status(422).json({message: err.message});
     }
 }
 
@@ -133,7 +134,7 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         const expenditures = await getExpendituresAsync(getExpendituresDto);
         return response.status(200).send(expenditures);
     } catch (err) {
-        return response.status(422).json({ message: err.message });
+        return response.status(422).json({message: err.message});
     }
 }
 
@@ -209,6 +210,36 @@ export async function updateExpenditure(request: IRequest, response: Response, n
         return response.status(204).send(expenditure);
     } catch (err) {
         console.log(err);
-        return response.status(422).json({ message: err.message });
+        return response.status(422).json({message: err.message});
     }
 }
+
+export class ExpenditureCommentDto {
+
+    currentUserId: number;
+
+    @IsNumber()
+    expenditureId: number;
+
+    @IsString()
+    comment: string;
+
+}
+
+export async function createExpenditureComment(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const expenditureCommentDto = Object.assign(new ExpenditureCommentDto(), {
+            expenditureId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id,
+            comment: request.body.comment
+        });
+        await checkDto(expenditureCommentDto);
+        const comment = await createExpenditureCommentAsync(expenditureCommentDto);
+        return response.status(204).json(comment);
+    } catch (err) {
+        return response.status(422).json({message: err.message});
+    }
+}
+
+

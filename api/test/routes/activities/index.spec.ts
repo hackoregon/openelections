@@ -113,7 +113,6 @@ describe('Activity', () => {
         const response = await request(app)
             .post('/activities')
             .send({
-                governmentId: government.id,
                 campaignId: campaign1.id,
                 perPage: 1,
                 page: 0
@@ -128,7 +127,6 @@ describe('Activity', () => {
         const response = await request(app)
             .post('/activities')
             .send({
-                governmentId: government.id,
                 campaignId: campaign1.id,
                 perPage: 1,
                 page: 0

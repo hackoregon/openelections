@@ -19,6 +19,8 @@ import {
     ContributorType
 } from '../models/entity/Contribution';
 import { User } from '../models/entity/User';
+import {IToken} from "../services/permissionService";
+import {getActivityByContributionAsync} from "../models/entity/Activity";
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -335,7 +337,7 @@ export async function archiveContribution(request: IRequest, response: Response,
 
 export class ContributionCommentDto {
 
-    currentUser: User;
+    currentUserId: number;
 
     @IsNumber()
     contributionId: number;
@@ -350,14 +352,13 @@ export async function createContributionComment(request: IRequest, response: Res
         checkCurrentUser(request);
         const contributionCommentDto = Object.assign(new ContributionCommentDto(), {
             contributionId: parseInt(request.params.id),
-            currentUser: request.currentUser,
+            currentUserId: request.currentUser.id,
             comment: request.body.comment
         });
         await checkDto(contributionCommentDto);
         const comment = await createContributionCommentAsync(contributionCommentDto);
-        return response.status(200).json(comment);
+        return response.status(204).json(comment);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
 }
-

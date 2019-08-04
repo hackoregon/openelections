@@ -167,7 +167,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
 }
 
 export interface IExpenditureCommentAttrs {
-    currentUser: User;
+    currentUserId: number;
     expenditureId: number;
     comment: string;
 }
@@ -176,25 +176,27 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
     try {
         const defaultConn = getConnection('default');
         const expenditureRepository = defaultConn.getRepository('Expenditure');
+        const userRepository = defaultConn.getRepository('User');
         const expenditure = (await expenditureRepository.findOneOrFail(attrs.expenditureId, {
             relations: ['campaign', 'government']
         })) as Expenditure;
+        const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
 
         const hasPermissions =
-            (await isCampaignAdminAsync(attrs.currentUser.id, expenditure.campaign.id)) ||
-            (await isCampaignStaffAsync(attrs.currentUser.id, expenditure.campaign.id)) ||
-            (await isGovernmentAdminAsync(attrs.currentUser.id, expenditure.government.id));
+            (await isCampaignAdminAsync(user.id, expenditure.campaign.id)) ||
+            (await isCampaignStaffAsync(user.id, expenditure.campaign.id)) ||
+            (await isGovernmentAdminAsync(user.id, expenditure.government.id));
         if (hasPermissions) {
             return createActivityRecordAsync({
-                currentUser: attrs.currentUser,
+                currentUser: user,
                 campaign: expenditure.campaign,
                 government: expenditure.government,
-                notes: `${attrs.currentUser.name()}: ${attrs.comment}`,
+                notes: `${user.name()}: ${attrs.comment}`,
                 activityId: expenditure.id,
                 activityType: ActivityTypeEnum.COMMENT_EXP
             });
         } else {
-            throw new Error('User does not have permission');
+            throw new Error('User does not have permissions');
         }
     } catch (e) {
         throw new Error(e.message);

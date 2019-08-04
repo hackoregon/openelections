@@ -1,7 +1,7 @@
 import {
     Activity,
     ActivityTypeEnum,
-    getActivityByCampaignAsync,
+    getActivityByCampaignAsync, getActivityByContributionAsync, getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
     IActivityResult
 } from '../models/entity/Activity';
@@ -10,6 +10,8 @@ import { Government } from '../models/entity/Government';
 import { User } from '../models/entity/User';
 import { Campaign } from '../models/entity/Campaign';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
+import { Contribution } from '../models/entity/Contribution';
+import { Expenditure } from '../models/entity/Expenditure';
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
@@ -36,24 +38,73 @@ export async function createActivityRecordAsync(params: ICreateActivityServicePa
     throw new Error(`Invalid activity ${activity.errors}`);
 }
 
-export interface IGetActivityRecordsForGovernmentOrCampaign {
+export interface IGetActivityRecords {
     currentUserId: number;
-    governmentId?: number; // get all actions by government, requires government admin
-    campaignId?: number; // get all actions by government, requires government admin, campaign admin or staff
+    governmentId?: number; // get all activities by government, requires government admin
+    campaignId?: number; // get all activities by government, requires government admin, campaign admin or staff
+    contributionId?: number; // get all activities by contribution, includes comments
+    expenditureId?: number;  // get all activities by expenditures
     perPage?: number;
     page?: number;
 }
 
-export async function getAllActivityRecordsforGovernmentOrCampaignAsync(params: IGetActivityRecordsForGovernmentOrCampaign): Promise<IActivityResult[]> {
-    const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, params.governmentId);
-    const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, params.campaignId);
-    const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, params.campaignId);
+export async function getAllActivityRecordsAsync(params: IGetActivityRecords): Promise<IActivityResult[]> {
+
     const perPage = params.perPage || 100;
     const page = params.page || 0;
-    if ((params.governmentId && !params.campaignId) && hasGovAdminPermissions) {
-        return getActivityByGovernmentAsync(params.governmentId, perPage, page);
-    } else if (params.campaignId && hasCampaignStaffPermissions) {
-        return getActivityByCampaignAsync(params.campaignId, perPage, page);
+
+    if (params.governmentId) {
+        const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, params.governmentId);
+        if (hasGovAdminPermissions) {
+            return getActivityByGovernmentAsync(params.governmentId, perPage, page);
+        }
     }
+
+    if (params.campaignId) {
+        const campaignRepository = getConnection('default').getRepository('Campaign');
+
+        const campaign = (await campaignRepository.findOneOrFail(params.campaignId, {
+            relations: ['government']
+        })) as Campaign;
+
+        const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, campaign.government.id);
+        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, params.campaignId);
+        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, params.campaignId);
+        if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
+            return getActivityByCampaignAsync(params.campaignId, perPage, page);
+        }
+    }
+
+    if (params.contributionId) {
+        const contributionRepository = getConnection('default').getRepository('Contribution');
+
+        const contribution = (await contributionRepository.findOneOrFail(params.contributionId, {
+            relations: ['government', 'campaign']
+        })) as Contribution;
+
+        const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, contribution.government.id);
+        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, contribution.campaign.id);
+        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, contribution.campaign.id);
+        if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
+            return getActivityByContributionAsync(params.contributionId, perPage, page);
+        }
+    }
+
+    if (params.expenditureId) {
+        const expenditureRepository = getConnection('default').getRepository('Expenditure');
+
+        const expenditure = (await expenditureRepository.findOneOrFail(params.expenditureId, {
+            relations: ['government', 'campaign']
+        })) as Expenditure;
+
+        const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, expenditure.government.id);
+        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, expenditure.campaign.id);
+        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, expenditure.campaign.id);
+
+        if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
+            return getActivityByExpenditureAsync(params.expenditureId, perPage, page);
+        }
+    }
+
     return [];
 }
