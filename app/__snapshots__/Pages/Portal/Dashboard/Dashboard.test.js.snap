@@ -8,7 +8,7 @@ exports[`<Dashboard/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "gkkade",
+        "name": "14w8i5q",
         "next": undefined,
         "styles": "   
 
@@ -32,17 +32,27 @@ exports[`<Dashboard/> should be defined 1`] = `
   @media only screen and (min-width : 601px) {
     .cards-wrapper {
         display: flex;
+        flex-wrap: wrap;
         
-        .card:first-of-type {
+        .left-cards:first-of-type {
             flex: 3;
             margin-right: 10px;
         }
             
-        .card:nth-child(2) {
+        .right-cards:nth-child(2) { 
           flex: 2;
           margin-left: 10px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
-      }  
+        
+        .card.small {
+          height: 48%;
+        }  
+        
+        
+     }  
   }
   
 ",
@@ -56,23 +66,48 @@ exports[`<Dashboard/> should be defined 1`] = `
       className="cards-wrapper"
     >
       <div
-        className="card"
+        className="left-cards"
       >
-        <ContributionsCard />
+        <div
+          className="card large"
+        >
+          <ContributionsCard />
+        </div>
       </div>
       <div
-        className="card"
+        className="right-cards"
       >
-        <LinksCard
-          links={
-            Array [
-              Object {
-                "label": "Reset Password",
-                "path": "/reset-password",
-              },
-            ]
-          }
-        />
+        <div
+          className="card small"
+        >
+          <SearchCard />
+        </div>
+        <div
+          className="card small"
+        >
+          <LinksCard
+            links={
+              Array [
+                Object {
+                  "label": "Add Contribution",
+                  "path": "/contributions",
+                },
+                Object {
+                  "label": "Add Expense",
+                  "path": "/expenses",
+                },
+                Object {
+                  "label": "Invite User",
+                  "path": "/manage-portal",
+                },
+                Object {
+                  "label": "Reset Password",
+                  "path": "/reset-password",
+                },
+              ]
+            }
+          />
+        </div>
       </div>
     </div>
   </EmotionCssPropInternal>
