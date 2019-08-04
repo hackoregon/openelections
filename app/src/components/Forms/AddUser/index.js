@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import FormModal from "../../FormModal/FormModal";
 import Button from "../../Button/Button";
 import AddUserForm from "./AddUserForm";
-import { inviteUser } from "../../../state/ducks/users";
 import { clearModal } from "../../../state/ducks/modal";
+import { inviteUser } from "../../../state/ducks/users";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
@@ -31,7 +31,7 @@ const AddUser = props => (
     <AddUserForm
       onSubmit={({ email, firstName, lastName, userRole }) => {
         const role = USER_ROLES[userRole];
-        props.inviteUser(email, firstName, lastName, 1, role);
+        props.inviteUser(email, firstName, lastName, props.orgId, role);
         props.clearModal();
       }}
       initialValues={{
@@ -81,10 +81,13 @@ const AddUser = props => (
 
 // export default AddUser;
 export default connect(
-  state => ({}),
+  state => ({
+    orgId: state.campaigns.currentCampaignId || state.governments.currentGovernmentId
+  }),
   dispatch => {
     return {
-      clearModal: () => dispatch(clearModal())
+      clearModal: () => dispatch(clearModal()),
+      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role))
     };
   }
 )(AddUser);
