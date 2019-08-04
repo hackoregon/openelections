@@ -93,11 +93,11 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                 const saved = await contributionRepository.save(contribution);
                 await createActivityRecordAsync({
                     currentUser: user,
-                    notes: `${user.email} created ${saved.id}.`,
+                    notes: `${user.name()} added a contribution (${saved.id}).`,
                     campaign: contribution.campaign,
                     government: contribution.government,
                     activityType: ActivityTypeEnum.CONTRIBUTION,
-                    activityId: user.id
+                    activityId: saved.id
                 });
                 return saved;
             }
@@ -202,11 +202,11 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             ]);
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.email} updated ${contributionAttrs.id} fields. ${changeNotes}`,
+                notes: `${user.name()} updated contribution ${contributionAttrs.id} fields. ${changeNotes}`,
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
-                activityId: user.id
+                activityId: contribution.id
             });
         } else {
             throw new Error('User does not have permissions');
@@ -274,11 +274,11 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
             await contributionRepository.save(contribution);
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.email} archived ${contribution.id}.`,
+                notes: `${user.email} archived contribution ${contribution.id}.`,
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
-                activityId: user.id
+                activityId: contribution.id
             });
             return getContributionByIdAsync(contrAttrs);
         } else {

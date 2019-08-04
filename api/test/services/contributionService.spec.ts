@@ -134,7 +134,7 @@ describe('contributionService', () => {
 
         expect(await contributionRepository.count()).equal(1);
         expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include(`created ${contribution.id}.`);
+        expect(activity[0].notes).to.include(`added a contribution (${contribution.id}).`);
     });
 
     it('Does not add a contribution if the user does not belong to the campaign', async () => {
@@ -786,7 +786,7 @@ describe('contributionService', () => {
             campaignId: campaign2.id
         });
         expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include(`archived ${contribution.id}.`);
+        expect(activity[0].notes).to.include(`archived contribution ${contribution.id}.`);
     });
 
     it('archiveContributionAsync fails if processed', async () => {
