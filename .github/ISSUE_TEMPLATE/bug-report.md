@@ -15,6 +15,8 @@ labels: "bug"
 
 Describe the issue that you're seeing.
 
+### Screen Shots
+
 ### Steps to reproduce
 
 Clear steps describing how to reproduce the issue.
@@ -29,4 +31,5 @@ What happened.
 
 ### Environment
 
-Where are you seeing the error? (Environment details)
+Where are you seeing the error? 
+(Environment details like your browser, operating system and is this local development)

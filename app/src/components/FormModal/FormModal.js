@@ -10,6 +10,8 @@ const formModalWrapper = css`
   flex-direction: column;
   align-items: center;
   padding: 40px 40px;
+  height: 100%;
+  overflow: auto;
 `;
 
 // TODO: need to fix position, absolute causes other form styling to fail

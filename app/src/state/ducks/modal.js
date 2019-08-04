@@ -40,7 +40,6 @@ export const actionCreators = {
 
 export function showModal (payload) {
   return (dispatch, getState) => {
-    console.log({ payload })
     dispatch(actionCreators.showmodal(payload));
   };
 }
