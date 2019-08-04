@@ -1,1 +1,0 @@
-{"url":"http://localhost:3000/users","status":200,"statusText":"OK","ok":true,"headers":{"x-powered-by":["Express"],"vary":["Origin"],"access-control-allow-credentials":["true"],"content-type":["application/json; charset=utf-8"],"content-length":["2511"],"etag":["W/\"9cf-wWHtvf9E+Lc3op4PQmuy53kaEbQ\""],"date":["Tue, 30 Jul 2019 03:15:31 GMT"],"connection":["close"]}}

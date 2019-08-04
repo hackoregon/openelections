@@ -382,7 +382,7 @@ describe("API", () => {
       campaignId: campaignId,
       city: "Portland",
       currentUserId: campaignStaffId,
-      date: Date.now(),
+      date: 1562436237700,
       governmentId: governmentId,
       type: api.ExpenditureTypeEnum.EXPENDITURE,
       subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
@@ -406,7 +406,7 @@ describe("API", () => {
     expect(response.status).toEqual(200);
   });
 
-  it("updateExpenditure testme", async () => {
+  it("updateExpenditure", async () => {
     process.env.TOKEN = campaignStaffToken;
 
     let response = await api.createExpenditure({
@@ -415,7 +415,7 @@ describe("API", () => {
       campaignId: campaignId,
       city: "Portland",
       currentUserId: campaignStaffId,
-      date: Date.now(),
+      date: 1562436237700,
       governmentId: governmentId,
       type: api.ExpenditureTypeEnum.EXPENDITURE,
       subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
