@@ -5,7 +5,9 @@ import {
     ManyToOne,
     BeforeInsert,
     BeforeUpdate,
-    CreateDateColumn, getConnection, OneToMany
+    CreateDateColumn,
+    getConnection,
+    OneToMany
 } from 'typeorm';
 import { Government, IGovernmentSummary } from './Government';
 import { Campaign, ICampaignSummary } from './Campaign';
@@ -13,7 +15,7 @@ import { IUserSummary, User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { IUserPermission, IUserPermissionResult } from './Permission';
 import { Contribution } from './Contribution';
-import {Expenditure} from "./Expenditure";
+import { Expenditure } from './Expenditure';
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -21,11 +23,11 @@ export enum ActivityTypeEnum {
     CAMPAIGN = 'campaign',
     GOVERNMENT = 'government',
     INVITATION_EMAIL = 'invitation email',
+    CONTRIBUTION = 'contribution'
 }
 
 @Entity()
 export class Activity {
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -44,13 +46,13 @@ export class Activity {
     @IsDefined()
     activityType: ActivityTypeEnum;
 
-    @ManyToOne(type => Government, government => government.activities, {eager: true})
+    @ManyToOne(type => Government, government => government.activities, { eager: true })
     government: Government;
 
-    @ManyToOne(type => Campaign, campaign => campaign.activities, {eager: true})
+    @ManyToOne(type => Campaign, campaign => campaign.activities, { eager: true })
     campaign: Campaign;
 
-    @ManyToOne(type => User, user => user.activities, {eager: true})
+    @ManyToOne(type => User, user => user.activities, { eager: true })
     user: User;
 
     @ManyToOne(type => Contribution, contribution => contribution.activities, { eager: true })
@@ -89,7 +91,7 @@ export class Activity {
         if (!u) {
             const error = new ValidationError();
             error.property = 'userId';
-            error.constraints = {isDefined: 'userId should not be null or undefined'};
+            error.constraints = { isDefined: 'userId should not be null or undefined' };
             this.errors.push(error);
         }
     }
@@ -106,22 +108,28 @@ export interface IActivityResult {
 
 export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResult[]> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
-        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
+    return (await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"'
+        )
+        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[];
+        .getRawMany()) as IActivityResult[];
 }
 
 export async function getActivityByCampaignAsync(campaignId, perPage, page: number): Promise<IActivityResult[]> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
-        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
+    return (await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"'
+        )
+        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[];
+        .getRawMany()) as IActivityResult[];
 }

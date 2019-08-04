@@ -1,4 +1,4 @@
-import { getConnection } from 'typeorm';
+import { getConnection, UpdateResult } from 'typeorm';
 import {
     Contribution,
     ContributionStatus,
@@ -12,6 +12,9 @@ import {
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
+import { createActivityRecordAsync } from './activityService';
+import { User } from '../models/entity/User';
+import { ActivityTypeEnum } from '../models/entity/Activity';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -50,12 +53,14 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             const contributionRepository = defaultConn.getRepository('Contribution');
             const governmentRepository = defaultConn.getRepository('Government');
             const campaignRepository = defaultConn.getRepository('Campaign');
+            const userRepository = defaultConn.getRepository('User');
 
             const contribution = new Contribution();
 
-            const [campaign, government] = await Promise.all([
+            const [campaign, government, user] = await Promise.all([
                 campaignRepository.findOne(contributionAttrs.campaignId),
-                governmentRepository.findOne(contributionAttrs.governmentId)
+                governmentRepository.findOne(contributionAttrs.governmentId),
+                (userRepository.findOneOrFail(contributionAttrs.currentUserId) as unknown) as User
             ]);
 
             contribution.campaign = campaign as Campaign;
@@ -85,7 +90,16 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
-                return await contributionRepository.save(contribution);
+                const saved = await contributionRepository.save(contribution);
+                await createActivityRecordAsync({
+                    currentUser: user,
+                    notes: `${user.name()} added a contribution (${saved.id}).`,
+                    campaign: contribution.campaign,
+                    government: contribution.government,
+                    activityType: ActivityTypeEnum.CONTRIBUTION,
+                    activityId: saved.id
+                });
+                return saved;
             }
             throw new Error('Contribution is missing one or more required properties.');
         }
@@ -167,6 +181,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
+        const userRepository = defaultConn.getRepository('User');
         const contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
             relations: ['campaign', 'government']
         })) as Contribution;
@@ -178,7 +193,21 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
             (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
         if (hasCampaignPermissions) {
-            await contributionRepository.update(contributionAttrs.id, attrs);
+            const [_, user, changeNotes] = await Promise.all([
+                contributionRepository.update(contributionAttrs.id, attrs),
+                (userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown) as User,
+                Object.keys(attrs)
+                    .map(k => `${k} changed from ${contribution[k]} to ${attrs[k]}.`)
+                    .join(' ')
+            ]);
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.name()} updated contribution ${contributionAttrs.id} fields. ${changeNotes}`,
+                campaign: contribution.campaign,
+                government: contribution.government,
+                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityId: contribution.id
+            });
         } else {
             throw new Error('User does not have permissions');
         }
@@ -208,13 +237,13 @@ export async function getContributionByIdAsync(
         if (hasCampaignPermissions) {
             contribution = (await contributionRepository.findOne({
                 select: contributionSummaryFields,
-                where: {id: contributionId},
+                where: { id: contributionId },
                 relations: ['campaign', 'government']
             })) as Contribution;
         } else {
             throw new Error('User does not have permissions');
         }
-        return (contribution as IContributionSummary);
+        return contribution as IContributionSummary;
     } catch (e) {
         throw new Error(e.message);
     }
@@ -229,9 +258,13 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
-        const contribution = (await contributionRepository.findOneOrFail(contrAttrs.contributionId, {
-            relations: ['campaign', 'government']
-        })) as Contribution;
+        const userRepository = defaultConn.getRepository('User');
+        const [contribution, user] = await Promise.all([
+            (contributionRepository.findOneOrFail(contrAttrs.contributionId, {
+                relations: ['campaign', 'government']
+            }) as unknown) as Contribution,
+            (userRepository.findOneOrFail(contrAttrs.currentUserId) as unknown) as User
+        ]);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
             (await isCampaignStaffAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
@@ -239,6 +272,14 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
         if (hasCampaignPermissions && contribution.status === ContributionStatus.DRAFT) {
             contribution.status = ContributionStatus.ARCHIVED;
             await contributionRepository.save(contribution);
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.email} archived contribution ${contribution.id}.`,
+                campaign: contribution.campaign,
+                government: contribution.government,
+                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityId: contribution.id
+            });
             return getContributionByIdAsync(contrAttrs);
         } else {
             throw new Error('Contribution must have status of Draft to be Archived');
