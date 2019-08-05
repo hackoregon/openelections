@@ -11,6 +11,21 @@ export const ContributionTypeEnum = Object.freeze({
   OTHER: "other"
 });
 
+export const ContributionTypeFieldEnum = Object.freeze({
+  CONTRIBUTION: "Contribution", 
+  OTHER: "Other Receipt"
+})
+
+export const DataToContributionTypeFieldMap = new Map([
+  [ContributionTypeEnum.CONTRIBUTION, ContributionTypeFieldEnum.CONTRIBUTION],
+  [ContributionTypeEnum.OTHER, ContributionTypeFieldEnum.OTHER]
+])
+
+export const ContributionTypeFieldToDataMap = new Map([
+  [ContributionTypeFieldEnum.CONTRIBUTION, ContributionTypeEnum.CONTRIBUTION],
+  [ContributionTypeFieldEnum.OTHER, ContributionTypeEnum.OTHER]
+])
+
 export const ContributionSubTypeEnum = Object.freeze({
   CASH: "cash",
   INKIND_CONTRIBUTION: "inkind_contribution",
@@ -23,6 +38,39 @@ export const ContributionSubTypeEnum = Object.freeze({
   ITEM_REFUND: "item_refund"
 });
 
+export const ContributionSubTypeFieldEnum = Object.freeze({
+  ITEM_SOLD_FAIR_MARKET: "Items Sold at Fair Market Value", 
+  LOST_RETURNED_CHECK: "Lost or Returned Check", 
+  MISC_OTHER_RECEIPT: "Miscellaneous Other Receipt", 
+  REFUND_REBATES: "Refunds and Rebates",
+  INKIND_CONTRIBUTION: "In-Kind Contribution",
+  INKIND_FORGIVEN_ACCOUNT: "In-Kind Forgiven Accounts Payable",
+  INKIND_FORGIVEN_PERSONAL: "In-Kind /Forgiven Personal Expenditure",
+  CASH_CONTRIBUTION: "Cash Contribution"
+})
+
+export const DataToContributionSubTypeFieldMap = new Map([
+  [ContributionSubTypeEnum.CASH, ContributionSubTypeFieldEnum.CASH_CONTRIBUTION],
+  [ContributionSubTypeEnum.INKIND_CONTRIBUTION, ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION],
+  [ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT, ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT],
+  [ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL, ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL],
+  [ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET, ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET],
+  [ContributionSubTypeEnum.ITEM_RETURNED_CHECK, ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK],
+  [ContributionSubTypeEnum.ITEM_MISC, ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT],
+  [ContributionSubTypeEnum.ITEM_REFUND, ContributionSubTypeFieldEnum.REFUND_REBATES]
+])
+
+export const ContributionSubTypeFieldToDataMap = new Map([
+  [ContributionSubTypeFieldEnum.CASH_CONTRIBUTION, ContributionSubTypeEnum.CASH],
+  [ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION, ContributionSubTypeEnum.INKIND_CONTRIBUTION],
+  [ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT, ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT],
+  [ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL, ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL],
+  [ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET, ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET],
+  [ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK, ContributionSubTypeEnum.ITEM_RETURNED_CHECK],
+  [ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT, ContributionSubTypeEnum.ITEM_MISC],
+  [ContributionSubTypeFieldEnum.REFUND_REBATES, ContributionSubTypeEnum.ITEM_REFUND]
+])
+
 export const ContributorTypeEnum = Object.freeze({
   INDIVIDUAL: "individual",
   BUSINESS: "business",
@@ -34,11 +82,67 @@ export const ContributorTypeEnum = Object.freeze({
   OTHER: "other"
 });
 
+export const ContributorTypeFieldEnum = Object.freeze({
+  BUSINESS_ENTITY: "Business Entity",
+  LABOR_ORGANIZATION: "Labor Organization",
+  POLITICAL_COMMITTEE: "Political Committee",
+  POLITICAL_PARTY_COMMITEE: "Political Party Committee",
+  UNREGISTERED_COMMITTEE: "Unregistered Committee",
+  INDIVIDUAL: "Individual",
+  CANDIDATE_IMMEDIATE_FAMILY: "Candidate’s Immediate Family",
+  OTHER: "Other"
+})
+
+export const DataToContributorTypeFieldMap = new Map([
+  [ContributorTypeEnum.INDIVIDUAL, ContributorTypeFieldEnum.INDIVIDUAL],
+  [ContributorTypeEnum.BUSINESS, ContributorTypeFieldEnum.BUSINESS_ENTITY],
+  [ContributorTypeEnum.FAMILY, ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY],
+  [ContributorTypeEnum.LABOR, ContributorTypeFieldEnum.LABOR_ORGANIZATION],
+  [ContributorTypeEnum.POLITICAL_COMMITTEE, ContributorTypeFieldEnum.POLITICAL_COMMITTEE],
+  [ContributorTypeEnum.POLITICAL_PARTY, ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE],
+  [ContributorTypeEnum.UNREGISTERED, ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE],
+  [ContributorTypeEnum.OTHER, ContributorTypeFieldEnum.OTHER],
+])
+
+export const ContributorTypeFieldToDataMap = new Map([
+  [ContributorTypeFieldEnum.INDIVIDUAL, ContributorTypeEnum.INDIVIDUAL],
+  [ContributorTypeFieldEnum.BUSINESS_ENTITY, ContributorTypeEnum.BUSINESS],
+  [ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY, ContributorTypeEnum.FAMILY],
+  [ContributorTypeFieldEnum.LABOR_ORGANIZATION, ContributorTypeEnum.LABOR,],
+  [ContributorTypeFieldEnum.POLITICAL_COMMITTEE, ContributorTypeEnum.POLITICAL_COMMITTEE,],
+  [ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE, ContributorTypeEnum.POLITICAL_PARTY,],
+  [ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE, ContributorTypeEnum.UNREGISTERED,],
+  [ContributorTypeFieldEnum.OTHER, ContributorTypeEnum.OTHER,],
+])
+
 export const PhoneTypeEnum = Object.freeze({
   MOBILE: "Mobile",
   WORK: "Work",
   HOME: "Home"
-});
+})
+
+export const ContactTypeFieldEnum = Object.freeze({
+  MOBILE_PHONE: "Mobile Phone",
+  WORK_PHONE: "Work Phone", 
+  EXTENSION: "Extension", 
+  HOME_PHONE: "Home Phone", 
+  FAX: "Fax", 
+  EMAIL: "Email address"
+})
+
+export const DataToContactTypeFieldMap = new Map([
+  [PhoneTypeEnum.MOBILE, ContactTypeFieldEnum.MOBILE_PHONE],
+  [PhoneTypeEnum.WORK, ContactTypeFieldEnum.WORK_PHONE],
+  [PhoneTypeEnum.HOME, ContactTypeFieldEnum.HOME_PHONE],
+])
+
+export const ContactTypeFieldToDataMap = new Map([
+  [ContactTypeFieldEnum.MOBILE_PHONE, PhoneTypeEnum.MOBILE],
+  [ContactTypeFieldEnum.HOME_PHONE, PhoneTypeEnum.HOME_PHONE],
+  [ContactTypeFieldEnum.WORK_PHONE, PhoneTypeEnum.WORK],
+  [ContactTypeFieldEnum.EXTENSION, PhoneTypeEnum.WORK],
+  [ContactTypeFieldEnum.FAX, PhoneTypeEnum.WORK],
+])
 
 export const ContributionStatusEnum = Object.freeze({
   ARCHIVED: "Archived",

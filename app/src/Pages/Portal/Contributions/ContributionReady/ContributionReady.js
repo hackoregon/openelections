@@ -1,32 +1,28 @@
 import React, { Component } from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import AddContributionForm from "../../../../components/Forms/AddContribution/index";
 import { connect } from "react-redux";
-import { login } from "../../../../state/ducks/auth";
+import ContributionReadyForm from '../../../../components/Forms/ContributionReady/index';
+import { getContributionById } from "../../../../state/ducks/contributions";
 
 class AddContribution extends Component {
-  componentWillUpdate(newprops) {
-    if (!(typeof newprops.state.me == "undefined" || !newprops.state.me)) {
-      this.props.history.push("/dashboard");
-    }
+  componentWillMount() {
+    this.props.getContributionById(parseInt(this.props.contributionId))
   }
+
   render() {
     return (
       <PageHoc>
-        <AddContributionForm {...this.props} />
+        <ContributionReadyForm contribution={this.props.contributions[this.props.contributionId]} />
       </PageHoc>
     );
   }
 }
-
 export default connect(
-  state => {
-    return { state: state.auth };
-  },
-  dispatch => {
-    return {
-      login: (email, password) => dispatch(login(email, password)),
-      dispatch
-    };
-  }
+  (state, ownProps) => ({
+    contributionId: parseInt(ownProps.match.params.id),
+    contributions: state.contributions
+  }),
+  dispatch => ({
+    getContributionById: (id) => dispatch(getContributionById(id))
+  })
 )(AddContribution);

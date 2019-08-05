@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import AddContribution from "./AddContribution/AddContribution";
-import ContributionReady from "../../../components/Forms/ContributionReady";
+import ContributionReady from "./ContributionReady/ContributionReady"
 import ContributionSubmitted from "./ContributionSubmitted/ContributionSubmitted";
 import ContributionsTable from "./ContributionsTable/ContributionsTable";
 // import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
@@ -21,12 +21,12 @@ const Contributions = props => {
           />
           <Route 
             exact 
-            path={`${match.url}/ready`}
+            path={`${match.url}/ready/:id`}
             component={ContributionReady}
           />
           <Route 
             exact
-            path={`${match.url}/submitted`}
+            path={`${match.url}/submitted/:id`}
             component={ContributionSubmitted}
           />
           <Route 
