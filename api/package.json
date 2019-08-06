@@ -22,6 +22,7 @@
         "@types/express-session": "^1.15.12",
         "aws-sdk": "^2.449.0",
         "bcryptjs": "^2.4.3",
+        "bull": "^3.10.0",
         "chai": "^4.2.0",
         "class-validator": "^0.9.1",
         "cookie-parser": "~1.4.3",
@@ -48,6 +49,7 @@
         "typescript": "^3.5.1"
     },
     "devDependencies": {
+        "@types/bull": "^3.10.2",
         "@types/mocha": "^5.2.6",
         "@types/node": "^8.0.29",
         "chai-as-promised": "^7.1.1",
