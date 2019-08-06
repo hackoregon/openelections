@@ -25,6 +25,9 @@ const onSubmit = (data) => {
 // - linkToDocumentation
 // - notes
 const mapDataToForm = (contribution) => {
+  for (const [key, value] of Object.entries(contribution)) {
+    if(value===null){contribution[key]="" }
+  }
   const {
     date,
     // createdAt,
