@@ -104,7 +104,7 @@ describe("Side Effects", () => {
     delete process.env.TOKEN;
   });
 
-  it("creates expenditure", async () => {
+  it("creates expenditure testme", async () => {
     const expectedActions = [
       { type: actionTypes.CREATE_EXPENDITURE.REQUEST },
       { type: ADD_ENTITIES },
@@ -121,7 +121,7 @@ describe("Side Effects", () => {
           campaignId: campaignId,
           city: "Portland",
           currentUserId: campaignStaffId,
-          date: 1564881802534,
+          date: 1565060230243,
           governmentId: governmentId,
           type: api.ExpenditureTypeEnum.EXPENDITURE,
           subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
