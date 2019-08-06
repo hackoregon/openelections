@@ -192,6 +192,10 @@ components:
                 type: integer
               campaignId:
                 type: integer
+              contributionId:
+                type: interger
+              expenditureId:
+                type: interger
               perPage:
                 type: integer
               page:
@@ -231,6 +235,14 @@ components:
               - password
               - firstName
               - lastName
+    AddCommentBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: onbject
+            properties:
+              comment: string
     UpdateContributionBody:
       required: true
       content:
