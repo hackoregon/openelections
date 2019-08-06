@@ -52,7 +52,7 @@ const mapDataToForm = (contribution) => {
   } = contribution
   return {
     // BASICS VALUES
-    dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
+    dateOfContribution: date ? format(new Date(date), "yyyy-MM-dd"): 0,
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
@@ -86,6 +86,8 @@ const mapDataToForm = (contribution) => {
 }
 
 const ContributionReady = ({ contribution }) => (
+<>
+  {contribution.date ?  
   <ContributionReadyForm
     onSubmit={onSubmit}
     initialValues={mapDataToForm(contribution)}
@@ -99,6 +101,8 @@ const ContributionReady = ({ contribution }) => (
       </>
     )}
   </ContributionReadyForm>
+: <div></div>  }
+</>
 );
 export default connect(
   state => ({

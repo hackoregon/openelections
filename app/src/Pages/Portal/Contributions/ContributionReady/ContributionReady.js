@@ -11,8 +11,8 @@ class AddContribution extends Component {
 
   render() {
     return (
-      <PageHoc>
-        <ContributionReadyForm contribution={this.props.contributions[this.props.contributionId]} />
+      <PageHoc >
+        <ContributionReadyForm contribution={this.props.currentContribution} />
       </PageHoc>
     );
   }
@@ -20,7 +20,8 @@ class AddContribution extends Component {
 export default connect(
   (state, ownProps) => ({
     contributionId: parseInt(ownProps.match.params.id),
-    contributions: state.contributions
+    contributions: state.contributions,
+    currentContribution: state.contributions[ownProps.match.params.id] ? state.contributions[ownProps.match.params.id]: {}
   }),
   dispatch => ({
     getContributionById: (id) => dispatch(getContributionById(id))
