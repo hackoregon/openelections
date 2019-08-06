@@ -121,6 +121,7 @@ const headerStyles = {
     align-self: flex-end;
   `,
   submitButton: css`
+<<<<<<< HEAD
     background-color: #42B44A;
     border-radius: 5px;
     color: white;
@@ -128,11 +129,14 @@ const headerStyles = {
     height: 50px;
   `,
   draftButton: css`
+=======
+>>>>>>> develop
     background-color: #d8d8d8;
     border-radius: 5px;
     color: white;
     width: 165px;
     height: 50px;
+<<<<<<< HEAD
     margin-right: 8px !important;
   `,
   trashButton: css`
@@ -142,6 +146,15 @@ const headerStyles = {
     width: 165px;
     height: 50px;
     margin-right: 8px !important;
+=======
+  `,
+  draftButton: css`
+    // HAVING ZERO IMPACT
+    background-color: #5f5fff;
+    border-radius: 5px;
+    width: 165px;
+    height: 50px;
+>>>>>>> develop
   `
 };
 
@@ -170,7 +183,11 @@ const sectionStyles = {
 };
 
 // HEADER VALUES
+<<<<<<< HEAD
 const invoiceNumber = "#1030090212"; // TODO: Where is this invoice number coming from/generated? 
+=======
+const invoiceNumber = "#1030090212";
+>>>>>>> develop
 const campaignName = "FakeName";
 const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
 const currentStatus = "Draft";
@@ -200,6 +217,7 @@ const LabelBlock = () => (
 );
 
 // TODO: need more handleSubmit functions.
+<<<<<<< HEAD
 export const ReadyHeaderSection = ({ isValid, handleSubmit }) => {
   return (
     <>
@@ -243,6 +261,51 @@ export const ReadyHeaderSection = ({ isValid, handleSubmit }) => {
     </>
   )
 }
+=======
+export const ReadyHeaderSection = ({ isValid, handleSubmit }) => (
+  <>
+    <div css={containers.header}>
+      <div css={headerStyles.leftColumn}>
+        <InvoiceNumberBlock />
+        <div style={{ display: "flex" }}>
+          <LabelBlock />
+          <StatusBlock />
+        </div>
+      </div>
+      <div css={headerStyles.rightColumn}>
+        <div style={{ display: "flex", height: "50px", width: "600px" }}>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Move to Trash
+        </Button>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Save as Draft
+        </Button>
+          <p> ✅</p>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            disabled={!isValid}
+            onClick={handleSubmit}
+          >
+            Submit Contribution
+        </Button>
+        </div>
+      </div>
+    </div>
+    <hr css={sectionStyles.dividerLine} />
+  </>
+)
+>>>>>>> develop
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
