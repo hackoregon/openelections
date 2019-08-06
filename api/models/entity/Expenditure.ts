@@ -18,7 +18,6 @@ import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetExpenditureAttrs } from '../../services/expenditureService';
-import { Contribution, contributionSummaryFields } from './Contribution';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',

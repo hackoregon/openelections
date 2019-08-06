@@ -391,35 +391,27 @@ describe('expenditureService', () => {
         ]);
 
         const updateExpenditure1 = {
-            ...expenditure1,
+            id: expenditure1.id,
             amount: 500,
-            campaignId: campaign2.id,
-            currentUserId: campaignStaff.id,
-            governmentId: government.id
+            currentUserId: campaignStaff.id
         };
 
         const updateExpenditure2 = {
-            ...expenditure2,
+            id: expenditure2.id,
             name: 'foo',
-            campaignId: campaign1.id,
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id
+            currentUserId: campaignAdmin.id
         };
 
         const updateExpenditure1Gov = {
-            ...updateExpenditure1,
+            id: updateExpenditure1.id,
             name: 'bar',
-            campaignId: campaign2.id,
-            currentUserId: govAdmin.id,
-            governmentId: government.id
+            currentUserId: govAdmin.id
         };
 
         const updateExpenditure2Gov = {
-            ...updateExpenditure2,
+            id: updateExpenditure1.id,
             amount: 100,
-            campaignId: campaign1.id,
-            currentUserId: govAdmin.id,
-            governmentId: government.id
+            currentUserId: govAdmin.id
         };
 
         const [updatedOne, updatedTwo, updatedOneGov, updatedTwoGov] = await Promise.all([
