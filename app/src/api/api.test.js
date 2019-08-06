@@ -261,7 +261,33 @@ describe("API", () => {
     expect(response.status).toEqual(201);
   });
 
-  it("updateContribution testme", async () => {
+  it("getContributionActivities", async () => {
+    process.env.TOKEN = campaignAdminToken;
+    let contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    contribution = await contribution.json();
+
+    const response = await api.getContributionActivities(contribution.id);
+    expect(response.length >= 1).toBeTruthy();
+  });
+
+  it("updateContribution", async () => {
     process.env.TOKEN = campaignStaffToken;
 
     let response = await api.createContribution({
@@ -433,6 +459,110 @@ describe("API", () => {
       amount: 500,
       currentUserId: campaignStaffId
     });
+    expect(response.status).toEqual(204);
+  });
+
+  it("getExpenditureActivities", async () => {
+    process.env.TOKEN = campaignStaffToken;
+
+    let response = await api.createExpenditure({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      governmentId: governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: "OR",
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: "97214",
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: "Test Expenditure",
+      description: "This is an update test"
+    });
+    const expenditure = await response.json();
+
+    response = await api.getExpenditureActivities(expenditure.id);
+    expect(response.length >= 1).toBeTruthy();
+  });
+
+  it("postExpenditureComment", async () => {
+    process.env.TOKEN = campaignStaffToken;
+
+    let response = await api.createExpenditure({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      governmentId: governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: "OR",
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: "97214",
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: "Test Expenditure",
+      description: "This is an update test"
+    });
+    const expenditure = await response.json();
+
+    response = await api.postExpenditureComment(expenditure.id, 'This is a comment');
+    expect(response.status).toEqual(204);
+  });
+
+  it("getExpenditure", async () => {
+    process.env.TOKEN = campaignStaffToken;
+
+    let response = await api.createExpenditure({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      governmentId: governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: "OR",
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: "97214",
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: "Test Expenditure",
+      description: "This is an update test"
+    });
+    const expenditure = await response.json();
+
+    response = await api.getExpenditureById(expenditure.id);
+    expect(response.status).toEqual(200);
+  });
+
+  it("postContributionComment", async () => {
+    process.env.TOKEN = campaignStaffToken;
+    let contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    contribution = await contribution.json();
+
+    const response = await api.postContributionComment(contribution.id, 'This is a comment');
     expect(response.status).toEqual(204);
   });
 });

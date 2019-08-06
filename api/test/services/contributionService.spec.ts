@@ -126,11 +126,7 @@ describe('contributionService', () => {
         };
 
         const contribution = await addContributionAsync(indvidualContribution);
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
 
         expect(await contributionRepository.count()).equal(1);
         expect(activity).to.have.length(1);
@@ -665,11 +661,7 @@ describe('contributionService', () => {
             zip: '98101'
         });
         contribution = await contributionRepository.findOne(contribution.id);
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 10, 0);
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
         expect(activity).to.have.length(1);
@@ -780,11 +772,7 @@ describe('contributionService', () => {
         const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
 
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
         expect(activity).to.have.length(1);
         expect(activity[0].notes).to.include(`archived contribution ${contribution.id}.`);
     });
@@ -831,7 +819,7 @@ describe('contributionService', () => {
                 comment: 'This is a comment'
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permission');
+            expect(e.message).to.equal('User does not have permissions');
         }
         activities = await getActivityByContributionAsync(contribution.id, 100, 0);
         expect(activities.length).to.equal(0);

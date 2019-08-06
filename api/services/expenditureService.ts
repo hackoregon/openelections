@@ -1,9 +1,9 @@
 import {
     Expenditure,
     ExpenditureStatus,
-    ExpenditureSubType,
+    ExpenditureSubType, expenditureSummaryFields,
     ExpenditureType,
-    getExpendituresByGovernmentIdAsync,
+    getExpendituresByGovernmentIdAsync, IExpenditureSummary,
     PayeeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
@@ -13,6 +13,7 @@ import { Government } from '../models/entity/Government';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
 import { User } from '../models/entity/User';
+import { Contribution, contributionSummaryFields, IContributionSummary } from '../models/entity/Contribution';
 
 export interface IAddExpenditureAttrs {
     date: number;
@@ -43,6 +44,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             const expenditureRepository = defaultConn.getRepository('Expenditure');
             const governmentRepository = defaultConn.getRepository('Government');
             const campaignRepository = defaultConn.getRepository('Campaign');
+            const userRepository = defaultConn.getRepository('User');
 
             const expenditure = new Expenditure();
 
@@ -70,7 +72,18 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             expenditure.amount = expenditureAttrs.amount;
             expenditure.date = new Date(expenditureAttrs.date);
             if (await expenditure.isValidAsync()) {
-                return await expenditureRepository.save(expenditure);
+                const saved = await expenditureRepository.save(expenditure);
+                const user = await userRepository.findOneOrFail(expenditureAttrs.currentUserId) as User;
+
+                await createActivityRecordAsync({
+                    currentUser: user,
+                    notes: `${user.name()} added an expenditure (${saved.id}).`,
+                    campaign: expenditure.campaign,
+                    government: expenditure.government,
+                    activityType: ActivityTypeEnum.EXPENDITURE,
+                    activityId: saved.id
+                });
+                return saved;
             }
             throw new Error('Expenditure is missing one or more required properties.');
         }
@@ -144,6 +157,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
         const expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
             relations: ['campaign', 'government']
         })) as Expenditure;
+        const userRepository = defaultConn.getRepository('User');
         const attrs = Object.assign({}, expenditureAttrs);
         delete attrs.currentUserId;
         delete attrs.id;
@@ -153,6 +167,23 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
                 (await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id));
             if (hasCampaignPermissions) {
+
+                const [_, user, changeNotes] = await Promise.all([
+                    expenditureRepository.update(expenditureAttrs.id, attrs),
+                    (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
+                    Object.keys(attrs)
+                        .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
+                        .join(' ')
+                ]);
+
+                await createActivityRecordAsync({
+                    currentUser: user,
+                    notes: `${user.name()} updated expenditure ${expenditureAttrs.id} fields. ${changeNotes}`,
+                    campaign: expenditure.campaign,
+                    government: expenditure.government,
+                    activityType: ActivityTypeEnum.CONTRIBUTION,
+                    activityId: expenditure.id
+                });
                 return expenditureRepository.save(expenditure);
             } else {
                 throw new Error('User is not permitted to update expenditures for this campaign.');
@@ -198,6 +229,39 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
         } else {
             throw new Error('User does not have permissions');
         }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface IGetExpenditureByIdAttrs {
+    currentUserId: number;
+    expenditureId: number;
+}
+
+export async function getExpenditureByIdAsync(
+    expenditureAttrs: IGetExpenditureByIdAttrs
+): Promise<IExpenditureSummary> {
+    try {
+        const { expenditureId, currentUserId } = expenditureAttrs;
+        const expenditureRepository = getConnection('default').getRepository('Expenditure');
+        let expenditure = (await expenditureRepository.findOneOrFail(expenditureId, {
+            relations: ['campaign', 'government']
+        })) as Expenditure;
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(currentUserId, expenditure.campaign.id)) ||
+            (await isCampaignStaffAsync(currentUserId, expenditure.campaign.id)) ||
+            (await isGovernmentAdminAsync(currentUserId, expenditure.government.id));
+        if (hasCampaignPermissions) {
+            expenditure = (await expenditureRepository.findOne({
+                select: expenditureSummaryFields,
+                where: { id: expenditureId },
+                relations: ['campaign', 'government']
+            })) as Expenditure;
+        } else {
+            throw new Error('User does not have permissions');
+        }
+        return expenditure as IExpenditureSummary;
     } catch (e) {
         throw new Error(e.message);
     }

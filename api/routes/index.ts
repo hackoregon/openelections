@@ -743,7 +743,35 @@ export const AppRoutes = [
         path: '/expenditures/:id',
         method: 'put',
         action: expenditures.updateExpenditure
-    }
+    },
+    /**
+     * @swagger
+     * /expenditures/{id}:
+     *   get:
+     *     summary: Get an expenditure
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Expenditure'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/expenditures/:id',
+        method: 'get',
+        action: expenditures.getExpenditureById
+    },
+
 ];
 
 export const setupRoutes = (app: express.Express) => {

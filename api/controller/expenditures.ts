@@ -1,17 +1,16 @@
 import { Response } from 'express';
-import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsEnum } from 'class-validator';
 import {
     IAddExpenditureAttrs,
     addExpenditureAsync,
     IGetExpenditureAttrs,
     getExpendituresAsync,
     IUpdateExpenditureAttrs,
-    updateExpenditureAsync, createExpenditureCommentAsync
+    updateExpenditureAsync, createExpenditureCommentAsync, getExpenditureByIdAsync
 } from '../services/expenditureService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { checkDto } from './helpers';
 import { ExpenditureStatus, ExpenditureType, ExpenditureSubType, PayeeType } from '../models/entity/Expenditure';
-import { User } from '../models/entity/User';
 
 export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsNumber()
@@ -243,3 +242,26 @@ export async function createExpenditureComment(request: IRequest, response: Resp
 }
 
 
+export class GetExpenditureByIdDto {
+
+    @IsNumber()
+    expenditureId: number;
+
+    @IsNumber()
+    currentUserId: number;
+}
+
+export async function getExpenditureById(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const getExpenditureByIdDto = Object.assign(new GetExpenditureByIdDto(), {
+            expenditureId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(getExpenditureByIdDto);
+        const expenditure = await getExpenditureByIdAsync(getExpenditureByIdDto);
+        return response.status(200).json(expenditure);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}

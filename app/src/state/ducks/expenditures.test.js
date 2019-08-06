@@ -209,4 +209,45 @@ describe("Side Effects", () => {
         expect(actions[1].type).toEqual(expectedActions[1].type);
       });
   });
+
+  it("gets expenditure", async () => {
+    const expectedActions = [
+      { type: actionTypes.GET_EXPENDITURE_BY_ID.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    const expenditure = await api.createExpenditure({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignStaffId,
+      date: 1564881802534,
+      governmentId: governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: "OR",
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: "97214",
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: "Test Expenditure",
+      description: "This is a test"
+    });
+    const { id } = await expenditure.json();
+
+    return store
+      .dispatch(
+        expenditures.getExpenditureById(id)
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
 });

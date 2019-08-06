@@ -18,6 +18,7 @@ import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetExpenditureAttrs } from '../../services/expenditureService';
+import { Contribution, contributionSummaryFields } from './Contribution';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',
@@ -53,6 +54,7 @@ export enum ExpenditureStatus {
     OUT_OF_COMPLIANCE = 'out_of_compliance',
     IN_COMPLIANCE = 'in_compliance'
 }
+
 
 @Entity({ name: 'expenditures' })
 export class Expenditure {
@@ -264,7 +266,25 @@ export class Expenditure {
     }
 }
 
-const expenditureSummaryFields = <const>['id', 'amount'];
+export const expenditureSummaryFields = <const>[
+    'id',
+    'amount',
+    'createdAt',
+    'updatedAt',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state',
+    'zip',
+    'type',
+    'subType',
+    'payeeType',
+    'checkNumber',
+    'description',
+    'status',
+    'date'
+];
 export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFields[number]>;
 
 export async function getExpendituresByGovernmentIdAsync(

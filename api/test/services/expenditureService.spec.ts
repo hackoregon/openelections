@@ -15,7 +15,7 @@ import {
     getExpendituresAsync,
     IGetExpenditureAttrs,
     updateExpenditureAsync,
-    createExpenditureCommentAsync
+    createExpenditureCommentAsync, getExpenditureByIdAsync
 } from '../../services/expenditureService';
 import { PayeeType, ExpenditureSubType, ExpenditureType, ExpenditureStatus } from '../../models/entity/Expenditure';
 import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
@@ -521,7 +521,7 @@ describe('expenditureService', () => {
                 comment: 'This is a comment'
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permission');
+            expect(e.message).to.equal('User does not have permissions');
         }
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
         expect(activities.length).to.equal(0);
@@ -540,7 +540,7 @@ describe('expenditureService', () => {
         expect(activities.length).to.equal(1);
     });
 
-    it('etActivityByExpenditureAsync fails cant find expenditure', async () => {
+    it('getActivityByExpenditureAsync fails cant find expenditure', async () => {
         let activities = await getActivityByExpenditureAsync(1000, 100, 0);
         expect(activities.length).to.equal(0);
         const user = await newActiveUserAsync();
@@ -555,5 +555,12 @@ describe('expenditureService', () => {
         }
         activities = await getActivityByExpenditureAsync(1000, 100, 0);
         expect(activities.length).to.equal(0);
+    });
+
+    it('getExpenditureByIdAsync testme', async () => {
+        const expenditure = await newExpenditureAsync(campaign1, government);
+        const summary = await getExpenditureByIdAsync({ currentUserId: campaignAdmin.id, expenditureId: expenditure.id })
+
+        expect(summary.id).to.equal(expenditure.id);
     });
 });

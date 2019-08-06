@@ -1,0 +1,1 @@
+{"url":"http://localhost:3000/campaigns","status":200,"statusText":"OK","ok":true,"headers":{"x-powered-by":["Express"],"vary":["Origin"],"access-control-allow-credentials":["true"],"content-type":["application/json; charset=utf-8"],"content-length":["269"],"etag":["W/\"10d-6nJafspwHeiQ5/XYjd58H950afw\""],"date":["Tue, 06 Aug 2019 00:40:05 GMT"],"connection":["close"]}}
