@@ -101,7 +101,7 @@ const ContributionReady = ({ contribution }) => (
       </>
     )}
   </ContributionReadyForm>
-: <div></div>  }
+: <div>Contribution not found</div>  }
 </>
 );
 export default connect(
