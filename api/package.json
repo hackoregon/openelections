@@ -13,7 +13,9 @@
         "testone": "mocha --timeout 5000 --require ts-node/register test/setup.ts",
         "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
         "seed": "ts-node models/seeds/index.ts",
-        "console": "ts-node"
+        "console": "ts-node",
+        "dev-jobs": "nodemon --watch ./ -e ts --exec ts-node jobs/index.ts",
+        "jobs": "ts-node jobs/index.ts"
     },
     "dependencies": {
         "@types/bcrypt": "^3.0.0",
