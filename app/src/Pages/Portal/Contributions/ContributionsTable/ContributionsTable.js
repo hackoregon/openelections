@@ -1,6 +1,7 @@
 import React from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
 import { connect } from "react-redux";
+import FilterContribution from "../../../../components/Forms/FilterContributions/index"
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
@@ -66,6 +67,7 @@ const ContributionsTable = ({ ...props }) => {
 	return (
 		<PageHoc>
 			<h1>Contributions</h1>
+			<FilterContribution />
 			<Table
 				isLoading={isLoading}
 				title={title}
