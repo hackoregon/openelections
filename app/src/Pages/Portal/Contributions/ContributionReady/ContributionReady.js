@@ -6,13 +6,19 @@ import { getContributionById } from "../../../../state/ducks/contributions";
 
 class AddContribution extends Component {
   componentWillMount() {
-    this.props.getContributionById(parseInt(this.props.contributionId))
+    const { getContributionById, contributionId } = this.props
+    getContributionById(parseInt(contributionId))
   }
 
   render() {
+    const { contributions, contributionId, history } = this.props
     return (
       <PageHoc>
-        <ContributionReadyForm contribution={this.props.contributions[this.props.contributionId]} />
+        <ContributionReadyForm 
+          contribution={contributions[contributionId]} 
+          contributionId={contributionId}
+          history={history}
+        />
       </PageHoc>
     );
   }
@@ -20,7 +26,8 @@ class AddContribution extends Component {
 export default connect(
   (state, ownProps) => ({
     contributionId: parseInt(ownProps.match.params.id),
-    contributions: state.contributions
+    contributions: state.contributions,
+    history: ownProps.history
   }),
   dispatch => ({
     getContributionById: (id) => dispatch(getContributionById(id))

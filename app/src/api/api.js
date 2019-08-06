@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import { format } from "date-fns"
 
 export const UserRoleEnum = Object.freeze({
   GOVERNMENT_ADMIN: "government_admin",
@@ -12,7 +13,7 @@ export const ContributionTypeEnum = Object.freeze({
 });
 
 export const ContributionTypeFieldEnum = Object.freeze({
-  CONTRIBUTION: "Contribution", 
+  CONTRIBUTION: "Contribution",
   OTHER: "Other Receipt"
 })
 
@@ -39,9 +40,9 @@ export const ContributionSubTypeEnum = Object.freeze({
 });
 
 export const ContributionSubTypeFieldEnum = Object.freeze({
-  ITEM_SOLD_FAIR_MARKET: "Items Sold at Fair Market Value", 
-  LOST_RETURNED_CHECK: "Lost or Returned Check", 
-  MISC_OTHER_RECEIPT: "Miscellaneous Other Receipt", 
+  ITEM_SOLD_FAIR_MARKET: "Items Sold at Fair Market Value",
+  LOST_RETURNED_CHECK: "Lost or Returned Check",
+  MISC_OTHER_RECEIPT: "Miscellaneous Other Receipt",
   REFUND_REBATES: "Refunds and Rebates",
   INKIND_CONTRIBUTION: "In-Kind Contribution",
   INKIND_FORGIVEN_ACCOUNT: "In-Kind Forgiven Accounts Payable",
@@ -123,10 +124,10 @@ export const PhoneTypeEnum = Object.freeze({
 
 export const ContactTypeFieldEnum = Object.freeze({
   MOBILE_PHONE: "Mobile Phone",
-  WORK_PHONE: "Work Phone", 
-  EXTENSION: "Extension", 
-  HOME_PHONE: "Home Phone", 
-  FAX: "Fax", 
+  WORK_PHONE: "Work Phone",
+  EXTENSION: "Extension",
+  HOME_PHONE: "Home Phone",
+  FAX: "Fax",
   EMAIL: "Email address"
 })
 
@@ -185,6 +186,129 @@ export const ExpenditureStatusEnum = Object.freeze({
   OUT_OF_COMPLIANCE: "out_of_compliance",
   IN_COMPLIANCE: "in_compliance"
 });
+
+// TODO: need to get data for the following:
+// - oaeContributionType
+// - paymentMethod
+// - employerZipcode
+// - occupationLetterDate
+// - linkToDocumentation
+// - notes
+export const mapContributionDataToForm = (contribution) => {
+  const {
+    date,
+    // createdAt,
+    type,
+    subtype,
+    contributorType,
+    amount,
+    checkNumber,
+    firstName,
+    lastName,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+    email,
+    phone,
+    // phoneType, 
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    calendarYearAggregate,
+    inKindDescription,
+  } = contribution
+  return {
+    // BASICS VALUES
+    dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
+    typeOfContribution: DataToContributionTypeFieldMap.get(type),
+    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
+    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
+    amountOfContribution: amount,
+    checkNumber: checkNumber,
+
+    // CONTRIBUTOR VALUES
+    firstName,
+    lastName,
+    streetAddress: address1,
+    addressLine2: address2,
+    city,
+    state,
+    zipcode: zip,
+    // TODO: contact type can return null for users
+    // contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
+    contactType: "",
+    contactInformation: email || phone,
+    occupation: occupation || "",
+    employerName,
+    employerCity,
+    employerState: employerState || "",
+
+    // OTHER DETAILS VALUES
+    electionAggregate: calendarYearAggregate,
+    description: inKindDescription || "",
+    oaeContributionType: "",
+    paymentMethod: ""
+  }
+}
+
+// TODO: need to fix some of the fields here.
+export const mapContributionFormToData = (data) => {
+  const {
+    streetAddress,
+    amountOfContribution,
+    city,
+    dateOfContribution,
+    addressLine2,
+    firstName,
+    lastNameOrEntity,
+    state,
+    zipcode,
+    employerName,
+    employerCity,
+    employerState,
+    occupation,
+    description,
+    electionAggregate,
+    contactInformation,
+    contactType,
+    checkNumber,
+    typeOfContributor,
+    subTypeOfContribution,
+    typeOfContribution
+  } = data
+
+  return {
+    city,
+    firstName,
+    state,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    checkNumber,
+    contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
+    subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
+    type: ContributionTypeFieldToDataMap.get(typeOfContribution),
+    address1: streetAddress,
+    address2: addressLine2,
+    email: contactType === ContactTypeFieldEnum.EMAIL ? contactInformation : null,
+    phone: contactType !== ContactTypeFieldEnum.EMAIL ? contactInformation : null,
+    phoneType: contactType !== ContactTypeFieldEnum.EMAIL ? ContactTypeFieldToDataMap.get(contactType) : null,
+    amount: parseFloat(amountOfContribution),
+    date: new Date(dateOfContribution).getTime() / 1000,
+    middleInitial: "",
+    lastName: lastNameOrEntity,
+    type: ContributionTypeEnum.CONTRIBUTION,
+    subType: ContributionSubTypeEnum.CASH,
+    zip: zipcode,
+    contributorType: ContributorTypeEnum.INDIVIDUAL,
+    inKindDescription: description,
+    calendarYearAggregate: electionAggregate,
+  }
+}
 
 export function baseUrl() {
   if (process.env.NODE_ENV === "test") {

@@ -200,7 +200,12 @@ const LabelBlock = () => (
 );
 
 // TODO: need more handleSubmit functions.
-export const ReadyHeaderSection = ({ isValid, handleSubmit }) => {
+export const ReadyHeaderSection = ({ 
+  isValid, 
+  handleSubmit,
+  handleTrash,
+  handleDraft
+}) => {
   return (
     <>
       <div css={containers.header}>
@@ -215,15 +220,13 @@ export const ReadyHeaderSection = ({ isValid, handleSubmit }) => {
           <div style={{ display: "flex", height: "50px", width: "750px" }}>
             <Button
               style={headerStyles.trashButton}
-              disabled={isValid}
-              onClick={handleSubmit}
+              onClick={handleTrash}
             >
               Move to Trash
             </Button>
             <Button
               style={headerStyles.draftButton}
-              disabled={!isValid}
-              onClick={handleSubmit}
+              onClick={handleDraft}
             >
               Save as Draft
             </Button>
@@ -231,7 +234,7 @@ export const ReadyHeaderSection = ({ isValid, handleSubmit }) => {
             <p css={css`margin-right: 8px;`}> ✅</p>
             <Button
               style={headerStyles.submitButton}
-              disabled={isValid}
+              disabled={!isValid}
               onClick={handleSubmit}
             >
               Submit Contribution
