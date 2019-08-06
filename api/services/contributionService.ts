@@ -310,7 +310,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
         })) as Contribution;
 
         const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
-        
+
         const hasPermissions =
             (await isCampaignAdminAsync(user.id, contribution.campaign.id)) ||
             (await isCampaignStaffAsync(user.id, contribution.campaign.id)) ||

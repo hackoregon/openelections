@@ -5,10 +5,9 @@ import {
     getContributionsAsync,
     IAddContributionAttrs,
     addContributionAsync,
-    IGetContributionByIdAttrs,
     getContributionByIdAsync, archiveContributionAsync, createContributionCommentAsync
 } from '../services/contributionService';
-import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean, IsBooleanString } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { checkDto } from './helpers';
@@ -18,9 +17,6 @@ import {
     ContributionType,
     ContributorType
 } from '../models/entity/Contribution';
-import { User } from '../models/entity/User';
-import {IToken} from "../services/permissionService";
-import {getActivityByContributionAsync} from "../models/entity/Activity";
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
