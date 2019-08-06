@@ -58,7 +58,7 @@ export async function removePermissionAsync(attrs: IRemovePermissionAsyncAttrs):
     const permission = await permissionRepository.findOneOrFail(attrs.permissionId) as Permission;
     if (permission) {
         if (await isGovernmentAdminAsync(attrs.userId, permission.government.id) ||
-            await isCampaignAdminAsync(attrs.userId, permission.government.id) ) {
+            await isCampaignAdminAsync(attrs.userId, permission.campaign.id) ) {
             await permissionRepository.delete(attrs.permissionId);
         } else {
             throw new Error('User must be an admin');
