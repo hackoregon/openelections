@@ -140,4 +140,44 @@ describe("Side Effects", () => {
         expect(actions[2].type).toEqual(expectedActions[2].type);
       });
   });
+
+  it("gets CONTRIBUTION activities", async () => {
+    const expectedActions = [
+      { type: actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    return store
+      .dispatch(activities.getContributionActivities(1))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
+
+  it("gets EXPENDITURE activities", async () => {
+    const expectedActions = [
+      { type: actionTypes.GET_EXPENDITURE_ACTIVITIES.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: actionTypes.GET_EXPENDITURE_ACTIVITIES.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    return store
+      .dispatch(activities.getExpenditureActivities(1))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
 });

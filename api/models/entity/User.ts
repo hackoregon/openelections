@@ -191,7 +191,7 @@ export class User {
     }
 
     name() {
-        return `${this.firstName} ${this.lastName}}`;
+        return `${this.firstName} ${this.lastName}`;
     }
 }
 

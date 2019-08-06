@@ -12,9 +12,9 @@ import {
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { createActivityRecordAsync } from './activityService';
 import { User } from '../models/entity/User';
-import { ActivityTypeEnum } from '../models/entity/Activity';
+import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
+import { createActivityRecordAsync } from './activityService';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -286,5 +286,48 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
         }
     } catch (error) {
         throw new Error(error.message);
+    }
+}
+
+export interface IArchiveContributionByIdOptions {
+    currentUserId: number;
+    contributionId: number;
+}
+
+export interface IContributionCommentAttrs {
+    currentUserId: number;
+    contributionId: number;
+    comment: string;
+}
+
+export async function createContributionCommentAsync(attrs: IContributionCommentAttrs): Promise<Activity> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+        const userRepository = defaultConn.getRepository('User');
+        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
+            relations: ['campaign', 'government']
+        })) as Contribution;
+
+        const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
+
+        const hasPermissions =
+            (await isCampaignAdminAsync(user.id, contribution.campaign.id)) ||
+            (await isCampaignStaffAsync(user.id, contribution.campaign.id)) ||
+            (await isGovernmentAdminAsync(user.id, contribution.government.id));
+        if (hasPermissions) {
+            return createActivityRecordAsync({
+                currentUser: user,
+                campaign: contribution.campaign,
+                government: contribution.government,
+                notes: `${user.name()}: ${attrs.comment}`,
+                activityId: contribution.id,
+                activityType: ActivityTypeEnum.COMMENT_CONTR
+            });
+        } else {
+            throw new Error('User does not have permissions');
+        }
+    } catch (e) {
+        throw new Error(e.message);
     }
 }
