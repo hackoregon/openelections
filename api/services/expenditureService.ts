@@ -7,7 +7,7 @@ import {
     getExpendituresByGovernmentIdAsync
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { getConnection, UpdateResult } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 

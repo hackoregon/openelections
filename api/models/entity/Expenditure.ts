@@ -258,9 +258,11 @@ export class Expenditure {
     }
 
     toJSON() {
-        return {
-            id: this.id
-        };
+        const json: any = {};
+        expenditureSummaryFields.forEach(( (key: string): void => {
+            json[key] = this[key];
+        }));
+        return json as IExpenditureSummary;
     }
 }
 
