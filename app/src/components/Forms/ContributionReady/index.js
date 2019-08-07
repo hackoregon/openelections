@@ -13,10 +13,13 @@ class ContributionReady extends React.Component {
 
   onDraft = (id, data) => {
     const { updateContribution, showMessage } = this.props
-    console.log(mapContributionFormToData(data))
     const payload = { id, ...mapContributionFormToData(data) }
+    delete payload.date // TODO: should remove this later, current endpoint failing when including date in payload.
+    const showErrorMessage = (error) => showMessage(`Error: ${error.message}`, { props: { variant: "error" } })
+    const showSuccessMessage = () => showMessage("Contribution saved", { props: { variant: "success" } })
     updateContribution(payload)
-      .then(() => showMessage("Contribution saved", { props: { variant: "success" } }))
+      .then(data => data != null ? showErrorMessage(data) : showSuccessMessage())
+      .catch(error => showErrorMessage(error))
   }
 
   // TODO: currently sending user back to table, need proper behavior.
@@ -29,7 +32,6 @@ class ContributionReady extends React.Component {
   render() {
     const { contribution, contributionId } = this.props
     const { onSubmit, onDraft, onTrash } = this
-    console.log(this.props)
     return (
       <ContributionReadyForm
         onSubmit={onSubmit}

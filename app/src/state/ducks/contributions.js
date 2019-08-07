@@ -136,9 +136,12 @@ export function updateContribution(contributionAttrs) {
         dispatch(actionCreators.updateContribution.success());
       } else {
         dispatch(actionCreators.updateContribution.failure());
+        const error = await response.json()
+        return error
       }
     } catch (error) {
       dispatch(actionCreators.updateContribution.failure(error));
+      return error
     }
   };
 }

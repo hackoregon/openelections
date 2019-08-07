@@ -298,7 +298,7 @@ export const mapContributionFormToData = (data) => {
     phone: contactType !== ContactTypeFieldEnum.EMAIL ? contactInformation : null,
     phoneType: contactType !== ContactTypeFieldEnum.EMAIL ? ContactTypeFieldToDataMap.get(contactType) : null,
     amount: parseFloat(amountOfContribution),
-    date: new Date(dateOfContribution).getTime() / 1000,
+    date: new Date(dateOfContribution).getTime(),
     middleInitial: "",
     lastName: lastNameOrEntity,
     type: ContributionTypeEnum.CONTRIBUTION,
