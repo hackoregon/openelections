@@ -6,6 +6,7 @@ import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
 import { createSelector } from "reselect";
 import { get } from "lodash";
+import { getContributionActivities } from "./activities";
 
 export const STATE_KEY = "contributions";
 
@@ -16,6 +17,7 @@ export const actionTypes = {
   GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS"),
   GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID"),
   ARCHIVE_CONTRIBUTION: createActionTypes(STATE_KEY, "ARCHIVE_CONTRIBUTION"),
+  POST_CONTRIBUTION_COMMENT:  createActionTypes(STATE_KEY, "POST_CONTRIBUTION_COMMENT"),
 };
 
 // Initial State
@@ -73,7 +75,17 @@ export default createReducer(initialState, {
   },
   [actionTypes.ARCHIVE_CONTRIBUTION.FAILURE]: (state) => {
   return { ...state, isLoading: false , error: action.error };
-}
+  },
+  [actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST]: (state, action) => {
+    return { ...state, isLoading: true};
+  },
+  [actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS]: (state) => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: (state) => {
+    return { ...state, isLoading: false , error: action.error };
+  },
+
 });
 
 // Action Creators
@@ -104,6 +116,12 @@ export const actionCreators = {
     success: () => action(actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS),
     failure: error =>
       action(actionTypes.ARCHIVE_CONTRIBUTION.FAILURE, { error })
+  },
+  postContributionComment: {
+    request: () => action(actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST),
+    success: () => action(actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS),
+    failure: error =>
+      action(actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE, { error })
   }
 };
 
@@ -193,6 +211,23 @@ export function archiveContribution(id) {
       }
     } catch (error) {
       dispatch(actionCreators.archiveContribution.failure(error));
+    }
+  };
+}
+
+export function postContributionComment(id, comment) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.postContributionComment.request());
+    try {
+      const response = await api.postContributionComment(id, comment);
+      if (response.status === 204) {
+        await dispatch(getContributionActivities(id));
+        dispatch(actionCreators.postContributionComment.success());
+      } else {
+        dispatch(actionCreators.postContributionComment.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.postContributionComment.failure(error));
     }
   };
 }
