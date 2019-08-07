@@ -5,7 +5,7 @@ import Modal from "../../components/Modal/index";
 import DashboardPage from "./Dashboard/Dashboard";
 import ManagePortalPage from "./ManagePortal/index";
 import ManageUserPage from "./ManagePortal/ManageUser/index";
-import ExpensesPage from "./Expenses/Expenses";
+import ExpensesPage from "./Expenses/index";
 import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"

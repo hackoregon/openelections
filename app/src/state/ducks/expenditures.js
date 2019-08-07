@@ -24,6 +24,7 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
+    console.log(action.payload);
     return { ...state, ...action.payload.expenditures };
   },
   [actionTypes.CREATE_EXPENDITURE.REQUEST]: (state, action) => {
