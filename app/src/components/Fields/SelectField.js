@@ -8,6 +8,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 
+<<<<<<< HEAD
 /**
   * 
   * If a simple array, ['OR','WA','CA'], is passed to options.values 
@@ -41,6 +42,8 @@ import { jsx } from "@emotion/core";
   * 
   */ 
 
+=======
+>>>>>>> hook up api redux duck and do basic style tweek
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'block !important',
@@ -48,6 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+<<<<<<< HEAD
 const SelectField = ({ id, label, options, formik, isRequired }) => {
   const classes = useStyles();
   let optionValues = options.values;
@@ -66,6 +70,13 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor={id} required={isRequired}>{label}</InputLabel>
+=======
+const SelectField = ({ id, label, options, formik }) => {
+  const classes = useStyles();
+  return (
+    <FormControl fullWidth>
+      <InputLabel htmlFor={id}>{label}</InputLabel>
+>>>>>>> hook up api redux duck and do basic style tweek
       <Select
         value={formik.values[id]}
         onChange={formik.handleChange}
@@ -75,9 +86,15 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
         }}
         fullWidth
       >
+<<<<<<< HEAD
        {optionValues.map((option, key) => (
           <MenuItem value={option.value} key={key} className={classes.root}>
             {option.label } 
+=======
+        {options.values.map(role => (
+          <MenuItem value={role} key={role} className={classes.root}>
+            {role}
+>>>>>>> hook up api redux duck and do basic style tweek
           </MenuItem>
         ))}
       </Select>

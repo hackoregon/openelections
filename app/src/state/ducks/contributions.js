@@ -170,10 +170,17 @@ export function getContributions (contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
+<<<<<<< HEAD
 
       if (response.status === 200) {
         const data = normalize(await response.json(), [schema.contribution]);
 
+=======
+      console.log({ response })
+      if (response.status === 200) {
+        const data = normalize(await response.json(), [schema.contribution]);
+        console.log({ data })
+>>>>>>> hook up api redux duck and do basic style tweek
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
