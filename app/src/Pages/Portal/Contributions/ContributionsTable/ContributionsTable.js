@@ -6,6 +6,7 @@ import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
 import { getContributionsList } from "../../../../state/ducks/contributions";
+import DateRangeField from "../../../../components/Fields/DateRangeField";
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }

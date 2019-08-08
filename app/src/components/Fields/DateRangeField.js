@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes, { func } from 'prop-types';
+<<<<<<< HEAD
 import { makeStyles, AppBar, Tabs, Tab, Select, MenuItem } from '@material-ui/core';
+=======
+import { makeStyles, AppBar, Tabs, Tab, Select } from '@material-ui/core';
+>>>>>>> Created DateRange field and added to the contributions filter
 import DateField from "./DateField";
 import TimeField from "./TimeField";
 import Form from "../Form/Form";
@@ -12,6 +16,7 @@ import FormControl from "@material-ui/core/FormControl";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+<<<<<<< HEAD
 import { accents } from "../../assets/styles/variables";
 import TextFieldMaterial from "@material-ui/core/TextField/TextField";
 
@@ -101,16 +106,45 @@ export default function DateRangeField (props) {
             </div>}
         </FormControl>
     );
+=======
+
+
+export default function SimpleTabs(props) {
+    const { formik, label, id } = props;
+  const [selectValue, setSelectValue] = React.useState('Current Campaign');
+
+  function renderSelectValue () {
+      return selectValue;
+  }
+
+  return (
+      <>
+      <FormControl fullWidth>
+          <InputLabel htmlFor={id}>{label}</InputLabel>
+          <Select
+              value={selectValue}
+              renderValue={renderSelectValue}
+              displayEmpty={true}
+              autoWidth>
+              <Popover formik={formik} />
+          </Select>
+      </FormControl>
+          </>
+  );
+>>>>>>> Created DateRange field and added to the contributions filter
 }
 
 const popoverStyles = css`
   padding: 0;
   margin-top: -8px;
+<<<<<<< HEAD
   
   .MuiTabs-indicator {
     background-color: ${accents.purple};
   }
   
+=======
+>>>>>>> Created DateRange field and added to the contributions filter
   .tab-content {
     padding: 10px;
   }
@@ -120,6 +154,7 @@ const popoverStyles = css`
   }
 `;
 
+<<<<<<< HEAD
 function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
@@ -164,19 +199,37 @@ function Popover (props) {
     }
 
     function a11yProps (index) {
+=======
+function Popover(props) {
+    const {formik} = props;
+    const [tab, setTab] = React.useState(0);
+
+    function handleChange(event, newValue) {
+        setTab(newValue);
+    }
+
+    function a11yProps(index) {
+>>>>>>> Created DateRange field and added to the contributions filter
         return {
             id: `simple-tab-${index}`,
             'aria-controls': `simple-tabpanel-${index}`,
         };
     }
+<<<<<<< HEAD
 
     return (
         <div css={popoverStyles}>
             <Tabs value={tab} onChange={handleTabChange} aria-label="simple tabs example">
+=======
+    return (
+        <div css={popoverStyles}>
+            <Tabs value={tab} onChange={handleChange} aria-label="simple tabs example">
+>>>>>>> Created DateRange field and added to the contributions filter
                 <Tab label="From" {...a11yProps(0)} />
                 <Tab label="To" {...a11yProps(1)} />
             </Tabs>
             <div className={'tab-content'} hidden={tab !== 0}>
+<<<<<<< HEAD
                 <DateField
                     label={'Date'}
                     id={`from-date`}
@@ -205,8 +258,21 @@ function Popover (props) {
                     value={timeTo}
 
                 />
+=======
+                <DateField label={'Date'} formik={formik} id={`from-date`}/>
+                <div className={'spacer'}></div>
+                <TimeField label={'Time'} formik={formik} id={`form-time`}/>
+            </div>
+            <div className={'tab-content'} hidden={tab !== 1}>
+                <DateField label={'Date'} formik={formik} id={`to-date`}/>
+                <div className={'spacer'}></div>
+                <TimeField label={'Time'} formik={formik} id={`to-time`}/>
+>>>>>>> Created DateRange field and added to the contributions filter
             </div>
         </div>
     )
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Created DateRange field and added to the contributions filter

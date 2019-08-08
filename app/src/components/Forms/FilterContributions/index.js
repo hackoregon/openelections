@@ -20,15 +20,11 @@ const STATUS_OPTIONS = {
 
 const wtf = css`
   display: flex;
-<<<<<<< HEAD
   flex-direction: row;
   align-items: flex-end;
   > div {
     margin: 0 5px;  
   }
-=======
-  flex-direction: column;
->>>>>>> hook up api redux duck and do basic style tweek
 `;
 
 const FilterContribution = props => (
