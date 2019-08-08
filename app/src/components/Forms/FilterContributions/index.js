@@ -17,6 +17,11 @@ const STATUS_OPTIONS = {
   "Processed": "Processed"
 }
 
+const wtf = css`
+  display: flex;
+  flex-direction: column;
+`;
+
 const FilterContribution = props => (
   <>
     {console.log({ props })}
@@ -29,6 +34,7 @@ const FilterContribution = props => (
         }
         filterOptions.status !== "all" ? data.status = STATUS_OPTIONS[filterOptions.status] : data.status = null
         console.log(filterOptions, data)
+        props.getContributions(data);
       }}
       initialValues={{
         status: "All Statuses"
@@ -40,7 +46,9 @@ const FilterContribution = props => (
         handleSubmit /* isDirty, isSubmitting */
       }) => (
           <React.Fragment>
-            {formSections.filter}
+            <div className="nark" css={wtf}>
+              {formSections.filter}
+            </div>
             <div>
               <Button
                 buttonType="submit"
@@ -66,7 +74,7 @@ export default connect(
   }),
   dispatch => {
     return {
-      getContributions: () => dispatch(getContributions())
+      getContributions: (data) => dispatch(getContributions(data))
     };
   }
 )(FilterContribution);
