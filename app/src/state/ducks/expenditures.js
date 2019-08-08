@@ -4,7 +4,8 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
-
+import { createSelector } from "reselect";
+import { get } from "lodash";
 export const STATE_KEY = "expenditures";
 
 // Action Types
@@ -24,7 +25,6 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
-    console.log(action.payload);
     return { ...state, ...action.payload.expenditures };
   },
   [actionTypes.CREATE_EXPENDITURE.REQUEST]: (state, action) => {
@@ -132,7 +132,15 @@ export function getExpenditures(expenditureSearchAttrs) {
       const response = await api.getExpenditures(expenditureSearchAttrs);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.expenditure);
-        dispatch(addEntities(data.entities));
+       
+        //TODO Remove these lines when 'undefined' is removed from fetched data
+        const dataFix = {};
+        dataFix.expenditures = data.entities.expenditures.undefined;
+        dispatch(addEntities(dataFix));
+        
+        //TODO Unremark next line when 'undefined' is removed from fetched data
+        // dispatch(addEntities(data.entities));
+
         dispatch(actionCreators.getExpenditures.success());
       } else {
         dispatch(actionCreators.getExpenditures.failure());
@@ -160,3 +168,12 @@ export function getExpenditureById(id) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getExpendituresList = createSelector(
+  rootState,
+  state => Object.values(state.expenditures)
+  .filter(withId => !!get(withId, "id"))
+);

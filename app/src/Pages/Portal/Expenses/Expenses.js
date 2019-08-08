@@ -6,13 +6,13 @@ import ExpensesTable from "./ExpensesTable/ExpensesTable";
 
 // Switch statement for routing
 
-const ExpensePage = props => {
+const Expense = props => {
   return (
     <PageHoc>
       {/* <AddExpense /> */}
       {/* <ExpensesDetail /> */}
-      <ExpensesTable />
+      <ExpensesTable  {...props} />
     </PageHoc>
   );
 };
-export default ExpensePage;
+export default Expense;

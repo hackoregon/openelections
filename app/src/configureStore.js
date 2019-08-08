@@ -18,6 +18,7 @@ import governments, {
 import permissions, {
     STATE_KEY as PERMISSIONS_STATE_KEY 
 } from './state/ducks/permissions';
+import expenditures, {STATE_KEY as EXPENDITURES_STATE_KEY } from './state/ducks/expenditures';
 import users, { STATE_KEY as USERS_STATE_KEY } from "./state/ducks/users";
 import modal, { STATE_KEY as MODAL_STATE_KEY } from "./state/ducks/modal";
 import * as api from "./api";
@@ -44,7 +45,8 @@ export default function configureStore(history) {
       [GOVERNMENTS_STATE_KEY]: governments,
       [PERMISSIONS_STATE_KEY]: permissions,
       [USERS_STATE_KEY]: users,
-      [MODAL_STATE_KEY]: modal
+      [MODAL_STATE_KEY]: modal,
+      [EXPENDITURES_STATE_KEY]: expenditures
     }),
     composeEnhancers(
       applyMiddleware(

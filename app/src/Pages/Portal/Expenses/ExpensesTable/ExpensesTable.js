@@ -1,13 +1,8 @@
 import React from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
-import { connect } from "react-redux";
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
-import { getExpenditures } from "../../../../state/ducks/expenditures";
-
-const columnInfo = (title, field, type = undefined) =>
-	type ? { title, field, type } : { title, field }
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 	isFreeAction ? { icon: "none", name, buttonType, onClick, isFreeAction } : { icon: "none", name, buttonType, onClick }
@@ -28,18 +23,15 @@ const columns = [
 	{
 		field: 'name',
 		title: 'Name',
-
 	},
 	{
 		field: 'amount',
 		title: 'Amount',
 		type: 'currency'
-
 	},
 	{
-		field: 'payment',
+		field: 'type',
 		title: 'Payment',
-
 	},
 ]
 
@@ -60,7 +52,7 @@ const ExpensesTable = ({ ...props }) => {
 		actionInfo("View", "primary", (event, rowData) => {
 			props.history.push(`/contributions/ready/${rowData.id}`)
 		}),
-		actionInfo("Add New Contribution", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
+		actionInfo("Add New Expense", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
 	]
 	const components = {
 		Action: props => (
@@ -76,7 +68,7 @@ const ExpensesTable = ({ ...props }) => {
 	}
 	return (
 		<PageHoc>
-			<h1>Contributions</h1>
+			<h1>Expenses</h1>
 			<Table
 				isLoading={isLoading}
 				title={title}
@@ -84,16 +76,10 @@ const ExpensesTable = ({ ...props }) => {
 				options={options}
 				actions={actions}
 				components={components}
-				data={isLoading ? [{}] : props.contributionList}
+				data={isLoading ? [{}] : props.expendituresList}
 			/>
 		</PageHoc>
 	)
 }
 
-export default connect(
-	state => ({
-	isListLoading: state.campaigns.isLoading,
-	expendituresList: getExpenditures(state)
-})
-
-)(ExpensesTable);
+export default ExpensesTable;

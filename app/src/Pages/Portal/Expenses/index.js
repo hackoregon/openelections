@@ -1,13 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import Expenses from './Expenses';
-import { getExpenditures } from "../../../state/ducks/expenditures";
+import { getExpenditures, getExpendituresList } from "../../../state/ducks/expenditures";
 
 class ExpensesPage extends React.Component {
   componentDidMount() {
-    // TODO: API requires government and campaign ID, is that available to campaign users?
-    this.props.getExpenditures({ governmentId: 1 })
-    console.log('hshshshsh');
+      //fetch data only if it's not in redux
+      //refetch on success of adding and removing records 
+      if(this.props.expendituresList.length < 1){
+        this.props.getExpenditures({ governmentId: 1 })
+    }
   }
 
   render() {
@@ -15,6 +17,9 @@ class ExpensesPage extends React.Component {
   }
 }
 export default connect(
-  state => ({}),
+    state => ({
+        isListLoading: state.expenditures.isLoading,
+        expendituresList: getExpendituresList(state)
+    }),
   dispatch => ({ getExpenditures: (data) => dispatch(getExpenditures(data))})
 )(ExpensesPage);
