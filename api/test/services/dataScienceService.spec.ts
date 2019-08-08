@@ -1,25 +1,45 @@
 import { expect } from 'chai';
-import { dataScienceUrl } from '../../services/dataScienceService';
+import { dataScienceUrl, retrieveResultAsync } from '../../services/dataScienceService';
+import { seedAddresses } from '../../models/seeds/seeds';
 
 describe('dataScienceService', () => {
+    before(async () => {
+        await seedAddresses();
+    });
     context('dataScienceUrl', () => {
         it('test', () => {
-            expect(dataScienceUrl()).to.equal('http://data');
+            expect(dataScienceUrl()).to.equal('http://datatest/match');
         });
         it('production', () => {
             process.env.APP_ENV = 'production';
-            expect(dataScienceUrl()).to.equal('http://openelections-data.local');
+            expect(dataScienceUrl()).to.equal('http://openelections-data.local/match');
             process.env.APP_ENV = 'test';
         });
         it('staging', () => {
             process.env.APP_ENV = 'staging';
-            expect(dataScienceUrl()).to.equal('http://openelections-data-staging.local');
+            expect(dataScienceUrl()).to.equal('http://openelections-data-staging.local/match');
+            process.env.APP_ENV = 'test';
+        });
+
+        it('development', () => {
+            process.env.APP_ENV = 'development';
+            expect(dataScienceUrl()).to.equal('http://data/match');
             process.env.APP_ENV = 'test';
         });
     });
 
     context('retrieveResultAsync', () => {
         it('exact match', async () => {
+            const result = await retrieveResultAsync({
+                last_name: 'daniel',
+                first_name: 'debbie',
+                addr1: '1024 SE Morrison',
+                zip_code: '97214',
+                city: 'Portland',
+                state: 'OR'
+            });
+            console.log(JSON.stringify(result));
+            expect(result).to.equal('');
 // exact matches
 // curl http://data/match -d "last_name=daniel&first_name=debbie&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR"
 // {
