@@ -50,9 +50,9 @@ const ExpensesTable = ({ ...props }) => {
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
-			props.history.push(`/contributions/ready/${rowData.id}`)
+			props.history.push(`/expenses/${rowData.id}`)
 		}),
-		actionInfo("Add New Expense", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
+		actionInfo("Add New Expense", "primary", () => props.history.push({ pathname: "/expenses/new" }), true)
 	]
 	const components = {
 		Action: props => (
