@@ -1,6 +1,12 @@
 import { getConnection } from 'typeorm';
 import { createUserAsync } from '../../services/userService';
-import { newCampaignAsync, newGovernmentAsync, truncateAll, newContributionAsync } from '../../test/factories';
+import {
+    newCampaignAsync,
+    newGovernmentAsync,
+    truncateAll,
+    newContributionAsync,
+    newExpenditureAsync
+} from '../../test/factories';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../entity/Permission';
 import { User, UserStatus } from '../../models/entity/User';
@@ -128,6 +134,7 @@ export default async () => {
     const promises = [];
     for (let i = 0; i < 101; i++) {
         promises.push(newContributionAsync(campaign, government));
+        promises.push(newExpenditureAsync(campaign, government));
     }
 
     console.log('Adding address data');

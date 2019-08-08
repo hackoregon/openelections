@@ -431,6 +431,18 @@ export function getGovernmentActivities(governmentId) {
   );
 }
 
+export function getContributionActivities(contributionId) {
+  return post(`${baseUrl()}/activities`, { contributionId }).then(response =>
+    response.json()
+  );
+}
+
+export function getExpenditureActivities(expenditureId) {
+  return post(`${baseUrl()}/activities`, { expenditureId }).then(response =>
+    response.json()
+  );
+}
+
 //   path: '/campaigns',
 //   method: 'post',
 export function getCampaignsForGovernment(governmentId) {
@@ -466,6 +478,12 @@ export function getContributions(contributionSearchAttrs) {
   return post(`${baseUrl()}/contributions`, contributionSearchAttrs);
 }
 
+//   path: '/contributions/:id/comments',
+//   method: 'post',
+export function postContributionComment(contributionId, comment) {
+  return post(`${baseUrl()}/contributions/${contributionId}/comments`, {comment});
+}
+
 //   path: '/contributions/{id}',
 //   method: 'post',
 export function getContributionById(id) {
@@ -484,10 +502,22 @@ export function createExpenditure(expenditureAttrs) {
   return post(`${baseUrl()}/expenditures/new`, expenditureAttrs);
 }
 
+//   path: '/expenditures/:id/comments',
+//   method: 'post',
+export function postExpenditureComment(expenditureId, comment) {
+  return post(`${baseUrl()}/expenditures/${expenditureId}/comments`, {comment});
+}
+
 //   path: '/expenditures',
 //   method: 'post',
 export function getExpenditures(expenditureSearchAttrs) {
   return post(`${baseUrl()}/expenditures`, expenditureSearchAttrs);
+}
+
+//   path: '/expenditures/:id',
+//   method: 'get',
+export function getExpenditureById(id) {
+  return get(`${baseUrl()}/expenditures/${id}`);
 }
 
 // path: '/expenditures/:id'

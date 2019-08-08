@@ -54,6 +54,7 @@ export enum ExpenditureStatus {
     IN_COMPLIANCE = 'in_compliance'
 }
 
+
 @Entity({ name: 'expenditures' })
 export class Expenditure {
     @PrimaryGeneratedColumn()
@@ -258,13 +259,33 @@ export class Expenditure {
     }
 
     toJSON() {
-        return {
-            id: this.id
-        };
+        const json: any = {};
+        expenditureSummaryFields.forEach(( (key: string): void => {
+            json[key] = this[key];
+        }));
+        return json as IExpenditureSummary;
     }
 }
 
-const expenditureSummaryFields = <const>['id', 'amount'];
+export const expenditureSummaryFields = <const>[
+    'id',
+    'amount',
+    'createdAt',
+    'updatedAt',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state',
+    'zip',
+    'type',
+    'subType',
+    'payeeType',
+    'checkNumber',
+    'description',
+    'status',
+    'date'
+];
 export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFields[number]>;
 
 export async function getExpendituresByGovernmentIdAsync(

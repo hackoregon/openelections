@@ -1,6 +1,7 @@
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as contributions from "./contributions";
+import * as activities from "./activities";
 import * as api from "../../api";
 import * as schema from "../../api/schema";
 import {
@@ -304,4 +305,54 @@ describe("Side Effects", () => {
         expect(actions[2].type).toEqual(expectedActions[2].type);
       });
   });
+
+  it("post comments", async () => {
+    const expectedActions = [
+      { type: actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST },
+      { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },
+      { type: ADD_ENTITIES },
+      { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS },
+      { type: actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS }
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = campaignAdminToken;
+
+    const contribution = await api.createContribution({
+      address1: "123 ABC ST",
+      amount: 250,
+      campaignId: campaignId,
+      city: "Portland",
+      currentUserId: campaignAdminId,
+      date: 1562436237619,
+      firstName: "John",
+      middleInitial: "",
+      lastName: "Doe",
+      governmentId: governmentId,
+      type: ContributionTypeEnum.CONTRIBUTION,
+      subType: ContributionSubTypeEnum.CASH,
+      state: "OR",
+      status: ContributionStatusEnum.DRAFT,
+      zip: "97214",
+      contributorType: ContributorTypeEnum.INDIVIDUAL
+    });
+    const { id } = await contribution.json();
+
+    return store
+      .dispatch(
+        contributions.postContributionComment(id, 'This is a comment')
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions.length).toEqual(5);
+
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+        expect(actions[3].type).toEqual(expectedActions[3].type);
+        expect(actions[4].type).toEqual(expectedActions[4].type);
+      });
+  });
+
+
 });

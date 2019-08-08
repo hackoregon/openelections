@@ -5,10 +5,9 @@ import {
     getContributionsAsync,
     IAddContributionAttrs,
     addContributionAsync,
-    IGetContributionByIdAttrs,
-    getContributionByIdAsync, archiveContributionAsync
+    getContributionByIdAsync, archiveContributionAsync, createContributionCommentAsync
 } from '../services/contributionService';
-import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean, IsBooleanString } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { checkDto } from './helpers';
@@ -332,3 +331,30 @@ export async function archiveContribution(request: IRequest, response: Response,
     }
 }
 
+export class ContributionCommentDto {
+
+    currentUserId: number;
+
+    @IsNumber()
+    contributionId: number;
+
+    @IsString()
+    comment: string;
+
+}
+
+export async function createContributionComment(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const contributionCommentDto = Object.assign(new ContributionCommentDto(), {
+            contributionId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id,
+            comment: request.body.comment
+        });
+        await checkDto(contributionCommentDto);
+        const comment = await createContributionCommentAsync(contributionCommentDto);
+        return response.status(204).json(comment);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}

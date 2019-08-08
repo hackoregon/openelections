@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
-    archiveContributionAsync,
+    archiveContributionAsync, createContributionCommentAsync,
     getContributionByIdAsync,
     getContributionsAsync,
     IAddContributionAttrs,
@@ -24,7 +24,7 @@ import {
     newGovernmentAsync,
     truncateAll
 } from '../factories';
-import { getAllActivityRecordsforGovernmentOrCampaignAsync } from '../../services/activityService';
+import { getActivityByContributionAsync } from '../../models/entity/Activity';
 
 let campaignAdmin;
 let campaignStaff;
@@ -126,11 +126,7 @@ describe('contributionService', () => {
         };
 
         const contribution = await addContributionAsync(indvidualContribution);
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
 
         expect(await contributionRepository.count()).equal(1);
         expect(activity).to.have.length(1);
@@ -665,11 +661,7 @@ describe('contributionService', () => {
             zip: '98101'
         });
         contribution = await contributionRepository.findOne(contribution.id);
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 10, 0);
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
         expect(activity).to.have.length(1);
@@ -780,11 +772,7 @@ describe('contributionService', () => {
         const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
 
-        const activity = await getAllActivityRecordsforGovernmentOrCampaignAsync({
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            campaignId: campaign2.id
-        });
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
         expect(activity).to.have.length(1);
         expect(activity[0].notes).to.include(`archived contribution ${contribution.id}.`);
     });
@@ -817,5 +805,54 @@ describe('contributionService', () => {
         }
         const notUpdated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(notUpdated.status).to.equal(ContributionStatus.SUBMITTED);
+    });
+
+    it('createContributionCommentAsync fails no user permission', async () => {
+        const contribution = await newContributionAsync(campaign2, government);
+        let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        expect(activities.length).to.equal(0);
+        const user = await newActiveUserAsync();
+        try {
+            await createContributionCommentAsync({
+                contributionId: contribution.id,
+                currentUserId: user.id,
+                comment: 'This is a comment'
+            });
+        } catch (e) {
+            expect(e.message).to.equal('User does not have permissions');
+        }
+        activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        expect(activities.length).to.equal(0);
+    });
+
+    it('createContributionCommentAsync fails cant find conrtibution', async () => {
+        let activities = await getActivityByContributionAsync(1000, 100, 0);
+        expect(activities.length).to.equal(0);
+        const user = await newActiveUserAsync();
+        try {
+            await createContributionCommentAsync({
+                contributionId: 1000,
+                currentUserId: user.id,
+                comment: 'This is a comment'
+            });
+        } catch (e) {
+            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 1000');
+        }
+        activities = await getActivityByContributionAsync(1000, 100, 0);
+        expect(activities.length).to.equal(0);
+    });
+
+
+    it('getActivityByContributionAsync success', async () => {
+        const contribution = await newContributionAsync(campaign1, government);
+        let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        expect(activities.length).to.equal(0);
+        await createContributionCommentAsync({
+            contributionId: contribution.id,
+            currentUserId: campaignAdmin.id,
+            comment: 'This is a comment'
+        });
+        activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        expect(activities.length).to.equal(1);
     });
 });

@@ -1,14 +1,22 @@
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
-import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../factories';
+import {
+    newActiveUserAsync,
+    newCampaignAsync,
+    newContributionAsync, newExpenditureAsync,
+    newGovernmentAsync,
+    truncateAll
+} from '../factories';
 import {
     Activity,
     ActivityTypeEnum,
-    getActivityByCampaignAsync,
-    getActivityByGovernmentAsync
+    getActivityByCampaignAsync, getActivityByContributionAsync, getActivityByExpenditureAsync,
+    getActivityByGovernmentAsync, getActivityByUserAsync
 } from '../../models/entity/Activity';
 import { Government } from '../../models/entity/Government';
 import { createActivityRecordAsync } from '../../services/activityService';
+import { addPermissionAsync } from '../../services/permissionService';
+import { UserRole } from '../../models/entity/Permission';
 
 let activityRepository: any;
 let government: Government;
@@ -98,7 +106,7 @@ describe('Activity', () => {
         expect(records3[0].id).to.equal(activity1.id);
     });
 
-    it('getActivityByCampaignAsync testme', async () => {
+    it('getActivityByCampaignAsync', async () => {
         const user = await newActiveUserAsync();
         const campaign = await newCampaignAsync();
         const campaign2 = await newCampaignAsync();
@@ -139,5 +147,77 @@ describe('Activity', () => {
         expect(records2[0].id).to.equal(activity2.id);
         expect(records3.length).to.equal(1);
         expect(records3[0].id).to.equal(activity1.id);
+    });
+
+    it('getActivityByUser', async () => {
+        const user = await newActiveUserAsync();
+        const govUser = await newActiveUserAsync();
+        const gov = await newGovernmentAsync();
+        const campaign = await newCampaignAsync(gov);
+        await addPermissionAsync({userId: govUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: gov.id});
+        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        await createActivityRecordAsync({
+            currentUser: user,
+            notes: `${govUser.name()} added ${user.name()} to ${gov.name} as a ${UserRole.CAMPAIGN_ADMIN}`,
+            government: gov,
+            campaign,
+            activityType: ActivityTypeEnum.PERMISSION,
+            activityId: permission.id
+        });
+        const activities = await getActivityByUserAsync(user.id, 100, 0);
+        expect(activities.length).to.equal(1);
+    });
+
+    it('getActivityByContributionAsync', async () => {
+        const gov = await newGovernmentAsync();
+        const campaign = await newCampaignAsync(gov);
+        const contr = await newContributionAsync(campaign, gov);
+        const user = await newActiveUserAsync();
+        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        await createActivityRecordAsync({
+            currentUser: user,
+            notes: `${user.name()} added a new contribution (${contr.id})`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.CONTRIBUTION,
+            activityId: contr.id
+        });
+
+        await createActivityRecordAsync({
+            currentUser: user,
+            notes: `Note from ${user.name()}: There is a problem with this contribution, please resubmit.`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.COMMENT_CONTR,
+            activityId: contr.id
+        });
+        const activities = await getActivityByContributionAsync(contr.id, 100, 0);
+        expect(activities.length).to.equal(2);
+    });
+
+    it('getActivityByExpenditureAsync testme', async () => {
+        const gov = await newGovernmentAsync();
+        const campaign = await newCampaignAsync(gov);
+        const exp = await newExpenditureAsync(campaign, gov);
+        const user = await newActiveUserAsync();
+        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        await createActivityRecordAsync({
+            currentUser: user,
+            notes: `${user.name()} added a new expenditure (${exp.id})`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.EXPENDITURE,
+            activityId: exp.id
+        });
+        await createActivityRecordAsync({
+            currentUser: user,
+            notes: `Note from ${user.name()}: There is a problem with this expenditure (${exp.id})`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.COMMENT_EXP,
+            activityId: exp.id
+        });
+        const activities = await getActivityByExpenditureAsync(exp.id, 100, 0);
+        expect(activities.length).to.equal(2);
     });
 });
