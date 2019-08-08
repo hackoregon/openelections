@@ -25,6 +25,9 @@ const onSubmit = (data) => {
 // - linkToDocumentation
 // - notes
 const mapDataToForm = (contribution) => {
+  for (const [key, value] of Object.entries(contribution)) {
+    if(value===null){contribution[key]="" }
+  }
   const {
     date,
     // createdAt,
@@ -52,7 +55,7 @@ const mapDataToForm = (contribution) => {
   } = contribution
   return {
     // BASICS VALUES
-    dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
+    dateOfContribution: date ? format(new Date(date), "yyyy-MM-dd"): 0,
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
@@ -86,6 +89,8 @@ const mapDataToForm = (contribution) => {
 }
 
 const ContributionReady = ({ contribution }) => (
+<>
+  {contribution.date ?  
   <ContributionReadyForm
     onSubmit={onSubmit}
     initialValues={mapDataToForm(contribution)}
@@ -99,6 +104,8 @@ const ContributionReady = ({ contribution }) => (
       </>
     )}
   </ContributionReadyForm>
+: <div>Contribution not found</div>  }
+</>
 );
 export default connect(
   state => ({

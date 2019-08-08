@@ -1,6 +1,5 @@
 import * as express from 'express';
 import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -15,8 +14,6 @@ import { Government } from '../../../models/entity/Government';
 import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
-import { IUpdateExpenditureAttrs } from '../../../services/expenditureService';
-import { ExpenditureType, ExpenditureSubType, ExpenditureStatus, PayeeType } from '../../../models/entity/Expenditure';
 import { Expenditure } from '../../../models/entity/Expenditure';
 
 let app: express.Express;

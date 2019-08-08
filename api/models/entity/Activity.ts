@@ -9,11 +9,10 @@ import {
     getConnection,
     OneToMany
 } from 'typeorm';
-import { Government, IGovernmentSummary } from './Government';
-import { Campaign, ICampaignSummary } from './Campaign';
-import { IUserSummary, User } from './User';
+import { Government } from './Government';
+import { Campaign } from './Campaign';
+import { User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
-import { IUserPermission, IUserPermissionResult } from './Permission';
 import { Contribution } from './Contribution';
 import { Expenditure } from './Expenditure';
 
@@ -23,7 +22,10 @@ export enum ActivityTypeEnum {
     CAMPAIGN = 'campaign',
     GOVERNMENT = 'government',
     INVITATION_EMAIL = 'invitation email',
-    CONTRIBUTION = 'contribution'
+    CONTRIBUTION = 'contribution',
+    EXPENDITURE = 'expenditure',
+    COMMENT_CONTR = 'commentcontr',
+    COMMENT_EXP = 'commentexp',
 }
 
 @Entity()
@@ -132,4 +134,39 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
         .limit(perPage)
         .offset(perPage * page)
         .getRawMany()) as IActivityResult[];
+}
+
+export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .andWhere('"activity"."userId" = :userId', {userId})
+        .orderBy('"activity"."createdAt"', 'DESC')
+        .limit(perPage)
+        .offset(perPage * page)
+        .getRawMany() as IActivityResult[];
+}
+
+export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .andWhere('"activity"."activityId" = :contributionId', {contributionId})
+        .andWhere('"activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
+        .orderBy('"activity"."createdAt"', 'DESC')
+        .limit(perPage)
+        .offset(perPage * page)
+        .getRawMany() as IActivityResult[];
+}
+
+export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
+        .andWhere('"activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
+        .orderBy('"activity"."createdAt"', 'DESC')
+        .limit(perPage)
+        .offset(perPage * page)
+        .getRawMany() as IActivityResult[];
 }
