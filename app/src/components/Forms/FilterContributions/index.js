@@ -19,7 +19,7 @@ const STATUS_OPTIONS = {
 
 const wtf = css`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 `;
 
 const FilterContribution = props => (
@@ -31,7 +31,7 @@ const FilterContribution = props => (
           governmentId: props.govId,
           currentUserId: props.userId,
           campaignId: props.campaignId
-        }
+        };
         filterOptions.status !== "all" ? data.status = STATUS_OPTIONS[filterOptions.status] : data.status = null
         console.log(filterOptions, data)
         props.getContributions(data);

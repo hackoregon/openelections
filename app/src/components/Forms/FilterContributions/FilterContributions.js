@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
+import DateRangeField from "../../Fields/DateRangeField";
 
 const fields = {
   status: {
@@ -14,7 +15,15 @@ const fields = {
     },
     component: SelectField,
     validation: Yup.string("Choose a status").required("A status is required to filter")
-  }
+  },
+  range: {
+    label: "Date Range",
+    section: "filter",
+    options: {
+    },
+    component: DateRangeField,
+    validation: Yup.string("Choose a status").required("A status is required to filter")
+  },
 };
 
 const FilterContributionForm = ({ initialValues, onSubmit, children }) => (
