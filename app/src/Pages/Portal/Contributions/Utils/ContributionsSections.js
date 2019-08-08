@@ -176,7 +176,7 @@ const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
 const currentStatus = "Draft";
 const labelsCount = 0;
 
-const InvoiceNumberBlock = () => (
+const InvoiceNumberBlock = ({ campaignName, lastEdited }) => (
   <>
     <p css={headerStyles.invoice}>{invoiceNumber}</p>
     <p css={headerStyles.subheading}>
@@ -185,23 +185,26 @@ const InvoiceNumberBlock = () => (
   </>
 );
 
-const StatusBlock = () => (
+const StatusBlock = ({ status }) => (
   <div css={headerStyles.statusBlock}>
     <p css={headerStyles.status}>Current Status</p>
-    <p css={headerStyles.actualStatus}>{currentStatus}</p>
+    <p css={headerStyles.actualStatus}>{status}</p>
   </div>
 );
 
-const LabelBlock = () => (
+const LabelBlock = ({labelsCount}) => (
   <div css={headerStyles.labelBlock}>
     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
     <p css={headerStyles.smallBlueText}>+ Add Labels</p>
   </div>
 );
 
-// TODO: need more handleSubmit functions.
-export const ReadyHeaderSection = ({ 
-  isValid, 
+export const ReadyHeaderSection = ({
+  campaignName,
+  lastEdited,
+  status,
+  labelsCount,
+  isValid,
   handleSubmit,
   handleTrash,
   handleDraft
@@ -210,14 +213,17 @@ export const ReadyHeaderSection = ({
     <>
       <div css={containers.header}>
         <div css={headerStyles.leftColumn}>
-          <InvoiceNumberBlock />
+          <InvoiceNumberBlock 
+            campaignName={campaignName}
+            lastEdited={lastEdited}
+          />
           <div style={{ display: "flex" }}>
-            <LabelBlock />
-            <StatusBlock />
+            <LabelBlock labelsCount={labelsCount} />
+            <StatusBlock status={status} />
           </div>
         </div>
         <div css={headerStyles.rightColumn}>
-          <div style={{ display: "flex", height: "50px", width: "750px" }}>
+          <div style={{ display: "flex", height: "50px", width: "600px" }}>
             <Button
               style={headerStyles.trashButton}
               onClick={handleTrash}

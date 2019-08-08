@@ -3,9 +3,9 @@ import ContributionReadyForm from "./ContributionReadyForm";
 import { connect } from "react-redux";
 import { ReadyHeaderSection, BasicsSection, ContributorSection, OtherDetailsSection } from "../../../Pages/Portal/Contributions/Utils/ContributionsSections";
 import {
-    mapContributionDataToForm,
-    mapContributionFormToData,
-    ContributionStatusEnum
+  mapContributionDataToForm,
+  mapContributionFormToData,
+  ContributionStatusEnum
 } from '../../../api/api';
 import { updateContribution, archiveContribution } from "../../../state/ducks/contributions";
 import { flashMessage } from "redux-flash";
@@ -20,13 +20,13 @@ class ContributionReady extends React.Component {
       .then(data => data != null ? showErrorMessage(data) : showSuccessMessage())
       .catch(error => showErrorMessage(error))
   }
-  
+
   onSubmit = (id, data) => {
     const { updateContribution } = this
-    const payload = { 
-      id, 
-      status:  ContributionStatusEnum.SUBMITTED,
-      ...mapContributionFormToData(data) 
+    const payload = {
+      id,
+      status: ContributionStatusEnum.SUBMITTED,
+      ...mapContributionFormToData(data)
     }
     updateContribution(payload)
   }
@@ -43,7 +43,6 @@ class ContributionReady extends React.Component {
     archiveContribution(id).then(() => history.push('/contributions'))
   }
 
-
   render() {
     const { contribution, contributionId } = this.props
     const { onSubmit, onDraft, onTrash } = this
@@ -55,6 +54,8 @@ class ContributionReady extends React.Component {
         {({ formFields, isValid, handleSubmit, values }) => (
           <>
             <ReadyHeaderSection
+              campaignName={"FakeName"}
+              lastEdited={values.updatedAt}
               isValid={isValid}
               handleSubmit={handleSubmit}
               handleDraft={() => onDraft(contributionId, values)}
