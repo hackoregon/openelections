@@ -7,7 +7,9 @@ import MaterialButton from "@material-ui/core/Button";
 // To add a custom button style, you can create a new buttonType and style. Emotion was not overriding material :(
 const manageStyle = {
   border: "1px solid #5F5FFF",
-  color: "#5F5FFF"
+  color: "#5F5FFF",
+  borderRadius: "5px",
+  padding: "6px 16px"
 };
 
 const formDefaultStyle = {
@@ -18,15 +20,18 @@ const formDefaultStyle = {
   fontStyle: "normal",
   fontWeight: "normal",
   fontSize: "16px",
-  lineHeight: "19px"
+  lineHeight: "19px",
+  borderRadius: "5px",
+  padding: "6px 16px"
 }
 
 const formDefaultOutlinedStyle = {
   border: "1px solid #5F5FFF",
   color: "#5F5FFF",
   padding: "10px 20px",
-  textTransform: "none"
-
+  textTransform: "none",
+  borderRadius: "5px",
+  padding: "6px 16px"
 };
 
 const primaryOverrides = {
@@ -38,7 +43,9 @@ const primaryOverrides = {
   fontWeight: "normal",
   fontSize: "16px",
   lineHeight: "19px",
-  padding: "10px 20px !important"
+  padding: "10px 20px !important",
+  borderRadius: "5px",
+  padding: "6px 16px"
 };
 
 const remove = {
@@ -49,12 +56,16 @@ const remove = {
   fontStyle: "normal",
   fontWeight: "normal",
   fontSize: "16px",
-  lineHeight: "19px"
+  lineHeight: "19px",
+  borderRadius: "5px",
+  padding: "6px 16px"
 };
 
 const greenStyle = {
   backgroundColor: "#42B44A",
-  color: "#fff"
+  color: "#fff",
+  borderRadius: "5px",
+  padding: "6px 16px"
 };
 
 const buttonTypes = {
