@@ -320,3 +320,9 @@ export const isCampAdmin = state => {
 export const isCampStaff = state => {
   return getMeRole(state, "campaign_staff");
 }
+export const getGovOrCampIdAttributes = state => {
+  if(state.auth.me){
+    const { governmentId = 1 , campaignId } = state.auth.me.permissions[0]
+    return {governmentId, campaignId };
+  }
+}

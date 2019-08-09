@@ -4,7 +4,8 @@ import createReducer from "../utils/createReducer";
 import createActionTypes from "../utils/createActionTypes";
 import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
-
+import { createSelector } from "reselect";
+import { get } from "lodash";
 export const STATE_KEY = "expenditures";
 
 // Action Types
@@ -130,7 +131,7 @@ export function getExpenditures(expenditureSearchAttrs) {
     try {
       const response = await api.getExpenditures(expenditureSearchAttrs);
       if (response.status === 200) {
-        const data = normalize(await response.json(), schema.expenditure);
+        const data = normalize(await response.json(), [schema.expenditure]);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getExpenditures.success());
       } else {
@@ -159,3 +160,12 @@ export function getExpenditureById(id) {
     }
   };
 }
+
+// Selectors
+export const rootState = state => state || {};
+
+export const getExpendituresList = createSelector(
+  rootState,
+  state => Object.values(state.expenditures)
+  .filter(withId => !!get(withId, "id"))
+);
