@@ -7,6 +7,7 @@ import { getContributions } from "../../../state/ducks/contributions";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
+import { isLoggedIn } from "../../../state/ducks/auth";
 
 
 const STATUS_OPTIONS = {
@@ -70,7 +71,7 @@ export default connect(
     orgId: state.campaigns.currentCampaignId || state.governments.currentGovernmentId,
     campaignId: state.campaigns.currentCampaignId,
     govId: state.governments.currentGovernmentId || 1,
-    userId: state.auth.me.id
+    userId: isLoggedIn(state) ? state.auth.me.id: null
   }),
   dispatch => {
     return {

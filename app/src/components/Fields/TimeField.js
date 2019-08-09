@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import TextFieldMaterial from "@material-ui/core/TextField";
 
-const DateField = ({ id, label, formik }) => (
+const TimeField = (props) => {
+    const { id, label, formik } = props;
+  return (
   <TextFieldMaterial
     id={id}
     name={id}
@@ -16,13 +18,14 @@ const DateField = ({ id, label, formik }) => (
     autoComplete="on"
     fullWidth
     InputLabelProps={{ shrink: true }}
+    {...props}
   />
-);
+)};
 
-DateField.propTypes = {
+TimeField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
   formik: PropTypes.shape({})
 };
 
-export default DateField;
+export default TimeField;
