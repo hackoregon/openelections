@@ -4,7 +4,11 @@ import TextFieldMaterial from "@material-ui/core/TextField";
 import TextField from "../TextField/TextField";
 
 const DateField = (props) => {
+<<<<<<< HEAD
   const { id, label, formik, isRequired } = props;
+=======
+  const { id, label, formik } = props;
+>>>>>>> WIP: DateRangeField
 
   return (
   <TextFieldMaterial
