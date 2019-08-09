@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 import React from "react";
 import PropTypes from "prop-types";
 import MaterialButton from "@material-ui/core/Button";
@@ -67,12 +69,13 @@ const buttonTypes = {
   green: { type: "button", variant: "contained", style: greenStyle}
 };
 
-const Button = ({ buttonType, onClick, disabled, children }) => {
+const Button = ({ buttonType, onClick, disabled, style, children }) => {
   const typeOrDefault = Object.keys(buttonTypes).includes(buttonType)
     ? buttonType
     : "default";
   return (
     <MaterialButton
+      css={style}
       onClick={onClick}
       disabled={disabled}
       {...buttonTypes[typeOrDefault]}
@@ -85,7 +88,8 @@ const Button = ({ buttonType, onClick, disabled, children }) => {
 Button.propTypes = {
   buttonType: PropTypes.string,
   onClick: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  style: PropTypes.object
 };
 
 export default Button;
