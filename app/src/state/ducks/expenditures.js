@@ -131,16 +131,8 @@ export function getExpenditures(expenditureSearchAttrs) {
     try {
       const response = await api.getExpenditures(expenditureSearchAttrs);
       if (response.status === 200) {
-        const data = normalize(await response.json(), schema.expenditure);
-       
-        //TODO Remove these lines when 'undefined' is removed from fetched data
-        const dataFix = {};
-        dataFix.expenditures = data.entities.expenditures.undefined;
-        dispatch(addEntities(dataFix));
-        
-        //TODO Unremark next line when 'undefined' is removed from fetched data
-        // dispatch(addEntities(data.entities));
-
+        const data = normalize(await response.json(), [schema.expenditure]);
+        dispatch(addEntities(data.entities));
         dispatch(actionCreators.getExpenditures.success());
       } else {
         dispatch(actionCreators.getExpenditures.failure());
