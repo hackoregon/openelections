@@ -47,7 +47,7 @@ const ContributionsTable = ({ ...props }) => {
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
-			props.history.push(`/contributions/ready/${rowData.id}`)
+			props.history.push(`/contributions/${rowData.id}`)
 		}),
 		actionInfo("Add New Contribution", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
 	]
