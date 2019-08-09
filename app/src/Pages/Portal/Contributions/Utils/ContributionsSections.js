@@ -256,22 +256,16 @@ export const ReadyHeaderSection = ({
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
     <div css={containers.header}>
-      <div css={headerStyles.leftColumn}>
-        <InvoiceNumberBlock />
-        <div style={{ display: "flex" }}>
-          <LabelBlock />
-        </div>
-      </div>
+      <div css={headerStyles.leftColumn}></div>
       <div css={headerStyles.rightColumn}>
         <div style={{ flexDirection: "column" }}>
-          <StatusBlock />
           <Button
             css={headerStyles.submitButton}
             buttonType="submit"
             disabled={!isValid}
             onClick={handleSubmit}
           >
-            Submit Contribution
+            Save as Draft
         </Button>
         </div>
       </div>
