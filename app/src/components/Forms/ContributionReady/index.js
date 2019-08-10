@@ -50,7 +50,6 @@ class ContributionReady extends React.Component {
     const { contributions, contributionId } = this.props
     const { onSubmit, onDraft, onTrash } = this
     const contribution = contributions[contributionId]
-    console.log(contribution)
     return (
       <ContributionReadyForm
         onSubmit={data => onSubmit(contributionId, data)}

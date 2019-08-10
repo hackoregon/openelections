@@ -52,10 +52,10 @@ export const contributionsEmptyState = {
   typeOfContribution: "",
   subTypeOfContribution: "",
   typeOfContributor: "",
-  amountOfContribution: undefined,
+  amountOfContribution: 0.00,
   oaeContributionType: "",
   paymentMethod: "",
-  checkNumber: undefined,
+  checkNumber: null,
 
   // CONTRIBUTOR VALUES
   firstName: "",

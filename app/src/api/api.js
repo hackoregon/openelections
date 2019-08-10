@@ -232,7 +232,7 @@ export const mapContributionDataToForm = (contribution) => {
 
     // CONTRIBUTOR VALUES
     firstName,
-    lastName,
+    lastNameOrEntity: lastName,
     streetAddress: address1,
     addressLine2: address2,
     city,
