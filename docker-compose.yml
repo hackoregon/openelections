@@ -40,6 +40,7 @@ services:
       - SKIP_BOWER_INSTALL=0
       - REDIS_URL=redis://redis:6379/0
       - HOST_URL=openelectionsportland.org
+      - APP_ENV=development
     depends_on:
       - db
       - redis

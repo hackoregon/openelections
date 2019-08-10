@@ -4,9 +4,10 @@ import {
     addContributionAsync,
     archiveContributionAsync, createContributionCommentAsync,
     getContributionByIdAsync,
-    getContributionsAsync,
+    getContributionsAsync, getMatchResultAsync,
     IAddContributionAttrs,
-    updateContributionAsync
+    updateContributionAsync,
+    updateMatchResultAsync
 } from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
@@ -15,7 +16,8 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType
+    ContributorType,
+    MatchStrength
 } from '../../models/entity/Contribution';
 import {
     newActiveUserAsync,
@@ -24,7 +26,9 @@ import {
     newGovernmentAsync,
     truncateAll
 } from '../factories';
+
 import { getActivityByContributionAsync } from '../../models/entity/Activity';
+import { seedAddresses } from '../../models/seeds/seeds';
 
 let campaignAdmin;
 let campaignStaff;
@@ -38,11 +42,12 @@ let invalidIndvidualContribution;
 let contributionRepository: any;
 
 describe('contributionService', () => {
-    before(() => {
+    before(async () => {
         contributionRepository = getConnection('default').getRepository('Contribution');
     });
 
     beforeEach(async () => {
+        await seedAddresses();
         [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
             newActiveUserAsync(),
             newActiveUserAsync(),
@@ -854,5 +859,269 @@ describe('contributionService', () => {
         });
         activities = await getActivityByContributionAsync(contribution.id, 100, 0);
         expect(activities.length).to.equal(1);
+    });
+
+    it('retrieveAndSaveMatchResultAsync exact', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debbie',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        expect(contribution.matchStrength).to.equal(MatchStrength.EXACT);
+        expect(contribution.matchId).to.not.be.null;
+        expect(contribution.matchResult).to.not.be.null;
+        expect(contribution.matchResult.exact.length).to.equal(1);
+        expect(contribution.matchResult.strong.length).to.equal(0);
+        expect(contribution.matchResult.weak.length).to.equal(0);
+    });
+
+    it('retrieveAndSaveMatchResultAsync strong', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debb',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        expect(contribution.matchStrength).to.equal(MatchStrength.STRONG);
+        expect(contribution.matchId).to.be.null;
+        expect(contribution.matchResult).to.not.be.null;
+        expect(contribution.matchResult.exact.length).to.equal(0);
+        expect(contribution.matchResult.strong.length).to.equal(1);
+        expect(contribution.matchResult.weak.length).to.equal(0);
+    });
+
+    it('retrieveAndSaveMatchResultAsync weak', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'daniel',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
+        expect(contribution.matchId).to.be.null;
+        expect(contribution.matchResult).to.not.be.null;
+        expect(contribution.matchResult.exact.length).to.equal(0);
+        expect(contribution.matchResult.strong.length).to.equal(0);
+        expect(contribution.matchResult.weak.length).to.equal(1);
+    });
+
+    it('retrieveAndSaveMatchResultAsync none', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'smith',
+            firstName: 'john',
+            address1: '10 Main',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        expect(contribution.matchStrength).to.equal(MatchStrength.NONE);
+        expect(contribution.matchId).to.be.not.null;
+        expect(contribution.matchResult).to.not.be.null;
+        expect(contribution.matchResult.exact.length).to.equal(0);
+        expect(contribution.matchResult.strong.length).to.equal(0);
+        expect(contribution.matchResult.weak.length).to.equal(0);
+    });
+
+    it('updateMatchResultAsync exact match not allow', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debbie',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        try {
+            await updateMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+        } catch (e) {
+            expect(e.message).to.equal('Contribution has an exact match, cannot update');
+        }
+    });
+
+    it('updateMatchResultAsync no permissions', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debb',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        try {
+            await updateMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+        } catch (e) {
+            expect(e.message).to.equal('User does not have permissions');
+        }
+    });
+
+    it('updateMatchResultAsync contribution not found', async () => {
+        try {
+            await updateMatchResultAsync({contributionId: 10000, currentUserId: campaignAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+        } catch (e) {
+            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
+        }
+    });
+
+    it('updateMatchResultAsync success', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'daniel',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+
+        contribution = await contributionRepository.findOne(contribution.id);
+        await updateMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id, matchStrength: MatchStrength.WEAK, matchId: 'love'});
+        contribution = await contributionRepository.findOne(contribution.id);
+        expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
+        expect(contribution.matchId).to.equal('love');
+    });
+
+    it('getMatchResultAsync no permissions', async () => {
+        let contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debb',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+
+        contribution = await contributionRepository.findOne(contribution.id);
+
+        try {
+            await getMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id});
+        } catch (e) {
+            expect(e.message).to.equal('User does not have permissions');
+        }
+    });
+
+    it('getMatchResultAsync contribution not found', async () => {
+        try {
+            await getMatchResultAsync({contributionId: 10000, currentUserId: govAdmin.id});
+        } catch (e) {
+            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
+        }
+    });
+
+    it('getMatchResultAsync success', async () => {
+        const contribution = await addContributionAsync({
+            lastName: 'daniel',
+            firstName: 'debbie',
+            address1: '1024 SE Morrison',
+            zip: '97214',
+            city: 'Portland',
+            state: 'OR',
+            amount: 250,
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            status: ContributionStatus.DRAFT,
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        const result = await getMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id});
+        expect(result.matchStrength).to.equal(MatchStrength.EXACT);
+        expect(result.results.exact.length).to.equal(1);
+        expect(result.results.strong.length).to.equal(0);
+        expect(result.results.weak.length).to.equal(0);
+        expect(result.results.none).to.not.be.undefined;
     });
 });

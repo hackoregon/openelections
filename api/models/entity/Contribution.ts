@@ -19,6 +19,7 @@ import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetContributionOptions } from '../../services/contributionService';
 import { removeUndefined } from './helpers';
+import {MatchAddressType} from "../../services/dataScienceService";
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -59,6 +60,13 @@ export enum ContributionStatus {
     DRAFT = 'Draft',
     SUBMITTED = 'Submitted',
     PROCESSED = 'Processed'
+}
+
+export enum MatchStrength {
+    STRONG = 'strong',
+    EXACT = 'exact',
+    WEAK = 'weak',
+    NONE = 'none'
 }
 
 @Entity({ name: 'contributions' })
@@ -216,6 +224,15 @@ export class Contribution {
     @OneToMany(type => Activity, activity => activity.contribution)
     activities: Activity[];
 
+    @Column({ type: 'json', nullable: true })
+    matchResult?: MatchAddressType;
+
+    @Column({nullable: true})
+    matchId?: string;
+
+    @Column({type: 'enum', enum: MatchStrength, nullable: true})
+    matchStrength?: MatchStrength;
+
     public errors: ValidationError[] = [];
 
     @BeforeInsert()
@@ -339,6 +356,13 @@ export class Contribution {
             error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
             this.errors.push(error);
         }
+    }
+
+    validateContributorAddress() {
+        if (this.contributorType === ContributorType.INDIVIDUAL) {
+            return this.address1 && this.city && this.zip && this.state;
+        }
+        return true;
     }
 
     toJSON() {
