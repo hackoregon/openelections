@@ -63,10 +63,6 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsOptional()
     subType: ExpenditureSubType;
 
-    @IsEnum(ExpenditureStatus)
-    @IsOptional()
-    status: ExpenditureStatus;
-
     @IsEnum(ExpenditureType)
     @IsOptional()
     type: ExpenditureType;

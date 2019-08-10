@@ -84,7 +84,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -114,7 +113,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -144,7 +142,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -162,7 +159,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -217,7 +213,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -263,7 +258,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -288,7 +282,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -311,7 +304,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: undefined,
             date: undefined
         };
 
@@ -337,7 +329,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: undefined,
             date: undefined
         };
 
@@ -363,7 +354,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -381,7 +371,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 
@@ -442,16 +431,16 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.SUBMITTED,
             date: Date.now()
         };
 
         const expenditure = await addExpenditureAsync(addExpenditureAttrs);
 
+        expenditureRepository.update(expenditure.id, { status: ExpenditureStatus.SUBMITTED});
+
         const updateExpenditure = {
             ...expenditure,
             amount: 750,
-            status: ExpenditureStatus.DRAFT,
             campaignId: campaign2.id,
             currentUserId: campaignStaff.id,
             governmentId: government.id
@@ -461,7 +450,7 @@ describe('expenditureService', () => {
             await updateExpenditureAsync(updateExpenditure);
         } catch (e) {
             expect(e.message).equal(
-                'User is not permitted to update expenditures in a non-draft state for this campaign.'
+                'User does have permissions to change status on expenditure'
             );
         }
     });
@@ -481,7 +470,6 @@ describe('expenditureService', () => {
             name: 'Test expense',
             description: 'Test description',
             payeeType: PayeeType.INDIVIDUAL,
-            status: ExpenditureStatus.DRAFT,
             date: Date.now()
         };
 

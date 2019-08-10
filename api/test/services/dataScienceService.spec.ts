@@ -9,7 +9,7 @@ describe('dataScienceService', () => {
     });
 
     after(async () => {
-        truncateAll();
+        await truncateAll();
     });
 
     context('dataScienceUrl', () => {
