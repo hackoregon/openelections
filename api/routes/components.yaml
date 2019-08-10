@@ -334,8 +334,6 @@ components:
                 type: string
               middleInitial:
                 type: string
-              matchAmount:
-                type: integer
               name:
                 type: string
               prefix:
@@ -344,9 +342,6 @@ components:
                 type: string
               title:
                 type: string
-              status:
-                type: string
-                enum: [Archived,Draft,Submitted,Processed]
               submitForMatch:
                 type: boolean
               subType:

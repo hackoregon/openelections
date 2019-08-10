@@ -1,9 +1,11 @@
 import {
     Expenditure,
     ExpenditureStatus,
-    ExpenditureSubType, expenditureSummaryFields,
+    ExpenditureSubType,
+    expenditureSummaryFields,
     ExpenditureType,
-    getExpendituresByGovernmentIdAsync, IExpenditureSummary,
+    getExpendituresByGovernmentIdAsync,
+    IExpenditureSummary,
     PayeeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
@@ -13,7 +15,6 @@ import { Government } from '../models/entity/Government';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
 import { User } from '../models/entity/User';
-import { Contribution, contributionSummaryFields, IContributionSummary } from '../models/entity/Contribution';
 
 export interface IAddExpenditureAttrs {
     date: number;
@@ -28,7 +29,6 @@ export interface IAddExpenditureAttrs {
     zip: string;
     amount: number;
     description: string;
-    status: ExpenditureStatus;
     currentUserId: number;
     campaignId: number;
     governmentId: number;
@@ -58,7 +58,6 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
 
             expenditure.type = expenditureAttrs.type;
             expenditure.subType = expenditureAttrs.subType;
-            expenditure.status = expenditureAttrs.status;
             expenditure.description = expenditureAttrs.description;
 
             expenditure.address1 = expenditureAttrs.address1;
@@ -71,6 +70,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
 
             expenditure.amount = expenditureAttrs.amount;
             expenditure.date = new Date(expenditureAttrs.date);
+            expenditure.status = ExpenditureStatus.DRAFT;
             if (await expenditure.isValidAsync()) {
                 const saved = await expenditureRepository.save(expenditure);
                 const user = await userRepository.findOneOrFail(expenditureAttrs.currentUserId) as User;
@@ -161,35 +161,37 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
         const attrs = Object.assign({}, expenditureAttrs);
         delete attrs.currentUserId;
         delete attrs.id;
-        if (expenditure.status === ExpenditureStatus.DRAFT) {
-            const hasCampaignPermissions =
-                (await isCampaignAdminAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
-                (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
-                (await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id));
-            if (hasCampaignPermissions) {
-
-                const [_, user, changeNotes] = await Promise.all([
-                    expenditureRepository.update(expenditureAttrs.id, attrs),
-                    (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
-                    Object.keys(attrs)
-                        .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
-                        .join(' ')
-                ]);
-
-                await createActivityRecordAsync({
-                    currentUser: user,
-                    notes: `${user.name()} updated expenditure ${expenditureAttrs.id} fields. ${changeNotes}`,
-                    campaign: expenditure.campaign,
-                    government: expenditure.government,
-                    activityType: ActivityTypeEnum.CONTRIBUTION,
-                    activityId: expenditure.id
-                });
-                return expenditureRepository.save(expenditure);
-            } else {
-                throw new Error('User is not permitted to update expenditures for this campaign.');
+        const govAdmin = await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id);
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
+            (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
+            (govAdmin);
+        if (!govAdmin) {
+            if (expenditure.status !== ExpenditureStatus.DRAFT) {
+                throw new Error('User does have permissions to change status on expenditure');
             }
+        }
+
+        if (hasCampaignPermissions) {
+            const [_, user, changeNotes] = await Promise.all([
+                expenditureRepository.update(expenditureAttrs.id, attrs),
+                (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
+                Object.keys(attrs)
+                    .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
+                    .join(' ')
+            ]);
+
+            await createActivityRecordAsync({
+                currentUser: user,
+                notes: `${user.name()} updated expenditure ${expenditureAttrs.id} fields. ${changeNotes}`,
+                campaign: expenditure.campaign,
+                government: expenditure.government,
+                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityId: expenditure.id
+            });
+            return expenditureRepository.save(expenditure);
         } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
-            throw new Error('User is not permitted to update expenditures in a non-draft state for this campaign.');
+            throw new Error('User is not permitted to update expenditures for this campaign.');
         }
         return expenditureRepository.save(expenditure);
     } catch (e) {

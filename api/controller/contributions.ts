@@ -227,10 +227,6 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsOptional()
     middleInitial: string;
 
-    @IsNumber()
-    @IsOptional()
-    matchAmount: number;
-
     @IsString()
     @IsOptional()
     name: string;
@@ -246,10 +242,6 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsString()
     @IsOptional()
     title: string;
-
-    @IsEnum(ContributionStatus)
-    @IsOptional()
-    status: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
 
     @IsBoolean()
     @IsOptional()

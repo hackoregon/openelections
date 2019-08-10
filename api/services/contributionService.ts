@@ -32,12 +32,10 @@ export interface IAddContributionAttrs {
     firstName?: string;
     governmentId: number;
     lastName?: string;
-    matchAmount?: number;
     middleInitial?: string;
     name?: string;
     prefix?: string;
     state: string;
-    status: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
     suffix?: string;
     submitForMatch?: boolean;
     subType: ContributionSubType;
@@ -72,7 +70,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
 
             contribution.type = contributionAttrs.type;
             contribution.subType = contributionAttrs.subType;
-            contribution.status = contributionAttrs.status;
 
             contribution.contrPrefix = contributionAttrs.prefix;
             contribution.firstName = contributionAttrs.firstName;
@@ -89,8 +86,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.name = contributionAttrs.name;
             contribution.contributorType = contributionAttrs.contributorType;
 
+            contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
-            contribution.matchAmount = contributionAttrs.matchAmount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
@@ -184,6 +181,7 @@ export interface IUpdateContributionAttrs {
     title?: string;
     type?: ContributionType;
     zip?: string;
+    compliant?: boolean;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
@@ -197,10 +195,40 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         const attrs = Object.assign({}, contributionAttrs);
         delete attrs.currentUserId;
         delete attrs.id;
+        const isGovAdmin = await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
-            (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
+            isGovAdmin;
+
+        if (contribution.status === ContributionStatus.SUBMITTED) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change attributes on a contribution with submitted status');
+            }
+        }
+
+        if (contribution.status === ContributionStatus.PROCESSED) {
+            throw new Error('Cannot change attributes on a processed contribution');
+        }
+
+        if (Object.keys(contributionAttrs).includes('compliant')) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change compliant status');
+            }
+        }
+
+        if (Object.keys(contributionAttrs).includes('status')) {
+            if (!isGovAdmin && contributionAttrs.status === ContributionStatus.PROCESSED) {
+                throw new Error('User does not have permissions to change status to processed');
+            }
+        }
+
+        if (Object.keys(contributionAttrs).includes('matchAmount')) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change matchAmount');
+            }
+        }
+
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 contributionRepository.update(contributionAttrs.id, attrs),
