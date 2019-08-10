@@ -1,4 +1,4 @@
-import {getConnection} from 'typeorm';
+import { getConnection } from 'typeorm';
 import {
     Contribution,
     ContributionStatus,
@@ -10,13 +10,13 @@ import {
     IContributionSummary,
     MatchStrength
 } from '../models/entity/Contribution';
-import {Campaign} from '../models/entity/Campaign';
-import {Government} from '../models/entity/Government';
-import {isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync} from './permissionService';
-import {User} from '../models/entity/User';
-import {Activity, ActivityTypeEnum} from '../models/entity/Activity';
-import {createActivityRecordAsync} from './activityService';
-import {PersonMatchType, retrieveResultAsync} from './dataScienceService';
+import { Campaign } from '../models/entity/Campaign';
+import { Government } from '../models/entity/Government';
+import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
+import { User } from '../models/entity/User';
+import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
+import { createActivityRecordAsync } from './activityService';
+import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 
 

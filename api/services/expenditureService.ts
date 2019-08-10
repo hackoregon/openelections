@@ -8,13 +8,13 @@ import {
     IExpenditureSummary,
     PayeeType
 } from '../models/entity/Expenditure';
-import {isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync} from './permissionService';
-import {getConnection} from 'typeorm';
-import {Campaign} from '../models/entity/Campaign';
-import {Government} from '../models/entity/Government';
-import {Activity, ActivityTypeEnum} from '../models/entity/Activity';
-import {createActivityRecordAsync} from './activityService';
-import {User} from '../models/entity/User';
+import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
+import { getConnection } from 'typeorm';
+import { Campaign } from '../models/entity/Campaign';
+import { Government } from '../models/entity/Government';
+import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
+import { createActivityRecordAsync } from './activityService';
+import { User } from '../models/entity/User';
 
 export interface IAddExpenditureAttrs {
     date: number;
