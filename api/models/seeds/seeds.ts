@@ -15,7 +15,13 @@ import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
 
 export async function seedAddresses() {
-    const data = fs.readFileSync('/app/models/seeds/addresses.csv', 'utf8');
+    let data: any;
+    if (process.env.NODE_ENV === 'test') {
+        data = fs.readFileSync('/app/models/seeds/addressesTest.csv', 'utf8');
+    } else {
+        data = fs.readFileSync('/app/models/seeds/addresses.csv', 'utf8');
+    }
+
     const parsed = parse(data, {
         columns: true,
         skip_empty_lines: true

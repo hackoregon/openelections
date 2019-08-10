@@ -15,8 +15,8 @@ export function dataScienceUrl() {
 
 export interface PersonMatchType {
     id: string;
-    first_name: string,
-    last_name: string,
+    first_name: string;
+    last_name: string;
     address_1: string;
     address_2: string;
     city: string;
@@ -58,7 +58,8 @@ export interface RetrieveDataScienceMatchAttrs {
 
 export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs): Promise<MatchAddressType> {
     try {
-        const response = await fetch(`${dataScienceUrl()}?last_name=daniel&first_name=debbie&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR`);
+        const urlParams = `?last_name=${attrs.last_name}&first_name=${attrs.first_name}&addr1=${attrs.addr1}${attrs.addr2 ? '&addr2=' + attrs.addr2 : ''}&zip_code=${attrs.zip_code}&city=${attrs.city}&state=${attrs.state}`;
+        const response = await fetch(`${dataScienceUrl()}${urlParams}`);
         return (await response.json() as MatchAddressType);
 
     } catch (error) {

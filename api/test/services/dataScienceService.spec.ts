@@ -1,11 +1,17 @@
 import { expect } from 'chai';
 import { dataScienceUrl, retrieveResultAsync } from '../../services/dataScienceService';
 import { seedAddresses } from '../../models/seeds/seeds';
+import { truncateAll } from '../factories';
 
 describe('dataScienceService', () => {
     before(async () => {
         await seedAddresses();
     });
+
+    after(async () => {
+        truncateAll();
+    });
+
     context('dataScienceUrl', () => {
         it('test', () => {
             expect(dataScienceUrl()).to.equal('http://datatest/match');
@@ -38,191 +44,60 @@ describe('dataScienceService', () => {
                 city: 'Portland',
                 state: 'OR'
             });
-            console.log(JSON.stringify(result));
-            expect(result).to.equal('');
-// exact matches
-// curl http://data/match -d "last_name=daniel&first_name=debbie&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR"
-// {
-//     "exact": [
-//     {
-//         "id": "3d5dc6f9-a795-4e76-bbad-81f390e5732b",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "1.0",
-//         "last_name_sim": "1.0",
-//         "eligible_address": "True"
-//     }
-// ],
-//     "strong": [],
-//     "weak": [],
-//     "donor_info": {
-//     "last_name": "DANIEL",
-//         "first_name": "DEBBIE",
-//         "zip_code": "97214",
-//         "addr1": "1024 SE MORRISON",
-//         "addr2": "",
-//         "city": "PORTLAND",
-//         "max_matches": "10",
-//         "eligible_address": "True"
-// }
-// }
+            expect(result.exact.length).to.equal(1);
+            expect(result.exact[0].last_name).to.equal('DANIEL');
+            expect(result.exact[0].first_name).to.equal('DEBBIE');
+            expect(result.donor_info.last_name).to.equal('DANIEL');
+            expect(result.donor_info.first_name).to.equal('DEBBIE');
+        });
+
+        it('strong matches', async () => {
+            const result = await retrieveResultAsync({
+                last_name: 'daniel',
+                first_name: 'debb',
+                addr1: '1024 SE Morrison',
+                zip_code: '97214',
+                city: 'Portland',
+                state: 'OR'
+            });
+            expect(result.exact.length).to.equal(0);
+            expect(result.strong.length).to.equal(1);
+            expect(result.strong[0].last_name).to.equal('DANIEL');
+            expect(result.strong[0].first_name).to.equal('DEBBIE');
+            expect(result.donor_info.last_name).to.equal('DANIEL');
+            expect(result.donor_info.first_name).to.equal('DEBB');
+        });
+
+        it('weak matches', async () => {
+            const result = await retrieveResultAsync({
+                last_name: 'daniel',
+                first_name: 'daniel',
+                addr1: '1024 SE Morrison',
+                zip_code: '97214',
+                city: 'Portland',
+                state: 'OR'
+            });
+            expect(result.exact.length).to.equal(0);
+            expect(result.strong.length).to.equal(0);
+            expect(result.weak.length).to.equal(1);
+            expect(result.weak[0].last_name).to.equal('DANIEL');
+            expect(result.weak[0].first_name).to.equal('DEBBIE');
+            expect(result.donor_info.last_name).to.equal('DANIEL');
+            expect(result.donor_info.first_name).to.equal('DANIEL');
+        });
+
+        it('no matches', async () => {
+            const result = await retrieveResultAsync({
+                last_name: 'smith',
+                first_name: 'john',
+                addr1: '122 MAIN ST',
+                zip_code: '97214',
+                city: 'Portland',
+                state: 'OR'
+            });
+            expect(result.exact.length).to.equal(0);
+            expect(result.strong.length).to.equal(0);
+            expect(result.weak.length).to.equal(0);
         });
     });
 });
-
-// exact matches
-// curl http://data/match -d "last_name=daniel&first_name=debbie&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR"
-// {
-//     "exact": [
-//     {
-//         "id": "3d5dc6f9-a795-4e76-bbad-81f390e5732b",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "1.0",
-//         "last_name_sim": "1.0",
-//         "eligible_address": "True"
-//     }
-// ],
-//     "strong": [],
-//     "weak": [],
-//     "donor_info": {
-//     "last_name": "DANIEL",
-//         "first_name": "DEBBIE",
-//         "zip_code": "97214",
-//         "addr1": "1024 SE MORRISON",
-//         "addr2": "",
-//         "city": "PORTLAND",
-//         "max_matches": "10",
-//         "eligible_address": "True"
-// }
-// }
-
-// strong
-// curl http://data/match -d "last_name=daniel&first_name=debb&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR"
-// {
-//     "exact": [],
-//     "strong": [
-//     {
-//         "id": "3d5dc6f9-a795-4e76-bbad-81f390e5732b",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "0.8",
-//         "last_name_sim": "1.0",
-//         "eligible_address": "True"
-//     },
-//     {
-//         "id": "2f76c383-5b89-4d2d-8792-13d1fb195ccb",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "0.8",
-//         "last_name_sim": "1.0",
-//         "eligible_address": "True"
-//     }
-// ],
-//     "weak": [],
-//     "donor_info": {
-//     "last_name": "DANIEL",
-//         "first_name": "DEBB",
-//         "zip_code": "97214",
-//         "addr1": "1024 SE MORRISON",
-//         "addr2": "",
-//         "city": "PORTLAND",
-//         "max_matches": "10",
-//         "eligible_address": "True"
-// }
-// }
-
-// weak matches
-// curl http://data/match -d "last_name=daniel&first_name=DANIEL&addr1=1024 SE Morrison&zip_code=97214&city=Portland&state=OR"
-// {
-//     "exact": [],
-//     "strong": [],
-//     "weak": [
-//     {
-//         "id": "3d5dc6f9-a795-4e76-bbad-81f390e5732b",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "0.5",
-//         "last_name_sim": "0.5",
-//         "eligible_address": "True"
-//     },
-//     {
-//         "id": "2f76c383-5b89-4d2d-8792-13d1fb195ccb",
-//         "first_name": "DEBBIE",
-//         "last_name": "DANIEL",
-//         "address_1": "1024 SE MORRISON",
-//         "address_2": "",
-//         "city": "PORTLAND",
-//         "state": "OR",
-//         "zip": "97214",
-//         "address_sim": "1.0",
-//         "zip_sim": "1.0",
-//         "first_name_sim": "0.5",
-//         "last_name_sim": "0.5",
-//         "eligible_address": "True"
-//     }
-// ],
-//     "donor_info": {
-//     "last_name": "DEBBIE",
-//         "first_name": "DANIEL",
-//         "zip_code": "97214",
-//         "addr1": "1024 SE MORRISON",
-//         "addr2": "",
-//         "city": "PORTLAND",
-//         "max_matches": "10",
-//         "eligible_address": "True"
-// }
-// }
-
-// No match
-// curl http://127.0.0.1/match -d "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland"
-// {
-//     "exact": [],
-//     "strong": [],
-//     "weak": [],
-//     "donor_info": {
-//     "last_name": "SMITH",
-//         "first_name": "JOHN",
-//         "zip_code": "97202",
-//         "addr1": "123 MAIN ST",
-//         "addr2": "",
-//         "city": "PORTLAND",
-//         "max_matches": "10",
-//         "eligible_address": "True"
-// }
-// }

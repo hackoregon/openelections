@@ -24,7 +24,7 @@ class DonorMatch(Resource):
     Donor match endpoint
     """
 
-    def post(self) -> dict:
+    def get(self) -> dict:
         """
         Get donor match
 
