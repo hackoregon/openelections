@@ -219,6 +219,7 @@ export const mapContributionDataToForm = (contribution) => {
     employerState,
     calendarYearAggregate,
     inKindDescription,
+    employerZipcode,
   } = contribution
   return {
     // BASICS VALUES
@@ -231,7 +232,7 @@ export const mapContributionDataToForm = (contribution) => {
 
     // CONTRIBUTOR VALUES
     firstName,
-    lastName,
+    lastNameOrEntity: lastName,
     streetAddress: address1,
     addressLine2: address2,
     city,
@@ -242,9 +243,10 @@ export const mapContributionDataToForm = (contribution) => {
     contactType: "",
     contactInformation: email || phone,
     occupation: occupation || "",
-    employerName,
-    employerCity,
+    employerName: employerName || "",
+    employerCity: employerCity || "",
     employerState: employerState || "",
+    employerZipcode: employerZipcode || "",
 
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,

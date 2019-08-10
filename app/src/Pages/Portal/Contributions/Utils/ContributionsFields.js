@@ -3,21 +3,21 @@ import * as Yup from "yup";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import {
-    requiredFormField,
-    DynamicOptionField,
-    formField,
-    stateList,
-    checkNoEmptyString
+  requiredFormField,
+  DynamicOptionField,
+  formField,
+  stateList,
+  checkNoEmptyString
 } from '../../../../components/Forms/Utils/FormsUtils';
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
-    ContributorTypeFieldEnum,
-    ContributionSubTypeFieldEnum,
-    ContactTypeFieldEnum,
-    ContributionTypeFieldEnum
+  ContributorTypeFieldEnum,
+  ContributionSubTypeFieldEnum,
+  ContactTypeFieldEnum,
+  ContributionTypeFieldEnum
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -45,6 +45,41 @@ const inKindContributionValues = [
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL
 ]
+
+export const contributionsEmptyState = {
+  // BASICS VALUES
+  dateOfContribution: "",
+  typeOfContribution: "",
+  subTypeOfContribution: "",
+  typeOfContributor: "",
+  amountOfContribution: 0.00,
+  oaeContributionType: "",
+  paymentMethod: "",
+  checkNumber: null,
+
+  // CONTRIBUTOR VALUES
+  firstName: "",
+  lastNameOrEntity: "",
+  streetAddress: "",
+  addressLine2: "",
+  city: "Portland",
+  state: "OR",
+  zipcode: "97201",
+  contactType: "",
+  contactInformation: "",
+  occupation: "",
+  employerName: "",
+  employerCity: "Portland",
+  employerState: "OR",
+  employerZipcode: "97201",
+
+  // OTHER DETAILS VALUES
+  electionAggregate: "",
+  description: "",
+  occupationLetterDate: "",
+  linkToDocumentation: "",
+  notes: ""
+}
 
 export const fields = {
   // BASICS SECTION
@@ -76,12 +111,14 @@ export const fields = {
         props={props}
         check={props.formik.values.typeOfContribution === 'Contribution'}
         trueOptions={{ values: inKindContributionValues.concat([ContributionSubTypeFieldEnum.CASH_CONTRIBUTION]) }}
-        falseOptions={{ values: [
-          ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET, 
-          ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
-          ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
-          ContributionSubTypeFieldEnum.REFUND_REBATES
-        ] }}
+        falseOptions={{
+          values: [
+            ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET,
+            ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
+            ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
+            ContributionSubTypeFieldEnum.REFUND_REBATES
+          ]
+        }}
       />
     ),
     Yup.string("Choose the subtype of contribution"),
@@ -203,7 +240,7 @@ export const fields = {
     Yup.string("Select the best way to contact you"),
     [
       ContactTypeFieldEnum.MOBILE_PHONE,
-      ContactTypeFieldEnum.WORK_PHONE, 
+      ContactTypeFieldEnum.WORK_PHONE,
       ContactTypeFieldEnum.EXTENSION,
       ContactTypeFieldEnum.HOME_PHONE,
       ContactTypeFieldEnum.FAX,

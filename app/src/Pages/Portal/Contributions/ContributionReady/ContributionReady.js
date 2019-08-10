@@ -5,17 +5,17 @@ import ContributionReadyForm from '../../../../components/Forms/ContributionRead
 import { getContributionById } from "../../../../state/ducks/contributions";
 
 class AddContribution extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const { getContributionById, contributionId } = this.props
     getContributionById(parseInt(contributionId))
   }
 
   render() {
     const { contributions, contributionId, history } = this.props
+    const data =  contributions[contributionId] || {}
     return (
       <PageHoc>
-        <ContributionReadyForm 
-          contribution={contributions[contributionId]} 
+        <ContributionReadyForm
           contributionId={contributionId}
           history={history}
         />
