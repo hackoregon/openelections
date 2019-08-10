@@ -14,6 +14,9 @@ import {
   ContributorSection,
   OtherDetailsSection
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
+import {
+    contributionsEmptyState
+} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createContribution } = props
@@ -32,40 +35,7 @@ const onSubmit = (data, props) => {
 const AddContribution = ({ ...props }) => (
   <AddContributionForm
     onSubmit={data => onSubmit(data, props)}
-    initialValues={{
-      // BASICS VALUES
-      dateOfContribution: "",
-      typeOfContribution: "",
-      subTypeOfContribution: "",
-      typeOfContributor: "",
-      amountOfContribution: undefined,
-      oaeContributionType: "",
-      paymentMethod: "",
-      checkNumber: undefined,
-
-      // CONTRIBUTOR VALUES
-      firstName: "",
-      lastNameOrEntity: "",
-      streetAddress: "",
-      addressLine2: "",
-      city: "Portland",
-      state: "OR",
-      zipcode: "97201",
-      contactType: "",
-      contactInformation: "",
-      occupation: "",
-      employerName: "",
-      employerCity: "Portland",
-      employerState: "OR",
-      employerZipcode: "97201",
-
-      // OTHER DETAILS VALUES
-      electionAggregate: "",
-      description: "",
-      occupationLetterDate: "",
-      linkToDocumentation: "",
-      notes: ""
-    }}
+    initialValues={contributionsEmptyState}
   >
     {({ formFields, isValid, handleSubmit }) => {
       return (

@@ -9,6 +9,9 @@ import {
 } from '../../../api/api';
 import { updateContribution, archiveContribution } from "../../../state/ducks/contributions";
 import { flashMessage } from "redux-flash";
+import {
+    contributionsEmptyState
+} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 class ContributionReady extends React.Component {
   updateContribution = (payload) => {
@@ -44,13 +47,14 @@ class ContributionReady extends React.Component {
   }
 
   render() {
-    const { contribution, contributionId } = this.props
+    const { contributions, contributionId } = this.props
     const { onSubmit, onDraft, onTrash } = this
+    const contribution = contributions[contributionId]
     console.log(contribution)
     return (
       <ContributionReadyForm
         onSubmit={data => onSubmit(contributionId, data)}
-        initialValues={mapContributionDataToForm(contribution)}
+        initialValues={!contributions.isLoading && contribution ? mapContributionDataToForm(contribution) : contributionsEmptyState}
       >
         {({ formFields, isValid, handleSubmit, values }) => (
           <>
@@ -76,7 +80,8 @@ export default connect(
     currentUserId: state.auth.me.id,
     governmentId: state.auth.me.permissions[0].id,
     campaignId: state.auth.me.permissions[0].campaignId,
-    history: ownProps.history
+    history: ownProps.history,
+    contributions: state.contributions
   }),
   dispatch => ({
     archiveContribution: (id) => dispatch(archiveContribution(id)),
