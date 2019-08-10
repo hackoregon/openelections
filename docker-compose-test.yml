@@ -22,8 +22,8 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-    volumes:
-      - ./api:/app
+#    volumes:
+#      - ./api:/app
     command: ["./wait-for-it.sh", "testdb:5433", "--", "npm", "run", "seedandrun"]
     environment:
       - PORT=3000
@@ -59,17 +59,21 @@ services:
   datatest:
     build:
       context: ./datascience
-      dockerfile: 'Dockerfile.test'
     command: ["sh", "/app/openelections/api/start.sh"]
-    ports: ["8080:80"]
+    depends_on:
+      - testdb
+    ports:
+      - 8080:80
 #    volumes:
 #      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=open_elections_data
+      - POSTGRES_DB=open_elections_test
       - POSTGRES_PORT=5432
-      - POSTGRES_HOST=data_db
+      - POSTGRES_HOST=testdb
+    networks:
+      - openelections
 networks:
   openelections:
 
