@@ -25,10 +25,7 @@ export default function DateRangeField (props) {
 
     function renderSelectValue (value) {
         if (value.to && value.from) {
-            const dateFromString = new Date(dateTimeRangeValue.from).toLocaleString('en-GB');
-            const dateToString = new Date(dateTimeRangeValue.to).toLocaleString('en-GB');
-
-            return dateFromString + ' - ' + dateToString;
+            return value.from + ' - ' + value.to;
         } else {
             return 'All dates';
         }
@@ -81,54 +78,45 @@ function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
+    const { init } =  setupInitialState( rangeValues );
+    const [dateFrom, setDateFrom] = React.useState(init.dateFrom);
+    const [timeFrom, setTimeFrom] = React.useState(init.timeFrom);
+    const [dateTo, setDateTo] = React.useState(init.dateTo);
+    const [timeTo, setTimeTo] = React.useState(init.timeTo);
 
-    const [dateFrom, setDateFrom] = React.useState('2019-9-10');
-    const [timeFrom, setTimeFrom] = React.useState('00:00');
-    const [dateTo, setDateTo] = React.useState('2019-11-10');
-    const [timeTo, setTimeTo] = React.useState('00:00');
-
-    const [timeDateRange, setTimeDateRange] = React.useState(rangeValues);
 
     function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
+    function setupInitialState(rangeValue) {
+        const [dateFrom, timeFrom] = rangeValue.from ? rangeValue.from.split(' ') : ['', '00:00'];
+        const [dateTo, timeTo] = rangeValue.to ? rangeValue.from.split(' ') : ['', '00:00'];
+
+        return { init: {dateFrom, timeFrom, dateTo, timeTo} }
+    }
+
     function handleDateTimeChange (event) {
-        const elementId = event.target.id;
-        const value = event.target.value;
+        const elementId = event.currentTarget.id;
+        const value = event.currentTarget.value;
+
+        const range = rangeValues;
 
         switch (elementId) {
-            case 'from-date': setDateFrom(value); break;
-            case 'from-time': setTimeFrom(value); break;
-            case 'to-date': setDateTo(value); break;
-            case 'to-time': setTimeTo(value); break;
+            case 'from-date':
+                range.from = value + ' ' + timeFrom;
+                setDateFrom(value); break;
+            case 'from-time':
+                range.from = dateFrom + ' ' + value;
+                setTimeFrom(value); break;
+            case 'to-date':
+                range.to = value + ' ' + timeTo;
+                setDateTo(value); break;
+            case 'to-time':
+                range.to = dateTo + ' ' + value;
+                setTimeTo(value); break;
         }
 
-        const [fromHour, fromMinute] = timeFrom.split(':');
-        const [toHour, toMinute] = timeFrom.split(':');
-
-        let rangeFrom, rangeTo = '';
-
-        if (dateFrom) {
-            const dateFromObject = new Date(dateFrom);
-            dateFromObject.setHours(Number(fromHour), Number(fromMinute));
-
-            rangeFrom = dateFromObject.toISOString()
-        }
-
-        if (dateTo) {
-            const dateToObject = new Date(dateTo);
-            dateToObject.setHours(Number(toHour), Number(toMinute));
-
-            rangeTo = dateToObject.toISOString()
-        }
-
-        const range = {
-            from: rangeFrom,
-            to: rangeTo
-        };
-
-        setTimeDateRange(range);
         onDateRangeChange(range);
     }
 
@@ -138,6 +126,7 @@ function Popover (props) {
             'aria-controls': `simple-tabpanel-${index}`,
         };
     }
+
     return (
         <div css={popoverStyles}>
             <Tabs value={tab} onChange={handleTabChange} aria-label="simple tabs example">
@@ -150,6 +139,7 @@ function Popover (props) {
                     id={`from-date`}
                     formik={formik}
                     onChange={handleDateTimeChange}
+                    value={dateFrom}
                 />
                 <div className={'spacer'}></div>
                 <TimeField label={'Time'}
@@ -162,6 +152,7 @@ function Popover (props) {
             <div className={'tab-content'} hidden={tab !== 1}>
                 <DateField label={'Date'} formik={formik} id={`to-date`}
                     onChange={handleDateTimeChange}
+                           value={dateTo}
                 />
                 <div className={'spacer'}></div>
                 <TimeField label={'Time'}
