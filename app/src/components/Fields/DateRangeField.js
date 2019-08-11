@@ -29,10 +29,6 @@ const helperTextStyles = css`
   font-weight: 400;
   line-height: 1em;
   letter-spacing: 0.03333em;
-<<<<<<< HEAD
-=======
-
->>>>>>> Implemented DateTimeRange field
     &.Mui-disabled {
       color: rgba(0, 0, 0, 0.38);
     }
@@ -45,11 +41,7 @@ export default function DateRangeField (props) {
     const { formik, label, id, isRequired } = props;
 
     const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState(
-<<<<<<< HEAD
         { from: { date: '', time: '00:00' }, to: { date: '', time: '00:00' } });
-=======
-        { from: { date: '', time: '00:00'}, to: { date: '', time: '00:00' } });
->>>>>>> Implemented DateTimeRange field
 
     function renderSelectValue (value) {
         if (value.to.date && value.from.date) {
@@ -96,27 +88,17 @@ export default function DateRangeField (props) {
                 value={dateTimeRangeValue}
                 renderValue={renderSelectValue}
                 displayEmpty={true}
-<<<<<<< HEAD
-=======
                 helperText={formik.touched[id] ? formik.errors[id] : ""}
->>>>>>> Implemented DateTimeRange field
                 error={formik.touched[id] && Boolean(formik.errors[id])}
                 autoWidth>
                 <MenuItem css={hack}></MenuItem>
                 <Popover rangeValues={dateTimeRangeValue} onDateRangeChange={onDateRangeChange} formik={formik} />
             </Select>
             {formik.errors[id] &&
-<<<<<<< HEAD
                 formik.touched[id] &&
                 <div css={helperTextStyles} className="MuiFormHelperText-root Mui-error">
                     {formik.errors[id]}
                 </div>}
-=======
-            formik.touched[id] &&
-            <div css={helperTextStyles} className="MuiFormHelperText-root Mui-error">
-                {formik.errors[id]}
-            </div>}
->>>>>>> Implemented DateTimeRange field
         </FormControl>
     );
 }
@@ -142,36 +124,19 @@ function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
-<<<<<<< HEAD
-    const { init } = setupInitialState(rangeValues);
-    const [dateFrom, setDateFrom] = React.useState(init.dateFrom);
-    const [timeFrom, setTimeFrom] = React.useState(init.timeFrom);
-    const [dateTo, setDateTo] = React.useState(init.dateTo);
-    const [timeTo, setTimeTo] = React.useState(init.timeTo);
-
-=======
-    const { dateFrom, timeFrom, dateTo, timeTo } =  setupInitialState( rangeValues );
->>>>>>> Implemented DateTimeRange field
+    const { dateFrom, timeFrom, dateTo, timeTo } = setupInitialState(rangeValues);
 
     function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
-<<<<<<< HEAD
     function setupInitialState (rangeValue) {
-        const [dateFrom, timeFrom] = rangeValue.from ? rangeValue.from.split(' ') : ['', '00:00'];
-        const [dateTo, timeTo] = rangeValue.to ? rangeValue.from.split(' ') : ['', '00:00'];
-
-        return { init: { dateFrom, timeFrom, dateTo, timeTo } }
-=======
-    function setupInitialState(rangeValue) {
         return {
             dateFrom: rangeValue.from.date,
-            timeFrom:rangeValue.from.time,
+            timeFrom: rangeValue.from.time,
             dateTo: rangeValue.to.date,
             timeTo: rangeValue.to.time
         }
->>>>>>> Implemented DateTimeRange field
     }
 
     function handleDateTimeChange (event) {
@@ -194,8 +159,6 @@ function Popover (props) {
                 range.to.time = value;
                 break;
         }
-
-        console.log(elementId, value, range.from);
 
         onDateRangeChange(range);
     }

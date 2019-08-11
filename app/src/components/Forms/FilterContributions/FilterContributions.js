@@ -22,7 +22,6 @@ const fields = {
     options: {
     },
     component: DateRangeField,
-<<<<<<< HEAD
     validation: Yup.mixed().test('is-valid-range', 'Range is not valid', (value) => {
       if (value.from && value.to) {
         if (Date.parse(value.from) > Date.parse(value.to)) {
@@ -31,16 +30,6 @@ const fields = {
       }
       return true;
     }),
-=======
-    validation: Yup.object().test('is-valid-range', 'Range is not valid', async (value) => {
-      if ( value.from.date && value.to.date) {
-        if (Date.parse(value.from.date) <= Date.parse(value.to.date)) {
-          return true
-        }
-      }
-      return false;
-    }).required('Bitch'),
->>>>>>> Implemented DateTimeRange field
   },
 };
 

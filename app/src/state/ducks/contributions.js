@@ -171,6 +171,7 @@ export function getContributions (contributionSearchAttrs) {
     try {
       const response = await api.getContributions(contributionSearchAttrs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       if (response.status === 200) {
         const data = normalize(await response.json(), [schema.contribution]);
@@ -181,6 +182,12 @@ export function getContributions (contributionSearchAttrs) {
         const data = normalize(await response.json(), [schema.contribution]);
         console.log({ data })
 >>>>>>> hook up api redux duck and do basic style tweek
+=======
+
+      if (response.status === 200) {
+        const data = normalize(await response.json(), [schema.contribution]);
+
+>>>>>>> Implemented DateTimeRange field
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
