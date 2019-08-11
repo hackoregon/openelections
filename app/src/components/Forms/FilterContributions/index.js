@@ -28,13 +28,24 @@ const FilterContribution = props => (
     {console.log({ props })}
     <FilterContributions
       onSubmit={(filterOptions) => {
-        const data = {  
+        const data = {
           governmentId: props.govId,
           currentUserId: props.userId,
-          campaignId: props.campaignId
+          campaignId: props.campaignId,
         };
-        filterOptions.status !== "all" ? data.status = STATUS_OPTIONS[filterOptions.status] : data.status = null
-        console.log(filterOptions, data)
+
+        if (filterOptions.status && filterOptions.status !== "All Statuses") {
+           data.status = STATUS_OPTIONS[filterOptions.status]
+        }
+
+        if (filterOptions.range) {
+            console.log(filterOptions.range);
+            if (filterOptions.range.from && filterOptions.range.to) {
+                data.from = filterOptions.range.from;
+                data.to = filterOptions.range.to;
+            }
+
+        }
         props.getContributions(data);
       }}
       initialValues={{

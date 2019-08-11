@@ -52,15 +52,35 @@ export default function DateRangeField (props) {
         }
     }
 
+    function formatFieldValue ( range ) {
+        const result = {
+            from: '',
+            to: ''
+        };
+
+        if ( range.from.date ) {
+            const dateFrom = new Date(range.from.date);
+            const [hourFrom, minFrom] = range.from.time.split(":");
+            dateFrom.setHours(hourFrom, minFrom);
+            result.from = dateFrom.toISOString();
+        }
+
+        if ( range.to.date ) {
+            const dateTo = new Date(range.to.date);
+            const [hourTo, minTo] = range.to.time.split(":");
+            dateTo.setHours(hourTo, minTo);
+            result.to = dateTo.toISOString();
+        }
+
+        return result;
+    }
+
     function onDateRangeChange (newDateRange) {
         setDateTimeRangeValue(newDateRange);
 
-        formik.setValues({
-            [id]: newDateRange
-        });
-        formik.setTouched({
-            [id]: true
-        });
+
+        formik.setFieldValue(id, formatFieldValue(newDateRange));
+        formik.setFieldTouched(id, true);
     }
 
     return (
@@ -70,7 +90,6 @@ export default function DateRangeField (props) {
                 value={dateTimeRangeValue}
                 renderValue={renderSelectValue}
                 displayEmpty={true}
-                helperText={formik.touched[id] ? formik.errors[id] : ""}
                 error={formik.touched[id] && Boolean(formik.errors[id])}
                 autoWidth>
                 <MenuItem css={hack}></MenuItem>
@@ -141,8 +160,6 @@ function Popover (props) {
                 range.to.time = value;
                 break;
         }
-
-        console.log(elementId, value, range.from);
 
         onDateRangeChange(range);
     }

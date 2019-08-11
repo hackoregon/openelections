@@ -23,13 +23,16 @@ const fields = {
     },
     component: DateRangeField,
     validation: Yup.object().test('is-valid-range', 'Range is not valid', async (value) => {
-      if ( value.from.date && value.to.date) {
-        if (Date.parse(value.from.date) <= Date.parse(value.to.date)) {
+      if ( ! ( value.from || value.to ) ) return true;
+
+      if ( value.from && value.to) {
+        if (Date.parse(value.from) <= Date.parse(value.to)) {
           return true
         }
+      } else {
+        return false;
       }
-      return false;
-    }).required('Bitch'),
+    }),
   },
 };
 
