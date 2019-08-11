@@ -13,19 +13,40 @@ import FormControl from "@material-ui/core/FormControl";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 import { accents } from "../../assets/styles/variables";
+import TextFieldMaterial from "@material-ui/core/TextField/TextField";
 
 const hack = css`
     display: none !important;
 `;
 
+const helperTextStyles = css`
+  color: rgba(0, 0, 0, 0.54);
+  margin: 0;
+  font-size: 0.75rem;
+  margin-top: 8px;
+  min-height: 1em;
+  text-align: left;
+  font-weight: 400;
+  line-height: 1em;
+  letter-spacing: 0.03333em;
+
+    &.Mui-disabled {
+      color: rgba(0, 0, 0, 0.38);
+    }
+    &.Mui-error {
+      color: #f44336;
+    }
+`;
+
 export default function DateRangeField (props) {
     const { formik, label, id } = props;
 
-    const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState({ from: '', to: '' });
+    const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState(
+        { from: { date: '', time: '00:00'}, to: { date: '', time: '00:00' } });
 
     function renderSelectValue (value) {
-        if (value.to && value.from) {
-            return value.from + ' - ' + value.to;
+        if (value.to.date && value.from.date) {
+            return value.from.date + ' to ' + value.to.date;
         } else {
             return 'All dates';
         }
@@ -49,10 +70,17 @@ export default function DateRangeField (props) {
                 value={dateTimeRangeValue}
                 renderValue={renderSelectValue}
                 displayEmpty={true}
+                helperText={formik.touched[id] ? formik.errors[id] : ""}
+                error={formik.touched[id] && Boolean(formik.errors[id])}
                 autoWidth>
                 <MenuItem css={hack}></MenuItem>
                 <Popover rangeValues={dateTimeRangeValue} onDateRangeChange={onDateRangeChange} formik={formik} />
             </Select>
+            {formik.errors[id] &&
+            formik.touched[id] &&
+            <div css={helperTextStyles} className="MuiFormHelperText-root Mui-error">
+                {formik.errors[id]}
+            </div>}
         </FormControl>
     );
 }
@@ -78,44 +106,43 @@ function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
-    const { init } =  setupInitialState( rangeValues );
-    const [dateFrom, setDateFrom] = React.useState(init.dateFrom);
-    const [timeFrom, setTimeFrom] = React.useState(init.timeFrom);
-    const [dateTo, setDateTo] = React.useState(init.dateTo);
-    const [timeTo, setTimeTo] = React.useState(init.timeTo);
-
+    const { dateFrom, timeFrom, dateTo, timeTo } =  setupInitialState( rangeValues );
 
     function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
     function setupInitialState(rangeValue) {
-        const [dateFrom, timeFrom] = rangeValue.from ? rangeValue.from.split(' ') : ['', '00:00'];
-        const [dateTo, timeTo] = rangeValue.to ? rangeValue.from.split(' ') : ['', '00:00'];
-
-        return { init: {dateFrom, timeFrom, dateTo, timeTo} }
+        return {
+            dateFrom: rangeValue.from.date,
+            timeFrom:rangeValue.from.time,
+            dateTo: rangeValue.to.date,
+            timeTo: rangeValue.to.time
+        }
     }
 
     function handleDateTimeChange (event) {
-        const elementId = event.currentTarget.id;
-        const value = event.currentTarget.value;
+        const elementId = event.target.id;
+        const value = event.target.value;
 
         const range = rangeValues;
 
         switch (elementId) {
             case 'from-date':
-                range.from = value + ' ' + timeFrom;
-                setDateFrom(value); break;
+                range.from.date = value;
+                break;
             case 'from-time':
-                range.from = dateFrom + ' ' + value;
-                setTimeFrom(value); break;
+                range.from.time = value;
+                break;
             case 'to-date':
-                range.to = value + ' ' + timeTo;
-                setDateTo(value); break;
+                range.to.date = value;
+                break;
             case 'to-time':
-                range.to = dateTo + ' ' + value;
-                setTimeTo(value); break;
+                range.to.time = value;
+                break;
         }
+
+        console.log(elementId, value, range.from);
 
         onDateRangeChange(range);
     }
@@ -144,7 +171,7 @@ function Popover (props) {
                 <div className={'spacer'}></div>
                 <TimeField label={'Time'}
                     formik={formik}
-                    id={`form-time`}
+                    id={`from-time`}
                     onChange={handleDateTimeChange}
                     value={timeFrom}
                 />

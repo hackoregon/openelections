@@ -14,7 +14,7 @@ const fields = {
       values: ["All Statuses", "Archived", "Draft", "Submitted", "Processed"]
     },
     component: SelectField,
-    validation: Yup.string("Choose a status").required("A status is required to filter")
+    validation: Yup.string("Choose a status")
   },
   range: {
     label: "Date Range",
@@ -22,7 +22,14 @@ const fields = {
     options: {
     },
     component: DateRangeField,
-    validation: Yup.string("Choose a status").required("A status is required to filter")
+    validation: Yup.object().test('is-valid-range', 'Range is not valid', async (value) => {
+      if ( value.from.date && value.to.date) {
+        if (Date.parse(value.from.date) <= Date.parse(value.to.date)) {
+          return true
+        }
+      }
+      return false;
+    }).required('Bitch'),
   },
 };
 

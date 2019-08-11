@@ -28,7 +28,7 @@ const FilterContribution = props => (
     {console.log({ props })}
     <FilterContributions
       onSubmit={(filterOptions) => {
-        const data = {
+        const data = {  
           governmentId: props.govId,
           currentUserId: props.userId,
           campaignId: props.campaignId
