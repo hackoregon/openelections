@@ -18,8 +18,8 @@ const fields = {
     options: {
       values: [
         "Mayor",
-        "Commissioner 1",
-        "Commissioner 4",
+        "value1",
+        "value2",
       ]
     },
     validation: Yup.string("Enter office sought").required("Office is required")

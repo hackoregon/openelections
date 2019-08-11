@@ -15,7 +15,6 @@ const SelectField = ({ id, label, options, formik }) => (
         name: id,
         id: id
       }}
-      fullWidth
     >
       {options.values.map(role => (
         <MenuItem value={role} key={role}>
