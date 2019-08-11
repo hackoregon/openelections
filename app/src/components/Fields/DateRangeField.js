@@ -29,6 +29,10 @@ const helperTextStyles = css`
   font-weight: 400;
   line-height: 1em;
   letter-spacing: 0.03333em;
+<<<<<<< HEAD
+=======
+
+>>>>>>> Implemented DateTimeRange field
     &.Mui-disabled {
       color: rgba(0, 0, 0, 0.38);
     }
@@ -41,11 +45,15 @@ export default function DateRangeField (props) {
     const { formik, label, id, isRequired } = props;
 
     const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState(
+<<<<<<< HEAD
         { from: { date: '', time: '00:00' }, to: { date: '', time: '00:00' } });
+=======
+        { from: { date: '', time: '00:00'}, to: { date: '', time: '00:00' } });
+>>>>>>> Implemented DateTimeRange field
 
     function renderSelectValue (value) {
-        if (value.to && value.from) {
-            return value.from + ' - ' + value.to;
+        if (value.to.date && value.from.date) {
+            return value.from.date + ' to ' + value.to.date;
         } else {
             return 'All dates';
         }
@@ -88,16 +96,27 @@ export default function DateRangeField (props) {
                 value={dateTimeRangeValue}
                 renderValue={renderSelectValue}
                 displayEmpty={true}
+<<<<<<< HEAD
+=======
+                helperText={formik.touched[id] ? formik.errors[id] : ""}
+>>>>>>> Implemented DateTimeRange field
                 error={formik.touched[id] && Boolean(formik.errors[id])}
                 autoWidth>
                 <MenuItem css={hack}></MenuItem>
                 <Popover rangeValues={dateTimeRangeValue} onDateRangeChange={onDateRangeChange} formik={formik} />
             </Select>
             {formik.errors[id] &&
+<<<<<<< HEAD
                 formik.touched[id] &&
                 <div css={helperTextStyles} className="MuiFormHelperText-root Mui-error">
                     {formik.errors[id]}
                 </div>}
+=======
+            formik.touched[id] &&
+            <div css={helperTextStyles} className="MuiFormHelperText-root Mui-error">
+                {formik.errors[id]}
+            </div>}
+>>>>>>> Implemented DateTimeRange field
         </FormControl>
     );
 }
@@ -123,44 +142,60 @@ function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
+<<<<<<< HEAD
     const { init } = setupInitialState(rangeValues);
     const [dateFrom, setDateFrom] = React.useState(init.dateFrom);
     const [timeFrom, setTimeFrom] = React.useState(init.timeFrom);
     const [dateTo, setDateTo] = React.useState(init.dateTo);
     const [timeTo, setTimeTo] = React.useState(init.timeTo);
 
+=======
+    const { dateFrom, timeFrom, dateTo, timeTo } =  setupInitialState( rangeValues );
+>>>>>>> Implemented DateTimeRange field
 
     function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
+<<<<<<< HEAD
     function setupInitialState (rangeValue) {
         const [dateFrom, timeFrom] = rangeValue.from ? rangeValue.from.split(' ') : ['', '00:00'];
         const [dateTo, timeTo] = rangeValue.to ? rangeValue.from.split(' ') : ['', '00:00'];
 
         return { init: { dateFrom, timeFrom, dateTo, timeTo } }
+=======
+    function setupInitialState(rangeValue) {
+        return {
+            dateFrom: rangeValue.from.date,
+            timeFrom:rangeValue.from.time,
+            dateTo: rangeValue.to.date,
+            timeTo: rangeValue.to.time
+        }
+>>>>>>> Implemented DateTimeRange field
     }
 
     function handleDateTimeChange (event) {
-        const elementId = event.currentTarget.id;
-        const value = event.currentTarget.value;
+        const elementId = event.target.id;
+        const value = event.target.value;
 
         const range = rangeValues;
 
         switch (elementId) {
             case 'from-date':
-                range.from = value + ' ' + timeFrom;
-                setDateFrom(value); break;
+                range.from.date = value;
+                break;
             case 'from-time':
-                range.from = dateFrom + ' ' + value;
-                setTimeFrom(value); break;
+                range.from.time = value;
+                break;
             case 'to-date':
-                range.to = value + ' ' + timeTo;
-                setDateTo(value); break;
+                range.to.date = value;
+                break;
             case 'to-time':
-                range.to = dateTo + ' ' + value;
-                setTimeTo(value); break;
+                range.to.time = value;
+                break;
         }
+
+        console.log(elementId, value, range.from);
 
         onDateRangeChange(range);
     }
