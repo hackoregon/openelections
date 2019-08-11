@@ -44,8 +44,8 @@ export default function DateRangeField (props) {
         { from: { date: '', time: '00:00' }, to: { date: '', time: '00:00' } });
 
     function renderSelectValue (value) {
-        if (value.to.date || value.from.date) {
-            return (value.from.date || 'All dates') + ' to ' + (value.to.date || 'All dates');
+        if (value.to && value.from) {
+            return value.from + ' - ' + value.to;
         } else {
             return 'All dates';
         }
@@ -123,40 +123,43 @@ function Popover (props) {
     const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
-    const { dateFrom, timeFrom, dateTo, timeTo } = setupInitialState(rangeValues);
+    const { init } = setupInitialState(rangeValues);
+    const [dateFrom, setDateFrom] = React.useState(init.dateFrom);
+    const [timeFrom, setTimeFrom] = React.useState(init.timeFrom);
+    const [dateTo, setDateTo] = React.useState(init.dateTo);
+    const [timeTo, setTimeTo] = React.useState(init.timeTo);
+
 
     function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
     function setupInitialState (rangeValue) {
-        return {
-            dateFrom: rangeValue.from.date,
-            timeFrom: rangeValue.from.time,
-            dateTo: rangeValue.to.date,
-            timeTo: rangeValue.to.time
-        }
+        const [dateFrom, timeFrom] = rangeValue.from ? rangeValue.from.split(' ') : ['', '00:00'];
+        const [dateTo, timeTo] = rangeValue.to ? rangeValue.from.split(' ') : ['', '00:00'];
+
+        return { init: { dateFrom, timeFrom, dateTo, timeTo } }
     }
 
     function handleDateTimeChange (event) {
-        const elementId = event.target.id;
-        const value = event.target.value;
+        const elementId = event.currentTarget.id;
+        const value = event.currentTarget.value;
 
         const range = rangeValues;
 
         switch (elementId) {
             case 'from-date':
-                range.from.date = value;
-                break;
+                range.from = value + ' ' + timeFrom;
+                setDateFrom(value); break;
             case 'from-time':
-                range.from.time = value;
-                break;
+                range.from = dateFrom + ' ' + value;
+                setTimeFrom(value); break;
             case 'to-date':
-                range.to.date = value;
-                break;
+                range.to = value + ' ' + timeTo;
+                setDateTo(value); break;
             case 'to-time':
-                range.to.time = value;
-                break;
+                range.to = dateTo + ' ' + value;
+                setTimeTo(value); break;
         }
 
         onDateRangeChange(range);
