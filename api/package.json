@@ -14,9 +14,10 @@
         "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
         "seed": "ts-node models/seeds/index.ts",
         "console": "ts-node",
-        "buildprocessorsandrunjobs": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/ && npm run jobs",
-        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs",
-        "jobs": "ts-node jobs/index.ts"
+        "jobs": "ts-node jobs/index.ts",
+        "buildprocessors": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/",
+        "buildprocessorsandrunjobs": "npm run buildprocessors && npm run jobs",
+        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs"
     },
     "dependencies": {
         "@types/bcrypt": "^3.0.0",
