@@ -9,6 +9,7 @@ const manageStyle = {
   border: "1px solid #5F5FFF",
   color: "#5F5FFF",
   borderRadius: "5px",
+  lineHeight: "17px",
   padding: "6px 16px"
 };
 
@@ -28,7 +29,11 @@ const formDefaultStyle = {
 const formDefaultOutlinedStyle = {
   border: "1px solid #5F5FFF",
   color: "#5F5FFF",
-  padding: "10px 20px",
+  fontFamily: "Rubik",
+  fontStyle: "normal",
+  fontWeight: "normal",
+  lineHeight: "17px",
+  fontSize: "16px",
   textTransform: "none",
   borderRadius: "5px",
   padding: "6px 16px"
@@ -43,7 +48,7 @@ const primaryOverrides = {
   fontWeight: "normal",
   fontSize: "16px",
   lineHeight: "19px",
-  padding: "10px 20px !important",
+  // padding: "10px 20px !important",  // need to check where this matters
   borderRadius: "5px",
   padding: "6px 16px"
 };
@@ -69,11 +74,11 @@ const greenStyle = {
 };
 
 const buttonTypes = {
-  submit: { type: "submit", variant: "contained", color: "primary" },
+  submit: { type: "submit", variant: "contained", color: "primary", style: formDefaultStyle },
   primary: { type: "submit", variant: "contained", style: primaryOverrides },
   manage: { type: "button", variant: "outlined", style: manageStyle },
-  cancel: { type: "button", variant: "outlined", color: "secondary" },
-  default: { type: "button", variant: "contained", color: "primary" },
+  cancel: { type: "button", variant: "outlined", color: "secondary", style: formDefaultOutlinedStyle },
+  default: { type: "button", variant: "contained", color: "primary", style: formDefaultStyle },
   formDefault: { type: "button", variant: "contained", fullWidth: true, style: formDefaultStyle },
   formDefaultOutlined: { type: "button", variant: "outlined", fullWidth: true, style: formDefaultOutlinedStyle },
   remove: { type: "button", variant: "contained", style: remove, size: "large" },
