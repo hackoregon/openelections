@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes, { func } from 'prop-types';
-import { makeStyles, AppBar, Tabs, Tab, Select, MenuItem} from '@material-ui/core';
+import { makeStyles, AppBar, Tabs, Tab, Select, MenuItem } from '@material-ui/core';
 import DateField from "./DateField";
 import TimeField from "./TimeField";
 import Form from "../Form/Form";
@@ -14,46 +14,50 @@ import FormControl from "@material-ui/core/FormControl";
 import { css, jsx } from "@emotion/core";
 import { accents } from "../../assets/styles/variables";
 
+const hack = css`
+    display: none !important;
+`;
 
-export default function DateRangeField(props) {
+export default function DateRangeField (props) {
     const { formik, label, id } = props;
 
-    const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState({from: '', to: ''});
+    const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState({ from: '', to: '' });
 
-  function renderSelectValue (value) {
-      if (value.to && value.from) {
-          const dateFromString = new Date(dateTimeRangeValue.from).toLocaleString('en-GB');
-          const dateToString = new Date(dateTimeRangeValue.to).toLocaleString('en-GB');
+    function renderSelectValue (value) {
+        if (value.to && value.from) {
+            const dateFromString = new Date(dateTimeRangeValue.from).toLocaleString('en-GB');
+            const dateToString = new Date(dateTimeRangeValue.to).toLocaleString('en-GB');
 
-          return dateFromString + ' - ' + dateToString;
-      } else {
-          return 'All dates';
-      }
-  }
-  
-  function onDateRangeChange(newDateRange) {
-      setDateTimeRangeValue(newDateRange);
+            return dateFromString + ' - ' + dateToString;
+        } else {
+            return 'All dates';
+        }
+    }
 
-      formik.setValues({
-          [id]: newDateRange
-      });
-      formik.setTouched({
-          [id]: true
-      });
-  }
+    function onDateRangeChange (newDateRange) {
+        setDateTimeRangeValue(newDateRange);
 
-  return (
-      <FormControl fullWidth>
-          <InputLabel htmlFor={id}>{label}</InputLabel>
-          <Select
-              value={dateTimeRangeValue}
-              renderValue={renderSelectValue}
-              displayEmpty={true}
-              autoWidth>
-              <Popover rangeValues={dateTimeRangeValue} onDateRangeChange={onDateRangeChange} formik={formik} />
-          </Select>
-      </FormControl>
-  );
+        formik.setValues({
+            [id]: newDateRange
+        });
+        formik.setTouched({
+            [id]: true
+        });
+    }
+
+    return (
+        <FormControl fullWidth>
+            <InputLabel htmlFor={id}>{label}</InputLabel>
+            <Select
+                value={dateTimeRangeValue}
+                renderValue={renderSelectValue}
+                displayEmpty={true}
+                autoWidth>
+                <MenuItem css={hack}></MenuItem>
+                <Popover rangeValues={dateTimeRangeValue} onDateRangeChange={onDateRangeChange} formik={formik} />
+            </Select>
+        </FormControl>
+    );
 }
 
 const popoverStyles = css`
@@ -73,8 +77,8 @@ const popoverStyles = css`
   }
 `;
 
-function Popover(props) {
-    const {formik, onDateRangeChange, rangeValues} = props;
+function Popover (props) {
+    const { formik, onDateRangeChange, rangeValues } = props;
     const [tab, setTab] = React.useState(0);
 
 
@@ -85,11 +89,11 @@ function Popover(props) {
 
     const [timeDateRange, setTimeDateRange] = React.useState(rangeValues);
 
-    function handleTabChange(event, newValue) {
+    function handleTabChange (event, newValue) {
         setTab(newValue);
     }
 
-    function handleDateTimeChange(event) {
+    function handleDateTimeChange (event) {
         const elementId = event.target.id;
         const value = event.target.value;
 
@@ -105,14 +109,14 @@ function Popover(props) {
 
         let rangeFrom, rangeTo = '';
 
-        if ( dateFrom ) {
+        if (dateFrom) {
             const dateFromObject = new Date(dateFrom);
             dateFromObject.setHours(Number(fromHour), Number(fromMinute));
 
             rangeFrom = dateFromObject.toISOString()
         }
 
-        if ( dateTo ) {
+        if (dateTo) {
             const dateToObject = new Date(dateTo);
             dateToObject.setHours(Number(toHour), Number(toMinute));
 
@@ -128,7 +132,7 @@ function Popover(props) {
         onDateRangeChange(range);
     }
 
-    function a11yProps(index) {
+    function a11yProps (index) {
         return {
             id: `simple-tab-${index}`,
             'aria-controls': `simple-tabpanel-${index}`,
@@ -149,22 +153,22 @@ function Popover(props) {
                 />
                 <div className={'spacer'}></div>
                 <TimeField label={'Time'}
-                           formik={formik}
-                           id={`form-time`}
-                           onChange={handleDateTimeChange}
-                           value={timeFrom}
+                    formik={formik}
+                    id={`form-time`}
+                    onChange={handleDateTimeChange}
+                    value={timeFrom}
                 />
             </div>
             <div className={'tab-content'} hidden={tab !== 1}>
                 <DateField label={'Date'} formik={formik} id={`to-date`}
-                           onChange={handleDateTimeChange}
+                    onChange={handleDateTimeChange}
                 />
                 <div className={'spacer'}></div>
                 <TimeField label={'Time'}
-                           formik={formik}
-                           id={`to-time`}
-                           onChange={handleDateTimeChange}
-                           value={timeTo}
+                    formik={formik}
+                    id={`to-time`}
+                    onChange={handleDateTimeChange}
+                    value={timeTo}
 
                 />
             </div>
