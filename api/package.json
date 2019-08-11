@@ -14,7 +14,8 @@
         "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
         "seed": "ts-node models/seeds/index.ts",
         "console": "ts-node",
-        "dev-jobs": "nodemon --watch ./ -e ts --exec ts-node jobs/index.ts",
+        "buildprocessorsandrunjobs": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/ && npm run jobs",
+        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs",
         "jobs": "ts-node jobs/index.ts"
     },
     "dependencies": {
