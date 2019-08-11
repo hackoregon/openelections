@@ -3,6 +3,8 @@ import * as Yup from "yup";
 import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 
 const fields = {
   name: {
@@ -18,9 +20,12 @@ const fields = {
     options: {
       values: [
         "Mayor",
-        "value1",
-        "value2",
-      ]
+        "Commissioner 1",
+        "Commissioner 4",
+      ],
+      style: css`
+        display: flex !important;
+      `
     },
     validation: Yup.string("Enter office sought").required("Office is required")
   },
