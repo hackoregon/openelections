@@ -19,7 +19,7 @@ import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetContributionOptions } from '../../services/contributionService';
 import { removeUndefined } from './helpers';
-import {MatchAddressType} from "../../services/dataScienceService";
+import { MatchAddressType } from '../../services/dataScienceService';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -67,6 +67,23 @@ export enum MatchStrength {
     EXACT = 'exact',
     WEAK = 'weak',
     NONE = 'none'
+}
+
+export enum InKindDescriptionType {
+    WAGES = 'wages',
+    BROADCAST = 'broadcast_advertising',
+    FUNDRAISING = 'fundraising_event_expenses',
+    GENERAL_OPERATING = 'general_operating_expenses',
+    PRIMTING = 'printing',
+    MANAGEMENT = 'management',
+    NEWSPAPER =  'print_advertising',
+    OTHER_AD = 'other_advertising',
+    PETITION = 'petition_Circulators',
+    POSTAGE = 'postage',
+    PREP_AD = 'preparation_of_advertising',
+    POLLING = 'surveys_and_polls',
+    TRAVEL = 'travel_expenses',
+    UTILITIES = 'utilities'
 }
 
 @Entity({ name: 'contributions' })
@@ -203,6 +220,10 @@ export class Contribution {
     @Column({ nullable: true })
     matchAmount?: number;
 
+    @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType})
+    inKindType?: InKindDescriptionType;
+
+
     @Column({
         type: 'enum',
         enum: ContributionStatus,
@@ -258,6 +279,7 @@ export class Contribution {
         this.validateName();
         this.validateSubmitForMatch();
         this.validateMatchAmount();
+        this.validateInKindType();
         return this.errors;
     }
 
@@ -365,6 +387,19 @@ export class Contribution {
         return true;
     }
 
+    isInKind() {
+        return [ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL, ContributionSubType.INKIND_PAID_SUPERVISION].includes(this.subType);
+    }
+
+    validateInKindType() {
+        if (this.isInKind() && !this.inKindType) {
+            const error = new ValidationError();
+            error.property = 'inKindType';
+            error.constraints = { notAllowed: 'inKindType must be present if subType is an inkind type' };
+            this.errors.push(error);
+        }
+    }
+
     toJSON() {
         const json: any = {};
         contributionSummaryFields.forEach(( (key: string): void => {
@@ -381,6 +416,7 @@ export const contributionSummaryFields = <const>[
     'updatedAt',
     'type',
     'subType',
+    'inKindType',
     'contributorType',
     'contrPrefix',
     'firstName',
@@ -400,7 +436,7 @@ export const contributionSummaryFields = <const>[
     'phoneType',
     'checkNumber',
     'calendarYearAggregate',
-    'inKindDescription',
+    'inKindType',
     'occupation',
     'employerName',
     'employerCity',

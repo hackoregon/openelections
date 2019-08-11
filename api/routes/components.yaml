@@ -94,6 +94,9 @@ components:
         contributorType:
           type: string
           enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+        inKindType:
+          type: string
+          enum: [wages,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,print_advertising,other_advertising,petition_Circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
         email:
           type: string
         firstName:
@@ -113,13 +116,16 @@ components:
         title:
           type: string
         status:
-          type: enum[Archived,Draft,Submitted,Processed]
+          type: string
+          enum: [Archived,Draft,Submitted,Processed]
         submitForMatch:
           type: boolean
         subType:
-          type: enum[cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
+          type: string
+          enum: [cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
         type:
-          type: enum[contribution,other]
+          type: string
+          enum: [contribution,other]
         date:
           type: integer
     Expenditure:
@@ -146,11 +152,14 @@ components:
         name:
           type: string
         status:
-          type: enum[Archived,Draft,Submitted,Processed]
+          type: string
+          enum: [Archived,Draft,Submitted,Processed]
         subType:
-          type: enum[accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
+          type: string
+          enum: [accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
         type:
-          type: enum[expenditure,other,other_disbursement]
+          type: string
+          enum: [expenditure,other,other_disbursement]
         date:
           type: integer
 
@@ -267,6 +276,9 @@ components:
               contributorType:
                 type: string
                 enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+              inKindType:
+                type: string
+                enum: [wages,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,print_advertising,other_advertising,petition_Circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
               email:
                 type: string
               firstName:
@@ -326,6 +338,9 @@ components:
               contributorType:
                 type: string
                 enum: [individual,business,family,labor,political_committee,political_party,unregistered,other]
+              inKindType:
+                type: string
+                enum: [wages,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,print_advertising,other_advertising,petition_Circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
               email:
                 type: string
               firstName:
@@ -418,11 +433,14 @@ components:
               name:
                 type: string
               status:
-                type: enum[Archived,Draft,Submitted,Processed]
+                type: string
+                enum: [Archived,Draft,Submitted,Processed]
               subType:
-                type: enum[accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
+                type: string
+                enum: [accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
               type:
-                type: enum[expenditure,other,other_disbursement]
+                type: string
+                enum: [expenditure,other,other_disbursement]
               date:
                 type: integer
 

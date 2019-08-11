@@ -446,6 +446,8 @@ describe('expenditureService', () => {
             governmentId: government.id
         };
 
+        delete updateExpenditure.errors;
+
         try {
             await updateExpenditureAsync(updateExpenditure);
         } catch (e) {
