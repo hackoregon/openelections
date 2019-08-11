@@ -15,7 +15,7 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType
+    ContributorType, InKindDescriptionType
 } from '../models/entity/Contribution';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
@@ -250,6 +250,10 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsEnum(ContributionSubType)
     @IsOptional()
     subType: ContributionSubType;
+
+    @IsEnum(InKindDescriptionType)
+    @IsOptional()
+    inKindType: InKindDescriptionType;
 
     @IsEnum(ContributionType)
     @IsOptional()
