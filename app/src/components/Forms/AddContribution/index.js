@@ -28,8 +28,7 @@ const onSubmit = (data, props) => {
     currentUserId,
     ...contributionData
   }
-  createContribution(payload)
-    .then(data => props.history.push(`/contributions/ready/${data}`))
+  createContribution(payload).then(data => props.history.push(`/contributions/${data}`))
 }
 
 const AddContribution = ({ ...props }) => (
