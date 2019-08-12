@@ -22,6 +22,7 @@ export const actionTypes = {
 
 // Initial State
 export const initialState = {
+  list: {},
   isLoading: false,
   error: null
 };
@@ -29,7 +30,7 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
-    return { ...state, ...action.payload.contributions };
+    return { ...state, list: action.payload.contributions || {} };
   },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -239,7 +240,5 @@ export const rootState = state => state || {};
 
 export const getContributionsList = createSelector(
   rootState,
-  state =>
-    Object.values(state.contributions)
-      .filter(withId => !!get(withId, "id"))
+  state => Object.values(state.contributions.list)
 );

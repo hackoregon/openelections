@@ -65,6 +65,7 @@ const ContributionsTable = ({ ...props }) => {
 			</WithAdminPermissions>
 		)
 	}
+
 	return (
 		<PageHoc>
 			<h1>Contributions</h1>
@@ -80,7 +81,7 @@ const ContributionsTable = ({ ...props }) => {
 			/>
 		</PageHoc>
 	)
-}
+};
 
 export default connect(state => ({
 	isListLoading: state.campaigns.isLoading,

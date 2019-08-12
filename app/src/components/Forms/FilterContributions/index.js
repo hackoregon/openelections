@@ -21,6 +21,10 @@ const STATUS_OPTIONS = {
 const wtf = css`
   display: flex;
   flex-direction: row;
+  align-items: flex-end;
+  > div {
+    margin: 0 5px;  
+  }
 `;
 
 const FilterContribution = props => (
@@ -39,9 +43,11 @@ const FilterContribution = props => (
         }
 
         if (filterOptions.range) {
-            console.log(filterOptions.range);
-            if (filterOptions.range.from && filterOptions.range.to) {
+            if (filterOptions.range.from) {
                 data.from = filterOptions.range.from;
+            }
+
+            if (filterOptions.range.to) {
                 data.to = filterOptions.range.to;
             }
 
@@ -49,7 +55,11 @@ const FilterContribution = props => (
         props.getContributions(data);
       }}
       initialValues={{
-        status: "All Statuses"
+          status: "",
+          range: {
+              to: "",
+              from: ""
+          }
       }}
     >
       {({
@@ -60,15 +70,15 @@ const FilterContribution = props => (
           <React.Fragment>
             <div className="nark" css={wtf}>
               {formSections.filter}
-            </div>
-            <div>
-              <Button
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Filter
-            </Button>
+                <div>
+                    <Button
+                        buttonType="submit"
+                        disabled={!isValid}
+                        onClick={handleSubmit}
+                    >
+                        Filter
+                    </Button>
+                </div>
             </div>
           </React.Fragment>
         )}

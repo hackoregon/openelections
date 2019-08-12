@@ -45,8 +45,8 @@ export default function DateRangeField (props) {
         { from: { date: '', time: '00:00'}, to: { date: '', time: '00:00' } });
 
     function renderSelectValue (value) {
-        if (value.to.date && value.from.date) {
-            return value.from.date + ' to ' + value.to.date;
+        if (value.to.date || value.from.date) {
+            return (value.from.date || 'All dates') + ' to ' + (value.to.date || 'All dates');
         } else {
             return 'All dates';
         }
@@ -77,8 +77,7 @@ export default function DateRangeField (props) {
 
     function onDateRangeChange (newDateRange) {
         setDateTimeRangeValue(newDateRange);
-
-
+        
         formik.setFieldValue(id, formatFieldValue(newDateRange));
         formik.setFieldTouched(id, true);
     }
