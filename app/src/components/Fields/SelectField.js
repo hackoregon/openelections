@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,7 +43,8 @@ SelectField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
   options: PropTypes.shape({
-    values: PropTypes.arrayOf(PropTypes.string)
+    values: PropTypes.arrayOf(PropTypes.string),
+    style: PropTypes.object
   }),
   formik: PropTypes.shape({})
 };
