@@ -79,7 +79,6 @@ describe('Routes post /expenditures/new', () => {
                 type: ExpenditureType.EXPENDITURE,
                 subType: ExpenditureSubType.CASH_EXPENDITURE,
                 state: 'OR',
-                status: ExpenditureStatus.DRAFT,
                 zip: '97214',
                 payeeType: PayeeType.INDIVIDUAL,
                 name: 'Test Expenditure',
