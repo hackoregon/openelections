@@ -1,116 +1,90 @@
 import React from "react";
 import ContributionReadyForm from "./ContributionReadyForm";
-/** @jsx jsx */
-import { jsx } from "@emotion/core";
 import { connect } from "react-redux";
 import { ReadyHeaderSection, BasicsSection, ContributorSection, OtherDetailsSection } from "../../../Pages/Portal/Contributions/Utils/ContributionsSections";
-import { format } from "date-fns"
 import {
-    DataToContributionTypeFieldMap,
-    DataToContributionSubTypeFieldMap,
-    DataToContributorTypeFieldMap,
-    // ContactTypeFieldEnum,
-    // DataToContactTypeFieldMap
+  mapContributionDataToForm,
+  mapContributionFormToData,
+  ContributionStatusEnum
 } from '../../../api/api';
+import { updateContribution, archiveContribution } from "../../../state/ducks/contributions";
+import { flashMessage } from "redux-flash";
+import {
+    contributionsEmptyState
+} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
-const onSubmit = (data) => {
-  console.log(data)
-}
-
-// TODO: need to get data for the following:
-// - oaeContributionType
-// - paymentMethod
-// - employerZipcode
-// - occupationLetterDate
-// - linkToDocumentation
-// - notes
-const mapDataToForm = (contribution) => {
-  for (const [key, value] of Object.entries(contribution)) {
-    if(value===null){contribution[key]="" }
+class ContributionReady extends React.Component {
+  updateContribution = (payload) => {
+    const { updateContribution, showMessage } = this.props
+    delete payload.date // TODO: should remove this later, current endpoint failing when including date in payload.
+    const showErrorMessage = (error) => showMessage(`Error: ${error.message}`, { props: { variant: "error" } })
+    const showSuccessMessage = () => showMessage("Contribution saved", { props: { variant: "success" } })
+    updateContribution(payload)
+      .then(data => data != null ? showErrorMessage(data) : showSuccessMessage())
+      .catch(error => showErrorMessage(error))
   }
-  const {
-    date,
-    // createdAt,
-    type, 
-    subtype,
-    contributorType,
-    amount, 
-    checkNumber,
-    firstName, 
-    lastName, 
-    address1,
-    address2, 
-    city, 
-    state,
-    zip,
-    email,
-    phone,
-    // phoneType, 
-    occupation,
-    employerName,
-    employerCity,
-    employerState,
-    calendarYearAggregate,
-    inKindDescription,
-  } = contribution
-  return {
-    // BASICS VALUES
-    dateOfContribution: date ? format(new Date(date), "yyyy-MM-dd"): 0,
-    typeOfContribution: DataToContributionTypeFieldMap.get(type),
-    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
-    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
-    amountOfContribution: amount,
-    checkNumber: checkNumber,
 
-    // CONTRIBUTOR VALUES
-    firstName,
-    lastName,
-    streetAddress: address1,
-    addressLine2: address2,
-    city,
-    state,
-    zipcode: zip,
-    // TODO: contact type can return null for users
-    // contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
-    contactType: "",
-    contactInformation: email || phone,
-    occupation: occupation || "",
-    employerName,
-    employerCity,
-    employerState: employerState || "",
+  onSubmit = (id, data) => {
+    const { updateContribution } = this
+    const payload = {
+      id,
+      status: ContributionStatusEnum.SUBMITTED,
+      ...mapContributionFormToData(data)
+    }
+    updateContribution(payload)
+  }
 
-    // OTHER DETAILS VALUES
-    electionAggregate: calendarYearAggregate,
-    description: inKindDescription || "",
-    oaeContributionType: "",
-    paymentMethod: "", 
-    
+  onDraft = (id, data) => {
+    const { updateContribution } = this
+    const payload = { id, ...mapContributionFormToData(data) }
+    updateContribution(payload)
+  }
+
+  // TODO: currently sending user back to table, need proper behavior.
+  onTrash = (id) => {
+    const { archiveContribution, history } = this.props
+    archiveContribution(id).then(() => history.push('/contributions'))
+  }
+
+  render() {
+    const { contributions, contributionId } = this.props
+    const { onSubmit, onDraft, onTrash } = this
+    const contribution = contributions[contributionId]
+    return (
+      <ContributionReadyForm
+        onSubmit={data => onSubmit(contributionId, data)}
+        initialValues={!contributions.isLoading && contribution ? mapContributionDataToForm(contribution) : contributionsEmptyState}
+      >
+        {({ formFields, isValid, handleSubmit, values }) => (
+          <>
+            <ReadyHeaderSection
+              campaignName={"FakeName"}
+              lastEdited={values.updatedAt}
+              isValid={isValid}
+              handleSubmit={handleSubmit}
+              handleDraft={() => onDraft(contributionId, values)}
+              handleTrash={() => onTrash(contributionId)}
+            />
+            <BasicsSection formFields={formFields} />
+            <ContributorSection formFields={formFields} />
+            <OtherDetailsSection formFields={formFields} />
+          </>
+        )}
+      </ContributionReadyForm>
+    )
   }
 }
-
-const ContributionReady = ({ contribution }) => (
-<>
-  {contribution.date ?  
-  <ContributionReadyForm
-    onSubmit={onSubmit}
-    initialValues={mapDataToForm(contribution)}
-  >
-    {({ formFields, isValid, handleSubmit }) => (
-      <>
-        <ReadyHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
-        <BasicsSection formFields={formFields} />
-        <ContributorSection formFields={formFields} />
-        <OtherDetailsSection formFields={formFields} />
-      </>
-    )}
-  </ContributionReadyForm>
-: <div>Contribution not found</div>  }
-</>
-);
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     currentUserId: state.auth.me.id,
     governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId
+    campaignId: state.auth.me.permissions[0].campaignId,
+    history: ownProps.history,
+    contributions: state.contributions
+  }),
+  dispatch => ({
+    archiveContribution: (id) => dispatch(archiveContribution(id)),
+    updateContribution: (data) => dispatch(updateContribution(data)),
+    showMessage: (message, props) => dispatch(flashMessage(message, props))
   })
 )(ContributionReady);

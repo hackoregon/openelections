@@ -15,7 +15,7 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType
+    ContributorType, InKindDescriptionType
 } from '../models/entity/Contribution';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
@@ -227,10 +227,6 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsOptional()
     middleInitial: string;
 
-    @IsNumber()
-    @IsOptional()
-    matchAmount: number;
-
     @IsString()
     @IsOptional()
     name: string;
@@ -247,10 +243,6 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsOptional()
     title: string;
 
-    @IsEnum(ContributionStatus)
-    @IsOptional()
-    status: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
-
     @IsBoolean()
     @IsOptional()
     submitForMatch: boolean;
@@ -258,6 +250,10 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsEnum(ContributionSubType)
     @IsOptional()
     subType: ContributionSubType;
+
+    @IsEnum(InKindDescriptionType)
+    @IsOptional()
+    inKindType: InKindDescriptionType;
 
     @IsEnum(ContributionType)
     @IsOptional()

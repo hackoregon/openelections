@@ -14,7 +14,6 @@ const modalStyle = css`
   top: 8vh;
   left: calc(50vw - 175px);
   margin-bottom: 20px;
-  height: 85%;
   max-height: 625px;
 `;
 

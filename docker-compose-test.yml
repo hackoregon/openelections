@@ -38,8 +38,10 @@ services:
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=0
       - DB_PORT=5432
+      - APP_ENV=test
     depends_on:
       - testdb
+      - datatest
     ports:
       - 3000:3000
     networks:
@@ -54,18 +56,24 @@ services:
       - POSTGRES_DB=open_elections_test
     networks:
       - openelections
-  data:
+  datatest:
     build:
       context: ./datascience
-      dockerfile: 'Dockerfile.test'
+    command: ["sh", "/app/openelections/api/start.sh"]
+    depends_on:
+      - testdb
+    ports:
+      - 8080:80
 #    volumes:
 #      - ./datascience:/app
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=open_elections_data
+      - POSTGRES_DB=open_elections_test
       - POSTGRES_PORT=5432
-      - POSTGRES_HOST=data_db
+      - POSTGRES_HOST=testdb
+    networks:
+      - openelections
 networks:
   openelections:
 

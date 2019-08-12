@@ -140,6 +140,18 @@ describe('Contribution', () => {
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('matchAmount');
         });
+
+        it('isInKind && validateInKindType', async () => {
+            const newRecord = new Contribution();
+            newRecord.type = ContributionType.CONTRIBUTION;
+            newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
+            newRecord.contributorType = ContributorType.INDIVIDUAL;
+            expect(newRecord.isInKind()).to.be.true;
+            expect(!newRecord.inKindType).to.be.true;
+            await newRecord.validateInKindType();
+            expect(newRecord.errors.length).to.equal(1);
+            expect(newRecord.errors[0].property).to.equal('inKindType');
+        });
     });
 });
 
