@@ -21,6 +21,7 @@ describe("Reducer", () => {
   const reducer = contributions.default;
   it("initial state", () => {
     expect(reducer(undefined, {})).toEqual({
+      list: {},
       isLoading: false,
       error: null
     });
@@ -37,7 +38,9 @@ describe("Reducer", () => {
         }
       })
     ).toEqual({
-      "1": {},
+      list: {
+        "1": {}
+      },
       isLoading: false,
       error: null
     });
