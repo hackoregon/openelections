@@ -4,8 +4,12 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 
-const SelectField = ({ id, label, options, formik }) => (
+const SelectField = ({ id, label, options, formik}) => {
+  const { style } = options
+  return (
   <FormControl fullWidth>
     <InputLabel htmlFor={id}>{label}</InputLabel>
     <Select
@@ -15,22 +19,22 @@ const SelectField = ({ id, label, options, formik }) => (
         name: id,
         id: id
       }}
-      fullWidth
     >
       {options.values.map(role => (
-        <MenuItem value={role} key={role}>
+        <MenuItem css={style || {}} value={role} key={role}>
           {role}
         </MenuItem>
       ))}
     </Select>
   </FormControl>
-);
+)};
 
 SelectField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
   options: PropTypes.shape({
-    values: PropTypes.arrayOf(PropTypes.string)
+    values: PropTypes.arrayOf(PropTypes.string),
+    style: PropTypes.object
   }),
   formik: PropTypes.shape({})
 };

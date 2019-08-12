@@ -10,7 +10,7 @@ import {
 import { updateContribution, archiveContribution } from "../../../state/ducks/contributions";
 import { flashMessage } from "redux-flash";
 import {
-    contributionsEmptyState
+  contributionsEmptyState
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 class ContributionReady extends React.Component {
@@ -55,21 +55,24 @@ class ContributionReady extends React.Component {
         onSubmit={data => onSubmit(contributionId, data)}
         initialValues={!contributions.isLoading && contribution ? mapContributionDataToForm(contribution) : contributionsEmptyState}
       >
-        {({ formFields, isValid, handleSubmit, values }) => (
-          <>
-            <ReadyHeaderSection
-              campaignName={"FakeName"}
-              lastEdited={values.updatedAt}
-              isValid={isValid}
-              handleSubmit={handleSubmit}
-              handleDraft={() => onDraft(contributionId, values)}
-              handleTrash={() => onTrash(contributionId)}
-            />
-            <BasicsSection formFields={formFields} />
-            <ContributorSection formFields={formFields} />
-            <OtherDetailsSection formFields={formFields} />
-          </>
-        )}
+        {({ formFields, isValid, handleSubmit, values }) => {
+          const checkSelected = values.paymentMethod === "Check"
+          return (
+            <>
+              <ReadyHeaderSection
+                campaignName={"FakeName"}
+                lastEdited={values.updatedAt}
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                handleDraft={() => onDraft(contributionId, values)}
+                handleTrash={() => onTrash(contributionId)}
+              />
+              <BasicsSection formFields={formFields} checkSelected={checkSelected} />
+              <ContributorSection formFields={formFields} />
+              <OtherDetailsSection formFields={formFields} />
+            </>
+          )
+        }}
       </ContributionReadyForm>
     )
   }

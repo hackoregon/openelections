@@ -319,12 +319,14 @@ export const fields = {
     ]
   ),
   // Not required if occupation & employer name/address filled in
+  /*
   occupationLetterDate: formField(
     "Occupation Letter Date",
     FormSectionEnum.OTHER_DETAILS,
     DateField,
     Yup.date("Enter occupation letter date")
   ),
+  */
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: formField(
@@ -344,6 +346,7 @@ export const fields = {
 export const validate = (values) => {
   const {
     paymentMethod,
+    checkNumber,
     linkToDocumentation,
     occupation,
     employerName,
@@ -357,6 +360,10 @@ export const validate = (values) => {
     typeOfContributor
   } = values
   const error = {}
+
+  if (paymentMethod === "Check" && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = "Check number is required."
+  }
 
   if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
     error.linkToDocumentation = "A link to documentation of your contribution is required"
