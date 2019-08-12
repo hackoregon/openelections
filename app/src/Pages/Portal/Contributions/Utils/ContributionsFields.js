@@ -319,12 +319,14 @@ export const fields = {
     ]
   ),
   // Not required if occupation & employer name/address filled in
+  /*
   occupationLetterDate: formField(
     "Occupation Letter Date",
     FormSectionEnum.OTHER_DETAILS,
     DateField,
     Yup.date("Enter occupation letter date")
   ),
+  */
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: formField(
