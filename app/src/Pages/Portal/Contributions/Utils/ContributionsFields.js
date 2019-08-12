@@ -344,6 +344,7 @@ export const fields = {
 export const validate = (values) => {
   const {
     paymentMethod,
+    checkNumber,
     linkToDocumentation,
     occupation,
     employerName,
@@ -357,6 +358,10 @@ export const validate = (values) => {
     typeOfContributor
   } = values
   const error = {}
+
+  if (paymentMethod === "Check" && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = "Check number is required."
+  }
 
   if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
     error.linkToDocumentation = "A link to documentation of your contribution is required"

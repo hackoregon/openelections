@@ -274,7 +274,7 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   </>
 )
 
-export const BasicsSection = ({ formFields }) => (
+export const BasicsSection = ({ formFields, checkSelected }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
@@ -285,7 +285,7 @@ export const BasicsSection = ({ formFields }) => (
       <h2>{formFields.amountOfContribution}</h2>
       <h2>{formFields.oaeContributionType}</h2>
       <h2>{formFields.paymentMethod}</h2>
-      <h2>{formFields.checkNumber}</h2>
+      { checkSelected ? <h2>{formFields.checkNumber}</h2> : null }
     </div>
   </div>
 )
