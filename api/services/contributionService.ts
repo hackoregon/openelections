@@ -1,4 +1,4 @@
-import { getConnection, UpdateResult } from 'typeorm';
+import { getConnection } from 'typeorm';
 import {
     Contribution,
     ContributionStatus,
@@ -7,7 +7,8 @@ import {
     ContributionType,
     ContributorType,
     getContributionsByGovernmentIdAsync,
-    IContributionSummary
+    IContributionSummary, InKindDescriptionType,
+    MatchStrength
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -15,6 +16,9 @@ import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } fr
 import { User } from '../models/entity/User';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
+import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
+import * as crypto from 'crypto';
+
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -28,15 +32,14 @@ export interface IAddContributionAttrs {
     firstName?: string;
     governmentId: number;
     lastName?: string;
-    matchAmount?: number;
     middleInitial?: string;
     name?: string;
     prefix?: string;
     state: string;
-    status: ContributionStatus.DRAFT | ContributionStatus.SUBMITTED;
     suffix?: string;
     submitForMatch?: boolean;
     subType: ContributionSubType;
+    inKindType?: InKindDescriptionType;
     title?: string;
     type: ContributionType;
     date: number;
@@ -68,7 +71,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
 
             contribution.type = contributionAttrs.type;
             contribution.subType = contributionAttrs.subType;
-            contribution.status = contributionAttrs.status;
 
             contribution.contrPrefix = contributionAttrs.prefix;
             contribution.firstName = contributionAttrs.firstName;
@@ -84,9 +86,10 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.zip = contributionAttrs.zip;
             contribution.name = contributionAttrs.name;
             contribution.contributorType = contributionAttrs.contributorType;
+            contribution.inKindType = contributionAttrs.inKindType;
 
+            contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
-            contribution.matchAmount = contributionAttrs.matchAmount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             if (await contribution.isValidAsync()) {
@@ -99,6 +102,11 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityType: ActivityTypeEnum.CONTRIBUTION,
                     activityId: saved.id
                 });
+                if (process.env.NODE_ENV === 'production') {
+                    // replace with a background job creation;
+                } else {
+                    await retrieveAndSaveMatchResultAsync(contribution.id);
+                }
                 return saved;
             }
             throw new Error('Contribution is missing one or more required properties.');
@@ -175,6 +183,8 @@ export interface IUpdateContributionAttrs {
     title?: string;
     type?: ContributionType;
     zip?: string;
+    compliant?: boolean;
+    inKindType?: InKindDescriptionType;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
@@ -188,10 +198,40 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         const attrs = Object.assign({}, contributionAttrs);
         delete attrs.currentUserId;
         delete attrs.id;
+        const isGovAdmin = await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
-            (await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id));
+            isGovAdmin;
+
+        if (contribution.status === ContributionStatus.SUBMITTED) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change attributes on a contribution with submitted status');
+            }
+        }
+
+        if (contribution.status === ContributionStatus.PROCESSED) {
+            throw new Error('Cannot change attributes on a processed contribution');
+        }
+
+        if (Object.keys(contributionAttrs).includes('compliant')) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change compliant status');
+            }
+        }
+
+        if (Object.keys(contributionAttrs).includes('status')) {
+            if (!isGovAdmin && contributionAttrs.status === ContributionStatus.PROCESSED) {
+                throw new Error('User does not have permissions to change status to processed');
+            }
+        }
+
+        if (Object.keys(contributionAttrs).includes('matchAmount')) {
+            if (!isGovAdmin) {
+                throw new Error('User does not have permissions to change matchAmount');
+            }
+        }
+
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 contributionRepository.update(contributionAttrs.id, attrs),
@@ -324,6 +364,131 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR
             });
+        } else {
+            throw new Error('User does not have permissions');
+        }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<void> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+
+        const contribution = await contributionRepository.findOneOrFail(contributionId, {
+                relations: ['campaign', 'government']
+            }) as Contribution;
+
+        if (contribution.matchResult) {
+            return;
+        }
+
+        if (contribution.validateContributorAddress()) {
+            contribution.matchResult = await retrieveResultAsync({
+                first_name: contribution.firstName,
+                last_name: contribution.lastName,
+                addr1: contribution.address1,
+                addr2: contribution.address2,
+                city: contribution.city,
+                state: contribution.state,
+                zip_code: contribution.zip
+            });
+
+            if (contribution.matchResult.exact.length > 0) {
+                contribution.matchId = contribution.matchResult.exact[0].id;
+                contribution.matchStrength = MatchStrength.EXACT;
+
+            } else if (contribution.matchResult.strong.length > 0) {
+                contribution.matchStrength = MatchStrength.STRONG;
+            } else if (contribution.matchResult.weak.length > 0) {
+                contribution.matchStrength = MatchStrength.WEAK;
+            } else {
+                contribution.matchId = crypto.randomBytes(16).toString('hex');
+                contribution.matchStrength = MatchStrength.NONE;
+            }
+            await contributionRepository.save(contribution);
+        }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface UpdateMatchResultAttrs {
+    currentUserId: number;
+    matchStrength: MatchStrength;
+    matchId: string;
+    contributionId: number;
+}
+
+export async function updateMatchResultAsync(attrs: UpdateMatchResultAttrs): Promise<boolean> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+
+        const contribution = await contributionRepository.findOneOrFail(attrs.contributionId, {
+            relations: ['government', 'campaign']
+        }) as Contribution;
+
+        if (contribution.matchStrength === MatchStrength.EXACT) {
+            throw new Error('Contribution has an exact match, cannot update');
+        }
+
+        const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
+
+        if (hasPermissions) {
+            contribution.matchId = attrs.matchId;
+            contribution.matchStrength = attrs.matchStrength;
+            await contributionRepository.save(contribution);
+            return true;
+        } else {
+            throw new Error('User does not have permissions');
+        }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export interface GetMatchResultAttrs {
+    currentUserId: number;
+    contributionId: number;
+}
+
+export interface MatchResults {
+    matchId: string;
+    matchStrength: MatchStrength;
+    results: {
+        exact: PersonMatchType[];
+        strong: PersonMatchType[];
+        weak: PersonMatchType[];
+        none: string;
+    };
+}
+
+export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<MatchResults> {
+    try {
+        const defaultConn = getConnection('default');
+        const contributionRepository = defaultConn.getRepository('Contribution');
+
+        const contribution = await contributionRepository.findOneOrFail(attrs.contributionId, {
+            relations: ['government']
+        }) as Contribution;
+
+        const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
+
+        if (hasPermissions) {
+            const matchResults: MatchResults = {
+                matchId: contribution.matchId,
+                matchStrength: contribution.matchStrength,
+                results: {
+                    exact: contribution.matchResult.exact,
+                    strong: contribution.matchResult.strong,
+                    weak: contribution.matchResult.weak,
+                    none: crypto.randomBytes(16).toString('hex')
+                }
+            };
+            return matchResults;
         } else {
             throw new Error('User does not have permissions');
         }

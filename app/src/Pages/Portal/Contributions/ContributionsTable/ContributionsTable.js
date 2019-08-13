@@ -1,10 +1,12 @@
 import React from "react";
 import PageHoc from "../../../../components/PageHoc/PageHoc";
 import { connect } from "react-redux";
+import FilterContribution from "../../../../components/Forms/FilterContributions/index"
 import Table from "../../../../components/Table";
 import WithAdminPermissions from "../../../../components/WithAdminPermissions/";
 import Button from "../../../../components/Button/Button";
 import { getContributionsList } from "../../../../state/ducks/contributions";
+import DateRangeField from "../../../../components/Fields/DateRangeField";
 
 const columnInfo = (title, field, type = undefined) =>
 	type ? { title, field, type } : { title, field }
@@ -47,7 +49,7 @@ const ContributionsTable = ({ ...props }) => {
 	}
 	const actions = [
 		actionInfo("View", "primary", (event, rowData) => {
-			props.history.push(`/contributions/ready/${rowData.id}`)
+			props.history.push(`/contributions/${rowData.id}`)
 		}),
 		actionInfo("Add New Contribution", "primary", () => props.history.push({ pathname: "/contributions/add" }), true)
 	]
@@ -63,9 +65,11 @@ const ContributionsTable = ({ ...props }) => {
 			</WithAdminPermissions>
 		)
 	}
+
 	return (
 		<PageHoc>
 			<h1>Contributions</h1>
+			<FilterContribution />
 			<Table
 				isLoading={isLoading}
 				title={title}
@@ -77,7 +81,7 @@ const ContributionsTable = ({ ...props }) => {
 			/>
 		</PageHoc>
 	)
-}
+};
 
 export default connect(state => ({
 	isListLoading: state.campaigns.isLoading,

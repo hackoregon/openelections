@@ -11,19 +11,18 @@ class SignIn extends Component {
   render() {
     return (
       <PageHoc>
-        <SignInForm {...this.props} />
+        <form>
+          <SignInForm {...this.props} />
+        </form>
       </PageHoc>
     );
   }
 }
 
 export default connect(
-  state => ({
-  }), 
-  dispatch => {
-    return {
-      login: (email,password) => dispatch(login(email,password)),
-      dispatch
-    }
-  }
+  null,
+  dispatch => ({
+    login: (email, password) => dispatch(login(email, password)),
+    dispatch
+  })
 )(SignIn);
