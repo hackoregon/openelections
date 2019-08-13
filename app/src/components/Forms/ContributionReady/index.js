@@ -14,6 +14,7 @@ import {
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 class ContributionReady extends React.Component {
+
   updateContribution = (payload) => {
     const { updateContribution, showMessage } = this.props
     delete payload.date // TODO: should remove this later, current endpoint failing when including date in payload.
