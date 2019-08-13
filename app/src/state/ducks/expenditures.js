@@ -6,7 +6,11 @@ import action from "../utils/action";
 import { addEntities, ADD_ENTITIES } from "./common";
 import { createSelector } from "reselect";
 import { get } from "lodash";
+import {getGovOrCampIdAttributes} from "./auth"
+
+
 export const STATE_KEY = "expenditures";
+
 
 // Action Types
 export const actionTypes = {
@@ -92,10 +96,18 @@ export const actionCreators = {
 
 // Side Effects, e.g. thunks
 export function createExpenditure(expenditureAttrs) {
+
+
   return async (dispatch, getState, { api, schema }) => {
+    const x = getGovOrCampIdAttributes(getState());
+    
+let r = {...expenditureAttrs, ...x};
+console.log('x', r);
     dispatch(actionCreators.createExpenditure.request());
     try {
-      const response = await api.createExpenditure(expenditureAttrs);
+
+
+      const response = await api.createExpenditure(r);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.expenditure);
         dispatch(addEntities(data.entities));
@@ -127,6 +139,8 @@ export function updateExpenditure(expenditureAttrs) {
 
 export function getExpenditures(expenditureSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
+    const x = getGovOrCampIdAttributes(getState());
+    console.log('x', x);
     dispatch(actionCreators.getExpenditures.request());
     try {
       const response = await api.getExpenditures(expenditureSearchAttrs);

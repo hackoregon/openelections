@@ -5,11 +5,7 @@ import { connect } from "react-redux";
 import { login } from "../../../../state/ducks/auth";
 
 class ExpensesDetail extends Component {
-  componentWillUpdate(newprops) {
-    if (!(typeof newprops.state.me == "undefined" || !newprops.state.me)) {
-      this.props.history.push("/dashboard");
-    }
-  }
+ 
   render() {
     return (
       <PageHoc>

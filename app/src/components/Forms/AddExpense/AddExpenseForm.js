@@ -5,48 +5,87 @@ import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
 import DateField from "../../Fields/DateField";
+import {PayeeTypeEnum, ExpenditureSubTypeEnum, ExpenditureTypeEnum} from "../../../api/api"
 
+const {EXPENDITURE,OTHER,OTHER_DISBURSEMENT} = ExpenditureTypeEnum
+const {ACCOUNTS_PAYABLE, CASH_EXPENDITURE, PERSONAL_EXPENDITURE, ACCOUNTS_PAYABLE_RESCINDED, CASH_BALANCE_ADJUSTMENT,MISCELLANEOUS_OTHER_DISBURSEMENT, REFUND_OF_CONTRIBUTION } = ExpenditureSubTypeEnum
+const expenditureTypes = [];
+expenditureTypes[EXPENDITURE] = [ACCOUNTS_PAYABLE, CASH_EXPENDITURE, PERSONAL_EXPENDITURE ]
+expenditureTypes[OTHER] = [ACCOUNTS_PAYABLE_RESCINDED, CASH_BALANCE_ADJUSTMENT]
+expenditureTypes[OTHER_DISBURSEMENT] = [MISCELLANEOUS_OTHER_DISBURSEMENT, REFUND_OF_CONTRIBUTION]
+// date: number;
+// type: ExpenditureType;
+// subType: ExpenditureSubType;
+// payeeType: PayeeType;
+// name: string;
+// address1: string;
+// address2?: string;
+// city: string;
+// state: string;
+// zip: string;
+// amount: number;
+// description: string;
+// status: ExpenditureStatus;
+// currentUserId: number;
+// campaignId: number;
+// governmentId: number;
 const fields = {
   // BASICS SECTION
   amount: {
-    label: "Amount of Expenditure",
+    label: "Amount of Expenditure *",
     section: "sectionOne",
     component: TextField,
-    validation: Yup.number("Choose the amount of expenditure")
-      // NEEDS TO BE FORMATTED AS CURRENCY
-      .required("The expenditure amount is required")
+    // validation: Yup.number("Choose the amount of expenditure")
+    //   // NEEDS TO BE FORMATTED AS CURRENCY
+    //   .required("The expenditure amount is required")
   },
-  dateOfExpenditure: {
+  date: {
     label: "Date of Expenditure",
     section: "sectionOne",
     component: DateField,
-    validation: Yup.number("Enter date of expenditure").required(
+    validation: Yup.date("Enter date of expenditure").required(
       // date format? validate specifically?
       "A expenditure date is required"
     )
   },
-  typeOfExpenditure: {
+  type: {
     label: "Type of Expenditure",
     section: "sectionOne",
     component: SelectField,
     options: {
-      values: ["Expenditure", "Other", "Other Disbursement"]
+      values: [
+        {value: ExpenditureTypeEnum.EXPENDITURE, label: 'Expenditure'},
+        {value: ExpenditureTypeEnum.OTHER, label: 'Other'},
+        {value: ExpenditureTypeEnum.OTHER_DISBURSEMENT, label: 'Other Disbursement'},
+      ],
+    //values: Object.values(ExpenditureTypeEnum),
     },
     validation: Yup.string("Choose the type of contribution").required(
       "A contribution type is required"
     )
   },
-  subTypeOfExpenditure: {
+  subType: {
     label: "Subtype of Expenditure",
     section: "sectionOne",
     component: SelectField,
     options: {
+      limitByField: 'type',
+      limitByValues: expenditureTypes,
+      values: Object.values(ExpenditureSubTypeEnum),
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
-      values: [
-        "Accounts Payable",
-        "Cash Expenditure",
-        "Personal Expenditure for Reimbursement"
-      ]
+      
+      // isDisabled={!values.company.value},
+      //       options={
+      //         values.company.value ? employees[values.company.value] : []
+      //       }
+      
+      
+      
+     // [
+        // "Accounts Payable",
+        // "Cash Expenditure",
+        // "Personal Expenditure for Reimbursement"
+     // ]
       // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
       // values: [
       //   "Accounts Payable Rescinded", "Cash Balance Adjustment"
@@ -60,32 +99,32 @@ const fields = {
       "The expenditure subtype is required"
     )
   },
-  paymentMethod: {
-    label: "Payment Method",
-    section: "sectionOne",
-    component: SelectField,
-    options: {
-      values: [
-        "Check",
-        "Credit Card",
-        "Debit Card",
-        "Electronic Check",
-        "Electronic Funds Transfer"
-      ]
-    },
-    validation: Yup.string("Choose the payment method").required(
-      "The payment method is required"
-    )
-  },
-  checkNumber: {
-    label: "Check Number",
-    section: "sectionOne",
-    component: TextField,
-    validation: Yup.number("Enter your check number").required(
-      "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
-    )
-  },
-  purposeOfExpenditure: {
+  // paymentMethod: {
+  //   label: "Payment Method (not in API or DB)",
+  //   section: "sectionOne",
+  //   component: SelectField,
+  //   options: {
+  //     values: [
+  //       "Check",
+  //       "Credit Card",
+  //       "Debit Card",
+  //       "Electronic Check",
+  //       "Electronic Funds Transfer"
+  //     ]
+  //   },
+  //   validation: Yup.string("Choose the payment method").required(
+  //     "The payment method is required"
+  //   )
+  // },
+  // checkNumber: {
+  //   label: "Check Number",
+  //   section: "sectionOne",
+  //   component: TextField,
+  //   validation: Yup.number("Enter your check number").required(
+  //     "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
+  //   )
+  // },
+  description: {
     label: "Purpose of Expenditure",
     section: "sectionOne",
     component: SelectField,
@@ -122,13 +161,14 @@ const fields = {
     section: "sectionTwo",
     component: SelectField,
     options: {
-      values: ["Individual", "Business Entity", "Candidate"]
+      values: Object.values(PayeeTypeEnum),
+      values_display: ["Individual", "Business Entity", "Candidate"]
     },
     validation: Yup.string("Select the payee type").required(
       "The payee type is required"
     )
   },
-  payeeName: {
+  name: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
     section: "sectionTwo",
@@ -137,7 +177,7 @@ const fields = {
       "The payee's name is required"
     )
   },
-  streetAddress: {
+  address1: {
     label: "Street Address/PO Box",
     section: "sectionTwo",
     component: TextField,
@@ -145,20 +185,20 @@ const fields = {
       "The payee's street address is required"
     )
   },
-  addressLine2: {
+  address2: {
     label: "Address Line 2",
     section: "sectionTwo",
     component: TextField
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
-  countryRegion: {
-    label: "Country/Region",
-    setion: "sectionTwo",
-    component: TextField,
-    validation: Yup.string("Enter the payee's country or region").required(
-      "The payee's country or region is required"
-    )
-  },
+  // countryRegion: {
+  //   label: "Country/Region",
+  //   setion: "sectionTwo",
+  //   component: TextField,
+  //   validation: Yup.string("Enter the payee's country or region").required(
+  //     "The payee's country or region is required"
+  //   )
+  // },
   city: {
     label: "City",
     section: "sectionTwo",
@@ -234,7 +274,7 @@ const fields = {
       "Your state is required"
     )
   },
-  zipcode: {
+  zip: {
     label: "Zipcode",
     section: "sectionTwo",
     component: TextField,
@@ -242,21 +282,21 @@ const fields = {
       "A zipcode is required"
     )
   },
-  county: {
-    label: "County",
-    setion: "sectionTwo",
-    component: TextField,
-    validation: Yup.string("Enter the payee's county").required(
-      "The payee's county is required"
-    )
-  },
+  // county: {
+  //   label: "County",
+  //   setion: "sectionTwo",
+  //   component: TextField,
+  //   validation: Yup.string("Enter the payee's county").required(
+  //     "The payee's county is required"
+  //   )
+  // },
 
-  notes: {
-    label: "Notes",
-    section: "sectionThree",
-    component: TextField,
-    validation: Yup.string("Add any additional notes")
-  }
+  // notes: {
+  //   label: "Notes",
+  //   section: "sectionThree",
+  //   component: TextField,
+  //   validation: Yup.string("Add any additional notes")
+  // }
 };
 
 const AddExpenseForm = ({ initialValues, onSubmit, children }) => (

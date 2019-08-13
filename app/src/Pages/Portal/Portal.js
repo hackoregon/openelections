@@ -10,7 +10,7 @@ import PageHoc from "../../components/PageHoc/PageHoc";
 import Sidebar from "../../components/Sidebar";
 import WithPermissions from "../../components/WithPermissions"
 import ManageCampaignPage from "./ManageCampaign";
-import ContributionsPage from "./Contributions"
+import ContributionsPage from "./Contributions/index"
 
 /* @jsx jsx */
 import { css, jsx } from "@emotion/core";
@@ -98,8 +98,7 @@ const Portal = props => {
                         path="/contributions"
                         component={ContributionsPage}
                       />
-                      <Route 
-                        exact 
+                      <Route
                         path="/expenses" 
                         component={ExpensesPage} 
                       />

@@ -192,33 +192,34 @@ const labelBlock = (
   </div>
 );
 
-const AddExpense = () => (
+const AddExpense = (props) => (
   <AddExpenseForm
-    onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+     {...props}
+    onSubmit={data => props.createExpenditure(data)}
     initialValues={{
       // BASICS
-      amount: undefined,
-      dateOfExpenditure: "", // Date.now(), // FORMAT?
-      typeOfExpenditure: "",
-      subTypeOfExpenditure: "",
-      paymentMethod: "",
-      checkNumber: undefined,
-      purposeOfExpenditure: "",
+      amount: "",
+      date: "", // Date.now(), // FORMAT?
+      type: "expenditure",
+      subType: "",
+     // paymentMethod: "",
+    //  checkNumber: undefined,
+      description: "",
 
       // PAYEE INFO
       payeeType: "",
-      payeeName: "",
-      streetAddress: "",
-      addressLine2: "",
-      countryRegion: "",
+      name: "",
+      address1: "",
+      address2: "",
+      //countryRegion: "",
       city: "Portland",
       state: "OR",
-      zipcode: "97201",
-      county: "Multnomah",
-      notes: ""
+      zip: "97201",
+     // county: "Multnomah",
+     // notes: ""
     }}
   >
-    {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
+    {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ } ) => (
       <React.Fragment>
         {/* HEADER SECTION */}
         <div css={containers.header}>
@@ -257,13 +258,13 @@ const AddExpense = () => (
           <h3 css={sectionStyles.title}>Basics</h3>
           <div css={containers.main}>
             <h2>{formFields.amount}</h2>
-            <h2>{formFields.dateOfExpenditure}</h2>
-            <h2>{formFields.typeOfExpenditure}</h2>
-            <h2>{formFields.subTypeOfExpenditure}</h2>
-            <h2>{formFields.paymentMethod}</h2>
-            <h2>{formFields.checkNumber}</h2>
+            <h2>{formFields.date}</h2>
+            <h2>{formFields.type}</h2>
+            <h2>{formFields.subType}</h2>
+            {/* <h2>{formFields.paymentMethod}</h2> */}
+            {/* <h2>{formFields.checkNumber}</h2> */}
           </div>
-          <h2 css={containers.fullWidth}>{formFields.purposeOfExpenditure}</h2>
+          <h2 css={containers.fullWidth}>{formFields.description}</h2>
         </div>
 
         {/* PAYEE INFO SECTION */}
@@ -271,18 +272,18 @@ const AddExpense = () => (
           <h3 css={sectionStyles.title}>Payee Information</h3>
           <div css={containers.sectionTwo}>
             <h2>{formFields.payeeType}</h2>
-            <h2>{formFields.payeeName}</h2>
+            <h2>{formFields.name}</h2>
           </div>
-          <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
-          <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
+          <h2 css={containers.fullWidth}>{formFields.address1}</h2>
+          <h2 css={containers.fullWidth}>{formFields.address2}</h2>
           <div css={containers.cityStateZip}>
-            <h2>{formFields.countryRegion}</h2>
+            {/* <h2>{formFields.countryRegion}</h2> */}
             <h2>{formFields.city}</h2>
             <h2>{formFields.state}</h2>
           </div>
           <div css={containers.sectionTwo}>
             <h2>{formFields.zipcode}</h2>
-            <h2>{formFields.county}</h2>
+            {/* <h2>{formFields.county}</h2> */}
           </div>
         </div>
         <div css={sectionStyles.main}>

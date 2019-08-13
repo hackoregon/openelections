@@ -322,7 +322,8 @@ export const isCampStaff = state => {
 }
 export const getGovOrCampIdAttributes = state => {
   if(state.auth.me){
-    const { governmentId = 1 , campaignId } = state.auth.me.permissions[0]
-    return {governmentId, campaignId };
+    const { governmentId = 1 , campaignId, id } = state.auth.me.permissions[0]
+    const currentUserId=id;
+    return {governmentId, campaignId, currentUserId };
   }
 }

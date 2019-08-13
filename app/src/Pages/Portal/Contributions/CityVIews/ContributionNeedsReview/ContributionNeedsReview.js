@@ -3,11 +3,13 @@ import { connect } from "react-redux";
 import { login } from "../../../../../state/ducks/auth";
 import PageHoc from '../../../../../components/PageHoc/PageHoc';
 import ContributionNeedsReviewForm from '../../../../../components/Forms/CityViews/ContributionNeedsReview/ContributionNeedsReviewForm';
+import WithAdminPermissions from "../../../../../components/WithAdminPermissions";
 
 class ContributionNeedsReview extends Component {
   componentWillUpdate(newprops) {
     if (!(typeof newprops.state.me == "undefined" || !newprops.state.me)) {
-      this.props.history.push("/dashboard");
+   //TODO USE WithAdminPermissions
+      //  this.props.history.push("/dashboard");
     }
   }
   render() {

@@ -16,6 +16,11 @@ const Expense = props => {
         <Switch location={location}>
           <Route 
             exact 
+            path="/expenses"
+            component={ExpensesTable} 
+          />          
+          <Route 
+            exact 
             path={`${match.url}/add`}
             component={AddExpense}
           />
@@ -24,11 +29,7 @@ const Expense = props => {
             path={`${match.url}/:id`}
             component={ExpensesDetail}
           />
-          <Route 
-            exact 
-            path={`${match.url}/`}
-            component={ExpensesTable} 
-          />
+
         </Switch>
       )}}
     />
