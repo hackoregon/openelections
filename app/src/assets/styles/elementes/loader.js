@@ -12,9 +12,10 @@ export default (radius, color) => {
       height: ${radius}px;
     }
     & {
+      display: inline-block;
       font-size: 10px;
       position: relative;
-      text-indent: -9999px;
+      color: transparent;
       border-top: ${radius / 10}px solid ${convertHex(color, 20)};
       border-right: ${radius / 10}px solid ${convertHex(color, 20)};
       border-bottom: ${radius / 10}px solid ${convertHex(color, 20)};
