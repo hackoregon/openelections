@@ -13,7 +13,11 @@
         "testone": "mocha --timeout 5000 --require ts-node/register test/setup.ts",
         "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
         "seed": "ts-node models/seeds/index.ts",
-        "console": "ts-node"
+        "console": "ts-node",
+        "jobs": "ts-node jobs/index.ts",
+        "buildprocessors": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/",
+        "buildprocessorsandrunjobs": "npm run buildprocessors && npm run jobs",
+        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs"
     },
     "dependencies": {
         "@types/bcrypt": "^3.0.0",
@@ -22,6 +26,7 @@
         "@types/express-session": "^1.15.12",
         "aws-sdk": "^2.449.0",
         "bcryptjs": "^2.4.3",
+        "bull": "^3.10.0",
         "chai": "^4.2.0",
         "class-validator": "^0.9.1",
         "cookie-parser": "~1.4.3",
@@ -49,6 +54,7 @@
         "typescript": "^3.5.1"
     },
     "devDependencies": {
+        "@types/bull": "^3.10.2",
         "@types/mocha": "^5.2.6",
         "@types/node": "^8.0.29",
         "chai-as-promised": "^7.1.1",
