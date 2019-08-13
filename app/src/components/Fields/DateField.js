@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TextFieldMaterial from "@material-ui/core/TextField";
+import TextField from "../TextField/TextField";
 
 const DateField = (props) => {
-  const { id, label, formik } = props;
+  const { id, label, formik, isRequired } = props;
 
   return (
   <TextFieldMaterial
+    required={isRequired}
     id={id}
     name={id}
     label={label}
