@@ -12,7 +12,7 @@ LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
 WORKDIR /app
 COPY --from=build-stage /app/build/ /app/build/
 COPY --from=build-stage /app/node_modules/ /app/node_modules/
-COPY --from=build-stage /app/pm2.json /app/pm2-jobs.json
+COPY --from=build-stage /app/pm2-jobs.json /app/pm2-jobs.json
 
 RUN apk add --no-cache curl
 
