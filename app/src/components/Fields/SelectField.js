@@ -4,35 +4,88 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+ 
+/**
+  * 
+  * If a simple array, ['OR','WA','CA'], is passed to options.values 
+  * then the value and label will be set the same. To specify a differnt 
+  * label and value use the following format.
+  * 
+  *  usStates:{
+  *   option: {
+  *     values: [ 
+  *       {value: "OR", label: "Oregon State"},
+  *       {value: 'WA', label: 'Washington State'},
+  *     ],
+  *   }
+  *  }
+  *  usCities:{
+  *   option: {
+  *     limitByField: "usaState",       //Dynamic options based on the usStates field
+  *     limitByValues:{
+  *       "OR":["portland"],["salem"],  //When 'OR' is selected in state show these options
+  *       "WA":["vancouver", "seattle"]
+  *         
+  *     }
+  *     values: [
+  *       {value: "portland", label: "Portland"},
+  *       {value: "vancouver", label: "Vancouver"},
+  *       {value: "seatte", label: "Seattle"},
+  *       {value: "salem", label: "Salem"},
+  *     ],
+  *   }
+  *  }
+  * 
+  */ 
+ 
+const SelectField = ({ id, label, options, formik }) => {
 
-const SelectField = ({ id, label, options, formik }) => (
-  <FormControl fullWidth>
-    <InputLabel htmlFor={id}>{label}</InputLabel>
-    <Select
-      value={formik.values[id]}
-      onChange={formik.handleChange}
-      inputProps={{
-        name: id,
-        id: id
-      }}
-      fullWidth
-    >
-      {options.values.map(role => (
-        <MenuItem value={role} key={role}>
-          {role}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
-);
+  let optionValues = options.values;
 
-SelectField.propTypes = {
-  id: PropTypes.string,
-  label: PropTypes.string,
-  options: PropTypes.shape({
-    values: PropTypes.arrayOf(PropTypes.string)
-  }),
-  formik: PropTypes.shape({})
-};
+  if(options.values && !options.values[0].value){
+    optionValues = options.values.map(x => ({value: x, label: x }))
+  }
+
+  if(options.limitByField){
+    if(options.limitByValues){
+      let includeValues = options.limitByValues[formik.values[options.limitByField]];
+      optionValues = optionValues.filter(x => includeValues.indexOf(x.value) != -1);
+    }
+  }
+
+  return (
+    <FormControl fullWidth>
+      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <Select
+        value={formik.values[id]}
+        onChange={formik.handleChange}
+        inputProps={{
+          name: id,
+          id: id
+        }}
+        fullWidth
+      >
+        {optionValues.map((role, key) => (
+          <MenuItem value={role.value} key={key}>
+            {role.label } 
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )};
+  SelectField.propTypes = {
+    id: PropTypes.string,
+    label: PropTypes.string,
+    options: PropTypes.shape({
+      limitByField: PropTypes.string,
+      limitByValues: function(props, propName, componentName) {
+        if (props['limitByField'] != undefined && props[propName] == undefined ){
+          return new Error('limitByValues array is required when limitByField is set');
+        }
+      },
+      values: PropTypes.array.isRequired
+    }),
+    formik: PropTypes.shape({})
+  };
 
 export default SelectField;
