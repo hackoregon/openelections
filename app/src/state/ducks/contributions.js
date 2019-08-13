@@ -17,11 +17,12 @@ export const actionTypes = {
   GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS"),
   GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID"),
   ARCHIVE_CONTRIBUTION: createActionTypes(STATE_KEY, "ARCHIVE_CONTRIBUTION"),
-  POST_CONTRIBUTION_COMMENT:  createActionTypes(STATE_KEY, "POST_CONTRIBUTION_COMMENT"),
+  POST_CONTRIBUTION_COMMENT: createActionTypes(STATE_KEY, "POST_CONTRIBUTION_COMMENT"),
 };
 
 // Initial State
 export const initialState = {
+  list: {},
   isLoading: false,
   error: null
 };
@@ -29,7 +30,7 @@ export const initialState = {
 // Reducer
 export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
-    return { ...state, ...action.payload.contributions };
+    return { ...state, list: action.payload.contributions || {} };
   },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -68,22 +69,22 @@ export default createReducer(initialState, {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.ARCHIVE_CONTRIBUTION.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true};
+    return { ...state, isLoading: true };
   },
   [actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS]: (state) => {
     return { ...state, isLoading: false };
   },
   [actionTypes.ARCHIVE_CONTRIBUTION.FAILURE]: (state) => {
-  return { ...state, isLoading: false , error: action.error };
+    return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST]: (state, action) => {
-    return { ...state, isLoading: true};
+    return { ...state, isLoading: true };
   },
   [actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS]: (state) => {
     return { ...state, isLoading: false };
   },
   [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: (state) => {
-    return { ...state, isLoading: false , error: action.error };
+    return { ...state, isLoading: false, error: action.error };
   },
 
 });
@@ -126,7 +127,7 @@ export const actionCreators = {
 };
 
 // Side Effects, e.g. thunks
-export function createContribution(contributionAttrs) {
+export function createContribution (contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createContribution.request());
     try {
@@ -145,7 +146,7 @@ export function createContribution(contributionAttrs) {
   };
 }
 
-export function updateContribution(contributionAttrs) {
+export function updateContribution (contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.updateContribution.request());
     try {
@@ -164,13 +165,15 @@ export function updateContribution(contributionAttrs) {
   };
 }
 
-export function getContributions(contributionSearchAttrs) {
+export function getContributions (contributionSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
+
       if (response.status === 200) {
         const data = normalize(await response.json(), [schema.contribution]);
+
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
@@ -182,7 +185,7 @@ export function getContributions(contributionSearchAttrs) {
   };
 }
 
-export function getContributionById(id) {
+export function getContributionById (id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributionById.request());
     try {
@@ -200,7 +203,7 @@ export function getContributionById(id) {
   };
 }
 
-export function archiveContribution(id) {
+export function archiveContribution (id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.archiveContribution.request());
     try {
@@ -218,7 +221,7 @@ export function archiveContribution(id) {
   };
 }
 
-export function postContributionComment(id, comment) {
+export function postContributionComment (id, comment) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.postContributionComment.request());
     try {
@@ -240,7 +243,5 @@ export const rootState = state => state || {};
 
 export const getContributionsList = createSelector(
   rootState,
-  state =>
-    Object.values(state.contributions)
-      .filter(withId => !!get(withId, "id"))
+  state => Object.values(state.contributions.list)
 );
