@@ -1,4 +1,4 @@
 export default Object.freeze({
-    concurrency: 10,
-    redis: 'redis://redis:6379'
+    concurrency: Number(process.env.JOB_CONCURRENCY) || 10,
+    redis: process.env.REDIS_URL || 'redis://redis:6379'
 });

@@ -39,3 +39,9 @@ services:
       - "POSTGRES_DB="
       - "POSTGRES_PORT=5432"
       - "POSTGRES_HOST="
+  jobs:
+    tty: true # Enables debugging capabilities when attached to this container.
+    user: root
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.jobs'
