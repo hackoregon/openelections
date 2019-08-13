@@ -220,6 +220,7 @@ export const mapContributionDataToForm = (contribution) => {
     calendarYearAggregate,
     inKindDescription,
     employerZipcode,
+    submitForMatch
   } = contribution
   return {
     // BASICS VALUES
@@ -229,6 +230,7 @@ export const mapContributionDataToForm = (contribution) => {
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
     amountOfContribution: amount,
     checkNumber: checkNumber,
+    submitForMatch: submitForMatch ? "Yes" : "No",
 
     // CONTRIBUTOR VALUES
     firstName,
@@ -279,7 +281,8 @@ export const mapContributionFormToData = (data) => {
     checkNumber,
     typeOfContributor,
     subTypeOfContribution,
-    typeOfContribution
+    typeOfContribution,
+    submitForMatch
   } = data
 
   return {
@@ -309,6 +312,7 @@ export const mapContributionFormToData = (data) => {
     contributorType: ContributorTypeEnum.INDIVIDUAL,
     inKindDescription: description,
     calendarYearAggregate: electionAggregate,
+    submitForMatch: submitForMatch === "Yes"
   }
 }
 

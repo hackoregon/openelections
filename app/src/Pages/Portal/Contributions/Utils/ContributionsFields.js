@@ -53,7 +53,7 @@ export const contributionsEmptyState = {
   subTypeOfContribution: "",
   typeOfContributor: "",
   amountOfContribution: 0.00,
-  oaeContributionType: "",
+  submitForMatch: "",
   paymentMethod: "",
   checkNumber: null,
 
@@ -140,20 +140,15 @@ export const fields = {
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
   ),
-  oaeContributionType: requiredFormField(
-    "OAE Contribution Type",
+  submitForMatch: requiredFormField(
+    "Submit for Match?",
     FormSectionEnum.BASIC,
     SelectField,
-    Yup.string("Choose the OAE contribution type"),
-    "The OAE contribution type is required",
+    Yup.string("Select yes or no."),
+    "This field is required.",
     [
-      "Seed Money",
-      "Matchable",
-      "Public Matching Contribution",
-      "Qualifying",
-      "Allowable",
-      "In-Kind: Paid Supervision of Volunteers",
-      "In-Kind: Other"
+      "Yes",
+      "No",
     ]
   ),
   paymentMethod: requiredFormField(
