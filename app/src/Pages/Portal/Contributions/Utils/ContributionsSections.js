@@ -274,8 +274,6 @@ export const ReadyHeaderSection = ({
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
     <div css={containers.header}>
-      <div css={headerStyles.leftColumn}></div>
-      <div css={headerStyles.rightColumn}>
         <div style={{ flexDirection: "column" }}>
           <Button
             css={headerStyles.submitButton}
@@ -287,7 +285,6 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
         </Button>
         </div>
       </div>
-    </div>
     <hr css={sectionStyles.dividerLine} />
   </>
 )
