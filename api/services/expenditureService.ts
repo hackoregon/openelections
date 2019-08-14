@@ -17,7 +17,7 @@ import { createActivityRecordAsync } from './activityService';
 import { User } from '../models/entity/User';
 
 export interface IAddExpenditureAttrs {
-    date: number;
+    date: string;
     type: ExpenditureType;
     subType: ExpenditureSubType;
     payeeType: PayeeType;

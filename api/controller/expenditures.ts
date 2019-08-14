@@ -67,8 +67,8 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsOptional()
     type: ExpenditureType;
 
-    @IsNumber()
-    date: number;
+    @IsString()
+    date: string;
 }
 
 export async function addExpenditure(request: IRequest, response: Response, next: Function) {
