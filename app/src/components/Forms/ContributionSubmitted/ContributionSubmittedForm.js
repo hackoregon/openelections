@@ -235,20 +235,17 @@ const fields = {
       "A zipcode is required"
     )
   },
-  contactType: {
-    label: "Contact Type",
+  email: {
+    label: "Email Address",
     section: "contributorSection",
     component: FieldValue,
-    options: {
-      values: ["Work Phone", "Extension", "Home Phone", "Fax", "Email address"] // get from Redux state eventually
-    },
-    validation: Yup.string("Select the best way to contact you")
+    validation: Yup.string("Enter your email address")
   },
-  contactInformation: {
-    label: "Contact Information",
+  phone: {
+    label: "Phone Number",
     section: "contributorSection",
     component: FieldValue,
-    validation: Yup.string("Enter your contact information")
+    validation: Yup.string("Enter your phone number")
   },
   occupation: {
     label: "Occupation",
