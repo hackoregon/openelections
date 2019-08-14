@@ -36,8 +36,9 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, values }) => {
+    {({ formFields, isValid, handleSubmit, values, formik }) => {
       const checkSelected = values.paymentMethod === "Check"
+      if(formik.values.amountOfContribution > 500 && formik.values.submitForMatch != "No"){ formik.setFieldValue('submitForMatch', 'No', false)}
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
