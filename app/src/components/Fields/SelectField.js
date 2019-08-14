@@ -76,7 +76,7 @@ const SelectField = ({ id, label, options, formik }) => {
         fullWidth
       >
        {optionValues.map((option, key) => (
-          <MenuItem value={option.value} key={key}>
+          <MenuItem value={option.value} key={key} className={classes.root}>
             {option.label } 
           </MenuItem>
         ))}
