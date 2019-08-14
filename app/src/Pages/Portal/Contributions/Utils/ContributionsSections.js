@@ -321,7 +321,10 @@ export const ContributorSection = ({ formFields }) => (
     <div css={containers.sectionTwo}>
       <h2>{formFields.email}</h2>
       <h2>{formFields.phone}</h2>
+<<<<<<< HEAD
       <h2>{formFields.phoneType}</h2>
+=======
+>>>>>>> update formFields from contactType/contactInfo to phone and email
       <h2>{formFields.occupation}</h2>
       <h2>{formFields.employerName}</h2>
     </div>
