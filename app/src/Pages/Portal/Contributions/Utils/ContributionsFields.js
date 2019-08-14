@@ -12,8 +12,8 @@ import {
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
-// import PhoneField from '../../../../components/Fields/PhoneField';
-// import EmailField from '../../../../components/Fields/EmailField';
+import PhoneField from '../../../../components/Fields/PhoneField';
+import EmailField from '../../../../components/Fields/EmailField';
 import CurrencyField from '../../../../components/Fields/CurrencyField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
@@ -186,14 +186,14 @@ export const fields = {
   firstName: formField(
     "Contributor's First Name",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    EmailField,
     Yup.string("Enter first name")
   ),
   // If entity selected, will require entity instead of first/last name
   lastNameOrEntity: formField(
     "Contributor's Last Name / Entity Name",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    PhoneField,
     Yup.string("Enter last name or entity name")
   ),
   streetAddress: formField(
