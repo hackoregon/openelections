@@ -16,7 +16,6 @@ import AddressLookupField from '../../../../components/Fields/AddressLookupField
 import {
   ContributorTypeFieldEnum,
   ContributionSubTypeFieldEnum,
-  ContactTypeFieldEnum,
   ContributionTypeFieldEnum
 } from '../../../../api/api';
 
@@ -65,8 +64,8 @@ export const contributionsEmptyState = {
   city: "Portland",
   state: "OR",
   zipcode: "97201",
-  contactType: "",
-  contactInformation: "",
+  email: "",
+  phone: "",
   occupation: "",
   employerName: "",
   employerCity: "Portland",
@@ -228,25 +227,17 @@ export const fields = {
     Yup.number("Enter your zipcode"),
     "A zipcode is required"
   ),
-  contactType: formField(
-    "Contact Type",
-    FormSectionEnum.CONTRIBUTOR,
-    SelectField,
-    Yup.string("Select the best way to contact you"),
-    [
-      ContactTypeFieldEnum.MOBILE_PHONE,
-      ContactTypeFieldEnum.WORK_PHONE,
-      ContactTypeFieldEnum.EXTENSION,
-      ContactTypeFieldEnum.HOME_PHONE,
-      ContactTypeFieldEnum.FAX,
-      ContactTypeFieldEnum.EMAIL
-    ]
-  ),
-  contactInformation: formField(
-    "Contact Information",
+  email: formField(
+    "Email Address",
     FormSectionEnum.CONTRIBUTOR,
     TextField,
-    Yup.string("Enter your contact information")
+    Yup.string("Enter your email address"),
+  ),
+  phone: formField(
+    "Phone Number",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter your phone number")
   ),
   occupation: formField(
     "Occupation",
