@@ -250,7 +250,7 @@ export const ReadyHeaderSection = ({
         <div css={headerStyles.leftColumn}>
           <InvoiceNumberBlock
             campaignName={campaignName}
-            lastEdited={format(new Date(lastEdited), 'MM/DD/YYYY')}
+            lastEdited={format(new Date(lastEdited), 'mm/DD/yyyy')}
           />
           <div style={{ display: "flex" }}>
             <LabelBlock labelsCount={labelsCount} />
