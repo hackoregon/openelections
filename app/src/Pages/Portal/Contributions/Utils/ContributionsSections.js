@@ -21,14 +21,15 @@ const containers = {
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   `,
   sectionTwo: css`
     display: grid;
+    width: 100%;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   `,
   fullWidth: css`
     display: grid;
@@ -38,7 +39,7 @@ const containers = {
     margin-bottom: 20px;
   `,
   cityStateZip: css`
-    width: 96%;
+    width: 100%;
     min-height: 25px;
     display: grid;
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
@@ -324,8 +325,8 @@ export const ContributorSection = ({ formFields }) => (
       <h2>{formFields.phone}</h2>
       <h2>{formFields.phoneType}</h2>
       <h2>{formFields.occupation}</h2>
-      <h2>{formFields.employerName}</h2>
     </div>
+    <h2 css={containers.fullWidth} style={{marginTop: '45px'}}>{formFields.employerName}</h2>
     <div css={containers.cityStateZip}>
       <h2>{formFields.employerCity}</h2>
       <h2>{formFields.employerState}</h2>
