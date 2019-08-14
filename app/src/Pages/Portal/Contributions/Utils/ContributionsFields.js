@@ -12,6 +12,9 @@ import {
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
+// import PhoneField from '../../../../components/Fields/PhoneField';
+// import EmailField from '../../../../components/Fields/EmailField';
+import CurrencyField from '../../../../components/Fields/CurrencyField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
   ContributorTypeFieldEnum,
@@ -143,7 +146,7 @@ export const fields = {
   amountOfContribution: requiredFormField(
     "Amount of Contribution",
     FormSectionEnum.BASIC,
-    TextField,
+    CurrencyField,
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
   ),
