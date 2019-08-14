@@ -58,8 +58,13 @@ export const contributionsEmptyState = {
   typeOfContribution: "",
   subTypeOfContribution: "",
   typeOfContributor: "",
+<<<<<<< HEAD
   amountOfContribution: 0.00,
   submitForMatch: "No",
+=======
+  amountOfContribution: undefined,
+  submitForMatch: "",
+>>>>>>> update amountOfContribution to undefined
   paymentMethod: "",
   checkNumber: undefined,
 
@@ -142,7 +147,6 @@ export const fields = {
     "A contributor type is required",
     individualContributorValues.concat(entityContributorValues)
   ),
-  // TODO: Needs to be formatted as currency
   amountOfContribution: requiredFormField(
     "Amount of Contribution",
     FormSectionEnum.BASIC,
@@ -193,7 +197,7 @@ export const fields = {
   lastNameOrEntity: formField(
     "Contributor's Last Name / Entity Name",
     FormSectionEnum.CONTRIBUTOR,
-    PhoneField,
+    TextField,
     Yup.string("Enter last name or entity name")
   ),
   streetAddress: formField(
