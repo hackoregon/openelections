@@ -5,7 +5,7 @@ import Form from "../../Form/Form";
 import TextField from "../../Fields/TextField";
 import SelectField from "../../Fields/SelectField";
 import DateField from "../../Fields/DateField";
-import {PayeeTypeEnum, ExpenditureSubTypeEnum, ExpenditureTypeEnum} from "../../../api/api"
+import { PayeeTypeEnum, ExpenditureSubTypeEnum, ExpenditureTypeEnum} from "../../../api/api"
 
 const {EXPENDITURE,OTHER,OTHER_DISBURSEMENT} = ExpenditureTypeEnum
 const {ACCOUNTS_PAYABLE, CASH_EXPENDITURE, PERSONAL_EXPENDITURE, ACCOUNTS_PAYABLE_RESCINDED, CASH_BALANCE_ADJUSTMENT,MISCELLANEOUS_OTHER_DISBURSEMENT, REFUND_OF_CONTRIBUTION } = ExpenditureSubTypeEnum
@@ -32,10 +32,10 @@ expenditureTypes[OTHER_DISBURSEMENT] = [MISCELLANEOUS_OTHER_DISBURSEMENT, REFUND
 const fields = {
   // BASICS SECTION
   amount: {
-    label: "Amount of Expenditure *",
+    label: "Amount of Expenditure",
     section: "sectionOne",
     component: TextField,
-    // validation: Yup.number("Choose the amount of expenditure")
+     validation: Yup.number("Choose the amount of expenditure")
     //   // NEEDS TO BE FORMATTED AS CURRENCY
     //   .required("The expenditure amount is required")
   },
@@ -71,7 +71,18 @@ const fields = {
     options: {
       limitByField: 'type',
       limitByValues: expenditureTypes,
-      values: Object.values(ExpenditureSubTypeEnum),
+      valuessss: Object.values(ExpenditureSubTypeEnum),
+
+      values: [
+        {value: ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE, label: 'Accounts Payable'},
+        {value: ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED, label: 'Accounts Payable Rescinded'},
+        {value: ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT, label: 'Cash Balance Adjustment'},
+        {value: ExpenditureSubTypeEnum.CASH_EXPENDITURE, label: 'Cash Expenditure'},
+        {value: ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT, label: 'Miscellaneous Other Disbursement'},
+        {value: ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE, label: 'Personal Expenditure for Reimbursement'},
+        {value: ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, label: 'Return or Refund of Contribution'} 
+      ], 
+
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
       
       // isDisabled={!values.company.value},
@@ -80,20 +91,6 @@ const fields = {
       //       }
       
       
-      
-     // [
-        // "Accounts Payable",
-        // "Cash Expenditure",
-        // "Personal Expenditure for Reimbursement"
-     // ]
-      // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
-      // values: [
-      //   "Accounts Payable Rescinded", "Cash Balance Adjustment"
-      // ]
-      // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
-      // values: [
-      //   "Miscellaneous Other Disbursement", "Return or Refund of Contribution"
-      // ]
     },
     validation: Yup.string("Choose the subtype of expenditure").required(
       "The expenditure subtype is required"

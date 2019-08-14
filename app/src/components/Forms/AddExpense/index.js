@@ -5,6 +5,8 @@ import AddExpenseForm from "./AddExpenseForm";
 import { css, jsx } from "@emotion/core";
 import { isLoggedIn } from "../../../state/ducks/auth";
 import { connect } from "react-redux";
+import {ExpenditureStatusEnum} from "../../../api/api"
+
 
 const containers = {
   header: css`
@@ -195,10 +197,10 @@ const labelBlock = (
 const AddExpense = (props) => (
   <AddExpenseForm
      {...props}
-    onSubmit={data => props.createExpenditure(data)}
+    onSubmit={data => props.createExpenditure({...data, status: ExpenditureStatusEnum.DRAFT })}
     initialValues={{
       // BASICS
-      amount: "",
+      amount: 0,
       date: "", // Date.now(), // FORMAT?
       type: "expenditure",
       subType: "",
