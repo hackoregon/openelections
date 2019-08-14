@@ -120,30 +120,7 @@ export const PhoneTypeEnum = Object.freeze({
   MOBILE: "Mobile",
   WORK: "Work",
   HOME: "Home"
-})
-
-export const ContactTypeFieldEnum = Object.freeze({
-  MOBILE_PHONE: "Mobile Phone",
-  WORK_PHONE: "Work Phone",
-  EXTENSION: "Extension",
-  HOME_PHONE: "Home Phone",
-  FAX: "Fax",
-  EMAIL: "Email address"
-})
-
-export const DataToContactTypeFieldMap = new Map([
-  [PhoneTypeEnum.MOBILE, ContactTypeFieldEnum.MOBILE_PHONE],
-  [PhoneTypeEnum.WORK, ContactTypeFieldEnum.WORK_PHONE],
-  [PhoneTypeEnum.HOME, ContactTypeFieldEnum.HOME_PHONE],
-])
-
-export const ContactTypeFieldToDataMap = new Map([
-  [ContactTypeFieldEnum.MOBILE_PHONE, PhoneTypeEnum.MOBILE],
-  [ContactTypeFieldEnum.HOME_PHONE, PhoneTypeEnum.HOME_PHONE],
-  [ContactTypeFieldEnum.WORK_PHONE, PhoneTypeEnum.WORK],
-  [ContactTypeFieldEnum.EXTENSION, PhoneTypeEnum.WORK],
-  [ContactTypeFieldEnum.FAX, PhoneTypeEnum.WORK],
-])
+});
 
 export const ContributionStatusEnum = Object.freeze({
   ARCHIVED: "Archived",
@@ -240,10 +217,8 @@ export const mapContributionDataToForm = (contribution) => {
     city,
     state,
     zipcode: zip,
-    // TODO: contact type can return null for users
-    // contactType: email ? ContactTypeFieldEnum.EMAIL : DataToContactTypeFieldMap.get(phoneType),
-    contactType: "",
-    contactInformation: email || phone,
+    email: email || "",
+    phone: phone || "",
     occupation: occupation || "",
     employerName: employerName || "",
     employerCity: employerCity || "",
@@ -276,8 +251,8 @@ export const mapContributionFormToData = (data) => {
     occupation,
     description,
     electionAggregate,
-    contactInformation,
-    contactType,
+    email,
+    phone,
     checkNumber,
     typeOfContributor,
     subTypeOfContribution,
@@ -299,9 +274,8 @@ export const mapContributionFormToData = (data) => {
     type: ContributionTypeFieldToDataMap.get(typeOfContribution),
     address1: streetAddress,
     address2: addressLine2,
-    email: contactType === ContactTypeFieldEnum.EMAIL ? contactInformation : null,
-    phone: contactType !== ContactTypeFieldEnum.EMAIL ? contactInformation : null,
-    phoneType: contactType !== ContactTypeFieldEnum.EMAIL ? ContactTypeFieldToDataMap.get(contactType) : null,
+    email,
+    phone,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     middleInitial: "",
