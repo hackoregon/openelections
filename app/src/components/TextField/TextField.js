@@ -11,9 +11,11 @@ const TextField = ({
   error,
   value,
   onChange,
-  onBlur
+  onBlur,
+  isRequired
 }) => (
   <MaterialTextField
+    required={isRequired}
     id={id}
     name={name}
     label={label}

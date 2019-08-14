@@ -55,7 +55,7 @@ export const contributionsEmptyState = {
   amountOfContribution: 0.00,
   submitForMatch: "",
   paymentMethod: "",
-  checkNumber: null,
+  checkNumber: undefined,
 
   // CONTRIBUTOR VALUES
   firstName: "",
