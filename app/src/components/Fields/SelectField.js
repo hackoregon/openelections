@@ -17,6 +17,19 @@ const useStyles = makeStyles(theme => ({
 
 const SelectField = ({ id, label, options, formik, isRequired }) => {
   const classes = useStyles();
+  let optionValues = options.values;
+
+  if(options.values && !options.values[0].value){
+    optionValues = options.values.map(x => ({value: x, label: x }))
+  }
+
+  if(options.limitByField){
+    if(options.limitByValues){
+      let includeValues = options.limitByValues[formik.values[options.limitByField]];
+      optionValues = optionValues.filter(x => includeValues.indexOf(x.value) != -1);
+    }
+  }
+
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor={id} required={isRequired}>{label}</InputLabel>
@@ -29,9 +42,9 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
         }}
         fullWidth
       >
-        {options.values.map(role => (
-          <MenuItem value={role} key={role} className={classes.root}>
-            {role}
+       {optionValues.map((option, key) => (
+          <MenuItem value={option.value} key={key}>
+            {option.label } 
           </MenuItem>
         ))}
       </Select>
@@ -43,8 +56,13 @@ SelectField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
   options: PropTypes.shape({
-    values: PropTypes.arrayOf(PropTypes.string),
-    style: PropTypes.object
+    limitByField: PropTypes.string,
+    limitByValues: function(props, propName, componentName) {
+      if (props['limitByField'] != undefined && props[propName] == undefined ){
+        return new Error('limitByValues array is required when limitByField is set');
+      }
+    },
+    values: PropTypes.array.isRequired
   }),
   formik: PropTypes.shape({})
 };
