@@ -186,7 +186,7 @@ export const fields = {
   firstName: formField(
     "Contributor's First Name",
     FormSectionEnum.CONTRIBUTOR,
-    EmailField,
+    TextField,
     Yup.string("Enter first name")
   ),
   // If entity selected, will require entity instead of first/last name
@@ -241,13 +241,13 @@ export const fields = {
   email: formField(
     "Email Address",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    EmailField,
     Yup.string("Enter your email address"),
   ),
   phone: formField(
     "Phone Number",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    PhoneField,
     Yup.string("Enter your phone number")
 <<<<<<< HEAD
   ),
