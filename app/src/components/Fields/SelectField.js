@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SelectField = ({ id, label, options, formik }) => {
+const SelectField = ({ id, label, options, formik, isRequired }) => {
   const classes = useStyles();
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <InputLabel htmlFor={id} required={isRequired}>{label}</InputLabel>
       <Select
         value={formik.values[id]}
         onChange={formik.handleChange}
