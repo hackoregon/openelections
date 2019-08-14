@@ -19,10 +19,7 @@ import AddressLookupField from '../../../../components/Fields/AddressLookupField
 import {
   ContributorTypeFieldEnum,
   ContributionSubTypeFieldEnum,
-<<<<<<< HEAD
   PhoneTypeEnum,
-=======
->>>>>>> update contactType & contactInfo info fields to phone and email
   ContributionTypeFieldEnum
 } from '../../../../api/api';
 
@@ -58,15 +55,10 @@ export const contributionsEmptyState = {
   typeOfContribution: "",
   subTypeOfContribution: "",
   typeOfContributor: "",
-<<<<<<< HEAD
-  amountOfContribution: 0.00,
+  amountOfContribution: "",
   submitForMatch: "No",
-=======
-  amountOfContribution: undefined,
-  submitForMatch: "",
->>>>>>> update amountOfContribution to undefined
   paymentMethod: "",
-  checkNumber: undefined,
+  checkNumber: "",
 
   // CONTRIBUTOR VALUES
   firstName: "",
@@ -78,10 +70,7 @@ export const contributionsEmptyState = {
   zipcode: "97201",
   email: "",
   phone: "",
-<<<<<<< HEAD
   phoneType: "",
-=======
->>>>>>> update contactType & contactInfo info fields to phone and email
   occupation: "",
   employerName: "",
   employerCity: "Portland",
@@ -253,7 +242,6 @@ export const fields = {
     FormSectionEnum.CONTRIBUTOR,
     PhoneField,
     Yup.string("Enter your phone number")
-<<<<<<< HEAD
   ),
   phoneType: formField(
     "Phone Type",
@@ -265,15 +253,6 @@ export const fields = {
       PhoneTypeEnum.WORK,
       PhoneTypeEnum.HOME,
     ]
-=======
->>>>>>> update contactType & contactInfo info fields to phone and email
-  ),
-  phoneType: formField(
-    "Phone Type",
-    FormSectionEnum.CONTRIBUTOR,
-    SelectField,
-    Yup.string("Select your phone number"),
-    ["Mobile Phone", "Home Phone", "Work Phone"]
   ),
   occupation: formField(
     "Occupation",
