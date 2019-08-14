@@ -96,18 +96,14 @@ export const actionCreators = {
 
 // Side Effects, e.g. thunks
 export function createExpenditure(expenditureAttrs) {
-
-
   return async (dispatch, getState, { api, schema }) => {
-    const x = getGovOrCampIdAttributes(getState());
-    
-let r = {...expenditureAttrs, ...x};
-console.log('x', r);
     dispatch(actionCreators.createExpenditure.request());
     try {
-
-
-      const response = await api.createExpenditure(r);
+      let values = {...expenditureAttrs, ...getGovOrCampIdAttributes(getState())};
+      //Transformations. Move these down?
+      values.date = new Date(values.date).getTime();
+      values.amount = parseFloat(values.amount)
+      const response = await api.createExpenditure(values);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.expenditure);
         dispatch(addEntities(data.entities));

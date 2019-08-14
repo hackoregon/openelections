@@ -197,15 +197,20 @@ const labelBlock = (
 const AddExpense = (props) => (
   <AddExpenseForm
      {...props}
-    onSubmit={data => props.createExpenditure({...data, status: ExpenditureStatusEnum.DRAFT })}
+    onSubmit={ data => {
+      console.log(props);
+      props.createExpenditure({...data, status: ExpenditureStatusEnum.DRAFT })
+    
+      }
+    }
     initialValues={{
       // BASICS
-      amount: 0,
+      amount: "",
       date: "", // Date.now(), // FORMAT?
       type: "expenditure",
       subType: "",
-     // paymentMethod: "",
-    //  checkNumber: undefined,
+      paymentMethod: "Check",
+      checkNumber: "",
       description: "",
 
       // PAYEE INFO
@@ -221,7 +226,7 @@ const AddExpense = (props) => (
      // notes: ""
     }}
   >
-    {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ } ) => (
+    {({ formFields, isValid, handleSubmit, values /* isDirty, isSubmitting */ } ) => (
       <React.Fragment>
         {/* HEADER SECTION */}
         <div css={containers.header}>
@@ -238,7 +243,16 @@ const AddExpense = (props) => (
                 css={headerStyles.draftButton}
                 buttonType="submit"
                 disabled={!isValid}
-                onClick={handleSubmit}
+                onClick={
+                  async () => {
+                  //Todo pass in formik to set values based on click 
+                  // OR create formik buttom component that 
+                  //    sets a value on click based on fields obj 
+                   // await formik.setFieldValue('status', true);
+                    handleSubmit();
+                  }
+                  }
+                
               >
                 Save as Draft
               </Button>
@@ -263,8 +277,8 @@ const AddExpense = (props) => (
             <h2>{formFields.date}</h2>
             <h2>{formFields.type}</h2>
             <h2>{formFields.subType}</h2>
-            {/* <h2>{formFields.paymentMethod}</h2> */}
-            {/* <h2>{formFields.checkNumber}</h2> */}
+            <h2>{formFields.paymentMethod}</h2>
+            {values.paymentMethod == 'Check' ?  <h2 d={console.log(console.log(values))}>{formFields.checkNumber}</h2> : null}
           </div>
           <h2 css={containers.fullWidth}>{formFields.description}</h2>
         </div>

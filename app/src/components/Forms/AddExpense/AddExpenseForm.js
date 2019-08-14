@@ -13,22 +13,7 @@ const expenditureTypes = [];
 expenditureTypes[EXPENDITURE] = [ACCOUNTS_PAYABLE, CASH_EXPENDITURE, PERSONAL_EXPENDITURE ]
 expenditureTypes[OTHER] = [ACCOUNTS_PAYABLE_RESCINDED, CASH_BALANCE_ADJUSTMENT]
 expenditureTypes[OTHER_DISBURSEMENT] = [MISCELLANEOUS_OTHER_DISBURSEMENT, REFUND_OF_CONTRIBUTION]
-// date: number;
-// type: ExpenditureType;
-// subType: ExpenditureSubType;
-// payeeType: PayeeType;
-// name: string;
-// address1: string;
-// address2?: string;
-// city: string;
-// state: string;
-// zip: string;
-// amount: number;
-// description: string;
-// status: ExpenditureStatus;
-// currentUserId: number;
-// campaignId: number;
-// governmentId: number;
+
 const fields = {
   // BASICS SECTION
   amount: {
@@ -49,7 +34,7 @@ const fields = {
     )
   },
   type: {
-    label: "Type of Expenditure",
+    label: "Type of Expenditure (TODO: Pick Other Dis)",
     section: "sectionOne",
     component: SelectField,
     options: {
@@ -65,7 +50,7 @@ const fields = {
     )
   },
   subType: {
-    label: "Subtype of Expenditure",
+    label: "Subtype of Expenditure (TODO: Pick Miscellaneous )",
     section: "sectionOne",
     component: SelectField,
     options: {
@@ -82,47 +67,38 @@ const fields = {
         {value: ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE, label: 'Personal Expenditure for Reimbursement'},
         {value: ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, label: 'Return or Refund of Contribution'} 
       ], 
-
-      // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
-      
-      // isDisabled={!values.company.value},
-      //       options={
-      //         values.company.value ? employees[values.company.value] : []
-      //       }
-      
-      
     },
     validation: Yup.string("Choose the subtype of expenditure").required(
       "The expenditure subtype is required"
     )
   },
-  // paymentMethod: {
-  //   label: "Payment Method (not in API or DB)",
-  //   section: "sectionOne",
-  //   component: SelectField,
-  //   options: {
-  //     values: [
-  //       "Check",
-  //       "Credit Card",
-  //       "Debit Card",
-  //       "Electronic Check",
-  //       "Electronic Funds Transfer"
-  //     ]
-  //   },
-  //   validation: Yup.string("Choose the payment method").required(
-  //     "The payment method is required"
-  //   )
-  // },
-  // checkNumber: {
-  //   label: "Check Number",
-  //   section: "sectionOne",
-  //   component: TextField,
-  //   validation: Yup.number("Enter your check number").required(
-  //     "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
-  //   )
-  // },
+  paymentMethod: {
+    label: "Payment Method (TODO: not in API or DB)",
+    section: "sectionOne",
+    component: SelectField,
+    options: {
+      values: [
+        "Check",
+        "Credit Card",
+        "Debit Card",
+        "Electronic Check",
+        "Electronic Funds Transfer"
+      ]
+    },
+    validation: Yup.string("Choose the payment method").required(
+      "The payment method is required"
+    )
+  },
+  checkNumber: {
+    label: "Check Number",
+    section: "sectionOne",
+    component: TextField,
+    validation: Yup.number("Enter your check number").required(
+      "Check number is required" // ONLY REQUIRED IF PAYMENT METHOD IS CHECK
+    )
+  },
   description: {
-    label: "Purpose of Expenditure",
+    label: "Purpose of Expenditure (TODO: Stored in DB as discription)",
     section: "sectionOne",
     component: SelectField,
     options: {
