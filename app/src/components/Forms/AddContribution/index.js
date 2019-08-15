@@ -8,8 +8,8 @@ import {
   ContributionTypeFieldEnum,
   ContributionStatusEnum,
   mapContributionFormToData,
-  ContributionSubTypeEnum,
-  ContributorTypeEnum
+  ContributionSubTypeFieldEnum,
+  ContributorTypeFieldEnum
 } from '../../../api/api';
 import {
   AddHeaderSection,
@@ -45,8 +45,8 @@ const AddContribution = ({ ...props }) => (
         if( //Set submitForMatch to No under these conditions
           values.amountOfContribution > 500 ||
           values.typeOfContribution != ContributionTypeFieldEnum.CONTRIBUTION ||
-          values.subTypeOfContribution != ContributionSubTypeEnum.CASH ||
-          (values.typeOfContributor != ContributorTypeEnum.FAMILY || values.typeOfContribution != ContributorTypeEnum.INDIVIDUAL)
+          values.subTypeOfContribution != ContributionSubTypeFieldEnum.CASH_CONTRIBUTION ||
+          (values.typeOfContributor != ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY && values.typeOfContributor != ContributorTypeFieldEnum.INDIVIDUAL)
         ) {
             values['submitForMatch'] = 'No'
           }
