@@ -247,6 +247,12 @@ const fields = {
     component: FieldValue,
     validation: Yup.string("Enter your phone number")
   },
+  phoneType: {
+    label: "Phone Type",
+    section: "contributorSection",
+    component: FieldValue,
+    validation: Yup.string("Enter your phone type")
+  },
   occupation: {
     label: "Occupation",
     section: "contributorSection",

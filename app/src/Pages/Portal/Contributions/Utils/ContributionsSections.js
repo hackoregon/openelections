@@ -322,6 +322,7 @@ export const ContributorSection = ({ formFields }) => (
     <div css={containers.sectionTwo}>
       <h2>{formFields.email}</h2>
       <h2>{formFields.phone}</h2>
+      <h2>{formFields.phoneType}</h2>
       <h2>{formFields.occupation}</h2>
       <h2>{formFields.employerName}</h2>
     </div>

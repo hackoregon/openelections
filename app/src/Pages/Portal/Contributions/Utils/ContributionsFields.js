@@ -239,6 +239,13 @@ export const fields = {
     TextField,
     Yup.string("Enter your phone number")
   ),
+  phoneType: formField(
+    "Phone Type",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Select your phone number"),
+    ["Mobile Phone", "Home Phone", "Work Phone"]
+  ),
   occupation: formField(
     "Occupation",
     FormSectionEnum.CONTRIBUTOR,
