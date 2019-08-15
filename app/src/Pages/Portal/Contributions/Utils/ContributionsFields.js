@@ -261,6 +261,13 @@ export const fields = {
 =======
 >>>>>>> update contactType & contactInfo info fields to phone and email
   ),
+  phoneType: formField(
+    "Phone Type",
+    FormSectionEnum.CONTRIBUTOR,
+    SelectField,
+    Yup.string("Select your phone number"),
+    ["Mobile Phone", "Home Phone", "Work Phone"]
+  ),
   occupation: formField(
     "Occupation",
     FormSectionEnum.CONTRIBUTOR,
