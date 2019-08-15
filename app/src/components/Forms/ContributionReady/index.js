@@ -10,10 +10,11 @@ import {
 import { updateContribution, archiveContribution } from "../../../state/ducks/contributions";
 import { flashMessage } from "redux-flash";
 import {
-    contributionsEmptyState
+  contributionsEmptyState
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 class ContributionReady extends React.Component {
+
   updateContribution = (payload) => {
     const { updateContribution, showMessage } = this.props
     delete payload.date // TODO: should remove this later, current endpoint failing when including date in payload.
@@ -36,7 +37,11 @@ class ContributionReady extends React.Component {
 
   onDraft = (id, data) => {
     const { updateContribution } = this
-    const payload = { id, ...mapContributionFormToData(data) }
+    const payload = { 
+      id, 
+      status: ContributionStatusEnum.DRAFT,
+      ...mapContributionFormToData(data) 
+    }
     updateContribution(payload)
   }
 
@@ -50,26 +55,33 @@ class ContributionReady extends React.Component {
     const { contributions, contributionId } = this.props
     const { onSubmit, onDraft, onTrash } = this
     const contribution = contributions[contributionId]
+    const loadCheck = !contributions.isLoading && contribution
+    const { updatedAt, status } = loadCheck ? contribution : {}
     return (
       <ContributionReadyForm
         onSubmit={data => onSubmit(contributionId, data)}
-        initialValues={!contributions.isLoading && contribution ? mapContributionDataToForm(contribution) : contributionsEmptyState}
+        initialValues={loadCheck ? mapContributionDataToForm(contribution) : contributionsEmptyState}
       >
-        {({ formFields, isValid, handleSubmit, values }) => (
-          <>
-            <ReadyHeaderSection
-              campaignName={"FakeName"}
-              lastEdited={values.updatedAt}
-              isValid={isValid}
-              handleSubmit={handleSubmit}
-              handleDraft={() => onDraft(contributionId, values)}
-              handleTrash={() => onTrash(contributionId)}
-            />
-            <BasicsSection formFields={formFields} />
-            <ContributorSection formFields={formFields} />
-            <OtherDetailsSection formFields={formFields} />
-          </>
-        )}
+        {({ formFields, isValid, handleSubmit, values }) => {
+          const { paymentMethod } = values
+          const checkSelected = paymentMethod === "Check"
+          return (
+            <>
+              <ReadyHeaderSection
+                status={status}
+                campaignName={"FakeName"}
+                lastEdited={updatedAt}
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                handleDraft={() => onDraft(contributionId, values)}
+                handleTrash={() => onTrash(contributionId)}
+              />
+              <BasicsSection formFields={formFields} checkSelected={checkSelected} />
+              <ContributorSection formFields={formFields} />
+              <OtherDetailsSection formFields={formFields} />
+            </>
+          )
+        }}
       </ContributionReadyForm>
     )
   }

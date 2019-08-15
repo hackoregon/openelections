@@ -83,7 +83,6 @@ describe('Routes post /contributions', () => {
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
             state: 'OR',
-            status: ContributionStatus.DRAFT,
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL
         });

@@ -39,7 +39,11 @@ const helperTextStyles = css`
 `;
 
 export default function DateRangeField (props) {
+<<<<<<< HEAD
     const { formik, label, id } = props;
+=======
+    const { formik, label, id, isRequired } = props;
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
 
     const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState(
         { from: { date: '', time: '00:00'}, to: { date: '', time: '00:00' } });
@@ -84,7 +88,11 @@ export default function DateRangeField (props) {
 
     return (
         <FormControl fullWidth>
+<<<<<<< HEAD
             <InputLabel htmlFor={id}>{label}</InputLabel>
+=======
+            <InputLabel htmlFor={id} required={isRequired}>{label}</InputLabel>
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
             <Select
                 value={dateTimeRangeValue}
                 renderValue={renderSelectValue}

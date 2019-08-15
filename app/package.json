@@ -13,18 +13,27 @@
   },
   "dependencies": {
     "@hackoregon/component-library": "^3.0.0-ci",
-    "@material-ui/core": "^4.3.0",
+    "@material-ui/core": "^4.3.2",
     "@material-ui/icons": "^4.2.1",
+<<<<<<< HEAD
     "@material-ui/pickers": "^3.2.2",
     "@material-ui/styles": "^4.2.0",
+=======
+    "@material-ui/styles": "^4.3.0",
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
     "clsx": "^1.0.4",
     "connected-react-router": "^6.5.2",
     "date-fns": "^1.30.1",
     "formik": "^1.5.4",
     "history": "^4.9.0",
     "jwt-decode": "^2.2.0",
+<<<<<<< HEAD
     "material-table": "^1.40.0",
     "material-ui-datetime-range-picker": "^0.2.4",
+=======
+    "lodash": "^4.17.15",
+    "material-table": "^1.48.0",
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
     "normalizr": "^3.3.0",
     "parse-google-place": "^1.2.0",
     "prop-types": "^15.7.2",

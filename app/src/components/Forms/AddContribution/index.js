@@ -28,8 +28,7 @@ const onSubmit = (data, props) => {
     currentUserId,
     ...contributionData
   }
-  createContribution(payload)
-    .then(data => props.history.push(`/contributions/ready/${data}`))
+  createContribution(payload).then(data => props.history.push(`/contributions/${data}`))
 }
 
 const AddContribution = ({ ...props }) => (
@@ -37,11 +36,12 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit }) => {
+    {({ formFields, isValid, handleSubmit, values }) => {
+      const checkSelected = values.paymentMethod === "Check"
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
-          <BasicsSection formFields={formFields} />
+          <BasicsSection formFields={formFields} checkSelected={checkSelected} />
           <ContributorSection formFields={formFields} />
           <OtherDetailsSection formFields={formFields} />
         </>

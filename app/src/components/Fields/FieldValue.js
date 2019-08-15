@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import TextFieldMaterial from "@material-ui/core/TextField";
 
-const FieldValue = ({ id, label, formik }) => (
+const FieldValue = ({ id, label, formik, isRequired }) => (
   <TextFieldMaterial
-    id={id}
+      required={isRequired}
+      id={id}
     name={id}
     label={label}
     helperText={formik.touched[id] ? formik.errors[id] : ""}

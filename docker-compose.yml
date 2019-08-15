@@ -54,8 +54,54 @@ services:
       - ./api/services:/app/services
       - ./api/test:/app/test
       - ./api/types:/app/types
+      - ./api/jobs:/app/jobs
       - ./api/.nvmrc:/app/.nvmrc
       - ./api/app.ts:/app/app.ts
+      - ./api/package.json:/app/package.json
+      - ./api/tsconfig.json:/app/tsconfig.json
+    networks:
+      - openelections
+  jobs:
+    tty: true # Enables debugging capabilities when attached to this container.
+    user: root
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.development'
+    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - SECRET_KEY=bananas
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=open_elections_dev
+      - DB_HOST=db
+      - DB_PORT=5432
+      - SKIP_DB_WAIT=0
+      - SKIP_DB_MIGRATION=0
+      - SKIP_NPM_INSTALL=0
+      - SKIP_BOWER_INSTALL=0
+      - REDIS_URL=redis://redis:6379/0
+      - HOST_URL=openelectionsportland.org
+    depends_on:
+      - db
+      - redis
+      - data
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api/controller:/app/controller
+      - ./api/models:/app/models
+      - ./api/routes:/app/routes
+      - ./api/services:/app/services
+      - ./api/test:/app/test
+      - ./api/types:/app/types
+      - ./api/jobs:/app/jobs
+      - ./api/.nvmrc:/app/.nvmrc
+      - ./api/app.ts:/app/app.ts
+      - ./api/package.json:/app/package.json
       - ./api/tsconfig.json:/app/tsconfig.json
     networks:
       - openelections

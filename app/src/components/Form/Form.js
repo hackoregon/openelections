@@ -11,7 +11,8 @@ export const formFromFields = (fields, formikProps) =>
       id,
       label: fields[id].label,
       options: { ...fields[id].options },
-      formik: formikProps
+      formik: formikProps,
+      isRequired: _.get(fields[id], 'validation._exclusive.required')
     })
   );
 

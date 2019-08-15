@@ -53,9 +53,9 @@ export const contributionsEmptyState = {
   subTypeOfContribution: "",
   typeOfContributor: "",
   amountOfContribution: 0.00,
-  oaeContributionType: "",
+  submitForMatch: "",
   paymentMethod: "",
-  checkNumber: null,
+  checkNumber: undefined,
 
   // CONTRIBUTOR VALUES
   firstName: "",
@@ -140,20 +140,15 @@ export const fields = {
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
   ),
-  oaeContributionType: requiredFormField(
-    "OAE Contribution Type",
+  submitForMatch: requiredFormField(
+    "Submit for Match?",
     FormSectionEnum.BASIC,
     SelectField,
-    Yup.string("Choose the OAE contribution type"),
-    "The OAE contribution type is required",
+    Yup.string("Select yes or no."),
+    "This field is required.",
     [
-      "Seed Money",
-      "Matchable",
-      "Public Matching Contribution",
-      "Qualifying",
-      "Allowable",
-      "In-Kind: Paid Supervision of Volunteers",
-      "In-Kind: Other"
+      "Yes",
+      "No",
     ]
   ),
   paymentMethod: requiredFormField(
@@ -319,12 +314,14 @@ export const fields = {
     ]
   ),
   // Not required if occupation & employer name/address filled in
+  /*
   occupationLetterDate: formField(
     "Occupation Letter Date",
     FormSectionEnum.OTHER_DETAILS,
     DateField,
     Yup.date("Enter occupation letter date")
   ),
+  */
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: formField(
@@ -344,6 +341,7 @@ export const fields = {
 export const validate = (values) => {
   const {
     paymentMethod,
+    checkNumber,
     linkToDocumentation,
     occupation,
     employerName,
@@ -357,6 +355,10 @@ export const validate = (values) => {
     typeOfContributor
   } = values
   const error = {}
+
+  if (paymentMethod === "Check" && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = "Check number is required."
+  }
 
   if (checkNoEmptyString(paymentMethod) && paymentMethod !== "Credit Card (Online)" && !checkNoEmptyString(linkToDocumentation)) {
     error.linkToDocumentation = "A link to documentation of your contribution is required"
