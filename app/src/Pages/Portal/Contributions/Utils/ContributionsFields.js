@@ -67,7 +67,7 @@ export const contributionsEmptyState = {
   lastNameOrEntity: "",
   streetAddress: "",
   addressLine2: "",
-  city: "Portland",
+  city: "",
   state: "OR",
   zipcode: "97201",
   email: "",
@@ -75,9 +75,9 @@ export const contributionsEmptyState = {
   phoneType: "",
   occupation: "",
   employerName: "",
-  employerCity: "Portland",
-  employerState: "OR",
-  employerZipcode: "97201",
+  employerCity: "",
+  employerState: "",
+  employerZipcode: "",
 
   // OTHER DETAILS VALUES
   electionAggregate: "",
