@@ -78,15 +78,15 @@ const headerStyles = {
     margin-top: 0px;
     width: 360px;
   `,
-  labelBlock: css`
-    margin-right: 40px;
-  `,
-  labels: css`
-    font-size: 13px;
-    line-height: 15px;
-    color: #979797;
-    margin-bottom: 4px;
-  `,
+  // labelBlock: css`
+  //   margin-right: 40px;
+  // `,
+  // labels: css`
+  //   font-size: 13px;
+  //   line-height: 15px;
+  //   color: #979797;
+  //   margin-bottom: 4px;
+  // `,
   smallBlueText: css`
     font-size: 13px;
     line-height: 15px;
@@ -175,7 +175,7 @@ const sectionStyles = {
 // HEADER VALUES
 const invoiceNumber = "#1030090212"; // TODO: Where is this invoice number coming from/generated? 
 const currentStatus = "Draft";
-const labelsCount = 0;
+// const labelsCount = 0;
 
 const InvoiceNumberBlock = ({ campaignName, lastEdited }) => (
   <>
@@ -193,12 +193,12 @@ const StatusBlock = ({ status }) => (
   </div>
 );
 
-const LabelBlock = ({ labelsCount }) => (
-  <div css={headerStyles.labelBlock}>
-    <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
-    <p css={headerStyles.smallBlueText}>+ Add Labels</p>
-  </div>
-);
+// const LabelBlock = ({ labelsCount }) => (
+//   <div css={headerStyles.labelBlock}>
+//     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
+//     <p css={headerStyles.smallBlueText}>+ Add Labels</p>
+//   </div>
+// );
 
 // TODO: make a separate component for this checkmark component, find out what it indicates?
 const CheckmarkComponent = ({}) => (
@@ -237,7 +237,7 @@ export const ReadyHeaderSection = ({
   status,
   campaignName,
   lastEdited,
-  labelsCount,
+  // labelsCount,
   isValid,
   handleSubmit,
   handleTrash,
@@ -253,7 +253,6 @@ export const ReadyHeaderSection = ({
             lastEdited={format(new Date(lastEdited), 'MM/DD/YYYY')}
           />
           <div style={{ display: "flex" }}>
-            <LabelBlock labelsCount={labelsCount} />
             <StatusBlock status={status} />
           </div>
         </div>

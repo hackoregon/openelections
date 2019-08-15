@@ -30,7 +30,7 @@ const columns = [
 	columnInfo("Name", "lastName"),
 	columnInfo("Amount", "amount", "currency"),
 	columnInfo("Status", "status"),
-	columnInfo("Labels", "NotSet")
+	// columnInfo("Labels", "NotSet")
 ]
 
 const ContributionsTable = ({ ...props }) => {
