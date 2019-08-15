@@ -21,23 +21,20 @@ const containers = {
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    // margin-bottom: 20px;
   `,
   sectionTwo: css`
     display: grid;
     width: 100%;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     grid-gap: 20px;
-    // margin-bottom: 20px;
   `,
   fullWidth: css`
     display: grid;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: 1fr;
     grid-gap: 20px;
-    margin-bottom: 20px;
-  `,
+\  `,
   cityStateZip: css`
     width: 100%;
     min-height: 25px;
@@ -45,7 +42,6 @@ const containers = {
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
     grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
-    margin-bottom: 20px;
   `
 };
 
