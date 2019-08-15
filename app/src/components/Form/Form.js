@@ -17,8 +17,8 @@ export const formFromFields = (fields, formikProps) =>
   );
 
 class Form extends React.Component {
-  render() {
-    const { fields, initialValues, sections, children, validate } = this.props;
+  render () {
+    const { fields, initialValues, sections, children, validate, handleReset } = this.props;
     const fieldIds = Object.keys(fields);
     const validations = Object.fromEntries(
       fieldIds.map(id => [id, fields[id].validation])
@@ -30,6 +30,7 @@ class Form extends React.Component {
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
+        handleReset={handleReset}
         onSubmit={(values, formikBag) => {
           // This is a work around to be able to encapsulate
           // attaching state handling upon submission within the form.
@@ -57,32 +58,32 @@ class Form extends React.Component {
           const formSections =
             sections && sections.length > 0
               ? Object.fromEntries(
-                  sections.map(section => [
-                    section,
-                    <React.Fragment>
-                      {formFromFields(
-                        _.pickBy(fields, field => field.section === section),
-                        formikProps
-                      )}
-                    </React.Fragment>
-                  ])
-                )
+                sections.map(section => [
+                  section,
+                  <React.Fragment>
+                    {formFromFields(
+                      _.pickBy(fields, field => field.section === section),
+                      formikProps
+                    )}
+                  </React.Fragment>
+                ])
+              )
               : {};
           const formFields =
             fieldIds && fieldIds.length > 0
               ? Object.fromEntries(
-                  fieldIds.map(id => [
-                    id,
-                    <React.Fragment>
-                      {formFromFields(
-                        _.pick(
-                          fields,id
-                        ),
-                        formikProps
-                      )}
-                    </React.Fragment>
-                  ])
-                )
+                fieldIds.map(id => [
+                  id,
+                  <React.Fragment>
+                    {formFromFields(
+                      _.pick(
+                        fields, id
+                      ),
+                      formikProps
+                    )}
+                  </React.Fragment>
+                ])
+              )
               : {};
           return children({
             form,

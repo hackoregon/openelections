@@ -29,7 +29,6 @@ const wtf = css`
 
 const FilterContribution = props => (
   <>
-    {console.log({ props })}
     <FilterContributions
       onSubmit={(filterOptions) => {
         const data = {
@@ -78,6 +77,16 @@ const FilterContribution = props => (
                   onClick={handleSubmit}
                 >
                   Filter
+                    </Button>
+                <Button
+                  buttonType="submit"
+                  disabled={!isDirty}
+                  onClick={() => {
+                    handleCancel()
+                    handleSubmit()
+                  }}
+                >
+                  Reset
                     </Button>
               </div>
             </div>
