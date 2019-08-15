@@ -8,6 +8,39 @@ import InputLabel from "@material-ui/core/InputLabel";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 
+/**
+  * 
+  * If a simple array, ['OR','WA','CA'], is passed to options.values 
+  * then the value and label will be set the same. To specify a differnt 
+  * label and value use the following format.
+  * 
+  *  usStates:{
+  *   option: {
+  *     values: [ 
+  *       {value: "OR", label: "Oregon State"},
+  *       {value: 'WA', label: 'Washington State'},
+  *     ],
+  *   }
+  *  }
+  *  usCities:{
+  *   option: {
+  *     limitByField: "usaState",       //Dynamic options based on the usStates field
+  *     limitByValues:{
+  *       "OR":["portland"],["salem"],  //When 'OR' is selected in state show these options
+  *       "WA":["vancouver", "seattle"]
+  *         
+  *     }
+  *     values: [
+  *       {value: "portland", label: "Portland"},
+  *       {value: "vancouver", label: "Vancouver"},
+  *       {value: "seatte", label: "Seattle"},
+  *       {value: "salem", label: "Salem"},
+  *     ],
+  *   }
+  *  }
+  * 
+  */ 
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'block !important',
@@ -43,7 +76,7 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
         fullWidth
       >
        {optionValues.map((option, key) => (
-          <MenuItem value={option.value} key={key}>
+          <MenuItem value={option.value} key={key} className={classes.root}>
             {option.label } 
           </MenuItem>
         ))}
