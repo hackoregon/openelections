@@ -93,8 +93,7 @@ class Form extends React.Component {
             isSubmitting: formikProps.isSubmitting,
             handleSubmit: formikProps.handleSubmit,
             handleCancel: formikProps.handleReset,
-            values: formikProps.values,
-            formik: formikProps
+            values: formikProps.values
             /* could return more formikProps if needed */
           });
         }}
