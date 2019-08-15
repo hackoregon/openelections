@@ -5,8 +5,11 @@ import { jsx } from "@emotion/core";
 import { connect } from "react-redux";
 import { createContribution } from "../../../state/ducks/contributions"
 import {
+  ContributionTypeFieldEnum,
   ContributionStatusEnum,
-  mapContributionFormToData
+  mapContributionFormToData,
+  ContributionSubTypeEnum,
+  ContributorTypeEnum
 } from '../../../api/api';
 import {
   AddHeaderSection,
@@ -38,8 +41,15 @@ const AddContribution = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, values }) => {
       const checkSelected = values.paymentMethod === "Check"
-      if(values.amountOfContribution > 500 && values.submitForMatch != "No"){ 
-        values['submitForMatch'] = 'No'
+      if( values.submitForMatch != "No"){
+        if( //Set submitForMatch to No under these conditions
+          values.amountOfContribution > 500 ||
+          values.typeOfContribution != ContributionTypeFieldEnum.CONTRIBUTION ||
+          values.subTypeOfContribution != ContributionSubTypeEnum.CASH ||
+          (values.typeOfContributor != ContributorTypeEnum.FAMILY || values.typeOfContribution != ContributorTypeEnum.INDIVIDUAL)
+        ) {
+            values['submitForMatch'] = 'No'
+          }
       }
       return (
         <>
