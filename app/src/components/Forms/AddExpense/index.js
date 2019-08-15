@@ -75,15 +75,15 @@ const headerStyles = {
     line-height: 19px;
     margin-top: 0px;
   `,
-  labelBlock: css`
-    margin-right: 40px;
-  `,
-  labels: css`
-    font-size: 13px;
-    line-height: 15px;
-    color: #979797;
-    margin-bottom: 4px;
-  `,
+  // labelBlock: css`
+  //   margin-right: 40px;
+  // `,
+  // labels: css`
+  //   font-size: 13px;
+  //   line-height: 15px;
+  //   color: #979797;
+  //   margin-bottom: 4px;
+  // `,
   smallBlueText: css`
     font-size: 13px;
     line-height: 15px;
@@ -165,7 +165,7 @@ const invoiceNumber = "#1030090212";
 const campaignName = "FakeName";
 const lastEdited = "date";
 const currentStatus = "Draft";
-const labelsCount = 0;
+// const labelsCount = 0;
 
 const invoiceNumberBlock = (
   <React.Fragment>
@@ -184,13 +184,13 @@ const statusBlock = (
   </div>
 );
 
-const labelBlock = (
-  <div css={headerStyles.labelBlock}>
-    <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
-    <p style={{ fontSize: "8px", color: "green" }}>(add icons)</p>
-    <p css={headerStyles.smallBlueText}>Manage</p>
-  </div>
-);
+// const labelBlock = (
+//   <div css={headerStyles.labelBlock}>
+//     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
+//     <p style={{ fontSize: "8px", color: "green" }}>(add icons)</p>
+//     <p css={headerStyles.smallBlueText}>Manage</p>
+//   </div>
+// );
 
 const AddExpense = () => (
   <AddExpenseForm
@@ -225,7 +225,6 @@ const AddExpense = () => (
           <div css={headerStyles.leftColumn}>
             {invoiceNumberBlock}
             <div style={{ display: "flex" }}>
-              {labelBlock}
               {statusBlock}
             </div>
           </div>

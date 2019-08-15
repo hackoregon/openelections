@@ -80,15 +80,15 @@ const headerStyles = {
     margin-top: 0px;
     width: 360px;
   `,
-  labelBlock: css`
-    margin-right: 40px;
-  `,
-  labels: css`
-    font-size: 13px;
-    line-height: 15px;
-    color: #979797;
-    margin-bottom: 4px;
-  `,
+  // labelBlock: css`
+  //   margin-right: 40px;
+  // `,
+  // labels: css`
+  //   font-size: 13px;
+  //   line-height: 15px;
+  //   color: #979797;
+  //   margin-bottom: 4px;
+  // `,
   smallBlueText: css`
     font-size: 13px;
     line-height: 15px;
@@ -181,7 +181,7 @@ const invoiceNumber = "#1030090212";
 const campaignName = "FakeName";
 const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
 const currentStatus = "Needs Review";
-const labelsCount = 0;
+// const labelsCount = 0;
 
 const invoiceNumberBlock = (
   <React.Fragment>
@@ -200,14 +200,14 @@ const statusBlock = (
   </div>
 );
 
-const labelBlock = (
-  <div css={headerStyles.labelBlock}>
-    <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
-    <p style={{ fontSize: "7px", color: "green" }}>()()()</p>
-    {/* placeholder for icon ^ */}
-    <p css={headerStyles.smallBlueText}>Manage</p>
-  </div>
-);
+// const labelBlock = (
+//   <div css={headerStyles.labelBlock}>
+//     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
+//     <p style={{ fontSize: "7px", color: "green" }}>()()()</p>
+//     {/* placeholder for icon ^ */}
+//     <p css={headerStyles.smallBlueText}>Manage</p>
+//   </div>
+// );
 
 const ContributionNeedsReview = () => (
   <>
@@ -217,7 +217,6 @@ const ContributionNeedsReview = () => (
         <div css={headerStyles.leftColumn}>
           {invoiceNumberBlock}
           <div style={{ display: "flex" }}>
-            {labelBlock}
             {statusBlock}
           </div>
         </div>
