@@ -144,6 +144,25 @@ export const PhoneTypeFieldToDataMap = new Map([
 >>>>>>> remove contactType and contactInformation from api.js
 
 
+export const PhoneTypeFieldEnum = Object.freeze({
+  MOBILE_PHONE: "Mobile Phone",
+  WORK_PHONE: "Work Phone",
+  HOME_PHONE: "Home Phone",
+})
+
+export const DataToPhoneTypeFieldMap = new Map([
+  [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
+  [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
+  [PhoneTypeEnum.HOME, PhoneTypeFieldEnum.HOME_PHONE],
+])
+
+export const PhoneTypeFieldToDataMap = new Map([
+  [PhoneTypeFieldEnum.MOBILE_PHONE, PhoneTypeEnum.MOBILE],
+  [PhoneTypeFieldEnum.HOME_PHONE, PhoneTypeEnum.HOME_PHONE],
+  [PhoneTypeFieldEnum.WORK_PHONE, PhoneTypeEnum.WORK],
+])
+
+
 export const ContributionStatusEnum = Object.freeze({
   ARCHIVED: "Archived",
   DRAFT: "Draft",
