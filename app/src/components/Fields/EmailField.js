@@ -21,17 +21,6 @@ function TextMaskCustom(props) {
   }
 
 export default function EmailField({ id, label, formik }) {
-    const [values, setValues] = React.useState({
-        textmask: formik.values[id],
-
-      });
-
-      const handleChange = name => event => {
-        setValues({
-          ...values,
-          [name]: event.target.value,
-        });
-      };
 
       return(
         <TextFieldMaterial
@@ -40,13 +29,13 @@ export default function EmailField({ id, label, formik }) {
             label={label}
             helperText={formik.touched[id] ? formik.errors[id] : ""}
             error={formik.touched[id] && Boolean(formik.errors[id])}
-            value={values.textmask}
-            onChange={handleChange('textmask')}
+            value={formik.values[id]}
+            onChange={formik.handleChange(id)}
             onBlur={formik.handleBlur}
             autoComplete="on"
             fullWidth
             InputProps={{
-                inputComponent: TextMaskCustom,
+              inputComponent: TextMaskCustom,
             }}
         />
     )
