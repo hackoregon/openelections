@@ -236,6 +236,7 @@ export const mapContributionDataToForm = (contribution) => {
     oaeType,
     amount,
     checkNumber,
+    name,
     firstName,
     lastName,
     address1,
@@ -269,7 +270,7 @@ export const mapContributionDataToForm = (contribution) => {
     // CONTRIBUTOR VALUES
     firstName,
     lastName: lastName,
-    entityName: lastName,
+    entityName: name | "",
     streetAddress: address1,
     addressLine2: address2,
     city,
@@ -324,7 +325,7 @@ export const mapContributionFormToData = (data) => {
 
   return {
     city,
-    firstName,
+    firstName: firstName?firstName:null,
     state,
     occupation,
     employerName,
@@ -343,7 +344,8 @@ export const mapContributionFormToData = (data) => {
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     middleInitial: "",
-    lastName: lastName?lastName:entityName,
+    lastName: lastName?lastName:null,
+    name: entityName?entityName:null,
    // type: ContributionTypeEnum.CONTRIBUTION,
    // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
