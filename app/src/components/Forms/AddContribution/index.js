@@ -41,6 +41,10 @@ const AddContribution = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, values }) => {
       const checkSelected = values.paymentMethod === "Check"
+
+      // // Only show Employer section if the contributor type is Individual OR Family
+      const showEmployerSection = (values.typeOfContributor == ContributorTypeFieldEnum.INDIVIDUAL) || (values.typeOfContributor == ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY);
+
       if( values.submitForMatch != "No"){
         if( //Set submitForMatch to No under these conditions
           values.amountOfContribution > 500 ||
@@ -51,15 +55,12 @@ const AddContribution = ({ ...props }) => (
             values['submitForMatch'] = 'No'
           }
       }
-      // // Only show Employer section if the contributor type is Individual OR Family
-      const showEmployerSection = (values.typeOfContributor == "Individual") || (values.typeOfContributor == "Candidate’s Immediate Family");
-        console.log({showEmployerSection})
 
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection formFields={formFields} checkSelected={checkSelected} />
-          <ContributorSection formFields={formFields} />
+          <ContributorSection formFields={formFields} showEmployerSection={showEmployerSection} />
           <OtherDetailsSection formFields={formFields} />
         </>
       )
