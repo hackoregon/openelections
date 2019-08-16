@@ -12,6 +12,9 @@ import {
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
+import PhoneField from '../../../../components/Fields/PhoneField';
+import EmailField from '../../../../components/Fields/EmailField';
+import CurrencyField from '../../../../components/Fields/CurrencyField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
   ContributorTypeFieldEnum,
@@ -52,10 +55,10 @@ export const contributionsEmptyState = {
   typeOfContribution: "",
   subTypeOfContribution: "",
   typeOfContributor: "",
-  amountOfContribution: 0.00,
+  amountOfContribution: "",
   submitForMatch: "No",
   paymentMethod: "",
-  checkNumber: undefined,
+  checkNumber: "",
 
   // CONTRIBUTOR VALUES
   firstName: "",
@@ -133,11 +136,10 @@ export const fields = {
     "A contributor type is required",
     individualContributorValues.concat(entityContributorValues)
   ),
-  // TODO: Needs to be formatted as currency
   amountOfContribution: requiredFormField(
     "Amount of Contribution",
     FormSectionEnum.BASIC,
-    TextField,
+    CurrencyField,
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
   ),
@@ -232,13 +234,13 @@ export const fields = {
   email: formField(
     "Email Address",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    EmailField,
     Yup.string("Enter your email address"),
   ),
   phone: formField(
     "Phone Number",
     FormSectionEnum.CONTRIBUTOR,
-    TextField,
+    PhoneField,
     Yup.string("Enter your phone number")
   ),
   phoneType: formField(
