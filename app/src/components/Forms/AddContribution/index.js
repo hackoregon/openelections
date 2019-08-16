@@ -51,6 +51,19 @@ const AddContribution = ({ ...props }) => (
             values['submitForMatch'] = 'No'
           }
       }
+      // Only show Employer section if the contributor type is Individual OR Family
+      if( values.typeOfContributor == "Individual" || values.typeOfContributor == "Candidate’s Immediate Family") {
+        console.log("show employer section")
+      } else {
+        console.log("DON'T show employer section")
+      }
+      // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in, 
+      // then the employer name, city, state and zip code are not required
+      if( values.occupation == "Self Employed" || values.occupationLetterDate !== ""){
+        console.log('self employed is selected or occupation letter date is NOT empty, so employer info NOT required', {values})
+      } else {
+        console.log('self employed is NOT selected or occupation letter field is empty', {values})
+      }
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
