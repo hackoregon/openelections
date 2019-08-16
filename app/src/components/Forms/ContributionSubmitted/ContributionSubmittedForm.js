@@ -240,7 +240,6 @@ const fields = {
     section: "contributorSection",
     component: FieldValue,
     validation: Yup.string("Enter your email address")
-<<<<<<< HEAD
   },
   phone: {
     label: "Phone Number",
@@ -253,17 +252,12 @@ const fields = {
     section: "contributorSection",
     component: FieldValue,
     validation: Yup.string("Enter your phone type")
-<<<<<<< HEAD
-=======
   },
   phone: {
     label: "Phone Number",
     section: "contributorSection",
     component: FieldValue,
     validation: Yup.string("Enter your phone number")
->>>>>>> update formFields from contactType/contactInfo to phone and email
-=======
->>>>>>> add in phoneType select field
   },
   occupation: {
     label: "Occupation",

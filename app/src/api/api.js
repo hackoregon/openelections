@@ -121,28 +121,6 @@ export const PhoneTypeEnum = Object.freeze({
   WORK: "Work",
   HOME: "Home"
 });
-<<<<<<< HEAD
-
-export const PhoneTypeFieldEnum = Object.freeze({
-  MOBILE_PHONE: "Mobile Phone",
-  WORK_PHONE: "Work Phone",
-  HOME_PHONE: "Home Phone",
-})
-
-export const DataToPhoneTypeFieldMap = new Map([
-  [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
-  [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
-  [PhoneTypeEnum.HOME, PhoneTypeFieldEnum.HOME_PHONE],
-])
-
-export const PhoneTypeFieldToDataMap = new Map([
-  [PhoneTypeFieldEnum.MOBILE_PHONE, PhoneTypeEnum.MOBILE],
-  [PhoneTypeFieldEnum.HOME_PHONE, PhoneTypeEnum.HOME_PHONE],
-  [PhoneTypeFieldEnum.WORK_PHONE, PhoneTypeEnum.WORK],
-])
-=======
->>>>>>> remove contactType and contactInformation from api.js
-
 
 export const PhoneTypeFieldEnum = Object.freeze({
   MOBILE_PHONE: "Mobile Phone",
@@ -260,10 +238,7 @@ export const mapContributionDataToForm = (contribution) => {
     zipcode: zip,
     email: email || "",
     phone: phone || "",
-<<<<<<< HEAD
     phoneType: phoneType || "",
-=======
->>>>>>> remove contactType and contactInformation from api.js
     occupation: occupation || "",
     employerName: employerName || "",
     employerCity: employerCity || "",
@@ -298,10 +273,7 @@ export const mapContributionFormToData = (data) => {
     electionAggregate,
     email,
     phone,
-<<<<<<< HEAD
     phoneType,
-=======
->>>>>>> remove contactType and contactInformation from api.js
     checkNumber,
     typeOfContributor,
     subTypeOfContribution,
@@ -325,10 +297,7 @@ export const mapContributionFormToData = (data) => {
     address2: addressLine2,
     email,
     phone,
-<<<<<<< HEAD
     phoneType,
-=======
->>>>>>> remove contactType and contactInformation from api.js
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     middleInitial: "",
