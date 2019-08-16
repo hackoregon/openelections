@@ -40,7 +40,7 @@ const containers = {
     min-height: 25px;
     display: grid;
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
-    grid-template-columns: 2fr 22% 24%;
+    grid-template-columns: 2fr 1fr 1fr;
     grid-gap: 20px;
   `
 };
@@ -322,14 +322,15 @@ export const ContributorSection = ({ formFields, showEmployerSection }) => (
       <h2>{formFields.phoneType}</h2>
       <h2>{formFields.occupation}</h2>
     </div>
-    <div css={containers.cityStateZip}>
     {showEmployerSection ? 
-    <><h2 css={containers.fullWidth} style={{marginTop: '45px'}}>{formFields.employerName}</h2>
-      <h2>{formFields.employerCity}</h2>
-      <h2>{formFields.employerState}</h2>
-    <h2>{formFields.employerZipcode}</h2></>
+      <div css={containers.cityStateZip}>
+        <h2 css={containers.fullWidth} >{formFields.employerName}</h2>
+          <h2>{formFields.employerCity}</h2>
+          <h2>{formFields.employerState}</h2>
+        <h2>{formFields.employerZipcode}</h2>
+      </div> 
      : ""}
-    </div> 
+
     <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>
 )
