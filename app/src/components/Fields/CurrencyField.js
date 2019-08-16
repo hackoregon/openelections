@@ -42,7 +42,7 @@ export default function CurrencyField ({ id, label, formik }) {
                 helperText={formik.touched[id] ? formik.errors[id] : ""}
                 error={formik.touched[id] && Boolean(formik.errors[id])}
                 value={formik.values[id]}
-                onChange={formik.handleChange}
+                onChange={formik.handleChange(id)}
                 onBlur={formik.handleBlur}
                 autoComplete="on"
                 fullWidth
