@@ -285,7 +285,7 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   </>
 )
 
-export const BasicsSection = ({ formFields, checkSelected }) => (
+export const BasicsSection = ({ formFields, checkSelected, showEmployerSection }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
@@ -302,7 +302,7 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
   </div>
 )
 
-export const ContributorSection = ({ formFields }) => (
+export const ContributorSection = ({ formFields, showEmployerSection }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Contributor</h3>
     <div css={containers.sectionTwo}>
@@ -322,17 +322,14 @@ export const ContributorSection = ({ formFields }) => (
       <h2>{formFields.phoneType}</h2>
       <h2>{formFields.occupation}</h2>
     </div>
-  </div>  
-)
-
-export const EmployerSection = ({ formFields }) => (
-  <div>
-    <h2 css={containers.fullWidth} style={{marginTop: '45px'}}>{formFields.employerName}</h2>
     <div css={containers.cityStateZip}>
+    {showEmployerSection ? 
+    <><h2 css={containers.fullWidth} style={{marginTop: '45px'}}>{formFields.employerName}</h2>
       <h2>{formFields.employerCity}</h2>
       <h2>{formFields.employerState}</h2>
-      <h2>{formFields.employerZipcode}</h2>
-    </div>
+    <h2>{formFields.employerZipcode}</h2></>
+     : ""}
+    </div> 
     <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>
 )
