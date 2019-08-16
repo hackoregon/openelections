@@ -16,7 +16,7 @@ import AddressLookupField from '../../../../components/Fields/AddressLookupField
 import {
   ContributorTypeFieldEnum,
   ContributionSubTypeFieldEnum,
-  PhoneTypeFieldEnum,
+  PhoneTypeEnum,
   ContributionTypeFieldEnum
 } from '../../../../api/api';
 
@@ -247,9 +247,9 @@ export const fields = {
     SelectField,
     Yup.string("Select your phone type"),
     [
-      PhoneTypeFieldEnum.MOBILE_PHONE,
-      PhoneTypeFieldEnum.WORK_PHONE,
-      PhoneTypeFieldEnum.HOME_PHONE,
+      PhoneTypeEnum.MOBILE,
+      PhoneTypeEnum.WORK,
+      PhoneTypeEnum.HOME,
     ]
   ),
   occupation: formField(
