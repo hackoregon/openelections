@@ -19,6 +19,7 @@ function NumberFormatCustom(props) {
         }}
         thousandSeparator
         prefix="$"
+        decimalScale="2"
       />
     );
   }
@@ -32,9 +33,6 @@ function NumberFormatCustom(props) {
 export default function CurrencyField ({ id, label, formik }) { 
     
       return (
-        <div>
-        {console.log("formik.values.id = ")}
-        {console.log(formik.values[id])}
             <TextFieldMaterial
                 id={id}
                 name={id}
@@ -49,8 +47,7 @@ export default function CurrencyField ({ id, label, formik }) {
                 InputProps={{
                   inputComponent: NumberFormatCustom,
                 }}
-                />
-                </div>
+            />
             );
 }
 
