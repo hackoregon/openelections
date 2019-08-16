@@ -41,6 +41,7 @@ const AddContribution = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, values }) => {
       const checkSelected = values.paymentMethod === "Check"
+      const isPerson = values.typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL || values.typeOfContributor === ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY ? true : false
       if( values.submitForMatch != "No"){
         if( //Set submitForMatch to No under these conditions
           values.amountOfContribution > 500 ||
@@ -55,7 +56,7 @@ const AddContribution = ({ ...props }) => (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection formFields={formFields} checkSelected={checkSelected} />
-          <ContributorSection formFields={formFields} />
+          <ContributorSection formFields={formFields} isPerson={isPerson} />
           <OtherDetailsSection formFields={formFields} />
         </>
       )

@@ -35,13 +35,13 @@ const entityContributorValues = [
   ContributorTypeFieldEnum.LABOR_ORGANIZATION,
   ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
   ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
-  ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE
+  ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE,
+  ContributorTypeFieldEnum.OTHER
 ]
 
 const individualContributorValues = [
   ContributorTypeFieldEnum.INDIVIDUAL,
-  ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
-  ContributorTypeFieldEnum.OTHER
+  ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
 ]
 
 const inKindContributionValues = [
@@ -55,7 +55,7 @@ export const contributionsEmptyState = {
   dateOfContribution: "",
   typeOfContribution: "",
   subTypeOfContribution: "",
-  typeOfContributor: "",
+  typeOfContributor: "ContributorTypeFieldEnum.INDIVIDUAL",
   amountOfContribution: "",
   oaeType: "",
   submitForMatch: "No",
@@ -64,7 +64,8 @@ export const contributionsEmptyState = {
 
   // CONTRIBUTOR VALUES
   firstName: "",
-  lastNameOrEntity: "",
+  lastName: "",
+  entityName: "",
   streetAddress: "",
   addressLine2: "",
   city: "Portland",
@@ -191,20 +192,25 @@ export const fields = {
     TextField,
     Yup.number("Enter your check number")
   ),
-
   // CONTRIBUTOR SECTION
-  firstName: formField(
-    "Contributor's First Name",
-    FormSectionEnum.CONTRIBUTOR,
-    TextField,
-    Yup.string("Enter first name")
-  ),
+  firstName: {
+    label: "Contributor's First Name",
+    section: FormSectionEnum.CONTRIBUTOR,
+    component:TextField,
+    validation: Yup.string("Enter first name")
+  },
   // If entity selected, will require entity instead of first/last name
-  lastNameOrEntity: formField(
-    "Contributor's Last Name / Entity Name",
+  lastName: formField(
+    "Contributor's Last Name",
     FormSectionEnum.CONTRIBUTOR,
     TextField,
-    Yup.string("Enter last name or entity name")
+    Yup.string("Enter last name")
+  ),
+  entityName: formField(
+    "Entity Name",
+    FormSectionEnum.CONTRIBUTOR,
+    TextField,
+    Yup.string("Enter entity name")
   ),
   streetAddress: formField(
     "Street Address",
@@ -373,7 +379,8 @@ export const validate = (values) => {
     employerZipcode,
     subTypeOfContribution,
     description,
-    lastNameOrEntity,
+    lastName,
+    entityName,
     firstName,
     typeOfContributor
   } = values
@@ -395,17 +402,17 @@ export const validate = (values) => {
     error.description = "A description is required"
   }
 
-  if (entityContributorValues.includes(typeOfContributor) && !checkNoEmptyString(lastNameOrEntity)) {
-    error.lastNameOrEntity = "Name of entity is required"
+  //If it's an entity require entityName
+  if (entityContributorValues.includes(typeOfContributor) && !checkNoEmptyString(entityName)) {
+    error.entityName = "Name of entity is required"
   }
-
+   //If it's a person require first and last name
   if (individualContributorValues.includes(typeOfContributor)) {
     if (!checkNoEmptyString(firstName)) {
       error.firstName = "First name is required."
     }
-
-    if (!checkNoEmptyString(lastNameOrEntity)) {
-      error.lastNameOrEntity = "Last name is required."
+    if (!checkNoEmptyString(lastName)) {
+      error.lastName = "Last name is required."
     }
   }
 

@@ -295,7 +295,6 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
       <h2>{formFields.dateOfContribution}</h2>
       <h2>{formFields.typeOfContribution}</h2>
       <h2>{formFields.subTypeOfContribution}</h2>
-      <h2>{formFields.typeOfContributor}</h2>
       <h2>{formFields.amountOfContribution}</h2>
       <h2>{formFields.oaeType}</h2>
       <h2>{formFields.submitForMatch}</h2>
@@ -305,12 +304,19 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
   </div>
 )
 
-export const ContributorSection = ({ formFields }) => (
+export const ContributorSection = ({ formFields, isPerson }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Contributor</h3>
     <div css={containers.sectionTwo}>
-      <h2>{formFields.firstName}</h2>
-      <h2>{formFields.lastNameOrEntity}</h2>
+      <h2>{formFields.typeOfContributor}</h2>
+      {isPerson ?
+        <>
+        <h2>{formFields.firstName}</h2>
+        <h2>{formFields.lastName}</h2>
+        </>
+        :
+        <h2>{formFields.entityName}</h2>
+    }
     </div>
     <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
     <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
