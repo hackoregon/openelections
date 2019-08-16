@@ -15,6 +15,7 @@ import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
+  EmployerSection,
   OtherDetailsSection
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import {
@@ -51,7 +52,7 @@ const AddContribution = ({ ...props }) => (
             values['submitForMatch'] = 'No'
           }
       }
-      // Only show Employer section if the contributor type is Individual OR Family
+      // // Only show Employer section if the contributor type is Individual OR Family
       if( values.typeOfContributor == "Individual" || values.typeOfContributor == "Candidate’s Immediate Family") {
         console.log("show employer section")
       } else {
@@ -69,6 +70,7 @@ const AddContribution = ({ ...props }) => (
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection formFields={formFields} checkSelected={checkSelected} />
           <ContributorSection formFields={formFields} />
+          <EmployerSection formFields={formFields} />
           <OtherDetailsSection formFields={formFields} />
         </>
       )

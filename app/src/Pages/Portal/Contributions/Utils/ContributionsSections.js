@@ -322,6 +322,11 @@ export const ContributorSection = ({ formFields }) => (
       <h2>{formFields.phoneType}</h2>
       <h2>{formFields.occupation}</h2>
     </div>
+  </div>  
+)
+
+export const EmployerSection = ({ formFields }) => (
+  <div>
     <h2 css={containers.fullWidth} style={{marginTop: '45px'}}>{formFields.employerName}</h2>
     <div css={containers.cityStateZip}>
       <h2>{formFields.employerCity}</h2>
