@@ -409,12 +409,21 @@ export const validate = (values) => {
       error.lastNameOrEntity = "Last name is required."
     }
   }
-  // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in, 
-  // then the employer name, city, state and zip code are not required
-  if( occupation == "Self Employed" || occupationLetterDate !== ""){
-    error.occupation = "Occupation is required."
-    console.log('self employed is selected or occupation letter date is NOT empty, so employer info NOT required', {values})
+  
+  if(( occupation == "Other" ) && !checkNoEmptyString(employerName)){
+    error.employerName = "Employer name is required."
   }
 
+  if(( occupation == "Other" ) && !checkNoEmptyString(employerCity)){
+    error.employerCity = "Employer city is required."
+  }
+
+  if(( occupation == "Other" ) && !checkNoEmptyString(employerState)){
+    error.employerState = "Employer state is required."
+  }
+
+  if(( occupation == "Other" ) && !checkNoEmptyString(employerZipcode)){
+    error.employerZipcode = "Employer zipcode is required."
+  }
   return error
 }
