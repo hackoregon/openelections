@@ -264,8 +264,8 @@ const ContributionNeedsReview = () => (
         city: "Portland",
         state: "OR",
         zipcode: "97212",
-        contactType: "Email",
-        contactInformation: "s.helen@example.com",
+        email: "fakeemail@fakester.com",
+        phone: "5411234567",
         occupation: "Program Manager",
         employerName: "Self Employed",
         employerCity: "Portland",
@@ -314,8 +314,8 @@ const ContributionNeedsReview = () => (
               <h2>{formFields.zipcode}</h2>
             </div>
             <div css={containers.sectionTwo}>
-              <h2>{formFields.contactType}</h2>
-              <h2>{formFields.contactInformation}</h2>
+              <h2>{formFields.email}</h2>
+              <h2>{formFields.phone}</h2>
               <h2>{formFields.occupation}</h2>
               <h2>{formFields.employerName}</h2>
             </div>
