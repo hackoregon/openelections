@@ -18,6 +18,7 @@ import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
+import {geocodeAddressAsync} from "./gisService";
 
 
 export interface IAddContributionAttrs {
@@ -495,4 +496,19 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
     } catch (e) {
         throw new Error(e.message);
     }
+}
+
+export async function getGISCoordinates(contributionId: number): Promise<boolean> {
+    const defaultConn = getConnection('default');
+    const contributionRepository = defaultConn.getRepository('Contribution');
+
+    const contribution = await contributionRepository.findOneOrFail(contributionId) as Contribution;
+
+    if (contribution.address1 && contribution.state && contribution.city && contribution.zip) {
+        const result = await geocodeAddressAsync({address1: contribution.address1, city: contribution.city, state: contribution.state, zip: contribution.zip});
+        if (result) {
+            contributionRepository.update(contributionId, { addressPoint: result});
+        }
+    }
+
 }
