@@ -116,6 +116,47 @@ export const ContributorTypeFieldToDataMap = new Map([
   [ContributorTypeFieldEnum.OTHER, ContributorTypeEnum.OTHER,],
 ])
 
+export const OAEContributionTypeEnum = Object.freeze({
+  SEED_MONEY: "seed money",
+  MATCHABLE: "matchable",
+  PUBLIC_MATCHING_CONTRIBUTION: "public matching contribution",
+  QUALIFYING: "qualifying",
+  ALLOWABLE: "allowable",
+  INKIND_PAID_SUPERVISION: "in-kind: paid supervision of volunteers",
+  INKIND_OTHER: "in-kind: other",
+});
+
+export const OAEContributionTypeFieldEnum = Object.freeze({
+  SEED_MONEY: "Seed Money",
+  MATCHABLE: "Matchable",
+  PUBLIC_MATCHING_CONTRIBUTION: "Public Matching Contribution",
+  QUALIFYING: "Qualifying",
+  ALLOWABLE: "Allowable",
+  INKIND_PAID_SUPERVISION: "In-Kind: Paid Supervision of Volunteers",
+  INKIND_OTHER: "In-Kind: Other",
+})
+
+export const DataToOAEContributionTypeFieldMap = new Map([
+  [OAEContributionTypeEnum.SEED_MONEY, OAEContributionTypeFieldEnum.SEED_MONEY],
+  [OAEContributionTypeEnum.MATCHABLE, OAEContributionTypeFieldEnum.MATCHABLE],
+  [OAEContributionTypeEnum.PUBLIC_MATCHING_CONTRIBUTION, OAEContributionTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [OAEContributionTypeEnum.QUALIFYING, OAEContributionTypeFieldEnum.QUALIFYING],
+  [OAEContributionTypeEnum.ALLOWABLE, OAEContributionTypeFieldEnum.ALLOWABLE],
+  [OAEContributionTypeEnum.INKIND_PAID_SUPERVISION, OAEContributionTypeFieldEnum.INKIND_PAID_SUPERVISION],
+  [OAEContributionTypeEnum.INKIND_OTHER, OAEContributionTypeFieldEnum.INKIND_OTHER],
+])
+
+export const OAEContributionTypeFieldToDataMap = new Map([
+  [OAEContributionTypeFieldEnum.SEED_MONEY, OAEContributionTypeEnum.SEED_MONEY],
+  [OAEContributionTypeFieldEnum.MATCHABLE, OAEContributionTypeEnum.MATCHABLE],
+  [OAEContributionTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION, OAEContributionTypeEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [OAEContributionTypeFieldEnum.QUALIFYING, OAEContributionTypeEnum.QUALIFYING,],
+  [OAEContributionTypeFieldEnum.ALLOWABLE, OAEContributionTypeEnum.ALLOWABLE,],
+  [OAEContributionTypeFieldEnum.INKIND_PAID_SUPERVISION, OAEContributionTypeEnum.INKIND_PAID_SUPERVISION,],
+  [OAEContributionTypeFieldEnum.INKIND_OTHER, OAEContributionTypeEnum.INKIND_OTHER,],
+])
+
+
 export const PhoneTypeEnum = Object.freeze({
   MOBILE: "Mobile",
   WORK: "Work",
@@ -184,7 +225,6 @@ export const ExpenditureStatusEnum = Object.freeze({
 });
 
 // TODO: need to get data for the following:
-// - oaeContributionType
 // - paymentMethod
 // - employerZipcode
 // - occupationLetterDate
@@ -197,6 +237,7 @@ export const mapContributionDataToForm = (contribution) => {
     type,
     subtype,
     contributorType,
+    oaeContributionType,
     amount,
     checkNumber,
     firstName,
@@ -224,6 +265,7 @@ export const mapContributionDataToForm = (contribution) => {
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
+    oaeContributionType: DataToOAEContributionTypeFieldMap.get(oaeContributionType),
     amountOfContribution: amount,
     checkNumber: checkNumber,
     submitForMatch: submitForMatch ? "Yes" : "No",
@@ -278,6 +320,7 @@ export const mapContributionFormToData = (data) => {
     typeOfContributor,
     subTypeOfContribution,
     typeOfContribution,
+    oaeContributionType,
     submitForMatch
   } = data
 
@@ -293,6 +336,7 @@ export const mapContributionFormToData = (data) => {
     contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
     subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
     type: ContributionTypeFieldToDataMap.get(typeOfContribution),
+    oaeContributionType: OAEContributionTypeFieldToDataMap.get(oaeContributionType),
     address1: streetAddress,
     address2: addressLine2,
     email,
