@@ -8,7 +8,7 @@ import {
     ContributorType,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, InKindDescriptionType,
-    MatchStrength
+    MatchStrength, OaeType
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -41,6 +41,7 @@ export interface IAddContributionAttrs {
     subType: ContributionSubType;
     inKindType?: InKindDescriptionType;
     title?: string;
+    oaeType?: OaeType;
     type: ContributionType;
     date: number;
     zip: string;
@@ -87,6 +88,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.name = contributionAttrs.name;
             contribution.contributorType = contributionAttrs.contributorType;
             contribution.inKindType = contributionAttrs.inKindType;
+            contribution.oaeType = contributionAttrs.oaeType;
 
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
@@ -184,6 +186,7 @@ export interface IUpdateContributionAttrs {
     type?: ContributionType;
     zip?: string;
     compliant?: boolean;
+    oaeType?: OaeType;
     inKindType?: InKindDescriptionType;
 }
 
