@@ -329,7 +329,7 @@ export const ContributorSection = ({ formFields, showEmployerSection }) => (
           <h2>{formFields.employerState}</h2>
         <h2>{formFields.employerZipcode}</h2>
       </div> 
-     : ""}
+     : null}
 
     <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>

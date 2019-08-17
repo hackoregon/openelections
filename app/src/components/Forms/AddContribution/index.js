@@ -41,9 +41,11 @@ const AddContribution = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, values }) => {
       const checkSelected = values.paymentMethod === "Check"
-
-      // // Only show Employer section if the contributor type is Individual OR Family
-      const showEmployerSection = (values.typeOfContributor == ContributorTypeFieldEnum.INDIVIDUAL) || (values.typeOfContributor == ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY);
+      // // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Other'
+      const showEmployerSection = values.occupation == "Other" && (
+        (values.typeOfContributor == ContributorTypeFieldEnum.INDIVIDUAL) || 
+        (values.typeOfContributor == ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY)
+        );
 
       if( values.submitForMatch != "No"){
         if( //Set submitForMatch to No under these conditions
