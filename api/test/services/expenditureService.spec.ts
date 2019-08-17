@@ -445,6 +445,7 @@ describe('expenditureService', () => {
         };
 
         delete updateExpenditure.errors;
+        delete updateExpenditure.campaignId;
 
         try {
             await updateExpenditureAsync(updateExpenditure);

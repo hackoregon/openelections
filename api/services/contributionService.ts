@@ -125,6 +125,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
 export interface IGetContributionOptions {
     currentUserId?: number;
     campaignId?: number;
+    matchId?: number;
     perPage?: number;
     page?: number;
     status?: string;
@@ -139,11 +140,14 @@ export interface IGetContributionAttrs extends IGetContributionOptions {
 export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummary[]> {
     try {
         const { governmentId, ...options } = contributionAttrs;
-        if (options.campaignId) {
+        const govAdmin = await isGovernmentAdminAsync(options.currentUserId, governmentId);
+        if (options.matchId && !govAdmin) {
+            throw new Error('User is not permitted to get contributions by matchId.');
+        } else if (options.campaignId) {
             const hasCampaignPermissions =
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
                 (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
-                (await isGovernmentAdminAsync(options.currentUserId, governmentId));
+                (govAdmin);
             if (hasCampaignPermissions) {
                 return getContributionsByGovernmentIdAsync(governmentId, {
                     ...options,
@@ -152,7 +156,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
                 });
             }
             throw new Error('User is not permitted to get contributions for this campaign.');
-        } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
+        } else if (!(govAdmin)) {
             throw new Error('Must be a government admin to see all contributions');
         }
         return getContributionsByGovernmentIdAsync(governmentId, {

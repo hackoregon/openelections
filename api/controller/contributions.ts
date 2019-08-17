@@ -142,6 +142,10 @@ export class GetContributionsDto implements IGetContributionAttrs {
 
     @IsOptional()
     @IsNumber()
+    matchId?: number;
+
+    @IsOptional()
+    @IsNumber()
     perPage?: number;
 
     @IsOptional()

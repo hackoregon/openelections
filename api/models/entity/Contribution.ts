@@ -480,7 +480,7 @@ export async function getContributionsByGovernmentIdAsync(
 ): Promise<IContributionSummary[]> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
-        const { page, perPage, campaignId, status, from, to } = options;
+        const { page, perPage, campaignId, status, from, to, matchId } = options;
         const relations = campaignId ? ['government', 'campaign'] : ['government'];
         const query = {
             select: contributionSummaryFields,
@@ -494,6 +494,7 @@ export async function getContributionsByGovernmentIdAsync(
                           id: campaignId
                       }
                     : undefined,
+                matchId,
                 status,
                 date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined

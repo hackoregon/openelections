@@ -389,6 +389,8 @@ components:
                 type: integer
               campaignId:
                 type: integer
+              matchId:
+                type: integer
               perPage:
                 type: integer
               page:

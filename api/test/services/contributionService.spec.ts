@@ -236,6 +236,56 @@ describe('contributionService', () => {
         ).to.equal(2);
     });
 
+    it('Gets all contributions for a matchId as govAdmin', async () => {
+        let contribution = await addContributionAsync({
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            firstName: 'John',
+            middleInitial: '',
+            lastName: 'Doe',
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            state: 'OR',
+            zip: '97214',
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now()
+        });
+        contributionRepository.update(contribution.id, {matchId: 1});
+        contribution = await addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                state: 'OR',
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
+            });
+          contributionRepository.update(contribution.id, {matchId: 2});
+        expect(
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: 1 })).length
+        ).to.equal(1);
+    });
+
+    it('Gets all contributions for a matchId as campaign', async () => {
+        try {
+            await getContributionsAsync({ governmentId: government.id, currentUserId: campaignAdmin.id, matchId: 1 });
+        } catch (e) {
+            expect(e.message).to.equal('User is not permitted to get contributions by matchId.');
+        }
+    });
+
     it('Throw an error getting all contributions for a government as a non gov admin', async () => {
         await Promise.all([
             addContributionAsync({
