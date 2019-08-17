@@ -106,7 +106,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                 if (process.env.NODE_ENV === 'production') {
                     // replace with a background job creation;
                 } else {
-                    await retrieveAndSaveMatchResultAsync(contribution.id);
+                    await getGISCoordinates(saved.id);
+                    await retrieveAndSaveMatchResultAsync(saved.id);
                 }
                 return saved;
             }
@@ -114,6 +115,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
+        console.log(e)
         throw new Error(e.message);
     }
 }
@@ -503,12 +505,18 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
     const contributionRepository = defaultConn.getRepository('Contribution');
 
     const contribution = await contributionRepository.findOneOrFail(contributionId) as Contribution;
-
     if (contribution.address1 && contribution.state && contribution.city && contribution.zip) {
         const result = await geocodeAddressAsync({address1: contribution.address1, city: contribution.city, state: contribution.state, zip: contribution.zip});
         if (result) {
-            contributionRepository.update(contributionId, { addressPoint: result});
+            await contributionRepository.update(contributionId,
+                { addressPoint:
+                    {
+                    type: 'Point',
+                    coordinates: result
+                    }
+                });
         }
+        return true;
     }
-
+    return false;
 }
