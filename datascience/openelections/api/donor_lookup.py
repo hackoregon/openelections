@@ -5,7 +5,8 @@ To Launch RESTful Server (will run on Port 8080)
 >>> python -m openelections.api.donor_lookup
 
 Example Request:
-curl http://127.0.0.1:8080/match -d "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland"
+curl http://127.0.0.1:8080/match -d
+"last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland&latitude=45.51179&longitude=-122.67563"
 """
 import sys
 sys.path.insert(0, "/app")
@@ -38,6 +39,8 @@ class DonorMatch(Resource):
             aparser.add_argument("addr1", type=str, required=True)
             aparser.add_argument("addr2", default=None, type=str)
             aparser.add_argument("city", default=None, type=str)
+            aparser.add_argument("latitude", dest="latitude", type=str)
+            aparser.add_argument("longitude", dest="longitude", type=str)
             aparser.add_argument("max_matches", default=10, type=int)
 
             options = aparser.parse_args()
@@ -54,7 +57,7 @@ class DonorMatch(Resource):
 
             # Add donor information to outout
             donor = {key: str(val).upper() if val is not None else "" for key, val in options.items()}
-            donor['eligible_address'] = str(in_portland(zip_code=options['zip_code'], city=options['city']))
+            donor['eligible_address'] = str(in_portland(longitude=options['longitude'], latitude=options['latitude']))
             matches_dict['donor_info'] = donor
 
             # Print JSON output

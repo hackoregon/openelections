@@ -60,7 +60,6 @@ ORESTAR_KEY = {'Tran Id': 'VARCHAR(255)',
                'Attest Date': 'TIMESTAMP',
                'Tran Date': 'TIMESTAMP'}
 
-
 POSTGRES_LOGIN = {"host": os.environ['POSTGRES_HOST'],
                   "port": os.environ['POSTGRES_PORT'],
                   "database": os.environ['POSTGRES_DB'],
@@ -195,3 +194,17 @@ def initialize_unified(zip_codes: Optional[List[str]] = None):
     with connect(**POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             curr.executemany(cmd, data.to_numpy())
+
+
+def initialize_citylimits():
+    '''
+    Provides the CLI for importing a table of city polygons to the active open_data_db
+    Needs: .shp and .shx files in proper folders (currently api->models->seeds->geometry)
+    :return:
+    '''
+
+    my_cmd = f'ogr2ogr -f "PostgreSQL" PG:"host={POSTGRES_LOGIN["host"]} user={POSTGRES_LOGIN["user"]} ' \
+             + f'password={POSTGRES_LOGIN["password"]} dbname={POSTGRES_LOGIN["database"]} ' \
+             + '"api/models/seeds/geometry/cty_fill.shp" -lco GEOMETRY_NAME=the_geom' \
+             + ' -lco FID=gid -nlt PROMOTE_TO_MULTI -nln city_limits -overwrite'
+    os.system(my_cmd)

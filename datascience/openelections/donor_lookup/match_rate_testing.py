@@ -10,10 +10,43 @@ import openelections.data.database as db
 from openelections import _RESOURCES
 from psycopg2 import connect
 from datetime import datetime
-from openelections.donor_lookup.match import get_match, PORTLAND_ZIP_CODES
+from openelections.donor_lookup.match import get_match
 
 
 USE_SAVED_FILES = True  # Set to True if you want to use previously saved data
+
+PORTLAND_ZIP_CODES = ['97201',
+                      '97202',
+                      '97203',
+                      '97204',
+                      '97205',
+                      '97206',
+                      '97209',
+                      '97210',
+                      '97211',
+                      '97212',
+                      '97213',
+                      '97214',
+                      '97215',
+                      '97216',
+                      '97217',
+                      '97218',
+                      '97219',
+                      '97220',
+                      '97221',
+                      '97222',
+                      '97223',
+                      '97225',
+                      '97227',
+                      '97229',
+                      '97230',
+                      '97231',
+                      '97232',
+                      '97233',
+                      '97236',
+                      '97239',
+                      '97258',
+                      '97266']
 
 
 def save(obj: object, filename: str):

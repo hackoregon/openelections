@@ -43,9 +43,6 @@ class TestGetMatch():
         ematch = matches['exact'][0]
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
 
-        # City match
-        assert ematch['eligible_address']
-
     @patch('psycopg2.connect')
     def test_exact_match_addr2(self, mock_connect):
         """
@@ -73,9 +70,6 @@ class TestGetMatch():
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
         assert ematch['address_2'] == 'UNIT 102'
 
-        # City match
-        assert ematch['eligible_address']
-
     @patch('psycopg2.connect')
     def test_exact_match_addr2_cat(self, mock_connect):
         """
@@ -98,9 +92,6 @@ class TestGetMatch():
         ematch = matches['exact'][0]
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
 
-        # City match
-        assert ematch['eligible_address']
-
     @patch('psycopg2.connect')
     def test_exact_match_addr2_miss(self, mock_connect):
         """
@@ -122,9 +113,6 @@ class TestGetMatch():
         # Scores correct
         ematch = matches['exact'][0]
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
-
-        # City match
-        assert ematch['eligible_address']
 
     @patch('psycopg2.connect')
     def test_strong_match_addr2(self, mock_connect):
@@ -150,9 +138,6 @@ class TestGetMatch():
                smatch['first_name_sim'] == 1 and \
                smatch['last_name_sim'] == 1
 
-        # City match
-        assert smatch['eligible_address']
-
     @patch('psycopg2.connect')
     def test_exact_match_abr(self, mock_connect):
         """
@@ -174,9 +159,6 @@ class TestGetMatch():
         # Scores correct
         ematch = matches['exact'][0]
         assert ematch['address_sim'] == 1 and ematch['first_name_sim'] == 1 and ematch['last_name_sim'] == 1
-
-        # City match
-        assert ematch['eligible_address']
 
     @patch('psycopg2.connect')
     def test_strong_match_abr(self, mock_connect):
@@ -201,9 +183,6 @@ class TestGetMatch():
         assert np.isclose(smatch['address_sim'], 0.97435) and \
                smatch['first_name_sim'] == 1 and \
                smatch['last_name_sim'] == 1
-
-        # City match
-        assert smatch['eligible_address']
 
     @patch('psycopg2.connect')
     def test_max_return(self, mock_connect):
@@ -236,29 +215,15 @@ class TestInPortland():
     Test class for in_portland
     """
 
-    def test_wrong_zip(self):
+    @patch('psycopg2.connect')
+    def test_wrong_zip(self, mock_connect):
         """
         Ensure that wrong zip code returns false
         :return:
         """
+        test_data = [('t')]
+        setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
+
         from openelections.donor_lookup.match import in_portland
 
-        assert not in_portland(city='Portland', zip_code='11209')
-
-    def test_wrong_city(self):
-        """
-        Ensure that wrong city returns true
-        :return:
-        """
-        from openelections.donor_lookup.match import in_portland
-
-        assert not in_portland(city='Brooklyn', zip_code='97202')
-
-    def test_valid_address(self):
-        """
-        Ensure that valid Portland address returns True
-        :return:
-        """
-        from openelections.donor_lookup.match import in_portland
-
-        assert in_portland(city='Portland', zip_code='97202')
+        assert not in_portland(latitude='45.51179', longitude='-122.67563')
