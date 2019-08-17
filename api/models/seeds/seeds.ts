@@ -39,6 +39,12 @@ export async function seedAddresses() {
         .execute();
 }
 
+export function addGISBoundaries() {
+    require('child_process').execSync(
+        `ogr2ogr -f "PostgreSQL" PG:"host=${process.env.DB_HOST} user=${process.env.DB_USERNAME} password=${process.env.DB_PASSWORD} dbname=${process.env.DB_NAME}" "/app/models/seeds/geometry/cty_fill.shp" -lco GEOMETRY_NAME=the_geom -lco FID=gid -nlt PROMOTE_TO_MULTI -nln gis_boundaries -overwrite`
+    );
+}
+
 export interface Address {
     firstName: string;
     middleName: string;
@@ -141,6 +147,9 @@ export default async () => {
     }
 
     await truncateAll();
+
+    console.log('Adding a gis boundaries admin');
+    addGISBoundaries();
 
     console.log('Adding a government admin');
     const govAdmin = await createUserAsync({

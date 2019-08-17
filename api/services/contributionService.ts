@@ -396,7 +396,8 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 addr2: contribution.address2,
                 city: contribution.city,
                 state: contribution.state,
-                zip_code: contribution.zip
+                zip_code: contribution.zip,
+                addressPoint: contribution.addressPoint
             });
 
             if (contribution.matchResult.exact.length > 0) {

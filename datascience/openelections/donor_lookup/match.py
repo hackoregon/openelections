@@ -72,7 +72,7 @@ def in_portland(longitude: str, latitude: str) -> bool:
     with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             cmd = f"SELECT ST_Contains(the_geom, ST_Transform(ST_GeomFromText('Point({longitude} {latitude})',4326)," \
-                + f" 900914)) FROM city_limits WHERE cityname='Portland'"
+                + f" 900914)) FROM gis_boundaries WHERE cityname='Portland'"
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
