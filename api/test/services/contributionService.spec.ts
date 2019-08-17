@@ -1287,4 +1287,8 @@ describe('contributionService', () => {
 
     });
 
+    it('getGISCoordinates', async () => {
+
+    })
+
 });
