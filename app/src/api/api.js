@@ -116,7 +116,7 @@ export const ContributorTypeFieldToDataMap = new Map([
   [ContributorTypeFieldEnum.OTHER, ContributorTypeEnum.OTHER,],
 ])
 
-export const OAEContributionTypeEnum = Object.freeze({
+export const OAETypeEnum = Object.freeze({
   SEED_MONEY: "seed money",
   MATCHABLE: "matchable",
   PUBLIC_MATCHING_CONTRIBUTION: "public matching contribution",
@@ -126,7 +126,7 @@ export const OAEContributionTypeEnum = Object.freeze({
   INKIND_OTHER: "in-kind: other",
 });
 
-export const OAEContributionTypeFieldEnum = Object.freeze({
+export const OAETypeFieldEnum = Object.freeze({
   SEED_MONEY: "Seed Money",
   MATCHABLE: "Matchable",
   PUBLIC_MATCHING_CONTRIBUTION: "Public Matching Contribution",
@@ -136,24 +136,24 @@ export const OAEContributionTypeFieldEnum = Object.freeze({
   INKIND_OTHER: "In-Kind: Other",
 })
 
-export const DataToOAEContributionTypeFieldMap = new Map([
-  [OAEContributionTypeEnum.SEED_MONEY, OAEContributionTypeFieldEnum.SEED_MONEY],
-  [OAEContributionTypeEnum.MATCHABLE, OAEContributionTypeFieldEnum.MATCHABLE],
-  [OAEContributionTypeEnum.PUBLIC_MATCHING_CONTRIBUTION, OAEContributionTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION],
-  [OAEContributionTypeEnum.QUALIFYING, OAEContributionTypeFieldEnum.QUALIFYING],
-  [OAEContributionTypeEnum.ALLOWABLE, OAEContributionTypeFieldEnum.ALLOWABLE],
-  [OAEContributionTypeEnum.INKIND_PAID_SUPERVISION, OAEContributionTypeFieldEnum.INKIND_PAID_SUPERVISION],
-  [OAEContributionTypeEnum.INKIND_OTHER, OAEContributionTypeFieldEnum.INKIND_OTHER],
+export const DataToOAETypeTypeFieldMap = new Map([
+  [OAETypeEnum.SEED_MONEY, OAETypeFieldEnum.SEED_MONEY],
+  [OAETypeEnum.MATCHABLE, OAETypeFieldEnum.MATCHABLE],
+  [OAETypeEnum.PUBLIC_MATCHING_CONTRIBUTION, OAETypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [OAETypeEnum.QUALIFYING, OAETypeFieldEnum.QUALIFYING],
+  [OAETypeEnum.ALLOWABLE, OAETypeFieldEnum.ALLOWABLE],
+  [OAETypeEnum.INKIND_PAID_SUPERVISION, OAETypeFieldEnum.INKIND_PAID_SUPERVISION],
+  [OAETypeEnum.INKIND_OTHER, OAETypeFieldEnum.INKIND_OTHER],
 ])
 
-export const OAEContributionTypeFieldToDataMap = new Map([
-  [OAEContributionTypeFieldEnum.SEED_MONEY, OAEContributionTypeEnum.SEED_MONEY],
-  [OAEContributionTypeFieldEnum.MATCHABLE, OAEContributionTypeEnum.MATCHABLE],
-  [OAEContributionTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION, OAEContributionTypeEnum.PUBLIC_MATCHING_CONTRIBUTION],
-  [OAEContributionTypeFieldEnum.QUALIFYING, OAEContributionTypeEnum.QUALIFYING,],
-  [OAEContributionTypeFieldEnum.ALLOWABLE, OAEContributionTypeEnum.ALLOWABLE,],
-  [OAEContributionTypeFieldEnum.INKIND_PAID_SUPERVISION, OAEContributionTypeEnum.INKIND_PAID_SUPERVISION,],
-  [OAEContributionTypeFieldEnum.INKIND_OTHER, OAEContributionTypeEnum.INKIND_OTHER,],
+export const OAETypeFieldToDataMap = new Map([
+  [OAETypeFieldEnum.SEED_MONEY, OAETypeEnum.SEED_MONEY],
+  [OAETypeFieldEnum.MATCHABLE, OAETypeEnum.MATCHABLE],
+  [OAETypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION, OAETypeEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [OAETypeFieldEnum.QUALIFYING, OAETypeEnum.QUALIFYING,],
+  [OAETypeFieldEnum.ALLOWABLE, OAETypeEnum.ALLOWABLE,],
+  [OAETypeFieldEnum.INKIND_PAID_SUPERVISION, OAETypeEnum.INKIND_PAID_SUPERVISION,],
+  [OAETypeFieldEnum.INKIND_OTHER, OAETypeEnum.INKIND_OTHER,],
 ])
 
 
@@ -237,7 +237,7 @@ export const mapContributionDataToForm = (contribution) => {
     type,
     subtype,
     contributorType,
-    oaeContributionType,
+    oaeType,
     amount,
     checkNumber,
     firstName,
@@ -265,7 +265,7 @@ export const mapContributionDataToForm = (contribution) => {
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
-    oaeContributionType: DataToOAEContributionTypeFieldMap.get(oaeContributionType),
+    oaeType: DataToOAETypeTypeFieldMap.get(oaeType),
     amountOfContribution: amount,
     checkNumber: checkNumber,
     submitForMatch: submitForMatch ? "Yes" : "No",
@@ -290,7 +290,7 @@ export const mapContributionDataToForm = (contribution) => {
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
     description: inKindDescription || "",
-    oaeContributionType: "",
+    oaeType: "",
     paymentMethod: ""
   }
 }
@@ -320,7 +320,7 @@ export const mapContributionFormToData = (data) => {
     typeOfContributor,
     subTypeOfContribution,
     typeOfContribution,
-    oaeContributionType,
+    oaeType,
     submitForMatch
   } = data
 
@@ -336,7 +336,7 @@ export const mapContributionFormToData = (data) => {
     contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
     subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
     type: ContributionTypeFieldToDataMap.get(typeOfContribution),
-    oaeContributionType: OAEContributionTypeFieldToDataMap.get(oaeContributionType),
+    oaeType: OAETypeFieldToDataMap.get(oaeType),
     address1: streetAddress,
     address2: addressLine2,
     email,

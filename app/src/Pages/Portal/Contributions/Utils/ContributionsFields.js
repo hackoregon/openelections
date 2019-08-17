@@ -56,7 +56,7 @@ export const contributionsEmptyState = {
   subTypeOfContribution: "",
   typeOfContributor: "",
   amountOfContribution: "",
-  oaeContributionType: "",
+  oaeType: "",
   submitForMatch: "No",
   paymentMethod: "",
   checkNumber: "",
@@ -144,7 +144,7 @@ export const fields = {
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
   ),
-  oaeContributionType: requiredFormField(
+  oaeType: requiredFormField(
     "OAE Contribution Type",
     FormSectionEnum.BASIC,
     SelectField,

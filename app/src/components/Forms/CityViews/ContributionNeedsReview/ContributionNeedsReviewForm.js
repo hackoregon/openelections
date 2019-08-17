@@ -75,7 +75,7 @@ const fields = {
       // NEEDS TO BE FORMATTED AS CURRENCY
       .required("The contribution amount is required")
   },
-  oaeContributionType: {
+  oaeType: {
     label: "OAE Contribution Type",
     section: "basicsSection",
     component: FieldValue,

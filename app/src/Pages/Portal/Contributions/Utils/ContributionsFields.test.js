@@ -7,7 +7,7 @@ const formFieldKeys = [
   "subTypeOfContribution",
   "typeOfContributor",
   "amountOfContribution",
-  "oaeContributionType",
+  "oaeType",
   "submitForMatch",
   "paymentMethod",
   "checkNumber",
