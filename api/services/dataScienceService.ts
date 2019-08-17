@@ -41,7 +41,7 @@ export interface MatchAddressType {
         addr2: string;
         city: string;
         max_matches: string;
-        eligible_address: string;
+        eligible_address: any;
     };
     error?: Error;
 }
@@ -64,8 +64,14 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
             urlParams = urlParams + `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`
         }
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
-        return (await response.json() as MatchAddressType);
+        const addressInfo: MatchAddressType = await response.json();
 
+        if (addressInfo.donor_info.eligible_address === 'true') {
+            addressInfo.donor_info.eligible_address = true;
+        } else {
+            addressInfo.donor_info.eligible_address = false;
+        }
+        return addressInfo;
     } catch (error) {
         const errorReturnAttrs: any = attrs;
         errorReturnAttrs.max_matches = 10;
