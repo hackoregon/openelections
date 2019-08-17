@@ -101,3 +101,5 @@ elections2019_login.json
 # Python resources
 /2019-openelections-data/openelections/resources/
 /2019-openelections-data/data/
+
+.env
