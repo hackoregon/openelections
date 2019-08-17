@@ -81,7 +81,7 @@ export async function geocodeAddressAsync(attrs: {
     if (request.ok) {
         const json = await request.json() as GoogleResult;
         if (json.status === 'OK' && json.results[0] ) {
-            return [json.results[0].geometry.location.lat, json.results[0].geometry.location.lng];
+            return [json.results[0].geometry.location.lng, json.results[0].geometry.location.lat];
         }
     }
     return;
