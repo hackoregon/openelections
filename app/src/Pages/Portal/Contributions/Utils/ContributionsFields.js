@@ -426,4 +426,18 @@ export const validate = (values) => {
     error.employerZipcode = "Employer zipcode is required."
   }
   return error
+
+  // switch(occupation== "Other") {
+  //   case !checkNoEmptyString(employerName):
+  //     return error.employerName = "Employer name is required.";
+  //   case !checkNoEmptyString(employerCity):
+  //     return error.employerCity = "Employer city is required.";
+  //   case !checkNoEmptyString(employerState):
+  //     return error.employerState = "Employer state is required.";
+  //   case !checkNoEmptyString(employerZipcode):
+  //     return error.employerZipcode = "Employer zipcode is required.";
+  //   default: 
+  //     return error.occupation = "If you select 'Other', you must include employer information";
+  // }
+
 }

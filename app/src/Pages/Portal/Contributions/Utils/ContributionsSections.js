@@ -285,7 +285,7 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   </>
 )
 
-export const BasicsSection = ({ formFields, checkSelected, showEmployerSection }) => (
+export const BasicsSection = ({ formFields, checkSelected }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
@@ -323,7 +323,7 @@ export const ContributorSection = ({ formFields, showEmployerSection }) => (
       <h2>{formFields.occupation}</h2>
     </div>
     {showEmployerSection ? 
-      <div style={{marginTop: '50px'}} css={containers.cityStateZip}>
+      <div style={{marginTop: '70px'}} css={containers.cityStateZip}>
         <h2 css={containers.fullWidth} >{formFields.employerName}</h2>
           <h2>{formFields.employerCity}</h2>
           <h2>{formFields.employerState}</h2>
