@@ -9,7 +9,7 @@ exports[`<Portal/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "1j037t",
+        "name": "1pnsaey",
         "next": undefined,
         "styles": "
   .content-wrapper {
@@ -20,29 +20,27 @@ exports[`<Portal/> should be defined 1`] = `
   .content-wrapper {
     padding-top: 20px;
   }
-  
+
   @media only screen and (min-width : 993px) {
-    
     .sidebar-wrapper {
       padding-top: 20px;
     }
-  
+
     &.portal-wrapper {
       display: flex;
     }
-    
+
     .sidebar-wrapper {
       width: 20%;
-      
+
       > div {
         position: sticky;
         top: 10px;
         left: 0;
       }
     }
-    
-    
-    .content-wrapper { 
+
+    .content-wrapper {
       width: 80%;
       border-left: 1px solid rgba(0, 0, 0, 0.15);
     }
