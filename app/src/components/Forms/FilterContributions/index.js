@@ -39,27 +39,27 @@ const FilterContribution = props => (
         };
 
         if (filterOptions.status && filterOptions.status !== "All Statuses") {
-           data.status = STATUS_OPTIONS[filterOptions.status]
+          data.status = STATUS_OPTIONS[filterOptions.status]
         }
 
         if (filterOptions.range) {
-            if (filterOptions.range.from) {
-                data.from = filterOptions.range.from;
-            }
+          if (filterOptions.range.from) {
+            data.from = filterOptions.range.from;
+          }
 
-            if (filterOptions.range.to) {
-                data.to = filterOptions.range.to;
-            }
+          if (filterOptions.range.to) {
+            data.to = filterOptions.range.to;
+          }
 
         }
         props.getContributions(data);
       }}
       initialValues={{
-          status: "",
-          range: {
-              to: "",
-              from: ""
-          }
+        status: "",
+        range: {
+          to: "",
+          from: ""
+        }
       }}
     >
       {({
@@ -70,15 +70,15 @@ const FilterContribution = props => (
           <React.Fragment>
             <div className="nark" css={wtf}>
               {formSections.filter}
-                <div>
-                    <Button
-                        buttonType="submit"
-                        disabled={!isValid}
-                        onClick={handleSubmit}
-                    >
-                        Filter
+              <div>
+                <Button
+                  buttonType="submit"
+                  disabled={!isValid}
+                  onClick={handleSubmit}
+                >
+                  Filter
                     </Button>
-                </div>
+              </div>
             </div>
           </React.Fragment>
         )}
@@ -92,7 +92,7 @@ export default connect(
     orgId: state.campaigns.currentCampaignId || state.governments.currentGovernmentId,
     campaignId: state.campaigns.currentCampaignId,
     govId: state.governments.currentGovernmentId || 1,
-    userId: isLoggedIn(state) ? state.auth.me.id: null
+    userId: isLoggedIn(state) ? state.auth.me.id : null
   }),
   dispatch => {
     return {
