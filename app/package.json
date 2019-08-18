@@ -54,20 +54,6 @@
     "build-storybook": "build-storybook",
     "flow": "flow"
   },
-  "jest": {
-    "setupFiles": [
-      "<rootDir>/node_modules/regenerator-runtime/runtime",
-      "./test/jestsetup.js"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.(css|less|scss)$": "identity-obj-proxy",
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js"
-    },
-    "snapshotResolver": "<rootDir>/snapshotResolver.js"
-  },
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
