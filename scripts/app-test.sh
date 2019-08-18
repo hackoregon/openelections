@@ -9,5 +9,5 @@ GITTAG=$(git rev-parse --short HEAD)
 
 git diff-tree --no-commit-id --name-only -r $GITTAG | grep '^app/' || exit 0
 echo Detected changes to app, running test suite
-
+docker-compose -f docker-compose-test.yml build app
 docker-compose -f docker-compose-test.yml run app yarn test
