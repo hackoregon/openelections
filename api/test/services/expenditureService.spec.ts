@@ -439,12 +439,10 @@ describe('expenditureService', () => {
         expenditureRepository.update(expenditure.id, { status: ExpenditureStatus.SUBMITTED});
 
         const updateExpenditure = {
-            ...expenditure,
+            id: expenditure.id,
             amount: 750,
             currentUserId: campaignStaff.id,
         };
-
-        delete updateExpenditure.errors;
 
         try {
             await updateExpenditureAsync(updateExpenditure);
@@ -476,7 +474,7 @@ describe('expenditureService', () => {
         const expenditure = await addExpenditureAsync(addExpenditureAttrs);
 
         const updateExpenditure = {
-            ...expenditure,
+            id: expenditure.id,
             amount: 750,
             currentUserId: campaignAdmin.id,
         };
