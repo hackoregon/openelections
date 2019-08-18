@@ -504,14 +504,11 @@ export function baseUrl() {
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:3000';
   }
-  if (process.env.NODE_ENV === 'staging') {
+
+  if (window && window.location.hostname.includes('qa')) {
     return 'https://api-qa.openelectionsportland.org';
   }
-  if (process.env.NODE_ENV === 'production') {
-    // Todo: Change for production
-    // return "https://api.openelectionsportland.org";
-    return 'https://api-qa.openelectionsportland.org';
-  }
+  return 'https://api.openelectionsportland.org';
 }
 
 // returns the jwt session token

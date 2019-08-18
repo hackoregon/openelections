@@ -47,20 +47,6 @@ describe('API', () => {
     delete process.env.TOKEN;
   });
 
-  it('baseUrl', async () => {
-    expect(api.baseUrl()).toEqual('http://localhost:3000');
-    process.env.NODE_ENV = 'development';
-    expect(api.baseUrl()).toEqual('http://localhost:3000');
-    process.env.NODE_ENV = 'staging';
-    expect(api.baseUrl()).toEqual('https://api-qa.openelectionsportland.org');
-    process.env.NODE_ENV = 'production';
-
-    // Todo: Change for production
-    expect(api.baseUrl()).toEqual('https://api-qa.openelectionsportland.org');
-    // expect(api.baseUrl()).toEqual("https://api.openelectionsportland.org");
-    process.env.NODE_ENV = 'test';
-  });
-
   it('decodeToken', () => {
     const decoded = api.decodeToken(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEwOSwiZXhwIjoxNTU4NTQ2OTE5OTk5LCJmaXJzdE5hbWUiOiJHb3Zlcm5tZW50IiwibGFzdE5hbWUiOiJBZG1pbiIsImVtYWlsIjoiZ292YWRtaW5Ab3BlbmVsZWN0aW9uc3BvcnRsYW5kLm9yZyIsInBlcm1pc3Npb25zIjpbeyJyb2xlIjoiZ292ZXJubWVudF9hZG1pbiIsInR5cGUiOiJnb3Zlcm5tZW50IiwiaWQiOjI0MTF9XSwiaWF0IjoxNTU4Mjg3NzE5fQ.qdSVIWO8yJ0ZR73MUGfyW1TQDOrhfcaOBEOTvEK_dUs'
