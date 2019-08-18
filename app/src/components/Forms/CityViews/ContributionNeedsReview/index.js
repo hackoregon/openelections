@@ -252,7 +252,7 @@ const ContributionNeedsReview = () => (
         subTypeOfContribution: "In-Kind Contribution",
         typeOfContributor: "Individual",
         amountOfContribution: `$ ${100}`,
-        oaeContributionType: "Matchable",
+        oaeType: "Matchable",
         paymentMethod: "Check",
         checkNumber: "#1027",
 
@@ -293,7 +293,7 @@ const ContributionNeedsReview = () => (
               <h2>{formFields.subTypeOfContribution}</h2>
               <h2>{formFields.typeOfContributor}</h2>
               <h2>{formFields.amountOfContribution}</h2>
-              <h2>{formFields.oaeContributionType}</h2>
+              <h2>{formFields.oaeType}</h2>
               <h2>{formFields.paymentMethod}</h2>
               <h2>{formFields.checkNumber}</h2>
             </div>
