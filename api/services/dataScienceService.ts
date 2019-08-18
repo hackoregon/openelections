@@ -61,7 +61,7 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
     try {
         let urlParams = `?last_name=${attrs.last_name}&first_name=${attrs.first_name}&addr1=${attrs.addr1}${attrs.addr2 ? '&addr2=' + attrs.addr2 : ''}&zip_code=${attrs.zip_code}&city=${attrs.city}&state=${attrs.state}`;
         if (attrs.addressPoint) {
-            urlParams = urlParams + `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`
+            urlParams = urlParams + `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`;
         }
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
         const addressInfo: MatchAddressType = await response.json();

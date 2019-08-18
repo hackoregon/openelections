@@ -130,6 +130,8 @@ export async function truncateAll() {
     try {
         await connection.query('TRUNCATE "gis_boundaries" RESTART IDENTITY CASCADE');
     } catch (error) {
-        console.log('table gis_boundaries not found');
+        if (process.env.NODE_ENV !== 'test') {
+            console.log('table gis_boundaries not found');
+        }
     }
 }

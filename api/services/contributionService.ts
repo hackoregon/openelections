@@ -18,7 +18,7 @@ import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
-import {geocodeAddressAsync} from "./gisService";
+import { geocodeAddressAsync } from './gisService';
 
 
 export interface IAddContributionAttrs {
@@ -115,7 +115,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
-        console.log(e)
+        console.log(e);
         throw new Error(e.message);
     }
 }
