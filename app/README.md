@@ -36,7 +36,7 @@ This will build your storybook app.
 
 ## Running the Front-End and Back-End together with seeded data
 
-Run the following command: `docker-compose up -d` (`-d` for daemon)
+Run the following command: `docker-compose up api` (`-d` for daemon)
 
 - You will need to use `sudo` with this command as well, if you are developing with Linux
 
@@ -263,7 +263,9 @@ This layout component assembles the UI components, implements the specific form 
 To run tests against the backend, you need to run the test stack:
 
 ```bash
+    docker-compose stop api
     docker-compose -f docker-compose-test.yml run api
+    cd app && yarn test
 
 ```
 
