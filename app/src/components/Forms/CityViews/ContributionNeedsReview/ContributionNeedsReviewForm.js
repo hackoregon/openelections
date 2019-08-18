@@ -3,6 +3,7 @@ import * as Yup from "yup";
 
 import Form from "../../../Form/Form";
 import FieldValue from "../../../Fields/FieldValue";
+import { OaeTypeFieldEnum } from "../../../../api/api";
 
 const fields = {
   // BASICS SECTION
@@ -81,13 +82,12 @@ const fields = {
     component: FieldValue,
     options: {
       values: [
-        "Seed Money",
-        "Matchable",
-        "Public Matching Contribution",
-        "Qualifying",
-        "Allowable",
-        "In-Kind: Paid Supervision of Volunteers",
-        "In-Kind: Other"
+        OaeTypeFieldEnum.SEED_MONEY,
+        OaeTypeFieldEnum.MATCHABLE,
+        OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+        OaeTypeFieldEnum.QUALIFYING,
+        OaeTypeFieldEnum.ALLOWABLE,
+        OaeTypeFieldEnum.INKIND,
       ]
     },
     validation: Yup.string("Choose the OAE contribution type").required(

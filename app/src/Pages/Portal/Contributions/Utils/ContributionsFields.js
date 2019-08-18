@@ -20,7 +20,8 @@ import {
   ContributorTypeFieldEnum,
   ContributionSubTypeFieldEnum,
   PhoneTypeEnum,
-  ContributionTypeFieldEnum
+  ContributionTypeFieldEnum,
+  OaeTypeFieldEnum
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -150,14 +151,13 @@ export const fields = {
     SelectField,
     Yup.string("Choose the OAE contribution type."),
     "The OAE contribution type is required",
-    [        
-      "Seed Money",
-      "Matchable",
-      "Public Matching Contribution",
-      "Qualifying",
-      "Allowable",
-      "In-Kind: Paid Supervision of Volunteers",
-      "In-Kind: Other",
+    [
+      OaeTypeFieldEnum.SEED_MONEY,
+      OaeTypeFieldEnum.MATCHABLE,
+      OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+      OaeTypeFieldEnum.QUALIFYING,
+      OaeTypeFieldEnum.ALLOWABLE,
+      OaeTypeFieldEnum.INKIND,
     ]
   ),
   submitForMatch: requiredFormField(
