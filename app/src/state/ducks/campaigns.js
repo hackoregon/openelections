@@ -1,27 +1,27 @@
 // campaigns.js
-import { createSelector } from "reselect";
-import { normalize } from "normalizr";
-import createReducer from "../utils/createReducer";
-import createActionTypes from "../utils/createActionTypes";
-import action from "../utils/action";
-import { addEntities, ADD_ENTITIES } from "./common";
-import { flashMessage } from "redux-flash";
-import { inviteUser } from "./users";
+import { createSelector } from 'reselect';
+import { normalize } from 'normalizr';
+import { flashMessage } from 'redux-flash';
+import createReducer from '../utils/createReducer';
+import createActionTypes from '../utils/createActionTypes';
+import action from '../utils/action';
+import { addEntities, ADD_ENTITIES } from './common';
+import { inviteUser } from './users';
 
-export const STATE_KEY = "campaigns";
+export const STATE_KEY = 'campaigns';
 
 // Action Types
 export const actionTypes = {
-  CREATE_CAMPAIGN: createActionTypes(STATE_KEY, "CREATE_CAMPAIGN"),
-  SET_CAMPAIGN: createActionTypes(STATE_KEY, "SET_CAMPAIGN"),
-  GET_CAMPAIGNS: createActionTypes(STATE_KEY, "GET_CAMPAIGNS")
+  CREATE_CAMPAIGN: createActionTypes(STATE_KEY, 'CREATE_CAMPAIGN'),
+  SET_CAMPAIGN: createActionTypes(STATE_KEY, 'SET_CAMPAIGN'),
+  GET_CAMPAIGNS: createActionTypes(STATE_KEY, 'GET_CAMPAIGNS'),
 };
 
 // Initial State
 export const initialState = {
   isLoading: false,
   error: null,
-  currentCampaignId: null
+  currentCampaignId: null,
 };
 
 // Reducer
@@ -49,7 +49,7 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_CAMPAIGNS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
 });
 
 // Action Creators
@@ -57,57 +57,68 @@ export const actionCreators = {
   createCampaign: {
     request: () => action(actionTypes.CREATE_CAMPAIGN.REQUEST),
     success: () => action(actionTypes.CREATE_CAMPAIGN.SUCCESS),
-    failure: error => action(actionTypes.CREATE_CAMPAIGN.FAILURE, { error })
+    failure: error => action(actionTypes.CREATE_CAMPAIGN.FAILURE, { error }),
   },
   setCampaign: {
     success: campaignId =>
-      action(actionTypes.SET_CAMPAIGN.SUCCESS, { campaignId })
+      action(actionTypes.SET_CAMPAIGN.SUCCESS, { campaignId }),
   },
   getCampaigns: {
     request: () => action(actionTypes.GET_CAMPAIGNS.REQUEST),
     success: () => action(actionTypes.GET_CAMPAIGNS.SUCCESS),
-    failure: error => action(actionTypes.GET_CAMPAIGNS.FAILURE, { error })
-  }
+    failure: error => action(actionTypes.GET_CAMPAIGNS.FAILURE, { error }),
+  },
 };
 
 // Side Effects, e.g. thunks
 export function createCampaignForGovernment(
-    governmentId,
-    campaignName,
-    officeSought,
-    email, 
-    firstName, 
-    lastName  
-  ) {
+  governmentId,
+  campaignName,
+  officeSought,
+  email,
+  firstName,
+  lastName
+) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createCampaign.request());
-    const campaignAttrs = { 
+    const campaignAttrs = {
       governmentId,
       name: campaignName,
-      officeSought
-    }
+      officeSought,
+    };
     try {
-    const response = await api.createCampaignForGovernment(campaignAttrs);
+      const response = await api.createCampaignForGovernment(campaignAttrs);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.campaign);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createCampaign.success());
         dispatch(
           inviteUser(
-          email, 
-          firstName, 
-          lastName, 
-          data.result, 
-          api.UserRoleEnum.CAMPAIGN_ADMIN
-        ));
-        dispatch(flashMessage('Campaign created', {props:{variant:'success'}}));
+            email,
+            firstName,
+            lastName,
+            data.result,
+            api.UserRoleEnum.CAMPAIGN_ADMIN
+          )
+        );
+        dispatch(
+          flashMessage('Campaign created', { props: { variant: 'success' } })
+        );
       } else {
         dispatch(actionCreators.createCampaign.failure());
-        dispatch(flashMessage('Unable to create Campaign', {props:{variant:'error'}}));        
+        dispatch(
+          flashMessage('Unable to create Campaign', {
+            props: { variant: 'error' },
+          })
+        );
       }
     } catch (error) {
       dispatch(actionCreators.createCampaign.failure(error));
-      dispatch(flashMessage('Unable to create Campaign - ' + error, {props:{variant:'error'}}));
+      dispatch(
+        flashMessage(`Unable to create Campaign - ${error}`, {
+          props: { variant: 'error' },
+        })
+      );
     }
   };
 }
@@ -139,22 +150,25 @@ export const getCampaignInfo = createSelector(
   state => state.campaigns
 );
 
-//Assumes one campaign
+// Assumes one campaign
 export const getCampaignName = state => {
   const id = getCampaignInfo(state).currentCampaignId
     ? getCampaignInfo(state).currentCampaignId
     : 0;
   return getCampaignInfo(state)[id]
     ? getCampaignInfo(state)[id].name
-    : "Campaign";
+    : 'Campaign';
 };
 
 export const getCampaignList = createSelector(
   rootState,
-  state => Object.keys(state.campaigns).filter(k => !isNaN(k)).map(k => state.campaigns[k])
-)
+  state =>
+    Object.keys(state.campaigns)
+      .filter(k => !Number.isNaN(k))
+      .map(k => state.campaigns[k])
+);
 
 export const isCampaignsLoading = createSelector(
   rootState,
   state => state.campaigns.isLoading
-)
+);

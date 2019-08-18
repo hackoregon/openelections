@@ -1,8 +1,8 @@
-import React from "react";
-import { Form } from "./Form";
+import React from 'react';
+import Form from './Form';
 
-describe("<Form />", () => {
-  it("should be defined", () => {
+describe('<Form />', () => {
+  it('should be defined', () => {
     expect(Form).toMatchSnapshot();
   });
 });

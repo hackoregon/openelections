@@ -1,14 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import TextFieldMaterial from "@material-ui/core/TextField";
+import React from 'react';
+import PropTypes from 'prop-types';
+import TextFieldMaterial from '@material-ui/core/TextField';
 
 const FieldValue = ({ id, label, formik, isRequired }) => (
   <TextFieldMaterial
-      required={isRequired}
-      id={id}
+    required={isRequired}
+    id={id}
     name={id}
     label={label}
-    helperText={formik.touched[id] ? formik.errors[id] : ""}
+    helperText={formik.touched[id] ? formik.errors[id] : ''}
     error={formik.touched[id] && Boolean(formik.errors[id])}
     value={formik.values[id]}
     onChange={formik.handleChange}
@@ -16,7 +16,7 @@ const FieldValue = ({ id, label, formik, isRequired }) => (
     autoComplete="on"
     fullWidth
     InputProps={{
-      disableUnderline: true
+      disableUnderline: true,
     }}
   />
 );
@@ -24,7 +24,7 @@ const FieldValue = ({ id, label, formik, isRequired }) => (
 FieldValue.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
-  formik: PropTypes.shape({})
+  formik: PropTypes.shape({}),
 };
 
 export default FieldValue;

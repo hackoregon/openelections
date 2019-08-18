@@ -1,31 +1,32 @@
-import React from "react";
-import * as Yup from "yup";
+import React from 'react';
+import * as Yup from 'yup';
 
-import Form from "../../Form/Form";
-import PasswordField from "../../Fields/PasswordField";
+import Form from '../../Form/Form';
+import PasswordField from '../../Fields/PasswordField';
 
 const fields = {
   oldPassword: {
-    label: "Current Password",
-    section: "resetPassword",
+    label: 'Current Password',
+    section: 'resetPassword',
     component: PasswordField,
-    validation: Yup.string("Enter your current password")
-        .required("Current password is required")
+    validation: Yup.string('Enter your current password').required(
+      'Current password is required'
+    ),
   },
   newPassword: {
-    label: "New Password",
-    section: "resetPassword",
+    label: 'New Password',
+    section: 'resetPassword',
     component: PasswordField,
-    validation: Yup.string("Enter your new password")
-        .required("New password is required")
-        .min(6, "Passwords must be 6 characters")
+    validation: Yup.string('Enter your new password')
+      .required('New password is required')
+      .min(6, 'Passwords must be 6 characters'),
   },
 };
 
 const ResetPasswordForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={["resetPassword"]}
+    sections={['resetPassword']}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >

@@ -1,8 +1,8 @@
-import React from "react";
-import DateRangeField from "./DateRangeField";
+import React from 'react';
+import DateRangeField from './DateRangeField';
 
-describe("<DateRangeield/>", () => {
-	it("should be defined", () => {
-		expect(DateRangeField).toMatchSnapshot();
-	});
+describe('<DateRangeield/>', () => {
+  it('should be defined', () => {
+    expect(DateRangeField).toMatchSnapshot();
+  });
 });

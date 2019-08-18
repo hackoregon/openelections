@@ -1,11 +1,11 @@
-import React from "react";
-import Button from "../../../Button/Button";
-import ContributionNeedsReviewForm from "./ContributionNeedsReviewForm";
-import ActivityStream from "../../../ActivityStream";
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import { connect } from 'react-redux';
+import Button from '../../../Button/Button';
+import ContributionNeedsReviewForm from './ContributionNeedsReviewForm';
+import ActivityStream from '../../../ActivityStream';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { isLoggedIn } from "../../../../state/ducks/auth";
-import { connect } from "react-redux";
+import { isLoggedIn } from '../../../../state/ducks/auth';
 
 const containers = {
   header: css`
@@ -47,7 +47,7 @@ const containers = {
     grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
     margin-bottom: 20px;
-  `
+  `,
 };
 
 const headerStyles = {
@@ -149,7 +149,7 @@ const headerStyles = {
   checkIcon: css`
     padding-right: 10px;
     align-self: center;
-  `
+  `,
 };
 
 const sectionStyles = {
@@ -173,14 +173,14 @@ const sectionStyles = {
   `,
   notes: css`
     margin-top: 75px;
-  `
+  `,
 };
 
 // HEADER VALUES
-const invoiceNumber = "#1030090212";
-const campaignName = "FakeName";
-const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
-const currentStatus = "Needs Review";
+const invoiceNumber = '#1030090212';
+const campaignName = 'FakeName';
+const lastEdited = '09/09/2019'; // NEEDS TO BE ACTUAL DATE
+const currentStatus = 'Needs Review';
 // const labelsCount = 0;
 
 const invoiceNumberBlock = (
@@ -216,22 +216,20 @@ const ContributionNeedsReview = () => (
       <div css={containers.header}>
         <div css={headerStyles.leftColumn}>
           {invoiceNumberBlock}
-          <div style={{ display: "flex" }}>
-            {statusBlock}
-          </div>
+          <div style={{ display: 'flex' }}>{statusBlock}</div>
         </div>
         <div css={headerStyles.rightColumn}>
           <div
             css={headerStyles.checkButtonContainer}
-            style={{ display: "flex", flexDirection: "column-reverse" }}
+            style={{ display: 'flex', flexDirection: 'column-reverse' }}
           >
             <div
               css={headerStyles.checkButtonCombo}
-              style={{ display: "flex", flexDirection: "row" }}
+              style={{ display: 'flex', flexDirection: 'row' }}
             >
               <div
                 css={headerStyles.checkIcon}
-                style={{ paddingRight: "10px", alignSelf: "center" }}
+                style={{ paddingRight: '10px', alignSelf: 'center' }}
               >
                 √
               </div>
@@ -244,40 +242,40 @@ const ContributionNeedsReview = () => (
       </div>
     </React.Fragment>
     <ContributionNeedsReviewForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
       initialValues={{
         // BASICS VALUES
-        dateOfContribution: "09/09/2019", // Date.now(), // FORMAT?
-        typeOfContribution: "Contribution",
-        subTypeOfContribution: "In-Kind Contribution",
-        typeOfContributor: "Individual",
+        dateOfContribution: '09/09/2019', // Date.now(), // FORMAT?
+        typeOfContribution: 'Contribution',
+        subTypeOfContribution: 'In-Kind Contribution',
+        typeOfContributor: 'Individual',
         amountOfContribution: `$ ${100}`,
-        oaeType: "Matchable",
-        paymentMethod: "Check",
-        checkNumber: "#1027",
+        oaeType: 'Matchable',
+        paymentMethod: 'Check',
+        checkNumber: '#1027',
 
         // CONTRIBUTOR VALUES
-        firstName: "Helen",
-        lastName: "Troy",
-        streetAddress: "2526 Race Street",
-        addressLine2: "",
-        city: "Portland",
-        state: "OR",
-        zipcode: "97212",
-        email: "fakeemail@fakester.com",
-        phone: "5411234567",
-        occupation: "Program Manager",
-        employerName: "Self Employed",
-        employerCity: "Portland",
-        employerState: "OR",
-        employerZipcode: "97212",
+        firstName: 'Helen',
+        lastName: 'Troy',
+        streetAddress: '2526 Race Street',
+        addressLine2: '',
+        city: 'Portland',
+        state: 'OR',
+        zipcode: '97212',
+        email: 'fakeemail@fakester.com',
+        phone: '5411234567',
+        occupation: 'Program Manager',
+        employerName: 'Self Employed',
+        employerCity: 'Portland',
+        employerState: 'OR',
+        employerZipcode: '97212',
 
         // OTHER DETAILS VALUES
-        electionAggregate: "2019",
-        description: "Some Description",
-        occupationLetterDate: "",
-        linkToDocumentation: "",
-        notes: ""
+        electionAggregate: '2019',
+        description: 'Some Description',
+        occupationLetterDate: '',
+        linkToDocumentation: '',
+        notes: '',
       }}
     >
       {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
@@ -344,5 +342,5 @@ const ContributionNeedsReview = () => (
   </>
 );
 export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false
+  isLoggedIn: isLoggedIn(state) || false,
 }))(ContributionNeedsReview);

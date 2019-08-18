@@ -1,8 +1,22 @@
-import { css } from "@emotion/core";
+import { css } from '@emotion/core';
+
+// Found at: https://jsfiddle.net/subodhghulaxe/t568u/
+function convertHex(hex, opacity) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) {
+    hex = hex.split().reduce((a, b) => a + b + b, '');
+  }
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return `rgba(${r},${g},${b},${opacity / 100})`;
+}
 
 export default (radius, color) => {
   radius = radius || 5;
-  color = color || "#ffffff";
+  color = color || '#ffffff';
 
   return css`
     &,
@@ -48,17 +62,3 @@ export default (radius, color) => {
     }
   `;
 };
-
-// Found at: https://jsfiddle.net/subodhghulaxe/t568u/
-function convertHex(hex, opacity) {
-  hex = hex.replace("#", "");
-  if (hex.length === 3) {
-    hex = hex.split().reduce((a, b) => a + b + b, "");
-  }
-
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-
-  return "rgba(" + r + "," + g + "," + b + "," + opacity / 100 + ")";
-}

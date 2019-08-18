@@ -1,9 +1,9 @@
-import React from "react";
-import Navigation from "../Navigation/Navigation";
-import { NavLink } from "react-router-dom";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from '@emotion/core';
+import Navigation from '../Navigation/Navigation';
 
 const styles = css`
   display: flex;

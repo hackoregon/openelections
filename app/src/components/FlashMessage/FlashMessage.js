@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { getLatestMessage } from 'redux-flash';
 import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContentWrapper from "./FlashMessageWrapper";
+import SnackbarContentWrapper from './FlashMessageWrapper';
 
 /*
  
@@ -37,30 +37,27 @@ import SnackbarContentWrapper from "./FlashMessageWrapper";
 
 */
 
-function FlashMessage ({ flash }) {
+function FlashMessage({ flash }) {
   return (
-    <div  >
-    {
-      flash && 
-      <div>
-      <Snackbar open={true}  >  
-        <SnackbarContentWrapper 
-           variant = {flash.props.variant ? flash.props.variant : "success"}  
-           anchororigin = {flash.props.anchorOrigin}
-           message = {flash.message}
-           className = 'anchorOriginTopRight'
-        />
-        </Snackbar> 
-     </div>
-    }
+    <div>
+      {flash && (
+        <div>
+          <Snackbar open>
+            <SnackbarContentWrapper
+              variant={flash.props.variant ? flash.props.variant : 'success'}
+              anchororigin={flash.props.anchorOrigin}
+              message={flash.message}
+              className="anchorOriginTopRight"
+            />
+          </Snackbar>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default connect(
-  state=> {
-    return {   
-        flash: getLatestMessage(state)
-    }
-  }
-)(FlashMessage)
+export default connect(state => {
+  return {
+    flash: getLatestMessage(state),
+  };
+})(FlashMessage);

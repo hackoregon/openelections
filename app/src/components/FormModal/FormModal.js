@@ -1,8 +1,8 @@
 // eslint-disable-next-line
 import React from "react";
-import Paper from "@material-ui/core/Paper";
+import Paper from '@material-ui/core/Paper';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from '@emotion/core';
 
 const formModalWrapper = css`
   max-width: 350px;

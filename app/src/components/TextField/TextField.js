@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import MaterialTextField from "@material-ui/core/TextField";
+import React from 'react';
+import PropTypes from 'prop-types';
+import MaterialTextField from '@material-ui/core/TextField';
 
 const TextField = ({
   id,
@@ -12,7 +12,7 @@ const TextField = ({
   value,
   onChange,
   onBlur,
-  isRequired
+  isRequired,
 }) => (
   <MaterialTextField
     required={isRequired}
@@ -38,7 +38,7 @@ TextField.propTypes = {
   error: PropTypes.bool,
   value: PropTypes.string,
   onChange: PropTypes.func,
-  onBlur: PropTypes.func
+  onBlur: PropTypes.func,
 };
 
 export default TextField;

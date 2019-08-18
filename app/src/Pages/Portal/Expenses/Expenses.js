@@ -1,8 +1,8 @@
-import * as React from "react";
-import PageHoc from "../../../components/PageHoc/PageHoc";
+import * as React from 'react';
+import PageHoc from '../../../components/PageHoc/PageHoc';
 // import AddExpense from "./AddExpense/AddExpense";
 // import ExpensesDetail from "./ExpensesDetail/ExpensesDetail";
-import ExpensesTable from "./ExpensesTable/ExpensesTable";
+import ExpensesTable from './ExpensesTable/ExpensesTable';
 
 // Switch statement for routing
 
@@ -11,7 +11,7 @@ const Expense = props => {
     <PageHoc>
       {/* <AddExpense /> */}
       {/* <ExpensesDetail /> */}
-      <ExpensesTable  {...props} />
+      <ExpensesTable {...props} />
     </PageHoc>
   );
 };

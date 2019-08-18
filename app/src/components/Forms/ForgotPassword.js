@@ -1,6 +1,6 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 export const ForgotPasswordForm = props => {
   const {
@@ -11,7 +11,7 @@ export const ForgotPasswordForm = props => {
     handleSubmit,
     handleChange,
     isValid,
-    handleBlur
+    handleBlur,
   } = props;
 
   const change = (name, e) => {
@@ -28,16 +28,16 @@ export const ForgotPasswordForm = props => {
         name="email"
         label="Email"
         autoComplete="email"
-        helperText={touched.email ? errors.email : ""}
+        helperText={touched.email ? errors.email : ''}
         error={touched.email && Boolean(errors.email)}
         value={email}
-        onChange={change.bind(null, "email")}
+        onChange={change.bind(null, 'email')}
         onBlur={e => {
           handleBlur(e);
         }}
         fullWidth
       />
-      <div className="form-submission-options" style={{ marginTop: 30 + "px" }}>
+      <div className="form-submission-options" style={{ marginTop: `${30}px` }}>
         <Button
           type="submit"
           variant="contained"

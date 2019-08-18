@@ -1,11 +1,11 @@
 // eslint-disable-next-line
 import React from "react";
-import ModalMaterial from "@material-ui/core/Modal";
-import IconButton from "@material-ui/core/IconButton";
-import Close from "@material-ui/icons/Close";
-import * as ModalOptions from "../Forms/ModalForms";
+import ModalMaterial from '@material-ui/core/Modal';
+import IconButton from '@material-ui/core/IconButton';
+import Close from '@material-ui/icons/Close';
+import { css, jsx } from '@emotion/core';
+import * as ModalOptions from '../Forms/ModalForms';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 
 const modalStyle = css`
   position: absolute;
@@ -28,20 +28,22 @@ const errorStyle = css`
 `;
 
 const Modal = props => {
-  const handleClose = x => props.clearModal()
-  const currentModalOptions = ModalOptions[props.getModalState.currentModal]
-  const ModalContent = () => React.createElement(currentModalOptions, props.getModalState._props)
-  const ErrorMessage = () =>
+  const handleClose = x => props.clearModal();
+  const currentModalOptions = ModalOptions[props.getModalState.currentModal];
+  const ModalContent = () =>
+    React.createElement(currentModalOptions, props.getModalState._props);
+  const ErrorMessage = () => (
     <div css={errorStyle}>
       <br />
       <br />
       <h2>Error loading modal</h2>
     </div>
+  );
 
   return (
     <ModalMaterial
-        style={{ overflowY: 'scroll' }}
-      aria-label={props.getModalState.currentModal + " modal"}
+      style={{ overflowY: 'scroll' }}
+      aria-label={`${props.getModalState.currentModal} modal`}
       open={props.getModalState.isActive}
       onClose={() => handleClose()}
     >
@@ -49,10 +51,14 @@ const Modal = props => {
         <div css={modalStyle}>
           <div css={closeModal}>
             <IconButton aria-label="Back" onClick={() => handleClose()}>
-              <Close style={{ fontSize: "26px", color: "black" }} />
+              <Close style={{ fontSize: '26px', color: 'black' }} />
             </IconButton>
           </div>
-          {currentModalOptions != undefined ? <ModalContent /> : <ErrorMessage />}
+          {currentModalOptions !== undefined ? (
+            <ModalContent />
+          ) : (
+            <ErrorMessage />
+          )}
         </div>
       </div>
     </ModalMaterial>

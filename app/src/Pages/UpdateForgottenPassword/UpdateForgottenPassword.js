@@ -1,27 +1,27 @@
-import React, { Component } from "react";
-import * as Yup from "yup";
-import { Formik } from "formik";
-import Paper from "@material-ui/core/Paper";
-import PageHoc from "../../components/PageHoc/PageHoc";
+import React, { Component } from 'react';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+import Paper from '@material-ui/core/Paper';
+import { css, jsx } from '@emotion/core';
+import { connect } from 'react-redux';
+import { flashMessage } from 'redux-flash';
+import PageHoc from '../../components/PageHoc/PageHoc';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { UpdateForgottenPasswordForm } from "../../components/Forms/UpdateForgottenPassword";
-import GreenCheck from "../../assets/icons/green-check";
-import { connect } from "react-redux";
-import { resetPassword } from "../../state/ducks/auth";
-import { flashMessage } from "redux-flash";
+import { UpdateForgottenPasswordForm } from '../../components/Forms/UpdateForgottenPassword';
+import GreenCheck from '../../assets/icons/green-check';
+import { resetPassword } from '../../state/ducks/auth';
 
-//TODO Refactor to current page/form format
+// TODO Refactor to current page/form format
 
 const validationSchema = Yup.object({
-  newPassword: Yup.string("Choose a new password")
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+  newPassword: Yup.string('Choose a new password')
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
   confirmNewPassword: Yup.string(
-    "Choose a new password that matches the other one"
+    'Choose a new password that matches the other one'
   )
-    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-    .required("Password confirmation is required")
+    .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+    .required('Password confirmation is required'),
 });
 
 const styles = css`
@@ -67,39 +67,44 @@ const styles = css`
 class UpdateForgottenPassword extends Component {
   state = {
     formValues: {
-      newPassword: "",
-      confirmNewPassword: ""
+      newPassword: '',
+      confirmNewPassword: '',
     },
     isSubmitted: false,
-    updateCode: ""
+    updateCode: '',
   };
-  componentDidMount(){
-    let search = new URLSearchParams(this.props.location.search);
-    let update_code = search.get("invitationCode");
-    if(update_code){
-      this.setState({updateCode: update_code});
+
+  componentDidMount() {
+    const search = new URLSearchParams(this.props.location.search);
+    const update_code = search.get('invitationCode');
+    if (update_code) {
+      this.setState({ updateCode: update_code });
     }
   }
+
   handleStateChange(name, event) {
     this.setState({
       formValues: {
         ...this.state.formValues,
-        [name]: event.target.value
-      }
+        [name]: event.target.value,
+      },
     });
   }
+
   formIsSubmitted(bool) {
     this.setState({ isSubmitted: bool });
   }
+
   clearState(e) {
     // e.preventDefault();
     this.setState({
       formValues: {
-        newPassword: "",
-        confirmNewPassword: ""
-      }
+        newPassword: '',
+        confirmNewPassword: '',
+      },
     });
   }
+
   render() {
     return (
       <PageHoc>
@@ -110,16 +115,26 @@ class UpdateForgottenPassword extends Component {
             {!this.state.isSubmitted ? (
               <Formik
                 onSubmit={(values, actions) => {
-                  this.props.dispatch(resetPassword(this.state.updateCode,values.newPassword))
-                  .then(submitted=>{
-                    if(submitted){
-                      this.formIsSubmitted(true);
-                      this.props.dispatch(flashMessage("Password updated", {props:{variant:'success'}}));
-                    }else{
-                      this.props.dispatch(flashMessage("Invalid code", {props:{variant:'error'}}));
-                    }
-                  }
-                  );
+                  this.props
+                    .dispatch(
+                      resetPassword(this.state.updateCode, values.newPassword)
+                    )
+                    .then(submitted => {
+                      if (submitted) {
+                        this.formIsSubmitted(true);
+                        this.props.dispatch(
+                          flashMessage('Password updated', {
+                            props: { variant: 'success' },
+                          })
+                        );
+                      } else {
+                        this.props.dispatch(
+                          flashMessage('Invalid code', {
+                            props: { variant: 'error' },
+                          })
+                        );
+                      }
+                    });
                 }}
                 onReset={(values, bag) => {
                   this.clearState();
@@ -136,11 +151,11 @@ class UpdateForgottenPassword extends Component {
                 validationSchema={validationSchema}
               />
             ) : (
-              <div className={"user-signedup"}>
-                <GreenCheck width={50} className={"checkMark"} />
+              <div className="user-signedup">
+                <GreenCheck width={50} className="checkMark" />
                 <p>
                   Your password is updated.
-                  <span> </span>
+                  <span />
                 </p>
               </div>
             )}

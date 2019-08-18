@@ -1,17 +1,20 @@
-import React from "react";
-import { connect } from "react-redux";
-import ManageCampaign from "./ManageCampaign";
-import { showModal } from "../../../state/ducks/modal";
-import { isCampaignsLoading, getCampaigns, getCampaignList } from "../../../state/ducks/campaigns";
-import { getCurrentGovernmentId } from "../../../state/ducks/governments";
-
+import React from 'react';
+import { connect } from 'react-redux';
+import ManageCampaign from './ManageCampaign';
+import { showModal } from '../../../state/ducks/modal';
+import {
+  isCampaignsLoading,
+  getCampaigns,
+  getCampaignList,
+} from '../../../state/ducks/campaigns';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 class ManageCampaignPage extends React.Component {
   componentDidMount() {
     this.props.getCampaigns(this.props.governmentId);
   }
 
-  render () {
+  render() {
     return <ManageCampaign {...this.props} />;
   }
 }
@@ -24,8 +27,8 @@ export default connect(
   }),
   dispatch => {
     return {
-      getCampaigns: (governmentId) => dispatch(getCampaigns(governmentId)),
-      showModal: (payload) => dispatch(showModal( payload))
+      getCampaigns: governmentId => dispatch(getCampaigns(governmentId)),
+      showModal: payload => dispatch(showModal(payload)),
     };
   }
 )(ManageCampaignPage);

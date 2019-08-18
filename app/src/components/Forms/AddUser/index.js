@@ -1,12 +1,12 @@
-import React from "react";
-import { connect } from "react-redux";
-import FormModal from "../../FormModal/FormModal";
-import Button from "../../Button/Button";
-import AddUserForm from "./AddUserForm";
-import { clearModal } from "../../../state/ducks/modal";
-import { inviteUser } from "../../../state/ducks/users";
+import React from 'react';
+import { connect } from 'react-redux';
+import { css, jsx } from '@emotion/core';
+import FormModal from '../../FormModal/FormModal';
+import Button from '../../Button/Button';
+import AddUserForm from './AddUserForm';
+import { clearModal } from '../../../state/ducks/modal';
+import { inviteUser } from '../../../state/ducks/users';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 
 const formTitle = css`
   font-size: 35px;
@@ -21,9 +21,9 @@ const leftAlign = css`
 `;
 
 const USER_ROLES = {
-  "Admin": "campaign_admin",
-  "Staff": "campaign_staff"
-}
+  Admin: 'campaign_admin',
+  Staff: 'campaign_staff',
+};
 // Todo: get from API
 
 const AddUser = props => (
@@ -35,17 +35,17 @@ const AddUser = props => (
         props.clearModal();
       }}
       initialValues={{
-        userRole: "Staff",
-        email: "",
-        firstName: "",
-        lastName: ""
+        userRole: 'Staff',
+        email: '',
+        firstName: '',
+        lastName: '',
       }}
     >
       {({
         formSections,
         isValid,
         handleCancel,
-        handleSubmit /* isDirty, isSubmitting */
+        handleSubmit /* isDirty, isSubmitting */,
       }) => (
         <React.Fragment>
           <p css={formTitle}>Add a New User</p>
@@ -82,12 +82,17 @@ const AddUser = props => (
 // export default AddUser;
 export default connect(
   state => ({
-    orgId: state.campaigns.currentCampaignId || state.governments.currentGovernmentId
+    orgId:
+      state.campaigns.currentCampaignId ||
+      state.governments.currentGovernmentId,
   }),
   dispatch => {
     return {
       clearModal: () => dispatch(clearModal()),
-      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) => dispatch(inviteUser(email, firstName, lastName, campaignOrGovernmentId, role))
+      inviteUser: (email, firstName, lastName, campaignOrGovernmentId, role) =>
+        dispatch(
+          inviteUser(email, firstName, lastName, campaignOrGovernmentId, role)
+        ),
     };
   }
 )(AddUser);

@@ -1,8 +1,8 @@
-import React from "react";
-import { ForgotPasswordForm } from "./ForgotPassword";
+import React from 'react';
+import { ForgotPasswordForm } from './ForgotPassword';
 
-describe("<ForgotPasswordForm/>", () => {
-  it("should be defined", () => {
+describe('<ForgotPasswordForm/>', () => {
+  it('should be defined', () => {
     expect(ForgotPasswordForm).toMatchSnapshot();
   });
 });

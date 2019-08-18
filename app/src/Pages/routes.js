@@ -1,27 +1,26 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import TopNavigation from "../components/TopNavigation";
-import HomePage from "./Home/Home";
-import AboutPage from "./About/About";
-import SandboxPage from "./Sandbox/Sandbox";
-import InvitationPage from "./Invitation/Invitation";
-import SignInPage from "./SignIn/SignIn";
-import SignUpPage from "./SignUp/SignUp";
-import ForgotPasswordPage from "./ForgotPassword/ForgotPassword";
-import UpdateForgottenPasswordPage from "./UpdateForgottenPassword/UpdateForgottenPassword";
-import ContributionPage from "./Portal/Contributions/Contributions";
-import ExpensePage from "./Portal/Expenses/Expenses";
-import Portal from "./Portal/Portal";
-import ResetPassword from "./ResetPassword/ResetPassword";
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import TopNavigation from '../components/TopNavigation';
+import HomePage from './Home/Home';
+import AboutPage from './About/About';
+import SandboxPage from './Sandbox/Sandbox';
+import InvitationPage from './Invitation/Invitation';
+import SignInPage from './SignIn/SignIn';
+import SignUpPage from './SignUp/SignUp';
+import ForgotPasswordPage from './ForgotPassword/ForgotPassword';
+import UpdateForgottenPasswordPage from './UpdateForgottenPassword/UpdateForgottenPassword';
+import ContributionPage from './Portal/Contributions/Contributions';
+import ExpensePage from './Portal/Expenses/Expenses';
+import Portal from './Portal/Portal';
+import ResetPassword from './ResetPassword/ResetPassword';
 
 const shouldTransition = location => {
-  let transitionPages = ["/", "/about", "/sandbox"];
+  const transitionPages = ['/', '/about', '/sandbox'];
   if (transitionPages.includes(location.pathname)) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
 const Routes = props => {
@@ -32,7 +31,7 @@ const Routes = props => {
           <TopNavigation />
           <TransitionGroup className="oe-page-container">
             <CSSTransition
-              key={shouldTransition(location) ? location.pathname : "nope"}
+              key={shouldTransition(location) ? location.pathname : 'nope'}
               timeout={{ enter: 500, exit: 300 }}
               classNames="page"
               appear
@@ -50,11 +49,7 @@ const Routes = props => {
                   component={ContributionPage}
                 />
                 <Route exact path="/add-expense" component={ExpensePage} />
-                <Route
-                  exact
-                  path="/reset-password"
-                  component={ResetPassword}
-                />
+                <Route exact path="/reset-password" component={ResetPassword} />
                 <Route
                   exact
                   path="/forgot-password"

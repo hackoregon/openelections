@@ -1,223 +1,299 @@
-import jwtDecode from "jwt-decode";
-import { format } from "date-fns"
+import jwtDecode from 'jwt-decode';
+import { format } from 'date-fns';
 
 export const UserRoleEnum = Object.freeze({
-  GOVERNMENT_ADMIN: "government_admin",
-  CAMPAIGN_ADMIN: "campaign_admin",
-  CAMPAIGN_STAFF: "campaign_staff"
+  GOVERNMENT_ADMIN: 'government_admin',
+  CAMPAIGN_ADMIN: 'campaign_admin',
+  CAMPAIGN_STAFF: 'campaign_staff',
 });
 
 export const ContributionTypeEnum = Object.freeze({
-  CONTRIBUTION: "contribution",
-  OTHER: "other"
+  CONTRIBUTION: 'contribution',
+  OTHER: 'other',
 });
 
 export const ContributionTypeFieldEnum = Object.freeze({
-  CONTRIBUTION: "Contribution",
-  OTHER: "Other Receipt"
-})
+  CONTRIBUTION: 'Contribution',
+  OTHER: 'Other Receipt',
+});
 
 export const DataToContributionTypeFieldMap = new Map([
   [ContributionTypeEnum.CONTRIBUTION, ContributionTypeFieldEnum.CONTRIBUTION],
-  [ContributionTypeEnum.OTHER, ContributionTypeFieldEnum.OTHER]
-])
+  [ContributionTypeEnum.OTHER, ContributionTypeFieldEnum.OTHER],
+]);
 
 export const ContributionTypeFieldToDataMap = new Map([
   [ContributionTypeFieldEnum.CONTRIBUTION, ContributionTypeEnum.CONTRIBUTION],
-  [ContributionTypeFieldEnum.OTHER, ContributionTypeEnum.OTHER]
-])
+  [ContributionTypeFieldEnum.OTHER, ContributionTypeEnum.OTHER],
+]);
 
 export const ContributionSubTypeEnum = Object.freeze({
-  CASH: "cash",
-  INKIND_CONTRIBUTION: "inkind_contribution",
-  INKIND_PAID_SUPERVISION: "inkind_paid_supervision",
-  INKIND_FORGIVEN_ACCOUNT: "inkind_forgiven_account",
-  INKIND_FORGIVEN_PERSONAL: "inkind_forgiven_personal",
-  ITEM_SOLD_FAIR_MARKET: "item_sold_fair_market",
-  ITEM_RETURNED_CHECK: "item_returned_check",
-  ITEM_MISC: "item_misc",
-  ITEM_REFUND: "item_refund"
+  CASH: 'cash',
+  INKIND_CONTRIBUTION: 'inkind_contribution',
+  INKIND_PAID_SUPERVISION: 'inkind_paid_supervision',
+  INKIND_FORGIVEN_ACCOUNT: 'inkind_forgiven_account',
+  INKIND_FORGIVEN_PERSONAL: 'inkind_forgiven_personal',
+  ITEM_SOLD_FAIR_MARKET: 'item_sold_fair_market',
+  ITEM_RETURNED_CHECK: 'item_returned_check',
+  ITEM_MISC: 'item_misc',
+  ITEM_REFUND: 'item_refund',
 });
 
 export const ContributionSubTypeFieldEnum = Object.freeze({
-  ITEM_SOLD_FAIR_MARKET: "Items Sold at Fair Market Value",
-  LOST_RETURNED_CHECK: "Lost or Returned Check",
-  MISC_OTHER_RECEIPT: "Miscellaneous Other Receipt",
-  REFUND_REBATES: "Refunds and Rebates",
-  INKIND_CONTRIBUTION: "In-Kind Contribution",
-  INKIND_FORGIVEN_ACCOUNT: "In-Kind Forgiven Accounts Payable",
-  INKIND_FORGIVEN_PERSONAL: "In-Kind /Forgiven Personal Expenditure",
-  CASH_CONTRIBUTION: "Cash Contribution"
-})
+  ITEM_SOLD_FAIR_MARKET: 'Items Sold at Fair Market Value',
+  LOST_RETURNED_CHECK: 'Lost or Returned Check',
+  MISC_OTHER_RECEIPT: 'Miscellaneous Other Receipt',
+  REFUND_REBATES: 'Refunds and Rebates',
+  INKIND_CONTRIBUTION: 'In-Kind Contribution',
+  INKIND_FORGIVEN_ACCOUNT: 'In-Kind Forgiven Accounts Payable',
+  INKIND_FORGIVEN_PERSONAL: 'In-Kind /Forgiven Personal Expenditure',
+  CASH_CONTRIBUTION: 'Cash Contribution',
+});
 
 export const DataToContributionSubTypeFieldMap = new Map([
-  [ContributionSubTypeEnum.CASH, ContributionSubTypeFieldEnum.CASH_CONTRIBUTION],
-  [ContributionSubTypeEnum.INKIND_CONTRIBUTION, ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION],
-  [ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT, ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT],
-  [ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL, ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL],
-  [ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET, ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET],
-  [ContributionSubTypeEnum.ITEM_RETURNED_CHECK, ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK],
-  [ContributionSubTypeEnum.ITEM_MISC, ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT],
-  [ContributionSubTypeEnum.ITEM_REFUND, ContributionSubTypeFieldEnum.REFUND_REBATES]
-])
+  [
+    ContributionSubTypeEnum.CASH,
+    ContributionSubTypeFieldEnum.CASH_CONTRIBUTION,
+  ],
+  [
+    ContributionSubTypeEnum.INKIND_CONTRIBUTION,
+    ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
+  ],
+  [
+    ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT,
+    ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
+  ],
+  [
+    ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL,
+    ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL,
+  ],
+  [
+    ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET,
+    ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET,
+  ],
+  [
+    ContributionSubTypeEnum.ITEM_RETURNED_CHECK,
+    ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
+  ],
+  [
+    ContributionSubTypeEnum.ITEM_MISC,
+    ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
+  ],
+  [
+    ContributionSubTypeEnum.ITEM_REFUND,
+    ContributionSubTypeFieldEnum.REFUND_REBATES,
+  ],
+]);
 
 export const ContributionSubTypeFieldToDataMap = new Map([
-  [ContributionSubTypeFieldEnum.CASH_CONTRIBUTION, ContributionSubTypeEnum.CASH],
-  [ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION, ContributionSubTypeEnum.INKIND_CONTRIBUTION],
-  [ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT, ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT],
-  [ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL, ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL],
-  [ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET, ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET],
-  [ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK, ContributionSubTypeEnum.ITEM_RETURNED_CHECK],
-  [ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT, ContributionSubTypeEnum.ITEM_MISC],
-  [ContributionSubTypeFieldEnum.REFUND_REBATES, ContributionSubTypeEnum.ITEM_REFUND]
-])
+  [
+    ContributionSubTypeFieldEnum.CASH_CONTRIBUTION,
+    ContributionSubTypeEnum.CASH,
+  ],
+  [
+    ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
+    ContributionSubTypeEnum.INKIND_CONTRIBUTION,
+  ],
+  [
+    ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
+    ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT,
+  ],
+  [
+    ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL,
+    ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL,
+  ],
+  [
+    ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET,
+    ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET,
+  ],
+  [
+    ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
+    ContributionSubTypeEnum.ITEM_RETURNED_CHECK,
+  ],
+  [
+    ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
+    ContributionSubTypeEnum.ITEM_MISC,
+  ],
+  [
+    ContributionSubTypeFieldEnum.REFUND_REBATES,
+    ContributionSubTypeEnum.ITEM_REFUND,
+  ],
+]);
 
 export const ContributorTypeEnum = Object.freeze({
-  INDIVIDUAL: "individual",
-  BUSINESS: "business",
-  FAMILY: "family",
-  LABOR: "labor",
-  POLITICAL_COMMITTEE: "political_committee",
-  POLITICAL_PARTY: "political_party",
-  UNREGISTERED: "unregistered",
-  OTHER: "other"
+  INDIVIDUAL: 'individual',
+  BUSINESS: 'business',
+  FAMILY: 'family',
+  LABOR: 'labor',
+  POLITICAL_COMMITTEE: 'political_committee',
+  POLITICAL_PARTY: 'political_party',
+  UNREGISTERED: 'unregistered',
+  OTHER: 'other',
 });
 
 export const ContributorTypeFieldEnum = Object.freeze({
-  BUSINESS_ENTITY: "Business Entity",
-  LABOR_ORGANIZATION: "Labor Organization",
-  POLITICAL_COMMITTEE: "Political Committee",
-  POLITICAL_PARTY_COMMITEE: "Political Party Committee",
-  UNREGISTERED_COMMITTEE: "Unregistered Committee",
-  INDIVIDUAL: "Individual",
-  CANDIDATE_IMMEDIATE_FAMILY: "Candidate’s Immediate Family",
-  OTHER: "Other"
-})
+  BUSINESS_ENTITY: 'Business Entity',
+  LABOR_ORGANIZATION: 'Labor Organization',
+  POLITICAL_COMMITTEE: 'Political Committee',
+  POLITICAL_PARTY_COMMITEE: 'Political Party Committee',
+  UNREGISTERED_COMMITTEE: 'Unregistered Committee',
+  INDIVIDUAL: 'Individual',
+  CANDIDATE_IMMEDIATE_FAMILY: 'Candidate’s Immediate Family',
+  OTHER: 'Other',
+});
 
 export const DataToContributorTypeFieldMap = new Map([
   [ContributorTypeEnum.INDIVIDUAL, ContributorTypeFieldEnum.INDIVIDUAL],
   [ContributorTypeEnum.BUSINESS, ContributorTypeFieldEnum.BUSINESS_ENTITY],
-  [ContributorTypeEnum.FAMILY, ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY],
+  [
+    ContributorTypeEnum.FAMILY,
+    ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
+  ],
   [ContributorTypeEnum.LABOR, ContributorTypeFieldEnum.LABOR_ORGANIZATION],
-  [ContributorTypeEnum.POLITICAL_COMMITTEE, ContributorTypeFieldEnum.POLITICAL_COMMITTEE],
-  [ContributorTypeEnum.POLITICAL_PARTY, ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE],
-  [ContributorTypeEnum.UNREGISTERED, ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE],
+  [
+    ContributorTypeEnum.POLITICAL_COMMITTEE,
+    ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
+  ],
+  [
+    ContributorTypeEnum.POLITICAL_PARTY,
+    ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
+  ],
+  [
+    ContributorTypeEnum.UNREGISTERED,
+    ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE,
+  ],
   [ContributorTypeEnum.OTHER, ContributorTypeFieldEnum.OTHER],
-])
+]);
 
 export const ContributorTypeFieldToDataMap = new Map([
   [ContributorTypeFieldEnum.INDIVIDUAL, ContributorTypeEnum.INDIVIDUAL],
   [ContributorTypeFieldEnum.BUSINESS_ENTITY, ContributorTypeEnum.BUSINESS],
-  [ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY, ContributorTypeEnum.FAMILY],
-  [ContributorTypeFieldEnum.LABOR_ORGANIZATION, ContributorTypeEnum.LABOR,],
-  [ContributorTypeFieldEnum.POLITICAL_COMMITTEE, ContributorTypeEnum.POLITICAL_COMMITTEE,],
-  [ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE, ContributorTypeEnum.POLITICAL_PARTY,],
-  [ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE, ContributorTypeEnum.UNREGISTERED,],
-  [ContributorTypeFieldEnum.OTHER, ContributorTypeEnum.OTHER,],
-])
+  [
+    ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
+    ContributorTypeEnum.FAMILY,
+  ],
+  [ContributorTypeFieldEnum.LABOR_ORGANIZATION, ContributorTypeEnum.LABOR],
+  [
+    ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
+    ContributorTypeEnum.POLITICAL_COMMITTEE,
+  ],
+  [
+    ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
+    ContributorTypeEnum.POLITICAL_PARTY,
+  ],
+  [
+    ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE,
+    ContributorTypeEnum.UNREGISTERED,
+  ],
+  [ContributorTypeFieldEnum.OTHER, ContributorTypeEnum.OTHER],
+]);
 
 export const OaeTypeEnum = Object.freeze({
-  SEED_MONEY: "seed",
-  MATCHABLE: "matchable",
-  PUBLIC_MATCHING_CONTRIBUTION: "public_matching_contribution",
-  QUALIFYING: "qualifying",
-  ALLOWABLE: "allowable",
-  INKIND: "inkind",
+  SEED_MONEY: 'seed',
+  MATCHABLE: 'matchable',
+  PUBLIC_MATCHING_CONTRIBUTION: 'public_matching_contribution',
+  QUALIFYING: 'qualifying',
+  ALLOWABLE: 'allowable',
+  INKIND: 'inkind',
 });
 
 export const OaeTypeFieldEnum = Object.freeze({
-  SEED_MONEY: "Seed Money",
-  MATCHABLE: "Matchable",
-  PUBLIC_MATCHING_CONTRIBUTION: "Public Matching Contribution",
-  QUALIFYING: "Qualifying",
-  ALLOWABLE: "Allowable",
-  INKIND: "In-Kind",
-})
+  SEED_MONEY: 'Seed Money',
+  MATCHABLE: 'Matchable',
+  PUBLIC_MATCHING_CONTRIBUTION: 'Public Matching Contribution',
+  QUALIFYING: 'Qualifying',
+  ALLOWABLE: 'Allowable',
+  INKIND: 'In-Kind',
+});
 
 export const DataToOaeTypeTypeFieldMap = new Map([
   [OaeTypeEnum.SEED_MONEY, OaeTypeFieldEnum.SEED_MONEY],
   [OaeTypeEnum.MATCHABLE, OaeTypeFieldEnum.MATCHABLE],
-  [OaeTypeEnum.PUBLIC_MATCHING_CONTRIBUTION, OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [
+    OaeTypeEnum.PUBLIC_MATCHING_CONTRIBUTION,
+    OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+  ],
   [OaeTypeEnum.QUALIFYING, OaeTypeFieldEnum.QUALIFYING],
   [OaeTypeEnum.ALLOWABLE, OaeTypeFieldEnum.ALLOWABLE],
   [OaeTypeEnum.INKIND, OaeTypeFieldEnum.INKIND],
-])
+]);
 
 export const OaeTypeFieldToDataMap = new Map([
   [OaeTypeFieldEnum.SEED_MONEY, OaeTypeEnum.SEED_MONEY],
   [OaeTypeFieldEnum.MATCHABLE, OaeTypeEnum.MATCHABLE],
-  [OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION, OaeTypeEnum.PUBLIC_MATCHING_CONTRIBUTION],
+  [
+    OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+    OaeTypeEnum.PUBLIC_MATCHING_CONTRIBUTION,
+  ],
   [OaeTypeFieldEnum.QUALIFYING, OaeTypeEnum.QUALIFYING],
   [OaeTypeFieldEnum.ALLOWABLE, OaeTypeEnum.ALLOWABLE],
   [OaeTypeFieldEnum.INKIND, OaeTypeEnum.INKIND],
-])
-
+]);
 
 export const PhoneTypeEnum = Object.freeze({
-  MOBILE: "Mobile",
-  WORK: "Work",
-  HOME: "Home"
+  MOBILE: 'Mobile',
+  WORK: 'Work',
+  HOME: 'Home',
 });
 
 export const PhoneTypeFieldEnum = Object.freeze({
-  MOBILE_PHONE: "Mobile Phone",
-  WORK_PHONE: "Work Phone",
-  HOME_PHONE: "Home Phone",
-})
+  MOBILE_PHONE: 'Mobile Phone',
+  WORK_PHONE: 'Work Phone',
+  HOME_PHONE: 'Home Phone',
+});
 
 export const DataToPhoneTypeFieldMap = new Map([
   [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
   [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
   [PhoneTypeEnum.HOME, PhoneTypeFieldEnum.HOME_PHONE],
-])
+]);
 
 export const PhoneTypeFieldToDataMap = new Map([
   [PhoneTypeFieldEnum.MOBILE_PHONE, PhoneTypeEnum.MOBILE],
   [PhoneTypeFieldEnum.HOME_PHONE, PhoneTypeEnum.HOME_PHONE],
   [PhoneTypeFieldEnum.WORK_PHONE, PhoneTypeEnum.WORK],
-])
-
+]);
 
 export const ContributionStatusEnum = Object.freeze({
-  ARCHIVED: "Archived",
-  DRAFT: "Draft",
-  SUBMITTED: "Submitted",
-  PROCESSED: "Processed"
+  ARCHIVED: 'Archived',
+  DRAFT: 'Draft',
+  SUBMITTED: 'Submitted',
+  PROCESSED: 'Processed',
 });
 
 export const ExpenditureTypeEnum = Object.freeze({
-  EXPENDITURE: "expenditure",
-  OTHER: "other",
-  OTHER_DISBURSEMENT: "other_disbursement"
+  EXPENDITURE: 'expenditure',
+  OTHER: 'other',
+  OTHER_DISBURSEMENT: 'other_disbursement',
 });
 
 export const ExpenditureSubTypeEnum = Object.freeze({
-  ACCOUNTS_PAYABLE: "accounts_payable",
-  CASH_EXPENDITURE: "cash_expenditure",
-  PERSONAL_EXPENDITURE: "personal_expenditure",
-  ACCOUNTS_PAYABLE_RESCINDED: "accounts_payable_rescinded",
-  CASH_BALANCE_ADJUSTMENT: "cash_balance_adjustment",
-  MISCELLANEOUS_OTHER_DISBURSEMENT: "miscellaneous_other_disbursement",
-  REFUND_OF_CONTRIBUTION: "refund_of_expenditure"
+  ACCOUNTS_PAYABLE: 'accounts_payable',
+  CASH_EXPENDITURE: 'cash_expenditure',
+  PERSONAL_EXPENDITURE: 'personal_expenditure',
+  ACCOUNTS_PAYABLE_RESCINDED: 'accounts_payable_rescinded',
+  CASH_BALANCE_ADJUSTMENT: 'cash_balance_adjustment',
+  MISCELLANEOUS_OTHER_DISBURSEMENT: 'miscellaneous_other_disbursement',
+  REFUND_OF_CONTRIBUTION: 'refund_of_expenditure',
 });
 
 export const PayeeTypeEnum = Object.freeze({
-  INDIVIDUAL: "individual",
-  BUSINESS: "business",
-  FAMILY: "family",
-  LABOR: "labor",
-  POLITICAL_COMMITTEE: "political_committee",
-  POLITICAL_PARTY: "political_party",
-  UNREGISTERED: "unregistered",
-  OTHER: "other"
+  INDIVIDUAL: 'individual',
+  BUSINESS: 'business',
+  FAMILY: 'family',
+  LABOR: 'labor',
+  POLITICAL_COMMITTEE: 'political_committee',
+  POLITICAL_PARTY: 'political_party',
+  UNREGISTERED: 'unregistered',
+  OTHER: 'other',
 });
 
 export const ExpenditureStatusEnum = Object.freeze({
-  ARCHIVED: "archived",
-  DRAFT: "draft",
-  SUBMITTED: "submitted",
-  OUT_OF_COMPLIANCE: "out_of_compliance",
-  IN_COMPLIANCE: "in_compliance"
+  ARCHIVED: 'archived',
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  OUT_OF_COMPLIANCE: 'out_of_compliance',
+  IN_COMPLIANCE: 'in_compliance',
 });
 
 // TODO: need to get data for the following:
@@ -226,7 +302,7 @@ export const ExpenditureStatusEnum = Object.freeze({
 // - occupationLetterDate
 // - linkToDocumentation
 // - notes
-export const mapContributionDataToForm = (contribution) => {
+export const mapContributionDataToForm = contribution => {
   const {
     date,
     // createdAt,
@@ -254,46 +330,46 @@ export const mapContributionDataToForm = (contribution) => {
     calendarYearAggregate,
     inKindDescription,
     employerZipcode,
-    submitForMatch
-  } = contribution
+    submitForMatch,
+  } = contribution;
   return {
     // BASICS VALUES
-    dateOfContribution: format(new Date(date), "YYYY-MM-DD"),
+    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
-    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || "",
+    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || '',
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
     oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
     amountOfContribution: amount,
-    checkNumber: checkNumber,
-    submitForMatch: submitForMatch ? "Yes" : "No",
+    checkNumber,
+    submitForMatch: submitForMatch ? 'Yes' : 'No',
 
     // CONTRIBUTOR VALUES
     firstName,
-    lastName: lastName,
-    entityName: name | "",
+    lastName,
+    entityName: name || '',
     streetAddress: address1,
     addressLine2: address2,
     city,
     state,
     zipcode: zip,
-    email: email || "",
-    phone: phone || "",
-    phoneType: phoneType || "",
-    occupation: occupation || "",
-    employerName: employerName || "",
-    employerCity: employerCity || "",
-    employerState: employerState || "",
-    employerZipcode: employerZipcode || "",
+    email: email || '',
+    phone: phone || '',
+    phoneType: phoneType || '',
+    occupation: occupation || '',
+    employerName: employerName || '',
+    employerCity: employerCity || '',
+    employerState: employerState || '',
+    employerZipcode: employerZipcode || '',
 
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
-    description: inKindDescription || "",
-    paymentMethod: ""
-  }
-}
+    description: inKindDescription || '',
+    paymentMethod: '',
+  };
+};
 
 // TODO: need to fix some of the fields here.
-export const mapContributionFormToData = (data) => {
+export const mapContributionFormToData = data => {
   const {
     streetAddress,
     amountOfContribution,
@@ -319,12 +395,12 @@ export const mapContributionFormToData = (data) => {
     subTypeOfContribution,
     typeOfContribution,
     oaeType,
-    submitForMatch
-  } = data
+    submitForMatch,
+  } = data;
 
   return {
     city,
-    firstName: firstName?firstName:null,
+    firstName: firstName || null,
     state,
     occupation,
     employerName,
@@ -342,30 +418,99 @@ export const mapContributionFormToData = (data) => {
     phoneType,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
-    middleInitial: "",
-    lastName: lastName?lastName:null,
-    name: entityName?entityName:null,
-   // type: ContributionTypeEnum.CONTRIBUTION,
-   // subType: ContributionSubTypeEnum.CASH,
+    middleInitial: '',
+    lastName: lastName || null,
+    name: entityName || null,
+    // type: ContributionTypeEnum.CONTRIBUTION,
+    // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
- //   contributorType: ContributorTypeEnum.INDIVIDUAL,
+    //   contributorType: ContributorTypeEnum.INDIVIDUAL,
     inKindDescription: description,
     calendarYearAggregate: electionAggregate,
-    submitForMatch: submitForMatch === "Yes"
+    submitForMatch: submitForMatch === 'Yes',
+  };
+};
+
+export function post(url, data) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+  if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
+    headers.Cookie = `token=${process.env.TOKEN}`;
   }
+  return fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+}
+
+export function deleteRequest(url) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+  if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
+    headers.Cookie = `token=${process.env.TOKEN}`;
+  }
+  return fetch(url, {
+    method: 'DELETE',
+    headers,
+    credentials: 'include',
+  });
+}
+
+export function get(url) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+  if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
+    headers.Cookie = `token=${process.env.TOKEN}`;
+  }
+  return fetch(url, {
+    method: 'GET',
+    headers,
+    credentials: 'include',
+  });
+}
+
+export function put(url, data) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+  if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
+    headers.Cookie = `token=${process.env.TOKEN}`;
+  }
+  return fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+}
+
+export function decodeToken(token) {
+  return jwtDecode(token);
 }
 
 export function baseUrl() {
-  if (process.env.NODE_ENV === "test") {
-    return "http://localhost:3000";
-  } else if (process.env.NODE_ENV === "development") {
-    return "http://localhost:3000";
-  } else if (process.env.NODE_ENV === "staging") {
-    return "https://api-qa.openelectionsportland.org";
-  } else if (process.env.NODE_ENV === "production") {
-    //Todo: Change for production
-    //return "https://api.openelectionsportland.org";
-    return "https://api-qa.openelectionsportland.org";
+  if (process.env.NODE_ENV === 'test') {
+    return 'http://localhost:3000';
+  }
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000';
+  }
+  if (process.env.NODE_ENV === 'staging') {
+    return 'https://api-qa.openelectionsportland.org';
+  }
+  if (process.env.NODE_ENV === 'production') {
+    // Todo: Change for production
+    // return "https://api.openelectionsportland.org";
+    return 'https://api-qa.openelectionsportland.org';
   }
 }
 
@@ -390,7 +535,7 @@ export function inviteUsertoGovernment(
     firstName,
     lastName,
     governmentId,
-    role: UserRoleEnum.GOVERNMENT_ADMIN
+    role: UserRoleEnum.GOVERNMENT_ADMIN,
   });
 }
 
@@ -406,7 +551,7 @@ export function inviteUsertoCampaign(
     firstName,
     lastName,
     campaignId,
-    role
+    role,
   });
 }
 
@@ -423,7 +568,7 @@ export function redeemInvite(invitationCode, password, firstName, lastName) {
     invitationCode,
     password,
     firstName,
-    lastName
+    lastName,
   };
 
   return post(`${baseUrl()}/users/redeem-invite`, data);
@@ -452,7 +597,7 @@ export function sendPasswordResetEmail(email) {
 export function resetPassword(invitationCode, password) {
   return post(`${baseUrl()}/users/reset-password`, {
     invitationCode,
-    password
+    password,
   });
 }
 
@@ -526,7 +671,9 @@ export function getContributions(contributionSearchAttrs) {
 //   path: '/contributions/:id/comments',
 //   method: 'post',
 export function postContributionComment(contributionId, comment) {
-  return post(`${baseUrl()}/contributions/${contributionId}/comments`, {comment});
+  return post(`${baseUrl()}/contributions/${contributionId}/comments`, {
+    comment,
+  });
 }
 
 //   path: '/contributions/{id}',
@@ -550,7 +697,9 @@ export function createExpenditure(expenditureAttrs) {
 //   path: '/expenditures/:id/comments',
 //   method: 'post',
 export function postExpenditureComment(expenditureId, comment) {
-  return post(`${baseUrl()}/expenditures/${expenditureId}/comments`, {comment});
+  return post(`${baseUrl()}/expenditures/${expenditureId}/comments`, {
+    comment,
+  });
 }
 
 //   path: '/expenditures',
@@ -572,70 +721,4 @@ export function updateExpenditure(expenditureAttrs) {
     `${baseUrl()}/expenditures/${expenditureAttrs.id}`,
     expenditureAttrs
   );
-}
-
-export function post(url, data) {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json"
-  };
-  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
-    headers["Cookie"] = `token=${process.env.TOKEN}`;
-  }
-  return fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(data),
-    credentials: "include"
-  });
-}
-
-export function deleteRequest(url) {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json"
-  };
-  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
-    headers["Cookie"] = `token=${process.env.TOKEN}`;
-  }
-  return fetch(url, {
-    method: "DELETE",
-    headers,
-    credentials: "include"
-  });
-}
-
-export function get(url) {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json"
-  };
-  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
-    headers["Cookie"] = `token=${process.env.TOKEN}`;
-  }
-  return fetch(url, {
-    method: "GET",
-    headers: headers,
-    credentials: "include"
-  });
-}
-
-export function put(url, data) {
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json"
-  };
-  if (process.env.NODE_ENV === "test" && !!process.env.TOKEN) {
-    headers["Cookie"] = `token=${process.env.TOKEN}`;
-  }
-  return fetch(url, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(data),
-    credentials: "include"
-  });
-}
-
-export function decodeToken(token) {
-  return jwtDecode(token);
 }

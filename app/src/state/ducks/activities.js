@@ -1,37 +1,37 @@
 // activities.js
-import { normalize } from "normalizr";
-import createReducer from "../utils/createReducer";
-import createActionTypes from "../utils/createActionTypes";
-import action from "../utils/action";
-import { addEntities, ADD_ENTITIES } from "./common";
-import { expenditure } from "../../api/schema";
+import { normalize } from 'normalizr';
+import createReducer from '../utils/createReducer';
+import createActionTypes from '../utils/createActionTypes';
+import action from '../utils/action';
+import { addEntities, ADD_ENTITIES } from './common';
+import { expenditure } from '../../api/schema';
 
-export const STATE_KEY = "activities";
+export const STATE_KEY = 'activities';
 
 // Action Types
 export const actionTypes = {
   GET_CAMPAIGN_ACTIVITIES: createActionTypes(
     STATE_KEY,
-    "GET_CAMPAIGN_ACTIVITIES"
+    'GET_CAMPAIGN_ACTIVITIES'
   ),
   GET_GOVERNMENT_ACTIVITIES: createActionTypes(
     STATE_KEY,
-    "GET_GOVERNMENT_ACTIVITIES"
+    'GET_GOVERNMENT_ACTIVITIES'
   ),
   GET_CONTRIBUTION_ACTIVITIES: createActionTypes(
     STATE_KEY,
-    "GET_CONTRIBUTION_ACTIVITIES"
+    'GET_CONTRIBUTION_ACTIVITIES'
   ),
   GET_EXPENDITURE_ACTIVITIES: createActionTypes(
     STATE_KEY,
-    "GET_EXPENDITURE_ACTIVITIES"
-  )
+    'GET_EXPENDITURE_ACTIVITIES'
+  ),
 };
 
 // Initial State
 export const initialState = {
   isLoading: false,
-  error: null
+  error: null,
 };
 
 // Reducer
@@ -39,42 +39,42 @@ export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, ...action.payload.activities };
   },
-  [actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST]: (state, action) => {
+  [actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST]: state => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.GET_CAMPAIGN_ACTIVITIES.SUCCESS]: (state, action) => {
+  [actionTypes.GET_CAMPAIGN_ACTIVITIES.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
   [actionTypes.GET_CAMPAIGN_ACTIVITIES.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  [actionTypes.GET_GOVERNMENT_ACTIVITIES.REQUEST]: (state, action) => {
+  [actionTypes.GET_GOVERNMENT_ACTIVITIES.REQUEST]: state => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.GET_GOVERNMENT_ACTIVITIES.SUCCESS]: (state, action) => {
+  [actionTypes.GET_GOVERNMENT_ACTIVITIES.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
   [actionTypes.GET_GOVERNMENT_ACTIVITIES.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  [actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST]: (state, action) => {
+  [actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST]: state => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS]: (state, action) => {
+  [actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
   [actionTypes.GET_CONTRIBUTION_ACTIVITIES.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  [actionTypes.GET_EXPENDITURE_ACTIVITIES.REQUEST]: (state, action) => {
+  [actionTypes.GET_EXPENDITURE_ACTIVITIES.REQUEST]: state => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.GET_EXPENDITURE_ACTIVITIES.SUCCESS]: (state, action) => {
+  [actionTypes.GET_EXPENDITURE_ACTIVITIES.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
   [actionTypes.GET_EXPENDITURE_ACTIVITIES.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
 });
 
 // Action Creators
@@ -83,25 +83,25 @@ export const actionCreators = {
     request: () => action(actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST),
     success: () => action(actionTypes.GET_CAMPAIGN_ACTIVITIES.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_CAMPAIGN_ACTIVITIES.FAILURE, { error })
+      action(actionTypes.GET_CAMPAIGN_ACTIVITIES.FAILURE, { error }),
   },
   getGovernmentActivities: {
     request: () => action(actionTypes.GET_GOVERNMENT_ACTIVITIES.REQUEST),
     success: () => action(actionTypes.GET_GOVERNMENT_ACTIVITIES.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_GOVERNMENT_ACTIVITIES.FAILURE, { error })
+      action(actionTypes.GET_GOVERNMENT_ACTIVITIES.FAILURE, { error }),
   },
   getContributionActivities: {
     request: () => action(actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST),
     success: () => action(actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_CONTRIBUTION_ACTIVITIES.FAILURE, { error })
+      action(actionTypes.GET_CONTRIBUTION_ACTIVITIES.FAILURE, { error }),
   },
   getExpenditureActivities: {
     request: () => action(actionTypes.GET_EXPENDITURE_ACTIVITIES.REQUEST),
     success: () => action(actionTypes.GET_EXPENDITURE_ACTIVITIES.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_EXPENDITURE_ACTIVITIES.FAILURE, { error })
+      action(actionTypes.GET_EXPENDITURE_ACTIVITIES.FAILURE, { error }),
   },
 };
 

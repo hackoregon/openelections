@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export class WithAdminPermissions extends React.Component {
   componentDidMount() {
@@ -23,5 +23,5 @@ export class WithAdminPermissions extends React.Component {
 WithAdminPermissions.propTypes = {
   redirectToLogin: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };

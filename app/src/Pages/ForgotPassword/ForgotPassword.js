@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import * as Yup from "yup";
-import { Formik } from "formik";
-import Paper from "@material-ui/core/Paper";
-import PageHoc from "../../components/PageHoc/PageHoc";
-import GreenCheck from "../../assets/icons/green-check";
-import { ForgotPasswordForm } from "../../components/Forms/ForgotPassword";
-import { connect } from "react-redux";
-import { sendPasswordResetEmail } from "../../state/ducks/auth";
-import { flashMessage } from "redux-flash";
+import React, { Component } from 'react';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+import Paper from '@material-ui/core/Paper';
+import { connect } from 'react-redux';
+import { flashMessage } from 'redux-flash';
+import { css, jsx } from '@emotion/core';
+import Button from '@material-ui/core/Button';
+import PageHoc from '../../components/PageHoc/PageHoc';
+import GreenCheck from '../../assets/icons/green-check';
+import { ForgotPasswordForm } from '../../components/Forms/ForgotPassword';
+import { sendPasswordResetEmail } from '../../state/ducks/auth';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import Button from "@material-ui/core/Button";
 
 const validationSchema = Yup.object({
-  email: Yup.string("Enter your email")
-    .email("Enter a valid email")
-    .required("Email is required")
+  email: Yup.string('Enter your email')
+    .email('Enter a valid email')
+    .required('Email is required'),
 });
-//TODO Refactor this page and form!
+// TODO Refactor this page and form!
 
 const styles = css`
   max-width: 350px;
@@ -40,30 +40,33 @@ const styles = css`
 class ForgotPassword extends Component {
   state = {
     formValues: {
-      email: ""
+      email: '',
     },
-    isSubmitted: false
+    isSubmitted: false,
   };
 
   handleStateChange(name, event) {
     this.setState({
       formValues: {
         ...this.state.formValues,
-        [name]: event.target.value
-      }
+        [name]: event.target.value,
+      },
     });
   }
+
   formIsSubmitted(bool) {
     this.setState({ isSubmitted: bool });
   }
+
   clearState(e) {
     // e.preventDefault();
     this.setState({
       formValues: {
-        email: ""
-      }
+        email: '',
+      },
     });
   }
+
   render() {
     return (
       <PageHoc>
@@ -73,17 +76,24 @@ class ForgotPassword extends Component {
             {!this.state.isSubmitted ? (
               <Formik
                 onSubmit={(values, actions) => {
-                  this.props.dispatch(sendPasswordResetEmail(values.email))
-                  .then(submitted=>{
-                    if(submitted){
-                      this.formIsSubmitted(true);
-                      this.props.dispatch(flashMessage("Email sent", {props:{variant:'success'}}));
-                    }else{
-                      this.props.dispatch(flashMessage("Email not found", {props:{variant:'error'}}));
-                    }
-                  }
-                    
-                  );
+                  this.props
+                    .dispatch(sendPasswordResetEmail(values.email))
+                    .then(submitted => {
+                      if (submitted) {
+                        this.formIsSubmitted(true);
+                        this.props.dispatch(
+                          flashMessage('Email sent', {
+                            props: { variant: 'success' },
+                          })
+                        );
+                      } else {
+                        this.props.dispatch(
+                          flashMessage('Email not found', {
+                            props: { variant: 'error' },
+                          })
+                        );
+                      }
+                    });
                 }}
                 onReset={(values, bag) => {
                   this.clearState();
@@ -102,14 +112,14 @@ class ForgotPassword extends Component {
             ) : (
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center"
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 <GreenCheck width={80} />
-                <p style={{ textAlign: "center" }}>
+                <p style={{ textAlign: 'center' }}>
                   An email was sent to {this.state.formValues.email} to reset
                   your password.
                 </p>

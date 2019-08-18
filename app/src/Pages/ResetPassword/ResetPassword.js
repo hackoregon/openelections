@@ -1,9 +1,9 @@
-import React from "react";
-import PageHoc from "../../components/PageHoc/PageHoc";
-import ResetPasswordForm from "../../components/Forms/ResetPassword/index";
-import { connect } from "react-redux";
-import { updatePassword, isLoggedIn } from "../../state/ducks/auth";
-import { flashMessage } from "redux-flash";
+import React from 'react';
+import { connect } from 'react-redux';
+import { flashMessage } from 'redux-flash';
+import PageHoc from '../../components/PageHoc/PageHoc';
+import ResetPasswordForm from '../../components/Forms/ResetPassword/index';
+import { updatePassword, isLoggedIn } from '../../state/ducks/auth';
 
 class ResetPassword extends React.Component {
   constructor(props) {
@@ -12,12 +12,13 @@ class ResetPassword extends React.Component {
       submitted: false,
     };
   }
+
   render() {
     return (
       <PageHoc>
-        <ResetPasswordForm 
-          {...this.props} 
-          submitted={() => this.setState({submitted: true})} 
+        <ResetPasswordForm
+          {...this.props}
+          submitted={() => this.setState({ submitted: true })}
         />
       </PageHoc>
     );
@@ -25,14 +26,16 @@ class ResetPassword extends React.Component {
 }
 
 export default connect(
-  state => { 
-    return { }
-  }, 
+  state => {
+    return {};
+  },
   dispatch => {
     return {
-      updatePassword: (oldPassword,newPassword) => dispatch(updatePassword(oldPassword,newPassword)),
-      flashMessage: (message, options) => dispatch(flashMessage(message, options)),    
-      dispatch
-      }
-    }
+      updatePassword: (oldPassword, newPassword) =>
+        dispatch(updatePassword(oldPassword, newPassword)),
+      flashMessage: (message, options) =>
+        dispatch(flashMessage(message, options)),
+      dispatch,
+    };
+  }
 )(ResetPassword);

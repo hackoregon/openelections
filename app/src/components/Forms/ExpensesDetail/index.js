@@ -1,10 +1,10 @@
-import React from "react";
-import Button from "../../Button/Button";
-import ExpensesDetailForm from "./ExpensesDetailForm.js";
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import { connect } from 'react-redux';
+import Button from '../../Button/Button';
+import ExpensesDetailForm from './ExpensesDetailForm.js';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { isLoggedIn } from "../../../state/ducks/auth";
-import { connect } from "react-redux";
+import { isLoggedIn } from '../../../state/ducks/auth';
 
 const containers = {
   header: css`
@@ -46,7 +46,7 @@ const containers = {
     grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
     margin-bottom: 20px;
-  `
+  `,
 };
 
 const headerStyles = {
@@ -136,7 +136,7 @@ const headerStyles = {
     border-radius: 5px;
     width: 165px;
     height: 50px;
-  `
+  `,
 };
 
 const sectionStyles = {
@@ -160,14 +160,14 @@ const sectionStyles = {
   `,
   notes: css`
     margin-top: 75px;
-  `
+  `,
 };
 
 // HEADER VALUES
-const invoiceNumber = "#1030090212";
-const campaignName = "FakeName";
-const lastEdited = "09/09/2019"; // NEEDS TO BE ACTUAL DATE
-const currentStatus = "Submitted";
+const invoiceNumber = '#1030090212';
+const campaignName = 'FakeName';
+const lastEdited = '09/09/2019'; // NEEDS TO BE ACTUAL DATE
+const currentStatus = 'Submitted';
 // const labelsCount = 0;
 
 const invoiceNumberBlock = (
@@ -203,9 +203,7 @@ const ExpensesDetail = () => (
       <div css={containers.header}>
         <div css={headerStyles.leftColumn}>
           {invoiceNumberBlock}
-          <div style={{ display: "flex" }}>
-            {statusBlock}
-          </div>
+          <div style={{ display: 'flex' }}>{statusBlock}</div>
         </div>
         <div css={headerStyles.rightColumn}>
           <div>
@@ -220,28 +218,28 @@ const ExpensesDetail = () => (
       </div>
     </React.Fragment>
     <ExpensesDetailForm
-      onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+      onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
       initialValues={{
         // BASICS VALUES
         amount: `$ ${100}`,
-        dateOfExpenditure: "09/09/2019", // Date.now(), // FORMAT?
-        typeOfExpenditure: "Expenditure",
-        subTypeOfExpenditure: "In-Kind Contribution",
-        paymentMethod: "Check",
-        checkNumber: "#1027",
-        purposeOfExpenditure: "Fundraising Event Expenses",
+        dateOfExpenditure: '09/09/2019', // Date.now(), // FORMAT?
+        typeOfExpenditure: 'Expenditure',
+        subTypeOfExpenditure: 'In-Kind Contribution',
+        paymentMethod: 'Check',
+        checkNumber: '#1027',
+        purposeOfExpenditure: 'Fundraising Event Expenses',
 
         // PAYEE INFO
-        payeeType: "Business Entity",
-        payeeName: "Business Name",
-        streetAddress: "2625 Race Street",
-        addressLine2: "Suite 1200",
-        countryRegion: "",
-        city: "Portland",
-        state: "OR",
-        zipcode: "97206",
-        county: "Multnomah",
-        notes: ""
+        payeeType: 'Business Entity',
+        payeeName: 'Business Name',
+        streetAddress: '2625 Race Street',
+        addressLine2: 'Suite 1200',
+        countryRegion: '',
+        city: 'Portland',
+        state: 'OR',
+        zipcode: '97206',
+        county: 'Multnomah',
+        notes: '',
       }}
     >
       {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
@@ -291,5 +289,5 @@ const ExpensesDetail = () => (
   </>
 );
 export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false
+  isLoggedIn: isLoggedIn(state) || false,
 }))(ExpensesDetail);

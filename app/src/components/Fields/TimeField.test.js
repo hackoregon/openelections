@@ -1,8 +1,8 @@
-import React from "react";
-import TimeField from "./TimeField";
+import React from 'react';
+import TimeField from './TimeField';
 
-describe("<TimeField/>", () => {
-  it("should be defined", () => {
+describe('<TimeField/>', () => {
+  it('should be defined', () => {
     expect(TimeField).toMatchSnapshot();
   });
 });

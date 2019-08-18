@@ -1,8 +1,8 @@
-import React from "react";
-import Navigation from "./Navigation";
+import React from 'react';
+import Navigation from './Navigation';
 
-describe("<Navigation/>", () => {
-  it("should be defined", () => {
+describe('<Navigation/>', () => {
+  it('should be defined', () => {
     expect(Navigation).toMatchSnapshot();
   });
 });

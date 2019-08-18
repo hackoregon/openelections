@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core";
-import loader from "../../assets/styles/elementes/loader";
-import PropTypes from "prop-types";
-import Button from "../Button/Button";
-import Invitation from "../Invitation";
-import { TextField, InputAdornment } from "@material-ui/core";
-import { Search as SearchIcon } from "@material-ui/icons";
+import { jsx, css } from '@emotion/core';
+import PropTypes from 'prop-types';
+import { TextField, InputAdornment } from '@material-ui/core';
+import { Search as SearchIcon } from '@material-ui/icons';
+import loader from '../../assets/styles/elementes/loader';
+import Button from '../Button/Button';
+import Invitation from '../Invitation';
 
 class SearchBox extends Component {
   constructor(props) {
@@ -14,13 +14,13 @@ class SearchBox extends Component {
 
     this.state = {
       selectedItem: 0,
-      searchString: "",
+      searchString: '',
       guesses: [
-        { label: "Name", value: "Hola" },
-        { label: "sup", value: "Hola2" },
-        { label: "sup", value: "Hola4" }
+        { label: 'Name', value: 'Hola' },
+        { label: 'sup', value: 'Hola2' },
+        { label: 'sup', value: 'Hola4' },
       ],
-      showGuessesList: false
+      showGuessesList: false,
     };
 
     this.onSearchQueryChange = props.onSearchQueryChange || (value => {});
@@ -102,20 +102,21 @@ class SearchBox extends Component {
         <li
           key={i}
           data-index={i}
-          className={
-            "guess-item" + (i === this.state.selectedItem ? " focused" : "")
-          }
+          className={`guess-item${
+            i === this.state.selectedItem ? ' focused' : ''
+          }`}
           onMouseEnter={this.onHoverOverGuessItem}
           onMouseDown={this.onMouseDownOverGuessItem}
         >
-          <a href={"javascript:void"}>
-            <span className={"item-label"}>{item.label}</span>
+          <a href="javascript:void">
+            <span className="item-label">{item.label}</span>
             {item.value}
           </a>
         </li>
       ));
-    } else if (guesses && guesses.length === 0) {
-      return <li className={"no-guess-item"}>No Result</li>;
+    }
+    if (guesses && guesses.length === 0) {
+      return <li className="no-guess-item">No Result</li>;
     }
   }
 
@@ -125,11 +126,11 @@ class SearchBox extends Component {
     return (
       <div css={this.styles()} className={this.props.className}>
         {this.props.isLoading ? (
-          <div className={"loader"} css={loader(20, "#000")}>
+          <div className="loader" css={loader(20, '#000')}>
             Loading...
           </div>
         ) : (
-          ""
+          ''
         )}
         <TextField
           placeholder={this.props.placeholder}
@@ -142,21 +143,29 @@ class SearchBox extends Component {
           onBlur={this.onTextBoxBlur.bind(this)}
           InputProps={{
             endAdornment: (
-                <InputAdornment position="end">
-                  {this.props.isLoading ?
-                      <div className={"loader"} css={loader(20, "#000")}>
-                        Loading...
-                      </div> :
-                      <SearchIcon />}
-                </InputAdornment>
+              <InputAdornment position="end">
+                {this.props.isLoading ? (
+                  <div className="loader" css={loader(20, '#000')}>
+                    Loading...
+                  </div>
+                ) : (
+                  <SearchIcon />
+                )}
+              </InputAdornment>
             ),
           }}
         />
 
         {!this.props.isLoading && this.state.searchString.trim().length ? (
-          <ul className={"guesses-list" + ((this.state.showGuessesList) ? ' active' : '')}>{guessesList}</ul>
+          <ul
+            className={`guesses-list${
+              this.state.showGuessesList ? ' active' : ''
+            }`}
+          >
+            {guessesList}
+          </ul>
         ) : (
-          ""
+          ''
         )}
       </div>
     );
@@ -184,15 +193,15 @@ class SearchBox extends Component {
         width: 100%;
         list-style: none;
         font-size: inherit;
-    
+
         .guess-item {
-                font-size: inherit;
+          font-size: inherit;
           a {
             font-size: inherit;
             display: block;
             padding: 10px;
             color: inherit;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
           }
 
           //> a:hover,
@@ -245,18 +254,20 @@ Invitation.defaultProps = {
   guesses: [],
   onSearchQueryChange: () => {},
   onSearchResultSelected: () => {},
-  placeholder: "Search"
+  placeholder: 'Search',
 };
-
 
 SearchBox.propTypes = {
   onSearchQueryChange: PropTypes.func,
   onSearchResultSelected: PropTypes.func,
-  guesses: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string, value: PropTypes.string
-  })),
+  guesses: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string,
+    })
+  ),
   isLoading: PropTypes.bool,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
 };
 
 export default SearchBox;

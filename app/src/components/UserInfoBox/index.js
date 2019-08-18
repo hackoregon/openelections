@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from '@emotion/core';
 
 const styles = css`
   border: 1px solid #ccc;
@@ -28,12 +28,12 @@ const styles = css`
 const UserInfoBox = ({ role, name, email, isVerified }) => {
   return (
     <div css={styles}>
-      <p className={"role"}>
-        {role} {!isVerified ? "(Pending)" : ""}
+      <p className="role">
+        {role} {!isVerified ? '(Pending)' : ''}
       </p>
-      <h3 className={"name"}>{name}</h3>
-      <h6 className={"email"}>{email}</h6>
-      <Link className={"manage-user-link"} to="/manage-user/">
+      <h3 className="name">{name}</h3>
+      <h6 className="email">{email}</h6>
+      <Link className="manage-user-link" to="/manage-user/">
         Manage User
       </Link>
     </div>

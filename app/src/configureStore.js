@@ -1,38 +1,39 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import { connectRouter, routerMiddleware } from 'connected-react-router'
-import thunk from "redux-thunk";
-import { createReducer } from "./state";
+import { createStore, applyMiddleware, compose } from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+import thunk from 'redux-thunk';
+import { middleware as flashMiddleware } from 'redux-flash';
+import { createReducer } from './state';
 import contributions, {
-  STATE_KEY as CONTRIBUTIONS_STATE_KEY
-} from "./state/ducks/contributions"
+  STATE_KEY as CONTRIBUTIONS_STATE_KEY,
+} from './state/ducks/contributions';
 import activities, {
-  STATE_KEY as ACTIVITIES_STATE_KEY
-} from "./state/ducks/activities";
-import auth, { STATE_KEY as AUTH_STATE_KEY } from "./state/ducks/auth";
+  STATE_KEY as ACTIVITIES_STATE_KEY,
+} from './state/ducks/activities';
+import auth, { STATE_KEY as AUTH_STATE_KEY } from './state/ducks/auth';
 import campaigns, {
-  STATE_KEY as CAMPAIGNS_STATE_KEY
-} from "./state/ducks/campaigns";
+  STATE_KEY as CAMPAIGNS_STATE_KEY,
+} from './state/ducks/campaigns';
 import governments, {
-  STATE_KEY as GOVERNMENTS_STATE_KEY
-} from "./state/ducks/governments";
+  STATE_KEY as GOVERNMENTS_STATE_KEY,
+} from './state/ducks/governments';
 import permissions, {
-    STATE_KEY as PERMISSIONS_STATE_KEY 
+  STATE_KEY as PERMISSIONS_STATE_KEY,
 } from './state/ducks/permissions';
-import expenditures, {STATE_KEY as EXPENDITURES_STATE_KEY } from './state/ducks/expenditures';
-import users, { STATE_KEY as USERS_STATE_KEY } from "./state/ducks/users";
-import modal, { STATE_KEY as MODAL_STATE_KEY } from "./state/ducks/modal";
-import * as api from "./api";
-import * as schema from "./api/schema";
-import { middleware as flashMiddleware } from 'redux-flash'
-
+import expenditures, {
+  STATE_KEY as EXPENDITURES_STATE_KEY,
+} from './state/ducks/expenditures';
+import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
+import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
+import * as api from './api';
+import * as schema from './api/schema';
 
 export default function configureStore(history) {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   if (!composeEnhancers) {
     console.warn(
-      "Install Redux DevTools Extension to inspect the app state: " +
-        "https://github.com/zalmoxisus/redux-devtools-extension#installation"
+      'Install Redux DevTools Extension to inspect the app state: ' +
+        'https://github.com/zalmoxisus/redux-devtools-extension#installation'
     );
   }
   return createStore(
@@ -46,12 +47,14 @@ export default function configureStore(history) {
       [PERMISSIONS_STATE_KEY]: permissions,
       [USERS_STATE_KEY]: users,
       [MODAL_STATE_KEY]: modal,
-      [EXPENDITURES_STATE_KEY]: expenditures
+      [EXPENDITURES_STATE_KEY]: expenditures,
     }),
     composeEnhancers(
       applyMiddleware(
         routerMiddleware(history),
         thunk.withExtraArgument({ api, schema }),
-        flashMiddleware(), ))
+        flashMiddleware()
+      )
+    )
   );
 }

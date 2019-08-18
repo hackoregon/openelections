@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from '@emotion/core';
 
 const styles = {
   title: css`
@@ -83,26 +83,26 @@ const styles = {
     flex-grow: 1;
     height: 1px;
     background-color: #9f9f9f;
-  `
+  `,
 };
 
 // MOCK DATA (I don't know the real shape) - VALUES NEED TO BE PULLED IN
-let created = {
-  timestamp: "07/12/2019",
-  username: "User Name"
+const created = {
+  timestamp: '07/12/2019',
+  username: 'User Name',
 };
-let submitted = {
-  timestamp: "07/23/2019",
-  username: "User3 Name"
+const submitted = {
+  timestamp: '07/23/2019',
+  username: 'User3 Name',
 };
-let submissionResponse = {
-  timestamp: "07/12/2019",
-  username: "User2 Name",
+const submissionResponse = {
+  timestamp: '07/12/2019',
+  username: 'User2 Name',
   responseMessage:
-    "This contribution looks like it's missing the attestation document."
+    "This contribution looks like it's missing the attestation document.",
 };
 
-let pretendActivities = [created, submitted, submissionResponse];
+const pretendActivities = [created, submitted, submissionResponse];
 
 const ActivityStream = () => {
   return (
@@ -119,9 +119,9 @@ const ActivityStream = () => {
         <p css={styles.timestamp}>{submitted.timestamp}</p>
         <div css={styles.timeline} />
       </div>
-      <p css={styles.username}>{`Submitted for review by ${
-        submitted.username
-      }`}</p>
+      <p
+        css={styles.username}
+      >{`Submitted for review by ${submitted.username}`}</p>
 
       <div css={styles.timelineGroup}>
         <p css={styles.timestamp}>{submissionResponse.timestamp}</p>
@@ -135,7 +135,7 @@ const ActivityStream = () => {
         <p css={styles.messageBox}>
           <span css={styles.message}>Message to Campaign</span>
         </p>
-        <Link to={"#"} css={styles.sendToCampaignButton}>
+        <Link to="#" css={styles.sendToCampaignButton}>
           Submit Message to Campaign
         </Link>
       </div>

@@ -1,25 +1,26 @@
 // campaigns.js
-import { normalize } from "normalizr";
-import createReducer from "../utils/createReducer";
-import createActionTypes from "../utils/createActionTypes";
-import action from "../utils/action";
-import { addEntities, ADD_ENTITIES } from "./common";
-import { createSelector } from "reselect";
-import { get } from "lodash";
-export const STATE_KEY = "expenditures";
+import { normalize } from 'normalizr';
+import { createSelector } from 'reselect';
+import { get } from 'lodash';
+import createReducer from '../utils/createReducer';
+import createActionTypes from '../utils/createActionTypes';
+import action from '../utils/action';
+import { addEntities, ADD_ENTITIES } from './common';
+
+export const STATE_KEY = 'expenditures';
 
 // Action Types
 export const actionTypes = {
-  CREATE_EXPENDITURE: createActionTypes(STATE_KEY, "CREATE_EXPENDITURE"),
-  UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, "UPDATE_EXPENDITURE"),
-  GET_EXPENDITURES: createActionTypes(STATE_KEY, "GET_EXPENDITURES"),
-  GET_EXPENDITURE_BY_ID: createActionTypes(STATE_KEY, "GET_EXPENDITURE_BY_ID")
+  CREATE_EXPENDITURE: createActionTypes(STATE_KEY, 'CREATE_EXPENDITURE'),
+  UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, 'UPDATE_EXPENDITURE'),
+  GET_EXPENDITURES: createActionTypes(STATE_KEY, 'GET_EXPENDITURES'),
+  GET_EXPENDITURE_BY_ID: createActionTypes(STATE_KEY, 'GET_EXPENDITURE_BY_ID'),
 };
 
 // Initial State
 export const initialState = {
   isLoading: false,
-  error: null
+  error: null,
 };
 
 // Reducer
@@ -62,7 +63,7 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_EXPENDITURE_BY_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
-  }
+  },
 });
 
 // Action Creators
@@ -70,24 +71,24 @@ export const actionCreators = {
   createExpenditure: {
     request: () => action(actionTypes.CREATE_EXPENDITURE.REQUEST),
     success: () => action(actionTypes.CREATE_EXPENDITURE.SUCCESS),
-    failure: error => action(actionTypes.CREATE_EXPENDITURE.FAILURE, { error })
+    failure: error => action(actionTypes.CREATE_EXPENDITURE.FAILURE, { error }),
   },
   updateExpenditure: {
     request: () => action(actionTypes.UPDATE_EXPENDITURE.REQUEST),
     success: () => action(actionTypes.UPDATE_EXPENDITURE.SUCCESS),
-    failure: error => action(actionTypes.UPDATE_EXPENDITURE.FAILURE, { error })
+    failure: error => action(actionTypes.UPDATE_EXPENDITURE.FAILURE, { error }),
   },
   getExpenditures: {
     request: () => action(actionTypes.GET_EXPENDITURES.REQUEST),
     success: () => action(actionTypes.GET_EXPENDITURES.SUCCESS),
-    failure: error => action(actionTypes.GET_EXPENDITURES.FAILURE, { error })
+    failure: error => action(actionTypes.GET_EXPENDITURES.FAILURE, { error }),
   },
   getExpenditureById: {
     request: () => action(actionTypes.GET_EXPENDITURE_BY_ID.REQUEST),
     success: () => action(actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_EXPENDITURE_BY_ID.FAILURE, { error })
-  }
+      action(actionTypes.GET_EXPENDITURE_BY_ID.FAILURE, { error }),
+  },
 };
 
 // Side Effects, e.g. thunks
@@ -166,6 +167,6 @@ export const rootState = state => state || {};
 
 export const getExpendituresList = createSelector(
   rootState,
-  state => Object.values(state.expenditures)
-  .filter(withId => !!get(withId, "id"))
+  state =>
+    Object.values(state.expenditures).filter(withId => !!get(withId, 'id'))
 );

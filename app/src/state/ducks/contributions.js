@@ -1,30 +1,36 @@
 // campaigns.js
-import { normalize } from "normalizr";
-import createReducer from "../utils/createReducer";
-import createActionTypes from "../utils/createActionTypes";
-import action from "../utils/action";
-import { addEntities, ADD_ENTITIES } from "./common";
-import { createSelector } from "reselect";
-import { get } from "lodash";
-import { getContributionActivities } from "./activities";
+import { normalize } from 'normalizr';
+import { createSelector } from 'reselect';
+import { get } from 'lodash';
+import createReducer from '../utils/createReducer';
+import createActionTypes from '../utils/createActionTypes';
+import action from '../utils/action';
+import { addEntities, ADD_ENTITIES } from './common';
+import { getContributionActivities } from './activities';
 
-export const STATE_KEY = "contributions";
+export const STATE_KEY = 'contributions';
 
 // Action Types
 export const actionTypes = {
-  CREATE_CONTRIBUTION: createActionTypes(STATE_KEY, "CREATE_CONTRIBUTION"),
-  UPDATE_CONTRIBUTION: createActionTypes(STATE_KEY, "UPDATE_CONTRIBUTION"),
-  GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, "GET_CONTRIBUTIONS"),
-  GET_CONTRIBUTION_BY_ID: createActionTypes(STATE_KEY, "GET_CONTRIBUTION_BY_ID"),
-  ARCHIVE_CONTRIBUTION: createActionTypes(STATE_KEY, "ARCHIVE_CONTRIBUTION"),
-  POST_CONTRIBUTION_COMMENT: createActionTypes(STATE_KEY, "POST_CONTRIBUTION_COMMENT"),
+  CREATE_CONTRIBUTION: createActionTypes(STATE_KEY, 'CREATE_CONTRIBUTION'),
+  UPDATE_CONTRIBUTION: createActionTypes(STATE_KEY, 'UPDATE_CONTRIBUTION'),
+  GET_CONTRIBUTIONS: createActionTypes(STATE_KEY, 'GET_CONTRIBUTIONS'),
+  GET_CONTRIBUTION_BY_ID: createActionTypes(
+    STATE_KEY,
+    'GET_CONTRIBUTION_BY_ID'
+  ),
+  ARCHIVE_CONTRIBUTION: createActionTypes(STATE_KEY, 'ARCHIVE_CONTRIBUTION'),
+  POST_CONTRIBUTION_COMMENT: createActionTypes(
+    STATE_KEY,
+    'POST_CONTRIBUTION_COMMENT'
+  ),
 };
 
 // Initial State
 export const initialState = {
   list: {},
   isLoading: false,
-  error: null
+  error: null,
 };
 
 // Reducer
@@ -71,22 +77,21 @@ export default createReducer(initialState, {
   [actionTypes.ARCHIVE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS]: (state) => {
+  [actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.ARCHIVE_CONTRIBUTION.FAILURE]: (state) => {
+  [actionTypes.ARCHIVE_CONTRIBUTION.FAILURE]: state => {
     return { ...state, isLoading: false, error: action.error };
   },
   [actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
-  [actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS]: (state) => {
+  [actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: (state) => {
+  [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: state => {
     return { ...state, isLoading: false, error: action.error };
   },
-
 });
 
 // Action Creators
@@ -94,40 +99,42 @@ export const actionCreators = {
   createContribution: {
     request: () => action(actionTypes.CREATE_CONTRIBUTION.REQUEST),
     success: () => action(actionTypes.CREATE_CONTRIBUTION.SUCCESS),
-    failure: error => action(actionTypes.CREATE_CONTRIBUTION.FAILURE, { error })
+    failure: error =>
+      action(actionTypes.CREATE_CONTRIBUTION.FAILURE, { error }),
   },
   updateContribution: {
     request: () => action(actionTypes.UPDATE_CONTRIBUTION.REQUEST),
     success: () => action(actionTypes.UPDATE_CONTRIBUTION.SUCCESS),
-    failure: error => action(actionTypes.UPDATE_CONTRIBUTION.FAILURE, { error })
+    failure: error =>
+      action(actionTypes.UPDATE_CONTRIBUTION.FAILURE, { error }),
   },
   getContributions: {
     request: () => action(actionTypes.GET_CONTRIBUTIONS.REQUEST),
     success: () => action(actionTypes.GET_CONTRIBUTIONS.SUCCESS),
-    failure: error => action(actionTypes.GET_CONTRIBUTIONS.FAILURE, { error })
+    failure: error => action(actionTypes.GET_CONTRIBUTIONS.FAILURE, { error }),
   },
   getContributionById: {
     request: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.REQUEST),
     success: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS),
     failure: error =>
-      action(actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE, { error })
+      action(actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE, { error }),
   },
   archiveContribution: {
     request: () => action(actionTypes.ARCHIVE_CONTRIBUTION.REQUEST),
     success: () => action(actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS),
     failure: error =>
-      action(actionTypes.ARCHIVE_CONTRIBUTION.FAILURE, { error })
+      action(actionTypes.ARCHIVE_CONTRIBUTION.FAILURE, { error }),
   },
   postContributionComment: {
     request: () => action(actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST),
     success: () => action(actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS),
     failure: error =>
-      action(actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE, { error })
-  }
+      action(actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE, { error }),
+  },
 };
 
 // Side Effects, e.g. thunks
-export function createContribution (contributionAttrs) {
+export function createContribution(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createContribution.request());
     try {
@@ -136,17 +143,16 @@ export function createContribution (contributionAttrs) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createContribution.success());
-        return data.result
-      } else {
-        dispatch(actionCreators.createContribution.failure());
+        return data.result;
       }
+      dispatch(actionCreators.createContribution.failure());
     } catch (error) {
       dispatch(actionCreators.createContribution.failure(error));
     }
   };
 }
 
-export function updateContribution (contributionAttrs) {
+export function updateContribution(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.updateContribution.request());
     try {
@@ -155,17 +161,17 @@ export function updateContribution (contributionAttrs) {
         dispatch(actionCreators.updateContribution.success());
       } else {
         dispatch(actionCreators.updateContribution.failure());
-        const error = await response.json()
-        return error
+        const error = await response.json();
+        return error;
       }
     } catch (error) {
       dispatch(actionCreators.updateContribution.failure(error));
-      return error
+      return error;
     }
   };
 }
 
-export function getContributions (contributionSearchAttrs) {
+export function getContributions(contributionSearchAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
     try {
@@ -185,7 +191,7 @@ export function getContributions (contributionSearchAttrs) {
   };
 }
 
-export function getContributionById (id) {
+export function getContributionById(id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributionById.request());
     try {
@@ -203,7 +209,7 @@ export function getContributionById (id) {
   };
 }
 
-export function archiveContribution (id) {
+export function archiveContribution(id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.archiveContribution.request());
     try {
@@ -221,7 +227,7 @@ export function archiveContribution (id) {
   };
 }
 
-export function postContributionComment (id, comment) {
+export function postContributionComment(id, comment) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.postContributionComment.request());
     try {

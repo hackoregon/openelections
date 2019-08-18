@@ -1,10 +1,10 @@
-import React from "react";
-import FormModal from "../../FormModal/FormModal";
-import Button from "../../Button/Button";
-import SignInForm from "./SignInForm";
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import { Link } from 'react-router-dom';
+import FormModal from '../../FormModal/FormModal';
+import Button from '../../Button/Button';
+import SignInForm from './SignInForm';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { Link } from "react-router-dom";
 
 const formTitle = css`
   font-size: 35px;
@@ -28,49 +28,40 @@ const modalStyle = css`
   left: calc(50vw - 175px);
 `;
 
-const SignIn = (props) => (
+const SignIn = props => (
   <div css={modalStyle}>
     <FormModal>
       <SignInForm
-        onSubmit={
-          values => {
-            props.login(values.email, values.password);
-          }
-        }
+        onSubmit={values => {
+          props.login(values.email, values.password);
+        }}
         initialValues={{
-          email: "",
-          password: ""
+          email: '',
+          password: '',
         }}
       >
-        {({
-          formSections,
-          isValid,
-          handleCancel,
-          handleSubmit
-        }) => (
-            <>
-              <p css={formTitle}>Sign In</p>
-              <p>
-                Enter your credentials to sign into the portal.
-              </p>
-              {formSections.signIn}
-              <div css={forgotLink}>
-                <Link to={'/forgot-password'}>Forgot Password</Link>
-              </div>
-              <div css={buttonWrapper}>
-                <Button buttonType="cancel" onClick={handleCancel}>
-                  Cancel
-                </Button>
-                <Button
-                  buttonType="submit"
-                  disabled={!isValid}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              </div>
-            </>
-          )}
+        {({ formSections, isValid, handleCancel, handleSubmit }) => (
+          <>
+            <p css={formTitle}>Sign In</p>
+            <p>Enter your credentials to sign into the portal.</p>
+            {formSections.signIn}
+            <div css={forgotLink}>
+              <Link to="/forgot-password">Forgot Password</Link>
+            </div>
+            <div css={buttonWrapper}>
+              <Button buttonType="cancel" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </div>
+          </>
+        )}
       </SignInForm>
     </FormModal>
   </div>

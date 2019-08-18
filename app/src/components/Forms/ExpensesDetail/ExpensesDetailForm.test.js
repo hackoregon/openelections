@@ -1,8 +1,8 @@
-import React from "react";
-import ExpensesDetailForm from "./ExpensesDetailForm";
+import React from 'react';
+import ExpensesDetailForm from './ExpensesDetailForm';
 
-describe("<ExpensesDetailForm/>", () => {
-  it("should be defined", () => {
+describe('<ExpensesDetailForm/>', () => {
+  it('should be defined', () => {
     expect(ExpensesDetailForm).toMatchSnapshot();
   });
 });

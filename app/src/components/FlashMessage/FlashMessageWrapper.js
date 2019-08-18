@@ -60,7 +60,12 @@ export default function SnackbarContentWrapper(props) {
         </span>
       }
       action={[
-        <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
+        <IconButton
+          key="close"
+          aria-label="Close"
+          color="inherit"
+          onClick={onClose}
+        >
           <CloseIcon className={classes.icon} />
         </IconButton>,
       ]}
@@ -75,4 +80,3 @@ SnackbarContentWrapper.propTypes = {
   onClose: PropTypes.func,
   variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
 };
-

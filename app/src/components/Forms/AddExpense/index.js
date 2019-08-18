@@ -1,10 +1,10 @@
-import React from "react";
-import Button from "../../Button/Button";
-import AddExpenseForm from "./AddExpenseForm";
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import { connect } from 'react-redux';
+import Button from '../../Button/Button';
+import AddExpenseForm from './AddExpenseForm';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { isLoggedIn } from "../../../state/ducks/auth";
-import { connect } from "react-redux";
+import { isLoggedIn } from '../../../state/ducks/auth';
 
 const containers = {
   header: css`
@@ -44,7 +44,7 @@ const containers = {
     grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
     margin-bottom: 20px;
-  `
+  `,
 };
 
 const headerStyles = {
@@ -133,7 +133,7 @@ const headerStyles = {
     border-radius: 5px;
     width: 165px;
     height: 50px;
-  `
+  `,
 };
 
 const sectionStyles = {
@@ -157,14 +157,14 @@ const sectionStyles = {
   `,
   notes: css`
     margin-top: 75px;
-  `
+  `,
 };
 
 // HEADER VALUES
-const invoiceNumber = "#1030090212";
-const campaignName = "FakeName";
-const lastEdited = "date";
-const currentStatus = "Draft";
+const invoiceNumber = '#1030090212';
+const campaignName = 'FakeName';
+const lastEdited = 'date';
+const currentStatus = 'Draft';
 // const labelsCount = 0;
 
 const invoiceNumberBlock = (
@@ -194,28 +194,28 @@ const statusBlock = (
 
 const AddExpense = () => (
   <AddExpenseForm
-    onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
+    onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
     initialValues={{
       // BASICS
       amount: undefined,
-      dateOfExpenditure: "", // Date.now(), // FORMAT?
-      typeOfExpenditure: "",
-      subTypeOfExpenditure: "",
-      paymentMethod: "",
+      dateOfExpenditure: '', // Date.now(), // FORMAT?
+      typeOfExpenditure: '',
+      subTypeOfExpenditure: '',
+      paymentMethod: '',
       checkNumber: undefined,
-      purposeOfExpenditure: "",
+      purposeOfExpenditure: '',
 
       // PAYEE INFO
-      payeeType: "",
-      payeeName: "",
-      streetAddress: "",
-      addressLine2: "",
-      countryRegion: "",
-      city: "Portland",
-      state: "OR",
-      zipcode: "97201",
-      county: "Multnomah",
-      notes: ""
+      payeeType: '',
+      payeeName: '',
+      streetAddress: '',
+      addressLine2: '',
+      countryRegion: '',
+      city: 'Portland',
+      state: 'OR',
+      zipcode: '97201',
+      county: 'Multnomah',
+      notes: '',
     }}
   >
     {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
@@ -224,9 +224,7 @@ const AddExpense = () => (
         <div css={containers.header}>
           <div css={headerStyles.leftColumn}>
             {invoiceNumberBlock}
-            <div style={{ display: "flex" }}>
-              {statusBlock}
-            </div>
+            <div style={{ display: 'flex' }}>{statusBlock}</div>
           </div>
           <div css={headerStyles.rightColumn}>
             <div css={headerStyles.buttonDiv}>
@@ -294,5 +292,5 @@ const AddExpense = () => (
   </AddExpenseForm>
 );
 export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false
+  isLoggedIn: isLoggedIn(state) || false,
 }))(AddExpense);

@@ -1,5 +1,5 @@
-import * as React from "react";
-import PageHoc from "../../components/PageHoc/PageHoc";
+import * as React from 'react';
+import PageHoc from '../../components/PageHoc/PageHoc';
 // import { connect } from 'react-redux'
 
 const HomePage = props => {

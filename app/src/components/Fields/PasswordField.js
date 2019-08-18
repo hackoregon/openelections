@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import TextField from "../TextField/TextField";
+import React from 'react';
+import PropTypes from 'prop-types';
+import TextField from '../TextField/TextField';
 
 const PasswordField = ({ id, label, formik, isRequired }) => (
   <TextField
@@ -9,7 +9,7 @@ const PasswordField = ({ id, label, formik, isRequired }) => (
     name={id}
     label={label}
     type="password"
-    helperText={formik.touched[id] ? formik.errors[id] : ""}
+    helperText={formik.touched[id] ? formik.errors[id] : ''}
     error={formik.touched[id] && Boolean(formik.errors[id])}
     value={formik.values[id]}
     onChange={formik.handleChange}
@@ -21,7 +21,7 @@ const PasswordField = ({ id, label, formik, isRequired }) => (
 PasswordField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,
-  formik: PropTypes.shape({})
+  formik: PropTypes.shape({}),
 };
 
 export default PasswordField;

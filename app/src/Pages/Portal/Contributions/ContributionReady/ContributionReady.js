@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import PageHoc from "../../../../components/PageHoc/PageHoc";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ContributionReadyForm from '../../../../components/Forms/ContributionReady/index';
-import { getContributionById } from "../../../../state/ducks/contributions";
+import { getContributionById } from '../../../../state/ducks/contributions';
 
 class AddContribution extends Component {
   componentDidMount() {
-    const { getContributionById, contributionId } = this.props
-    getContributionById(parseInt(contributionId))
+    const { getContributionById, contributionId } = this.props;
+    getContributionById(parseInt(contributionId));
   }
 
   render() {
-    const { contributions, contributionId, history } = this.props
-    const data =  contributions[contributionId] || {}
+    const { contributions, contributionId, history } = this.props;
+    const data = contributions[contributionId] || {};
     return (
       <PageHoc>
         <ContributionReadyForm
@@ -27,9 +27,9 @@ export default connect(
   (state, ownProps) => ({
     contributionId: parseInt(ownProps.match.params.id),
     contributions: state.contributions,
-    history: ownProps.history
+    history: ownProps.history,
   }),
   dispatch => ({
-    getContributionById: (id) => dispatch(getContributionById(id))
+    getContributionById: id => dispatch(getContributionById(id)),
   })
 )(AddContribution);

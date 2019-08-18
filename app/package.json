@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@babel/core": "7.4.3",
+    "@emotion/core": "^10.0.10",
     "@hackoregon/component-library": "^3.0.0-ci",
     "@material-ui/core": "^4.3.2",
     "@material-ui/icons": "^4.2.1",
@@ -67,6 +68,7 @@
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
     "prop-types": "^15.7.2",
+    "query-string": "^6.8.2",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
     "react-dev-utils": "^9.0.1",
@@ -101,15 +103,14 @@
     "test": "jest --updateSnapshot",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "posttest": "lint",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "lint": "./node_modules/.bin/eslint src"
-
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@emotion/core": "^10.0.10",
     "@storybook/addon-a11y": "^5.0.10",
     "@storybook/addon-actions": "^5.0.6",
     "@storybook/addon-knobs": "^5.0.10",

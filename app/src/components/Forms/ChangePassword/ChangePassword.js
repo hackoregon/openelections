@@ -1,9 +1,9 @@
-import React from "react";
-import FormModal from "../../FormModal/FormModal";
-import Button from "../../Button/Button";
-import ChangePasswordForm from "./ChangePasswordForm";
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import FormModal from '../../FormModal/FormModal';
+import Button from '../../Button/Button';
+import ChangePasswordForm from './ChangePasswordForm';
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 
 const formTitle = css`
   font-size: 35px;
@@ -15,44 +15,41 @@ const buttonWrapper = css`
 `;
 
 const ChangePassword = () => (
-    <FormModal>
-      <ChangePasswordForm
-        onSubmit={x => console.log("REPLACE ME WITH SOMETHING REAL!")}
-        initialValues={{
-          oldPassword: "",
-          newPassword: "",
-          confirmNewPassword: ""
-        }}
-      >
-        {({
-          formSections,
-          isValid,
-          handleCancel,
-          handleSubmit /* isDirty, isSubmitting */
-        }) => (
-          <React.Fragment>
-            <p css={formTitle}>Change Password</p>
-            {formSections.oldPassword}
-            {formSections.newPassword}
-            <div css={buttonWrapper}>
-              <Button
-                buttonType="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </Button>
-              <Button
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </div>
-          </React.Fragment>
-        )}
-      </ChangePasswordForm>
-    </FormModal>
+  <FormModal>
+    <ChangePasswordForm
+      onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
+      initialValues={{
+        oldPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
+      }}
+    >
+      {({
+        formSections,
+        isValid,
+        handleCancel,
+        handleSubmit /* isDirty, isSubmitting */,
+      }) => (
+        <React.Fragment>
+          <p css={formTitle}>Change Password</p>
+          {formSections.oldPassword}
+          {formSections.newPassword}
+          <div css={buttonWrapper}>
+            <Button buttonType="cancel" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              buttonType="submit"
+              disabled={!isValid}
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          </div>
+        </React.Fragment>
+      )}
+    </ChangePasswordForm>
+  </FormModal>
 );
 
 export default ChangePassword;

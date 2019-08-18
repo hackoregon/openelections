@@ -1,9 +1,9 @@
-import React from "react";
-import { shallow } from "enzyme";
-import Doohicky from "./index";
+import React from 'react';
+import { shallow } from 'enzyme';
+import Doohicky from './index';
 
-describe("<Doohicky/>", () => {
-  it("should be defined", () => {
+describe('<Doohicky/>', () => {
+  it('should be defined', () => {
     const wrapper = shallow(<Doohicky />);
     expect(wrapper).toBeDefined();
     expect(wrapper).toMatchSnapshot();

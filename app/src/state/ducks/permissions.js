@@ -1,22 +1,21 @@
 // permissions.js
-import createReducer from "../utils/createReducer";
-import { ADD_ENTITIES } from "./common";
-import createActionTypes from "../utils/createActionTypes";
-import action from "../utils/action";
+import createReducer from '../utils/createReducer';
+import { ADD_ENTITIES } from './common';
+import createActionTypes from '../utils/createActionTypes';
+import action from '../utils/action';
 
-export const STATE_KEY = "permissions";
+export const STATE_KEY = 'permissions';
 
 // Action Types
 
 export const actionTypes = {
-  REMOVE_PERMISSION: createActionTypes(STATE_KEY, "REMOVE_PERMISSION")
+  REMOVE_PERMISSION: createActionTypes(STATE_KEY, 'REMOVE_PERMISSION'),
 };
-
 
 // Initial State
 export const initialState = {
   isLoading: false,
-  error: null
+  error: null,
 };
 
 // Reducer
@@ -25,7 +24,7 @@ export default createReducer(initialState, {
     return { ...state, ...action.payload.permissions };
   },
   [actionTypes.REMOVE_PERMISSION.SUCCESS]: (state, action) => {
-    const newState = {...state, isLoading: false};
+    const newState = { ...state, isLoading: false };
     delete newState[action.permissionId];
     return newState;
   },
@@ -35,9 +34,10 @@ export default createReducer(initialState, {
 
 export const actionCreators = {
   removePermission: {
-    success: (permissionId) => action(actionTypes.REMOVE_PERMISSION.SUCCESS, { permissionId })
-  }
-}
+    success: permissionId =>
+      action(actionTypes.REMOVE_PERMISSION.SUCCESS, { permissionId }),
+  },
+};
 
 // Side Effects, e.g. thunks
 

@@ -1,11 +1,11 @@
 // eslint-disable-next-line
 import React from "react";
-import Navigation from "../Navigation";
-import { Link } from "react-router-dom";
-import { Logo } from "@hackoregon/component-library";
+import { Link } from 'react-router-dom';
+import { Logo } from '@hackoregon/component-library';
 
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css, jsx } from '@emotion/core';
+import Navigation from '../Navigation';
 
 const styles = css`
   background-color: #201921;
@@ -37,7 +37,7 @@ const TopNavigation = props => {
   const { isLoggedIn } = { props };
   return (
     <header css={styles}>
-      <Link to={isLoggedIn ? "/dashboard" : "/"} className="header-icon">
+      <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
         <Logo type="squareLogoInverted" />
         <p className="logo-text">Open Elections</p>
       </Link>

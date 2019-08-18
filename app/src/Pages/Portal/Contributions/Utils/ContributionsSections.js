@@ -1,10 +1,9 @@
-import React from "react";
-import Button from '../../../../components/Button/Button';
+import React from 'react';
 /** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+import { format } from 'date-fns';
 import { ContributionStatusEnum } from '../../../../api/api';
-import { text } from '@storybook/addon-knobs';
-import { css, jsx } from "@emotion/core";
-import { format } from "date-fns"
+import Button from '../../../../components/Button/Button';
 
 const containers = {
   header: css`
@@ -45,7 +44,7 @@ const containers = {
     grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
     margin-bottom: 20px;
-  `
+  `,
 };
 
 const headerStyles = {
@@ -124,7 +123,7 @@ const headerStyles = {
     align-self: flex-end;
   `,
   submitButton: css`
-    background-color: #42B44A;
+    background-color: #42b44a;
     border-radius: 5px;
     color: white;
     width: 225px;
@@ -145,7 +144,7 @@ const headerStyles = {
     width: 165px;
     height: 50px;
     margin-right: 8px !important;
-  `
+  `,
 };
 
 const sectionStyles = {
@@ -169,12 +168,12 @@ const sectionStyles = {
   `,
   notes: css`
     margin-top: 75px;
-  `
+  `,
 };
 
 // HEADER VALUES
-const invoiceNumber = "#1030090212"; // TODO: Where is this invoice number coming from/generated? 
-const currentStatus = "Draft";
+const invoiceNumber = '#1030090212'; // TODO: Where is this invoice number coming from/generated?
+const currentStatus = 'Draft';
 // const labelsCount = 0;
 
 const InvoiceNumberBlock = ({ campaignName, lastEdited }) => (
@@ -202,36 +201,39 @@ const StatusBlock = ({ status }) => (
 
 // TODO: make a separate component for this checkmark component, find out what it indicates?
 const CheckmarkComponent = ({}) => (
-  <p css={css`margin-right: 8px;`}> ✅</p>
-)
+  <p
+    css={css`
+      margin-right: 8px;
+    `}
+  >
+    {' '}
+    ✅
+  </p>
+);
 
-const setButtonText = (status) => {
-  const configs = {}
+const setButtonText = status => {
+  const configs = {};
   switch (status) {
     case ContributionStatusEnum.DRAFT:
-      configs.archive = "Archive"
-      configs.draft = "Draft"
-      configs.submit = "Submit"
-      break
+      configs.archive = 'Archive';
+      configs.draft = 'Draft';
+      configs.submit = 'Submit';
+      break;
     case ContributionStatusEnum.ARCHIVED:
-      configs.draft = "Move to Draft"
+      configs.draft = 'Move to Draft';
     case ContributionStatusEnum.PROCESSED:
     case ContributionStatusEnum.SUBMITTED:
     default:
-      return configs
+      return configs;
   }
-  return configs
-}
+  return configs;
+};
 
 const createHeaderButton = (style, onClick, text, disabled = false) => (
-  <Button
-    style={style}
-    disabled={disabled}
-    onClick={onClick}
-  >
+  <Button style={style} disabled={disabled} onClick={onClick}>
     {text}
   </Button>
-)
+);
 
 export const ReadyHeaderSection = ({
   status,
@@ -241,9 +243,9 @@ export const ReadyHeaderSection = ({
   isValid,
   handleSubmit,
   handleTrash,
-  handleDraft
+  handleDraft,
 }) => {
-  const { archive, draft, submit } = setButtonText(status)
+  const { archive, draft, submit } = setButtonText(status);
   return (
     <>
       <div css={containers.header}>
@@ -252,41 +254,56 @@ export const ReadyHeaderSection = ({
             campaignName={campaignName}
             lastEdited={format(new Date(lastEdited), 'mm/DD/yyyy')}
           />
-          <div style={{ display: "flex" }}>
+          <div style={{ display: 'flex' }}>
             <StatusBlock status={status} />
           </div>
         </div>
         <div css={headerStyles.rightColumn}>
-          <div style={{ display: "flex", height: "50px" }}>
-            {archive ? createHeaderButton(headerStyles.trashButton, handleTrash, archive) : null}
-            {draft ? createHeaderButton(headerStyles.draftButton, handleDraft, draft) : null}
-            {draft && submit ? <CheckmarkComponent/> : null}
-            {submit ? createHeaderButton(headerStyles.submitButton, handleSubmit, submit, !isValid) : null}
+          <div style={{ display: 'flex', height: '50px' }}>
+            {archive
+              ? createHeaderButton(
+                  headerStyles.trashButton,
+                  handleTrash,
+                  archive
+                )
+              : null}
+            {draft
+              ? createHeaderButton(headerStyles.draftButton, handleDraft, draft)
+              : null}
+            {draft && submit ? <CheckmarkComponent /> : null}
+            {submit
+              ? createHeaderButton(
+                  headerStyles.submitButton,
+                  handleSubmit,
+                  submit,
+                  !isValid
+                )
+              : null}
           </div>
         </div>
       </div>
       <hr css={sectionStyles.dividerLine} />
     </>
-  )
-}
+  );
+};
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
     <div css={containers.header}>
-        <div style={{ flexDirection: "column" }}>
-          <Button
-            css={headerStyles.submitButton}
-            buttonType="submit"
-            disabled={!isValid}
-            onClick={handleSubmit}
-          >
-            Save as Draft
+      <div style={{ flexDirection: 'column' }}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="submit"
+          disabled={!isValid}
+          onClick={handleSubmit}
+        >
+          Save as Draft
         </Button>
-        </div>
       </div>
+    </div>
     <hr css={sectionStyles.dividerLine} />
   </>
-)
+);
 
 export const BasicsSection = ({ formFields, checkSelected }) => (
   <div css={sectionStyles.main}>
@@ -302,21 +319,21 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
       {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
     </div>
   </div>
-)
+);
 
 export const ContributorSection = ({ formFields, isPerson }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Contributor</h3>
     <div css={containers.sectionTwo}>
       <h2>{formFields.typeOfContributor}</h2>
-      {isPerson ?
+      {isPerson ? (
         <>
-        <h2>{formFields.firstName}</h2>
-        <h2>{formFields.lastName}</h2>
+          <h2>{formFields.firstName}</h2>
+          <h2>{formFields.lastName}</h2>
         </>
-        :
+      ) : (
         <h2>{formFields.entityName}</h2>
-    }
+      )}
     </div>
     <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
     <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
@@ -339,7 +356,7 @@ export const ContributorSection = ({ formFields, isPerson }) => (
     </div>
     <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>
-)
+);
 
 export const OtherDetailsSection = ({ formFields }) => (
   <div css={sectionStyles.main}>
@@ -351,4 +368,4 @@ export const OtherDetailsSection = ({ formFields }) => (
       <h2>{formFields.notes}</h2>
     </div>
   </div>
-)
+);
