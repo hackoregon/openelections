@@ -27,6 +27,13 @@ services:
       - "PORT=3000"
       - "DB_PASSWORD="
       - "SECRET_KEY=bananas"
+  jobs:
+    tty: true
+    user: root
+    image: openelections-jobs-production
+    build:
+      context: 'api'
+      dockerfile: 'Dockerfile.production'
   data:
     image: openelections-datascience-production
     build:
