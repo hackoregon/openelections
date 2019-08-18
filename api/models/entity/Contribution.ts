@@ -86,6 +86,15 @@ export enum InKindDescriptionType {
     UTILITIES = 'utilities'
 }
 
+export enum OaeType {
+    SEED = 'seed',
+    MATCHABLE = 'matchable',
+    PUBLICMATCHING = 'public_matching_contribution',
+    QUALIFYING = 'qualifying',
+    ALLOWABLE = 'allowable',
+    INKIND = 'inkind'
+}
+
 @Entity({ name: 'contributions' })
 export class Contribution {
     @PrimaryGeneratedColumn()
@@ -113,6 +122,13 @@ export class Contribution {
     })
     @IsDefined()
     subType: ContributionSubType;
+
+    @Column({
+        type: 'enum',
+        enum: OaeType,
+        nullable: true,
+    })
+    oaeType: OaeType;
 
     @Column({
         type: 'enum',
@@ -418,6 +434,7 @@ export const contributionSummaryFields = <const>[
     'subType',
     'inKindType',
     'contributorType',
+    'oaeType',
     'contrPrefix',
     'firstName',
     'middleInitial',
