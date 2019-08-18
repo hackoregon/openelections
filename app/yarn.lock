@@ -2259,10 +2259,31 @@
     tslib "^1.9.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+"@material-ui/pickers@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@material-ui/pickers/-/pickers-3.2.2.tgz#9b7a67f5a8f21f8183853ebc1848e5d8dd680d4c"
+  integrity sha512-on/J1yyKeJ4CkLnItpf/jPDKMZVWvHDklkh5FS7wkZ0s1OPoqTsPubLWfA7eND6xREnVRyLFzVTlE3VlWYdQWw==
+  dependencies:
+    "@babel/runtime" "^7.2.0"
+    "@types/styled-jsx" "^2.2.8"
+    clsx "^1.0.2"
+    react-transition-group "^4.0.0"
+    rifm "^0.7.0"
+    tslib "^1.9.3"
+
+"@material-ui/styles@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.2.0.tgz#dafb8a271cb6772354aece15d3e43af33844f692"
+  integrity sha512-VpPCNWYK1KjpurFh1gH02xpAmCqKZrC/rmiBosZcCRDl8AOcUkSxBMNU0rziHgSQ/jYTEh3MdKNs3Gq0vGCQ/w==
+=======
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 "@material-ui/styles@^4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.3.0.tgz#27f11fbf061d8a20ad5703acb0dbb0e69cc00345"
   integrity sha512-7yOu+IOvbTVM+LfFJ0c7RZKksSpi2PmPwMhVnAKo1Ca3Nadjd950ALL6WG+R/W3C3GqakUvOqA5OLMvN/8N2jg==
+<<<<<<< HEAD
 =======
 "@material-ui/pickers@^3.2.2":
   version "3.2.2"
@@ -2281,6 +2302,9 @@
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.2.0.tgz#dafb8a271cb6772354aece15d3e43af33844f692"
   integrity sha512-VpPCNWYK1KjpurFh1gH02xpAmCqKZrC/rmiBosZcCRDl8AOcUkSxBMNU0rziHgSQ/jYTEh3MdKNs3Gq0vGCQ/w==
 >>>>>>> Getting closer to making the date range field work
+=======
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@emotion/hash" "^0.7.1"
@@ -5147,6 +5171,7 @@ chai-enzyme@^1.0.0-beta.1:
     html "^1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.1, chalk@^2.4.1, chalk@^2.4.2:
 =======
 chain-function@^1.0.0:
@@ -5156,6 +5181,17 @@ chain-function@^1.0.0:
 
 chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.1, chalk@^2.4.2:
 >>>>>>> Created DateRange field and added to the contributions filter
+=======
+chain-function@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.1.tgz#c63045e5b4b663fb86f1c6e186adaf1de402a1cc"
+  integrity sha512-SxltgMwL9uCko5/ZCLiyG2B7R9fY4pDZUw7hJ4MhirdjBLosoDqkWABi3XMucddHdLiFJMb7PD2MZifZriuMTg==
+
+chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.1, chalk@^2.4.2:
+=======
+chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.1, chalk@^2.4.1, chalk@^2.4.2:
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   integrity sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==
@@ -8868,6 +8904,11 @@ https-browserify@^1.0.0:
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+hyphenate-style-name@^1.0.1, hyphenate-style-name@^1.0.2, hyphenate-style-name@^1.0.3:
+=======
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 https-proxy-agent@^2.2.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-2.2.2.tgz#271ea8e90f836ac9f119daccd39c19ff7dfb0793"
@@ -8884,9 +8925,13 @@ humanize-ms@^1.2.1:
     ms "^2.0.0"
 
 hyphenate-style-name@^1.0.1, hyphenate-style-name@^1.0.3:
+<<<<<<< HEAD
 =======
 hyphenate-style-name@^1.0.1, hyphenate-style-name@^1.0.2, hyphenate-style-name@^1.0.3:
 >>>>>>> Created DateRange field and added to the contributions filter
+=======
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.3.tgz#097bb7fa0b8f1a9cf0bd5c734cf95899981a9b48"
   integrity sha512-EcuixamT82oplpoJ2XU4pDtKGWQ7b00CD9f1ug9IaQ3p1bkHMiKCZ9ut9QDI6qsa6cpUuB+A/I+zLtdNK4n2DQ==
@@ -10592,16 +10637,28 @@ lodash.memoize@^4.1.2:
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+lodash.merge@^4.6.0, lodash.merge@^4.6.1:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+=======
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 lodash.set@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
   integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
+<<<<<<< HEAD
 =======
 lodash.merge@^4.6.0, lodash.merge@^4.6.1:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 >>>>>>> Created DateRange field and added to the contributions filter
+=======
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 
 lodash.some@^4.6.0:
   version "4.6.0"
@@ -12098,6 +12155,14 @@ parse-json@^4.0.0:
     json-parse-better-errors "^1.0.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+parse-num@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/parse-num/-/parse-num-1.0.0.tgz#abd8b339c157a23d3ef87953ceb11f1dd08059d0"
+  integrity sha1-q9izOcFXoj0++HlTzrEfHdCAWdA=
+=======
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 parse-path@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/parse-path/-/parse-path-4.0.1.tgz#0ec769704949778cb3b8eda5e994c32073a1adff"
@@ -12115,12 +12180,16 @@ parse-url@^5.0.0:
     normalize-url "^3.3.0"
     parse-path "^4.0.0"
     protocols "^1.4.0"
+<<<<<<< HEAD
 =======
 parse-num@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/parse-num/-/parse-num-1.0.0.tgz#abd8b339c157a23d3ef87953ceb11f1dd08059d0"
   integrity sha1-q9izOcFXoj0++HlTzrEfHdCAWdA=
 >>>>>>> Created DateRange field and added to the contributions filter
+=======
+>>>>>>> 7a9edf7cd01fab28342d7d547d47ffdbd7325a7a
+>>>>>>> cc9ab9703e61a52be3e6b1ef4ad9ca49a1887742
 
 parse5@4.0.0:
   version "4.0.0"
