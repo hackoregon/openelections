@@ -12,16 +12,15 @@ script:
   - docker-compose -f docker-compose-test.yml run --rm app yarn test
   - docker-compose -f docker-compose-test.yml run --rm api npm run test
 
-# deploys are not working, due to travis memory issues
-#before_deploy:
-#  - sudo add-apt-repository -y ppa:eugenesan/ppa
-#  - sudo apt-get update -y
-#  - sudo apt-get install jq -y
-#  - pip install --user awscli
-#
-#deploy:
-#  provider: script
-#  script: bash scripts/deploy.sh
-#  skip_cleanup: true
-#  on:
-#    branch: develop
+before_deploy:
+  - sudo add-apt-repository -y ppa:eugenesan/ppa
+  - sudo apt-get update -y
+  - sudo apt-get install jq -y
+  - pip install --user awscli
+
+deploy:
+  provider: script
+  script: sh scripts/deploy.sh
+  skip_cleanup: true
+  on:
+    branch: develop
