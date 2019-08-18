@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import { dataScienceUrl, retrieveResultAsync } from '../../services/dataScienceService';
-import { seedAddresses } from '../../models/seeds/seeds';
+import { addGISBoundaries, seedAddresses } from '../../models/seeds/seeds';
 import { truncateAll } from '../factories';
 
 describe('dataScienceService', () => {
     before(async () => {
+        addGISBoundaries();
         await seedAddresses();
     });
 
@@ -42,7 +43,11 @@ describe('dataScienceService', () => {
                 addr1: '1024 SE Morrison',
                 zip_code: '97214',
                 city: 'Portland',
-                state: 'OR'
+                state: 'OR',
+                addressPoint: {
+                    type: 'Point',
+                    coordinates: [-122.676483, 45.523064]
+                }
             });
             expect(result.exact.length).to.equal(1);
             expect(result.exact[0].last_name).to.equal('DANIEL');
@@ -58,7 +63,11 @@ describe('dataScienceService', () => {
                 addr1: '1024 SE Morrison',
                 zip_code: '97214',
                 city: 'Portland',
-                state: 'OR'
+                state: 'OR',
+                addressPoint: {
+                    type: 'Point',
+                    coordinates: [-122.676483, 45.523064]
+                }
             });
             expect(result.exact.length).to.equal(0);
             expect(result.strong.length).to.equal(1);
@@ -75,7 +84,11 @@ describe('dataScienceService', () => {
                 addr1: '1024 SE Morrison',
                 zip_code: '97214',
                 city: 'Portland',
-                state: 'OR'
+                state: 'OR',
+                addressPoint: {
+                    type: 'Point',
+                    coordinates: [-122.676483, 45.523064]
+                }
             });
             expect(result.exact.length).to.equal(0);
             expect(result.strong.length).to.equal(0);
@@ -93,7 +106,11 @@ describe('dataScienceService', () => {
                 addr1: '122 MAIN ST',
                 zip_code: '97214',
                 city: 'Portland',
-                state: 'OR'
+                state: 'OR',
+                addressPoint: {
+                    type: 'Point',
+                    coordinates: [-122.676483, 45.523064]
+                }
             });
             expect(result.exact.length).to.equal(0);
             expect(result.strong.length).to.equal(0);

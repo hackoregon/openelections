@@ -384,10 +384,6 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 relations: ['campaign', 'government']
             }) as Contribution;
 
-        if (contribution.matchResult) {
-            return;
-        }
-
         if (contribution.validateContributorAddress()) {
             contribution.matchResult = await retrieveResultAsync({
                 first_name: contribution.firstName,
@@ -405,9 +401,13 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 contribution.matchStrength = MatchStrength.EXACT;
 
             } else if (contribution.matchResult.strong.length > 0) {
+                // tslint:disable-next-line:no-null-keyword
+                contribution.matchId = null;
                 contribution.matchStrength = MatchStrength.STRONG;
             } else if (contribution.matchResult.weak.length > 0) {
                 contribution.matchStrength = MatchStrength.WEAK;
+                // tslint:disable-next-line:no-null-keyword
+                contribution.matchId = null;
             } else {
                 contribution.matchId = crypto.randomBytes(16).toString('hex');
                 contribution.matchStrength = MatchStrength.NONE;
