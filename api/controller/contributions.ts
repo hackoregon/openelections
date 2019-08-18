@@ -15,7 +15,7 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType, InKindDescriptionType
+    ContributorType, InKindDescriptionType, OaeType
 } from '../models/entity/Contribution';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
@@ -104,6 +104,10 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsEnum(ContributionSubType)
     @IsOptional()
     subType: ContributionSubType;
+
+    @IsEnum(OaeType)
+    @IsOptional()
+    oaeType: OaeType;
 
     @IsEnum(ContributionType)
     @IsOptional()
@@ -258,6 +262,10 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsEnum(ContributionType)
     @IsOptional()
     type: ContributionType;
+
+    @IsEnum(OaeType)
+    @IsOptional()
+    oaeType: OaeType;
 
     @IsNumber()
     date: number;

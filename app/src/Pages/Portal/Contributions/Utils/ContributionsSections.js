@@ -297,6 +297,7 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
       <h2>{formFields.subTypeOfContribution}</h2>
       <h2>{formFields.typeOfContributor}</h2>
       <h2>{formFields.amountOfContribution}</h2>
+      <h2>{formFields.oaeType}</h2>
       <h2>{formFields.submitForMatch}</h2>
       <h2>{formFields.paymentMethod}</h2>
       {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}

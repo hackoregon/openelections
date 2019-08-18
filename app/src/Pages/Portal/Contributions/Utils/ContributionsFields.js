@@ -20,7 +20,8 @@ import {
   ContributorTypeFieldEnum,
   ContributionSubTypeFieldEnum,
   PhoneTypeEnum,
-  ContributionTypeFieldEnum
+  ContributionTypeFieldEnum,
+  OaeTypeFieldEnum
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -56,6 +57,7 @@ export const contributionsEmptyState = {
   subTypeOfContribution: "",
   typeOfContributor: "",
   amountOfContribution: "",
+  oaeType: "",
   submitForMatch: "No",
   paymentMethod: "",
   checkNumber: "",
@@ -142,6 +144,21 @@ export const fields = {
     CurrencyField,
     Yup.number("Choose the amount of contribution"),
     "The contribution amount is required"
+  ),
+  oaeType: requiredFormField(
+    "OAE Contribution Type",
+    FormSectionEnum.BASIC,
+    SelectField,
+    Yup.string("Choose the OAE contribution type."),
+    "The OAE contribution type is required",
+    [
+      OaeTypeFieldEnum.SEED_MONEY,
+      OaeTypeFieldEnum.MATCHABLE,
+      OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+      OaeTypeFieldEnum.QUALIFYING,
+      OaeTypeFieldEnum.ALLOWABLE,
+      OaeTypeFieldEnum.INKIND,
+    ]
   ),
   submitForMatch: requiredFormField(
     "Submit for Match?",
