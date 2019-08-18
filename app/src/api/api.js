@@ -236,6 +236,7 @@ export const mapContributionDataToForm = (contribution) => {
     oaeType,
     amount,
     checkNumber,
+    name,
     firstName,
     lastName,
     address1,
@@ -268,7 +269,8 @@ export const mapContributionDataToForm = (contribution) => {
 
     // CONTRIBUTOR VALUES
     firstName,
-    lastNameOrEntity: lastName,
+    lastName: lastName,
+    entityName: name | "",
     streetAddress: address1,
     addressLine2: address2,
     city,
@@ -300,7 +302,8 @@ export const mapContributionFormToData = (data) => {
     dateOfContribution,
     addressLine2,
     firstName,
-    lastNameOrEntity,
+    lastName,
+    entityName,
     state,
     zipcode,
     employerName,
@@ -322,7 +325,7 @@ export const mapContributionFormToData = (data) => {
 
   return {
     city,
-    firstName,
+    firstName: firstName?firstName:null,
     state,
     occupation,
     employerName,
@@ -341,11 +344,12 @@ export const mapContributionFormToData = (data) => {
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     middleInitial: "",
-    lastName: lastNameOrEntity,
-    type: ContributionTypeEnum.CONTRIBUTION,
-    subType: ContributionSubTypeEnum.CASH,
+    lastName: lastName?lastName:null,
+    name: entityName?entityName:null,
+   // type: ContributionTypeEnum.CONTRIBUTION,
+   // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
-    contributorType: ContributorTypeEnum.INDIVIDUAL,
+ //   contributorType: ContributorTypeEnum.INDIVIDUAL,
     inKindDescription: description,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === "Yes"
