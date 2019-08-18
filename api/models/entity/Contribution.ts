@@ -254,6 +254,14 @@ export class Contribution {
     @Column({type: 'enum', enum: MatchStrength, nullable: true})
     matchStrength?: MatchStrength;
 
+    @Column({
+        type: 'geometry',
+        nullable: true,
+        spatialFeatureType: 'Point',
+        srid: 4326
+    })
+    addressPoint?: any; // geoJson coordinates for address
+
     public errors: ValidationError[] = [];
 
     @BeforeInsert()

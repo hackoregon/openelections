@@ -2,10 +2,9 @@ import { getConnection } from 'typeorm';
 import { createUserAsync } from '../../services/userService';
 import {
     newCampaignAsync,
+    newExpenditureAsync,
     newGovernmentAsync,
-    truncateAll,
-    newContributionAsync,
-    newExpenditureAsync
+    truncateAll
 } from '../../test/factories';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../entity/Permission';
@@ -13,6 +12,11 @@ import { User, UserStatus } from '../../models/entity/User';
 import { Address } from '../../models/entity/Address';
 import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
+import { addContributionAsync } from '../../services/contributionService';
+import { ContributionSubType, ContributionType, ContributorType } from '../entity/Contribution';
+import * as faker from 'faker';
+import { Government } from '../entity/Government';
+import { Campaign } from '../entity/Campaign';
 
 export async function seedAddresses() {
     let data: any;
@@ -35,12 +39,117 @@ export async function seedAddresses() {
         .execute();
 }
 
+export function addGISBoundaries() {
+    require('child_process').execSync(
+        `ogr2ogr -f "PostgreSQL" PG:"host=${process.env.DB_HOST} user=${process.env.DB_USERNAME} password=${process.env.DB_PASSWORD} dbname=${process.env.DB_NAME}" "/app/models/seeds/geometry/cty_fill.shp" -lco GEOMETRY_NAME=the_geom -lco FID=gid -nlt PROMOTE_TO_MULTI -nln gis_boundaries -overwrite`
+    );
+}
+
+export interface Address {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    county: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    zip: string;
+    zipPlusFour;
+}
+
+export async function addContributions(user: User, government: Government, campaign: Campaign) {
+    let data: any;
+    if (process.env.NODE_ENV === 'test') {
+        data = fs.readFileSync('/app/models/seeds/addressesTest.csv', 'utf8');
+    } else {
+        data = fs.readFileSync('/app/models/seeds/addresses.csv', 'utf8');
+    }
+
+    // firstName,middleName,lastName,county,address1,address2,city,state,zip,zipPlusFour
+    const promises = [];
+
+    const parsed: Address[] = parse(data, {
+        columns: true,
+        skip_empty_lines: true
+    });
+
+    let records: Address[] = parsed.filter( () => Math.random() >= 0.5).slice(0, 50);
+
+    records.forEach((address: Address) => {
+        promises.push(addContributionAsync({
+            firstName: address.firstName,
+            lastName: address.lastName,
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            state: address.state,
+            zip: address.zip,
+            contributorType: ContributorType.INDIVIDUAL,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            amount: faker.finance.amount(1, 500, 2),
+            date: faker.date.past(1),
+            governmentId: government.id,
+            campaignId: campaign.id,
+            currentUserId: user.id
+        }));
+    });
+
+    records = parsed.filter( () => Math.random() >= 0.5).slice(0, 10);
+    records.forEach((address: Address) => {
+        promises.push(addContributionAsync({
+            firstName: faker.name.firstName(),
+            lastName: address.lastName,
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            state: address.state,
+            zip: address.zip,
+            contributorType: ContributorType.INDIVIDUAL,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            amount: faker.finance.amount(1, 50, 2),
+            date: faker.date.past(1),
+            governmentId: government.id,
+            campaignId: campaign.id,
+            currentUserId: user.id
+        }));
+    });
+
+    records = parsed.filter( () => Math.random() >= 0.5).slice(0, 10);
+    records.forEach((address: Address) => {
+        promises.push(addContributionAsync({
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            state: address.state,
+            zip: address.zip,
+            contributorType: ContributorType.INDIVIDUAL,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            amount: faker.finance.amount(1, 50, 2),
+            date: faker.date.past(1),
+            governmentId: government.id,
+            campaignId: campaign.id,
+            currentUserId: user.id
+        }));
+    });
+
+    return Promise.all(promises);
+}
+
 export default async () => {
     if (process.env.NODE_ENV === 'production') {
         return console.log('Can only seed in staging, test or development mode');
     }
 
     await truncateAll();
+
+    console.log('Adding a gis boundaries admin');
+    addGISBoundaries();
 
     console.log('Adding a government admin');
     const govAdmin = await createUserAsync({
@@ -151,11 +260,12 @@ export default async () => {
         campaignId: campaign.id
     });
 
+    await seedAddresses();
+
     const promises = [];
+    await addContributions(campaignAdmin, government, campaign);
     for (let i = 0; i < 101; i++) {
-        promises.push(newContributionAsync(campaign, government));
         promises.push(newExpenditureAsync(campaign, government));
     }
-    promises.push(seedAddresses());
     await Promise.all(promises);
 };

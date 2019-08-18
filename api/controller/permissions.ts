@@ -6,7 +6,7 @@ export async function removePermission(request: IRequest, response: Response, ne
     try {
         checkCurrentUser(request);
         const userId = request.currentUser.id;
-        const permissionId = request.params.id;
+        const permissionId = parseInt(request.params.id);
         const attrs: IRemovePermissionAsyncAttrs = {
             userId,
             permissionId

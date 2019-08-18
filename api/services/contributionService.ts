@@ -18,6 +18,7 @@ import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
+import { geocodeAddressAsync } from './gisService';
 
 
 export interface IAddContributionAttrs {
@@ -105,7 +106,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                 if (process.env.NODE_ENV === 'production') {
                     // replace with a background job creation;
                 } else {
-                    await retrieveAndSaveMatchResultAsync(contribution.id);
+                    await getGISCoordinates(saved.id);
+                    await retrieveAndSaveMatchResultAsync(saved.id);
                 }
                 return saved;
             }
@@ -113,6 +115,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
+        console.log(e);
         throw new Error(e.message);
     }
 }
@@ -381,10 +384,6 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 relations: ['campaign', 'government']
             }) as Contribution;
 
-        if (contribution.matchResult) {
-            return;
-        }
-
         if (contribution.validateContributorAddress()) {
             contribution.matchResult = await retrieveResultAsync({
                 first_name: contribution.firstName,
@@ -393,7 +392,8 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 addr2: contribution.address2,
                 city: contribution.city,
                 state: contribution.state,
-                zip_code: contribution.zip
+                zip_code: contribution.zip,
+                addressPoint: contribution.addressPoint
             });
 
             if (contribution.matchResult.exact.length > 0) {
@@ -401,9 +401,13 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 contribution.matchStrength = MatchStrength.EXACT;
 
             } else if (contribution.matchResult.strong.length > 0) {
+                // tslint:disable-next-line:no-null-keyword
+                contribution.matchId = null;
                 contribution.matchStrength = MatchStrength.STRONG;
             } else if (contribution.matchResult.weak.length > 0) {
                 contribution.matchStrength = MatchStrength.WEAK;
+                // tslint:disable-next-line:no-null-keyword
+                contribution.matchId = null;
             } else {
                 contribution.matchId = crypto.randomBytes(16).toString('hex');
                 contribution.matchStrength = MatchStrength.NONE;
@@ -495,4 +499,25 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
     } catch (e) {
         throw new Error(e.message);
     }
+}
+
+export async function getGISCoordinates(contributionId: number): Promise<boolean> {
+    const defaultConn = getConnection('default');
+    const contributionRepository = defaultConn.getRepository('Contribution');
+
+    const contribution = await contributionRepository.findOneOrFail(contributionId) as Contribution;
+    if (contribution.address1 && contribution.state && contribution.city && contribution.zip) {
+        const result = await geocodeAddressAsync({address1: contribution.address1, city: contribution.city, state: contribution.state, zip: contribution.zip});
+        if (result) {
+            await contributionRepository.update(contributionId,
+                { addressPoint:
+                    {
+                    type: 'Point',
+                    coordinates: result
+                    }
+                });
+        }
+        return true;
+    }
+    return false;
 }

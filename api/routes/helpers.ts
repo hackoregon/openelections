@@ -3,7 +3,9 @@ import { Request } from 'express';
 
 export interface IRequest extends Request {
     currentUser?: IToken;
-    id?: string;
+    params: {
+        id?: string;
+    };
 }
 
 export async function getCurrentUser(req: IRequest, res, next) {

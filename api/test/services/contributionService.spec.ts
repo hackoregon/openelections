@@ -7,7 +7,7 @@ import {
     getContributionByIdAsync,
     getContributionsAsync,
     getMatchResultAsync,
-    IAddContributionAttrs,
+    IAddContributionAttrs, retrieveAndSaveMatchResultAsync,
     updateContributionAsync,
     updateMatchResultAsync
 } from '../../services/contributionService';
@@ -30,7 +30,7 @@ import {
 } from '../factories';
 
 import { getActivityByContributionAsync } from '../../models/entity/Activity';
-import { seedAddresses } from '../../models/seeds/seeds';
+import {addGISBoundaries, seedAddresses} from '../../models/seeds/seeds';
 
 let campaignAdmin;
 let campaignStaff;
@@ -50,6 +50,7 @@ describe('contributionService', () => {
 
     beforeEach(async () => {
         await seedAddresses();
+        addGISBoundaries();
         [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
             newActiveUserAsync(),
             newActiveUserAsync(),
@@ -859,7 +860,16 @@ describe('contributionService', () => {
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
+
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
+
+        await retrieveAndSaveMatchResultAsync(contribution.id);
+
         contribution = await contributionRepository.findOne(contribution.id);
+
 
         expect(contribution.matchStrength).to.equal(MatchStrength.EXACT);
         expect(contribution.matchId).to.not.be.null;
@@ -886,6 +896,14 @@ describe('contributionService', () => {
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
+
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
+
+        await retrieveAndSaveMatchResultAsync(contribution.id);
+
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.matchStrength).to.equal(MatchStrength.STRONG);
@@ -913,6 +931,15 @@ describe('contributionService', () => {
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
+
+
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
+
+        await retrieveAndSaveMatchResultAsync(contribution.id);
+
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
@@ -940,6 +967,13 @@ describe('contributionService', () => {
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
+
+        await retrieveAndSaveMatchResultAsync(contribution.id);
+
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.matchStrength).to.equal(MatchStrength.NONE);
@@ -978,7 +1012,7 @@ describe('contributionService', () => {
     });
 
     it('updateMatchResultAsync no permissions', async () => {
-        let contribution = await addContributionAsync({
+        const contribution = await addContributionAsync({
             lastName: 'daniel',
             firstName: 'debb',
             address1: '1024 SE Morrison',
@@ -995,7 +1029,10 @@ describe('contributionService', () => {
             date: Date.now()
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
 
         try {
             await updateMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
@@ -1030,7 +1067,11 @@ describe('contributionService', () => {
             date: Date.now()
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
+
         await updateMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id, matchStrength: MatchStrength.WEAK, matchId: 'love'});
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
@@ -1038,7 +1079,7 @@ describe('contributionService', () => {
     });
 
     it('getMatchResultAsync no permissions', async () => {
-        let contribution = await addContributionAsync({
+        const contribution = await addContributionAsync({
             lastName: 'daniel',
             firstName: 'debb',
             address1: '1024 SE Morrison',
@@ -1055,7 +1096,10 @@ describe('contributionService', () => {
             date: Date.now()
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        await contributionRepository.update(contribution.id, { addressPoint: {
+                type: 'Point',
+                coordinates: [-122.676483, 45.523064]
+            }});
 
         try {
             await getMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id});
@@ -1090,8 +1134,8 @@ describe('contributionService', () => {
             date: Date.now()
         });
         const result = await getMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id});
-        expect(result.matchStrength).to.equal(MatchStrength.EXACT);
-        expect(result.results.exact.length).to.equal(1);
+        expect(result.matchStrength).to.equal(MatchStrength.NONE);
+        expect(result.results.exact.length).to.equal(0);
         expect(result.results.strong.length).to.equal(0);
         expect(result.results.weak.length).to.equal(0);
         expect(result.results.none).to.not.be.undefined;
@@ -1286,5 +1330,9 @@ describe('contributionService', () => {
         expect(contribution.matchAmount).to.equal(50);
 
     });
+
+    it('getGISCoordinates', async () => {
+
+    })
 
 });

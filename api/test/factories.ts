@@ -80,7 +80,7 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.status = ContributionStatus.DRAFT;
         contribution.zip = '97214';
         contribution.contributorType = ContributorType.INDIVIDUAL;
-        contribution.date = faker.date.past(90);
+        contribution.date = faker.date.past(1);
     const contributionRepository = getConnection('default').getRepository('Contribution');
     contribution = await contributionRepository.save(contribution);
     if (process.env.NODE_ENV != 'test') {
@@ -127,4 +127,11 @@ export async function truncateAll() {
     await connection.query('TRUNCATE "expenditures" RESTART IDENTITY CASCADE');
     await connection.query('TRUNCATE "contributions" RESTART IDENTITY CASCADE');
     await connection.query('TRUNCATE "addresses" RESTART IDENTITY CASCADE');
+    try {
+        await connection.query('TRUNCATE "gis_boundaries" RESTART IDENTITY CASCADE');
+    } catch (error) {
+        if (process.env.NODE_ENV !== 'test') {
+            console.log('table gis_boundaries not found');
+        }
+    }
 }

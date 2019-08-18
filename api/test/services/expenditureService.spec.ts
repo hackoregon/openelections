@@ -441,9 +441,7 @@ describe('expenditureService', () => {
         const updateExpenditure = {
             ...expenditure,
             amount: 750,
-            campaignId: campaign2.id,
             currentUserId: campaignStaff.id,
-            governmentId: government.id
         };
 
         delete updateExpenditure.errors;
@@ -480,9 +478,7 @@ describe('expenditureService', () => {
         const updateExpenditure = {
             ...expenditure,
             amount: 750,
-            campaignId: campaign1.id,
             currentUserId: campaignAdmin.id,
-            governmentId: government.id
         };
         try {
             await updateExpenditureAsync(updateExpenditure);

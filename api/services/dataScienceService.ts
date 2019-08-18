@@ -41,7 +41,7 @@ export interface MatchAddressType {
         addr2: string;
         city: string;
         max_matches: string;
-        eligible_address: string;
+        eligible_address: any;
     };
     error?: Error;
 }
@@ -54,14 +54,24 @@ export interface RetrieveDataScienceMatchAttrs {
     city: string;
     state: string;
     zip_code: string;
+    addressPoint?: any;
 }
 
 export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs): Promise<MatchAddressType> {
     try {
-        const urlParams = `?last_name=${attrs.last_name}&first_name=${attrs.first_name}&addr1=${attrs.addr1}${attrs.addr2 ? '&addr2=' + attrs.addr2 : ''}&zip_code=${attrs.zip_code}&city=${attrs.city}&state=${attrs.state}`;
+        let urlParams = `?last_name=${attrs.last_name}&first_name=${attrs.first_name}&addr1=${attrs.addr1}${attrs.addr2 ? '&addr2=' + attrs.addr2 : ''}&zip_code=${attrs.zip_code}&city=${attrs.city}&state=${attrs.state}`;
+        if (attrs.addressPoint) {
+            urlParams = urlParams + `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`;
+        }
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
-        return (await response.json() as MatchAddressType);
+        const addressInfo: MatchAddressType = await response.json();
 
+        if (addressInfo.donor_info.eligible_address === 'true') {
+            addressInfo.donor_info.eligible_address = true;
+        } else {
+            addressInfo.donor_info.eligible_address = false;
+        }
+        return addressInfo;
     } catch (error) {
         const errorReturnAttrs: any = attrs;
         errorReturnAttrs.max_matches = 10;

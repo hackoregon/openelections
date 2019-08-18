@@ -206,5 +206,5 @@ def initialize_citylimits():
     my_cmd = f'ogr2ogr -f "PostgreSQL" PG:"host={POSTGRES_LOGIN["host"]} user={POSTGRES_LOGIN["user"]} ' \
              + f'password={POSTGRES_LOGIN["password"]} dbname={POSTGRES_LOGIN["database"]} ' \
              + '"api/models/seeds/geometry/cty_fill.shp" -lco GEOMETRY_NAME=the_geom' \
-             + ' -lco FID=gid -nlt PROMOTE_TO_MULTI -nln city_limits -overwrite'
+             + ' -lco FID=gid -nlt PROMOTE_TO_MULTI -nln gis_boundaries -overwrite'
     os.system(my_cmd)
