@@ -246,7 +246,7 @@ export const mapContributionDataToForm = (contribution) => {
     zip,
     email,
     phone,
-    phoneType, 
+    phoneType,
     occupation,
     employerName,
     employerCity,
@@ -288,7 +288,6 @@ export const mapContributionDataToForm = (contribution) => {
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
     description: inKindDescription || "",
-    oaeType: "",
     paymentMethod: ""
   }
 }

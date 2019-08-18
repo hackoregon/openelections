@@ -30,11 +30,16 @@
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
     "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-prettier-react": "^0.0.24",
     "eslint-config-react-app": "^4.0.1",
     "eslint-loader": "2.1.2",
     "eslint-plugin-flowtype": "2.50.1",
+    "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-jsx-a11y": "6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "7.12.4",
     "eslint-plugin-react-hooks": "^1.5.0",
     "file-loader": "3.0.1",
@@ -92,13 +97,14 @@
   "scripts": {
     "start": "PORT=4000 node scripts/start.js",
     "start-windows": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build": "node  --max_old_space_size=4096 scripts/build.js",
     "test": "jest --updateSnapshot",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "flow": "flow"
+    "lint": "./node_modules/.bin/eslint src"
+
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
