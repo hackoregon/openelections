@@ -173,12 +173,11 @@ export const fields = {
     'This field is required.',
     ['Yes', 'No']
   ),
-  paymentMethod: requiredFormField(
+  paymentMethod: formField(
     'Payment Method',
     FormSectionEnum.BASIC,
     SelectField,
     Yup.string('Choose the payment method'),
-    'The payment method is required',
     [
       'Cash',
       'Check',
@@ -404,14 +403,12 @@ export const fields = {
     ]
   ),
   // Not required if occupation & employer name/address filled in
-  /*
   occupationLetterDate: formField(
-    "Occupation Letter Date",
+    'Occupation Letter Date',
     FormSectionEnum.OTHER_DETAILS,
     DateField,
-    Yup.date("Enter occupation letter date")
+    Yup.date('Enter occupation letter date')
   ),
-  */
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: formField(
@@ -452,27 +449,16 @@ export const validate = values => {
     error.checkNumber = 'Check number is required.';
   }
 
-  if (
-    checkNoEmptyString(paymentMethod) &&
-    paymentMethod !== 'Credit Card (Online)' &&
-    !checkNoEmptyString(linkToDocumentation)
-  ) {
-    error.linkToDocumentation =
-      'A link to documentation of your contribution is required';
-  }
-
   // if (
-  //   !checkNoEmptyString(
-  //     occupation,
-  //     employerCity,
-  //     employerName,
-  //     employerState,
-  //     employerZipcode
-  //   )
+  //   checkNoEmptyString(paymentMethod) &&
+  //   paymentMethod !== 'Credit Card (Online)' &&
+  //   !checkNoEmptyString(linkToDocumentation)
   // ) {
-  //   error.occupationLetterDate = 'Occupation letter date is required';
+  //   error.linkToDocumentation =
+  //     'A link to documentation of your contribution is required';
   // }
 
+  const isPerson = !!individualContributorValues.includes(typeOfContributor);
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
     !checkNoEmptyString(description)
@@ -480,55 +466,60 @@ export const validate = values => {
     error.description = 'A description is required';
   }
 
-  // If it's an entity require entityName
-  if (
-    entityContributorValues.includes(typeOfContributor) &&
-    !checkNoEmptyString(entityName)
-  ) {
-    error.entityName = 'Name of entity is required';
-  }
   // If it's a person require first and last name
-  if (individualContributorValues.includes(typeOfContributor)) {
+  // else require entity name
+  if (isPerson) {
     if (!checkNoEmptyString(firstName)) {
       error.firstName = 'First name is required.';
     }
     if (!checkNoEmptyString(lastName)) {
       error.lastName = 'Last name is required.';
     }
-  }
-  
-  if(( occupation == "Other" ) && !checkNoEmptyString(employerName)){
-    error.employerName = "Employer name is required."
-  // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in, 
-  // then the employer name, city, state and zip code are not required
-  if( occupation == "Self Employed" || occupationLetterDate !== ""){
-    error.occupation = "Occupation is required."
-    console.log('self employed is selected or occupation letter date is NOT empty, so employer info NOT required', {values})
+  } else if (!checkNoEmptyString(entityName)) {
+    error.entityName = 'Name of entity is required';
   }
 
-  if (occupation === 'Other' && !checkNoEmptyString(employerCity)) {
-    error.employerCity = 'Employer city is required.';
-  }
+  // They are employed and they don't have a letter require employer info
+  if (occupation === 'Other' && isPerson) {
+    // If they don't have a letter then the employer fields are required
+    if (!checkNoEmptyString(occupationLetterDate)) {
+      if (!checkNoEmptyString(employerName)) {
+        error.employerName = 'Employer name is required.';
+      }
+      if (!checkNoEmptyString(employerCity)) {
+        error.employerCity = 'Employer city is required.';
+      }
+      if (!checkNoEmptyString(employerState)) {
+        error.employerState = 'Employer state is required.';
+      }
+      if (!checkNoEmptyString(employerZipcode)) {
+        error.employerZipcode = 'Employer zipcode is required.';
+      }
+    }
 
-  if (occupation === 'Other' && !checkNoEmptyString(employerState)) {
-    error.employerState = 'Employer state is required.';
-  }
+    // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in,
+    // then the employer name, city, state and zip code are not required
+    // if (occupation === 'Self Employed' || occupationLetterDate !== '') {
+    //   error.occupation = 'Occupation is required.';
+    //   console.log(
+    //     'self employed is selected or occupation letter date is NOT empty, so employer info NOT required',
+    //     { values }
+    //   );
+    // }
 
-  if (occupation === 'Other' && !checkNoEmptyString(employerZipcode)) {
-    error.employerZipcode = 'Employer zipcode is required.';
-  }
-  return error;
+    return error;
 
-  // switch(occupation== "Other") {
-  //   case !checkNoEmptyString(employerName):
-  //     return error.employerName = "Employer name is required.";
-  //   case !checkNoEmptyString(employerCity):
-  //     return error.employerCity = "Employer city is required.";
-  //   case !checkNoEmptyString(employerState):
-  //     return error.employerState = "Employer state is required.";
-  //   case !checkNoEmptyString(employerZipcode):
-  //     return error.employerZipcode = "Employer zipcode is required.";
-  //   default:
-  //     return error.occupation = "If you select 'Other', you must include employer information";
-  // }
+    // switch(occupation== "Other") {
+    //   case !checkNoEmptyString(employerName):
+    //     return error.employerName = "Employer name is required.";
+    //   case !checkNoEmptyString(employerCity):
+    //     return error.employerCity = "Employer city is required.";
+    //   case !checkNoEmptyString(employerState):
+    //     return error.employerState = "Employer state is required.";
+    //   case !checkNoEmptyString(employerZipcode):
+    //     return error.employerZipcode = "Employer zipcode is required.";
+    //   default:
+    //     return error.occupation = "If you select 'Other', you must include employer information";
+    // }
+  }
 };

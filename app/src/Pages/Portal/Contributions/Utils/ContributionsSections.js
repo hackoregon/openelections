@@ -353,18 +353,17 @@ export const ContributorSection = ({
       <h2>{formFields.email}</h2>
       <h2>{formFields.phone}</h2>
       <h2>{formFields.phoneType}</h2>
-      {isPerson ? <h2>{formFields.occupation}</h2> : ''}
+      {isPerson ? <h2>{formFields.occupation}</h2> : null}
     </div>
-    {showEmployerSection ? (
+    {isPerson ? (
       <div css={containers.cityStateZip}>
         <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
         <h2>{formFields.employerCity}</h2>
         <h2>{formFields.employerState}</h2>
         <h2>{formFields.employerZipcode}</h2>
+        <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
       </div>
     ) : null}
-
-    <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>
 );
 
