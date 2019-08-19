@@ -44,7 +44,7 @@ const individualContributorValues = [
   ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
 ];
 
-const inKindContributionValues = [
+export const inKindContributionValues = [
   ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL,
@@ -55,8 +55,9 @@ export const contributionsEmptyState = {
   dateOfContribution: '',
   typeOfContribution: '',
   subTypeOfContribution: '',
-  typeOfContributor: 'ContributorTypeFieldEnum.INDIVIDUAL',
+  typeOfContributor: ContributorTypeFieldEnum.INDIVIDUAL,
   amountOfContribution: '',
+  inKindType: '',
   oaeType: '',
   submitForMatch: 'No',
   paymentMethod: '',
@@ -64,11 +65,10 @@ export const contributionsEmptyState = {
 
   // CONTRIBUTOR VALUES
   firstName: '',
-  lastName: '',
-  entityName: '',
+  lastNameOrEntity: '',
   streetAddress: '',
   addressLine2: '',
-  city: 'Portland',
+  city: '',
   state: 'OR',
   zipcode: '97201',
   email: '',
@@ -76,9 +76,9 @@ export const contributionsEmptyState = {
   phoneType: '',
   occupation: '',
   employerName: '',
-  employerCity: 'Portland',
-  employerState: 'OR',
-  employerZipcode: '97201',
+  employerCity: '',
+  employerState: '',
+  employerZipcode: '',
 
   // OTHER DETAILS VALUES
   electionAggregate: '',
@@ -339,6 +339,68 @@ export const fields = {
       'Travel Expenses',
       'Utilities',
       'Wages/Salaries/Benefits',
+    ],
+    [
+      { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
+      {
+        value: 'fundraising_event_expenses',
+        label: 'Fundraising Event Expenses',
+      },
+      {
+        value: 'general_operating_expenses',
+        label: 'General Operating Expenses',
+      },
+      { value: 'printing', label: 'Literature/Brochures/Printing' },
+      { value: 'management', label: 'Management Services' },
+      {
+        value: 'print_advertising',
+        label: 'Newspaper and Other Periodical Advertising',
+      },
+      { value: 'other_advertising', label: 'Other Advertising' },
+      { value: 'petition_Circulators', label: 'Petition Circulators' },
+      { value: 'postage', label: 'Postage' },
+      {
+        value: 'preparation_of_advertising',
+        label: 'Preparation and Production of Advertising',
+      },
+      { value: 'surveys_and_polls', label: 'Surveys and Polls' },
+      { value: 'travel_expenses', label: 'Travel Expenses' },
+      { value: 'utilities', label: 'Utilities' },
+      { value: 'wages', label: 'Wages/Salaries/Benefits' },
+    ]
+  ),
+  inKindType: formField(
+    'Description',
+    FormSectionEnum.OTHER_DETAILS,
+    SelectField,
+    Yup.string(''),
+    [
+      { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
+      {
+        value: 'fundraising_event_expenses',
+        label: 'Fundraising Event Expenses',
+      },
+      {
+        value: 'general_operating_expenses',
+        label: 'General Operating Expenses',
+      },
+      { value: 'printing', label: 'Literature/Brochures/Printing' },
+      { value: 'management', label: 'Management Services' },
+      {
+        value: 'print_advertising',
+        label: 'Newspaper and Other Periodical Advertising',
+      },
+      { value: 'other_advertising', label: 'Other Advertising' },
+      { value: 'petition_Circulators', label: 'Petition Circulators' },
+      { value: 'postage', label: 'Postage' },
+      {
+        value: 'preparation_of_advertising',
+        label: 'Preparation and Production of Advertising',
+      },
+      { value: 'surveys_and_polls', label: 'Surveys and Polls' },
+      { value: 'travel_expenses', label: 'Travel Expenses' },
+      { value: 'utilities', label: 'Utilities' },
+      { value: 'wages', label: 'Wages/Salaries/Benefits' },
     ]
   ),
   // Not required if occupation & employer name/address filled in
@@ -372,6 +434,7 @@ export const validate = values => {
     checkNumber,
     linkToDocumentation,
     occupation,
+    occupationLetterDate,
     employerName,
     employerCity,
     employerState,
@@ -398,17 +461,17 @@ export const validate = values => {
       'A link to documentation of your contribution is required';
   }
 
-  if (
-    !checkNoEmptyString(
-      occupation,
-      employerCity,
-      employerName,
-      employerState,
-      employerZipcode
-    )
-  ) {
-    error.occupationLetterDate = 'Occupation letter date is required';
-  }
+  // if (
+  //   !checkNoEmptyString(
+  //     occupation,
+  //     employerCity,
+  //     employerName,
+  //     employerState,
+  //     employerZipcode
+  //   )
+  // ) {
+  //   error.occupationLetterDate = 'Occupation letter date is required';
+  // }
 
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
@@ -433,6 +496,39 @@ export const validate = values => {
       error.lastName = 'Last name is required.';
     }
   }
+  
+  if(( occupation == "Other" ) && !checkNoEmptyString(employerName)){
+    error.employerName = "Employer name is required."
+  // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in, 
+  // then the employer name, city, state and zip code are not required
+  if( occupation == "Self Employed" || occupationLetterDate !== ""){
+    error.occupation = "Occupation is required."
+    console.log('self employed is selected or occupation letter date is NOT empty, so employer info NOT required', {values})
+  }
 
+  if (occupation === 'Other' && !checkNoEmptyString(employerCity)) {
+    error.employerCity = 'Employer city is required.';
+  }
+
+  if (occupation === 'Other' && !checkNoEmptyString(employerState)) {
+    error.employerState = 'Employer state is required.';
+  }
+
+  if (occupation === 'Other' && !checkNoEmptyString(employerZipcode)) {
+    error.employerZipcode = 'Employer zipcode is required.';
+  }
   return error;
+
+  // switch(occupation== "Other") {
+  //   case !checkNoEmptyString(employerName):
+  //     return error.employerName = "Employer name is required.";
+  //   case !checkNoEmptyString(employerCity):
+  //     return error.employerCity = "Employer city is required.";
+  //   case !checkNoEmptyString(employerState):
+  //     return error.employerState = "Employer state is required.";
+  //   case !checkNoEmptyString(employerZipcode):
+  //     return error.employerZipcode = "Employer zipcode is required.";
+  //   default:
+  //     return error.occupation = "If you select 'Other', you must include employer information";
+  // }
 };

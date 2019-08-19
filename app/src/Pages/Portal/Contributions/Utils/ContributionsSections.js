@@ -20,30 +20,27 @@ const containers = {
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    margin-bottom: 20px;
   `,
   sectionTwo: css`
     display: grid;
+    width: 100%;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
-    margin-bottom: 20px;
   `,
   fullWidth: css`
     display: grid;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: 1fr;
     grid-gap: 20px;
-    margin-bottom: 20px;
-  `,
+\  `,
   cityStateZip: css`
-    width: 96%;
+    width: 100%;
     min-height: 25px;
     display: grid;
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
-    grid-template-columns: 2fr 22% 24%;
+    grid-template-columns: 2fr 1fr 1fr;
     grid-gap: 20px;
-    margin-bottom: 20px;
   `,
 };
 
@@ -305,7 +302,12 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   </>
 );
 
-export const BasicsSection = ({ formFields, checkSelected }) => (
+export const BasicsSection = ({
+  formFields,
+  checkSelected,
+  showEmployerSection,
+  showInKindFields,
+}) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
@@ -315,13 +317,18 @@ export const BasicsSection = ({ formFields, checkSelected }) => (
       <h2>{formFields.amountOfContribution}</h2>
       <h2>{formFields.oaeType}</h2>
       <h2>{formFields.submitForMatch}</h2>
-      <h2>{formFields.paymentMethod}</h2>
+      <h2>{formFields.inKindType}</h2>
+      {showInKindFields ? <h2>{formFields.paymentMethod}</h2> : null}
       {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
     </div>
   </div>
 );
 
-export const ContributorSection = ({ formFields, isPerson }) => (
+export const ContributorSection = ({
+  formFields,
+  showEmployerSection,
+  isPerson,
+}) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Contributor</h3>
     <div css={containers.sectionTwo}>
@@ -346,14 +353,17 @@ export const ContributorSection = ({ formFields, isPerson }) => (
       <h2>{formFields.email}</h2>
       <h2>{formFields.phone}</h2>
       <h2>{formFields.phoneType}</h2>
-      <h2>{formFields.occupation}</h2>
-      <h2>{formFields.employerName}</h2>
+      {isPerson ? <h2>{formFields.occupation}</h2> : ''}
     </div>
-    <div css={containers.cityStateZip}>
-      <h2>{formFields.employerCity}</h2>
-      <h2>{formFields.employerState}</h2>
-      <h2>{formFields.employerZipcode}</h2>
-    </div>
+    {showEmployerSection ? (
+      <div css={containers.cityStateZip}>
+        <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
+        <h2>{formFields.employerCity}</h2>
+        <h2>{formFields.employerState}</h2>
+        <h2>{formFields.employerZipcode}</h2>
+      </div>
+    ) : null}
+
     <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
   </div>
 );

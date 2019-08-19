@@ -206,16 +206,16 @@ const AddExpense = () => (
       purposeOfExpenditure: '',
 
       // PAYEE INFO
-      payeeType: '',
-      payeeName: '',
-      streetAddress: '',
-      addressLine2: '',
-      countryRegion: '',
-      city: 'Portland',
-      state: 'OR',
-      zipcode: '97201',
-      county: 'Multnomah',
-      notes: '',
+      payeeType: "",
+      payeeName: "",
+      streetAddress: "",
+      addressLine2: "",
+      countryRegion: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      county: "",
+      notes: ""
     }}
   >
     {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
