@@ -365,7 +365,7 @@ export const mapContributionDataToForm = contribution => {
 
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
-    description: inKindDescription || '',
+    inKindDescription: inKindDescription || '',
     paymentMethod: '',
   };
 };
@@ -387,7 +387,7 @@ export const mapContributionFormToData = data => {
     employerCity,
     employerState,
     occupation,
-    description,
+    inKindDescription,
     electionAggregate,
     email,
     phone,
@@ -429,7 +429,7 @@ export const mapContributionFormToData = data => {
     // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
     //   contributorType: ContributorTypeEnum.INDIVIDUAL,
-    inKindDescription: description,
+    inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
   };

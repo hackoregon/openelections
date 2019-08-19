@@ -48,7 +48,10 @@ const AddContribution = ({ ...props }) => (
         values.typeOfContributor ===
           ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
       );
-      const checkSelected = values.paymentMethod === 'Check';
+      const checkSelected =
+        values.paymentMethod === 'Check' ||
+        values.paymentMethod === 'Money Order';
+
       // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Other'
       const showEmployerSection = values.occupation === 'Other' && isPerson;
       const showInKindFields = !!inKindContributionValues.includes(
@@ -85,7 +88,7 @@ const AddContribution = ({ ...props }) => (
             isPerson={isPerson}
           />
           {/* <EmployerSection formFields={formFields} /> */}
-          <OtherDetailsSection formFields={formFields} />
+          {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
     }}
