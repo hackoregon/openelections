@@ -329,17 +329,17 @@ export class Contribution {
 
     validateType() {
         if (this.type === ContributionType.CONTRIBUTION) {
-            if (this.subType !== ContributionSubType.CASH) {
+            if (![ContributionSubType.CASH, ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_PAID_SUPERVISION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL].includes(this.subType) ) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "contribution" must have a subType of "cash"' };
+                error.constraints = { notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"' };
                 this.errors.push(error);
             }
         } else {
-            if (this.subType === ContributionSubType.CASH) {
+            if ([ContributionSubType.CASH, ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_PAID_SUPERVISION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL].includes(this.subType)) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash"' };
+                error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
                 this.errors.push(error);
             }
         }

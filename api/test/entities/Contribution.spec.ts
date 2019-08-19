@@ -48,12 +48,12 @@ describe('Contribution', () => {
         it('validateType CONTRIBUTION', async () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
-            newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
+            newRecord.subType = ContributionSubType.ITEM_REFUND;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('subType');
-            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a subType of "cash"');
+            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a valid subType of "cash or an inkind value"');
         });
 
         it('validateType OTHER', async () => {
@@ -64,7 +64,7 @@ describe('Contribution', () => {
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('subType');
-            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "other" cannot have a subType of "cash"');
+            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "other" cannot have a subType of "cash or inkind value"');
         });
 
         it('validateName Individual', async () => {
