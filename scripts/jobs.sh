@@ -11,6 +11,7 @@ echo Checking last commit
 git diff-tree --no-commit-id --name-only -r $GITTAG | grep '^api/' || exit 0
 echo Detected changes to api
 
+
 docker-compose  -f docker-compose-production.yml build jobs
 
 echo Getting the ECR login...
@@ -18,11 +19,7 @@ eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
 echo Tagging with "$GITTAG"
 docker tag openelections-jobs-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$GITTAG"
-docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-api:"$GITTAG"
-
-# tag with "latest" then push
-TAG="latest"
-echo Tagging with "$TAG"
+docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$GITTAG"
 docker tag openelections-jobs-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$TAG"
 docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$TAG"
 

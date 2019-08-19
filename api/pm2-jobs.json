@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "jobs",
+            "script": "/app/build/jobs/index.js",
+            "watch": true,
+            "instances": "1"
+        }
+    ]
+}
