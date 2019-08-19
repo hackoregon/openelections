@@ -60,7 +60,7 @@ const AddContribution = ({ ...props }) => (
 
       if (values.submitForMatch !== 'No') {
         if (
-          //Set submitForMatch to No under these conditions
+          // Set submitForMatch to No under these conditions
           values.amountOfContribution > 500 ||
           values.typeOfContribution !==
             ContributionTypeFieldEnum.CONTRIBUTION ||
