@@ -20,8 +20,8 @@ eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 echo Tagging with "$GITTAG"
 docker tag openelections-jobs-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$GITTAG"
 docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$GITTAG"
-docker tag openelections-jobs-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$TAG"
-docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$TAG"
+docker tag openelections-jobs-production:latest 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:latest
+docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:latest
 
 echo Running ecs-deploy.sh script...
 scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-jobs-staging -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-jobs:"$GITTAG"
