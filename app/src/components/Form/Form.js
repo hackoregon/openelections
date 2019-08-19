@@ -17,8 +17,8 @@ export const formFromFields = (fields, formikProps) =>
   );
 
 class Form extends React.Component {
-  render() {
-    const { fields, initialValues, sections, children, validate } = this.props;
+  render () {
+    const { fields, initialValues, sections, children, validate, handleReset } = this.props;
     const fieldIds = Object.keys(fields);
     const validations = Object.fromEntries(
       fieldIds.map(id => [id, fields[id].validation])
@@ -30,6 +30,7 @@ class Form extends React.Component {
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
+        handleReset={handleReset}
         onSubmit={(values, formikBag) => {
           // This is a work around to be able to encapsulate
           // attaching state handling upon submission within the form.

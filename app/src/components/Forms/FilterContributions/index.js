@@ -27,7 +27,6 @@ const wtf = css`
 
 const FilterContribution = props => (
   <>
-    {console.log({ props })}
     <FilterContributions
       onSubmit={filterOptions => {
         const data = {
@@ -65,17 +64,28 @@ const FilterContribution = props => (
         handleSubmit, isDirty,/* isSubmitting */
         handleCancel
       }) => (
-        <React.Fragment>
-          <div className="nark" css={wtf}>
-            {formSections.filter}
-            <div>
-              <Button
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Filter
-              </Button>
+          <React.Fragment>
+            <div className="nark" css={wtf}>
+              {formSections.filter}
+              <div>
+                <Button
+                  buttonType="submit"
+                  disabled={!isValid}
+                  onClick={handleSubmit}
+                >
+                  Filter
+                    </Button>
+                <Button
+                  buttonType="submit"
+                  disabled={!isDirty}
+                  onClick={() => {
+                    handleCancel()
+                    handleSubmit()
+                  }}
+                >
+                  Reset
+                    </Button>
+              </div>
             </div>
           </div>
         </React.Fragment>
