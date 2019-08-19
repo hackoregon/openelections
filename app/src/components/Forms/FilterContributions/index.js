@@ -62,7 +62,8 @@ const FilterContribution = props => (
       {({
         formSections,
         isValid,
-        handleSubmit /* isDirty, isSubmitting */,
+        handleSubmit, isDirty,/* isSubmitting */
+        handleCancel
       }) => (
         <React.Fragment>
           <div className="nark" css={wtf}>
