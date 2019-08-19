@@ -17,8 +17,15 @@ export const formFromFields = (fields, formikProps) =>
   );
 
 class Form extends React.Component {
-  render () {
-    const { fields, initialValues, sections, children, validate, handleReset } = this.props;
+  render() {
+    const {
+      fields,
+      initialValues,
+      sections,
+      children,
+      validate,
+      handleReset,
+    } = this.props;
     const fieldIds = Object.keys(fields);
     const validations = Object.fromEntries(
       fieldIds.map(id => [id, fields[id].validation])
