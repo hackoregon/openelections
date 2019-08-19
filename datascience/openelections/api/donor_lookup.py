@@ -39,8 +39,8 @@ class DonorMatch(Resource):
             aparser.add_argument("addr1", type=str, required=True)
             aparser.add_argument("addr2", default=None, type=str)
             aparser.add_argument("city", default=None, type=str)
-            aparser.add_argument("latitude", dest="latitude", type=str)
-            aparser.add_argument("longitude", dest="longitude", type=str)
+            aparser.add_argument("latitude", dest="latitude", default=None, type=str)
+            aparser.add_argument("longitude", dest="longitude", default=None, type=str)
             aparser.add_argument("max_matches", default=10, type=int)
 
             options = aparser.parse_args()
