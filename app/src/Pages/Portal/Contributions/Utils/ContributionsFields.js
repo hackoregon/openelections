@@ -497,4 +497,6 @@ export const validate = values => {
     //     return error.occupation = "If you select 'Other', you must include employer information";
     // }
   }
+  console.log('Form will submit error is empty', error);
+  return error;
 };
