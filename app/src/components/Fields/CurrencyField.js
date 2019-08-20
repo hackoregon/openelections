@@ -20,6 +20,7 @@ function NumberFormatCustom(props) {
       thousandSeparator
       prefix="$"
       decimalScale="2"
+      allowNegative={false}
     />
   );
 }
