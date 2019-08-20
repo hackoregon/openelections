@@ -31,7 +31,7 @@ const columns = [
   // columnInfo("Date", "date", "date"),
   {
     field: 'name',
-    Title: 'Name',
+    title: 'Name',
     render: rowData => {
       if (
         rowData.contributorType === 'individual' ||
