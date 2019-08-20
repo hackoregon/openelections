@@ -413,7 +413,7 @@ export const mapContributionFormToData = data => {
     contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
     subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
     type: ContributionTypeFieldToDataMap.get(typeOfContribution),
-    inKindType,
+    inKindType: inKindType || null,
     oaeType: OaeTypeFieldToDataMap.get(oaeType),
     address1: streetAddress,
     address2: addressLine2,
