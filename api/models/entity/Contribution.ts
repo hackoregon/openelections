@@ -480,9 +480,9 @@ export async function getContributionsByGovernmentIdAsync(
 ): Promise<IContributionSummary[]> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
-        const { page, perPage, campaignId, status, from, to, matchId } = options;
+        const { page, perPage, campaignId, status, from, to, matchId, sort } = options;
         const relations = campaignId ? ['government', 'campaign'] : ['government'];
-        const query = {
+        const query: any = {
             select: contributionSummaryFields,
             relations,
             where: {
@@ -500,8 +500,23 @@ export async function getContributionsByGovernmentIdAsync(
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             },
             skip: page,
-            take: perPage
+            take: perPage,
+            order: {
+                'updatedAt': 'DESC'
+            }
         };
+        if (sort) {
+            if (!['date', 'status', 'campaignId'].includes(sort.field)) {
+                throw new Error('Sort.field must be one of date, status or campaignid');
+            }
+
+            if (!['ASC', 'DESC'].includes(sort.direction)) {
+                throw new Error('Sort.direction must be one of ASC or DESC');
+            }
+
+            query.order = { [sort.field]: sort.direction };
+
+        }
         const contributions = await contributionRepository.find(removeUndefined(query));
         return contributions as IContributionSummary[];
     } catch (err) {

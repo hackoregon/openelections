@@ -401,6 +401,49 @@ components:
                 type: string
               to:
                 type: string
+              sort:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    enum:[date,campaignId,status]
+                  direction:
+                    type: string
+                    enum: ['ASC','DESC']
+            required:
+              - governmentId
+    GetExpenditureBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              governmentId:
+                type: integer
+              currentUserId:
+                type: integer
+              campaignId:
+                type: integer
+              perPage:
+                type: integer
+              page:
+                type: integer
+              status:
+                type: string
+              from:
+                type: string
+              to:
+                type: string
+              sort:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    enum:[date,campaignId,status]
+                  direction:
+                    type: string
+                    enum: ['ASC','DESC']
             required:
               - governmentId
     GetContributionByIdBody:
