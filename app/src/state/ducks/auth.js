@@ -344,9 +344,26 @@ export const isCampAdmin = state => {
 export const isCampStaff = state => {
   return getMeRole(state, 'campaign_staff');
 };
+
 export const getGovOrCampIdAttributes = state => {
   if (state.auth.me) {
     const { governmentId = 1, campaignId } = state.auth.me.permissions[0];
     return { governmentId, campaignId };
   }
+};
+
+export const getCurrentUserId = state => {
+  if (state.auth.me) {
+    return state.auth.me.id;
+  }
+  return null;
+};
+
+// TODO: Assumes only one campaign. Add setter and adjust default to [0] permission
+export const getCurrentCampaignId = state => {
+  if (state.auth.me) {
+    if (state.auth.me.permissions[0] && state.auth.me.permissions[0].campaignId)
+      return state.auth.me.permissions[0].campaignId;
+  }
+  return null;
 };

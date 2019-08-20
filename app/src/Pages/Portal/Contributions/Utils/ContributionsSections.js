@@ -333,6 +333,7 @@ export const ContributorSection = ({
   formFields,
   showEmployerSection,
   isPerson,
+  emptyOccupationLetterDate,
 }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Contributor</h3>
@@ -362,11 +363,21 @@ export const ContributorSection = ({
     </div>
     {isPerson ? (
       <div css={containers.cityStateZip}>
-        <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
-        <h2>{formFields.employerCity}</h2>
-        <h2>{formFields.employerState}</h2>
-        <h2>{formFields.employerZipcode}</h2>
-        <h2 css={containers.fullWidth}>{formFields.occupationLetterDate}</h2>
+        {showEmployerSection ? (
+          <>
+            {emptyOccupationLetterDate ? (
+              <>
+                <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
+                <h2>{formFields.employerCity}</h2>
+                <h2>{formFields.employerState}</h2>
+                <h2>{formFields.employerZipcode}</h2>
+              </>
+            ) : null}
+            <h2 css={containers.fullWidth}>
+              {formFields.occupationLetterDate}
+            </h2>
+          </>
+        ) : null}
       </div>
     ) : null}
   </div>

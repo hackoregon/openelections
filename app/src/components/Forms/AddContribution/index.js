@@ -2,8 +2,13 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import AddContributionForm from './AddContributionForm';
 import { createContribution } from '../../../state/ducks/contributions';
+import {
+  getCurrentCampaignId,
+  getCurrentUserId,
+} from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
+import AddContributionForm from './AddContributionForm';
 import {
   ContributionTypeFieldEnum,
   ContributionStatusEnum,
@@ -52,8 +57,9 @@ const AddContribution = ({ ...props }) => (
         values.paymentMethod === 'Check' ||
         values.paymentMethod === 'Money Order';
 
-      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Other'
-      const showEmployerSection = values.occupation === 'Other' && isPerson;
+      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
+      const emptyOccupationLetterDate = values.occupationLetterDate === '';
+      const showEmployerSection = values.occupation === 'Employed';
       const showInKindFields = !!inKindContributionValues.includes(
         values.subTypeOfContribution
       );
@@ -86,8 +92,8 @@ const AddContribution = ({ ...props }) => (
             formFields={formFields}
             showEmployerSection={showEmployerSection}
             isPerson={isPerson}
+            emptyOccupationLetterDate={emptyOccupationLetterDate}
           />
-          {/* <EmployerSection formFields={formFields} /> */}
           {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
@@ -97,9 +103,9 @@ const AddContribution = ({ ...props }) => (
 
 export default connect(
   state => ({
-    currentUserId: state.auth.me.id,
-    governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId,
+    currentUserId: getCurrentUserId(state),
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
   }),
   dispatch => ({
     createContribution: data => dispatch(createContribution(data)),

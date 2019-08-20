@@ -2,14 +2,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Contributions from './Contributions';
 import { getContributions } from '../../../state/ducks/contributions';
+import {
+  getCurrentCampaignId,
+  getCurrentUserId,
+} from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 class ContributionsPage extends React.Component {
   componentDidMount() {
-    // TODO: API requires government and campaign ID, is that available to campaign users?
-    this.props.getContributions({
-      governmentId: 1,
-      campaignId: 1,
-      currentUserId: 1,
+    const {
+      getContributions,
+      currentUserId,
+      governmentId,
+      campaignId,
+    } = this.props;
+    getContributions({
+      governmentId,
+      campaignId,
+      currentUserId,
     });
   }
 
@@ -18,6 +28,10 @@ class ContributionsPage extends React.Component {
   }
 }
 export default connect(
-  state => ({}),
+  state => ({
+    currentUserId: getCurrentUserId(state),
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
+  }),
   dispatch => ({ getContributions: data => dispatch(getContributions(data)) })
 )(ContributionsPage);

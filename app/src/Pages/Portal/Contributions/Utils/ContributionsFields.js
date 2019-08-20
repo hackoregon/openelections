@@ -280,7 +280,7 @@ export const fields = {
     FormSectionEnum.CONTRIBUTOR,
     SelectField,
     Yup.string('Select your occupation'),
-    ['Not Employed', 'Self Employed', 'Other']
+    ['Employed', 'Self Employed', 'Not Employed', 'Other']
   ),
   employerName: formField(
     "Employer's Name",
@@ -406,7 +406,7 @@ export const validate = values => {
     error.checkNumber = 'Check number is required.';
   }
   if (paymentMethod === 'Money Order' && !checkNoEmptyString(checkNumber)) {
-    error.checkNumber = 'Check number is required.';
+    error.checkNumber = 'Money Order number is required.';
   }
 
   const isPerson = !!individualContributorValues.includes(typeOfContributor);
@@ -437,7 +437,7 @@ export const validate = values => {
   }
 
   // They are employed and they don't have a letter require employer info
-  if (occupation === 'Other' && isPerson) {
+  if (occupation === 'Employed' && isPerson) {
     // If they don't have a letter then the employer fields are required
     if (!checkNoEmptyString(occupationLetterDate)) {
       if (!checkNoEmptyString(employerName)) {
