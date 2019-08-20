@@ -435,18 +435,9 @@ export const validate = values => {
   } else if (!checkNoEmptyString(entityName)) {
     error.entityName = 'Name of entity is required';
   }
-  
-  if(( occupation == "Other" ) && !checkNoEmptyString(employerName)){
-    error.employerName = "Employer name is required."
-  // If the self-employed option is selected OR If the occupation letter date (currently commented out) is filled in, 
-  // then the employer name, city, state and zip code are not required
-  if( occupation == "Self Employed" || occupationLetterDate !== ""){
-    error.occupation = "Occupation is required."
-    console.log('self employed is selected or occupation letter date is NOT empty, so employer info NOT required', {values})
-  }
 
   // They are employed and they don't have a letter require employer info
-  if (occupation === 'Other' && isPerson) {
+  if (occupation === 'Employed' && isPerson) {
     // If they don't have a letter then the employer fields are required
     if (!checkNoEmptyString(occupationLetterDate)) {
       if (!checkNoEmptyString(employerName)) {
@@ -462,40 +453,6 @@ export const validate = values => {
         error.employerZipcode = 'Employer zipcode is required.';
       }
     }
-
-  // They are employed and they don't have a letter require employer info
-  if (occupation === 'Other' && isPerson) {
-    // If they don't have a letter then the employer fields are required
-    if (!checkNoEmptyString(occupationLetterDate)) {
-      if (!checkNoEmptyString(employerName)) {
-        error.employerName = 'Employer name is required.';
-      }
-      if (!checkNoEmptyString(employerCity)) {
-        error.employerCity = 'Employer city is required.';
-      }
-      if (!checkNoEmptyString(employerState)) {
-        error.employerState = 'Employer state is required.';
-      }
-      if (!checkNoEmptyString(employerZipcode)) {
-        error.employerZipcode = 'Employer zipcode is required.';
-      }
-    }
-  }
-  console.log('Form will submit error is empty', error);
-  return error;
-
-    // switch(occupation== "Other") {
-    //   case !checkNoEmptyString(employerName):
-    //     return error.employerName = "Employer name is required.";
-    //   case !checkNoEmptyString(employerCity):
-    //     return error.employerCity = "Employer city is required.";
-    //   case !checkNoEmptyString(employerState):
-    //     return error.employerState = "Employer state is required.";
-    //   case !checkNoEmptyString(employerZipcode):
-    //     return error.employerZipcode = "Employer zipcode is required.";
-    //   default:
-    //     return error.occupation = "If you select 'Other', you must include employer information";
-    // }
   }
   console.log('Form will submit error is empty', error);
   return error;
