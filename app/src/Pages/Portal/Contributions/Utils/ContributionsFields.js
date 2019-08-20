@@ -143,13 +143,13 @@ export const fields = {
     'A contributor type is required',
     individualContributorValues.concat(entityContributorValues)
   ),
-  amountOfContribution: requiredFormField(
-    'Amount of Contribution',
-    FormSectionEnum.BASIC,
-    CurrencyField,
-    Yup.number('Choose the amount of contribution'),
-    'The contribution amount is required'
-  ),
+  amountOfContribution: {
+    label: 'Amount of Contribution',
+    section: FormSectionEnum.BASIC,
+    component: CurrencyField,
+    options: { allowNegative: false },
+    validation: Yup.number('Choose the amount of contribution'),
+  },
   oaeType: requiredFormField(
     'OAE Contribution Type',
     FormSectionEnum.BASIC,
