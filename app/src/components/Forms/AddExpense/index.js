@@ -211,10 +211,10 @@ const AddExpense = () => (
       streetAddress: '',
       addressLine2: '',
       countryRegion: '',
-      city: 'Portland',
-      state: 'OR',
-      zipcode: '97201',
-      county: 'Multnomah',
+      city: '',
+      state: '',
+      zipcode: '',
+      county: '',
       notes: '',
     }}
   >

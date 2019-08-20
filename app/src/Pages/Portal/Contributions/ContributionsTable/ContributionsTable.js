@@ -29,7 +29,19 @@ const columns = [
         .split(', ')[0],
   },
   // columnInfo("Date", "date", "date"),
-  columnInfo('Name', 'lastName'),
+  {
+    field: 'name',
+    Title: 'Name',
+    render: rowData => {
+      if (
+        rowData.contributorType === 'individual' ||
+        rowData.contributorType === 'family'
+      ) {
+        return `${rowData.firstName} ${rowData.lastName}`;
+      }
+      return rowData.name;
+    },
+  },
   columnInfo('Amount', 'amount', 'currency'),
   columnInfo('Status', 'status'),
   // columnInfo("Labels", "NotSet")

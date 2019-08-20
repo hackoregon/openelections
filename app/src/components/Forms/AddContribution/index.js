@@ -17,7 +17,10 @@ import {
   ContributorSection,
   OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import {
+  contributionsEmptyState,
+  inKindContributionValues,
+} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createContribution } = props;
@@ -40,12 +43,21 @@ const AddContribution = ({ ...props }) => (
     initialValues={contributionsEmptyState}
   >
     {({ formFields, isValid, handleSubmit, values }) => {
-      const checkSelected = values.paymentMethod === 'Check';
       const isPerson = !!(
         values.typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
         values.typeOfContributor ===
           ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
       );
+      const checkSelected =
+        values.paymentMethod === 'Check' ||
+        values.paymentMethod === 'Money Order';
+
+      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Other'
+      const showEmployerSection = values.occupation === 'Other' && isPerson;
+      const showInKindFields = !!inKindContributionValues.includes(
+        values.subTypeOfContribution
+      );
+
       if (values.submitForMatch !== 'No') {
         if (
           // Set submitForMatch to No under these conditions
@@ -61,15 +73,22 @@ const AddContribution = ({ ...props }) => (
           values.submitForMatch = 'No';
         }
       }
+
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
             formFields={formFields}
             checkSelected={checkSelected}
+            showInKindFields={showInKindFields}
           />
-          <ContributorSection formFields={formFields} isPerson={isPerson} />
-          <OtherDetailsSection formFields={formFields} />
+          <ContributorSection
+            formFields={formFields}
+            showEmployerSection={showEmployerSection}
+            isPerson={isPerson}
+          />
+          {/* <EmployerSection formFields={formFields} /> */}
+          {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
     }}

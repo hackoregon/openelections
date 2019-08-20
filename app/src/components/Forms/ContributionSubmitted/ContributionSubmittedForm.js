@@ -356,8 +356,8 @@ const fields = {
     component: FieldValue,
     validation: Yup.number('?????').required('????? is required'),
   },
-  description: {
-    label: 'Description',
+  inKindDescription: {
+    label: 'Inkind Description',
     section: 'otherDetailsSection',
     component: FieldValue,
     options: {
