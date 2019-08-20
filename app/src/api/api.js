@@ -399,11 +399,15 @@ export const mapContributionFormToData = data => {
     inKindType,
     oaeType,
     submitForMatch,
+    isPerson = !!(
+      typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
+      typeOfContributor === ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
+    ),
   } = data;
 
   return {
     city,
-    firstName: firstName || null,
+    firstName: isPerson && firstName ? firstName : null,
     state,
     occupation,
     employerName,
@@ -423,7 +427,7 @@ export const mapContributionFormToData = data => {
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     middleInitial: '',
-    lastName: lastName || null,
+    lastName: isPerson && lastName ? lastName : null,
     name: entityName || null,
     // type: ContributionTypeEnum.CONTRIBUTION,
     // subType: ContributionSubTypeEnum.CASH,

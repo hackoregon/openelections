@@ -2,8 +2,13 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import AddContributionForm from './AddContributionForm';
 import { createContribution } from '../../../state/ducks/contributions';
+import {
+  getCurrentCampaignId,
+  getCurrentUserId,
+} from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
+import AddContributionForm from './AddContributionForm';
 import {
   ContributionTypeFieldEnum,
   ContributionStatusEnum,
@@ -97,9 +102,9 @@ const AddContribution = ({ ...props }) => (
 
 export default connect(
   state => ({
-    currentUserId: state.auth.me.id,
-    governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId,
+    currentUserId: getCurrentUserId(state),
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
   }),
   dispatch => ({
     createContribution: data => dispatch(createContribution(data)),
