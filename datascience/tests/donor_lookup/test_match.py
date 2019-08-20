@@ -221,9 +221,18 @@ class TestInPortland():
         Ensure that wrong zip code returns false
         :return:
         """
-        test_data = [('t')]
+        test_data = [(False,)]
         setup_mock_connect(mock_connect=mock_connect, test_data=test_data)
 
         from openelections.donor_lookup.match import in_portland
 
         assert not in_portland(latitude='45.51179', longitude='-122.67563')
+
+    def test_missing_lat_log(self):
+        """
+        Ensure that wrong zip code returns false
+        :return:
+        """
+        from openelections.donor_lookup.match import in_portland
+
+        assert not in_portland(latitude=None, longitude=None)
