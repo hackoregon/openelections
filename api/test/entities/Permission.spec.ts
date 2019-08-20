@@ -243,4 +243,8 @@ describe('Permission', () => {
             });
         });
     });
+
+    it('retrieveCampaignAdminsAsync', async () => {
+
+    })
 });

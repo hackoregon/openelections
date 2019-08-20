@@ -7,7 +7,7 @@ import {
     BeforeUpdate,
     CreateDateColumn,
     getConnection,
-    OneToMany
+    Between
 } from 'typeorm';
 import { Government } from './Government';
 import { Campaign } from './Campaign';
@@ -134,6 +134,28 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
         .limit(perPage)
         .offset(perPage * page)
         .getRawMany()) as IActivityResult[];
+}
+
+
+export interface IShortActivityResult {
+    notes: string;
+    activityId: number;
+    activityType: ActivityTypeEnum;
+}
+
+export async function getActivityByCampaignByTimeAsync(campaignId: number, from, to: Date): Promise<IShortActivityResult[]> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+    return (await activityRepository
+        .find({
+            select: ['notes', 'activityId', 'activityType', 'createdAt'],
+            where: {
+                campaignId,
+                createdAt: Between(from, to)
+            },
+            order: {
+                createdAt: 'DESC'
+            }
+        })) as IShortActivityResult[];
 }
 
 export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResult[]> {

@@ -1,3 +1,6 @@
+import { getPermissionsByCampaignIdAsync, IUserPermission, UserRole } from '../models/entity/Permission';
+import { ActivityTypeEnum, getActivityByCampaignByTimeAsync, IShortActivityResult } from '../models/entity/Activity';
+
 const AWS = require('aws-sdk');
 
 export interface ISESEmailParams {
@@ -152,6 +155,112 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
       }
     },
     Source: 'no-reply@openelectionsprojec.org',
+  };
+  return sendEmail(email);
+}
+
+export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number): Promise<ISESEmailParams | null> {
+
+  const to: Date = new Date();
+  const from: Date = new Date(Date.now() - (24 * 60 * 60 * 1000));
+  const activities = await getActivityByCampaignByTimeAsync(campaignId, from, to);
+
+  if (activities.length > 0) {
+    return;
+  }
+
+  const permissions: IUserPermission[] = await getPermissionsByCampaignIdAsync(campaignId);
+  const permissionsFiltered = permissions.filter( (permission: IUserPermission ): boolean => {
+    return permission.role === UserRole.CAMPAIGN_ADMIN;
+  });
+
+  const emails = permissionsFiltered.map((permission: IUserPermission ): string => {
+    return permission.user.email;
+  });
+
+  const newContributionUpdates: string[] = activities.filter( (activity: IShortActivityResult) => {activity.activityType === ActivityTypeEnum.CONTRIBUTION; }).map((activity: IShortActivityResult) => { return `- ID# ${activity.activityId}: ${activity.notes}`; });
+  const newExpenditureUpdates: string[] = activities.filter( (activity: IShortActivityResult) => {activity.activityType === ActivityTypeEnum.EXPENDITURE; }).map((activity: IShortActivityResult) => { return `- ID# ${activity.activityId}: ${activity.notes}`; });
+  const newContributionComments: string[] = activities.filter( (activity: IShortActivityResult) => {activity.activityType === ActivityTypeEnum.COMMENT_CONTR; }).map((activity: IShortActivityResult) => { return `- ID# ${activity.activityId}: ${activity.notes}`; });
+  const newExpenditureComments: string[]  = activities.filter( (activity: IShortActivityResult) => {activity.activityType === ActivityTypeEnum.COMMENT_EXP; }).map((activity: IShortActivityResult) => { return `- ID# ${activity.activityId}: ${activity.notes}`; });
+
+  const contributionsText: string = newContributionUpdates.length > 0 ? `
+  Contributions:<br/><br/>
+  The following contributions have been created or updated in the last 24 hours.<br/><br/>
+
+  ${newContributionUpdates.join('<br/>\n')}
+
+  ` : '';
+
+  const contributionComments: string = newContributionComments.length > 0 ? `
+  Contribution Comments:
+  The following contributions have been commented on in the last 24 hours.
+
+  ${newContributionComments.join('<br/>\n')}
+
+  ` : '';
+
+  const expendituresText: string = newExpenditureUpdates.length > 0 ? `
+  Expenditures<br/><br/>
+  The following expenditures have been created or updated in the last 24 hours.<br/><br/>
+
+  ${newExpenditureUpdates.join('<br/>\n')}
+
+  ` : '';
+
+  const expendituresComments: string = newExpenditureComments.length > 0 ? `
+  Expenditures Comments:<br/><br/>
+  The following expenditures have been commented on in the last 24 hours.<br/><br/>
+
+  ${newExpenditureComments.join('<br/>\n')}<br/><br/>
+
+  ` : '';
+
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+    Destination: {
+      ToAddresses: emails
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<html><head><body>
+<p>This is a daily transaction summary for your campaigns Contributions and Expenditures.</p>
+<p>In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.</p>
+<p>If you would like more information about the transaction(s), please go to your campaign portal at <a href="${host}">${host}</a>.</p>
+<p>Sincerely,<br/>
+Susan Mottet<br/>
+Director, Open and Accountable Elections<br/>
+www.portlandoregon.gov/OAE<br/>
+</p></body></head>`
+        },
+        Text: {
+          Charset: 'UTF-8',
+          Data: `
+This is a daily transaction summary for your campaigns Contributions and Expenditures.
+${contributionsText.replace('<br/>', '')}
+${contributionComments.replace('<br/>', '')}
+${expendituresText.replace('<br/>', '')}
+${expendituresComments.replace('<br/>', '')}
+
+In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.
+
+If you would like more information about the transaction(s), please go to your campaign portal at ${host}.
+
+Sincerely,
+Susan Mottet
+Director, Open and Accountable Elections
+www.portlandoregon.gov/OAE
+`
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `Open and Accountable Elections Daily Campaign Transactions Summary`,
+      }
+    },
+    Source: 'no-reply@openelectionsproject.org',
+    ReplyToAddresses: ['susan.Mottet@portlandoregon.gov']
   };
   return sendEmail(email);
 }
