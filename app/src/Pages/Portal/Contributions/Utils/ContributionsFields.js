@@ -44,7 +44,7 @@ const individualContributorValues = [
   ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
 ];
 
-const inKindContributionValues = [
+export const inKindContributionValues = [
   ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
   ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL,
@@ -55,8 +55,9 @@ export const contributionsEmptyState = {
   dateOfContribution: '',
   typeOfContribution: '',
   subTypeOfContribution: '',
-  typeOfContributor: 'ContributorTypeFieldEnum.INDIVIDUAL',
+  typeOfContributor: ContributorTypeFieldEnum.INDIVIDUAL,
   amountOfContribution: '',
+  inKindType: '',
   oaeType: '',
   submitForMatch: 'No',
   paymentMethod: '',
@@ -64,11 +65,10 @@ export const contributionsEmptyState = {
 
   // CONTRIBUTOR VALUES
   firstName: '',
-  lastName: '',
-  entityName: '',
+  lastNameOrEntity: '',
   streetAddress: '',
   addressLine2: '',
-  city: 'Portland',
+  city: '',
   state: 'OR',
   zipcode: '97201',
   email: '',
@@ -76,13 +76,13 @@ export const contributionsEmptyState = {
   phoneType: '',
   occupation: '',
   employerName: '',
-  employerCity: 'Portland',
-  employerState: 'OR',
-  employerZipcode: '97201',
+  employerCity: '',
+  employerState: '',
+  employerZipcode: '',
 
   // OTHER DETAILS VALUES
   electionAggregate: '',
-  description: '',
+  inKindDescription: '',
   occupationLetterDate: '',
   linkToDocumentation: '',
   notes: '',
@@ -173,12 +173,11 @@ export const fields = {
     'This field is required.',
     ['Yes', 'No']
   ),
-  paymentMethod: requiredFormField(
+  paymentMethod: formField(
     'Payment Method',
     FormSectionEnum.BASIC,
     SelectField,
     Yup.string('Choose the payment method'),
-    'The payment method is required',
     [
       'Cash',
       'Check',
@@ -319,37 +318,53 @@ export const fields = {
   ),
   // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
   // or In-Kind Forgiven Personal Expenditure was selection.
-  description: formField(
-    'Description',
+  inKindDescription: formField(
+    'Inkind Description',
+    FormSectionEnum.OTHER_DETAILS,
+    TextField,
+    Yup.string('Give a description of the inkind contribution')
+  ),
+  inKindType: formField(
+    'Inkind Type',
     FormSectionEnum.OTHER_DETAILS,
     SelectField,
-    Yup.string('Choose the description of the contribution'),
+    Yup.string('Select type of inkind contribution'),
     [
-      'Broadcast Advertising',
-      'Fundraising Event Expenses',
-      'General Operating Expenses',
-      'Literature/Brochures/Printing',
-      'Management Services',
-      'Newspaper and Other Periodical Advertising',
-      'Other Advertising',
-      'Petition Circulators',
-      'Postage',
-      'Preparation and Production of Advertising',
-      'Surveys and Polls',
-      'Travel Expenses',
-      'Utilities',
-      'Wages/Salaries/Benefits',
+      { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
+      {
+        value: 'fundraising_event_expenses',
+        label: 'Fundraising Event Expenses',
+      },
+      {
+        value: 'general_operating_expenses',
+        label: 'General Operating Expenses',
+      },
+      { value: 'printing', label: 'Literature/Brochures/Printing' },
+      { value: 'management', label: 'Management Services' },
+      {
+        value: 'print_advertising',
+        label: 'Newspaper and Other Periodical Advertising',
+      },
+      { value: 'other_advertising', label: 'Other Advertising' },
+      { value: 'petition_Circulators', label: 'Petition Circulators' },
+      { value: 'postage', label: 'Postage' },
+      {
+        value: 'preparation_of_advertising',
+        label: 'Preparation and Production of Advertising',
+      },
+      { value: 'surveys_and_polls', label: 'Surveys and Polls' },
+      { value: 'travel_expenses', label: 'Travel Expenses' },
+      { value: 'utilities', label: 'Utilities' },
+      { value: 'wages', label: 'Wages/Salaries/Benefits' },
     ]
   ),
   // Not required if occupation & employer name/address filled in
-  /*
   occupationLetterDate: formField(
-    "Occupation Letter Date",
+    'Occupation Letter Date',
     FormSectionEnum.OTHER_DETAILS,
     DateField,
-    Yup.date("Enter occupation letter date")
+    Yup.date('Enter occupation letter date')
   ),
-  */
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: formField(
@@ -368,16 +383,18 @@ export const fields = {
 
 export const validate = values => {
   const {
+    typeOfContribution,
     paymentMethod,
     checkNumber,
     linkToDocumentation,
     occupation,
+    occupationLetterDate,
     employerName,
     employerCity,
     employerState,
     employerZipcode,
     subTypeOfContribution,
-    description,
+    inKindType,
     lastName,
     entityName,
     firstName,
@@ -388,51 +405,55 @@ export const validate = values => {
   if (paymentMethod === 'Check' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Check number is required.';
   }
-
-  if (
-    checkNoEmptyString(paymentMethod) &&
-    paymentMethod !== 'Credit Card (Online)' &&
-    !checkNoEmptyString(linkToDocumentation)
-  ) {
-    error.linkToDocumentation =
-      'A link to documentation of your contribution is required';
+  if (paymentMethod === 'Money Order' && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = 'Check number is required.';
   }
 
-  if (
-    !checkNoEmptyString(
-      occupation,
-      employerCity,
-      employerName,
-      employerState,
-      employerZipcode
-    )
-  ) {
-    error.occupationLetterDate = 'Occupation letter date is required';
-  }
-
+  const isPerson = !!individualContributorValues.includes(typeOfContributor);
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
-    !checkNoEmptyString(description)
+    !checkNoEmptyString(inKindType)
   ) {
-    error.description = 'A description is required';
+    error.inKindType = 'Inkind type is required';
+  }
+  if (
+    subTypeOfContribution === ContributionSubTypeFieldEnum.CASH_CONTRIBUTION &&
+    !checkNoEmptyString(subTypeOfContribution)
+  ) {
+    error.paymentMethod = 'Payment method type is required';
   }
 
-  // If it's an entity require entityName
-  if (
-    entityContributorValues.includes(typeOfContributor) &&
-    !checkNoEmptyString(entityName)
-  ) {
-    error.entityName = 'Name of entity is required';
-  }
   // If it's a person require first and last name
-  if (individualContributorValues.includes(typeOfContributor)) {
+  // else require entity name
+  if (isPerson) {
     if (!checkNoEmptyString(firstName)) {
       error.firstName = 'First name is required.';
     }
     if (!checkNoEmptyString(lastName)) {
       error.lastName = 'Last name is required.';
     }
+  } else if (!checkNoEmptyString(entityName)) {
+    error.entityName = 'Name of entity is required';
   }
 
+  // They are employed and they don't have a letter require employer info
+  if (occupation === 'Other' && isPerson) {
+    // If they don't have a letter then the employer fields are required
+    if (!checkNoEmptyString(occupationLetterDate)) {
+      if (!checkNoEmptyString(employerName)) {
+        error.employerName = 'Employer name is required.';
+      }
+      if (!checkNoEmptyString(employerCity)) {
+        error.employerCity = 'Employer city is required.';
+      }
+      if (!checkNoEmptyString(employerState)) {
+        error.employerState = 'Employer state is required.';
+      }
+      if (!checkNoEmptyString(employerZipcode)) {
+        error.employerZipcode = 'Employer zipcode is required.';
+      }
+    }
+  }
+  console.log('Form will submit error is empty', error);
   return error;
 };

@@ -309,6 +309,7 @@ export const mapContributionDataToForm = contribution => {
     type,
     subtype,
     contributorType,
+    inKindType,
     oaeType,
     amount,
     checkNumber,
@@ -338,6 +339,7 @@ export const mapContributionDataToForm = contribution => {
     typeOfContribution: DataToContributionTypeFieldMap.get(type),
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || '',
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
+    inKindType,
     oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
     amountOfContribution: amount,
     checkNumber,
@@ -363,7 +365,7 @@ export const mapContributionDataToForm = contribution => {
 
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
-    description: inKindDescription || '',
+    inKindDescription: inKindDescription || '',
     paymentMethod: '',
   };
 };
@@ -385,7 +387,7 @@ export const mapContributionFormToData = data => {
     employerCity,
     employerState,
     occupation,
-    description,
+    inKindDescription,
     electionAggregate,
     email,
     phone,
@@ -394,6 +396,7 @@ export const mapContributionFormToData = data => {
     typeOfContributor,
     subTypeOfContribution,
     typeOfContribution,
+    inKindType,
     oaeType,
     submitForMatch,
   } = data;
@@ -410,6 +413,7 @@ export const mapContributionFormToData = data => {
     contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
     subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
     type: ContributionTypeFieldToDataMap.get(typeOfContribution),
+    inKindType: inKindType || null,
     oaeType: OaeTypeFieldToDataMap.get(oaeType),
     address1: streetAddress,
     address2: addressLine2,
@@ -425,7 +429,7 @@ export const mapContributionFormToData = data => {
     // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
     //   contributorType: ContributorTypeEnum.INDIVIDUAL,
-    inKindDescription: description,
+    inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
   };
