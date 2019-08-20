@@ -363,7 +363,7 @@ export const getCurrentUserId = state => {
 export const getCurrentCampaignId = state => {
   if (state.auth.me) {
     if (state.auth.me.permissions[0] && state.auth.me.permissions[0].campaignId)
-      // const r = { campaignId = null } = state.auth.me.permissions[0];
       return state.auth.me.permissions[0].campaignId;
   }
+  return null;
 };
