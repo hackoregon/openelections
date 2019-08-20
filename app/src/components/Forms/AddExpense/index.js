@@ -215,7 +215,7 @@ const AddExpense = () => (
       state: '',
       zipcode: '',
       county: '',
-      notes: ''
+      notes: '',
     }}
   >
     {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
