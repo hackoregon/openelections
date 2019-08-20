@@ -443,7 +443,7 @@ components:
                     enum:[date,campaignId,status]
                   direction:
                     type: string
-                    enum: ['ASC','DESC']
+                    enum: [ASC,DESC]
             required:
               - governmentId
     GetContributionByIdBody:
