@@ -89,8 +89,6 @@ services:
       - db
       - redis
       - data
-    ports:
-      - 3000:3000
     volumes:
       - ./api/controller:/app/controller
       - ./api/models:/app/models
