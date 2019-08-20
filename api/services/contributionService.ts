@@ -131,6 +131,10 @@ export interface IGetContributionOptions {
     status?: string;
     from?: string;
     to?: string;
+    sort?: {
+        field: 'campaignId' | 'status' | 'date';
+        direction: 'ASC' | 'DESC';
+    };
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
@@ -475,6 +479,7 @@ export interface MatchResults {
         weak: PersonMatchType[];
         none: string;
     };
+    inPortland: boolean;
 }
 
 export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<MatchResults> {
@@ -497,7 +502,8 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
                     strong: contribution.matchResult.strong,
                     weak: contribution.matchResult.weak,
                     none: crypto.randomBytes(16).toString('hex')
-                }
+                },
+                inPortland: contribution.matchResult.donor_info.eligible_address
             };
             return matchResults;
         } else {

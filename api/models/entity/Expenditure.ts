@@ -294,9 +294,9 @@ export async function getExpendituresByGovernmentIdAsync(
 ): Promise<IExpenditureSummary[]> {
     try {
         const expenditureRepository = getConnection('default').getRepository('Expenditure');
-        const { page, perPage, campaignId, status, from, to } = options;
+        const { page, perPage, campaignId, status, from, to, sort } = options;
         const relations = campaignId ? ['government', 'campaign'] : ['government'];
-        const query = {
+        const query: any = {
             select: expenditureSummaryFields,
             relations,
             where: {
@@ -313,8 +313,22 @@ export async function getExpendituresByGovernmentIdAsync(
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             },
             skip: page,
-            take: perPage
+            take: perPage,
+            order: { 'updatedAt': 'DESC'}
         };
+
+        if (sort) {
+            if (!['date', 'status', 'campaignId'].includes(sort.field)) {
+                throw new Error('Sort.field must be one of date, status or campaignid');
+            }
+
+            if (!['ASC', 'DESC'].includes(sort.direction)) {
+                throw new Error('Sort.direction must be one of ASC or DESC');
+            }
+
+            query.order = { [sort.field]: sort.direction };
+
+        }
         const expenditures = await expenditureRepository.find(removeUndefined(query));
         return expenditures as IExpenditureSummary[];
     } catch (err) {

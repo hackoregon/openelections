@@ -102,6 +102,10 @@ export interface IGetExpenditureAttrs {
     status?: string;
     from?: string;
     to?: string;
+    sort?: {
+        field: 'campaignId' | 'status' | 'date';
+        direction: 'ASC' | 'DESC';
+    };
 }
 
 export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs) {

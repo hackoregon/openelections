@@ -1184,8 +1184,8 @@ describe('contributionService', () => {
             date: Date.now()
         });
         const result = await getMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id});
-        expect(result.matchStrength).to.equal(MatchStrength.NONE);
-        expect(result.results.exact.length).to.equal(0);
+        expect(result.matchStrength).to.equal(MatchStrength.EXACT);
+        expect(result.results.exact.length).to.equal(1);
         expect(result.results.strong.length).to.equal(0);
         expect(result.results.weak.length).to.equal(0);
         expect(result.results.none).to.not.be.undefined;
@@ -1380,9 +1380,5 @@ describe('contributionService', () => {
         expect(contribution.matchAmount).to.equal(50);
 
     });
-
-    it('getGISCoordinates', async () => {
-
-    })
 
 });
