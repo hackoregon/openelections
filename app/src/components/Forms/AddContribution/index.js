@@ -57,8 +57,9 @@ const AddContribution = ({ ...props }) => (
         values.paymentMethod === 'Check' ||
         values.paymentMethod === 'Money Order';
 
-      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Other'
-      const showEmployerSection = values.occupation === 'Other' && isPerson;
+      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
+      const emptyOccupationLetterDate = values.occupationLetterDate === '';
+      const showEmployerSection = values.occupation === 'Employed';
       const showInKindFields = !!inKindContributionValues.includes(
         values.subTypeOfContribution
       );
@@ -91,8 +92,8 @@ const AddContribution = ({ ...props }) => (
             formFields={formFields}
             showEmployerSection={showEmployerSection}
             isPerson={isPerson}
+            emptyOccupationLetterDate={emptyOccupationLetterDate}
           />
-          {/* <EmployerSection formFields={formFields} /> */}
           {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
