@@ -20,7 +20,6 @@ function NumberFormatCustom(props) {
       thousandSeparator
       prefix="$"
       decimalScale="2"
-      allowNegative={false}
     />
   );
 }
@@ -30,7 +29,7 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function CurrencyField({ id, label, formik }) {
+export default function CurrencyField({ id, label, formik, options }) {
   return (
     <TextFieldMaterial
       id={id}
@@ -45,6 +44,7 @@ export default function CurrencyField({ id, label, formik }) {
       fullWidth
       InputProps={{
         inputComponent: NumberFormatCustom,
+        inputProps: { allowNegative: options.allowNegative },
       }}
     />
   );
