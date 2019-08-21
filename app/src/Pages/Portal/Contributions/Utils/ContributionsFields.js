@@ -24,8 +24,10 @@ import {
   OaeTypeFieldEnum,
   DataToContributionTypeFieldMap,
   DataToContributionSubTypeFieldMap,
+  DataToContributorTypeFieldMap,
   ContributionSubTypeEnum,
   ContributionTypeEnum,
+  ContributorTypeEnum,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -34,19 +36,19 @@ export const FormSectionEnum = Object.freeze({
   OTHER_DETAILS: 'otherDetailsSection',
 });
 
-const entityContributorValues = [
-  ContributorTypeFieldEnum.BUSINESS_ENTITY,
-  ContributorTypeFieldEnum.LABOR_ORGANIZATION,
-  ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
-  ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
-  ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE,
-  ContributorTypeFieldEnum.OTHER,
-];
+// const entityContributorValues = [
+//   ContributorTypeFieldEnum.BUSINESS_ENTITY,
+//   ContributorTypeFieldEnum.LABOR_ORGANIZATION,
+//   ContributorTypeFieldEnum.POLITICAL_COMMITTEE,
+//   ContributorTypeFieldEnum.POLITICAL_PARTY_COMMITEE,
+//   ContributorTypeFieldEnum.UNREGISTERED_COMMITTEE,
+//   ContributorTypeFieldEnum.OTHER,
+// ];
 
-const individualContributorValues = [
-  ContributorTypeFieldEnum.INDIVIDUAL,
-  ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
-];
+// const individualContributorValues = [
+//   ContributorTypeFieldEnum.INDIVIDUAL,
+//   ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY,
+// ];
 
 export const inKindContributionValues = [
   ContributionSubTypeEnum.INKIND_CONTRIBUTION,
@@ -59,7 +61,7 @@ export const contributionsEmptyState = {
   dateOfContribution: '',
   typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
   subTypeOfContribution: '',
-  typeOfContributor: ContributorTypeFieldEnum.INDIVIDUAL,
+  typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
   amountOfContribution: '',
   inKindType: '',
   oaeType: '',
@@ -130,7 +132,7 @@ export const fields = {
   // If Other Receipt was selected, drop down says:
   //  -  Items Sold at Fair Market Value, Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
   subTypeOfContribution: {
-    // FIX ME
+    // FIX ME DONE
     label: 'Subtype of Contribution',
     section: FormSectionEnum.BASIC,
     component: SelectField,
@@ -177,14 +179,14 @@ export const fields = {
   },
   // 'The contribution subtype is required'
   typeOfContributor: {
-    // FIX ME
+    // FIX ME DONE
     label: 'Type of Contributor',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
     validation: Yup.string('Choose the type of contributor'),
     // 'A contributor type is required',
     options: {
-      values: individualContributorValues.concat(entityContributorValues),
+      values: mapToSelectOptions(DataToContributorTypeFieldMap),
     },
   },
   amountOfContribution: {
@@ -223,7 +225,7 @@ export const fields = {
     label: 'Payment Method',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
-    validation: Yup.string('Choose the payment method'),
+    validation: Yup.string(),
     options: {
       values: [
         'Cash',
@@ -238,14 +240,14 @@ export const fields = {
     label: 'Check Number',
     section: 'FormSectionEnum.BASIC',
     component: TextField,
-    validation: Yup.number('Enter your check number'),
+    validation: Yup.number().typeError('Must be a number'),
   },
   // CONTRIBUTOR SECTION
   firstName: {
     label: "Contributor's First Name",
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string('Enter first name'),
+    validation: Yup.string(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {
@@ -439,6 +441,7 @@ export const fields = {
 
 export const validate = values => {
   const {
+    dateOfContribution,
     amountOfContribution,
     typeOfContribution,
     paymentMethod,
@@ -460,20 +463,28 @@ export const validate = values => {
   const error = {};
 
   // These fields are always required
+  // Also contributor street, city, state and zip
+  if (isEmpty(dateOfContribution))
+    error.dateOfContribution = 'Contribution date is required';
   if (isEmpty(amountOfContribution))
     error.amountOfContribution = 'Contribution amount is required';
   if (isEmpty(typeOfContribution))
-    error.amountOfContribution = 'Contribution type is required';
+    error.typeOfContribution = 'Contribution type is required';
   if (isEmpty(subTypeOfContribution))
     error.subTypeOfContribution = 'Contribution subtype is required';
 
+  // These fields are conditionally required
   if (paymentMethod === 'Check' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Check number is required.';
   }
   if (paymentMethod === 'Money Order' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Money Order number is required.';
   }
-  const isPerson = !!individualContributorValues.includes(typeOfContributor);
+
+  const isPerson = !!(
+    typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+    typeOfContributor === ContributorTypeEnum.FAMILY
+  );
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
     isEmpty(inKindType)

@@ -338,7 +338,7 @@ export const mapContributionDataToForm = contribution => {
     dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
     typeOfContribution: type,
     subTypeOfContribution: subtype,
-    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
+    typeOfContributor: contributorType,
     inKindType,
     oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
     amountOfContribution: amount,
@@ -400,21 +400,25 @@ export const mapContributionFormToData = data => {
     oaeType,
     submitForMatch,
     isPerson = !!(
-      typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
-      typeOfContributor === ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
+      typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+      typeOfContributor === ContributorTypeEnum.FAMILY
     ),
   } = data;
 
   return {
     city,
+    // TODO Universally null fields that are not part of submit
     firstName: isPerson && firstName ? firstName : null,
+    middleInitial: '',
+    lastName: isPerson && lastName ? lastName : null,
+    name: entityName || null,
     state,
     occupation,
     employerName,
     employerCity,
     employerState,
     checkNumber,
-    contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
+    contributorType: typeOfContributor,
     subType: subTypeOfContribution,
     type: typeOfContribution,
     inKindType: inKindType || null,
@@ -426,13 +430,7 @@ export const mapContributionFormToData = data => {
     phoneType,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
-    middleInitial: '',
-    lastName: isPerson && lastName ? lastName : null,
-    name: entityName || null,
-    // type: ContributionTypeEnum.CONTRIBUTION,
-    // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
-    //   contributorType: ContributorTypeEnum.INDIVIDUAL,
     inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',

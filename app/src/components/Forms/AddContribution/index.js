@@ -15,6 +15,8 @@ import {
   mapContributionFormToData,
   ContributionSubTypeFieldEnum,
   ContributionSubTypeEnum,
+  ContributionTypeEnum,
+  ContributorTypeEnum,
   ContributorTypeFieldEnum,
 } from '../../../api/api';
 import {
@@ -50,9 +52,8 @@ const AddContribution = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, values }) => {
       const isPerson = !!(
-        values.typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
-        values.typeOfContributor ===
-          ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
+        values.typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+        values.typeOfContributor === ContributorTypeEnum.FAMILY
       );
       const checkSelected =
         values.paymentMethod === 'Check' ||
@@ -69,12 +70,9 @@ const AddContribution = ({ ...props }) => (
         if (
           // Set submitForMatch to No under these conditions
           values.amountOfContribution > 500 ||
-          values.typeOfContribution !==
-            ContributionTypeFieldEnum.CONTRIBUTION ||
+          values.typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
           values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
-          (values.typeOfContributor !==
-            ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY &&
-            values.typeOfContributor !== ContributorTypeFieldEnum.INDIVIDUAL)
+          !isPerson
         ) {
           values.submitForMatch = 'No';
         }
