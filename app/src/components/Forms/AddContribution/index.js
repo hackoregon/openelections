@@ -14,6 +14,7 @@ import {
   ContributionStatusEnum,
   mapContributionFormToData,
   ContributionSubTypeFieldEnum,
+  ContributionSubTypeEnum,
   ContributorTypeFieldEnum,
 } from '../../../api/api';
 import {
@@ -70,8 +71,7 @@ const AddContribution = ({ ...props }) => (
           values.amountOfContribution > 500 ||
           values.typeOfContribution !==
             ContributionTypeFieldEnum.CONTRIBUTION ||
-          values.subTypeOfContribution !==
-            ContributionSubTypeFieldEnum.CASH_CONTRIBUTION ||
+          values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
           (values.typeOfContributor !==
             ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY &&
             values.typeOfContributor !== ContributorTypeFieldEnum.INDIVIDUAL)
