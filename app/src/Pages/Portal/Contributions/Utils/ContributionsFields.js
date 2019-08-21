@@ -1,11 +1,11 @@
 import React from 'react';
 import * as Yup from 'yup';
+import { isEmpty } from 'lodash';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import {
   requiredFormField,
-  DynamicOptionField,
-  formField,
+  // formField,
   stateList,
   checkNoEmptyString,
 } from '../../../../components/Forms/Utils/FormsUtils';
@@ -22,6 +22,10 @@ import {
   PhoneTypeEnum,
   ContributionTypeFieldEnum,
   OaeTypeFieldEnum,
+  DataToContributionTypeFieldMap,
+  DataToContributionSubTypeFieldMap,
+  ContributionSubTypeEnum,
+  ContributionTypeEnum,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -53,7 +57,7 @@ export const inKindContributionValues = [
 export const contributionsEmptyState = {
   // BASICS VALUES
   dateOfContribution: '',
-  typeOfContribution: '',
+  typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
   subTypeOfContribution: '',
   typeOfContributor: ContributorTypeFieldEnum.INDIVIDUAL,
   amountOfContribution: '',
@@ -87,112 +91,153 @@ export const contributionsEmptyState = {
   linkToDocumentation: '',
   notes: '',
 };
-
+// Converts TypeFieldMap to options for a select
+// ie: DataToContributorTypeFieldMap
+// Just a patch DO NOT USE outside of this file
+export const mapToSelectOptions = mapPairs => {
+  const acc = [];
+  mapPairs.forEach((label, value) => {
+    acc.push({ value, label });
+  });
+  return acc;
+};
 export const fields = {
   // BASICS SECTION
   dateOfContribution: {
     label: 'Date of Contribution',
     section: 'FormSectionEnum.BASIC',
-    DateField,
+    component: DateField,
     validation: Yup.string('Enter data of contribution'),
     // 'Contribution date is required'
   },
   typeOfContribution: {
+    // FIX ME
     label: 'Type of Contribution',
     section: 'FormSectionEnum.BASIC',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Choose the type of contribution'),
     // 'A contribution type is required',
-    values: [
-      ContributionTypeFieldEnum.CONTRIBUTION,
-      ContributionTypeFieldEnum.OTHER,
-    ],
+    options: {
+      values: mapToSelectOptions(DataToContributionTypeFieldMap),
+      valuesold: [
+        ContributionTypeFieldEnum.CONTRIBUTION,
+        ContributionTypeFieldEnum.OTHER,
+      ],
+    },
   },
   // if typeOfContribution was 'contribution' subTypes are:
   //  - Cash Contribution, In-Kind Contribution, In-Kind Forgiven Accounts Payable, In-Kind /Forgiven Personal Expenditure
   // If Other Receipt was selected, drop down says:
   //  -  Items Sold at Fair Market Value, Lost or Returned Check, Miscellaneous Other Receipt, Refunds and Rebates
-  subTypeOfContribution: requiredFormField(
-    'Subtype of Contribution',
-    FormSectionEnum.BASIC,
-    props => (
-      <DynamicOptionField
-        Component={SelectField}
-        props={props}
-        check={props.formik.values.typeOfContribution === 'Contribution'}
-        trueOptions={{
-          values: inKindContributionValues.concat([
-            ContributionSubTypeFieldEnum.CASH_CONTRIBUTION,
-          ]),
-        }}
-        falseOptions={{
-          values: [
-            ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET,
-            ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
-            ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
-            ContributionSubTypeFieldEnum.REFUND_REBATES,
-          ],
-        }}
-      />
-    ),
-    Yup.string('Choose the subtype of contribution'),
-    'The contribution subtype is required'
-  ),
+  subTypeOfContribution: {
+    // FIX ME
+    label: 'Subtype of Contribution',
+    section: FormSectionEnum.BASIC,
+    component: SelectField,
+    options: {
+      values: mapToSelectOptions(DataToContributionSubTypeFieldMap),
+      limitByField: 'typeOfContribution',
+      limitByValues: {
+        contribution: [
+          ContributionSubTypeEnum.CASH,
+          ContributionSubTypeEnum.INKIND_CONTRIBUTION,
+          ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT,
+          ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL,
+          ContributionSubTypeEnum.INKIND_PAID_SUPERVISION,
+        ],
+        other: [
+          ContributionSubTypeEnum.ITEM_SOLD_FAIR_MARKET,
+          ContributionSubTypeEnum.ITEM_RETURNED_CHECK,
+          ContributionSubTypeEnum.ITEM_MISC,
+          ContributionSubTypeEnum.ITEM_REFUND,
+        ],
+      },
+    },
+    //   componentx: props => {
+    //     <DynamicOptionField
+    //       Component={SelectField}
+    //       props={props}
+    //       check={props.formik.values.typeOfContribution === 'Contribution'}
+    //       trueOptions={{
+    //         values: inKindContributionValues.concat([
+    //           ContributionSubTypeFieldEnum.CASH_CONTRIBUTION,
+    //         ]),
+    //       }}
+    //       falseOptions={{
+    //         values: [
+    //           ContributionSubTypeFieldEnum.ITEM_SOLD_FAIR_MARKET,
+    //           ContributionSubTypeFieldEnum.LOST_RETURNED_CHECK,
+    //           ContributionSubTypeFieldEnum.MISC_OTHER_RECEIPT,
+    //           ContributionSubTypeFieldEnum.REFUND_REBATES,
+    //         ],
+    //       }}
+    //     />;
+    //   },
+    validation: Yup.string('Choose the subtype of contribution'),
+  },
+  // 'The contribution subtype is required'
   typeOfContributor: {
+    // FIX ME
     label: 'Type of Contributor',
     section: 'FormSectionEnum.BASIC',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Choose the type of contributor'),
     // 'A contributor type is required',
-    values: individualContributorValues.concat(entityContributorValues),
+    options: {
+      values: individualContributorValues.concat(entityContributorValues),
+    },
   },
   amountOfContribution: {
     label: 'Amount of Contribution',
     section: 'FormSectionEnum.BASIC',
-    CurrencyField,
+    component: CurrencyField,
     validation: Yup.number('Choose the amount of contribution'),
     // 'The contribution amount is required'
   },
   oaeType: {
     label: 'OAE Contribution Type',
     section: 'FormSectionEnum.BASIC',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Choose the OAE contribution type.'),
     // 'The OAE contribution type is required',
-    values: [
-      OaeTypeFieldEnum.SEED_MONEY,
-      OaeTypeFieldEnum.MATCHABLE,
-      OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
-      OaeTypeFieldEnum.QUALIFYING,
-      OaeTypeFieldEnum.ALLOWABLE,
-      OaeTypeFieldEnum.INKIND,
-    ],
+    options: {
+      values: [
+        OaeTypeFieldEnum.SEED_MONEY,
+        OaeTypeFieldEnum.MATCHABLE,
+        OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
+        OaeTypeFieldEnum.QUALIFYING,
+        OaeTypeFieldEnum.ALLOWABLE,
+        OaeTypeFieldEnum.INKIND,
+      ],
+    },
   },
   submitForMatch: {
     label: 'Submit for Match?',
     section: 'FormSectionEnum.BASIC',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Select yes or no.'),
     // 'This field is required.',
-    values: ['Yes', 'No'],
+    options: { values: ['Yes', 'No'] },
   },
   paymentMethod: {
     label: 'Payment Method',
     section: 'FormSectionEnum.BASIC',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Choose the payment method'),
-    values: [
-      'Cash',
-      'Check',
-      'Money Order',
-      'Credit Card (Online)',
-      'Credit Card (Paper Form)',
-    ],
+    options: {
+      values: [
+        'Cash',
+        'Check',
+        'Money Order',
+        'Credit Card (Online)',
+        'Credit Card (Paper Form)',
+      ],
+    },
   },
   checkNumber: {
     label: 'Check Number',
     section: 'FormSectionEnum.BASIC',
-    TextField,
+    component: TextField,
     validation: Yup.number('Enter your check number'),
   },
   // CONTRIBUTOR SECTION
@@ -206,19 +251,20 @@ export const fields = {
   lastName: {
     label: "Contributor's Last Name",
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string('Enter last name'),
   },
   entityName: {
     label: 'Entity Name',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string('Enter entity name'),
   },
-  streetAddress: formField(
-    'Street Address',
-    FormSectionEnum.CONTRIBUTOR,
-    props => (
+  streetAddress: {
+    label: 'Street Address',
+    section: FormSectionEnum.CONTRIBUTOR,
+    // eslint-disable-next-line react/display-name
+    component: props => (
       <AddressLookupField
         {...props.field}
         {...props}
@@ -229,85 +275,87 @@ export const fields = {
           zipCode: 'zipcode',
         }}
       />
-    )
-  ),
+    ),
+  },
   addressLine2: {
     label: 'Address Line 2',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string('Enter second address line'),
   },
   city: {
     label: 'City',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string('Select your city'),
     // 'Your city is required'
   },
   state: {
     label: 'State',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Select your state'),
     // 'Your state is required',
-    stateList,
+    options: { values: stateList },
   },
   zipcode: {
     label: 'Zip Code',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.number('Enter your zipcode'),
     // 'A zipcode is required'
   },
   email: {
     label: 'Email Address',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    EmailField,
+    component: EmailField,
     validation: Yup.string('Enter your email address'),
   },
   phone: {
     label: 'Phone Number',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    PhoneField,
+    component: PhoneField,
     validation: Yup.string('Enter your phone number'),
   },
   phoneType: {
     label: 'Phone Type',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Select your phone type'),
-    values: [PhoneTypeEnum.MOBILE, PhoneTypeEnum.WORK, PhoneTypeEnum.HOME],
+    options: {
+      values: [PhoneTypeEnum.MOBILE, PhoneTypeEnum.WORK, PhoneTypeEnum.HOME],
+    },
   },
   occupation: {
     label: 'Occupation',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Select your occupation'),
-    values: ['Employed', 'Self Employed', 'Not Employed', 'Other'],
+    options: { values: ['Employed', 'Self Employed', 'Not Employed', 'Other'] },
   },
   employerName: {
     label: "Employer's Name",
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string("Enter your employer's name"),
   },
   employerCity: {
     label: 'Employer City',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string("Enter your employer's city"),
   },
   employerState: {
     label: 'Employer State',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    SelectField,
+    component: SelectField,
     validation: Yup.string("Enter your employer's state"),
-    stateList,
+    options: { values: stateList },
   },
   employerZipcode: {
     label: 'Employer Zip Code',
     section: 'FormSectionEnum.CONTRIBUTOR',
-    TextField,
+    component: TextField,
     validation: Yup.string("Enter your employer's zipcode"),
   },
 
@@ -315,7 +363,7 @@ export const fields = {
   electionAggregate: {
     label: 'Election Aggregate',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    TextField,
+    component: TextField,
     validation: Yup.number('Enter your election aggregate'),
     // 'Election aggregate is required'
   },
@@ -324,48 +372,51 @@ export const fields = {
   inKindDescription: {
     label: 'Inkind Description',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    TextField,
+    component: TextField,
     validation: Yup.string('Give a description of the inkind contribution'),
   },
   inKindType: {
+    // FIX ME
     label: 'Inkind Type',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    SelectField,
+    component: SelectField,
     validation: Yup.string('Select type of inkind contribution'),
-    values: [
-      { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
-      {
-        value: 'fundraising_event_expenses',
-        label: 'Fundraising Event Expenses',
-      },
-      {
-        value: 'general_operating_expenses',
-        label: 'General Operating Expenses',
-      },
-      { value: 'printing', label: 'Literature/Brochures/Printing' },
-      { value: 'management', label: 'Management Services' },
-      {
-        value: 'print_advertising',
-        label: 'Newspaper and Other Periodical Advertising',
-      },
-      { value: 'other_advertising', label: 'Other Advertising' },
-      { value: 'petition_Circulators', label: 'Petition Circulators' },
-      { value: 'postage', label: 'Postage' },
-      {
-        value: 'preparation_of_advertising',
-        label: 'Preparation and Production of Advertising',
-      },
-      { value: 'surveys_and_polls', label: 'Surveys and Polls' },
-      { value: 'travel_expenses', label: 'Travel Expenses' },
-      { value: 'utilities', label: 'Utilities' },
-      { value: 'wages', label: 'Wages/Salaries/Benefits' },
-    ],
+    options: {
+      values: [
+        { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
+        {
+          value: 'fundraising_event_expenses',
+          label: 'Fundraising Event Expenses',
+        },
+        {
+          value: 'general_operating_expenses',
+          label: 'General Operating Expenses',
+        },
+        { value: 'printing', label: 'Literature/Brochures/Printing' },
+        { value: 'management', label: 'Management Services' },
+        {
+          value: 'print_advertising',
+          label: 'Newspaper and Other Periodical Advertising',
+        },
+        { value: 'other_advertising', label: 'Other Advertising' },
+        { value: 'petition_Circulators', label: 'Petition Circulators' },
+        { value: 'postage', label: 'Postage' },
+        {
+          value: 'preparation_of_advertising',
+          label: 'Preparation and Production of Advertising',
+        },
+        { value: 'surveys_and_polls', label: 'Surveys and Polls' },
+        { value: 'travel_expenses', label: 'Travel Expenses' },
+        { value: 'utilities', label: 'Utilities' },
+        { value: 'wages', label: 'Wages/Salaries/Benefits' },
+      ],
+    },
   },
   // Not required if occupation & employer name/address filled in
   occupationLetterDate: {
     label: 'Occupation Letter Date',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    DateField,
+    component: DateField,
     validation: Yup.date('Enter occupation letter date'),
   },
   // Required UNLESS the payment method is Credit Card (Online).
@@ -373,7 +424,7 @@ export const fields = {
   linkToDocumentation: {
     label: 'Link to Documentation?',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    TextField,
+    component: TextField,
     validation: Yup.string(
       'Provide a link to documentation of your contribution'
     ),
@@ -381,13 +432,14 @@ export const fields = {
   notes: {
     label: 'Notes?',
     section: 'FormSectionEnum.OTHER_DETAILS',
-    TextField,
+    component: TextField,
     validation: Yup.string('Add any additional notes'),
   },
 };
 
 export const validate = values => {
   const {
+    amountOfContribution,
     typeOfContribution,
     paymentMethod,
     checkNumber,
@@ -407,13 +459,18 @@ export const validate = values => {
   } = values;
   const error = {};
 
+  // These fields are always required
+  if (isEmpty(amountOfContribution))
+    error.amountOfContribution = 'Contribution amount is required';
+  if (isEmpty(typeOfContribution))
+    error.amountOfContribution = 'Contribution amount is required';
+
   if (paymentMethod === 'Check' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Check number is required.';
   }
   if (paymentMethod === 'Money Order' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Money Order number is required.';
   }
-
   const isPerson = !!individualContributorValues.includes(typeOfContributor);
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
@@ -422,7 +479,7 @@ export const validate = values => {
     error.inKindType = 'Inkind type is required';
   }
   if (
-    subTypeOfContribution === ContributionSubTypeFieldEnum.CASH_CONTRIBUTION &&
+    subTypeOfContribution === ContributionSubTypeEnum.CASH &&
     !checkNoEmptyString(subTypeOfContribution)
   ) {
     error.paymentMethod = 'Payment method type is required';

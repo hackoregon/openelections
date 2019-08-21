@@ -26,7 +26,7 @@ import { jsx } from '@emotion/core';
  *   option: {
  *     limitByField: "usaState",       //Dynamic options based on the usStates field
  *     limitByValues:{
- *       "OR":["portland"],["salem"],  //When 'OR' is selected in state show these options
+ *       "OR":["portland", "salem"],  //When 'OR' is selected in state show these options
  *       "WA":["vancouver", "seattle"]
  *
  *     }
@@ -60,12 +60,17 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
     if (options.limitByValues) {
       const includeValues =
         options.limitByValues[formik.values[options.limitByField]];
+      // console.log(
+      //   { includeValues },
+      //   options.limitByField,
+      //   options.limitByValues
+      // );
       optionValues = optionValues.filter(
         x => includeValues.indexOf(x.value) !== -1
       );
     }
   }
-
+  // console.log(id, optionValues);
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor={id} required={isRequired}>

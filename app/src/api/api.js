@@ -336,7 +336,7 @@ export const mapContributionDataToForm = contribution => {
   return {
     // BASICS VALUES
     dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
-    typeOfContribution: DataToContributionTypeFieldMap.get(type),
+    typeOfContribution: type,
     subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || '',
     typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
     inKindType,
@@ -416,7 +416,7 @@ export const mapContributionFormToData = data => {
     checkNumber,
     contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
     subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
-    type: ContributionTypeFieldToDataMap.get(typeOfContribution),
+    type: typeOfContribution,
     inKindType: inKindType || null,
     oaeType: OaeTypeFieldToDataMap.get(oaeType),
     address1: streetAddress,
