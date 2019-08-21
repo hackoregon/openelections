@@ -14,16 +14,19 @@ import {
 } from '../../services/activityService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { Permission, UserRole } from '../../models/entity/Permission';
-import { ActivityTypeEnum } from '../../models/entity/Activity';
+import {ActivityTypeEnum, getActivityByCampaignByTimeAsync, IShortActivityResult} from '../../models/entity/Activity';
 import { getConnection } from 'typeorm';
-import { Contribution } from '../../models/entity/Contribution';
+import {Contribution, ContributionSubType, ContributionType, ContributorType} from '../../models/entity/Contribution';
 import { Expenditure } from '../../models/entity/Expenditure';
+import { sendActivityEmailToCampaignAdminsAsync } from '../../services/emailService';
+import {addContributionAsync} from "../../services/contributionService";
 
 let government: Government;
 let campaign1: Campaign;
 let campaign2: Campaign;
 let govUser: User;
 let campaignAdmin: User;
+let campaignAdmin2: User;
 let campaignStaff: User;
 let permission: Permission;
 let activityRepository: any;
@@ -37,6 +40,7 @@ describe('Activity', () => {
         govUser = await newActiveUserAsync();
         campaignAdmin = await newActiveUserAsync();
         campaignStaff = await newActiveUserAsync();
+        campaignAdmin2 = await newActiveUserAsync();
         government = await newGovernmentAsync();
         campaign1 = await newCampaignAsync(government);
         campaign2 = await newCampaignAsync(government);
@@ -51,6 +55,12 @@ describe('Activity', () => {
         });
         await addPermissionAsync({
             userId: campaignAdmin.id,
+            governmentId: government.id,
+            campaignId: campaign1.id,
+            role: UserRole.CAMPAIGN_ADMIN
+        });
+        await addPermissionAsync({
+            userId: campaignAdmin2.id,
             governmentId: government.id,
             campaignId: campaign1.id,
             role: UserRole.CAMPAIGN_ADMIN
@@ -347,7 +357,96 @@ describe('Activity', () => {
             });
             expect(records.length).to.equal(0);
         });
+    });
 
+    it('sendActivityEmailToCampaignAdminsAsync, no activities, so no sends no email', async () => {
+        const connection = getConnection('default');
+        await connection.query('TRUNCATE "activity" RESTART IDENTITY CASCADE');
+        const params = await sendActivityEmailToCampaignAdminsAsync(campaign1.id);
+        expect(params).to.be.undefined;
+    });
 
+    it('sendActivityEmailToCampaignAdminsAsync, only user activities, so no sends no email', async () => {
+        const connection = getConnection('default');
+        await connection.query('TRUNCATE "activity" RESTART IDENTITY CASCADE');
+        const params = await sendActivityEmailToCampaignAdminsAsync(campaign1.id);
+        expect(params).to.be.undefined;
+    });
+
+    it('sendActivityEmailToCampaignAdminsAsync testme', async () => {
+        const connection = getConnection('default');
+        await connection.query('TRUNCATE "activity" RESTART IDENTITY CASCADE');
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: contribution1.id,
+            activityType: ActivityTypeEnum.CONTRIBUTION
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: contribution1.id,
+            activityType: ActivityTypeEnum.COMMENT_CONTR
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: expenditure1.id,
+            activityType: ActivityTypeEnum.COMMENT_EXP
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: expenditure1.id,
+            activityType: ActivityTypeEnum.EXPENDITURE
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: contribution1.id,
+            activityType: ActivityTypeEnum.CONTRIBUTION
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: contribution1.id,
+            activityType: ActivityTypeEnum.COMMENT_CONTR
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: expenditure1.id,
+            activityType: ActivityTypeEnum.COMMENT_EXP
+        });
+
+        await createActivityRecordAsync({
+            currentUser: campaignAdmin,
+            government: government,
+            notes: 'this is a comment',
+            activityId: expenditure1.id,
+            activityType: ActivityTypeEnum.EXPENDITURE
+        });
+
+        const params = await sendActivityEmailToCampaignAdminsAsync(campaign1.id);
+        const to: Date = new Date();
+        const from: Date = new Date(Date.now() - (24 * 60 * 60 * 1000));
+        const activities = await getActivityByCampaignByTimeAsync(campaign1.id, from, to);
+        expect(activities.length).to.equal(8);
+        expect(params.Destination.ToAddresses.length).to.equal(2);
+        expect(JSON.stringify(params.Message.Body.Text)).to.equal('{"Charset":"UTF-8","Data":"This is a daily transaction summary for your campaign\'s Contributions and Expenditures.\\r\\nContributions:\\r\\n\\r\\nThe following contributions have been created or updated in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nContribution Comments:\\r\\n\\r\\nThe following contributions have been commented on in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nExpenditures:\\r\\n\\r\\nThe following expenditures have been created or updated in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nExpenditures Comments:\\r\\n\\r\\nThe following expenditures have been commented on in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\n\\r\\n\\r\\nIn accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.\\r\\nIf you would like more information about the transaction(s), please go to your campaign portal at http://localhost:3000.\\r\\nSincerely,\\r\\nSusan Mottet\\r\\nDirector, Open and Accountable Elections\\r\\nhttps://www.portlandoregon.gov/OAE"}');
+        expect(JSON.stringify(params.Message.Body.Html)).to.equal('{"Charset":"UTF-8","Data":"<html><head><body><p>This is a daily transaction summary for your campaign\'s Contributions and Expenditures.</p><p>Contributions:<br/>The following contributions have been created or updated in the last 24 hours.<br/><br/>- ID#1: this is a comment<br/>- ID#1: this is a comment</p><p>Contribution Comments:<br/>The following contributions have been commented on in the last 24 hours.<br/><br/>- ID#1: this is a comment<br/>- ID#1: this is a comment</p><p>Expenditures:<br/>The following expenditures have been created or updated in the last 24 hours.<br/><br/>- ID#1: this is a comment<br/>- ID#1: this is a comment</p><p>Expenditures Comments:<br/>The following expenditures have been commented on in the last 24 hours.<br/><br/>- ID#1: this is a comment<br/>- ID#1: this is a comment<br/><br/></p><p>In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.</p><p>If you would like more information about the transaction(s), please go to your campaign portal at <a href=\\"http://localhost:3000\\">http://localhost:3000</a>.</p><p>Sincerely,<br/>Susan Mottet<br/>Director, Open and Accountable Elections<br/><a href=\\"https://www.portlandoregon.gov/OAE\\">https://www.portlandoregon.gov/OAE</a><br/></p></body></head>"}');
     });
 });
