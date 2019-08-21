@@ -214,13 +214,13 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
         },
         Text: {
           Charset: 'UTF-8',
-          Data: 'This is a daily transaction summary for your campaign\'s Contributions and Expenditures.\r\n'+
+          Data: 'This is a daily transaction summary for your campaign\'s Contributions and Expenditures.\r\n' +
               `${contributionsText.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
               `${contributionComments.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
               `${expendituresText.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
               `${expendituresComments.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
-              'In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.\r\n'+
-              `If you would like more information about the transaction(s), please go to your campaign portal at ${host}.\r\n`+
+              'In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.\r\n' +
+              `If you would like more information about the transaction(s), please go to your campaign portal at ${host}.\r\n` +
               'Sincerely,\r\n' +
               'Susan Mottet\r\n' +
               'Director, Open and Accountable Elections\r\n' +
