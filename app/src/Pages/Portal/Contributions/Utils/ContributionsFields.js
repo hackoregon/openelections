@@ -109,16 +109,14 @@ export const fields = {
     label: 'Date of Contribution',
     section: 'FormSectionEnum.BASIC',
     component: DateField,
-    validation: Yup.string('Enter data of contribution'),
-    // 'Contribution date is required'
+    validation: Yup.string().required('Contribution date is required'),
   },
   typeOfContribution: {
     // FIX ME DONE!
     label: 'Type of Contribution',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
-    validation: Yup.string('Choose the type of contribution'),
-    // 'A contribution type is required',
+    validation: Yup.string().required('A contribution type is required'),
     options: {
       values: mapToSelectOptions(DataToContributionTypeFieldMap),
       valuesold: [
@@ -175,15 +173,14 @@ export const fields = {
     //       }}
     //     />;
     //   },
-    validation: Yup.string('Choose the subtype of contribution'),
+    validation: Yup.string().required('The contribution subtype is required'),
   },
-  // 'The contribution subtype is required'
   typeOfContributor: {
     // FIX ME DONE
     label: 'Type of Contributor',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
-    validation: Yup.string('Choose the type of contributor'),
+    validation: Yup.string(),
     // 'A contributor type is required',
     options: {
       values: mapToSelectOptions(DataToContributorTypeFieldMap),
@@ -193,14 +190,13 @@ export const fields = {
     label: 'Amount of Contribution',
     section: 'FormSectionEnum.BASIC',
     component: CurrencyField,
-    validation: Yup.number('Choose the amount of contribution'),
-    // 'The contribution amount is required'
+    validation: Yup.number().required('The contribution amount is required'),
   },
   oaeType: {
     label: 'OAE Contribution Type',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
-    validation: Yup.string('Choose the OAE contribution type.'),
+    validation: Yup.string(),
     // 'The OAE contribution type is required',
     options: {
       values: [
@@ -217,7 +213,7 @@ export const fields = {
     label: 'Submit for Match?',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
-    validation: Yup.string('Select yes or no.'),
+    validation: Yup.string(),
     // 'This field is required.',
     options: { values: ['Yes', 'No'] },
   },
@@ -254,13 +250,13 @@ export const fields = {
     label: "Contributor's Last Name",
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string('Enter last name'),
+    validation: Yup.string(),
   },
   entityName: {
     label: 'Entity Name',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string('Enter entity name'),
+    validation: Yup.string(),
   },
   streetAddress: {
     label: 'Street Address',
@@ -278,52 +274,50 @@ export const fields = {
         }}
       />
     ),
+    validation: Yup.string().required('Your street address is required'),
   },
   addressLine2: {
     label: 'Address Line 2',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string('Enter second address line'),
+    validation: Yup.string(),
   },
   city: {
     label: 'City',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string('Select your city'),
-    // 'Your city is required'
+    validation: Yup.string().required('Your city is required'),
   },
   state: {
     label: 'State',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: SelectField,
-    validation: Yup.string('Select your state'),
-    // 'Your state is required',
+    validation: Yup.string().required('Your state is required'),
     options: { values: stateList },
   },
   zipcode: {
     label: 'Zip Code',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.number('Enter your zipcode'),
-    // 'A zipcode is required'
+    validation: Yup.number().required('Your zipcode is required'),
   },
   email: {
     label: 'Email Address',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: EmailField,
-    validation: Yup.string('Enter your email address'),
+    validation: Yup.string(),
   },
   phone: {
     label: 'Phone Number',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: PhoneField,
-    validation: Yup.string('Enter your phone number'),
+    validation: Yup.string(),
   },
   phoneType: {
     label: 'Phone Type',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: SelectField,
-    validation: Yup.string('Select your phone type'),
+    validation: Yup.string(),
     options: {
       values: [PhoneTypeEnum.MOBILE, PhoneTypeEnum.WORK, PhoneTypeEnum.HOME],
     },
@@ -332,33 +326,33 @@ export const fields = {
     label: 'Occupation',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: SelectField,
-    validation: Yup.string('Select your occupation'),
+    validation: Yup.string(),
     options: { values: ['Employed', 'Self Employed', 'Not Employed', 'Other'] },
   },
   employerName: {
     label: "Employer's Name",
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string("Enter your employer's name"),
+    validation: Yup.string(),
   },
   employerCity: {
     label: 'Employer City',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string("Enter your employer's city"),
+    validation: Yup.string(),
   },
   employerState: {
     label: 'Employer State',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: SelectField,
-    validation: Yup.string("Enter your employer's state"),
+    validation: Yup.string(),
     options: { values: stateList },
   },
   employerZipcode: {
     label: 'Employer Zip Code',
     section: 'FormSectionEnum.CONTRIBUTOR',
     component: TextField,
-    validation: Yup.string("Enter your employer's zipcode"),
+    validation: Yup.string(),
   },
 
   // OTHER DETAILS SECTION
@@ -366,7 +360,7 @@ export const fields = {
     label: 'Election Aggregate',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: TextField,
-    validation: Yup.number('Enter your election aggregate'),
+    validation: Yup.number(),
     // 'Election aggregate is required'
   },
   // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
@@ -375,14 +369,14 @@ export const fields = {
     label: 'Inkind Description',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: TextField,
-    validation: Yup.string('Give a description of the inkind contribution'),
+    validation: Yup.string(),
   },
   inKindType: {
     // FIX ME
     label: 'Inkind Type',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: SelectField,
-    validation: Yup.string('Select type of inkind contribution'),
+    validation: Yup.string(),
     options: {
       values: [
         { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
@@ -419,7 +413,7 @@ export const fields = {
     label: 'Occupation Letter Date',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: DateField,
-    validation: Yup.date('Enter occupation letter date'),
+    validation: Yup.date(),
   },
   // Required UNLESS the payment method is Credit Card (Online).
   // or if there is a donor portal where donors can attest digitally, that may affect this
@@ -427,15 +421,13 @@ export const fields = {
     label: 'Link to Documentation?',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: TextField,
-    validation: Yup.string(
-      'Provide a link to documentation of your contribution'
-    ),
+    validation: Yup.string(),
   },
   notes: {
     label: 'Notes?',
     section: 'FormSectionEnum.OTHER_DETAILS',
     component: TextField,
-    validation: Yup.string('Add any additional notes'),
+    validation: Yup.string(),
   },
 };
 
