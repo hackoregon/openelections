@@ -49,9 +49,9 @@ const individualContributorValues = [
 ];
 
 export const inKindContributionValues = [
-  ContributionSubTypeFieldEnum.INKIND_CONTRIBUTION,
-  ContributionSubTypeFieldEnum.INKIND_FORGIVEN_ACCOUNT,
-  ContributionSubTypeFieldEnum.INKIND_FORGIVEN_PERSONAL,
+  ContributionSubTypeEnum.INKIND_CONTRIBUTION,
+  ContributionSubTypeEnum.INKIND_FORGIVEN_ACCOUNT,
+  ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL,
 ];
 
 export const contributionsEmptyState = {
@@ -111,7 +111,7 @@ export const fields = {
     // 'Contribution date is required'
   },
   typeOfContribution: {
-    // FIX ME
+    // FIX ME DONE!
     label: 'Type of Contribution',
     section: 'FormSectionEnum.BASIC',
     component: SelectField,
@@ -463,7 +463,9 @@ export const validate = values => {
   if (isEmpty(amountOfContribution))
     error.amountOfContribution = 'Contribution amount is required';
   if (isEmpty(typeOfContribution))
-    error.amountOfContribution = 'Contribution amount is required';
+    error.amountOfContribution = 'Contribution type is required';
+  if (isEmpty(subTypeOfContribution))
+    error.subTypeOfContribution = 'Contribution subtype is required';
 
   if (paymentMethod === 'Check' && !checkNoEmptyString(checkNumber)) {
     error.checkNumber = 'Check number is required.';
@@ -474,7 +476,7 @@ export const validate = values => {
   const isPerson = !!individualContributorValues.includes(typeOfContributor);
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
-    !checkNoEmptyString(inKindType)
+    isEmpty(inKindType)
   ) {
     error.inKindType = 'Inkind type is required';
   }
