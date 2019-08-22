@@ -2,6 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as auth from './auth';
 import * as campaigns from './campaigns';
+import * as summary from './summary';
 import * as governments from './governments';
 import * as api from '../../api';
 import * as schema from '../../api/schema';
@@ -413,6 +414,7 @@ describe('Side Effects', () => {
       { type: actionTypes.ME.REQUEST },
       { type: campaigns.actionTypes.SET_CAMPAIGN.SUCCESS, campaignId: 1 },
       { type: governments.actionTypes.SET_GOVERNMENT.SUCCESS, governmentId: 1 },
+      { type: summary.actionTypes.GET_SUMMARY.REQUEST },
       { type: actionTypes.ME.SUCCESS },
     ];
     const store = mockStore({});
@@ -430,7 +432,8 @@ describe('Side Effects', () => {
       expect(actions[0]).toEqual(expectedActions[0]);
       expect(actions[1].type).toEqual(expectedActions[1].type);
       expect(actions[2].type).toEqual(expectedActions[2].type);
-      expect(actions[3].me).toMatchObject({
+      expect(actions[3].type).toEqual(expectedActions[3].type);
+      expect(actions[4].me).toMatchObject({
         id: expect.any(Number),
         email: expect.any(String),
       });

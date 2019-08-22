@@ -10,6 +10,7 @@ import * as contributions from '../controller/contributions';
 import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
 import * as expenditures from '../controller/expenditures';
+import * as summary from '../controller/summary';
 
 export const AppRoutes = [
     /**
@@ -770,6 +771,33 @@ export const AppRoutes = [
         path: '/expenditures/:id',
         method: 'get',
         action: expenditures.getExpenditureById
+    },
+    /**
+     * @swagger
+     * /summary:
+     *   post:
+     *     summary: Get the summary of status for expenditures and contributions by campaingId or governmentId
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/GetStatusSummaryBody'
+     *     responses:
+     *       200:
+     *         description: summary object
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/StatusSummary'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/summary',
+        method: 'post',
+        action: summary.getSummary
     },
 
 ];

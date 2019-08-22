@@ -523,3 +523,51 @@ export async function getContributionsByGovernmentIdAsync(
         throw new Error('Error executing get contributions query');
     }
 }
+
+export interface SummaryAttrs {
+    campaignId?: number;
+    governmentId?: number;
+}
+
+export interface ContributionSummaryByStatus {
+    status: ContributionStatus;
+    total: number;
+    amount: number;
+    matchAmount: number;
+}
+
+export async function getContributionsSummaryByStatusAsync(
+    attrs: SummaryAttrs
+): Promise<ContributionSummaryByStatus[]> {
+    try {
+        const contributionQuery = getConnection('default')
+            .getRepository('Contribution')
+            .createQueryBuilder('contributions')
+            .select('SUM(contributions.amount)', 'amount')
+            .addSelect('coalesce(SUM(contributions.matchAmount), 0)', 'matchAmount')
+            .addSelect('COUNT(contributions.*)', 'total')
+            .addSelect('contributions.status', 'status')
+            .where('contributions.status != :status', {status: ContributionStatus.ARCHIVED})
+            .groupBy('contributions.status');
+        if (attrs.campaignId) {
+            contributionQuery.andWhere('contributions."campaignId" = :campaignId', {campaignId: attrs.campaignId});
+        } else if (attrs.governmentId) {
+            contributionQuery.andWhere('contributions."governmentId" = :governmentId', {governmentId: attrs.governmentId});
+        }
+
+        const results: any = await contributionQuery.getRawMany();
+        const summary: ContributionSummaryByStatus[] = [];
+        results.forEach((item: any): void => {
+            summary.push({
+                status: item.status,
+                total: parseInt(item.total),
+                amount: parseInt(item.amount),
+                matchAmount: parseInt(item.matchAmount)
+            });
+        });
+        return summary;
+
+    } catch (err) {
+        throw new Error('Error executing get contributions summary status query');
+    }
+}
