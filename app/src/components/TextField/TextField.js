@@ -12,10 +12,10 @@ const TextField = ({
   value,
   onChange,
   onBlur,
-  isRequired,
+  isrequired,
 }) => (
   <MaterialTextField
-    required={isRequired}
+    required={isrequired}
     id={id}
     name={name}
     label={label}

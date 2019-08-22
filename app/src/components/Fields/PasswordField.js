@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from '../TextField/TextField';
 
-const PasswordField = ({ id, label, formik, isRequired }) => (
+const PasswordField = ({ id, label, formik, isrequired }) => (
   <TextField
-    isRequired={isRequired}
+    required={isrequired}
     id={id}
     name={id}
     label={label}

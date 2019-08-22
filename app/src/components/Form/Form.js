@@ -12,7 +12,8 @@ export const formFromFields = (fields, formikProps) =>
       label: fields[id].label,
       options: { ...fields[id].options },
       formik: formikProps,
-      isRequired: _.get(fields[id], 'validation._exclusive.required'),
+      // TODO also look in validate for dynamic requires
+      isrequired: _.get(fields[id], 'validation._exclusive.required'),
     })
   );
 

@@ -4,11 +4,11 @@ import TextFieldMaterial from '@material-ui/core/TextField';
 import TextField from '../TextField/TextField';
 
 const DateField = props => {
-  const { id, label, formik, isRequired } = props;
-
+  const { id, label, formik, isrequired, onChange, picker } = props;
+  const pickerProps = picker ? props : null;
   return (
     <TextFieldMaterial
-      required={isRequired}
+      required={isrequired}
       id={id}
       name={id}
       label={label}
@@ -16,12 +16,12 @@ const DateField = props => {
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
       value={formik.values[id]}
-      onChange={formik.handleChange}
+      onChange={onChange || formik.handleChange}
       onBlur={formik.handleBlur}
       autoComplete="on"
       fullWidth
       InputLabelProps={{ shrink: true }}
-      {...props}
+      {...pickerProps}
     />
   );
 };

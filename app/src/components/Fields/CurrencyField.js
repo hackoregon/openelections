@@ -29,10 +29,17 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function CurrencyField({ id, label, formik, options }) {
+export default function CurrencyField({
+  id,
+  label,
+  formik,
+  options,
+  isrequired,
+}) {
   return (
     <TextFieldMaterial
       id={id}
+      required={isrequired}
       name={id}
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}

@@ -71,7 +71,8 @@ export const contributionsEmptyState = {
 
   // CONTRIBUTOR VALUES
   firstName: '',
-  lastNameOrEntity: '',
+  lastName: '',
+  entityName: '',
   streetAddress: '',
   addressLine2: '',
   city: '',
@@ -521,6 +522,6 @@ export const validate = values => {
       }
     }
   }
-  console.log('Form will submit error is empty', error);
+  console.log('Conditional require', error);
   return error;
 };
