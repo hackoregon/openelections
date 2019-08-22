@@ -470,28 +470,68 @@ export const validate = values => {
   visible.checkSelected = !!(
     values.paymentMethod === 'Check' || values.paymentMethod === 'Money Order'
   );
-
-  // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
+  visible.paymentMethod = visible.checkSelected;
   visible.emptyOccupationLetterDate = values.occupationLetterDate === '';
   visible.showEmployerSection =
     values.occupation === 'Employed' && visible.isPerson;
   visible.showInKindFields = !!inKindContributionValues.includes(
     values.subTypeOfContribution
   );
+  visible.showEmployerSection = inKindContributionValues.includes(
+    subTypeOfContribution
+  );
+
   // These fields are conditionally required
-  if (visible.checkSelected && !checkNoEmptyString(checkNumber)) {
-    error.checkNumber = 'Check number is required.';
-  }
-  if (visible.checkSelected && !checkNoEmptyString(checkNumber)) {
-    error.checkNumber = 'Money Order number is required.';
-  }
-  if (
-    values.paymentMethod === 'Check' ||
-    values.paymentMethod === 'Money Order'
-  ) {
-    error._visibleIf = 'paymentMethod';
+  if (visible.showEmployerSection && isEmpty(inKindType))
+    error.inKindType = 'Inkind type is required';
+
+  if (visible.checkSelected && isEmpty(checkNumber)) {
+    error.checkNumber =
+      values.paymentMethod === 'Check'
+        ? 'Check number is required.'
+        : 'Money Order number is required.';
   }
 
+  if (
+    subTypeOfContribution === ContributionSubTypeEnum.CASH &&
+    isEmpty(paymentMethod)
+  ) {
+    error.paymentMethod = 'Payment method type is required';
+  }
+
+  // If it's a person require first and last name
+  // else require entity name
+  if (visible.isPerson) {
+    if (isEmpty(firstName)) {
+      error.firstName = 'First name is required.';
+    }
+    if (isEmpty(lastName)) {
+      error.lastName = 'Last name is required.';
+    }
+  } else if (isEmpty(entityName)) {
+    error.entityName = 'Name of entity is required';
+  }
+
+  // They are employed and they don't have a letter require employer info
+  if (occupation === 'Employed' && visible.isPerson) {
+    // If they don't have a letter then the employer fields are required
+    if (isEmpty(occupationLetterDate)) {
+      if (isEmpty(employerName)) {
+        error.employerName = 'Employer name is required.';
+      }
+      if (isEmpty(employerCity)) {
+        error.employerCity = 'Employer city is required.';
+      }
+      if (isEmpty(employerState)) {
+        error.employerState = 'Employer state is required.';
+      }
+      if (isEmpty(employerZipcode)) {
+        error.employerZipcode = 'Employer zipcode is required.';
+      }
+    }
+  }
+
+  // Conditionally Set Values
   if (values.submitForMatch !== 'No') {
     if (
       // Set submitForMatch to No under these conditions
@@ -504,51 +544,8 @@ export const validate = values => {
     }
   }
 
-  if (
-    inKindContributionValues.includes(subTypeOfContribution) &&
-    isEmpty(inKindType)
-  ) {
-    error.inKindType = 'Inkind type is required';
-  }
-  if (
-    subTypeOfContribution === ContributionSubTypeEnum.CASH &&
-    !checkNoEmptyString(subTypeOfContribution)
-  ) {
-    error.paymentMethod = 'Payment method type is required';
-  }
-
-  // If it's a person require first and last name
-  // else require entity name
-  if (visible.isPerson) {
-    if (!checkNoEmptyString(firstName)) {
-      error.firstName = 'First name is required.';
-    }
-    if (!checkNoEmptyString(lastName)) {
-      error.lastName = 'Last name is required.';
-    }
-  } else if (!checkNoEmptyString(entityName)) {
-    error.entityName = 'Name of entity is required';
-  }
-
-  // They are employed and they don't have a letter require employer info
-  if (occupation === 'Employed' && visible.isPerson) {
-    // If they don't have a letter then the employer fields are required
-    if (!checkNoEmptyString(occupationLetterDate)) {
-      if (!checkNoEmptyString(employerName)) {
-        error.employerName = 'Employer name is required.';
-      }
-      if (!checkNoEmptyString(employerCity)) {
-        error.employerCity = 'Employer city is required.';
-      }
-      if (!checkNoEmptyString(employerState)) {
-        error.employerState = 'Employer state is required.';
-      }
-      if (!checkNoEmptyString(employerZipcode)) {
-        error.employerZipcode = 'Employer zipcode is required.';
-      }
-    }
-  }
-  console.log('Conditional require', error);
+  // console.log('Conditional require', error);
+  console.log('Conditionally Visible', visible);
   error._visibleIf = visible;
   return error;
 };

@@ -6,18 +6,12 @@ import _ from 'lodash';
 
 export const formFromFields = (fields, formikProps, dynamicRequire) =>
   Object.keys(fields).map(id => {
-    const x = !!(
-      dynamicRequire[id] || _.get(fields[id], 'validation._exclusive.required')
-    );
-    const y = !!formikProps.values[id];
-    if (x && !y) console.log('isrequired', id, x, y);
     return React.createElement(fields[id].component, {
       key: id,
       id,
       label: fields[id].label,
       options: { ...fields[id].options },
       formik: formikProps,
-      // TODO also look in validate for dynamic requires
       isrequired: !!(
         dynamicRequire[id] ||
         _.get(fields[id], 'validation._exclusive.required')
@@ -32,6 +26,12 @@ export const formFromFields = (fields, formikProps, dynamicRequire) =>
 //   return {};
 // };
 
+function removeVisibleIfFromErrorObject(errorObject) {
+  const modifiedErrorObject = errorObject;
+  delete modifiedErrorObject._visibleIf;
+  return modifiedErrorObject;
+}
+
 class Form extends React.Component {
   render() {
     const { fields, initialValues, sections, children, validate } = this.props;
@@ -45,11 +45,7 @@ class Form extends React.Component {
       <Formik
         validate={
           validate
-            ? validate => {
-                if (validate) {
-                  delete validate._visibleIf;
-                }
-              }
+            ? values => removeVisibleIfFromErrorObject(validate(values))
             : null
         }
         initialValues={initialValues}
@@ -122,7 +118,7 @@ class Form extends React.Component {
             handleCancel: formikProps.handleReset,
             values: formikProps.values,
             visibleIf,
-            formikProps,
+            formErrors: formikProps.errors,
             /* could return more formikProps if needed */
           });
         }}

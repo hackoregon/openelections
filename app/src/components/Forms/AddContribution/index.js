@@ -50,34 +50,8 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, visibleIf, formikProps }) => {
-      console.log('formikProps', formikProps);
-      // const isPerson = !!(
-      //   values.typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
-      //   values.typeOfContributor === ContributorTypeEnum.FAMILY
-      // );
-      // const checkSelected =
-      //   values.paymentMethod === 'Check' ||
-      //   values.paymentMethod === 'Money Order';
-
-      // // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
-      // const emptyOccupationLetterDate = values.occupationLetterDate === '';
-      // const showEmployerSection = values.occupation === 'Employed';
-      // const showInKindFields = !!inKindContributionValues.includes(
-      //   values.subTypeOfContribution
-      // );
-
-      // if (values.submitForMatch !== 'No') {
-      //   if (
-      //     // Set submitForMatch to No under these conditions
-      //     values.amountOfContribution > 500 ||
-      //     valques.typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
-      //     values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
-      //     !isPerson
-      //   ) {
-      //     values.submitForMatch = 'No';
-      //   }
-      // }
+    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
+      console.log('Required fields', Object.keys(formErrors));
 
       return (
         <>
