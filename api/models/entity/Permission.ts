@@ -1,8 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, getConnection} from 'typeorm';
-import {Government, IGovernmentSummary} from './Government';
-import {Campaign, ICampaignSummary} from './Campaign';
-import {IUserSummary, User, UserStatus} from './User';
-import {IsDefined, validate, ValidationError} from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, getConnection } from 'typeorm';
+import { Government, IGovernmentSummary } from './Government';
+import { Campaign, ICampaignSummary } from './Campaign';
+import { IUserSummary, User, UserStatus } from './User';
+import { IsDefined, validate, ValidationError } from 'class-validator';
+import { PermissionType } from 'aws-sdk/clients/workmail';
 
 export enum UserRole {
     GOVERNMENT_ADMIN = 'government_admin',
@@ -132,7 +133,7 @@ export async function getPermissionsByCampaignIdAsync(campaignId: number): Promi
     const permissionRepository = getConnection('default').getRepository('Permission');
     const permissions = await permissionRepository.createQueryBuilder('permission')
         .andWhere('"permission"."campaignId" = :campaignId', {campaignId}) // notice "" quotes around camelCase id items
-        .innerJoinAndSelect('permission.user', 'user',)
+        .innerJoinAndSelect('permission.user', 'user', )
         .innerJoinAndSelect('permission.campaign', 'campaign')
         .innerJoinAndSelect('permission.government', 'government')
         .getMany() as IUserPermissionResult[];

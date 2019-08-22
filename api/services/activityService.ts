@@ -1,9 +1,12 @@
 import {
     Activity,
     ActivityTypeEnum,
-    getActivityByCampaignAsync, getActivityByContributionAsync, getActivityByExpenditureAsync,
+    getActivityByCampaignAsync,
+    getActivityByCampaignByTimeAsync,
+    getActivityByContributionAsync,
+    getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
-    IActivityResult
+    IActivityResult, IShortActivityResult
 } from '../models/entity/Activity';
 import { getConnection } from 'typeorm';
 import { Government } from '../models/entity/Government';
@@ -107,4 +110,14 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
     }
 
     return [];
+}
+
+export interface IGetActivityRecordsForEmails {
+    campaignId: number;
+    from: Date;
+    to: Date;
+}
+
+export async function getActivityRecordsForEmailsAsync(params: IGetActivityRecordsForEmails): Promise<IShortActivityResult[]> {
+    return await getActivityByCampaignByTimeAsync(params.campaignId, params.from, params.to);
 }
