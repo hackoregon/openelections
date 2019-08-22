@@ -22,6 +22,9 @@ import permissions, {
 import expenditures, {
   STATE_KEY as EXPENDITURES_STATE_KEY,
 } from './state/ducks/expenditures';
+import summary, {
+  STATE_KEY as SUMMARY_STATE_KEY,
+} from './state/ducks/summary';
 import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
 import * as api from './api';
@@ -48,6 +51,7 @@ export default function configureStore(history) {
       [USERS_STATE_KEY]: users,
       [MODAL_STATE_KEY]: modal,
       [EXPENDITURES_STATE_KEY]: expenditures,
+      [SUMMARY_STATE_KEY]: summary,
     }),
     composeEnhancers(
       applyMiddleware(

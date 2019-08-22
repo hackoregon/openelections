@@ -279,6 +279,7 @@ export const expenditureSummaryFields = <const>[
     'state',
     'zip',
     'type',
+
     'subType',
     'payeeType',
     'checkNumber',
@@ -343,3 +344,49 @@ const removeUndefined = obj => {
     });
     return obj;
 };
+
+export interface ExpenditureSummaryByStatus {
+    status: ExpenditureStatus;
+    total: number;
+    amount: number;
+}
+
+
+export interface SummaryAttrs {
+    campaignId?: number;
+    governmentId?: number;
+}
+
+export async function getExpenditureSummaryByStatusAsync(
+    attrs: SummaryAttrs
+): Promise<ExpenditureSummaryByStatus[]> {
+    try {
+        const expenditureQuery = getConnection('default')
+            .getRepository('Expenditure')
+            .createQueryBuilder('expenditures')
+            .select('SUM(expenditures.amount)', 'amount')
+            .addSelect('COUNT(expenditures.*)', 'total')
+            .addSelect('expenditures.status', 'status')
+            .where('expenditures.status != :status', {status: ExpenditureStatus.ARCHIVED})
+            .groupBy('expenditures.status');
+        if (attrs.campaignId) {
+            expenditureQuery.andWhere('expenditures."campaignId" = :campaignId', {campaignId: attrs.campaignId});
+        } else if (attrs.governmentId) {
+            expenditureQuery.andWhere('expenditures."governmentId" = :governmentId', {governmentId: attrs.governmentId});
+        }
+
+        const results: any = await expenditureQuery.getRawMany();
+        const summary: ExpenditureSummaryByStatus[] = [];
+        results.forEach((item: any): void => {
+            summary.push({
+                status: item.status,
+                total: parseInt(item.total),
+                amount: parseInt(item.amount)
+            });
+        });
+        return summary;
+
+    } catch (err) {
+        throw new Error('Error executing get expenditures summary status query');
+    }
+}

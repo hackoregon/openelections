@@ -727,3 +727,13 @@ export function updateExpenditure(expenditureAttrs) {
     expenditureAttrs
   );
 }
+
+// path: '/summary'
+//   method: 'post',
+// summaryArttrs = {governmentId: integer OR campaignId: integer}
+export function getStatusSummary(summaryAttrs) {
+  return post(
+    `${baseUrl()}/summary`,
+    summaryAttrs
+  );
+}

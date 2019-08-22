@@ -70,6 +70,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+    ContributionStatusSummary:
+      type: object
+      properties:
+        status: enum[Draft,Submitted,Processed]
+        matchAmount: integer
+        amount: integer
+    ExpenditureStatusSummary:
+      type: object
+      properties:
+        status: enum[draft,submitted,processed, in_compliance, out_of_compliance]
+        amount: integer
+    StatusSummary:
+      type: object
+      properties:
+        contributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContributionStatusSummary'
+        expenditures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenditureStatusSummary'
     Contribution:
       type: object
       properties:
@@ -213,6 +235,20 @@ components:
               page:
                 type: integer
     GetUsersBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - type: object
+                properties:
+                  campaignId:
+                    type: integer
+              - type: object
+                properties:
+                  governmentId:
+                    type: integer
+    GetStatusSummaryBody:
       required: true
       content:
         application/json:
