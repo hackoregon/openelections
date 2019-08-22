@@ -432,6 +432,11 @@ export const fields = {
   },
 };
 
+// Uses Formik validate, with an additional object _visibleIf
+// Any boolean properties set on passed _visibleIf are passed to the form
+// All conditional display and requied logic goes in validate
+// All static type and requied field properties are set in the fields object
+// TODO create interface
 export const validate = values => {
   const {
     dateOfContribution,
@@ -454,30 +459,51 @@ export const validate = values => {
     typeOfContributor,
   } = values;
   const error = {};
+  const visible = {};
 
-  // These fields are always required
-  // Also contributor street, city, state and zip
-  if (isEmpty(dateOfContribution))
-    error.dateOfContribution = 'Contribution date is required';
-  if (isEmpty(amountOfContribution))
-    error.amountOfContribution = 'Contribution amount is required';
-  if (isEmpty(typeOfContribution))
-    error.typeOfContribution = 'Contribution type is required';
-  if (isEmpty(subTypeOfContribution))
-    error.subTypeOfContribution = 'Contribution subtype is required';
-
-  // These fields are conditionally required
-  if (paymentMethod === 'Check' && !checkNoEmptyString(checkNumber)) {
-    error.checkNumber = 'Check number is required.';
-  }
-  if (paymentMethod === 'Money Order' && !checkNoEmptyString(checkNumber)) {
-    error.checkNumber = 'Money Order number is required.';
-  }
-
-  const isPerson = !!(
+  // Make these areas visible
+  visible.isPerson = !!(
     typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
     typeOfContributor === ContributorTypeEnum.FAMILY
   );
+
+  visible.checkSelected = !!(
+    values.paymentMethod === 'Check' || values.paymentMethod === 'Money Order'
+  );
+
+  // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
+  visible.emptyOccupationLetterDate = values.occupationLetterDate === '';
+  visible.showEmployerSection =
+    values.occupation === 'Employed' && visible.isPerson;
+  visible.showInKindFields = !!inKindContributionValues.includes(
+    values.subTypeOfContribution
+  );
+  // These fields are conditionally required
+  if (visible.checkSelected && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = 'Check number is required.';
+  }
+  if (visible.checkSelected && !checkNoEmptyString(checkNumber)) {
+    error.checkNumber = 'Money Order number is required.';
+  }
+  if (
+    values.paymentMethod === 'Check' ||
+    values.paymentMethod === 'Money Order'
+  ) {
+    error._visibleIf = 'paymentMethod';
+  }
+
+  if (values.submitForMatch !== 'No') {
+    if (
+      // Set submitForMatch to No under these conditions
+      values.amountOfContribution > 500 ||
+      values.typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
+      values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
+      !visible.isPerson
+    ) {
+      values.submitForMatch = 'No';
+    }
+  }
+
   if (
     inKindContributionValues.includes(subTypeOfContribution) &&
     isEmpty(inKindType)
@@ -493,7 +519,7 @@ export const validate = values => {
 
   // If it's a person require first and last name
   // else require entity name
-  if (isPerson) {
+  if (visible.isPerson) {
     if (!checkNoEmptyString(firstName)) {
       error.firstName = 'First name is required.';
     }
@@ -505,7 +531,7 @@ export const validate = values => {
   }
 
   // They are employed and they don't have a letter require employer info
-  if (occupation === 'Employed' && isPerson) {
+  if (occupation === 'Employed' && visible.isPerson) {
     // If they don't have a letter then the employer fields are required
     if (!checkNoEmptyString(occupationLetterDate)) {
       if (!checkNoEmptyString(employerName)) {
@@ -523,5 +549,6 @@ export const validate = values => {
     }
   }
   console.log('Conditional require', error);
+  error._visibleIf = visible;
   return error;
 };

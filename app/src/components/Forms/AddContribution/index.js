@@ -10,24 +10,24 @@ import {
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddContributionForm from './AddContributionForm';
 import {
-  ContributionTypeFieldEnum,
+  // ContributionTypeFieldEnum,
   ContributionStatusEnum,
   mapContributionFormToData,
-  ContributionSubTypeFieldEnum,
-  ContributionSubTypeEnum,
-  ContributionTypeEnum,
-  ContributorTypeEnum,
-  ContributorTypeFieldEnum,
+  // ContributionSubTypeFieldEnum,
+  // ContributionSubTypeEnum,
+  // ContributionTypeEnum,
+  // ContributorTypeEnum,
+  // ContributorTypeFieldEnum,
 } from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
-  OtherDetailsSection,
+  // OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import {
   contributionsEmptyState,
-  inKindContributionValues,
+  // inKindContributionValues,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
@@ -50,47 +50,48 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, values }) => {
-      const isPerson = !!(
-        values.typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
-        values.typeOfContributor === ContributorTypeEnum.FAMILY
-      );
-      const checkSelected =
-        values.paymentMethod === 'Check' ||
-        values.paymentMethod === 'Money Order';
+    {({ formFields, isValid, handleSubmit, visibleIf, formikProps }) => {
+      console.log('formikProps', formikProps);
+      // const isPerson = !!(
+      //   values.typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+      //   values.typeOfContributor === ContributorTypeEnum.FAMILY
+      // );
+      // const checkSelected =
+      //   values.paymentMethod === 'Check' ||
+      //   values.paymentMethod === 'Money Order';
 
-      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
-      const emptyOccupationLetterDate = values.occupationLetterDate === '';
-      const showEmployerSection = values.occupation === 'Employed';
-      const showInKindFields = !!inKindContributionValues.includes(
-        values.subTypeOfContribution
-      );
+      // // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
+      // const emptyOccupationLetterDate = values.occupationLetterDate === '';
+      // const showEmployerSection = values.occupation === 'Employed';
+      // const showInKindFields = !!inKindContributionValues.includes(
+      //   values.subTypeOfContribution
+      // );
 
-      if (values.submitForMatch !== 'No') {
-        if (
-          // Set submitForMatch to No under these conditions
-          values.amountOfContribution > 500 ||
-          values.typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
-          values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
-          !isPerson
-        ) {
-          values.submitForMatch = 'No';
-        }
-      }
+      // if (values.submitForMatch !== 'No') {
+      //   if (
+      //     // Set submitForMatch to No under these conditions
+      //     values.amountOfContribution > 500 ||
+      //     valques.typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
+      //     values.subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
+      //     !isPerson
+      //   ) {
+      //     values.submitForMatch = 'No';
+      //   }
+      // }
 
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
             formFields={formFields}
-            checkSelected={checkSelected}
-            showInKindFields={showInKindFields}
+            checkSelected={visibleIf.checkSelected}
+            showInKindFields={visibleIf.showInKindFields}
           />
           <ContributorSection
             formFields={formFields}
-            showEmployerSection={showEmployerSection}
-            isPerson={isPerson}
-            emptyOccupationLetterDate={emptyOccupationLetterDate}
+            showEmployerSection={visibleIf.showEmployerSection}
+            isPerson={visibleIf.isPerson}
+            emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
           />
           {/* <OtherDetailsSection formFields={formFields} /> */}
         </>

@@ -4,18 +4,33 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 
-export const formFromFields = (fields, formikProps) =>
-  Object.keys(fields).map(id =>
-    React.createElement(fields[id].component, {
+export const formFromFields = (fields, formikProps, dynamicRequire) =>
+  Object.keys(fields).map(id => {
+    const x = !!(
+      dynamicRequire[id] || _.get(fields[id], 'validation._exclusive.required')
+    );
+    const y = !!formikProps.values[id];
+    if (x && !y) console.log('isrequired', id, x, y);
+    return React.createElement(fields[id].component, {
       key: id,
       id,
       label: fields[id].label,
       options: { ...fields[id].options },
       formik: formikProps,
       // TODO also look in validate for dynamic requires
-      isrequired: _.get(fields[id], 'validation._exclusive.required'),
-    })
-  );
+      isrequired: !!(
+        dynamicRequire[id] ||
+        _.get(fields[id], 'validation._exclusive.required')
+      ),
+    });
+  });
+// export const getIsVisible = (validate, values) => {
+//   const show = validate(values);
+//   if (show._visibleIf) {
+//     return show._visibleIf;
+//   }
+//   return {};
+// };
 
 class Form extends React.Component {
   render() {
@@ -25,9 +40,18 @@ class Form extends React.Component {
       fieldIds.map(id => [id, fields[id].validation])
     );
     const validationSchema = Yup.object(validations);
+    console.log('validate', validate);
     return (
       <Formik
-        validate={validate || null}
+        validate={
+          validate
+            ? validate => {
+                if (validate) {
+                  delete validate._visibleIf;
+                }
+              }
+            : null
+        }
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
@@ -50,7 +74,13 @@ class Form extends React.Component {
           return this.props.onSubmit(values, addHandlers);
         }}
         render={formikProps => {
-          const form = <>{formFromFields(fields, formikProps)}</>;
+          const dynamicRequire = validate ? validate(formikProps.values) : {};
+          const visibleIf = dynamicRequire._visibleIf
+            ? dynamicRequire._visibleIf
+            : {};
+          const form = (
+            <>{formFromFields(fields, formikProps, dynamicRequire)}</>
+          );
           const formSections =
             sections && sections.length > 0
               ? Object.fromEntries(
@@ -59,7 +89,8 @@ class Form extends React.Component {
                     <>
                       {formFromFields(
                         _.pickBy(fields, field => field.section === section),
-                        formikProps
+                        formikProps,
+                        dynamicRequire
                       )}
                     </>,
                   ])
@@ -70,7 +101,13 @@ class Form extends React.Component {
               ? Object.fromEntries(
                   fieldIds.map(id => [
                     id,
-                    <>{formFromFields(_.pick(fields, id), formikProps)}</>,
+                    <>
+                      {formFromFields(
+                        _.pick(fields, id),
+                        formikProps,
+                        dynamicRequire
+                      )}
+                    </>,
                   ])
                 )
               : {};
@@ -84,6 +121,8 @@ class Form extends React.Component {
             handleSubmit: formikProps.handleSubmit,
             handleCancel: formikProps.handleReset,
             values: formikProps.values,
+            visibleIf,
+            formikProps,
             /* could return more formikProps if needed */
           });
         }}
