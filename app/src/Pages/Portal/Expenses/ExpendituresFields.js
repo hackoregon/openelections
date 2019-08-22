@@ -3,6 +3,12 @@ import * as Yup from 'yup';
 
 import Form from '../../../components/Form/Form';
 import FieldValue from '../../../components/Fields/FieldValue';
+import CurrencyField from '../../../components/Fields/CurrencyField';
+import DateField from '../../../components/Fields/DateField';
+import SelectField from '../../../components/Fields/SelectField';
+import TextField from '../../../components/Fields/TextField';
+import AddressLookupField from '../../../components/Fields/AddressLookupField';
+import { stateList } from '../../../components/Forms/Utils/FormsUtils';
 
 export const expendituresEmptyState = {
   // BASICS VALUES
@@ -32,7 +38,7 @@ const fields = {
   amount: {
     label: 'Amount of Expenditure',
     section: 'basicsSection',
-    component: FieldValue,
+    component: CurrencyField,
     validation: Yup.number()
       // NEEDS TO BE FORMATTED AS CURRENCY
       .required('The expenditure amount is required'),
@@ -40,14 +46,14 @@ const fields = {
   dateOfExpenditure: {
     label: 'Date of Expenditure',
     section: 'basicsSection',
-    component: FieldValue,
+    component: DateField,
     validation: Yup.number().required('An expenditure date is required'),
     // date format? validate specifically?
   },
   typeOfExpenditure: {
     label: 'Type of Expenditure',
     section: 'basicsSection',
-    component: FieldValue,
+    component: SelectField,
     options: {
       values: ['Expenditure', 'Other', 'Other Disbursement'],
     },
@@ -56,7 +62,7 @@ const fields = {
   subTypeOfExpenditure: {
     label: 'Subtype of Expenditure',
     section: 'basicsSection',
-    component: FieldValue,
+    component: SelectField,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
       values: [
@@ -82,7 +88,7 @@ const fields = {
   paymentMethod: {
     label: 'Payment Method',
     section: 'basicsSection',
-    component: FieldValue,
+    component: SelectField,
     options: {
       values: [
         'Cash',
@@ -97,13 +103,13 @@ const fields = {
   checkNumber: {
     label: 'Check Number',
     section: 'basicsSection',
-    component: FieldValue,
+    component: TextField,
     validation: Yup.number().required('Check number is required'),
   },
   purposeOfExpenditure: {
     label: 'Purpose of Expenditure',
     section: 'sectionOne',
-    component: FieldValue,
+    component: SelectField,
     options: {
       values: [
         'Broadcast Advertising',
@@ -135,7 +141,7 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: 'Payee Type',
     section: 'sectionTwo',
-    component: FieldValue,
+    component: SelectField,
     options: {
       values: ['Individual', 'Business Entity', 'Candidate'],
     },
@@ -145,25 +151,25 @@ const fields = {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
     section: 'sectionTwo',
-    component: FieldValue,
+    component: TextField,
     validation: Yup.string().required("The payee's name is required"),
   },
   streetAddress: {
     label: 'Street Address/PO Box',
     section: 'sectionTwo',
-    component: FieldValue,
+    component: AddressLookupField,
     validation: Yup.string().required("The payee's street address is required"),
   },
   addressLine2: {
     label: 'Address Line 2',
     section: 'sectionTwo',
-    component: FieldValue,
+    component: TextField,
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   countryRegion: {
     label: 'Country/Region',
     setion: 'sectionTwo',
-    component: FieldValue,
+    component: TextField,
     validation: Yup.string().required(
       "The payee's country or region is required"
     ),
@@ -171,92 +177,36 @@ const fields = {
   city: {
     label: 'City',
     section: 'sectionTwo',
-    component: FieldValue,
+    component: TextField,
     validation: Yup.string().required("The payee's city is required"),
   },
   state: {
     label: 'State',
     section: 'sectionTwo',
-    component: FieldValue,
+    component: SelectField,
     options: {
-      values: [
-        'AK',
-        'AL',
-        'AR',
-        'AS',
-        'AZ',
-        'CA',
-        'CO',
-        'CT',
-        'DC',
-        'DE',
-        'FL',
-        'GA',
-        'GU',
-        'HI',
-        'IA',
-        'ID',
-        'IL',
-        'IN',
-        'KS',
-        'KY',
-        'LA',
-        'MA',
-        'MD',
-        'ME',
-        'MI',
-        'MN',
-        'MO',
-        'MS',
-        'MT',
-        'ND',
-        'NC',
-        'NE',
-        'NH',
-        'NJ',
-        'NM',
-        'NV',
-        'NY',
-        'OH',
-        'OK',
-        'OR',
-        'PA',
-        'PR',
-        'RI',
-        'SC',
-        'SD',
-        'TN',
-        'TX',
-        'UT',
-        'VA',
-        'VI',
-        'VT',
-        'WA',
-        'WI',
-        'WV',
-        'WY',
-      ],
+      values: { stateList },
+      validation: Yup.string().required('Your state is required'),
     },
-    validation: Yup.string().required('Your state is required'),
-  },
-  zipcode: {
-    label: 'Zipcode',
-    section: 'sectionTwo',
-    component: FieldValue,
-    validation: Yup.number().required('A zipcode is required'),
-  },
-  county: {
-    label: 'County',
-    setion: 'sectionTwo',
-    component: FieldValue,
-    validation: Yup.string().required("The payee's county is required"),
-  },
+    zipcode: {
+      label: 'Zipcode',
+      section: 'sectionTwo',
+      component: TextField,
+      validation: Yup.number().required('A zipcode is required'),
+    },
+    county: {
+      label: 'County',
+      setion: 'sectionTwo',
+      component: TextField,
+      validation: Yup.string().required("The payee's county is required"),
+    },
 
-  notes: {
-    label: 'Notes',
-    section: 'sectionThree',
-    component: FieldValue,
-    validation: Yup.string(),
+    notes: {
+      label: 'Notes',
+      section: 'sectionThree',
+      component: TextField,
+      validation: Yup.string(),
+    },
   },
 };
 
