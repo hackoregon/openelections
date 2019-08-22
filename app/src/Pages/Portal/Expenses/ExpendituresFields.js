@@ -1,8 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import * as Yup from 'yup';
 
 import Form from '../../../components/Form/Form';
-import FieldValue from '../../../components/Fields/FieldValue';
 import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
@@ -37,22 +36,16 @@ const fields = {
   // BASICS SECTION
   amount: {
     label: 'Amount of Expenditure',
-    section: 'basicsSection',
     component: CurrencyField,
-    validation: Yup.number()
-      // NEEDS TO BE FORMATTED AS CURRENCY
-      .required('The expenditure amount is required'),
+    validation: Yup.number().required('The expenditure amount is required'),
   },
   dateOfExpenditure: {
     label: 'Date of Expenditure',
-    section: 'basicsSection',
     component: DateField,
     validation: Yup.number().required('An expenditure date is required'),
-    // date format? validate specifically?
   },
   typeOfExpenditure: {
     label: 'Type of Expenditure',
-    section: 'basicsSection',
     component: SelectField,
     options: {
       values: ['Expenditure', 'Other', 'Other Disbursement'],
@@ -61,7 +54,6 @@ const fields = {
   },
   subTypeOfExpenditure: {
     label: 'Subtype of Expenditure',
-    section: 'basicsSection',
     component: SelectField,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
@@ -87,7 +79,6 @@ const fields = {
   },
   paymentMethod: {
     label: 'Payment Method',
-    section: 'basicsSection',
     component: SelectField,
     options: {
       values: [
@@ -102,13 +93,11 @@ const fields = {
   },
   checkNumber: {
     label: 'Check Number',
-    section: 'basicsSection',
     component: TextField,
     validation: Yup.number().required('Check number is required'),
   },
   purposeOfExpenditure: {
     label: 'Purpose of Expenditure',
-    section: 'sectionOne',
     component: SelectField,
     options: {
       values: [
@@ -140,7 +129,6 @@ const fields = {
   payeeType: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: 'Payee Type',
-    section: 'sectionTwo',
     component: SelectField,
     options: {
       values: ['Individual', 'Business Entity', 'Candidate'],
@@ -150,25 +138,21 @@ const fields = {
   payeeName: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
-    section: 'sectionTwo',
     component: TextField,
     validation: Yup.string().required("The payee's name is required"),
   },
   streetAddress: {
     label: 'Street Address/PO Box',
-    section: 'sectionTwo',
     component: AddressLookupField,
     validation: Yup.string().required("The payee's street address is required"),
   },
   addressLine2: {
     label: 'Address Line 2',
-    section: 'sectionTwo',
     component: TextField,
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   countryRegion: {
     label: 'Country/Region',
-    setion: 'sectionTwo',
     component: TextField,
     validation: Yup.string().required(
       "The payee's country or region is required"
@@ -176,13 +160,11 @@ const fields = {
   },
   city: {
     label: 'City',
-    section: 'sectionTwo',
     component: TextField,
     validation: Yup.string().required("The payee's city is required"),
   },
   state: {
     label: 'State',
-    section: 'sectionTwo',
     component: SelectField,
     options: {
       values: { stateList },
@@ -190,20 +172,17 @@ const fields = {
     },
     zipcode: {
       label: 'Zipcode',
-      section: 'sectionTwo',
       component: TextField,
       validation: Yup.number().required('A zipcode is required'),
     },
     county: {
       label: 'County',
-      setion: 'sectionTwo',
       component: TextField,
       validation: Yup.string().required("The payee's county is required"),
     },
 
     notes: {
       label: 'Notes',
-      section: 'sectionThree',
       component: TextField,
       validation: Yup.string(),
     },
@@ -212,12 +191,7 @@ const fields = {
 
 const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
   <>
-    <Form
-      fields={fields}
-      sections={['basicsSection', 'contributorSection', 'otherDetailsSection']}
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-    >
+    <Form fields={fields} initialValues={initialValues} onSubmit={onSubmit}>
       {children}
     </Form>
   </>
