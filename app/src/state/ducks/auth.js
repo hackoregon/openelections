@@ -7,6 +7,7 @@ import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
 import * as campaigns from './campaigns';
 import * as governments from './governments';
+import { getStatusSummaryAction } from './summary';
 
 // Export State Key
 export const STATE_KEY = 'auth';
@@ -144,6 +145,13 @@ export function me() {
               me.permissions[0].campaignId
             )
           );
+          if (me.permissions[0].campaignId) {
+            dispatch(
+              getStatusSummaryAction({
+                campaignId: me.permissions[0].campaignId,
+              })
+            );
+          }
         }
 
         const govPermission = me.permissions.filter(permission => {
@@ -155,6 +163,13 @@ export function me() {
               me.permissions[0].governmentId
             )
           );
+          if (me.permissions[0].governmentId) {
+            dispatch(
+              getStatusSummaryAction({
+                governmentId: me.permissions[0].governmentId,
+              })
+            );
+          }
         }
       }
       dispatch(actionCreators.me.success(me));

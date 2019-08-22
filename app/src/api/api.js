@@ -732,8 +732,5 @@ export function updateExpenditure(expenditureAttrs) {
 //   method: 'post',
 // summaryArttrs = {governmentId: integer OR campaignId: integer}
 export function getStatusSummary(summaryAttrs) {
-  return post(
-    `${baseUrl()}/summary`,
-    summaryAttrs
-  );
+  return post(`${baseUrl()}/summary`, summaryAttrs);
 }
