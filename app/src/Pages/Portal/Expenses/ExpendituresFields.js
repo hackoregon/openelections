@@ -91,11 +91,11 @@ const fields = {
     component: SelectField,
     options: {
       values: [
-        'Cash',
         'Check',
-        'Money Order',
-        'Credit Card (Online)',
-        'Credit Card (Paper Form)',
+        'Credit Card',
+        'Debit Card',
+        'Electronic Check',
+        'Electronic Funds Transfer',
       ],
     },
     validation: Yup.string().required('The payment method is required'),
@@ -143,7 +143,12 @@ const fields = {
       values: [
         PayeeTypeEnum.INDIVIDUAL,
         PayeeTypeEnum.BUSINESS,
-        // PayeeTypeEnum.CA 'Candidate'], KELLY- check with DAN (api enum)
+        PayeeTypeEnum.FAMILY,
+        PayeeTypeEnum.LABOR,
+        PayeeTypeEnum.POLITICAL_COMMITTEE,
+        PayeeTypeEnum.POLITICAL_PARTY,
+        PayeeTypeEnum.UNREGISTERED,
+        PayeeTypeEnum.OTHER,
       ],
     },
     validation: Yup.string().required('The payee type is required'),
@@ -223,13 +228,13 @@ const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
 // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
 // values: [
 //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
-//   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
+//   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT, (maybe)
 // ]
 
 // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
 // values: [
 //   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
-//   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
+//   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, - no longer?
 // ]
 
 // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
