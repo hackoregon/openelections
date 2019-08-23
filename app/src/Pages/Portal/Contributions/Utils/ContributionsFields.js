@@ -3,9 +3,7 @@ import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import {
-  stateList,
-} from '../../../../components/Forms/Utils/FormsUtils';
+import { stateList } from '../../../../components/Forms/Utils/FormsUtils';
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
