@@ -15,6 +15,7 @@ import {
   BasicsSection,
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
+import { expendituresEmptyState } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createExpenditure } = props;
@@ -64,4 +65,4 @@ export default connect(
   dispatch => ({
     createExpenditure: data => dispatch(createExpenditure(data)),
   })
-)(AddExpenseForm);
+)(AddExpense);

@@ -2,13 +2,22 @@ import React from 'react';
 import * as Yup from 'yup';
 
 import Form from '../../Form/Form';
-import Fields from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import {
+  HeaderSection,
+  BasicsSection,
+  PayeeInfoSection,
+} from '../../../Pages/Portal/Expenses/ExpendituresSections';
+import {
+  fields,
+  // FormSectionEnum,
+  // validate,
+} from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
-const AddExpenseForm = ({ initialValues, onSubmit, children, fields }) => (
+const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
   <>
     <Form
       fields={fields}
-      sections={['sectionOne', 'sectionTwo', 'sectionThree']}
+      sections={[HeaderSection, BasicsSection, PayeeInfoSection]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >
