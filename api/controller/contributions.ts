@@ -15,7 +15,7 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType, InKindDescriptionType, OaeType
+    ContributorType, InKindDescriptionType, OaeType, PaymentMethod
 } from '../models/entity/Contribution';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
@@ -52,6 +52,10 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsEnum(ContributorType)
     @IsOptional()
     contributorType: ContributorType;
+
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
 
     @IsString()
     @IsOptional()
@@ -270,6 +274,10 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsEnum(OaeType)
     @IsOptional()
     oaeType: OaeType;
+
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
 
     @IsNumber()
     date: number;

@@ -46,12 +46,39 @@ export enum PayeeType {
     OTHER = 'other'
 }
 
+export enum PaymentMethod {
+    'CASH'='Cash',
+    'CHECK'='Check',
+    'MONEY_ORDER'='Money Order',
+    'CREDIT_CARD_ONLINE'='Credit Card Online',
+    'CREDIT_CARD_PAPER'='Credit Card Paper Form'
+}
+
 export enum ExpenditureStatus {
     ARCHIVED = 'archived',
     DRAFT = 'draft',
     SUBMITTED = 'submitted',
     OUT_OF_COMPLIANCE = 'out_of_compliance',
     IN_COMPLIANCE = 'in_compliance'
+}
+
+export enum PurposeType {
+    WAGES = 'wages',
+    CASH = 'cash_contribution',
+    REIMBURSEMENT = 'personal_reimbursement',
+    BROADCAST = 'broadcast_advertising',
+    FUNDRAISING = 'fundraising_event_expenses',
+    GENERAL_OPERATING = 'general_operating_expenses',
+    PRIMTING = 'printing',
+    MANAGEMENT = 'management',
+    NEWSPAPER =  'print_advertising',
+    OTHER_AD = 'other_advertising',
+    PETITION = 'petition_circulators',
+    POSTAGE = 'postage',
+    PREP_AD = 'preparation_of_advertising',
+    POLLING = 'surveys_and_polls',
+    TRAVEL = 'travel_expenses',
+    UTILITIES = 'utilities'
 }
 
 
@@ -89,10 +116,24 @@ export class Expenditure {
 
     @Column({
         type: 'enum',
+        enum: PaymentMethod
+    })
+    @IsDefined()
+    paymentMethod: PaymentMethod;
+
+    @Column({
+        type: 'enum',
         enum: PayeeType
     })
     @IsDefined()
     payeeType: PayeeType;
+
+    @Column({
+        type: 'enum',
+        enum: PurposeType
+    })
+    @IsDefined()
+    purpose: PurposeType;
 
     @IsDefined()
     @Column({ nullable: true })
@@ -120,6 +161,9 @@ export class Expenditure {
     @Column({ nullable: true })
     checkNumber?: string;
 
+    @Column({ nullable: true })
+    notes?: string;
+
     @Column({
         type: 'decimal',
         transformer: {
@@ -133,10 +177,6 @@ export class Expenditure {
     })
     @IsDefined()
     amount: number;
-
-    @IsDefined()
-    @Column()
-    description: string;
 
     @Column({
         type: 'enum',
@@ -279,11 +319,12 @@ export const expenditureSummaryFields = <const>[
     'state',
     'zip',
     'type',
-
+    'notes',
+    'paymentMethod',
     'subType',
     'payeeType',
     'checkNumber',
-    'description',
+    'purpose',
     'status',
     'date'
 ];

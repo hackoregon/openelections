@@ -10,12 +10,12 @@ import {
 import {
     newCampaignAsync,
     newContributionAsync,
-    newExpenditureAsync,
     newGovernmentAsync,
     truncateAll
 } from '../factories';
 import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
+import { PaymentMethod } from '../../models/entity/Expenditure';
 
 let repository: any;
 let government: Government;
@@ -39,11 +39,12 @@ describe('Contribution', () => {
         it('isDefined Columns', async () => {
             const newRecord = new Contribution();
             await newRecord.validateAsync();
-            expect(newRecord.errors.length).to.equal(12);
+            expect(newRecord.errors.length).to.equal(13);
             const isDefinedFields = newRecord.errors.map(item => item.property);
             expect(isDefinedFields).to.deep.equal([
                 'type',
                 'subType',
+                'paymentMethod',
                 'contributorType',
                 'address1',
                 'city',
@@ -61,6 +62,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.ITEM_REFUND;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
@@ -72,6 +74,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.OTHER;
             newRecord.subType = ContributionSubType.CASH;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateType();
             expect(newRecord.errors.length).to.equal(1);
@@ -83,6 +86,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
@@ -95,6 +99,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.FAMILY;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
@@ -106,6 +111,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
             newRecord.submitForMatch = true;
             newRecord.amount = 0;
@@ -119,6 +125,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
             newRecord.submitForMatch = true;
             expect(newRecord.errors.length).to.equal(0);
@@ -131,6 +138,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.FAMILY;
             newRecord.submitForMatch = true;
             expect(newRecord.errors.length).to.equal(0);
@@ -144,6 +152,7 @@ describe('Contribution', () => {
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.submitForMatch = true;
             newRecord.amount = 1.00;
             newRecord.matchAmount = 10.00;
@@ -157,6 +166,7 @@ describe('Contribution', () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
+            newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
             expect(newRecord.isInKind()).to.be.true;
             expect(!newRecord.inKindType).to.be.true;

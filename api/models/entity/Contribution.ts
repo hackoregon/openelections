@@ -78,7 +78,7 @@ export enum InKindDescriptionType {
     MANAGEMENT = 'management',
     NEWSPAPER =  'print_advertising',
     OTHER_AD = 'other_advertising',
-    PETITION = 'petition_Circulators',
+    PETITION = 'petition_circulators',
     POSTAGE = 'postage',
     PREP_AD = 'preparation_of_advertising',
     POLLING = 'surveys_and_polls',
@@ -93,6 +93,14 @@ export enum OaeType {
     QUALIFYING = 'qualifying',
     ALLOWABLE = 'allowable',
     INKIND = 'inkind'
+}
+
+export enum PaymentMethod {
+    'CASH'='Cash',
+    'CHECK'='Check',
+    'MONEY_ORDER'='Money Order',
+    'CREDIT_CARD_ONLINE'='Credit Card Online',
+    'CREDIT_CARD_PAPER'='Credit Card Paper Form'
 }
 
 @Entity({ name: 'contributions' })
@@ -129,6 +137,13 @@ export class Contribution {
         nullable: true,
     })
     oaeType: OaeType;
+
+    @Column({
+        type: 'enum',
+        enum: PaymentMethod
+    })
+    @IsDefined()
+    paymentMethod: PaymentMethod;
 
     @Column({
         type: 'enum',
@@ -185,6 +200,9 @@ export class Contribution {
 
     @Column({ nullable: true })
     phone?: string;
+
+    @Column({ nullable: true })
+    notes?: string;
 
     @Column({
         type: 'enum',
@@ -470,6 +488,8 @@ export const contributionSummaryFields = <const>[
     'compliant',
     'matchAmount',
     'status',
+    'notes',
+    'paymentMethod',
     'date'
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
