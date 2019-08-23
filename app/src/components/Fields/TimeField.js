@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import TextFieldMaterial from '@material-ui/core/TextField';
 
 const TimeField = props => {
-  const { id, label, formik, isrequired, onChange, picker } = props;
+  const { id, label, formik, isRequired, onChange, picker } = props;
   const pickerProps = picker ? props : null;
   return (
     <TextFieldMaterial
-      required={isrequired}
+      required={isRequired}
       id={id}
       name={id}
       label={label}

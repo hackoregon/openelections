@@ -84,10 +84,10 @@ class AddressLookupField extends React.Component {
   }
 
   render() {
-    const { id, label, formik, isrequired } = this.props;
+    const { id, label, formik, isRequired } = this.props;
     return (
       <TextFieldMaterial
-        required={isrequired}
+        required={isRequired}
         id={id}
         name={id}
         label={label}

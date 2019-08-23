@@ -46,7 +46,7 @@ const helperTextStyles = css`
 `;
 
 export default function DateRangeField(props) {
-  const { formik, label, id, isrequired } = props;
+  const { formik, label, id, isRequired } = props;
 
   const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState({
     from: { date: '', time: '00:00' },
@@ -93,7 +93,7 @@ export default function DateRangeField(props) {
 
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={id} required={isrequired}>
+      <InputLabel htmlFor={id} required={isRequired}>
         {label}
       </InputLabel>
       <Select
@@ -201,7 +201,7 @@ function Popover(props) {
       </Tabs>
       <div className="tab-content" hidden={tab !== 0}>
         <DateField
-          picker
+          picker="true"
           label="Date"
           id="from-date"
           formik={formik}
@@ -210,7 +210,7 @@ function Popover(props) {
         />
         <div className="spacer" />
         <TimeField
-          picker
+          picker="true"
           label="Time"
           formik={formik}
           id="from-time"
@@ -220,7 +220,7 @@ function Popover(props) {
       </div>
       <div className="tab-content" hidden={tab !== 1}>
         <DateField
-          picker
+          picker="true"
           label="Date"
           formik={formik}
           id="to-date"
@@ -229,7 +229,7 @@ function Popover(props) {
         />
         <div className="spacer" />
         <TimeField
-          picker
+          piker="true"
           label="Time"
           formik={formik}
           id="to-time"

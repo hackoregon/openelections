@@ -10,25 +10,15 @@ import {
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddContributionForm from './AddContributionForm';
 import {
-  // ContributionTypeFieldEnum,
   ContributionStatusEnum,
   mapContributionFormToData,
-  // ContributionSubTypeFieldEnum,
-  // ContributionSubTypeEnum,
-  // ContributionTypeEnum,
-  // ContributorTypeEnum,
-  // ContributorTypeFieldEnum,
 } from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
-  // OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import {
-  contributionsEmptyState,
-  // inKindContributionValues,
-} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createContribution } = props;

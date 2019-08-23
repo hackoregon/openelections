@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SelectField = ({ id, label, options, formik, isrequired }) => {
+const SelectField = ({ id, label, options, formik, isRequired }) => {
   const classes = useStyles();
   let optionValues = options.values;
 
@@ -73,7 +73,7 @@ const SelectField = ({ id, label, options, formik, isrequired }) => {
   // console.log(id, optionValues);
   return (
     <FormControl fullWidth>
-      <InputLabel htmlFor={id} required={isrequired}>
+      <InputLabel htmlFor={id} required={isRequired}>
         {label}
       </InputLabel>
       <Select

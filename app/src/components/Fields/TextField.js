@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextFieldMaterial from '@material-ui/core/TextField';
 
-const TextField = ({ id, label, formik, isrequired }) => {
+const TextField = ({ id, label, formik, isRequired }) => {
   return (
     <TextFieldMaterial
-      required={isrequired}
+      required={isRequired}
       id={id}
       name={id}
       label={label}

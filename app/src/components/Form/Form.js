@@ -5,31 +5,22 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 
 export const formFromFields = (fields, formikProps, dynamicRequire) =>
-  Object.keys(fields).map(id => {
-    return React.createElement(fields[id].component, {
+  Object.keys(fields).map(id =>
+    React.createElement(fields[id].component, {
       key: id,
       id,
       label: fields[id].label,
       options: { ...fields[id].options },
       formik: formikProps,
-      isrequired: !!(
+      isRequired: !!(
         dynamicRequire[id] ||
         _.get(fields[id], 'validation._exclusive.required')
       ),
-    });
-  });
-// export const getIsVisible = (validate, values) => {
-//   const show = validate(values);
-//   if (show._visibleIf) {
-//     return show._visibleIf;
-//   }
-//   return {};
-// };
+    })
+  );
 
 function removeVisibleIfFromErrorObject(errorObject) {
-  const modifiedErrorObject = errorObject;
-  delete modifiedErrorObject._visibleIf;
-  return modifiedErrorObject;
+  return _.pick(errorObject, ['error']);
 }
 
 class Form extends React.Component {
@@ -40,7 +31,6 @@ class Form extends React.Component {
       fieldIds.map(id => [id, fields[id].validation])
     );
     const validationSchema = Yup.object(validations);
-    console.log('validate', validate);
     return (
       <Formik
         validate={

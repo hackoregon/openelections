@@ -34,12 +34,12 @@ export default function CurrencyField({
   label,
   formik,
   options,
-  isrequired,
+  isRequired,
 }) {
   return (
     <TextFieldMaterial
       id={id}
-      required={isrequired}
+      required={isRequired}
       name={id}
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
