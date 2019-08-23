@@ -207,7 +207,7 @@ const fields = {
   },
 };
 
-const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
+const ExpendituresFields = ({ initialValues, onSubmit, children }) => (
   <>
     <Form fields={fields} initialValues={initialValues} onSubmit={onSubmit}>
       {children}
@@ -244,4 +244,4 @@ const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
 // purposeOfExpenditure:
 // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
 
-export default ExpensesDetailForm;
+export default ExpendituresFields;
