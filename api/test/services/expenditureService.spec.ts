@@ -1,24 +1,25 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
-import { addPermissionAsync } from '../../services/permissionService';
-import { UserRole } from '../../models/entity/Permission';
+import {expect} from 'chai';
+import {getConnection} from 'typeorm';
+import {addPermissionAsync} from '../../services/permissionService';
+import {UserRole} from '../../models/entity/Permission';
+import {newActiveUserAsync, newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll} from '../factories';
 import {
-    newActiveUserAsync,
-    newCampaignAsync,
-    newExpenditureAsync,
-    newGovernmentAsync,
-    truncateAll
-} from '../factories';
-import {
-    IAddExpenditureAttrs,
     addExpenditureAsync,
+    createExpenditureCommentAsync,
+    getExpenditureByIdAsync,
     getExpendituresAsync,
+    IAddExpenditureAttrs,
     IGetExpenditureAttrs,
-    updateExpenditureAsync,
-    createExpenditureCommentAsync, getExpenditureByIdAsync
+    updateExpenditureAsync
 } from '../../services/expenditureService';
-import { PayeeType, ExpenditureSubType, ExpenditureType, ExpenditureStatus } from '../../models/entity/Expenditure';
-import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
+import {
+    ExpenditureStatus,
+    ExpenditureSubType,
+    ExpenditureType,
+    PayeeType,
+    PaymentMethod, PurposeType
+} from '../../models/entity/Expenditure';
+import {getActivityByExpenditureAsync} from '../../models/entity/Activity';
 
 let campaignAdmin;
 let campaignStaff;
@@ -82,7 +83,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -111,7 +113,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -140,7 +143,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -157,7 +161,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -211,7 +216,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -256,7 +262,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -280,7 +287,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -302,7 +310,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: undefined
         };
@@ -327,7 +336,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: undefined
         };
@@ -352,7 +362,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -369,7 +380,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -429,7 +441,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
@@ -466,7 +479,8 @@ describe('expenditureService', () => {
             type: ExpenditureType.EXPENDITURE,
             subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
             name: 'Test expense',
-            description: 'Test description',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };

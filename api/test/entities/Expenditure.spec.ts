@@ -3,11 +3,13 @@ import * as faker from 'faker';
 import { getConnection } from 'typeorm';
 import {
     Expenditure,
+    ExpenditureStatus,
     ExpenditureSubType,
     ExpenditureType,
+    getExpenditureSummaryByStatusAsync,
     PayeeType,
-    ExpenditureStatus,
-    getExpenditureSummaryByStatusAsync
+    PaymentMethod,
+    PurposeType
 } from '../../models/entity/Expenditure';
 import { newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll } from '../factories';
 import { Government } from '../../models/entity/Government';
@@ -31,19 +33,20 @@ describe('Expenditure', () => {
     it('isDefined Columns', async () => {
         const newRecord = new Expenditure();
         await newRecord.validateAsync();
-        expect(newRecord.errors.length).to.equal(15);
+        expect(newRecord.errors.length).to.equal(16);
         const isDefinedFields = newRecord.errors.map(item => item.property);
         expect(isDefinedFields).to.deep.equal(['date',
             'type',
             'subType',
+            'paymentMethod',
             'payeeType',
+            'purpose',
             'name',
             'address1',
             'city',
             'state',
             'zip',
             'amount',
-            'description',
             'status',
             'campaignId',
             'governmentId',
@@ -54,6 +57,8 @@ describe('Expenditure', () => {
         const newRecord = new Expenditure();
         newRecord.type = ExpenditureType.EXPENDITURE;
         newRecord.subType = ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT;
+        newRecord.paymentMethod = PaymentMethod.CASH;
+        newRecord.purpose = PurposeType.CASH;
         expect(newRecord.errors.length).to.equal(0);
         await newRecord.validateType();
         expect(newRecord.errors.length).to.equal(1);
@@ -65,6 +70,8 @@ describe('Expenditure', () => {
         const newRecord = new Expenditure();
         newRecord.type = ExpenditureType.OTHER;
         newRecord.subType = ExpenditureSubType.CASH_EXPENDITURE;
+        newRecord.paymentMethod = PaymentMethod.CASH;
+        newRecord.purpose = PurposeType.CASH;
         expect(newRecord.errors.length).to.equal(0);
         await newRecord.validateType();
         expect(newRecord.errors.length).to.equal(1);
@@ -76,6 +83,8 @@ describe('Expenditure', () => {
         const newRecord = new Expenditure();
         newRecord.type = ExpenditureType.EXPENDITURE;
         newRecord.subType = ExpenditureSubType.CASH_EXPENDITURE;
+        newRecord.paymentMethod = PaymentMethod.CASH;
+        newRecord.purpose = PurposeType.CASH;
         newRecord.payeeType = PayeeType.INDIVIDUAL;
         newRecord.amount = 0;
         expect(newRecord.errors.length).to.equal(0);
@@ -100,7 +109,8 @@ describe('Expenditure', () => {
         newRecord.campaign = campaign;
         newRecord.status = ExpenditureStatus.DRAFT;
         newRecord.date = new Date();
-        newRecord.description = 'Pays for something';
+        newRecord.paymentMethod = PaymentMethod.CASH;
+        newRecord.purpose = PurposeType.CASH;
         await newRecord.validateAsync();
         expect(newRecord.errors.length).to.equal(0);
         expect(await repository.count()).to.equal(0);

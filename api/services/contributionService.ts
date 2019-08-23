@@ -8,7 +8,7 @@ import {
     ContributorType,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, InKindDescriptionType,
-    MatchStrength, OaeType
+    MatchStrength, OaeType, PaymentMethod
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -45,6 +45,7 @@ export interface IAddContributionAttrs {
     oaeType?: OaeType;
     type: ContributionType;
     date: number;
+    paymentMethod: PaymentMethod;
     zip: string;
 }
 
@@ -90,6 +91,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.contributorType = contributionAttrs.contributorType;
             contribution.inKindType = contributionAttrs.inKindType;
             contribution.oaeType = contributionAttrs.oaeType;
+            contribution.paymentMethod = contributionAttrs.paymentMethod;
 
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
@@ -199,6 +201,7 @@ export interface IUpdateContributionAttrs {
     compliant?: boolean;
     oaeType?: OaeType;
     inKindType?: InKindDescriptionType;
+    paymentMethod?: PaymentMethod;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {

@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
+import {expect} from 'chai';
+import {getConnection} from 'typeorm';
 import {
     addContributionAsync,
     archiveContributionAsync,
@@ -7,19 +7,21 @@ import {
     getContributionByIdAsync,
     getContributionsAsync,
     getMatchResultAsync,
-    IAddContributionAttrs, retrieveAndSaveMatchResultAsync,
+    IAddContributionAttrs,
+    retrieveAndSaveMatchResultAsync,
     updateContributionAsync,
     updateMatchResultAsync
 } from '../../services/contributionService';
-import { addPermissionAsync } from '../../services/permissionService';
-import { UserRole } from '../../models/entity/Permission';
+import {addPermissionAsync} from '../../services/permissionService';
+import {UserRole} from '../../models/entity/Permission';
 import {
     Contribution,
     ContributionStatus,
     ContributionSubType,
     ContributionType,
     ContributorType,
-    MatchStrength
+    MatchStrength,
+    PaymentMethod
 } from '../../models/entity/Contribution';
 import {
     newActiveUserAsync,
@@ -29,7 +31,7 @@ import {
     truncateAll
 } from '../factories';
 
-import { getActivityByContributionAsync } from '../../models/entity/Activity';
+import {getActivityByContributionAsync} from '../../models/entity/Activity';
 import {addGISBoundaries, seedAddresses} from '../../models/seeds/seeds';
 
 let campaignAdmin;
@@ -103,6 +105,7 @@ describe('contributionService', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH,
             date: Date.now()
         };
 
@@ -128,6 +131,7 @@ describe('contributionService', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH,
             date: Date.now()
         };
 
@@ -157,6 +161,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
+                paymentMethod: PaymentMethod.CASH,
                 date: Date.now()
             };
 
@@ -184,6 +189,7 @@ describe('contributionService', () => {
                 subType: 'Bullion',
                 state: 'OR',
                 zip: '97214',
+                paymentMethod: PaymentMethod.CASH,
                 contributorType: ContributorType.INDIVIDUAL
             };
 
@@ -211,6 +217,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
+                paymentMethod: PaymentMethod.CASH,
                 date: Date.now()
             }),
             addContributionAsync({
@@ -225,6 +232,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -248,6 +256,7 @@ describe('contributionService', () => {
             lastName: 'Doe',
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
+            paymentMethod: PaymentMethod.CASH,
             subType: ContributionSubType.CASH,
             state: 'OR',
             zip: '97214',
@@ -267,6 +276,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -299,6 +309,7 @@ describe('contributionService', () => {
                 lastName: 'Doe',
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
+                paymentMethod: PaymentMethod.CASH,
                 subType: ContributionSubType.CASH,
                 state: 'OR',
                 zip: '97214',
@@ -317,6 +328,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -343,6 +355,7 @@ describe('contributionService', () => {
                 lastName: 'Doe',
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
+                paymentMethod: PaymentMethod.CASH,
                 subType: ContributionSubType.CASH,
                 state: 'OR',
                 zip: '97214',
@@ -360,6 +373,7 @@ describe('contributionService', () => {
                 lastName: 'Doe',
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
+                paymentMethod: PaymentMethod.CASH,
                 subType: ContributionSubType.CASH,
                 state: 'OR',
                 zip: '97214',
@@ -390,6 +404,7 @@ describe('contributionService', () => {
                 middleInitial: '',
                 lastName: 'Doe',
                 governmentId: government.id,
+                paymentMethod: PaymentMethod.CASH,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
                 state: 'OR',
@@ -407,6 +422,7 @@ describe('contributionService', () => {
                 middleInitial: '',
                 lastName: 'Doe',
                 governmentId: government.id,
+                paymentMethod: PaymentMethod.CASH,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
                 state: 'OR',
@@ -443,6 +459,7 @@ describe('contributionService', () => {
                 city: 'Portland',
                 currentUserId: campaignStaff.id,
                 firstName: 'John',
+                paymentMethod: PaymentMethod.CASH,
                 middleInitial: '',
                 lastName: 'Doe',
                 governmentId: government.id,
@@ -465,6 +482,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -482,6 +500,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -514,6 +533,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -531,6 +551,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -564,6 +585,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -581,6 +603,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -615,6 +638,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -632,6 +656,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 type: ContributionType.CONTRIBUTION,
                 subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
@@ -907,6 +932,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -943,6 +969,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -978,6 +1005,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1014,6 +1042,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1048,6 +1077,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1075,6 +1105,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1113,6 +1144,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1142,6 +1174,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1179,6 +1212,7 @@ describe('contributionService', () => {
             currentUserId: campaignAdmin.id,
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
+            paymentMethod: PaymentMethod.CASH,
             subType: ContributionSubType.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
@@ -1205,6 +1239,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1258,6 +1293,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1295,6 +1331,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });
@@ -1345,6 +1382,7 @@ describe('contributionService', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
             date: Date.now()
         });

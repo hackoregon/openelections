@@ -9,7 +9,11 @@ import {
 } from './permissionService';
 import { UserRole } from '../models/entity/Permission';
 import { ExpenditureSummaryByStatus, getExpenditureSummaryByStatusAsync } from '../models/entity/Expenditure';
-import { ContributionSummaryByStatus, getContributionsSummaryByStatusAsync } from '../models/entity/Contribution';
+import {
+    Contribution,
+    ContributionSummaryByStatus,
+    getContributionsSummaryByStatusAsync
+} from '../models/entity/Contribution';
 
 export interface ICreateCampaign {
     name: string;
@@ -85,9 +89,13 @@ export interface StatusSummary {
 }
 
 export async function getStatusSummary(attrs: GetStatusSummaryAttrs): Promise<StatusSummary> {
-    const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, attrs.governmentId);
     if (attrs.campaignId) {
-        const hasCampaignPermissions = await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isCampaignStaffAsync(attrs.currentUserId, attrs.campaignId)
+        const repository = getConnection('default').getRepository('Campaign');
+        const campaign = (await repository.findOneOrFail(attrs.campaignId, {
+            relations: ['government']
+        })) as Campaign;
+        const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id);
+        const hasCampaignPermissions = await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isCampaignStaffAsync(attrs.currentUserId, attrs.campaignId);
         if (hasGovPermissions || hasCampaignPermissions) {
             const contributions = await getContributionsSummaryByStatusAsync({
                 campaignId: attrs.campaignId
@@ -102,7 +110,8 @@ export async function getStatusSummary(attrs: GetStatusSummaryAttrs): Promise<St
         } else {
             throw new Error('User does not have permissions for this campaign');
         }
-    } else if (attrs.governmentId && hasGovPermissions) {
+    } else if (attrs.governmentId) {
+        const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, attrs.governmentId);
         const contributions = await getContributionsSummaryByStatusAsync({
             governmentId: attrs.governmentId
         });
