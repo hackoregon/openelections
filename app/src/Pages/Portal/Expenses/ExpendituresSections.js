@@ -239,7 +239,7 @@ export const BasicsSection = ({
       <h2>{formFields.paymentMethod}</h2>
       <h2>{formFields.checkNumber}</h2>
     </div>
-    <h2 css={containers.fullWidth}>{formFields.purposeOfExpenditure}</h2>
+    <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
   </div>
 );
 

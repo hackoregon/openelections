@@ -15,7 +15,6 @@ import {
 } from '../../../api/api';
 
 export const expendituresEmptyState = {
-  // KELLY does this ^ even do anything?
   // BASICS VALUES
   amount: '',
   dateOfExpenditure: '',
@@ -23,7 +22,7 @@ export const expendituresEmptyState = {
   expenditureSubType: '',
   paymentMethod: '',
   checkNumber: '',
-  purposeOfExpenditure: '',
+  purposeType: '',
 
   // PAYEE INFO
   payeeType: '',
@@ -105,7 +104,7 @@ export const fields = {
     component: TextField,
     validation: Yup.number().required('Check number is required'),
   },
-  purposeOfExpenditure: {
+  purposeType: {
     label: 'Purpose of Expenditure',
     component: SelectField,
     options: {
@@ -131,7 +130,7 @@ export const fields = {
     validation: Yup.string().required(
       'A description of the purpose is required'
     ),
-    // purposeOfExpenditure IS REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+    // purposeType IS REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
   },
 
   // PAYEE SECTION
@@ -241,7 +240,7 @@ const ExpendituresFields = ({ initialValues, onSubmit, children }) => (
 
 // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
 
-// purposeOfExpenditure:
+// purposeType:
 // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
 
 export default ExpendituresFields;

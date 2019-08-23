@@ -320,6 +320,26 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
+export const PurposeTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  CASH: 'cash_contribution',
+  REIMBURSEMENT: 'personal_reimbursement',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRIMTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
+});
+
+// TODO: need to fix some of the fields here.
 export const mapContributionFormToData = data => {
   const {
     streetAddress,
