@@ -8,13 +8,18 @@ import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
 import { stateList } from '../../../components/Forms/Utils/FormsUtils';
+import {
+  ExpenditureTypeEnum,
+  ExpenditureSubTypeEnum,
+  PayeeTypeEnum,
+} from '../../../api/api';
 
 export const expendituresEmptyState = {
   // BASICS VALUES
   amount: '',
   dateOfExpenditure: '',
-  typeOfExpenditure: '',
-  subTypeOfExpenditure: '',
+  expenditureType: '',
+  expenditureSubType: '',
   paymentMethod: '',
   checkNumber: '',
   purposeOfExpenditure: '',
@@ -39,40 +44,43 @@ const fields = {
     component: CurrencyField,
     validation: Yup.number().required('The expenditure amount is required'),
   },
-  dateOfExpenditure: {
+  date: {
     label: 'Date of Expenditure',
     component: DateField,
     validation: Yup.number().required('An expenditure date is required'),
   },
-  typeOfExpenditure: {
-    label: 'Type of Expenditure',
+  expenditureType: {
+    label: 'Expenditure Type',
     component: SelectField,
     options: {
-      values: ['Expenditure', 'Other', 'Other Disbursement'],
+      values: [
+        ExpenditureTypeEnum.EXPENDITURE,
+        ExpenditureTypeEnum.OTHER,
+        ExpenditureTypeEnum.OTHER_DISBURSEMENT,
+      ],
     },
     validation: Yup.string().required('An expenditure type is required'),
   },
-  subTypeOfExpenditure: {
-    label: 'Subtype of Expenditure',
+  expenditureSubType: {
+    label: 'Expenditure SubType',
     component: SelectField,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
       values: [
-        'Accounts Payable',
-        'Cash Expenditure',
-        'Personal Expenditure for Reimbursement',
+        ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
+        ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+        ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
       ],
       // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
       // values: [
-      //   "Accounts Payable Rescinded",
-      //   "Cash Balance Adjustment"  // maybe
+      //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
+      //   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
       // ]
 
       // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
       // values: [
-      //   "Miscellaneous",
-      //   "Other Disbursement",
-      //   "Return or Refund of Contribution"
+      //   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
+      //   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
       // ]
     },
     validation: Yup.string().required('The Expenditure subtype is required'),
@@ -131,7 +139,11 @@ const fields = {
     label: 'Payee Type',
     component: SelectField,
     options: {
-      values: ['Individual', 'Business Entity', 'Candidate'],
+      values: [
+        PayeeTypeEnum.INDIVIDUAL,
+        PayeeTypeEnum.BUSINESS,
+        // PayeeTypeEnum.CA 'Candidate'], KELLY- check with DAN (api enum)
+      ],
     },
     validation: Yup.string().required('The payee type is required'),
   },
