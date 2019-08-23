@@ -15,6 +15,7 @@ import {
 } from '../../../api/api';
 
 export const expendituresEmptyState = {
+  // KELLY does this ^ even do anything?
   // BASICS VALUES
   amount: '',
   dateOfExpenditure: '',
@@ -130,7 +131,7 @@ const fields = {
     validation: Yup.string().required(
       'A description of the purpose is required'
     ),
-    // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+    // purposeOfExpenditure IS REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
   },
 
   // PAYEE SECTION
@@ -208,5 +209,32 @@ const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
     </Form>
   </>
 );
+
+// LOGIC FOR CONDITIONALLY VISIBLE FIELDS OR DROPDOWN SELECT OPTIONS:
+
+// EXPENDITURE TYPE SELECT VALUES:
+// If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
+// values: [
+//   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
+//   ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+//   ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
+// ],
+
+// If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
+// values: [
+//   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
+//   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
+// ]
+
+// If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
+// values: [
+//   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
+//   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
+// ]
+
+// LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
+
+// purposeOfExpenditure:
+// REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
 
 export default ExpensesDetailForm;
