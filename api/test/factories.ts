@@ -1,8 +1,8 @@
 import * as faker from 'faker';
-import {User, UserStatus} from '../models/entity/User';
-import {getConnection} from 'typeorm';
-import {Government} from '../models/entity/Government';
-import {Campaign} from '../models/entity/Campaign';
+import { User, UserStatus } from '../models/entity/User';
+import { getConnection } from 'typeorm';
+import { Government } from '../models/entity/Government';
+import { Campaign } from '../models/entity/Campaign';
 import {
     Contribution,
     ContributionStatus,

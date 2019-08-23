@@ -96,11 +96,11 @@ export enum OaeType {
 }
 
 export enum PaymentMethod {
-    'CASH'='Cash',
-    'CHECK'='Check',
-    'MONEY_ORDER'='Money Order',
-    'CREDIT_CARD_ONLINE'='Credit Card Online',
-    'CREDIT_CARD_PAPER'='Credit Card Paper Form'
+    CASH = 'cash',
+    CHECK = 'check',
+    MONEY_ORDER = 'money_order',
+    CREDIT_CARD_ONLINE = 'credit_card_online',
+    CREDIT_CARD_PAPER = 'credit_card_paper'
 }
 
 @Entity({ name: 'contributions' })
