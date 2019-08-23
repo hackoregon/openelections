@@ -237,6 +237,8 @@ const ExpensesDetailForm = ({ initialValues, onSubmit, children }) => (
 //   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, - no longer?
 // ]
 
+// If PaymentMethod was check, show check number field
+
 // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
 
 // purposeOfExpenditure:
