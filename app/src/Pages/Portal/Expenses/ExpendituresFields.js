@@ -38,7 +38,7 @@ export const expendituresEmptyState = {
   notes: '',
 };
 
-const fields = {
+export const fields = {
   // BASICS SECTION
   amount: {
     label: 'Amount of Expenditure',
