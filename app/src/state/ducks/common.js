@@ -5,3 +5,11 @@ export const addEntities = entities => {
     payload: entities,
   };
 };
+
+export const ADD_ENTITIES_LIST = 'ADD_ENTITIES';
+export const addEntitiesList = entities => {
+  return {
+    type: ADD_ENTITIES,
+    payload: entities,
+  };
+};

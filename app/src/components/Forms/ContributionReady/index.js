@@ -1,118 +1,99 @@
 import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import { flashMessage } from 'redux-flash';
-import ContributionReadyForm from './ContributionReadyForm';
 import {
-  ReadyHeaderSection,
+  getContributionById,
+  getCurrentContribution,
+} from '../../../state/ducks/contributions';
+import {
+  AddHeaderSection,
   BasicsSection,
   ContributorSection,
-  OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
+import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import AddContributionForm from '../AddContribution/AddContributionForm';
 import {
   mapContributionDataToForm,
-  mapContributionFormToData,
-  ContributionStatusEnum,
+  // mapContributionFormToData,
 } from '../../../api/api';
-import {
-  updateContribution,
-  archiveContribution,
-} from '../../../state/ducks/contributions';
-import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
-class ContributionReady extends React.Component {
-  updateContribution = payload => {
-    const { updateContribution, showMessage } = this.props;
-    delete payload.date; // TODO: should remove this later, current endpoint failing when including date in payload.
-    const showErrorMessage = error =>
-      showMessage(`Error: ${error.message}`, { props: { variant: 'error' } });
-    const showSuccessMessage = () =>
-      showMessage('Contribution saved', { props: { variant: 'success' } });
-    updateContribution(payload)
-      .then(data =>
-        data !== null ? showErrorMessage(data) : showSuccessMessage()
-      )
-      .catch(error => showErrorMessage(error));
-  };
+const onSubmit = (data, props) => {
+  console.log('hshs');
+};
 
-  onSubmit = (id, data) => {
-    const { updateContribution } = this;
-    const payload = {
-      id,
-      status: ContributionStatusEnum.SUBMITTED,
-      ...mapContributionFormToData(data),
+const mapData = () => {
+  mapContributionDataToForm();
+};
+
+class ViewContribution extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log('zzz');
+    this.state = {
+      isLoading: true,
     };
-    updateContribution(payload);
-  };
+  }
 
-  onDraft = (id, data) => {
-    const { updateContribution } = this;
-    const payload = {
-      id,
-      status: ContributionStatusEnum.DRAFT,
-      ...mapContributionFormToData(data),
-    };
-    updateContribution(payload);
-  };
-
-  // TODO: currently sending user back to table, need proper behavior.
-  onTrash = id => {
-    const { archiveContribution, history } = this.props;
-    archiveContribution(id).then(() => history.push('/contributions'));
-  };
+  componentDidMount() {
+    getContributionById(2);
+  }
 
   render() {
-    const { contributions, contributionId } = this.props;
-    const { onSubmit, onDraft, onTrash } = this;
-    const contribution = contributions[contributionId];
-    const loadCheck = !contributions.isLoading && contribution;
-    const { updatedAt, status } = loadCheck ? contribution : {};
+    console.log('zzz');
+
     return (
-      <ContributionReadyForm
-        onSubmit={data => onSubmit(contributionId, data)}
-        initialValues={
-          loadCheck
-            ? mapContributionDataToForm(contribution)
-            : contributionsEmptyState
-        }
+      <AddContributionForm
+        sss={console.log('zzz')}
+        onSubmit={data => onSubmit(data, this.props)}
+        initialValues={contributionsEmptyState}
+        sadasdsa={console.log(this.props.getit)}
       >
-        {({ formFields, isValid, handleSubmit, values }) => {
-          const { paymentMethod } = values;
-          const checkSelected = paymentMethod === 'Check';
+        {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
+          // console.log('Required fields', Object.keys(formErrors));
+
+          // eslint-disable-next-line no-undef
+          // console.log(getit);
           return (
             <>
-              <ReadyHeaderSection
-                status={status}
-                campaignName="FakeName"
-                lastEdited={updatedAt}
-                isValid={isValid}
-                handleSubmit={handleSubmit}
-                handleDraft={() => onDraft(contributionId, values)}
-                handleTrash={() => onTrash(contributionId)}
-              />
+              <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
               <BasicsSection
                 formFields={formFields}
-                checkSelected={checkSelected}
+                checkSelected={visibleIf.checkSelected}
+                showInKindFields={visibleIf.showInKindFields}
               />
-              <ContributorSection formFields={formFields} />
-              <OtherDetailsSection formFields={formFields} />
+              <ContributorSection
+                formFields={formFields}
+                showEmployerSection={visibleIf.showEmployerSection}
+                isPerson={visibleIf.isPerson}
+                emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
+              />
+              {/* <OtherDetailsSection formFields={formFields} /> */}
             </>
           );
         }}
-      </ContributionReadyForm>
+      </AddContributionForm>
     );
   }
 }
 export default connect(
-  (state, ownProps) => ({
-    currentUserId: state.auth.me.id,
-    governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId,
-    history: ownProps.history,
-    contributions: state.contributions,
+  state => ({
+    getit: getCurrentContribution(state),
   }),
   dispatch => ({
-    archiveContribution: id => dispatch(archiveContribution(id)),
-    updateContribution: data => dispatch(updateContribution(data)),
-    showMessage: (message, props) => dispatch(flashMessage(message, props)),
+    getContributionById: data => dispatch(getContributionById(2)),
   })
-)(ContributionReady);
+)(ViewContribution);
+
+// class SignUp extends React.Component {
+//   render() {
+//     const { location } = this.props;
+//     const params = queryString.parse(location.search);
+//     const { invitationCode } = params;
+//     return (
+//       <PageHoc>
+//         <SignUpForm code={invitationCode} {...this.props} />
+//       </PageHoc>
+//     );
+//   }
+// }

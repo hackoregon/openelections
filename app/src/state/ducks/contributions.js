@@ -1,7 +1,7 @@
 // campaigns.js
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -30,7 +30,9 @@ export const actionTypes = {
 export const initialState = {
   list: {},
   isLoading: false,
+  isLoadingB: false,
   error: null,
+  currentId: 0,
 };
 
 // Reducer
@@ -38,6 +40,9 @@ export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, list: action.payload.contributions || {} };
   },
+  // [ADD_ENTITIES_LIST]: (state, action) => {
+  //   return { ...state, ...action.payload.contributions };
+  // },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
@@ -69,7 +74,11 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return {
+      ...state,
+      isLoading: false,
+      currentId: action.id,
+    };
   },
   [actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -115,7 +124,7 @@ export const actionCreators = {
   },
   getContributionById: {
     request: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.REQUEST),
-    success: () => action(actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS),
+    success: id => action(actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS, { id }),
     failure: error =>
       action(actionTypes.GET_CONTRIBUTION_BY_ID.FAILURE, { error }),
   },
@@ -196,10 +205,16 @@ export function getContributionById(id) {
     dispatch(actionCreators.getContributionById.request());
     try {
       const response = await api.getContributionById(id);
+      console.log('HERE A', response.status);
       if (response.status === 200) {
+        console.log('HERE B', response);
+
         const data = normalize(await response.json(), schema.contribution);
+        console.log('HERE cC', data);
         dispatch(addEntities(data.entities));
-        dispatch(actionCreators.getContributionById.success());
+        // console.log('HERE dD', data);
+        dispatch(actionCreators.getContributionById.success(id));
+        console.log('HERE ehhh');
       } else {
         dispatch(actionCreators.getContributionById.failure());
       }
@@ -251,3 +266,11 @@ export const getContributionsList = createSelector(
   rootState,
   state => Object.values(state.contributions.list)
 );
+
+export const isLoggedIn = state => {
+  return state.auth.me !== null;
+};
+export const getCurrentContribution = state => {
+  return state || false;
+  // state.contributions.list[state.contributions.currentId]
+};
