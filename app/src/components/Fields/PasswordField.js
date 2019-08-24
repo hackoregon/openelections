@@ -4,7 +4,7 @@ import TextField from '../TextField/TextField';
 
 const PasswordField = ({ id, label, formik, isRequired }) => (
   <TextField
-    isRequired={isRequired}
+    required={isRequired}
     id={id}
     name={id}
     label={label}

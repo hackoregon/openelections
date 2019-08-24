@@ -242,6 +242,14 @@ export const PhoneTypeFieldEnum = Object.freeze({
   HOME_PHONE: 'Home Phone',
 });
 
+export const PaymentMethodEnum = Object.freeze({
+  CASH: 'cash',
+  CHECK: 'check',
+  MONEY_ORDER: 'money_order',
+  CREDIT_CARD_ONLINE: 'credit_card_online',
+  CREDIT_CARD_PAPER: 'credit_card_paper',
+});
+
 export const DataToPhoneTypeFieldMap = new Map([
   [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
   [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
@@ -325,6 +333,7 @@ export const mapContributionDataToForm = contribution => {
     phone,
     phoneType,
     occupation,
+    paymentMethod,
     employerName,
     employerCity,
     employerState,
@@ -336,9 +345,9 @@ export const mapContributionDataToForm = contribution => {
   return {
     // BASICS VALUES
     dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
-    typeOfContribution: DataToContributionTypeFieldMap.get(type),
-    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || '',
-    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
+    typeOfContribution: type,
+    subTypeOfContribution: subtype,
+    typeOfContributor: contributorType,
     inKindType,
     oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
     amountOfContribution: amount,
@@ -366,7 +375,7 @@ export const mapContributionDataToForm = contribution => {
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
     inKindDescription: inKindDescription || '',
-    paymentMethod: '',
+    paymentMethod,
   };
 };
 
@@ -399,24 +408,29 @@ export const mapContributionFormToData = data => {
     inKindType,
     oaeType,
     submitForMatch,
+    paymentMethod,
     isPerson = !!(
-      typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
-      typeOfContributor === ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
+      typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+      typeOfContributor === ContributorTypeEnum.FAMILY
     ),
   } = data;
 
   return {
     city,
+    // TODO Universally null fields that are not part of submit
     firstName: isPerson && firstName ? firstName : null,
+    middleInitial: '',
+    lastName: isPerson && lastName ? lastName : null,
+    name: entityName || null,
     state,
     occupation,
     employerName,
     employerCity,
     employerState,
     checkNumber,
-    contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
-    subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
-    type: ContributionTypeFieldToDataMap.get(typeOfContribution),
+    contributorType: typeOfContributor,
+    subType: subTypeOfContribution,
+    type: typeOfContribution,
     inKindType: inKindType || null,
     oaeType: OaeTypeFieldToDataMap.get(oaeType),
     address1: streetAddress,
@@ -426,16 +440,11 @@ export const mapContributionFormToData = data => {
     phoneType,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
-    middleInitial: '',
-    lastName: isPerson && lastName ? lastName : null,
-    name: entityName || null,
-    // type: ContributionTypeEnum.CONTRIBUTION,
-    // subType: ContributionSubTypeEnum.CASH,
     zip: zipcode,
-    //   contributorType: ContributorTypeEnum.INDIVIDUAL,
     inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
+    paymentMethod,
   };
 };
 
