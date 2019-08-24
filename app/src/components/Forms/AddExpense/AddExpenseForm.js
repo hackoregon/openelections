@@ -11,11 +11,7 @@ const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
     <Form
       // validate={validate}
       fields={fields}
-      sections={[
-        FormSectionEnum.AddHeaderSection,
-        FormSectionEnum.BasicsSection,
-        FormSectionEnum.PayeeInfoSection,
-      ]}
+      sections={[FormSectionEnum.BASIC, FormSectionEnum.PAYEE_INFO]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >

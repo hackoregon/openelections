@@ -58,16 +58,19 @@ export const fields = {
   // BASICS SECTION
   amount: {
     label: 'Amount of Expenditure',
+    section: FormSectionEnum.BASIC,
     component: CurrencyField,
     validation: Yup.number().required('The expenditure amount is required'),
   },
   date: {
     label: 'Date of Expenditure',
+    section: FormSectionEnum.BASIC,
     component: DateField,
     validation: Yup.number().required('An expenditure date is required'),
   },
   expenditureType: {
     label: 'Expenditure Type',
+    section: FormSectionEnum.BASIC,
     component: SelectField,
     options: {
       values: [
@@ -80,6 +83,7 @@ export const fields = {
   },
   expenditureSubType: {
     label: 'Expenditure SubType',
+    section: FormSectionEnum.BASIC,
     component: SelectField,
     options: {
       // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
@@ -104,6 +108,7 @@ export const fields = {
   },
   paymentMethod: {
     label: 'Payment Method',
+    section: FormSectionEnum.BASIC,
     component: SelectField,
     options: {
       values: [
@@ -118,11 +123,13 @@ export const fields = {
   },
   checkNumber: {
     label: 'Check Number',
+    section: FormSectionEnum.BASIC,
     component: TextField,
     validation: Yup.number().required('Check number is required'),
   },
   purposeType: {
     label: 'Purpose of Expenditure',
+    section: FormSectionEnum.BASIC,
     component: SelectField,
     options: {
       values: [
@@ -154,6 +161,7 @@ export const fields = {
   payeeType: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: 'Payee Type',
+    section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: {
       values: [
@@ -172,12 +180,13 @@ export const fields = {
   payeeName: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required("The payee's name is required"),
   },
   streetAddress: {
     label: 'Street Address',
-    section: FormSectionEnum.CONTRIBUTOR,
+    section: FormSectionEnum.PAYEE_INFO,
     // eslint-disable-next-line react/display-name
     component: props => (
       <AddressLookupField
@@ -196,11 +205,13 @@ export const fields = {
 
   addressLine2: {
     label: 'Address Line 2',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   countryRegion: {
     label: 'Country/Region',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required(
       "The payee's country or region is required"
@@ -208,27 +219,32 @@ export const fields = {
   },
   city: {
     label: 'City',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required("The payee's city is required"),
   },
   state: {
     label: 'State',
+    section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: { values: stateList },
     alidation: Yup.string().required('Your state is required'),
   },
   zipcode: {
     label: 'Zipcode',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.number().required('A zipcode is required'),
   },
   county: {
     label: 'County',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required("The payee's county is required"),
   },
   notes: {
     label: 'Notes',
+    section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string(),
   },
