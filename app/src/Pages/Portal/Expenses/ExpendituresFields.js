@@ -1,23 +1,29 @@
 import React from 'react';
 import * as Yup from 'yup';
-
-import Form from '../../../components/Form/Form';
+import { isEmpty } from 'lodash';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { stateList } from '../../../components/Forms/Utils/FormsUtils';
 import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
-import { stateList } from '../../../components/Forms/Utils/FormsUtils';
 import {
   ExpenditureTypeEnum,
   ExpenditureSubTypeEnum,
   PayeeTypeEnum,
 } from '../../../api/api';
 
+export const FormSectionEnum = Object.freeze({
+  BASIC: 'basicsSection',
+  PAYEE_INFO: 'payeeInfoSection',
+});
+
 export const expendituresEmptyState = {
   // BASICS VALUES
   amount: '',
-  dateOfExpenditure: '',
+  date: '',
   expenditureType: '',
   expenditureSubType: '',
   paymentMethod: '',
@@ -25,7 +31,7 @@ export const expendituresEmptyState = {
   purposeType: '',
 
   // PAYEE INFO
-  payeeType: '',
+  payeeType: PayeeTypeEnum.INDIVIDUAL,
   payeeName: '',
   streetAddress: '',
   addressLine2: '',
@@ -35,6 +41,17 @@ export const expendituresEmptyState = {
   zipcode: '',
   county: '',
   notes: '',
+};
+
+// Converts TypeFieldMap to options for a select
+// ie: DataToContributorTypeFieldMap
+// Just a patch DO NOT USE outside of this file
+export const mapToSelectOptions = mapPairs => {
+  const acc = [];
+  mapPairs.forEach((label, value) => {
+    acc.push({ value, label });
+  });
+  return acc;
 };
 
 export const fields = {
@@ -159,10 +176,24 @@ export const fields = {
     validation: Yup.string().required("The payee's name is required"),
   },
   streetAddress: {
-    label: 'Street Address/PO Box',
-    component: AddressLookupField,
-    validation: Yup.string().required("The payee's street address is required"),
+    label: 'Street Address',
+    section: FormSectionEnum.CONTRIBUTOR,
+    // eslint-disable-next-line react/display-name
+    component: props => (
+      <AddressLookupField
+        {...props.field}
+        {...props}
+        updateFields={{
+          street: 'streetAddress',
+          stateShort: 'state',
+          city: 'city',
+          zipCode: 'zipcode',
+        }}
+      />
+    ),
+    validation: Yup.string().required('Your street address is required'),
   },
+
   addressLine2: {
     label: 'Address Line 2',
     component: TextField,
@@ -183,64 +214,81 @@ export const fields = {
   state: {
     label: 'State',
     component: SelectField,
-    options: {
-      values: { stateList },
-      validation: Yup.string().required('Your state is required'),
-    },
-    zipcode: {
-      label: 'Zipcode',
-      component: TextField,
-      validation: Yup.number().required('A zipcode is required'),
-    },
-    county: {
-      label: 'County',
-      component: TextField,
-      validation: Yup.string().required("The payee's county is required"),
-    },
-
-    notes: {
-      label: 'Notes',
-      component: TextField,
-      validation: Yup.string(),
-    },
+    options: { values: stateList },
+    alidation: Yup.string().required('Your state is required'),
+  },
+  zipcode: {
+    label: 'Zipcode',
+    component: TextField,
+    validation: Yup.number().required('A zipcode is required'),
+  },
+  county: {
+    label: 'County',
+    component: TextField,
+    validation: Yup.string().required("The payee's county is required"),
+  },
+  notes: {
+    label: 'Notes',
+    component: TextField,
+    validation: Yup.string(),
   },
 };
 
-const ExpendituresFields = ({ initialValues, onSubmit, children }) => (
-  <>
-    <Form fields={fields} initialValues={initialValues} onSubmit={onSubmit}>
-      {children}
-    </Form>
-  </>
-);
+export const validate = values => {
+  const {
+    // amount,
+    // dateOfExpenditure,
+    // expenditureType,
+    // expenditureSubType,
+    // paymentMethod,
+    // checkNumber,
+    // purposeType,
 
-// LOGIC FOR CONDITIONALLY VISIBLE FIELDS OR DROPDOWN SELECT OPTIONS:
+    // // PAYEE INFO
+    payeeType,
+    // payeeName,
+    // streetAddress,
+    // addressLine2,
+    // countryRegion,
+    // city,
+    // state,
+    // zipcode,
+    // county,
+    // notes,
+  } = values;
+  // const error = {};
+  const visible = {};
 
-// EXPENDITURE TYPE SELECT VALUES:
-// If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
-// values: [
-//   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
-//   ExpenditureSubTypeEnum.CASH_EXPENDITURE,
-//   ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
-// ],
+  // LOGIC FOR CONDITIONALLY VISIBLE FIELDS OR DROPDOWN SELECT OPTIONS:
 
-// If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
-// values: [
-//   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
-//   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT, (maybe)
-// ]
+  // Make these areas visible
+  visible.isPerson = !!(
+    payeeType === PayeeTypeEnum.INDIVIDUAL || payeeType === PayeeTypeEnum.FAMILY
+  );
+  // EXPENDITURE TYPE SELECT VALUES:
+  // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
+  // values: [
+  //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
+  //   ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+  //   ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
+  // ],
 
-// If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
-// values: [
-//   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
-//   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, - no longer?
-// ]
+  // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
+  // values: [
+  //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
+  //   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT, (maybe)
+  // ]
 
-// If PaymentMethod was check, show check number field
+  // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
+  // values: [
+  //   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
+  //   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, - no longer?
+  // ]
 
-// LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
+  // If PaymentMethod was check, show check number field
 
-// purposeType:
-// REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+  // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
 
-export default ExpendituresFields;
+  // purposeType:
+  // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+};

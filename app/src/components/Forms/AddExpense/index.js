@@ -14,7 +14,7 @@ import {
   mapExpenditureFormToData,
 } from '../../../api/api';
 import {
-  HeaderSection,
+  AddHeaderSection,
   BasicsSection,
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
@@ -31,7 +31,7 @@ const onSubmit = (data, props) => {
     ...expenditureData,
   };
   createExpenditure(payload).then(data =>
-    props.history.push(`/expenditure/${data}`)
+    props.history.push(`/expenditures/${data}`)
   );
 };
 
@@ -43,11 +43,11 @@ const AddExpense = ({ ...props }) => (
     {({ formFields, isValid, handleSubmit, visibleIf, formikProps }) => {
       console.log('formikProps', formikProps);
       <>
-        <HeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+        <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
         <BasicsSection
           formFields={formFields}
           checkSelected={visibleIf.checkSelected}
-          showInKindFields={visibleIf.showInKindFields}
+          // showInKindFields={visibleIf.showInKindFields}
           showPaymentMethod={visibleIf.paymentMethod}
         />
         <PayeeInfoSection

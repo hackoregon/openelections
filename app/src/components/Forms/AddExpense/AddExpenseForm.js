@@ -1,23 +1,21 @@
 import React from 'react';
-import * as Yup from 'yup';
-
 import Form from '../../Form/Form';
 import {
-  HeaderSection,
-  BasicsSection,
-  PayeeInfoSection,
-} from '../../../Pages/Portal/Expenses/ExpendituresSections';
-import {
   fields,
-  // FormSectionEnum,
+  FormSectionEnum,
   // validate,
 } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
   <>
     <Form
+      // validate={validate}
       fields={fields}
-      sections={[HeaderSection, BasicsSection, PayeeInfoSection]}
+      sections={[
+        FormSectionEnum.AddHeaderSection,
+        FormSectionEnum.BasicsSection,
+        FormSectionEnum.PayeeInfoSection,
+      ]}
       initialValues={initialValues}
       onSubmit={onSubmit}
     >
@@ -25,5 +23,4 @@ const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
     </Form>
   </>
 );
-
 export default AddExpenseForm;

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { format } from 'date-fns';
@@ -161,24 +161,22 @@ const sectionStyles = {
 
 // HEADER VALUES
 const invoiceNumber = '#1030090212';
-const campaignName = 'FakeName';
-const lastEdited = 'date';
 const currentStatus = 'Draft';
 // const labelsCount = 0;
 
-const invoiceNumberBlock = (
-  <React.Fragment>
+const InvoiceNumberBlock = ({ campaignName, lastEdited }) => (
+  <>
     <p css={headerStyles.invoice}>{invoiceNumber}</p>
     <p css={headerStyles.subheading}>
       {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
     </p>
-  </React.Fragment>
+  </>
 );
 
-const statusBlock = (
+const StatusBlock = ({ status }) => (
   <div css={headerStyles.statusBlock}>
     <p css={headerStyles.status}>Current Status</p>
-    <p css={headerStyles.actualStatus}>{currentStatus}</p>
+    <p css={headerStyles.actualStatus}>{status}</p>
     <p css={headerStyles.largerBlueText}>Jump to Activity</p>
   </div>
 );
@@ -191,44 +189,116 @@ const statusBlock = (
 //   </div>
 // );
 
-export const HeaderSection = ({ formFields, isValid, handleSubmit }) => (
+// TODO: make a separate component for this checkmark component, find out what it indicates?
+const CheckmarkComponent = ({}) => (
+  <p
+    css={css`
+      margin-right: 8px;
+    `}
+  >
+    {' '}
+    ✅
+  </p>
+);
+
+const setButtonText = status => {
+  const configs = {};
+  switch (status) {
+    case ExpenditureStatusEnum.DRAFT:
+      configs.archive = 'Archive';
+      configs.draft = 'Draft';
+      configs.submit = 'Submit';
+      break;
+    case ExpenditureStatusEnum.ARCHIVED:
+      configs.draft = 'Move to Draft';
+      break;
+    case ExpenditureStatusEnum.PROCESSED:
+      break;
+    case ExpenditureStatusEnum.SUBMITTED:
+      break;
+    default:
+      return configs;
+  }
+  return configs;
+};
+
+const createHeaderButton = (style, onClick, text, disabled = false) => (
+  <Button style={style} disabled={disabled} onClick={onClick}>
+    {text}
+  </Button>
+);
+
+export const ReadyHeaderSection = ({
+  status,
+  campaignName,
+  lastEdited,
+  // labelsCount,
+  isValid,
+  handleSubmit,
+  handleTrash,
+  handleDraft,
+}) => {
+  const { archive, draft, submit } = setButtonText(status);
+  return (
+    <>
+      <div css={containers.header}>
+        <div css={headerStyles.leftColumn}>
+          <InvoiceNumberBlock
+            campaignName={campaignName}
+            lastEdited={format(new Date(lastEdited), 'mm/DD/yyyy')}
+          />
+          <div style={{ display: 'flex' }}>
+            <StatusBlock status={status} />
+          </div>
+        </div>
+        <div css={headerStyles.rightColumn}>
+          <div style={{ display: 'flex', height: '50px' }}>
+            {archive
+              ? createHeaderButton(
+                  headerStyles.trashButton,
+                  handleTrash,
+                  archive
+                )
+              : null}
+            {draft
+              ? createHeaderButton(headerStyles.draftButton, handleDraft, draft)
+              : null}
+            {draft && submit ? <CheckmarkComponent /> : null}
+            {submit
+              ? createHeaderButton(
+                  headerStyles.submitButton,
+                  handleSubmit,
+                  submit,
+                  !isValid
+                )
+              : null}
+          </div>
+        </div>
+      </div>
+      <hr css={sectionStyles.dividerLine} />
+    </>
+  );
+};
+
+export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
     <div css={containers.header}>
-      <div css={headerStyles.leftColumn}>
-        {invoiceNumberBlock}
-        <div style={{ display: 'flex' }}>{statusBlock}</div>
-      </div>
-      <div css={headerStyles.rightColumn}>
-        <div css={headerStyles.buttonDiv}>
-          <Button
-            css={headerStyles.draftButton}
-            buttonType="submit"
-            disabled={!isValid}
-            onClick={handleSubmit}
-          >
-            Save as Draft
-          </Button>
-          <Button
-            css={headerStyles.submitButton}
-            buttonType="submit"
-            disabled={!isValid}
-            onClick={handleSubmit}
-          >
-            Submit Expense
-          </Button>
-        </div>
+      <div style={{ flexDirection: 'column' }}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="submit"
+          disabled={!isValid}
+          onClick={handleSubmit}
+        >
+          Save as Draft
+        </Button>
       </div>
     </div>
     <hr css={sectionStyles.dividerLine} />
   </>
 );
 
-export const BasicsSection = ({
-  formFields,
-  checkSelected,
-  showEmployerSection,
-  showInKindFields,
-}) => (
+export const BasicsSection = ({ formFields }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
