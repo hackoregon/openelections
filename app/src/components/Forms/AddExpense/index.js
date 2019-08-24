@@ -2,14 +2,17 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-// import createExpenditure from '../../../state/ducks/expenditures';
+import { createExpenditure } from '../../../state/ducks/expenditures';
 import {
   getCurrentCampaignId,
   getCurrentUserId,
 } from '../../../state/ducks/auth';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddExpenseForm from './AddExpenseForm';
-import ExpenditureStatusEnum from '../../../api/api';
+import {
+  ExpenditureStatusEnum,
+  mapExpenditureFormToData,
+} from '../../../api/api';
 import {
   HeaderSection,
   BasicsSection,
@@ -19,13 +22,13 @@ import { expendituresEmptyState } from '../../../Pages/Portal/Expenses/Expenditu
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createExpenditure } = props;
-  // const expenditureData = mapContributionFormToData(data);
+  const expenditureData = mapExpenditureFormToData(data);
   const payload = {
     status: ExpenditureStatusEnum.DRAFT,
     governmentId,
     campaignId,
     currentUserId,
-    // ...expenditureData,
+    ...expenditureData,
   };
   createExpenditure(payload).then(data =>
     props.history.push(`/expenditure/${data}`)
@@ -45,6 +48,7 @@ const AddExpense = ({ ...props }) => (
           formFields={formFields}
           checkSelected={visibleIf.checkSelected}
           showInKindFields={visibleIf.showInKindFields}
+          showPaymentMethod={visibleIf.paymentMethod}
         />
         <PayeeInfoSection
           formFields={formFields}

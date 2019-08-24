@@ -410,6 +410,144 @@ export const mapContributionFormToData = data => {
   return transformed;
 };
 
+export const mapExpenditureDataToForm = expenditure => {
+  const {
+    date,
+    // createdAt,
+    type,
+    subtype,
+    contributorType,
+    inKindType,
+    oaeType,
+    amount,
+    checkNumber,
+    name,
+    firstName,
+    lastName,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+    email,
+    phone,
+    phoneType,
+    occupation,
+    paymentMethod,
+    employerName,
+    employerCity,
+    employerState,
+    calendarYearAggregate,
+    inKindDescription,
+    employerZipcode,
+    submitForMatch,
+  } = expenditure;
+  return {
+    // BASICS VALUES
+    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
+    typeOfContribution: type,
+    subTypeOfContribution: subtype,
+    typeOfContributor: contributorType,
+    inKindType,
+    oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
+    amountOfContribution: amount,
+    checkNumber,
+    submitForMatch: submitForMatch ? 'Yes' : 'No',
+
+    // CONTRIBUTOR VALUES
+    firstName,
+    lastName,
+    entityName: name || '',
+    streetAddress: address1,
+    addressLine2: address2,
+    city,
+    state,
+    zipcode: zip,
+    email: email || '',
+    phone: phone || '',
+    phoneType: phoneType || '',
+    occupation: occupation || '',
+    employerName: employerName || '',
+    employerCity: employerCity || '',
+    employerState: employerState || '',
+    employerZipcode: employerZipcode || '',
+
+    // OTHER DETAILS VALUES
+    electionAggregate: calendarYearAggregate,
+    inKindDescription: inKindDescription || '',
+    paymentMethod,
+  };
+};
+
+// TODO: need to fix some of the fields here.
+export const mapExpenditureFormToData = data => {
+  const {
+    streetAddress,
+    amountOfContribution,
+    city,
+    dateOfContribution,
+    addressLine2,
+    firstName,
+    lastName,
+    entityName,
+    state,
+    zipcode,
+    employerName,
+    employerCity,
+    employerState,
+    occupation,
+    inKindDescription,
+    electionAggregate,
+    email,
+    phone,
+    phoneType,
+    checkNumber,
+    typeOfContributor,
+    subTypeOfContribution,
+    typeOfContribution,
+    inKindType,
+    oaeType,
+    submitForMatch,
+    paymentMethod,
+    isPerson = !!(
+      typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+      typeOfContributor === ContributorTypeEnum.FAMILY
+    ),
+  } = data;
+
+  return {
+    city,
+    // TODO Universally null fields that are not part of submit
+    firstName: isPerson && firstName ? firstName : null,
+    middleInitial: '',
+    lastName: isPerson && lastName ? lastName : null,
+    name: entityName || null,
+    state,
+    occupation,
+    employerName,
+    employerCity,
+    employerState,
+    checkNumber,
+    contributorType: typeOfContributor,
+    subType: subTypeOfContribution,
+    type: typeOfContribution,
+    inKindType: inKindType || null,
+    oaeType: OaeTypeFieldToDataMap.get(oaeType),
+    address1: streetAddress,
+    address2: addressLine2,
+    email,
+    phone,
+    phoneType,
+    amount: parseFloat(amountOfContribution),
+    date: new Date(dateOfContribution).getTime(),
+    zip: zipcode,
+    inKindDescription,
+    calendarYearAggregate: electionAggregate,
+    submitForMatch: submitForMatch === 'Yes',
+    paymentMethod,
+  };
+};
+
 export function post(url, data) {
   const headers = {
     'Content-Type': 'application/json',
