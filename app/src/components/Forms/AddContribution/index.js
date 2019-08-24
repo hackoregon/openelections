@@ -50,6 +50,7 @@ const AddContribution = ({ ...props }) => (
             formFields={formFields}
             checkSelected={visibleIf.checkSelected}
             showInKindFields={visibleIf.showInKindFields}
+            showPaymentMethod={visibleIf.paymentMethod}
           />
           <ContributorSection
             formFields={formFields}

@@ -19,7 +19,7 @@ export const formFromFields = (fields, formikProps, dynamicRequire) =>
     })
   );
 
-function removeVisibleIfFromErrorObject(errorObject) {
+function extractValidateErrors(errorObject) {
   return _.pick(errorObject, ['error']);
 }
 
@@ -34,9 +34,7 @@ class Form extends React.Component {
     return (
       <Formik
         validate={
-          validate
-            ? values => removeVisibleIfFromErrorObject(validate(values))
-            : null
+          validate ? values => extractValidateErrors(validate(values)) : null
         }
         initialValues={initialValues}
         enableReinitialize

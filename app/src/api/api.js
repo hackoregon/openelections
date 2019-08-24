@@ -242,6 +242,14 @@ export const PhoneTypeFieldEnum = Object.freeze({
   HOME_PHONE: 'Home Phone',
 });
 
+export const PaymentMethodEnum = Object.freeze({
+  CASH: 'cash',
+  CHECK: 'check',
+  MONEY_ORDER: 'money_order',
+  CREDIT_CARD_ONLINE: 'credit_card_online',
+  CREDIT_CARD_PAPER: 'credit_card_paper',
+});
+
 export const DataToPhoneTypeFieldMap = new Map([
   [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
   [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
@@ -325,6 +333,7 @@ export const mapContributionDataToForm = contribution => {
     phone,
     phoneType,
     occupation,
+    paymentMethod,
     employerName,
     employerCity,
     employerState,
@@ -366,7 +375,7 @@ export const mapContributionDataToForm = contribution => {
     // OTHER DETAILS VALUES
     electionAggregate: calendarYearAggregate,
     inKindDescription: inKindDescription || '',
-    paymentMethod: '',
+    paymentMethod,
   };
 };
 
@@ -399,6 +408,7 @@ export const mapContributionFormToData = data => {
     inKindType,
     oaeType,
     submitForMatch,
+    paymentMethod,
     isPerson = !!(
       typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
       typeOfContributor === ContributorTypeEnum.FAMILY
@@ -434,6 +444,7 @@ export const mapContributionFormToData = data => {
     inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
+    paymentMethod,
   };
 };
 

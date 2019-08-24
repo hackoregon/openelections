@@ -21,6 +21,7 @@ import {
   ContributionSubTypeEnum,
   ContributionTypeEnum,
   ContributorTypeEnum,
+  PaymentMethodEnum,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -181,11 +182,17 @@ export const fields = {
     validation: Yup.string(),
     options: {
       values: [
-        'Cash',
-        'Check',
-        'Money Order',
-        'Credit Card (Online)',
-        'Credit Card (Paper Form)',
+        { value: PaymentMethodEnum.CASH, label: 'Cash' },
+        { value: PaymentMethodEnum.CHECK, label: 'Check' },
+        { value: PaymentMethodEnum.MONEY_ORDER, label: 'Money Order' },
+        {
+          value: PaymentMethodEnum.CREDIT_CARD_ONLINE,
+          label: 'Credit Card (Online)',
+        },
+        {
+          value: PaymentMethodEnum.CREDIT_CARD_PAPER,
+          label: 'Credit Card (Paper Form)',
+        },
       ],
     },
   },
@@ -422,11 +429,19 @@ export const validate = values => {
   );
 
   visible.checkSelected = !!(
-    paymentMethod === 'Check' || paymentMethod === 'Money Order'
+    paymentMethod === PaymentMethodEnum.CHECK ||
+    paymentMethod === PaymentMethodEnum.MONEY_ORDER
   );
-  visible.paymentMethod = !!(
-    subTypeOfContribution === ContributionSubTypeEnum.CASH
-  );
+
+  // Default to visible
+  visible.paymentMethod = true;
+
+  // Un remark lines if payment types only show on subtype cash
+  // visible.paymentMethod = !!(
+  //   subTypeOfContribution === ContributionSubTypeEnum.CASH
+  // );
+  // OR show when not just payment type
+
   visible.emptyOccupationLetterDate = occupationLetterDate === '';
 
   visible.showEmployerSection =
@@ -442,7 +457,7 @@ export const validate = values => {
 
   if (visible.checkSelected && isEmpty(checkNumber)) {
     error.checkNumber =
-      paymentMethod === 'Check'
+      paymentMethod === PaymentMethodEnum.CHECK
         ? 'Check number is required.'
         : 'Money Order number is required.';
   }
