@@ -142,7 +142,7 @@ export async function addContributions(user: User, government: Government, campa
 }
 
 export default async () => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && process.env.APP_ENV !== 'staging') {
         return console.log('Can only seed in staging, test or development mode');
     }
 

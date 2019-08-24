@@ -115,7 +115,7 @@ export async function newExpenditureAsync(campaign: Campaign, government: Govern
 
 
 export async function truncateAll() {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && process.env.APP_ENV !== 'staging') {
         throw new Error('Cant run truncate in production');
     }
     const connection = getConnection('default');
