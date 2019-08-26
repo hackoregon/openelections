@@ -1,10 +1,15 @@
 import React from 'react';
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
+import { getExpenditureById } from '../../../state/ducks/expenditures';
 import Button from '../../Button/Button';
 import ExpensesDetailForm from './ExpensesDetailForm.js';
 /** @jsx jsx */
-import { isLoggedIn } from '../../../state/ducks/auth';
+import {
+  getCurrentCampaignId,
+  getCurrentUserId,
+} from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 const containers = {
   header: css`
@@ -288,6 +293,13 @@ const ExpensesDetail = () => (
     </ExpensesDetailForm>
   </>
 );
-export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false,
-}))(ExpensesDetail);
+export default connect(
+  state => ({
+    currentUserId: getCurrentUserId(state),
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
+  }),
+  dispatch => ({
+    getExpenditureById: data => dispatch(getExpenditureById(data)),
+  })
+)(ExpensesDetail);
