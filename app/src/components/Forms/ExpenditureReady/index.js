@@ -12,10 +12,7 @@ import {
   mapExpenditureFormToData,
   ExpenditureStatusEnum,
 } from '../../../api/api';
-import {
-  updateExpenditure,
-  // archiveExpenditure,
-} from '../../../state/ducks/expenditures';
+import { updateExpenditure } from '../../../state/ducks/expenditures';
 import { expendituresEmptyState } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 class ExpenditureReady extends React.Component {
