@@ -4,21 +4,11 @@ import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
 import { login } from '../../../../state/ducks/auth';
 
-class ExpensesDetail extends Component {
-  componentWillUpdate(newprops) {
-    if (!(typeof newprops.state.me === 'undefined' || !newprops.state.me)) {
-      this.props.history.push('/dashboard');
-    }
-  }
-
-  render() {
-    return (
-      <PageHoc>
-        <ExpensesDetailForm {...this.props} />
-      </PageHoc>
-    );
-  }
-}
+const ExpensesDetail = ({ ...props }) => (
+  <PageHoc>
+    <ExpensesDetailForm {...props} />
+  </PageHoc>
+);
 
 export default connect(
   state => {

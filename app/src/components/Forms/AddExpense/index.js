@@ -40,8 +40,8 @@ const AddExpense = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={expendituresEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, visibleIf, formikProps }) => {
-      console.log('formikProps', formikProps);
+    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
+      console.log('Required fields', Object.keys(formErrors));
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
