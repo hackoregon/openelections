@@ -30,7 +30,6 @@ export const actionTypes = {
 export const initialState = {
   list: {},
   isLoading: false,
-  isLoadingB: false,
   error: null,
   currentId: 0,
 };

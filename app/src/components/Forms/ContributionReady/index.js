@@ -108,7 +108,6 @@ class ContributionReadyForm extends React.Component {
                 status={this.props.data.status}
                 formValues={values}
               />
-              <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
               <BasicsSection
                 formFields={formFields}
                 checkSelected={visibleIf.checkSelected}

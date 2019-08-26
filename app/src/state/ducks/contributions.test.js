@@ -18,6 +18,7 @@ describe('Reducer', () => {
       list: {},
       isLoading: false,
       error: null,
+      currentId: 0,
     });
   });
 
@@ -37,6 +38,7 @@ describe('Reducer', () => {
       },
       isLoading: false,
       error: null,
+      currentId: 0,
     });
   });
 });
