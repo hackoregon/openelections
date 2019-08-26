@@ -31,7 +31,7 @@ const onSubmit = (data, props) => {
     ...expenditureData,
   };
   createExpenditure(payload).then(data =>
-    props.history.push(`/expenditures/${data}`)
+    props.history.push(`/expenses/${data}`)
   );
 };
 
@@ -42,20 +42,22 @@ const AddExpense = ({ ...props }) => (
   >
     {({ formFields, isValid, handleSubmit, visibleIf, formikProps }) => {
       console.log('formikProps', formikProps);
-      <>
-        <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
-        <BasicsSection
-          formFields={formFields}
-          checkSelected={visibleIf.checkSelected}
-          // showInKindFields={visibleIf.showInKindFields}
-          showPaymentMethod={visibleIf.paymentMethod}
-        />
-        <PayeeInfoSection
-          formFields={formFields}
-          showEmployerSection={visibleIf.showEmployerSection}
-          isPerson={visibleIf.isPerson}
-        />
-      </>;
+      return (
+        <>
+          <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+          <BasicsSection
+            formFields={formFields}
+            checkSelected={visibleIf.checkSelected}
+            // showInKindFields={visibleIf.showInKindFields}
+            showPaymentMethod={visibleIf.paymentMethod}
+          />
+          <PayeeInfoSection
+            formFields={formFields}
+            showEmployerSection={visibleIf.showEmployerSection}
+            isPerson={visibleIf.isPerson}
+          />
+        </>
+      );
     }}
   </AddExpenseForm>
 );

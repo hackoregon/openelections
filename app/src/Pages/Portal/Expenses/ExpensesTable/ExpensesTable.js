@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import Table from '../../../../components/Table';
 import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Button from '../../../../components/Button/Button';
+import { getExpendituresList } from '../../../../state/ducks/expenditures';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -92,4 +94,7 @@ const ExpensesTable = ({ ...props }) => {
   );
 };
 
-export default ExpensesTable;
+export default connect(state => ({
+  isListLoading: state.campaigns.isLoading,
+  expendituresList: getExpendituresList(state),
+}))(ExpensesTable);

@@ -14,7 +14,7 @@ import {
 } from '../../../api/api';
 import {
   updateExpenditure,
-  // archiveExpenditure,
+  archiveExpenditure,
 } from '../../../state/ducks/expenditures';
 import { expendituresEmptyState } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
@@ -109,7 +109,7 @@ export default connect(
     expenditures: state.expenditures,
   }),
   dispatch => ({
-    // archiveExpenditure: id => dispatch(archiveExpenditure(id)),
+    archiveExpenditure: id => dispatch(archiveExpenditure(id)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
     showMessage: (message, props) => dispatch(flashMessage(message, props)),
   })
