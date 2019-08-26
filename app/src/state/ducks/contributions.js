@@ -205,16 +205,11 @@ export function getContributionById(id) {
     dispatch(actionCreators.getContributionById.request());
     try {
       const response = await api.getContributionById(id);
-      console.log('HERE A', response.status);
       if (response.status === 200) {
-        console.log('HERE B', response);
-
-        const data = normalize(await response.json(), schema.contribution);
-        console.log('HERE cC', data);
+        // TODO look into why response.json() is removing data
+        const data = normalize(await response, schema.contribution);
         dispatch(addEntities(data.entities));
-        // console.log('HERE dD', data);
         dispatch(actionCreators.getContributionById.success(id));
-        console.log('HERE ehhh');
       } else {
         dispatch(actionCreators.getContributionById.failure());
       }
@@ -271,6 +266,11 @@ export const isLoggedIn = state => {
   return state.auth.me !== null;
 };
 export const getCurrentContribution = state => {
-  return state || false;
+  // return state || false;
+  return state.contributions &&
+    state.contributions.list &&
+    state.contributions.currentId
+    ? state.contributions.list[state.contributions.currentId]
+    : false;
   // state.contributions.list[state.contributions.currentId]
 };

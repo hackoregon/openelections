@@ -2,60 +2,112 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import {
-  getContributionById,
-  getCurrentContribution,
-} from '../../../state/ducks/contributions';
+import { updateContribution } from '../../../state/ducks/contributions';
+import { getCurrentUserId } from '../../../state/ducks/auth';
 import {
   AddHeaderSection,
+  ViewHeaderSection,
   BasicsSection,
   ContributorSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
 import {
-  mapContributionDataToForm,
-  // mapContributionFormToData,
+  ContributionStatusEnum,
+  mapContributionFormToData,
 } from '../../../api/api';
 
 const onSubmit = (data, props) => {
-  console.log('hshs');
+  const initialData = props.data;
+  const contributionData = mapContributionFormToData(data);
+  delete contributionData.date;
+  delete contributionData.calendarYearAggregate;
+  // const updateAttributes = data;
+  contributionData.id = data.id;
+  contributionData.currentUserId = props.currentUserId;
+  switch (data.buttonSubmitted) {
+    case 'archive':
+      contributionData.status = ContributionStatusEnum.ARCHIVED;
+      break;
+    case 'move_to_draft':
+      contributionData.status = ContributionStatusEnum.DRAFT;
+      break;
+    case 'save':
+      contributionData.status = ContributionStatusEnum.DRAFT;
+      break;
+    case 'submit':
+      // Only submit dirty fields
+      contributionData.status = ContributionStatusEnum.SUBMITTED;
+      break;
+    default:
+    // code block
+  }
+  // TODO only send dirty fields
+  // for (const key of Object.keys(data)) {
+  //   console.log(key, data[key]);
+  //   if (initialData[key]) {
+  //     if (data[key] !== initialData[key]) {
+  //       updateAttributes[key] = data[key];
+  //     }
+  //   }
+  // }
+
+  props
+    .updateContribution(contributionData)
+    .then(() => props.history.push('/contributions'));
 };
 
-const mapData = () => {
-  mapContributionDataToForm();
+const onSubmitSave = (data, props) => {
+  const { currentUserId, governmentId, campaignId, createContribution } = props;
+  const contributionData = mapContributionFormToData(data);
+  const payload = {
+    status: ContributionStatusEnum.DRAFT,
+    governmentId,
+    campaignId,
+    currentUserId,
+    ...contributionData,
+  };
+  createContribution(payload).then(data =>
+    props.history.push(`/contributions/${data}`)
+  );
 };
 
-class ViewContribution extends React.Component {
+class ContributionReadyForm extends React.Component {
   constructor(props) {
     super(props);
-    console.log('zzz');
     this.state = {
       isLoading: true,
     };
   }
 
-  componentDidMount() {
-    getContributionById(2);
-  }
-
   render() {
-    console.log('zzz');
-
     return (
       <AddContributionForm
-        sss={console.log('zzz')}
         onSubmit={data => onSubmit(data, this.props)}
-        initialValues={contributionsEmptyState}
-        sadasdsa={console.log(this.props.getit)}
+        initialValues={this.props.data}
       >
-        {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
-          // console.log('Required fields', Object.keys(formErrors));
-
-          // eslint-disable-next-line no-undef
-          // console.log(getit);
+        {({
+          formFields,
+          isValid,
+          handleSubmit,
+          visibleIf,
+          formErrors,
+          values,
+          initialValues,
+        }) => {
+          console.log(formErrors);
+          console.log(initialValues);
           return (
             <>
+              <ViewHeaderSection
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                onSubmitSave={onSubmitSave}
+                id={this.props.data.id}
+                updatedAt={this.props.data.updatedAt}
+                status={this.props.data.status}
+                formValues={values}
+              />
               <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
               <BasicsSection
                 formFields={formFields}
@@ -76,24 +128,12 @@ class ViewContribution extends React.Component {
     );
   }
 }
+
 export default connect(
   state => ({
-    getit: getCurrentContribution(state),
+    currentUserId: getCurrentUserId(state),
   }),
   dispatch => ({
-    getContributionById: data => dispatch(getContributionById(2)),
+    updateContribution: data => dispatch(updateContribution(data)),
   })
-)(ViewContribution);
-
-// class SignUp extends React.Component {
-//   render() {
-//     const { location } = this.props;
-//     const params = queryString.parse(location.search);
-//     const { invitationCode } = params;
-//     return (
-//       <PageHoc>
-//         <SignUpForm code={invitationCode} {...this.props} />
-//       </PageHoc>
-//     );
-//   }
-// }
+)(ContributionReadyForm);

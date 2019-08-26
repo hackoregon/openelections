@@ -107,6 +107,7 @@ class Form extends React.Component {
             values: formikProps.values,
             visibleIf,
             formErrors: formikProps.errors,
+            initialValues: formikProps.initialValues,
             /* could return more formikProps if needed */
           });
         }}

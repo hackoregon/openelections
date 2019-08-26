@@ -1,5 +1,4 @@
 import jwtDecode from 'jwt-decode';
-import { format } from 'date-fns';
 
 export const UserRoleEnum = Object.freeze({
   GOVERNMENT_ADMIN: 'government_admin',
@@ -304,82 +303,6 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
-// TODO: need to get data for the following:
-// - paymentMethod
-// - employerZipcode
-// - occupationLetterDate
-// - linkToDocumentation
-// - notes
-export const mapContributionDataToForm = contribution => {
-  const {
-    date,
-    // createdAt,
-    type,
-    subtype,
-    contributorType,
-    inKindType,
-    oaeType,
-    amount,
-    checkNumber,
-    name,
-    firstName,
-    lastName,
-    address1,
-    address2,
-    city,
-    state,
-    zip,
-    email,
-    phone,
-    phoneType,
-    occupation,
-    paymentMethod,
-    employerName,
-    employerCity,
-    employerState,
-    calendarYearAggregate,
-    inKindDescription,
-    employerZipcode,
-    submitForMatch,
-  } = contribution;
-  return {
-    // BASICS VALUES
-    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
-    typeOfContribution: type,
-    subTypeOfContribution: subtype,
-    typeOfContributor: contributorType,
-    inKindType,
-    oaeType,
-    // DataToOaeTypeTypeFieldMap.get(oaeType),
-    amountOfContribution: amount,
-    checkNumber,
-    submitForMatch: submitForMatch ? 'Yes' : 'No',
-
-    // CONTRIBUTOR VALUES
-    firstName,
-    lastName,
-    entityName: name || '',
-    streetAddress: address1,
-    addressLine2: address2,
-    city,
-    state,
-    zipcode: zip,
-    email: email || '',
-    phone: phone || '',
-    phoneType: phoneType || '',
-    occupation: occupation || '',
-    employerName: employerName || '',
-    employerCity: employerCity || '',
-    employerState: employerState || '',
-    employerZipcode: employerZipcode || '',
-
-    // OTHER DETAILS VALUES
-    electionAggregate: calendarYearAggregate,
-    inKindDescription: inKindDescription || '',
-    paymentMethod,
-  };
-};
-
 // TODO: need to fix some of the fields here.
 export const mapContributionFormToData = data => {
   const {
@@ -416,7 +339,7 @@ export const mapContributionFormToData = data => {
     ),
   } = data;
 
-  return {
+  const transformed = {
     city,
     // TODO Universally null fields that are not part of submit
     firstName: isPerson && firstName ? firstName : null,
@@ -433,7 +356,7 @@ export const mapContributionFormToData = data => {
     subType: subTypeOfContribution,
     type: typeOfContribution,
     inKindType: inKindType || null,
-    oaeType: OaeTypeFieldToDataMap.get(oaeType),
+    oaeType,
     address1: streetAddress,
     address2: addressLine2,
     email,
@@ -447,6 +370,7 @@ export const mapContributionFormToData = data => {
     submitForMatch: submitForMatch === 'Yes',
     paymentMethod,
   };
+  return transformed;
 };
 
 export function post(url, data) {

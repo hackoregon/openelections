@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import { isEmpty } from 'lodash';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
@@ -55,22 +56,17 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
   if (options.values && !options.values[0].value) {
     optionValues = options.values.map(x => ({ value: x, label: x }));
   }
-
-  if (options.limitByField) {
-    if (options.limitByValues) {
-      const includeValues =
-        options.limitByValues[formik.values[options.limitByField]];
-      // console.log(
-      //   { includeValues },
-      //   options.limitByField,
-      //   options.limitByValues
-      // );
-      optionValues = optionValues.filter(
-        x => includeValues.indexOf(x.value) !== -1
-      );
-    }
+  if (
+    options.limitByField &&
+    options.limitByValues &&
+    !isEmpty(formik.values[options.limitByField])
+  ) {
+    const includeValues =
+      options.limitByValues[formik.values[options.limitByField]];
+    optionValues = optionValues.filter(
+      x => includeValues.indexOf(x.value) !== -1
+    );
   }
-  // console.log(id, optionValues);
   return (
     <FormControl fullWidth>
       <InputLabel htmlFor={id} required={isRequired}>

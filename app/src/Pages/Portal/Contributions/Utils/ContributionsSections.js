@@ -168,34 +168,6 @@ const sectionStyles = {
   `,
 };
 
-// HEADER VALUES
-const invoiceNumber = '#1030090212'; // TODO: Where is this invoice number coming from/generated?
-const currentStatus = 'Draft';
-// const labelsCount = 0;
-
-const InvoiceNumberBlock = ({ campaignName, lastEdited }) => (
-  <>
-    <p css={headerStyles.invoice}>{invoiceNumber}</p>
-    <p css={headerStyles.subheading}>
-      {`${campaignName} Campaign`} | {`Last Edited ${lastEdited}`}
-    </p>
-  </>
-);
-
-const StatusBlock = ({ status }) => (
-  <div css={headerStyles.statusBlock}>
-    <p css={headerStyles.status}>Current Status</p>
-    <p css={headerStyles.actualStatus}>{status}</p>
-  </div>
-);
-
-// const LabelBlock = ({ labelsCount }) => (
-//   <div css={headerStyles.labelBlock}>
-//     <p css={headerStyles.labels}>{`Labels (${labelsCount})`}</p>
-//     <p css={headerStyles.smallBlueText}>+ Add Labels</p>
-//   </div>
-// );
-
 // TODO: make a separate component for this checkmark component, find out what it indicates?
 const CheckmarkComponent = ({}) => (
   <p
@@ -226,63 +198,77 @@ const setButtonText = status => {
   return configs;
 };
 
-const createHeaderButton = (style, onClick, text, disabled = false) => (
-  <Button style={style} disabled={disabled} onClick={onClick}>
-    {text}
-  </Button>
-);
-
-export const ReadyHeaderSection = ({
-  status,
-  campaignName,
-  lastEdited,
-  // labelsCount,
+export const ViewHeaderSection = ({
   isValid,
   handleSubmit,
-  handleTrash,
-  handleDraft,
-}) => {
-  const { archive, draft, submit } = setButtonText(status);
-  return (
-    <>
-      <div css={containers.header}>
-        <div css={headerStyles.leftColumn}>
-          <InvoiceNumberBlock
-            campaignName={campaignName}
-            lastEdited={format(new Date(lastEdited), 'mm/DD/yyyy')}
-          />
-          <div style={{ display: 'flex' }}>
-            <StatusBlock status={status} />
-          </div>
-        </div>
-        <div css={headerStyles.rightColumn}>
-          <div style={{ display: 'flex', height: '50px' }}>
-            {archive
-              ? createHeaderButton(
-                  headerStyles.trashButton,
-                  handleTrash,
-                  archive
-                )
-              : null}
-            {draft
-              ? createHeaderButton(headerStyles.draftButton, handleDraft, draft)
-              : null}
-            {draft && submit ? <CheckmarkComponent /> : null}
-            {submit
-              ? createHeaderButton(
-                  headerStyles.submitButton,
-                  handleSubmit,
-                  submit,
-                  !isValid
-                )
-              : null}
-          </div>
-        </div>
+  id,
+  updatedAt,
+  status,
+  formValues,
+}) => (
+  <>
+    <div css={containers.header}>
+      <div>
+        <p css={headerStyles.invoice}>
+          #{id} {status}
+        </p>
+        <p css={headerStyles.subheading}>
+          Campaign | {`Last Edited ${updatedAt}`}
+        </p>
       </div>
-      <hr css={sectionStyles.dividerLine} />
-    </>
-  );
-};
+      <div style={{ flexDirection: 'column' }}>
+        {status === ContributionStatusEnum.DRAFT ? (
+          <>
+            <Button
+              css={headerStyles.submitButton}
+              buttonType="submit"
+              onClick={() => {
+                formValues.buttonSubmitted = 'archive';
+                handleSubmit();
+              }}
+            >
+              Archive
+            </Button>
+            <Button
+              css={headerStyles.submitButton}
+              buttonType="submit"
+              // disabled={!isValid}
+              onClick={() => {
+                formValues.buttonSubmitted = 'save';
+                handleSubmit();
+              }}
+            >
+              Save
+            </Button>
+            <Button
+              css={headerStyles.submitButton}
+              buttonType="submit"
+              onClick={() => {
+                formValues.buttonSubmitted = 'submit';
+                handleSubmit();
+              }}
+            >
+              Submit
+            </Button>
+          </>
+        ) : null}
+        {status === ContributionStatusEnum.ARCHIVED ? (
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="submit"
+            onClick={() => {
+              formValues.buttonSubmitted = 'move_to_draft';
+              handleSubmit();
+            }}
+          >
+            Move to Draft
+          </Button>
+        ) : null}
+      </div>
+    </div>
+    <hr css={sectionStyles.dividerLine} />
+  </>
+);
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
@@ -367,7 +353,7 @@ export const ContributorSection = ({
                 <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
                 <h2>{formFields.employerCity}</h2>
                 <h2>{formFields.employerState}</h2>
-                <h2>{formFields.employerZipcode}</h2>
+                {/* <h2>{formFields.employerZipcode}</h2> */}
               </>
             ) : null}
             <h2 css={containers.fullWidth}>

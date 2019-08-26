@@ -41,7 +41,7 @@ const AddContribution = ({ ...props }) => (
     initialValues={contributionsEmptyState}
   >
     {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
-      console.log('Required fields', Object.keys(formErrors));
+      // console.log('Required fields', Object.keys(formErrors));
 
       return (
         <>

@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
+import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { stateList } from '../../../../components/Forms/Utils/FormsUtils';
@@ -14,7 +15,6 @@ import AddressLookupField from '../../../../components/Fields/AddressLookupField
 import {
   PhoneTypeEnum,
   ContributionTypeFieldEnum,
-  OaeTypeFieldEnum,
   DataToContributionTypeFieldMap,
   DataToContributionSubTypeFieldMap,
   DataToContributorTypeFieldMap,
@@ -22,6 +22,7 @@ import {
   ContributionTypeEnum,
   ContributorTypeEnum,
   PaymentMethodEnum,
+  DataToOaeTypeTypeFieldMap,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -36,8 +37,86 @@ export const inKindContributionValues = [
   ContributionSubTypeEnum.INKIND_FORGIVEN_PERSONAL,
 ];
 
+export const mapContributionDataToForm = contribution => {
+  const {
+    id,
+    buttonSubmitted,
+    date,
+    updatedAt,
+    type,
+    subType,
+    contributorType,
+    inKindType,
+    oaeType,
+    amount,
+    checkNumber,
+    name,
+    firstName,
+    lastName,
+    address1,
+    address2,
+    city,
+    state,
+    zip,
+    email,
+    phone,
+    phoneType,
+    occupation,
+    paymentMethod,
+    employerName,
+    employerCity,
+    employerState,
+    calendarYearAggregate,
+    inKindDescription,
+    // employerZipcode,
+    submitForMatch,
+    occupationLetterDate,
+    status,
+  } = contribution;
+  return {
+    // BASICS VALUES
+    id,
+    buttonSubmitted: buttonSubmitted || '',
+    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
+    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
+    typeOfContribution: type,
+    subTypeOfContribution: subType,
+    typeOfContributor: contributorType,
+    inKindType: inKindType || '',
+    oaeType: oaeType || '',
+    amountOfContribution: amount,
+    checkNumber: checkNumber || '',
+    submitForMatch: submitForMatch ? 'Yes' : 'No',
+
+    // CONTRIBUTOR VALUES
+    firstName,
+    lastName,
+    entityName: name || '',
+    streetAddress: address1,
+    addressLine2: address2,
+    city,
+    state,
+    zipcode: zip,
+    email: email || '',
+    phone: phone || '',
+    phoneType: phoneType || '',
+    occupation: occupation || '',
+    employerName: employerName || '',
+    employerCity: employerCity || '',
+    employerState: employerState || '',
+    // employerZipcode: employerZipcode || '',
+    electionAggregate: calendarYearAggregate || '',
+    inKindDescription: inKindDescription || '',
+    paymentMethod: paymentMethod || '',
+    occupationLetterDate: occupationLetterDate || '',
+    status,
+  };
+};
+
 export const contributionsEmptyState = {
   // BASICS VALUES
+  id: '',
+  updatedAt: '',
   dateOfContribution: '',
   typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
   subTypeOfContribution: '',
@@ -65,7 +144,7 @@ export const contributionsEmptyState = {
   employerName: '',
   employerCity: '',
   employerState: '',
-  employerZipcode: '',
+  // employerZipcode: '',
 
   // OTHER DETAILS VALUES
   electionAggregate: '',
@@ -157,14 +236,7 @@ export const fields = {
     validation: Yup.string(),
     // 'The OAE contribution type is required',
     options: {
-      values: [
-        OaeTypeFieldEnum.SEED_MONEY,
-        OaeTypeFieldEnum.MATCHABLE,
-        OaeTypeFieldEnum.PUBLIC_MATCHING_CONTRIBUTION,
-        OaeTypeFieldEnum.QUALIFYING,
-        OaeTypeFieldEnum.ALLOWABLE,
-        OaeTypeFieldEnum.INKIND,
-      ],
+      values: mapToSelectOptions(DataToOaeTypeTypeFieldMap),
     },
   },
   submitForMatch: {
@@ -225,19 +297,26 @@ export const fields = {
   streetAddress: {
     label: 'Street Address',
     section: FormSectionEnum.CONTRIBUTOR,
+    // TODO Catch error if google places lib cannot load
+    //    and load TextField instead of <AddressLookupField ...>.
+    // TODO Apply default input to google AddressLookupField whne a form is loaded
+    // To developing without internet access
+    // Uncomment component: TextField
+    // Comment component: props => <AddressLookupField ...>).
+    component: TextField,
     // eslint-disable-next-line react/display-name
-    component: props => (
-      <AddressLookupField
-        {...props.field}
-        {...props}
-        updateFields={{
-          street: 'streetAddress',
-          stateShort: 'state',
-          city: 'city',
-          zipCode: 'zipcode',
-        }}
-      />
-    ),
+    // component: props => (
+    //   <AddressLookupField
+    //     {...props.field}
+    //     {...props}
+    //     updateFields={{
+    //       street: 'streetAddress',
+    //       stateShort: 'state',
+    //       city: 'city',
+    //       zipCode: 'zipcode',
+    //     }}
+    //   />
+    // ),
     validation: Yup.string().required('Your street address is required'),
   },
   addressLine2: {
@@ -312,12 +391,12 @@ export const fields = {
     validation: Yup.string(),
     options: { values: stateList },
   },
-  employerZipcode: {
-    label: 'Employer Zip Code',
-    section: FormSectionEnum.CONTRIBUTOR,
-    component: TextField,
-    validation: Yup.string(),
-  },
+  // employerZipcode: {
+  //   label: 'Employer Zip Code',
+  //   section: FormSectionEnum.CONTRIBUTOR,
+  //   component: TextField,
+  //   validation: Yup.string(),
+  // },
 
   // OTHER DETAILS SECTION
   electionAggregate: {
@@ -411,7 +490,7 @@ export const validate = values => {
     employerName,
     employerCity,
     employerState,
-    employerZipcode,
+    // employerZipcode,
     subTypeOfContribution,
     inKindType,
     lastName,
@@ -495,9 +574,9 @@ export const validate = values => {
       if (isEmpty(employerState)) {
         error.employerState = 'Employer state is required.';
       }
-      if (isEmpty(employerZipcode)) {
-        error.employerZipcode = 'Employer zipcode is required.';
-      }
+      // if (isEmpty(employerZipcode)) {
+      //   error.employerZipcode = 'Employer zipcode is required.';
+      // }
     }
   }
 
@@ -515,7 +594,7 @@ export const validate = values => {
   }
 
   // console.log('Conditional require', error);
-  console.log('Conditionally Visible', visible);
+  // console.log('Conditionally Visible', visible);
   error._visibleIf = visible;
   return error;
 };
