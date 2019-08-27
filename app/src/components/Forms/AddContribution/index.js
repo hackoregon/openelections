@@ -41,8 +41,6 @@ const AddContribution = ({ ...props }) => (
     initialValues={contributionsEmptyState}
   >
     {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
-      // console.log('Required fields', Object.keys(formErrors));
-
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
@@ -58,7 +56,6 @@ const AddContribution = ({ ...props }) => (
             isPerson={visibleIf.isPerson}
             emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
           />
-          {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
     }}

@@ -23,6 +23,7 @@ import {
   ContributorTypeEnum,
   PaymentMethodEnum,
   DataToOaeTypeTypeFieldMap,
+  InKindDescriptionTypeEnum,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -72,6 +73,7 @@ export const mapContributionDataToForm = contribution => {
     submitForMatch,
     occupationLetterDate,
     status,
+    notes,
   } = contribution;
   return {
     // BASICS VALUES
@@ -99,7 +101,7 @@ export const mapContributionDataToForm = contribution => {
     zipcode: zip,
     email: email || '',
     phone: phone || '',
-    phoneType: phoneType || 'Mobile',
+    phoneType: phoneType || '',
     occupation: occupation || 'Employed',
     employerName: employerName || '',
     employerCity: employerCity || '',
@@ -110,6 +112,7 @@ export const mapContributionDataToForm = contribution => {
     paymentMethod: paymentMethod || '',
     occupationLetterDate: occupationLetterDate || '',
     status,
+    notes: notes || '',
   };
 };
 
@@ -125,7 +128,7 @@ export const contributionsEmptyState = {
   inKindType: '',
   oaeType: '',
   submitForMatch: 'No',
-  paymentMethod: '',
+  paymentMethod: PaymentMethodEnum.CASH,
   checkNumber: '',
 
   // CONTRIBUTOR VALUES
@@ -233,7 +236,7 @@ export const fields = {
     label: 'OAE Contribution Type',
     section: FormSectionEnum.BASIC,
     component: SelectField,
-    validation: Yup.string(),
+    validation: Yup.string().required('OAE contribution type is required'),
     // 'The OAE contribution type is required',
     options: {
       values: mapToSelectOptions(DataToOaeTypeTypeFieldMap),
@@ -243,8 +246,7 @@ export const fields = {
     label: 'Submit for Match?',
     section: FormSectionEnum.BASIC,
     component: SelectField,
-    validation: Yup.string(),
-    // 'This field is required.',
+    validation: Yup.string().required('Required'),
     options: { values: ['Yes', 'No'] },
   },
   paymentMethod: {
@@ -422,32 +424,53 @@ export const fields = {
     validation: Yup.string(),
     options: {
       values: [
-        { value: 'broadcast_advertising', label: 'Broadcast Advertising' },
         {
-          value: 'fundraising_event_expenses',
+          value: InKindDescriptionTypeEnum.BROADCAST,
+          label: 'Broadcast Advertising',
+        },
+        {
+          value: InKindDescriptionTypeEnum.FUNDRAISING,
           label: 'Fundraising Event Expenses',
         },
         {
-          value: 'general_operating_expenses',
+          value: InKindDescriptionTypeEnum.GENERAL_OPERATING,
           label: 'General Operating Expenses',
         },
-        { value: 'printing', label: 'Literature/Brochures/Printing' },
-        { value: 'management', label: 'Management Services' },
         {
-          value: 'print_advertising',
+          value: InKindDescriptionTypeEnum.PRINTING,
+          label: 'Literature/Brochures/Printing',
+        },
+        {
+          value: InKindDescriptionTypeEnum.MANAGEMENT,
+          label: 'Management Services',
+        },
+        {
+          value: InKindDescriptionTypeEnum.NEWSPAPER,
           label: 'Newspaper and Other Periodical Advertising',
         },
-        { value: 'other_advertising', label: 'Other Advertising' },
-        { value: 'petition_Circulators', label: 'Petition Circulators' },
-        { value: 'postage', label: 'Postage' },
         {
-          value: 'preparation_of_advertising',
+          value: InKindDescriptionTypeEnum.OTHER_AD,
+          label: 'Other Advertising',
+        },
+        {
+          value: InKindDescriptionTypeEnum.PETITION,
+          label: 'Petition Circulators',
+        },
+        { value: InKindDescriptionTypeEnum.POSTAGE, label: 'Postage' },
+        {
+          value: InKindDescriptionTypeEnum.PREP_AD,
           label: 'Preparation and Production of Advertising',
         },
-        { value: 'surveys_and_polls', label: 'Surveys and Polls' },
-        { value: 'travel_expenses', label: 'Travel Expenses' },
-        { value: 'utilities', label: 'Utilities' },
-        { value: 'wages', label: 'Wages/Salaries/Benefits' },
+        {
+          value: InKindDescriptionTypeEnum.POLLING,
+          label: 'Surveys and Polls',
+        },
+        { value: InKindDescriptionTypeEnum.TRAVEL, label: 'Travel Expenses' },
+        { value: InKindDescriptionTypeEnum.UTILITIES, label: 'Utilities' },
+        {
+          value: InKindDescriptionTypeEnum.WAGES,
+          label: 'Wages/Salaries/Benefits',
+        },
       ],
     },
   },
@@ -531,8 +554,14 @@ export const validate = values => {
   );
 
   // These fields are conditionally required
-  if (visible.showInKindFields && isEmpty(inKindType))
-    error.inKindType = 'Inkind type is required';
+  if (values.phone && isEmpty(values.phoneType)) {
+    error.phoneType = 'Please select a phone type';
+  }
+
+  if (visible.showInKindFields) {
+    visible.paymentMethod = false;
+    if (isEmpty(inKindType)) error.inKindType = 'Inkind type is required';
+  }
 
   if (visible.checkSelected && isEmpty(checkNumber)) {
     error.checkNumber =
@@ -593,8 +622,8 @@ export const validate = values => {
     }
   }
 
-  // console.log('Conditional require', error);
+  // Uncomment next line to view conditionally visible fields
   // console.log('Conditionally Visible', visible);
-  error._visibleIf = visible;
+  values._visibleIf = visible;
   return error;
 };

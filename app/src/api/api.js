@@ -49,6 +49,23 @@ export const ContributionSubTypeFieldEnum = Object.freeze({
   CASH_CONTRIBUTION: 'Cash Contribution',
 });
 
+export const InKindDescriptionTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRINTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
+});
+
 export const DataToContributionSubTypeFieldMap = new Map([
   [
     ContributionSubTypeEnum.CASH,
@@ -303,7 +320,6 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
-// TODO: need to fix some of the fields here.
 export const mapContributionFormToData = data => {
   const {
     streetAddress,
@@ -333,6 +349,7 @@ export const mapContributionFormToData = data => {
     oaeType,
     submitForMatch,
     paymentMethod,
+    notes,
     isPerson = !!(
       typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
       typeOfContributor === ContributorTypeEnum.FAMILY
@@ -341,7 +358,6 @@ export const mapContributionFormToData = data => {
 
   const transformed = {
     city,
-    // TODO Universally null fields that are not part of submit
     firstName: isPerson && firstName ? firstName : null,
     middleInitial: '',
     lastName: isPerson && lastName ? lastName : null,
@@ -361,7 +377,7 @@ export const mapContributionFormToData = data => {
     address2: addressLine2,
     email,
     phone,
-    phoneType,
+    phoneType: phoneType || null,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     zip: zipcode,
@@ -369,6 +385,7 @@ export const mapContributionFormToData = data => {
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
     paymentMethod,
+    notes,
   };
   return transformed;
 };

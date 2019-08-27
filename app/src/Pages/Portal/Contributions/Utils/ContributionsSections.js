@@ -180,24 +180,6 @@ const CheckmarkComponent = ({}) => (
   </p>
 );
 
-const setButtonText = status => {
-  const configs = {};
-  switch (status) {
-    case ContributionStatusEnum.DRAFT:
-      configs.archive = 'Archive';
-      configs.draft = 'Draft';
-      configs.submit = 'Submit';
-      break;
-    case ContributionStatusEnum.ARCHIVED:
-      configs.draft = 'Move to Draft';
-    case ContributionStatusEnum.PROCESSED:
-    case ContributionStatusEnum.SUBMITTED:
-    default:
-      return configs;
-  }
-  return configs;
-};
-
 export const ViewHeaderSection = ({
   isValid,
   handleSubmit,
@@ -232,7 +214,6 @@ export const ViewHeaderSection = ({
             <Button
               css={headerStyles.submitButton}
               buttonType="submit"
-              // disabled={!isValid}
               onClick={() => {
                 formValues.buttonSubmitted = 'save';
                 handleSubmit();
@@ -372,7 +353,11 @@ export const ContributorSection = ({
   </div>
 );
 
-export const OtherDetailsSection = ({ formFields }) => (
+export const OtherDetailsSection = ({
+  formFields,
+  formValues,
+  handleSubmit,
+}) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Other Details</h3>
     <div css={containers.main}>
@@ -380,6 +365,18 @@ export const OtherDetailsSection = ({ formFields }) => (
       <h2>{formFields.description}</h2> */}
       <h2>{formFields.linkToDocumentation}</h2>
       <h2>{formFields.notes}</h2>
+      <div css={containers.header}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="submit"
+          onClick={() => {
+            formValues.buttonSubmitted = 'submit';
+            handleSubmit();
+          }}
+        >
+          Save other details
+        </Button>
+      </div>
     </div>
   </div>
 );
