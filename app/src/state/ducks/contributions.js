@@ -295,5 +295,5 @@ export const getCurrentContribution = state => {
     state.contributions.list &&
     state.contributions.currentId
     ? state.contributions.list[state.contributions.currentId]
-    : {};
+    : false;
 };

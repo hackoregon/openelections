@@ -56,7 +56,6 @@ const AddContribution = ({ ...props }) => (
             isPerson={visibleIf.isPerson}
             emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
           />
-          {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
     }}

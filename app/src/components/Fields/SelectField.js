@@ -103,7 +103,7 @@ SelectField.propTypes = {
         );
       }
     },
-    values: PropTypes.array.isRequired,
+    values: PropTypes.array,
   }),
   formik: PropTypes.shape({}),
 };

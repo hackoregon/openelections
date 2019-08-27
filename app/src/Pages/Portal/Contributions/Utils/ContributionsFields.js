@@ -73,6 +73,7 @@ export const mapContributionDataToForm = contribution => {
     submitForMatch,
     occupationLetterDate,
     status,
+    notes,
   } = contribution;
   return {
     // BASICS VALUES
@@ -111,6 +112,7 @@ export const mapContributionDataToForm = contribution => {
     paymentMethod: paymentMethod || '',
     occupationLetterDate: occupationLetterDate || '',
     status,
+    notes: notes || '',
   };
 };
 

@@ -349,6 +349,7 @@ export const mapContributionFormToData = data => {
     oaeType,
     submitForMatch,
     paymentMethod,
+    notes,
     isPerson = !!(
       typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
       typeOfContributor === ContributorTypeEnum.FAMILY
@@ -384,6 +385,7 @@ export const mapContributionFormToData = data => {
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
     paymentMethod,
+    notes,
   };
   return transformed;
 };

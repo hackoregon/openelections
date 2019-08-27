@@ -134,7 +134,11 @@ class ContributionReadyForm extends React.Component {
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
               />
               {isSubmited ? (
-                <OtherDetailsSection formFields={formFields} />
+                <OtherDetailsSection
+                  formFields={formFields}
+                  formValues={values}
+                  handleSubmit={handleSubmit}
+                />
               ) : null}
             </>
           );

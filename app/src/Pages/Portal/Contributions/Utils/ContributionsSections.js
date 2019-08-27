@@ -353,7 +353,11 @@ export const ContributorSection = ({
   </div>
 );
 
-export const OtherDetailsSection = ({ formFields }) => (
+export const OtherDetailsSection = ({
+  formFields,
+  formValues,
+  handleSubmit,
+}) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Other Details</h3>
     <div css={containers.main}>
@@ -361,6 +365,18 @@ export const OtherDetailsSection = ({ formFields }) => (
       <h2>{formFields.description}</h2> */}
       <h2>{formFields.linkToDocumentation}</h2>
       <h2>{formFields.notes}</h2>
+      <div css={containers.header}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="submit"
+          onClick={() => {
+            formValues.buttonSubmitted = 'submit';
+            handleSubmit();
+          }}
+        >
+          Submit
+        </Button>
+      </div>
     </div>
   </div>
 );
