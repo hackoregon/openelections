@@ -107,10 +107,10 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.paymentMethod = contributionAttrs.paymentMethod;
             contribution.occupationLetterDate =
                 contributionAttrs.occupationLetterDate && new Date(contributionAttrs.occupationLetterDate);
-            contribution.occupation = contributionAttrs.paymentMethod;
-            contribution.employerName = contributionAttrs.paymentMethod;
-            contribution.employerCity = contributionAttrs.paymentMethod;
-            contribution.employerState = contributionAttrs.paymentMethod;
+            contribution.occupation = contributionAttrs.occupation;
+            contribution.employerName = contributionAttrs.employerName;
+            contribution.employerCity = contributionAttrs.employerCity;
+            contribution.employerState = contributionAttrs.employerState;
             contribution.phoneType = contributionAttrs.phoneType;
             contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
