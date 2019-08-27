@@ -15,8 +15,9 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType, InKindDescriptionType, OaeType, PaymentMethod
+    ContributorType, InKindDescriptionType, OaeType, PaymentMethod, PhoneType
 } from '../models/entity/Contribution';
+// import { PhoneType } from 'aws-sdk/clients/connect';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -116,6 +117,39 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsEnum(ContributionType)
     @IsOptional()
     type: ContributionType;
+
+     
+    @IsString()
+    @IsOptional()
+    phone: string;
+
+    @IsNumber()
+    @IsOptional()
+    occupationLetterDate: number;
+    
+    @IsString()
+    @IsOptional()
+    occupation: string;
+    
+    @IsString()
+    @IsOptional()
+    employerName: string;
+    
+    @IsString()
+    @IsOptional()
+    employerCity: string;
+    
+    @IsString()
+    @IsOptional()
+    employerState: string;
+    
+    @IsString()
+    @IsOptional()
+    phoneType: string;
+    
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
 }
 
 export async function updateContribution(request: IRequest, response: Response, next: Function) {
@@ -281,15 +315,49 @@ export class AddContributionDto implements IAddContributionAttrs {
 
     @IsNumber()
     date: number;
+ 
+    @IsString()
+    @IsOptional()
+    phone: string;
+
+    @IsNumber()
+    @IsOptional()
+    occupationLetterDate: number;
+    
+    @IsString()
+    @IsOptional()
+    occupation: string;
+    
+    @IsString()
+    @IsOptional()
+    employerName: string;
+    
+    @IsString()
+    @IsOptional()
+    employerCity: string;
+    
+    @IsString()
+    @IsOptional()
+    employerState: string;
+    
+    @IsEnum(PhoneType)
+    @IsOptional()
+    phoneType: PhoneType;
+    
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
 }
 
 export async function addContribution(request: IRequest, response: Response, next: Function) {
     try {
         checkCurrentUser(request);
+        console.log(request.body);
         const addContributionDto = Object.assign(new AddContributionDto(), {
             ...request.body,
             currentUserId: request.currentUser.id
         });
+        console.log(addContributionDto);
         await checkDto(addContributionDto);
         const contribution = await addContributionAsync(addContributionDto);
         return response.status(201).json(contribution);

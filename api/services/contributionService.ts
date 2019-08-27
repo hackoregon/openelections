@@ -8,7 +8,7 @@ import {
     ContributorType,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, InKindDescriptionType,
-    MatchStrength, OaeType, PaymentMethod
+    MatchStrength, OaeType, PaymentMethod, PhoneType
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -33,6 +33,7 @@ export interface IAddContributionAttrs {
     firstName?: string;
     governmentId: number;
     lastName?: string;
+    phone?: string;
     middleInitial?: string;
     name?: string;
     prefix?: string;
@@ -47,6 +48,13 @@ export interface IAddContributionAttrs {
     date: number;
     paymentMethod: PaymentMethod;
     zip: string;
+    occupationLetterDate?: number;
+    occupation?: string;
+    employerName?: string;
+    employerCity?: string;
+    employerState?: string;
+    phoneType?: PhoneType;
+    checkNumber?: string;
 }
 
 export async function addContributionAsync(contributionAttrs: IAddContributionAttrs): Promise<Contribution> {
@@ -79,6 +87,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.firstName = contributionAttrs.firstName;
             contribution.middleInitial = contributionAttrs.middleInitial;
             contribution.lastName = contributionAttrs.lastName;
+            contribution.phone = contributionAttrs.phone;
             contribution.suffix = contributionAttrs.suffix;
             contribution.title = contributionAttrs.title;
             contribution.email = contributionAttrs.email;
@@ -92,7 +101,13 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.inKindType = contributionAttrs.inKindType;
             contribution.oaeType = contributionAttrs.oaeType;
             contribution.paymentMethod = contributionAttrs.paymentMethod;
-
+            // contribution.occupationLetterDate = contributionAttrs.occupationLetterDate;
+            contribution.occupation = contributionAttrs.paymentMethod;
+            contribution.employerName = contributionAttrs.paymentMethod;
+            contribution.employerCity = contributionAttrs.paymentMethod;
+            contribution.employerState = contributionAttrs.paymentMethod;
+            contribution.phoneType = contributionAttrs.phoneType;
+            contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
