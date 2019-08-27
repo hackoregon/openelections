@@ -410,51 +410,6 @@ export const mapContributionFormToData = data => {
   return transformed;
 };
 
-export const mapExpenditureDataToForm = expenditure => {
-  const {
-    amount,
-    date,
-    expenditureType,
-    expenditureSubType,
-    checkNumber,
-    paymentMethod,
-    purposeType,
-    payeeType,
-    payeeName,
-    streetAddress,
-    addressLine2,
-    countryRegion,
-    city,
-    state,
-    zipcode,
-    county,
-    notes,
-  } = expenditure;
-  return {
-    // BASICS VALUES
-    amount,
-    date: format(new Date(date), 'yyyy-MM-dd'),
-    expenditureType,
-    expenditureSubType,
-    expenditureStatus,
-    checkNumber,
-    paymentMethod,
-    purposeType,
-
-    // PAYEE INFO VALUES
-    payeeType,
-    payeeName,
-    streetAddress,
-    addressLine2,
-    countryRegion,
-    city,
-    state,
-    zipcode,
-    county,
-    notes,
-  };
-};
-
 export const mapExpenditureFormToData = data => {
   const {
     amount,
@@ -486,6 +441,7 @@ export const mapExpenditureFormToData = data => {
     date: new Date(date).getTime(),
     expenditureType,
     expenditureSubType,
+    expenditureStatus,
     checkNumber,
     paymentMethod,
     purposeType,

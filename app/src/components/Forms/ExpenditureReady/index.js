@@ -8,7 +8,6 @@ import {
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import {
-  mapExpenditureDataToForm,
   mapExpenditureFormToData,
   ExpenditureStatusEnum,
 } from '../../../api/api';
@@ -64,10 +63,10 @@ class ExpenditureReady extends React.Component {
     const { updatedAt, status } = loadCheck ? expenditure : {};
     return (
       <ExpenditureReadyForm
-        onSubmit={data => onSubmit(expenditureId, data)}
+        onSubmit={data => onSubmit(expenditureId, expenditures)}
         initialValues={
           loadCheck
-            ? mapExpenditureDataToForm(expenditure)
+            ? mapExpenditureFormToData(expenditures)
             : expendituresEmptyState
         }
       >
