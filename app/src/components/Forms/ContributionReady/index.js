@@ -1,118 +1,145 @@
 import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import { flashMessage } from 'redux-flash';
-import ContributionReadyForm from './ContributionReadyForm';
+import { updateContribution } from '../../../state/ducks/contributions';
+import { getCurrentUserId } from '../../../state/ducks/auth';
 import {
-  ReadyHeaderSection,
+  AddHeaderSection,
+  ViewHeaderSection,
   BasicsSection,
   ContributorSection,
   OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import {
-  mapContributionDataToForm,
-  mapContributionFormToData,
-  ContributionStatusEnum,
-} from '../../../api/api';
-import {
-  updateContribution,
-  archiveContribution,
-} from '../../../state/ducks/contributions';
 import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import AddContributionForm from '../AddContribution/AddContributionForm';
+import {
+  ContributionStatusEnum,
+  mapContributionFormToData,
+} from '../../../api/api';
 
-class ContributionReady extends React.Component {
-  updateContribution = payload => {
-    const { updateContribution, showMessage } = this.props;
-    delete payload.date; // TODO: should remove this later, current endpoint failing when including date in payload.
-    const showErrorMessage = error =>
-      showMessage(`Error: ${error.message}`, { props: { variant: 'error' } });
-    const showSuccessMessage = () =>
-      showMessage('Contribution saved', { props: { variant: 'success' } });
-    updateContribution(payload)
-      .then(data =>
-        data !== null ? showErrorMessage(data) : showSuccessMessage()
-      )
-      .catch(error => showErrorMessage(error));
+const onSubmit = (data, props) => {
+  const initialData = props.data;
+  const contributionData = mapContributionFormToData(data);
+  delete contributionData.date;
+  delete contributionData.calendarYearAggregate;
+  contributionData.id = data.id;
+  contributionData.currentUserId = props.currentUserId;
+  switch (data.buttonSubmitted) {
+    case 'archive':
+      contributionData.status = ContributionStatusEnum.ARCHIVED;
+      break;
+    case 'move_to_draft':
+      contributionData.status = ContributionStatusEnum.DRAFT;
+      break;
+    case 'save':
+      contributionData.status = ContributionStatusEnum.DRAFT;
+      break;
+    case 'submit':
+      // Only submit dirty fields
+      contributionData.status = ContributionStatusEnum.SUBMITTED;
+      break;
+    default:
+    // code block
+  }
+  // TODO only send dirty fields
+  // for (const key of Object.keys(data)) {
+  //   console.log(key, data[key]);
+  //   if (initialData[key]) {
+  //     if (data[key] !== initialData[key]) {
+  //       updateAttributes[key] = data[key];
+  //     }
+  //   }
+  // }
+
+  props
+    .updateContribution(contributionData)
+    .then(() => props.history.push('/contributions'));
+};
+
+const onSubmitSave = (data, props) => {
+  const { currentUserId, governmentId, campaignId, createContribution } = props;
+  const contributionData = mapContributionFormToData(data);
+  const payload = {
+    status: ContributionStatusEnum.DRAFT,
+    governmentId,
+    campaignId,
+    currentUserId,
+    ...contributionData,
   };
+  createContribution(payload).then(data =>
+    props.history.push(`/contributions/${data}`)
+  );
+};
 
-  onSubmit = (id, data) => {
-    const { updateContribution } = this;
-    const payload = {
-      id,
-      status: ContributionStatusEnum.SUBMITTED,
-      ...mapContributionFormToData(data),
+class ContributionReadyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
     };
-    updateContribution(payload);
-  };
-
-  onDraft = (id, data) => {
-    const { updateContribution } = this;
-    const payload = {
-      id,
-      status: ContributionStatusEnum.DRAFT,
-      ...mapContributionFormToData(data),
-    };
-    updateContribution(payload);
-  };
-
-  // TODO: currently sending user back to table, need proper behavior.
-  onTrash = id => {
-    const { archiveContribution, history } = this.props;
-    archiveContribution(id).then(() => history.push('/contributions'));
-  };
+  }
 
   render() {
-    const { contributions, contributionId } = this.props;
-    const { onSubmit, onDraft, onTrash } = this;
-    const contribution = contributions[contributionId];
-    const loadCheck = !contributions.isLoading && contribution;
-    const { updatedAt, status } = loadCheck ? contribution : {};
     return (
-      <ContributionReadyForm
-        onSubmit={data => onSubmit(contributionId, data)}
-        initialValues={
-          loadCheck
-            ? mapContributionDataToForm(contribution)
-            : contributionsEmptyState
-        }
+      <AddContributionForm
+        onSubmit={data => onSubmit(data, this.props)}
+        initialValues={this.props.data}
       >
-        {({ formFields, isValid, handleSubmit, values }) => {
-          const { paymentMethod } = values;
-          const checkSelected = paymentMethod === 'Check';
+        {({
+          formFields,
+          isValid,
+          handleSubmit,
+          visibleIf,
+          formErrors,
+          values,
+          initialValues,
+        }) => {
+          console.log(formErrors);
+          console.log(initialValues);
+          const isSubmited = !!(
+            values.status === ContributionStatusEnum.SUBMITTED
+          );
           return (
             <>
-              <ReadyHeaderSection
-                status={status}
-                campaignName="FakeName"
-                lastEdited={updatedAt}
+              <ViewHeaderSection
                 isValid={isValid}
                 handleSubmit={handleSubmit}
-                handleDraft={() => onDraft(contributionId, values)}
-                handleTrash={() => onTrash(contributionId)}
+                onSubmitSave={onSubmitSave}
+                id={this.props.data.id}
+                updatedAt={this.props.data.updatedAt}
+                status={this.props.data.status}
+                formValues={values}
               />
               <BasicsSection
+                isSubmited={isSubmited}
                 formFields={formFields}
-                checkSelected={checkSelected}
+                checkSelected={visibleIf.checkSelected}
+                showInKindFields={visibleIf.showInKindFields}
               />
-              <ContributorSection formFields={formFields} />
-              <OtherDetailsSection formFields={formFields} />
+              <ContributorSection
+                isSubmited={isSubmited}
+                formFields={formFields}
+                showEmployerSection={visibleIf.showEmployerSection}
+                isPerson={visibleIf.isPerson}
+                emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
+              />
+              {isSubmited ? (
+                <OtherDetailsSection formFields={formFields} />
+              ) : null}
             </>
           );
         }}
-      </ContributionReadyForm>
+      </AddContributionForm>
     );
   }
 }
+
 export default connect(
-  (state, ownProps) => ({
-    currentUserId: state.auth.me.id,
-    governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId,
-    history: ownProps.history,
-    contributions: state.contributions,
+  state => ({
+    currentUserId: getCurrentUserId(state),
   }),
   dispatch => ({
-    archiveContribution: id => dispatch(archiveContribution(id)),
     updateContribution: data => dispatch(updateContribution(data)),
-    showMessage: (message, props) => dispatch(flashMessage(message, props)),
   })
-)(ContributionReady);
+)(ContributionReadyForm);
