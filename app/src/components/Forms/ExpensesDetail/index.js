@@ -227,12 +227,12 @@ const ExpensesDetail = () => (
       initialValues={{
         // BASICS VALUES
         amount: `$ ${100}`,
-        dateOfExpenditure: '09/09/2019', // Date.now(), // FORMAT?
-        typeOfExpenditure: 'Expenditure',
-        subTypeOfExpenditure: 'In-Kind Contribution',
+        date: '09/09/2019', // Date.now(), // FORMAT?
+        expenditureType: 'Expenditure',
+        expenditureSubType: 'In-Kind Contribution',
         paymentMethod: 'Check',
         checkNumber: '#1027',
-        purposeOfExpenditure: 'Fundraising Event Expenses',
+        purposeType: 'Fundraising Event Expenses',
 
         // PAYEE INFO
         payeeType: 'Business Entity',

@@ -45,7 +45,7 @@ export const expendituresEmptyState = {
   notes: '',
 };
 
-// Converts TypeFieldMap to options for a select
+// Converts TypeFieldMap to options for a select - KELLY!!!!!!!!!! talk to michael
 // ie: DataToContributorTypeFieldMap
 // Just a patch DO NOT USE outside of this file
 export const mapToSelectOptions = mapPairs => {
