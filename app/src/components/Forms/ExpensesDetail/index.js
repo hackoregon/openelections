@@ -256,11 +256,12 @@ const ExpensesDetail = () => (
             <h3 css={sectionStyles.title}>Basics</h3>
             <div css={containers.main}>
               <h2>{formFields.amount}</h2>
-              <h2>{formFields.dateOfExpenditure}</h2>
-              <h2>{formFields.typeOfExpenditure}</h2>
-              <h2>{formFields.subTypeOfExpenditure}</h2>
+              <h2>{formFields.date}</h2>
+              <h2>{formFields.expenditureType}</h2>
+              <h2>{formFields.expenditureSubType}</h2>
               <h2>{formFields.paymentMethod}</h2>
               <h2>{formFields.checkNumber}</h2>
+              <h2>{formFields.purposeType}</h2>
             </div>
           </div>
 
