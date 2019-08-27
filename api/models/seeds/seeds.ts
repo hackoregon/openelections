@@ -8,7 +8,7 @@ import {Address} from '../../models/entity/Address';
 import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
 import {addContributionAsync} from '../../services/contributionService';
-import {ContributionSubType, ContributionType, ContributorType, PaymentMethod} from '../entity/Contribution';
+import {ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType} from '../entity/Contribution';
 import * as faker from 'faker';
 import {Government} from '../entity/Government';
 import {Campaign} from '../entity/Campaign';
@@ -88,7 +88,9 @@ export async function addContributions(user: User, government: Government, campa
             governmentId: government.id,
             campaignId: campaign.id,
             currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 
@@ -110,7 +112,9 @@ export async function addContributions(user: User, government: Government, campa
             governmentId: government.id,
             campaignId: campaign.id,
             currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 
@@ -132,7 +136,9 @@ export async function addContributions(user: User, government: Government, campa
             governmentId: government.id,
             campaignId: campaign.id,
             currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 

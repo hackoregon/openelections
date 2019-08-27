@@ -102,7 +102,7 @@ export const mapContributionDataToForm = contribution => {
     email: email || '',
     phone: phone || '',
     phoneType: phoneType || '',
-    occupation: occupation || 'Employed',
+    occupation: occupation || '',
     employerName: employerName || '',
     employerCity: employerCity || '',
     employerState: employerState || '',
