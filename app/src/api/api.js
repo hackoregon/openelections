@@ -320,7 +320,6 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
-// TODO: need to fix some of the fields here.
 export const mapContributionFormToData = data => {
   const {
     streetAddress,
@@ -358,7 +357,6 @@ export const mapContributionFormToData = data => {
 
   const transformed = {
     city,
-    // TODO Universally null fields that are not part of submit
     firstName: isPerson && firstName ? firstName : null,
     middleInitial: '',
     lastName: isPerson && lastName ? lastName : null,

@@ -37,9 +37,10 @@ const onSubmit = (data, props) => {
       contributionData.status = ContributionStatusEnum.DRAFT;
       break;
     case 'submit':
-      // Only submit dirty fields
       contributionData.status = ContributionStatusEnum.SUBMITTED;
       break;
+    // Button that does not set buttonSubmitted would return to the
+    // contributions list without updating the record
     default:
       contributionData.status = false;
   }
