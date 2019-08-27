@@ -49,6 +49,23 @@ export const ContributionSubTypeFieldEnum = Object.freeze({
   CASH_CONTRIBUTION: 'Cash Contribution',
 });
 
+export const InKindDescriptionTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRINTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
+});
+
 export const DataToContributionSubTypeFieldMap = new Map([
   [
     ContributionSubTypeEnum.CASH,
@@ -361,7 +378,7 @@ export const mapContributionFormToData = data => {
     address2: addressLine2,
     email,
     phone,
-    phoneType,
+    phoneType: phoneType || null,
     amount: parseFloat(amountOfContribution),
     date: new Date(dateOfContribution).getTime(),
     zip: zipcode,

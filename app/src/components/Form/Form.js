@@ -19,10 +19,6 @@ export const formFromFields = (fields, formikProps, dynamicRequire) =>
     })
   );
 
-function extractValidateErrors(errorObject) {
-  return _.pick(errorObject, ['error']);
-}
-
 class Form extends React.Component {
   render() {
     const { fields, initialValues, sections, children, validate } = this.props;
@@ -33,9 +29,7 @@ class Form extends React.Component {
     const validationSchema = Yup.object(validations);
     return (
       <Formik
-        validate={
-          validate ? values => extractValidateErrors(validate(values)) : null
-        }
+        validate={validate}
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
@@ -59,8 +53,8 @@ class Form extends React.Component {
         }}
         render={formikProps => {
           const dynamicRequire = validate ? validate(formikProps.values) : {};
-          const visibleIf = dynamicRequire._visibleIf
-            ? dynamicRequire._visibleIf
+          const visibleIf = formikProps.values._visibleIf
+            ? formikProps.values._visibleIf
             : {};
           const form = (
             <>{formFromFields(fields, formikProps, dynamicRequire)}</>
@@ -95,6 +89,8 @@ class Form extends React.Component {
                   ])
                 )
               : {};
+          // Uncomment next line to see what formik can pass to the form
+          // console.log('formikProps', formikProps);
           return children({
             form,
             formSections,

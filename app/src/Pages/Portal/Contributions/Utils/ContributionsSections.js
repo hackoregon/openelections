@@ -180,24 +180,6 @@ const CheckmarkComponent = ({}) => (
   </p>
 );
 
-const setButtonText = status => {
-  const configs = {};
-  switch (status) {
-    case ContributionStatusEnum.DRAFT:
-      configs.archive = 'Archive';
-      configs.draft = 'Draft';
-      configs.submit = 'Submit';
-      break;
-    case ContributionStatusEnum.ARCHIVED:
-      configs.draft = 'Move to Draft';
-    case ContributionStatusEnum.PROCESSED:
-    case ContributionStatusEnum.SUBMITTED:
-    default:
-      return configs;
-  }
-  return configs;
-};
-
 export const ViewHeaderSection = ({
   isValid,
   handleSubmit,
@@ -232,7 +214,6 @@ export const ViewHeaderSection = ({
             <Button
               css={headerStyles.submitButton}
               buttonType="submit"
-              // disabled={!isValid}
               onClick={() => {
                 formValues.buttonSubmitted = 'save';
                 handleSubmit();

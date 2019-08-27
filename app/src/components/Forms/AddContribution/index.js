@@ -41,8 +41,6 @@ const AddContribution = ({ ...props }) => (
     initialValues={contributionsEmptyState}
   >
     {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
-      // console.log('Required fields', Object.keys(formErrors));
-
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />

@@ -2,6 +2,7 @@
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { get, isEmpty } from 'lodash';
+import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -39,9 +40,6 @@ export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, list: action.payload.contributions || {} };
   },
-  // [ADD_ENTITIES_LIST]: (state, action) => {
-  //   return { ...state, ...action.payload.contributions };
-  // },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
@@ -151,11 +149,24 @@ export function createContribution(contributionAttrs) {
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addEntities(data.entities));
         dispatch(actionCreators.createContribution.success());
+        dispatch(
+          flashMessage(`Contribution Added`, {
+            props: { variant: 'success' },
+          })
+        );
         return data.result;
       }
       dispatch(actionCreators.createContribution.failure());
+      dispatch(
+        flashMessage(`Error - ${response.status} status returned`, {
+          props: { variant: 'error' },
+        })
+      );
     } catch (error) {
       dispatch(actionCreators.createContribution.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
     }
   };
 }
@@ -166,14 +177,29 @@ export function updateContribution(contributionAttrs) {
     try {
       const response = await api.updateContribution(contributionAttrs);
       if (response.status === 204) {
+        let status = '';
+        if (contributionAttrs.status) {
+          status = contributionAttrs.status;
+        }
+        dispatch(
+          flashMessage(`Contribution Updated ${status}`, {
+            props: { variant: 'success' },
+          })
+        );
         dispatch(actionCreators.updateContribution.success());
       } else {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();
+        dispatch(
+          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+        );
         return error;
       }
     } catch (error) {
       dispatch(actionCreators.updateContribution.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
       return error;
     }
   };
@@ -265,11 +291,9 @@ export const isLoggedIn = state => {
   return state.auth.me !== null;
 };
 export const getCurrentContribution = state => {
-  // return state || false;
   return state.contributions &&
     state.contributions.list &&
     state.contributions.currentId
     ? state.contributions.list[state.contributions.currentId]
-    : false;
-  // state.contributions.list[state.contributions.currentId]
+    : {};
 };

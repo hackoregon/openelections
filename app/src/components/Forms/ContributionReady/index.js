@@ -2,6 +2,7 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
+import { flashMessage } from 'redux-flash';
 import { updateContribution } from '../../../state/ducks/contributions';
 import { getCurrentUserId } from '../../../state/ducks/auth';
 import {
@@ -40,7 +41,7 @@ const onSubmit = (data, props) => {
       contributionData.status = ContributionStatusEnum.SUBMITTED;
       break;
     default:
-    // code block
+      contributionData.status = false;
   }
   // TODO only send dirty fields
   // for (const key of Object.keys(data)) {
@@ -51,10 +52,13 @@ const onSubmit = (data, props) => {
   //     }
   //   }
   // }
-
-  props
-    .updateContribution(contributionData)
-    .then(() => props.history.push('/contributions'));
+  if (contributionData.status) {
+    props
+      .updateContribution(contributionData)
+      .then(() => props.history.push('/contributions'));
+  } else {
+    props.history.push('/contributions');
+  }
 };
 
 const onSubmitSave = (data, props) => {
@@ -93,13 +97,17 @@ class ContributionReadyForm extends React.Component {
           visibleIf,
           formErrors,
           values,
-          initialValues,
         }) => {
-          console.log(formErrors);
-          console.log(initialValues);
+          // TODO Next line used to disable sections move to fields object and dynamic validate
           const isSubmited = !!(
             values.status === ContributionStatusEnum.SUBMITTED
           );
+          if (values.buttonSubmitted && !isValid) {
+            for (const [key, value] of Object.entries(formErrors)) {
+              values.buttonSubmitted = '';
+              this.props.flashMessage(value, { props: { variant: 'error' } });
+            }
+          }
           return (
             <>
               <ViewHeaderSection
@@ -140,6 +148,8 @@ export default connect(
     currentUserId: getCurrentUserId(state),
   }),
   dispatch => ({
+    flashMessage: (message, options) =>
+      dispatch(flashMessage(message, options)),
     updateContribution: data => dispatch(updateContribution(data)),
   })
 )(ContributionReadyForm);

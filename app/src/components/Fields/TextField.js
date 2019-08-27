@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import TextFieldMaterial from '@material-ui/core/TextField';
 
 const TextField = ({ id, label, formik, isRequired }) => {
-  console.log('formik', formik);
   return (
     <TextFieldMaterial
       required={isRequired}
