@@ -374,7 +374,7 @@ export const OtherDetailsSection = ({
             handleSubmit();
           }}
         >
-          Submit
+          Save
         </Button>
       </div>
     </div>
