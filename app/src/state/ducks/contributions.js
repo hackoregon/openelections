@@ -181,12 +181,12 @@ export function updateContribution(contributionAttrs) {
         if (contributionAttrs.status) {
           status = contributionAttrs.status;
         }
+        dispatch(actionCreators.updateContribution.success());
         dispatch(
           flashMessage(`Contribution Updated ${status}`, {
             props: { variant: 'success' },
           })
         );
-        dispatch(actionCreators.updateContribution.success());
       } else {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();
