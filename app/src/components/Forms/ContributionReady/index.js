@@ -9,6 +9,7 @@ import {
   ViewHeaderSection,
   BasicsSection,
   ContributorSection,
+  OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
@@ -22,7 +23,6 @@ const onSubmit = (data, props) => {
   const contributionData = mapContributionFormToData(data);
   delete contributionData.date;
   delete contributionData.calendarYearAggregate;
-  // const updateAttributes = data;
   contributionData.id = data.id;
   contributionData.currentUserId = props.currentUserId;
   switch (data.buttonSubmitted) {
@@ -97,6 +97,9 @@ class ContributionReadyForm extends React.Component {
         }) => {
           console.log(formErrors);
           console.log(initialValues);
+          const isSubmited = !!(
+            values.status === ContributionStatusEnum.SUBMITTED
+          );
           return (
             <>
               <ViewHeaderSection
@@ -109,17 +112,21 @@ class ContributionReadyForm extends React.Component {
                 formValues={values}
               />
               <BasicsSection
+                isSubmited={isSubmited}
                 formFields={formFields}
                 checkSelected={visibleIf.checkSelected}
                 showInKindFields={visibleIf.showInKindFields}
               />
               <ContributorSection
+                isSubmited={isSubmited}
                 formFields={formFields}
                 showEmployerSection={visibleIf.showEmployerSection}
                 isPerson={visibleIf.isPerson}
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
               />
-              {/* <OtherDetailsSection formFields={formFields} /> */}
+              {isSubmited ? (
+                <OtherDetailsSection formFields={formFields} />
+              ) : null}
             </>
           );
         }}
