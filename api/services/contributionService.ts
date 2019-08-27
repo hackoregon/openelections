@@ -7,8 +7,12 @@ import {
     ContributionType,
     ContributorType,
     getContributionsByGovernmentIdAsync,
-    IContributionSummary, InKindDescriptionType,
-    MatchStrength, OaeType, PaymentMethod
+    IContributionSummary,
+    InKindDescriptionType,
+    MatchStrength,
+    OaeType,
+    PaymentMethod,
+    PhoneType
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -19,7 +23,6 @@ import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
-
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -33,6 +36,7 @@ export interface IAddContributionAttrs {
     firstName?: string;
     governmentId: number;
     lastName?: string;
+    phone?: string;
     middleInitial?: string;
     name?: string;
     prefix?: string;
@@ -47,6 +51,14 @@ export interface IAddContributionAttrs {
     date: number;
     paymentMethod: PaymentMethod;
     zip: string;
+    occupationLetterDate?: number;
+    occupation?: string;
+    employerName?: string;
+    employerCity?: string;
+    employerState?: string;
+    phoneType?: PhoneType;
+    checkNumber?: string;
+    notes?: string;
 }
 
 export async function addContributionAsync(contributionAttrs: IAddContributionAttrs): Promise<Contribution> {
@@ -79,6 +91,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.firstName = contributionAttrs.firstName;
             contribution.middleInitial = contributionAttrs.middleInitial;
             contribution.lastName = contributionAttrs.lastName;
+            contribution.phone = contributionAttrs.phone;
             contribution.suffix = contributionAttrs.suffix;
             contribution.title = contributionAttrs.title;
             contribution.email = contributionAttrs.email;
@@ -92,11 +105,19 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.inKindType = contributionAttrs.inKindType;
             contribution.oaeType = contributionAttrs.oaeType;
             contribution.paymentMethod = contributionAttrs.paymentMethod;
-
+            contribution.occupationLetterDate =
+                contributionAttrs.occupationLetterDate && new Date(contributionAttrs.occupationLetterDate);
+            contribution.occupation = contributionAttrs.paymentMethod;
+            contribution.employerName = contributionAttrs.paymentMethod;
+            contribution.employerCity = contributionAttrs.paymentMethod;
+            contribution.employerState = contributionAttrs.paymentMethod;
+            contribution.phoneType = contributionAttrs.phoneType;
+            contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
             contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
+            contribution.notes = contributionAttrs.notes;
             if (await contribution.isValidAsync()) {
                 const saved = await contributionRepository.save(contribution);
                 await createActivityRecordAsync({
@@ -153,7 +174,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             const hasCampaignPermissions =
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
                 (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
-                (govAdmin);
+                govAdmin;
             if (hasCampaignPermissions) {
                 return getContributionsByGovernmentIdAsync(governmentId, {
                     ...options,
@@ -162,7 +183,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
                 });
             }
             throw new Error('User is not permitted to get contributions for this campaign.');
-        } else if (!(govAdmin)) {
+        } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
         return getContributionsByGovernmentIdAsync(governmentId, {
@@ -223,7 +244,9 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
 
         if (contribution.status === ContributionStatus.SUBMITTED) {
             if (!isGovAdmin) {
-                throw new Error('User does not have permissions to change attributes on a contribution with submitted status');
+                throw new Error(
+                    'User does not have permissions to change attributes on a contribution with submitted status'
+                );
             }
         }
 
@@ -366,7 +389,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
             relations: ['campaign', 'government']
         })) as Contribution;
 
-        const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
+        const user = (await userRepository.findOneOrFail(attrs.currentUserId)) as User;
 
         const hasPermissions =
             (await isCampaignAdminAsync(user.id, contribution.campaign.id)) ||
@@ -394,9 +417,9 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
 
-        const contribution = await contributionRepository.findOneOrFail(contributionId, {
-                relations: ['campaign', 'government']
-            }) as Contribution;
+        const contribution = (await contributionRepository.findOneOrFail(contributionId, {
+            relations: ['campaign', 'government']
+        })) as Contribution;
 
         if (contribution.validateContributorAddress()) {
             contribution.matchResult = await retrieveResultAsync({
@@ -413,7 +436,6 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
             if (contribution.matchResult.exact.length > 0) {
                 contribution.matchId = contribution.matchResult.exact[0].id;
                 contribution.matchStrength = MatchStrength.EXACT;
-
             } else if (contribution.matchResult.strong.length > 0) {
                 // tslint:disable-next-line:no-null-keyword
                 contribution.matchId = null;
@@ -445,9 +467,9 @@ export async function updateMatchResultAsync(attrs: UpdateMatchResultAttrs): Pro
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
 
-        const contribution = await contributionRepository.findOneOrFail(attrs.contributionId, {
+        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['government', 'campaign']
-        }) as Contribution;
+        })) as Contribution;
 
         if (contribution.matchStrength === MatchStrength.EXACT) {
             throw new Error('Contribution has an exact match, cannot update');
@@ -490,9 +512,9 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
 
-        const contribution = await contributionRepository.findOneOrFail(attrs.contributionId, {
+        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['government']
-        }) as Contribution;
+        })) as Contribution;
 
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
 
@@ -521,17 +543,21 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
     const defaultConn = getConnection('default');
     const contributionRepository = defaultConn.getRepository('Contribution');
 
-    const contribution = await contributionRepository.findOneOrFail(contributionId) as Contribution;
+    const contribution = (await contributionRepository.findOneOrFail(contributionId)) as Contribution;
     if (contribution.address1 && contribution.state && contribution.city && contribution.zip) {
-        const result = await geocodeAddressAsync({address1: contribution.address1, city: contribution.city, state: contribution.state, zip: contribution.zip});
+        const result = await geocodeAddressAsync({
+            address1: contribution.address1,
+            city: contribution.city,
+            state: contribution.state,
+            zip: contribution.zip
+        });
         if (result) {
-            await contributionRepository.update(contributionId,
-                { addressPoint:
-                    {
+            await contributionRepository.update(contributionId, {
+                addressPoint: {
                     type: 'Point',
                     coordinates: result
-                    }
-                });
+                }
+            });
         }
         return true;
     }
