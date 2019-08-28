@@ -125,6 +125,7 @@ class ContributionReadyForm extends React.Component {
                 formFields={formFields}
                 checkSelected={visibleIf.checkSelected}
                 showInKindFields={visibleIf.showInKindFields}
+                paymentMethod={visibleIf.paymentMethod}
               />
               <ContributorSection
                 isSubmited={isSubmited}

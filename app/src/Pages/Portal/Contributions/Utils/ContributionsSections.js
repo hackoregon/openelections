@@ -272,9 +272,9 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
 export const BasicsSection = ({
   formFields,
   checkSelected,
-  showPaymentMethod,
   showInKindFields,
   isSubmited,
+  paymentMethod,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
@@ -287,7 +287,7 @@ export const BasicsSection = ({
         <h2>{formFields.oaeType}</h2>
         <h2>{formFields.submitForMatch}</h2>
         {showInKindFields ? <h2>{formFields.inKindType}</h2> : null}
-        {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
+        {paymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
         {checkSelected && !showInKindFields ? (
           <h2>{formFields.checkNumber}</h2>
         ) : null}
