@@ -125,6 +125,7 @@ const headerStyles = {
     color: white;
     width: 225px;
     height: 50px;
+    margin: 5px;
   `,
   draftButton: css`
     background-color: #d8d8d8;
@@ -167,7 +168,19 @@ const sectionStyles = {
     margin-top: 75px;
   `,
 };
-
+const buttonBar = {
+  wrapper: css`
+    position: relative;
+  `,
+  container: css`
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  `,
+  button: css`
+    margin: 1px;
+  `,
+};
 // TODO: make a separate component for this checkmark component, find out what it indicates?
 const CheckmarkComponent = ({}) => (
   <p
@@ -187,6 +200,8 @@ export const ViewHeaderSection = ({
   updatedAt,
   status,
   formValues,
+  isCampAdmin,
+  isCampStaff,
 }) => (
   <>
     <div css={containers.header}>
@@ -198,53 +213,65 @@ export const ViewHeaderSection = ({
           Campaign | {`Last Edited ${updatedAt}`}
         </p>
       </div>
-      <div style={{ flexDirection: 'column' }}>
-        {status === ContributionStatusEnum.DRAFT ? (
-          <>
+      <div css={buttonBar.wrapper}>
+        <div css={buttonBar.container}>
+          {status === ContributionStatusEnum.DRAFT ? (
+            <>
+              {isCampStaff || isCampAdmin ? (
+                <>
+                  <Button
+                    css={headerStyles.submitButton}
+                    style={{ margin: 1 }}
+                    buttonType="submit"
+                    onClick={() => {
+                      formValues.buttonSubmitted = 'archive';
+                      handleSubmit();
+                    }}
+                  >
+                    Archive
+                  </Button>
+                  <Button
+                    css={headerStyles.submitButton}
+                    style={{ margin: 1 }}
+                    buttonType="submit"
+                    onClick={() => {
+                      formValues.buttonSubmitted = 'save';
+                      handleSubmit();
+                    }}
+                  >
+                    Save
+                  </Button>
+                </>
+              ) : null}
+              {isCampAdmin ? (
+                <Button
+                  css={headerStyles.submitButton}
+                  style={{ margin: 1 }}
+                  buttonType="submit"
+                  onClick={() => {
+                    formValues.buttonSubmitted = 'submit';
+                    handleSubmit();
+                  }}
+                >
+                  Submit
+                </Button>
+              ) : null}
+            </>
+          ) : null}
+          {status === ContributionStatusEnum.ARCHIVED &&
+          (isCampStaff || isCampAdmin) ? (
             <Button
               css={headerStyles.submitButton}
               buttonType="submit"
               onClick={() => {
-                formValues.buttonSubmitted = 'archive';
+                formValues.buttonSubmitted = 'move_to_draft';
                 handleSubmit();
               }}
             >
-              Archive
+              Move to Draft
             </Button>
-            <Button
-              css={headerStyles.submitButton}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'save';
-                handleSubmit();
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              css={headerStyles.submitButton}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'submit';
-                handleSubmit();
-              }}
-            >
-              Submit
-            </Button>
-          </>
-        ) : null}
-        {status === ContributionStatusEnum.ARCHIVED ? (
-          <Button
-            css={headerStyles.submitButton}
-            buttonType="submit"
-            onClick={() => {
-              formValues.buttonSubmitted = 'move_to_draft';
-              handleSubmit();
-            }}
-          >
-            Move to Draft
-          </Button>
-        ) : null}
+          ) : null}
+        </div>
       </div>
     </div>
     <hr css={sectionStyles.dividerLine} />
@@ -272,9 +299,9 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
 export const BasicsSection = ({
   formFields,
   checkSelected,
-  showPaymentMethod,
   showInKindFields,
   isSubmited,
+  showPaymentMethod,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>

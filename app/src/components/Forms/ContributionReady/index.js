@@ -4,7 +4,12 @@ import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
 import { updateContribution } from '../../../state/ducks/contributions';
-import { getCurrentUserId } from '../../../state/ducks/auth';
+import {
+  getCurrentUserId,
+  isGovAdmin,
+  isCampAdmin,
+  isCampStaff,
+} from '../../../state/ducks/auth';
 import {
   AddHeaderSection,
   ViewHeaderSection,
@@ -46,7 +51,6 @@ const onSubmit = (data, props) => {
   }
   // TODO only send dirty fields
   // for (const key of Object.keys(data)) {
-  //   console.log(key, data[key]);
   //   if (initialData[key]) {
   //     if (data[key] !== initialData[key]) {
   //       updateAttributes[key] = data[key];
@@ -112,6 +116,8 @@ class ContributionReadyForm extends React.Component {
           return (
             <>
               <ViewHeaderSection
+                isCampAdmin={this.props.isCampAdmin}
+                isCampStaff={this.props.isCampStaff}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 onSubmitSave={onSubmitSave}
@@ -125,6 +131,7 @@ class ContributionReadyForm extends React.Component {
                 formFields={formFields}
                 checkSelected={visibleIf.checkSelected}
                 showInKindFields={visibleIf.showInKindFields}
+                showPaymentMethod={visibleIf.paymentMethod}
               />
               <ContributorSection
                 isSubmited={isSubmited}
@@ -133,7 +140,7 @@ class ContributionReadyForm extends React.Component {
                 isPerson={visibleIf.isPerson}
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
               />
-              {isSubmited ? (
+              {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection
                   formFields={formFields}
                   formValues={values}
@@ -151,6 +158,9 @@ class ContributionReadyForm extends React.Component {
 export default connect(
   state => ({
     currentUserId: getCurrentUserId(state),
+    isGovAdmin: isGovAdmin(state),
+    isCampAdmin: isCampAdmin(state),
+    isCampStaff: isCampStaff(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>
