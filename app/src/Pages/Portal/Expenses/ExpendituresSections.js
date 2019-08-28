@@ -298,7 +298,11 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   </>
 );
 
-export const BasicsSection = ({ formFields }) => (
+export const BasicsSection = ({
+  formFields,
+  checkSelected,
+  showPaymentMethod,
+}) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
     <div css={containers.main}>
@@ -306,8 +310,8 @@ export const BasicsSection = ({ formFields }) => (
       <h2>{formFields.date}</h2>
       <h2>{formFields.expenditureType}</h2>
       <h2>{formFields.expenditureSubType}</h2>
-      <h2>{formFields.paymentMethod}</h2>
-      <h2>{formFields.checkNumber}</h2>
+      {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
+      {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
     </div>
     <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
   </div>

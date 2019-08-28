@@ -308,8 +308,8 @@ export const validate = values => {
     // dateOfExpenditure,
     // expenditureType,
     // expenditureSubType,
-    // paymentMethod,
-    // checkNumber,
+    paymentMethod,
+    checkNumber,
     // purposeType,
 
     // // PAYEE INFO
@@ -324,7 +324,7 @@ export const validate = values => {
     // county,
     // notes,
   } = values;
-  // const error = {};
+  const error = {};
   const visible = {};
 
   // LOGIC FOR CONDITIONALLY VISIBLE FIELDS OR DROPDOWN SELECT OPTIONS:
@@ -335,9 +335,24 @@ export const validate = values => {
   );
 
   // If PaymentMethod was check, show check number field
+  visible.checkSelected = !!(
+    paymentMethod === PaymentMethodEnum.CHECK ||
+    paymentMethod === PaymentMethodEnum.MONEY_ORDER
+  );
+
+  // Default to visible
+  visible.paymentMethod = true;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
+  if (visible.checkSelected && isEmpty(checkNumber)) {
+    error.checkNumber =
+      paymentMethod === PaymentMethodEnum.CHECK
+        ? 'Check number is required.'
+        : 'Money Order number is required.';
+  }
 
   // purposeType:
   // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+  values._visibleIf = visible;
+  return error;
 };
