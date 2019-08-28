@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
+import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { stateList } from '../../../components/Forms/Utils/FormsUtils';
@@ -21,6 +22,55 @@ export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
   PAYEE_INFO: 'payeeInfoSection',
 });
+
+export const mapExpenditureDataToForm = expenditure => {
+  const {
+    id,
+    buttonSubmitted,
+    date,
+    updatedAt,
+    subType,
+    amount,
+    expenditureType,
+    expenditureSubType,
+    paymentMethod,
+    checkNumber,
+    purposeType,
+    payeeType,
+    payeeName,
+    streetAddress,
+    addressLine2,
+    countryRegion,
+    city,
+    state,
+    zipcode,
+    county,
+    notes,
+  } = expenditure;
+  return {
+    id,
+    buttonSubmitted: buttonSubmitted || '',
+    date: format(new Date(date), 'YYYY-MM-DD'),
+    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
+    subType,
+    amount,
+    expenditureType,
+    expenditureSubType,
+    paymentMethod,
+    checkNumber: checkNumber || '',
+    purposeType,
+    payeeType,
+    payeeName,
+    streetAddress,
+    addressLine2,
+    countryRegion,
+    city,
+    state,
+    zipcode,
+    county,
+    notes,
+  };
+};
 
 export const expendituresEmptyState = {
   // BASICS VALUES
@@ -43,17 +93,6 @@ export const expendituresEmptyState = {
   zipcode: '',
   county: '',
   notes: '',
-};
-
-// Converts TypeFieldMap to options for a select - KELLY!!!!!!!!!! talk to michael
-// ie: DataToContributorTypeFieldMap
-// Just a patch DO NOT USE outside of this file
-export const mapToSelectOptions = mapPairs => {
-  const acc = [];
-  mapPairs.forEach((label, value) => {
-    acc.push({ value, label });
-  });
-  return acc;
 };
 
 export const fields = {
@@ -88,23 +127,34 @@ export const fields = {
     section: FormSectionEnum.BASIC,
     component: SelectField,
     options: {
-      // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
       values: [
         ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
         ExpenditureSubTypeEnum.CASH_EXPENDITURE,
         ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
+        ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
+        ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
+        ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
+        ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
       ],
-      // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
-      // values: [
-      //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
-      //   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
-      // ]
-
-      // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
-      // values: [
-      //   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
-      //   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
-      // ]
+      limitByField: 'expenditureType',
+      limitByValues: {
+        // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
+        expenditure: [
+          ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
+          ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+          ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
+        ],
+        // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
+        other: [
+          ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
+          ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
+        ],
+        other_disbursement: [
+          // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
+          ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
+          ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
+        ],
+      },
     },
     validation: Yup.string().required('The Expenditure subtype is required'),
   },
@@ -283,25 +333,6 @@ export const validate = values => {
   visible.isPerson = !!(
     payeeType === PayeeTypeEnum.INDIVIDUAL || payeeType === PayeeTypeEnum.FAMILY
   );
-  // EXPENDITURE TYPE SELECT VALUES:
-  // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
-  // values: [
-  //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
-  //   ExpenditureSubTypeEnum.CASH_EXPENDITURE,
-  //   ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
-  // ],
-
-  // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
-  // values: [
-  //   ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
-  //   ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT, (maybe)
-  // ]
-
-  // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
-  // values: [
-  //   ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
-  //   ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION, - no longer?
-  // ]
 
   // If PaymentMethod was check, show check number field
 
