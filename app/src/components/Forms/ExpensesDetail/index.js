@@ -14,6 +14,7 @@ import {
   BasicsSection,
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
+import { ViewHeaderSection } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import AddExpenseForm from '../AddExpense/AddExpenseForm';
 import {
   ExpenditureStatusEnum,
@@ -21,6 +22,7 @@ import {
 } from '../../../api/api';
 
 const onSubmit = (data, props) => {
+  console.log({ props });
   const initialData = props.data;
   const expenditureData = mapExpenditureFormToData(data);
   delete expenditureData.date;
@@ -86,6 +88,7 @@ class ExpensesDetailForm extends React.Component {
   }
 
   render() {
+    console.log('props:', this.props);
     return (
       <AddExpenseForm
         onSubmit={data => onSubmit(data, this.props)}
@@ -111,6 +114,17 @@ class ExpensesDetailForm extends React.Component {
           }
           return (
             <>
+              <ViewHeaderSection
+                isCampAdmin={this.props.isCampAdmin}
+                isCampStaff={this.props.isCampStaff}
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                onSubmitSave={onSubmitSave}
+                id={this.props.data.id}
+                updatedAt={this.props.data.updatedAt}
+                status={this.props.data.status}
+                formValues={values}
+              />
               <BasicsSection
                 isSubmited={isSubmited}
                 formFields={formFields}

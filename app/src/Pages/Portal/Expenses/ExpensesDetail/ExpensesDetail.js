@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
-import { login } from '../../../../state/ducks/auth';
+import {
+  getExpenditureById,
+  getCurrentExpenditure,
+} from '../../../../state/ducks/expenditures';
+import {
+  expendituresEmptyState,
+  mapExpenditureDataToForm,
+} from '../ExpendituresFields';
 
 const ExpensesDetail = ({ ...props }) => (
   <PageHoc>
@@ -11,13 +18,13 @@ const ExpensesDetail = ({ ...props }) => (
 );
 
 export default connect(
-  state => {
-    return { state: state.auth };
-  },
-  dispatch => {
-    return {
-      login: (email, password) => dispatch(login(email, password)),
-      dispatch,
-    };
-  }
+  (state, ownProps) => ({
+    expenditureId: parseInt(ownProps.match.params.id),
+    expenditures: state.expenditures,
+    history: ownProps.history,
+    currentExpenditure: getCurrentExpenditure(state),
+  }),
+  dispatch => ({
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
+  })
 )(ExpensesDetail);
