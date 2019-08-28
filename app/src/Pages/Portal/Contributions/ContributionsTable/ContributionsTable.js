@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
-import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Button from '../../../../components/Button/Button';
 import { getContributionsList } from '../../../../state/ducks/contributions';
+import { isCampAdmin } from '../../../../state/ducks/auth';
 
 const columnInfo = (title, field, type = undefined) =>
   type ? { title, field, type } : { title, field };
@@ -28,7 +28,6 @@ const columns = [
         })
         .split(', ')[0],
   },
-  // columnInfo("Date", "date", "date"),
   {
     field: 'name',
     title: 'Name',
@@ -67,23 +66,27 @@ const ContributionsTable = ({ ...props }) => {
     actionInfo('View', 'primary', (event, rowData) => {
       props.history.push(`/contributions/${rowData.id}`);
     }),
-    actionInfo(
-      'Add New Contribution',
-      'primary',
-      () => props.history.push({ pathname: '/contributions/add' }),
-      true
-    ),
   ];
+  // Only campaign admins can create contributions
+  if (props.isCampAdmin) {
+    actions.push(
+      actionInfo(
+        'Add New Contribution',
+        'primary',
+        () => props.history.push({ pathname: '/contributions/add' }),
+        true
+      )
+    );
+  }
   const components = {
+    // eslint-disable-next-line react/display-name
     Action: props => (
-      <WithAdminPermissions>
-        <Button
-          onClick={event => props.action.onClick(event, props.data)}
-          buttonType={props.action.buttonType}
-        >
-          {props.action.name}
-        </Button>
-      </WithAdminPermissions>
+      <Button
+        onClick={event => props.action.onClick(event, props.data)}
+        buttonType={props.action.buttonType}
+      >
+        {props.action.name}
+      </Button>
     ),
   };
 
@@ -105,6 +108,7 @@ const ContributionsTable = ({ ...props }) => {
 };
 
 export default connect(state => ({
+  isCampAdmin: isCampAdmin(state),
   isListLoading: state.campaigns.isLoading,
   contributionList: getContributionsList(state),
 }))(ContributionsTable);
