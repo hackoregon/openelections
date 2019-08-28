@@ -170,3 +170,14 @@ export const getExpendituresList = createSelector(
   state =>
     Object.values(state.expenditures).filter(withId => !!get(withId, 'id'))
 );
+
+export const isLoggedIn = state => {
+  return state.auth.me !== null;
+};
+export const getCurrentExpenditure = state => {
+  return state.expenditures &&
+    state.expenditures.list &&
+    state.expenditures.currentId
+    ? state.expenditures.list[state.expenditures.currentId]
+    : false;
+};

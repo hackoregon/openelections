@@ -70,6 +70,9 @@ export const mapExpenditureDataToForm = expenditure => {
 
 export const expendituresEmptyState = {
   // BASICS VALUES
+  id: '',
+  createdAt: '',
+  updatedAt: '',
   amount: '',
   date: '',
   expenditureType: '',
