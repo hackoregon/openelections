@@ -424,11 +424,9 @@ export const mapExpenditureFormToData = data => {
     payeeName,
     streetAddress,
     addressLine2,
-    countryRegion,
     city,
     state,
     zipcode,
-    county,
     notes,
     isPerson = !!(
       payeeType === PayeeTypeEnum.INDIVIDUAL ||
@@ -449,11 +447,9 @@ export const mapExpenditureFormToData = data => {
     payeeName,
     streetAddress,
     addressLine2,
-    countryRegion,
     city,
     state,
     zipcode,
-    county,
     notes,
   };
 };

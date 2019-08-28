@@ -331,13 +331,11 @@ export const PayeeInfoSection = ({ formFields }) => (
       <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
       <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
       <div css={containers.cityStateZip}>
-        <h2>{formFields.countryRegion}</h2>
         <h2>{formFields.city}</h2>
         <h2>{formFields.state}</h2>
       </div>
       <div css={containers.sectionTwo}>
         <h2>{formFields.zipcode}</h2>
-        <h2>{formFields.county}</h2>
       </div>
     </div>
     <div css={sectionStyles.main}>

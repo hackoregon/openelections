@@ -40,11 +40,9 @@ export const mapExpenditureDataToForm = expenditure => {
     payeeName,
     streetAddress,
     addressLine2,
-    countryRegion,
     city,
     state,
     zipcode,
-    county,
     notes,
   } = expenditure;
   return {
@@ -63,11 +61,9 @@ export const mapExpenditureDataToForm = expenditure => {
     payeeName,
     streetAddress,
     addressLine2,
-    countryRegion,
     city,
     state,
     zipcode,
-    county,
     notes,
   };
 };
@@ -87,11 +83,9 @@ export const expendituresEmptyState = {
   payeeName: '',
   streetAddress: '',
   addressLine2: '',
-  countryRegion: '',
   city: '',
   state: '',
   zipcode: '',
-  county: '',
   notes: '',
 };
 
@@ -261,14 +255,6 @@ export const fields = {
     component: TextField,
     // NO VALIDATION BECAUSE NOT REQUIRED?
   },
-  countryRegion: {
-    label: 'Country/Region',
-    section: FormSectionEnum.PAYEE_INFO,
-    component: TextField,
-    validation: Yup.string().required(
-      "The payee's country or region is required"
-    ),
-  },
   city: {
     label: 'City',
     section: FormSectionEnum.PAYEE_INFO,
@@ -287,12 +273,6 @@ export const fields = {
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.number().required('A zipcode is required'),
-  },
-  county: {
-    label: 'County',
-    section: FormSectionEnum.PAYEE_INFO,
-    component: TextField,
-    validation: Yup.string().required("The payee's county is required"),
   },
   notes: {
     label: 'Notes',
@@ -317,11 +297,9 @@ export const validate = values => {
     // payeeName,
     // streetAddress,
     // addressLine2,
-    // countryRegion,
     // city,
     // state,
     // zipcode,
-    // county,
     // notes,
   } = values;
   const error = {};

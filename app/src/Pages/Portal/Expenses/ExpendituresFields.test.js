@@ -13,11 +13,9 @@ const formFieldKeys = [
   'payeeName',
   'streetAddress',
   'addressLine2',
-  'countryRegion',
   'city',
   'state',
   'zipcode',
-  'county',
   'notes',
 ];
 
