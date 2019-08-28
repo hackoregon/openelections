@@ -303,10 +303,7 @@ export const BasicsSection = ({
   isSubmited,
   showPaymentMethod,
 }) => (
-  <div
-    id={console.log(showPaymentMethod)}
-    style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}
-  >
+  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
       <h3 css={sectionStyles.title}>Basics</h3>
       <div css={containers.main}>
