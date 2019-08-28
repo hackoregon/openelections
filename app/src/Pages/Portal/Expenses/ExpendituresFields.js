@@ -307,7 +307,7 @@ export const validate = values => {
     // amount,
     // dateOfExpenditure,
     // expenditureType,
-    // expenditureSubType,
+    expenditureSubType,
     paymentMethod,
     checkNumber,
     // purposeType,
@@ -342,6 +342,7 @@ export const validate = values => {
 
   // Default to visible
   visible.paymentMethod = true;
+  visible.showPurposeType = true;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
   if (visible.checkSelected && isEmpty(checkNumber)) {
@@ -351,8 +352,12 @@ export const validate = values => {
         : 'Money Order number is required.';
   }
 
-  // purposeType:
-  // REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+  // PurposeType only required if Miscellaneous Other Disbursement is selected for Sub Type.
+  visible.showPurposeType = !!(
+    expenditureSubType ===
+    ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT
+  );
+
   values._visibleIf = visible;
   return error;
 };

@@ -302,6 +302,7 @@ export const BasicsSection = ({
   formFields,
   checkSelected,
   showPaymentMethod,
+  showPurposeType,
 }) => (
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Basics</h3>
@@ -313,7 +314,9 @@ export const BasicsSection = ({
       {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
       {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
     </div>
-    <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
+    {showPurposeType ? (
+      <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
+    ) : null}
   </div>
 );
 
