@@ -14,7 +14,8 @@ import {
     ContributionType,
     ContributionSubType,
     ContributionStatus,
-    ContributorType
+    ContributorType,
+    PaymentMethod,
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
 
@@ -82,6 +83,7 @@ describe('Routes delete /contributions/:id', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL
