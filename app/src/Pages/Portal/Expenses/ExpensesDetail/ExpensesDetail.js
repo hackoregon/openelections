@@ -11,12 +11,34 @@ import {
   mapExpenditureDataToForm,
 } from '../ExpendituresFields';
 
-const ExpensesDetail = ({ ...props }) => (
-  <PageHoc>
-    <ExpensesDetailForm {...props} />
-  </PageHoc>
-);
+class AddExpense extends Component {
+  componentDidMount() {
+    const { getExpenditureById, expenditureId } = this.props;
+    getExpenditureById(parseInt(expenditureId));
+  }
 
+  render() {
+    const {
+      expenditures,
+      expenditureId,
+      history,
+      currentExpenditure,
+    } = this.props;
+    const data = expendituresEmptyState;
+    if (currentExpenditure) {
+      data - mapExpenditureDataToForm(currentExpenditure);
+    }
+    return (
+      <PageHoc>
+        <ExpensesDetailForm
+          data={data}
+          expenditureId={expenditureId}
+          history={history}
+        />
+      </PageHoc>
+    );
+  }
+}
 export default connect(
   (state, ownProps) => ({
     expenditureId: parseInt(ownProps.match.params.id),
@@ -27,4 +49,4 @@ export default connect(
   dispatch => ({
     getExpenditureById: id => dispatch(getExpenditureById(id)),
   })
-)(ExpensesDetail);
+)(AddExpense);
