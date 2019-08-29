@@ -51,7 +51,7 @@
         "ts-node": "3.3.0",
         "tsconfig-paths": "3.8.0",
         "typeorm": "^0.2.16",
-        "typescript": "^3.5.1"
+        "typescript": "3.5.3"
     },
     "devDependencies": {
         "@types/bull": "^3.10.2",
