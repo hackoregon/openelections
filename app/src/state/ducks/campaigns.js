@@ -156,7 +156,10 @@ export const getCampaignInfo = createSelector(
 export const getCampaignName = state => {
   const id = getCurrentCampaignId(state);
 
-  return id && state.campaigns.list[id]
+  return id &&
+    state.campaigns.list &&
+    state.campaigns.list[id] &&
+    state.campaigns.list[id].name
     ? state.campaigns.list[id].name
     : 'Campaign';
 };
