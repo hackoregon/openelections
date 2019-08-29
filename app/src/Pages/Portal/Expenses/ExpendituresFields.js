@@ -26,7 +26,7 @@ export const FormSectionEnum = Object.freeze({
 export const mapExpenditureDataToForm = expenditure => {
   const {
     id,
-    buttonSubmitted,
+    // buttonSubmitted,
     amount,
     date,
     type,
@@ -45,7 +45,7 @@ export const mapExpenditureDataToForm = expenditure => {
   } = expenditure;
   return {
     id,
-    buttonSubmitted: buttonSubmitted || '',
+    // buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
     date: format(new Date(date), 'YYYY-MM-DD'),
     expenditureType: type,
@@ -198,7 +198,7 @@ export const fields = {
     label: 'Check Number',
     section: FormSectionEnum.BASIC,
     component: TextField,
-    validation: Yup.number().required('Check number is required'),
+    validation: Yup.number().typeError('Must be a number'),
   },
   purposeType: {
     label: 'Purpose of Expenditure',
@@ -323,7 +323,7 @@ export const validate = values => {
     expenditureSubType,
     paymentMethod,
     checkNumber,
-    purposeType,
+    // purposeType,
 
     // // PAYEE INFO
     payeeType,
