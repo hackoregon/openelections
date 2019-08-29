@@ -7,6 +7,7 @@ import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
 import { addEntities, ADD_ENTITIES } from './common';
 import { inviteUser } from './users';
+import { getCurrentCampaignId } from './auth';
 
 export const STATE_KEY = 'campaigns';
 
@@ -22,12 +23,13 @@ export const initialState = {
   isLoading: false,
   error: null,
   currentCampaignId: null,
+  list: {},
 };
 
 // Reducer
 export default createReducer(initialState, {
   [ADD_ENTITIES]: (state, action) => {
-    return { ...state, ...action.payload.campaigns };
+    return { ...state, list: action.payload.campaigns };
   },
   [actionTypes.CREATE_CAMPAIGN.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -152,20 +154,21 @@ export const getCampaignInfo = createSelector(
 
 // Assumes one campaign
 export const getCampaignName = state => {
-  const id = getCampaignInfo(state).currentCampaignId
-    ? getCampaignInfo(state).currentCampaignId
-    : 0;
-  return getCampaignInfo(state)[id]
-    ? getCampaignInfo(state)[id].name
+  const id = getCurrentCampaignId(state);
+
+  return id &&
+    state.campaigns.list &&
+    state.campaigns.list[id] &&
+    state.campaigns.list[id].name
+    ? state.campaigns.list[id].name
     : 'Campaign';
 };
 
 export const getCampaignList = createSelector(
   rootState,
-  state =>
-    Object.keys(state.campaigns)
-      .filter(k => !Number.isNaN(k))
-      .map(k => state.campaigns[k])
+  state => {
+    return state.campaigns.list ? Object.values(state.campaigns.list) : [{}];
+  }
 );
 
 export const isCampaignsLoading = createSelector(
