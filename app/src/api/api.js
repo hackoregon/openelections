@@ -416,7 +416,6 @@ export const mapExpenditureFormToData = data => {
     date,
     expenditureType,
     expenditureSubType,
-    expenditureStatus,
     checkNumber,
     paymentMethod,
     purposeType,
@@ -428,30 +427,30 @@ export const mapExpenditureFormToData = data => {
     state,
     zipcode,
     notes,
-    isPerson = !!(
-      payeeType === PayeeTypeEnum.INDIVIDUAL ||
-      payeeType === PayeeTypeEnum.FAMILY
-    ),
+    // isPerson = !!(
+    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
+    //   payeeType === PayeeTypeEnum.FAMILY
+    // ),
   } = data;
 
-  return {
+  const transformed = {
     amount: parseFloat(amount),
     date: new Date(date).getTime(),
-    expenditureType,
-    expenditureSubType,
-    expenditureStatus,
+    type: expenditureType,
+    subtype: expenditureSubType,
     checkNumber,
     paymentMethod,
-    purposeType,
+    purpose: purposeType,
     payeeType,
-    payeeName,
-    streetAddress,
-    addressLine2,
+    name: payeeName,
+    address1: streetAddress,
+    address2: addressLine2,
     city,
     state,
-    zipcode,
+    zip: zipcode,
     notes,
   };
+  return transformed;
 };
 
 export function post(url, data) {

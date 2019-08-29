@@ -22,7 +22,6 @@ import {
 } from '../../../api/api';
 
 const onSubmit = (data, props) => {
-  console.log({ props });
   const initialData = props.data;
   const expenditureData = mapExpenditureFormToData(data);
   delete expenditureData.date;
@@ -88,7 +87,6 @@ class ExpensesDetailForm extends React.Component {
   }
 
   render() {
-    console.log('props:', this.props);
     return (
       <AddExpenseForm
         onSubmit={data => onSubmit(data, this.props)}

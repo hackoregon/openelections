@@ -7,16 +7,14 @@ import {
 } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const AddExpenseForm = ({ initialValues, onSubmit, children }) => (
-  <>
-    <Form
-      validate={validate}
-      fields={fields}
-      sections={[FormSectionEnum.BASIC, FormSectionEnum.PAYEE_INFO]}
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-    >
-      {children}
-    </Form>
-  </>
+  <Form
+    validate={validate}
+    fields={fields}
+    sections={[FormSectionEnum.BASIC, FormSectionEnum.PAYEE_INFO]}
+    initialValues={initialValues}
+    onSubmit={onSubmit}
+  >
+    {children}
+  </Form>
 );
 export default AddExpenseForm;

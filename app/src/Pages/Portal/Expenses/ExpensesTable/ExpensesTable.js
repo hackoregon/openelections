@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
+// import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Table from '../../../../components/Table';
-import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Button from '../../../../components/Button/Button';
 import { getExpendituresList } from '../../../../state/ducks/expenditures';
 
@@ -67,15 +67,16 @@ const ExpensesTable = ({ ...props }) => {
     ),
   ];
   const components = {
+    // eslint-disable-next-line react/display-name
     Action: props => (
-      <WithAdminPermissions>
-        <Button
-          onClick={event => props.action.onClick(event, props.data)}
-          buttonType={props.action.buttonType}
-        >
-          {props.action.name}
-        </Button>
-      </WithAdminPermissions>
+      // <WithAdminPermissions>
+      <Button
+        onClick={event => props.action.onClick(event, props.data)}
+        buttonType={props.action.buttonType}
+      >
+        {props.action.name}
+      </Button>
+      // </WithAdminPermissions>
     ),
   };
   return (

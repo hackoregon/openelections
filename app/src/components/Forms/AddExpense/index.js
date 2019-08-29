@@ -47,8 +47,8 @@ const AddExpense = ({ ...props }) => (
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
             formFields={formFields}
-            showPaymentMethod={visibleIf.paymentMethod}
             checkSelected={visibleIf.checkSelected}
+            showPaymentMethod={visibleIf.paymentMethod}
             showPurposeType={visibleIf.showPurposeType}
           />
           <PayeeInfoSection
