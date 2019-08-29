@@ -33,6 +33,7 @@ describe('Reducer', () => {
       currentCampaignId: null,
       isLoading: false,
       error: null,
+      list: {},
     });
   });
 
@@ -47,7 +48,9 @@ describe('Reducer', () => {
         },
       })
     ).toEqual({
-      '1': {},
+      list: {
+        '1': {},
+      },
       currentCampaignId: null,
       isLoading: false,
       error: null,
