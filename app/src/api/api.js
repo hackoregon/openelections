@@ -437,7 +437,7 @@ export const mapExpenditureFormToData = data => {
     amount: parseFloat(amount),
     date: new Date(date).getTime(),
     type: expenditureType,
-    subtype: expenditureSubType,
+    subType: expenditureSubType,
     checkNumber,
     paymentMethod,
     purpose: purposeType,

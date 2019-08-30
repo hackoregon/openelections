@@ -267,18 +267,19 @@ export const fields = {
     label: 'Street Address',
     section: FormSectionEnum.PAYEE_INFO,
     // eslint-disable-next-line react/display-name
-    component: props => (
-      <AddressLookupField
-        {...props.field}
-        {...props}
-        updateFields={{
-          street: 'streetAddress',
-          stateShort: 'state',
-          city: 'city',
-          zipCode: 'zipcode',
-        }}
-      />
-    ),
+    // component: props => (
+    //   <AddressLookupField
+    //     {...props.field}
+    //     {...props}
+    //     updateFields={{
+    //       street: 'streetAddress',
+    //       stateShort: 'state',
+    //       city: 'city',
+    //       zipCode: 'zipcode',
+    //     }}
+    //   />
+    // ),
+    component: TextField,
     validation: Yup.string().required('Your street address is required'),
   },
 
