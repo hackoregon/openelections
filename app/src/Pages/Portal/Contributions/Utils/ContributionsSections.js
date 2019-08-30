@@ -280,17 +280,16 @@ export const ViewHeaderSection = ({
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
-    <div css={containers.header}>
-      <div style={{ flexDirection: 'column' }}>
-        <Button
-          css={headerStyles.submitButton}
-          buttonType="submit"
-          disabled={!isValid}
-          onClick={handleSubmit}
-        >
-          Save as Draft
-        </Button>
-      </div>
+    <h1>New Contribution</h1>
+    <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+      <Button
+        css={headerStyles.submitButton}
+        buttonType="submit"
+        disabled={!isValid}
+        onClick={handleSubmit}
+      >
+        Save as Draft
+      </Button>
     </div>
     <hr css={sectionStyles.dividerLine} />
   </>
