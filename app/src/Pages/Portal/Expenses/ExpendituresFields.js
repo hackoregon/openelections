@@ -261,7 +261,7 @@ export const fields = {
   },
   payeeName: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
-    label: "Payee's Full Name",
+    label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required("The payee's name is required"),
@@ -303,7 +303,7 @@ export const fields = {
     section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: { values: stateList },
-    alidation: Yup.string().required('Your state is required'),
+    validation: Yup.string().required('Your state is required'),
   },
   zipcode: {
     label: 'Zipcode',
