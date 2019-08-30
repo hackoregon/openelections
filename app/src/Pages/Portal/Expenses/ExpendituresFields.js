@@ -48,25 +48,24 @@ export const mapExpenditureDataToForm = expenditure => {
     // buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
     date: format(new Date(date), 'YYYY-MM-DD'),
-    expenditureType: type,
+    expenditureType: type || '',
     expenditureSubType: subType,
     paymentMethod: paymentMethod || '',
     checkNumber: checkNumber || '',
-    purposeType: purpose,
+    purposeType: purpose || '',
     payeeType: payeeType || '',
-    payeeName: name,
-    streetAddress: address1,
-    addressLine2: address2,
-    city,
-    state,
-    zipcode: zip,
+    payeeName: name || '',
+    streetAddress: address1 || '',
+    addressLine2: address2 || '',
+    city: city || '',
+    state: state || '',
+    zipcode: zip || '',
     notes: notes || '',
   };
 };
 
 export const expendituresEmptyState = {
   // BASICS VALUES
-  id: '',
   amount: '',
   date: '',
   expenditureType: '',

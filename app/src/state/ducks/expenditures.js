@@ -1,7 +1,8 @@
 // campaigns.js
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
+import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -107,11 +108,24 @@ export function createExpenditure(expenditureAttrs) {
         const data = normalize(await response.json(), schema.expenditure);
         dispatch(addExpenditureEntities(data.entities));
         dispatch(actionCreators.createExpenditure.success());
-      } else {
-        dispatch(actionCreators.createExpenditure.failure());
+        dispatch(
+          flashMessage(`Contribution Added`, {
+            props: { variant: 'success' },
+          })
+        );
+        return data.result;
       }
+      dispatch(actionCreators.createExpenditure.failure());
+      dispatch(
+        flashMessage(`Error - ${response.status} status returned`, {
+          props: { variant: 'error' },
+        })
+      );
     } catch (error) {
       dispatch(actionCreators.createExpenditure.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
     }
   };
 }
