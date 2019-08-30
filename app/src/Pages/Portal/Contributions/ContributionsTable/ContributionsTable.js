@@ -101,7 +101,7 @@ const ContributionsTable = ({ ...props }) => {
         options={options}
         actions={actions}
         components={components}
-        data={isLoading ? [{}] : props.contributionList}
+        data={props.contributionList}
       />
     </PageHoc>
   );

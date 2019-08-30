@@ -1,10 +1,146 @@
 import React from 'react';
+/** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import Button from '../../Button/Button';
-import ExpensesDetailForm from './ExpensesDetailForm.js';
-/** @jsx jsx */
-import { isLoggedIn } from '../../../state/ducks/auth';
+import { flashMessage } from 'redux-flash';
+import { updateExpenditure } from '../../../state/ducks/expenditures';
+import {
+  getCurrentUserId,
+  isGovAdmin,
+  isCampAdmin,
+  isCampStaff,
+} from '../../../state/ducks/auth';
+import {
+  BasicsSection,
+  PayeeInfoSection,
+} from '../../../Pages/Portal/Expenses/ExpendituresSections';
+import { ViewHeaderSection } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
+import AddExpenseForm from '../AddExpense/AddExpenseForm';
+import {
+  ExpenditureStatusEnum,
+  mapExpenditureFormToData,
+} from '../../../api/api';
+
+const onSubmit = (data, props) => {
+  const initialData = props.data;
+  const expenditureData = mapExpenditureFormToData(data);
+  delete expenditureData.date;
+  delete expenditureData.calendarYearAggregate;
+  expenditureData.id = data.id;
+  expenditureData.currentUserId = props.currentUserId;
+  switch (data.buttonSubmitted) {
+    case 'archive':
+      expenditureData.status = ExpenditureStatusEnum.ARCHIVED;
+      break;
+    case 'move_to_draft':
+      expenditureData.status = ExpenditureStatusEnum.DRAFT;
+      break;
+    case 'save':
+      expenditureData.status = ExpenditureStatusEnum.DRAFT;
+      break;
+    case 'submit':
+      expenditureData.status = ExpenditureStatusEnum.SUBMITTED;
+      break;
+    // Button that does not set buttonSubmitted would return to the
+    // contributions list without updating the record
+    default:
+      expenditureData.status = false;
+  }
+  // TODO only send dirty fields
+  // for (const key of Object.keys(data)) {
+  //   if (initialData[key]) {
+  //     if (data[key] !== initialData[key]) {
+  //       updateAttributes[key] = data[key];
+  //     }
+  //   }
+  // }
+  if (expenditureData.status) {
+    props
+      .updateExpenditure(expenditureData)
+      .then(() => props.history.push('/expenses'));
+  } else {
+    props.history.push('/expenses');
+  }
+};
+
+const onSubmitSave = (data, props) => {
+  const { currentUserId, governmentId, campaignId, createExpenditure } = props;
+  const expenditureData = mapExpenditureFormToData(data);
+  const payload = {
+    status: ExpenditureStatusEnum.DRAFT,
+    governmentId,
+    campaignId,
+    currentUserId,
+    ...expenditureData,
+  };
+  createExpenditure(payload).then(data =>
+    props.history.push(`/expenses/${data}`)
+  );
+};
+
+class ExpensesDetailForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+    };
+  }
+
+  render() {
+    return (
+      <AddExpenseForm
+        onSubmit={data => onSubmit(data, this.props)}
+        initialValues={this.props.data}
+      >
+        {({
+          formFields,
+          isValid,
+          handleSubmit,
+          visibleIf,
+          formErrors,
+          values,
+        }) => {
+          // TODO Next line used to disable sections move to fields object and dynamic validate
+          const isSubmited = !!(
+            values.status === ExpenditureStatusEnum.SUBMITTED
+          );
+          if (values.buttonSubmitted && !isValid) {
+            for (const [key, value] of Object.entries(formErrors)) {
+              values.buttonSubmitted = '';
+              this.props.flashMessage(value, { props: { variant: 'error' } });
+            }
+          }
+          return (
+            <>
+              <ViewHeaderSection
+                isCampAdmin={this.props.isCampAdmin}
+                isCampStaff={this.props.isCampStaff}
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                onSubmitSave={onSubmitSave}
+                id={this.props.data.id}
+                updatedAt={this.props.data.updatedAt}
+                status={this.props.data.status}
+                formValues={values}
+              />
+              <BasicsSection
+                isSubmited={isSubmited}
+                formFields={formFields}
+                checkSelected={visibleIf.checkSelected}
+                showInKindFields={visibleIf.showInKindFields}
+                showPaymentMethod={visibleIf.paymentMethod}
+              />
+              <PayeeInfoSection
+                isSubmited={isSubmited}
+                formFields={formFields}
+              />
+            </>
+          );
+        }}
+      </AddExpenseForm>
+    );
+  }
+}
 
 const containers = {
   header: css`
@@ -196,98 +332,64 @@ const statusBlock = (
 //   </div>
 // );
 
-const ExpensesDetail = () => (
-  <>
-    <React.Fragment>
-      {/* HEADER SECTION */}
-      <div css={containers.header}>
-        <div css={headerStyles.leftColumn}>
-          {invoiceNumberBlock}
-          <div style={{ display: 'flex' }}>{statusBlock}</div>
-        </div>
-        <div css={headerStyles.rightColumn}>
-          <div>
-            <Button css={headerStyles.submitButton} buttonType="submit">
-              Edit
-            </Button>
-            <Button css={headerStyles.submitButton} buttonType="submit">
-              Submit Expense
-            </Button>
-          </div>
-        </div>
-      </div>
-    </React.Fragment>
-    <ExpensesDetailForm
-      onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
-      initialValues={{
-        // BASICS VALUES
-        amount: `$ ${100}`,
-        dateOfExpenditure: '09/09/2019', // Date.now(), // FORMAT?
-        typeOfExpenditure: 'Expenditure',
-        subTypeOfExpenditure: 'In-Kind Contribution',
-        paymentMethod: 'Check',
-        checkNumber: '#1027',
-        purposeOfExpenditure: 'Fundraising Event Expenses',
+// const ExpensesDetail = () => (
+//   <>
 
-        // PAYEE INFO
-        payeeType: 'Business Entity',
-        payeeName: 'Business Name',
-        streetAddress: '2625 Race Street',
-        addressLine2: 'Suite 1200',
-        countryRegion: '',
-        city: 'Portland',
-        state: 'OR',
-        zipcode: '97206',
-        county: 'Multnomah',
-        notes: '',
-      }}
-    >
-      {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
-        <React.Fragment>
-          <hr css={sectionStyles.dividerLine} />
+//       {({ formFields, isValid, handleSubmit /* isDirty, isSubmitting */ }) => (
+//         <React.Fragment>
+//           <hr css={sectionStyles.dividerLine} />
 
-          {/* BASICS SECTION */}
-          <div css={sectionStyles.main}>
-            <h3 css={sectionStyles.title}>Basics</h3>
-            <div css={containers.main}>
-              <h2>{formFields.amount}</h2>
-              <h2>{formFields.dateOfExpenditure}</h2>
-              <h2>{formFields.typeOfExpenditure}</h2>
-              <h2>{formFields.subTypeOfExpenditure}</h2>
-              <h2>{formFields.paymentMethod}</h2>
-              <h2>{formFields.checkNumber}</h2>
-            </div>
-          </div>
+//           {/* BASICS SECTION */}
+//           <div css={sectionStyles.main}>
+//             <h3 css={sectionStyles.title}>Basics</h3>
+//             <div css={containers.main}>
+//               <h2>{formFields.amount}</h2>
+//               <h2>{formFields.date}</h2>
+//               <h2>{formFields.expenditureType}</h2>
+//               <h2>{formFields.expenditureSubType}</h2>
+//               <h2>{formFields.paymentMethod}</h2>
+//               <h2>{formFields.checkNumber}</h2>
+//               <h2>{formFields.purposeType}</h2>
+//             </div>
+//           </div>
 
-          {/* PAYEE INFO SECTION */}
-          <div css={sectionStyles.main}>
-            <h3 css={sectionStyles.title}>Payee Information</h3>
-            <div css={containers.sectionTwo}>
-              <h2>{formFields.payeeType}</h2>
-              <h2>{formFields.payeeName}</h2>
-            </div>
-            <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
-            <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
-            <div css={containers.cityStateZip}>
-              <h2>{formFields.countryRegion}</h2>
-              <h2>{formFields.city}</h2>
-              <h2>{formFields.state}</h2>
-            </div>
-            <div css={containers.sectionTwo}>
-              <h2>{formFields.zipcode}</h2>
-              <h2>{formFields.county}</h2>
-            </div>
-          </div>
-          <div css={sectionStyles.main}>
-            <h2 css={[containers.fullWidth, sectionStyles.notes]}>
-              {formFields.notes}
-            </h2>
-          </div>
-        </React.Fragment>
-      )}
-    </ExpensesDetailForm>
-  </>
-);
-export default connect(state => ({
-  isLoggedIn: isLoggedIn(state) || false,
-}))(ExpensesDetail);
+//           {/* PAYEE INFO SECTION */}
+//           <div css={sectionStyles.main}>
+//             <h3 css={sectionStyles.title}>Payee Information</h3>
+//             <div css={containers.sectionTwo}>
+//               <h2>{formFields.payeeType}</h2>
+//               <h2>{formFields.payeeName}</h2>
+//             </div>
+//             <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
+//             <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
+//             <div css={containers.cityStateZip}>
+//               <h2>{formFields.city}</h2>
+//               <h2>{formFields.state}</h2>
+//             </div>
+//             <div css={containers.sectionTwo}>
+//               <h2>{formFields.zipcode}</h2>
+//             </div>
+//           </div>
+//           <div css={sectionStyles.main}>
+//             <h2 css={[containers.fullWidth, sectionStyles.notes]}>
+//               {formFields.notes}
+//             </h2>
+//           </div>
+//         </React.Fragment>
+//       )}
+//     </ExpensesDetailForm>
+//   </>
+// );
+export default connect(
+  state => ({
+    currentUserId: getCurrentUserId(state),
+    isGovAdmin: isGovAdmin(state),
+    isCampAdmin: isCampAdmin(state),
+    isCampStaff: isCampStaff(state),
+  }),
+  dispatch => ({
+    flashMessage: (message, options) =>
+      dispatch(flashMessage(message, options)),
+    updateContribution: data => dispatch(updateExpenditure(data)),
+  })
+)(ExpensesDetailForm);

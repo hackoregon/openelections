@@ -4,7 +4,7 @@ import * as contributions from './contributions';
 import * as activities from './activities';
 import * as api from '../../api';
 import * as schema from '../../api/schema';
-import { ADD_ENTITIES } from './common';
+import { ADD_CONTRIBUTION_ENTITIES, ADD_ENTITIES } from './common';
 
 const { actionTypes, actionCreators } = contributions;
 
@@ -15,7 +15,7 @@ describe('Reducer', () => {
   const reducer = contributions.default;
   it('initial state', () => {
     expect(reducer(undefined, {})).toEqual({
-      list: {},
+      list: null,
       isLoading: false,
       error: null,
       currentId: 0,
@@ -25,7 +25,7 @@ describe('Reducer', () => {
   it('adds contribution entities', () => {
     expect(
       reducer(undefined, {
-        type: ADD_ENTITIES,
+        type: ADD_CONTRIBUTION_ENTITIES,
         payload: {
           contributions: {
             '1': {},
@@ -113,7 +113,7 @@ describe('Side Effects', () => {
   it('creates contribution', async () => {
     const expectedActions = [
       { type: actionTypes.CREATE_CONTRIBUTION.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_CONTRIBUTION_ENTITIES },
       { type: actionTypes.CREATE_CONTRIBUTION.SUCCESS },
     ];
     const store = mockStore({});
@@ -195,7 +195,7 @@ describe('Side Effects', () => {
   it('gets contributions', async () => {
     const expectedActions = [
       { type: actionTypes.GET_CONTRIBUTIONS.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_CONTRIBUTION_ENTITIES },
       { type: actionTypes.GET_CONTRIBUTIONS.SUCCESS },
     ];
     const store = mockStore({});
@@ -221,7 +221,7 @@ describe('Side Effects', () => {
   it('gets contribution by id', async () => {
     const expectedActions = [
       { type: actionTypes.GET_CONTRIBUTION_BY_ID.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_CONTRIBUTION_ENTITIES },
       { type: actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS },
     ];
     const store = mockStore({});
@@ -259,7 +259,7 @@ describe('Side Effects', () => {
   it('archives contribution by id', async () => {
     const expectedActions = [
       { type: actionTypes.ARCHIVE_CONTRIBUTION.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_CONTRIBUTION_ENTITIES },
       { type: actionTypes.ARCHIVE_CONTRIBUTION.SUCCESS },
     ];
     const store = mockStore({});

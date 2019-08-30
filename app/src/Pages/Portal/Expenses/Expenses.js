@@ -1,18 +1,23 @@
 import * as React from 'react';
-import PageHoc from '../../../components/PageHoc/PageHoc';
-// import AddExpense from "./AddExpense/AddExpense";
-// import ExpensesDetail from "./ExpensesDetail/ExpensesDetail";
+import { Route, Switch } from 'react-router-dom';
+import AddExpense from './AddExpense/AddExpense';
+import ExpensesDetail from './ExpensesDetail/ExpensesDetail';
 import ExpensesTable from './ExpensesTable/ExpensesTable';
 
-// Switch statement for routing
-
-const Expense = props => {
+const Expenses = props => {
+  const { match } = props;
   return (
-    <PageHoc>
-      {/* <AddExpense /> */}
-      {/* <ExpensesDetail /> */}
-      <ExpensesTable {...props} />
-    </PageHoc>
+    <Route
+      render={({ location }) => {
+        return (
+          <Switch location={location}>
+            <Route exact path={`${match.url}/new`} component={AddExpense} />
+            <Route exact path={`${match.url}/:id`} component={ExpensesDetail} />
+            <Route exact path={`${match.url}/`} component={ExpensesTable} />
+          </Switch>
+        );
+      }}
+    />
   );
 };
-export default Expense;
+export default Expenses;

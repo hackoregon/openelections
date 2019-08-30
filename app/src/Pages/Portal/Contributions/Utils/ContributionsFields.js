@@ -139,7 +139,7 @@ export const contributionsEmptyState = {
   addressLine2: '',
   city: '',
   state: 'OR',
-  zipcode: '97201',
+  zipcode: '',
   email: '',
   phone: '',
   phoneType: '',

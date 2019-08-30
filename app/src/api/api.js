@@ -320,6 +320,26 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
+export const PurposeTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  CASH: 'cash_contribution',
+  REIMBURSEMENT: 'personal_reimbursement',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRIMTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
+});
+
+// TODO: need to fix some of the fields here.
 export const mapContributionFormToData = data => {
   const {
     streetAddress,
@@ -385,6 +405,49 @@ export const mapContributionFormToData = data => {
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
     paymentMethod,
+    notes,
+  };
+  return transformed;
+};
+
+export const mapExpenditureFormToData = data => {
+  const {
+    amount,
+    date,
+    expenditureType,
+    expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purposeType,
+    payeeType,
+    payeeName,
+    streetAddress,
+    addressLine2,
+    city,
+    state,
+    zipcode,
+    notes,
+    // isPerson = !!(
+    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
+    //   payeeType === PayeeTypeEnum.FAMILY
+    // ),
+  } = data;
+
+  const transformed = {
+    amount: parseFloat(amount),
+    date: new Date(date).getTime(),
+    type: expenditureType,
+    subType: expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purpose: purposeType,
+    payeeType,
+    name: payeeName,
+    address1: streetAddress,
+    address2: addressLine2,
+    city,
+    state,
+    zip: zipcode,
     notes,
   };
   return transformed;

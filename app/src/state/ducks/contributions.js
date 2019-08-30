@@ -1,12 +1,12 @@
 // campaigns.js
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addEntities, ADD_ENTITIES } from './common';
+import { addContributionEntities, ADD_CONTRIBUTION_ENTITIES } from './common';
 import { getContributionActivities } from './activities';
 
 export const STATE_KEY = 'contributions';
@@ -29,7 +29,7 @@ export const actionTypes = {
 
 // Initial State
 export const initialState = {
-  list: {},
+  list: null,
   isLoading: false,
   error: null,
   currentId: 0,
@@ -37,8 +37,8 @@ export const initialState = {
 
 // Reducer
 export default createReducer(initialState, {
-  [ADD_ENTITIES]: (state, action) => {
-    return { ...state, list: action.payload.contributions || {} };
+  [ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
+    return { ...state, list: { ...action.payload.contributions } };
   },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -147,7 +147,7 @@ export function createContribution(contributionAttrs) {
       const response = await api.createContribution(contributionAttrs);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.contribution);
-        dispatch(addEntities(data.entities));
+        dispatch(addContributionEntities(data.entities));
         dispatch(actionCreators.createContribution.success());
         dispatch(
           flashMessage(`Contribution Added`, {
@@ -214,7 +214,7 @@ export function getContributions(contributionSearchAttrs) {
       if (response.status === 200) {
         const data = normalize(await response.json(), [schema.contribution]);
 
-        dispatch(addEntities(data.entities));
+        dispatch(addContributionEntities(data.entities));
         dispatch(actionCreators.getContributions.success());
       } else {
         dispatch(actionCreators.getContributions.failure());
@@ -233,7 +233,7 @@ export function getContributionById(id) {
       if (response.status === 200) {
         // TODO look into why response.json() is removing data
         const data = normalize(await response, schema.contribution);
-        dispatch(addEntities(data.entities));
+        dispatch(addContributionEntities(data.entities));
         dispatch(actionCreators.getContributionById.success(id));
       } else {
         dispatch(actionCreators.getContributionById.failure());
@@ -251,7 +251,7 @@ export function archiveContribution(id) {
       const response = await api.archiveContribution(id);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.contribution);
-        dispatch(addEntities(data.entities));
+        dispatch(addContributionEntities(data.entities));
         dispatch(actionCreators.archiveContribution.success());
       } else {
         dispatch(actionCreators.archiveContribution.failure());
@@ -284,7 +284,12 @@ export const rootState = state => state || {};
 
 export const getContributionsList = createSelector(
   rootState,
-  state => Object.values(state.contributions.list)
+  state => {
+    if (isEmpty(state.contributions.list)) {
+      return [];
+    }
+    return Object.values(state.contributions.list);
+  }
 );
 
 export const isLoggedIn = state => {

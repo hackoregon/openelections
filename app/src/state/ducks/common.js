@@ -6,10 +6,18 @@ export const addEntities = entities => {
   };
 };
 
-export const ADD_ENTITIES_LIST = 'ADD_ENTITIES';
-export const addEntitiesList = entities => {
+export const ADD_CONTRIBUTION_ENTITIES = 'ADD_CONTRIBUTION_ENTITIES';
+export const addContributionEntities = entities => {
   return {
-    type: ADD_ENTITIES,
+    type: ADD_CONTRIBUTION_ENTITIES,
+    payload: entities,
+  };
+};
+
+export const ADD_EXPENDITURE_ENTITIES = 'ADD_EXPENDITURE_ENTITIES';
+export const addExpenditureEntities = entities => {
+  return {
+    type: ADD_EXPENDITURE_ENTITIES,
     payload: entities,
   };
 };

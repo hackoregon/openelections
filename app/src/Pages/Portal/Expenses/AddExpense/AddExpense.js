@@ -2,15 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import AddExpenseForm from '../../../../components/Forms/AddExpense/index';
-import { login } from '../../../../state/ducks/auth';
 
 class AddExpense extends Component {
-  componentWillUpdate(newprops) {
-    if (!(typeof newprops.state.me === 'undefined' || !newprops.state.me)) {
-      this.props.history.push('/dashboard');
-    }
-  }
-
   render() {
     return (
       <PageHoc>
@@ -20,14 +13,4 @@ class AddExpense extends Component {
   }
 }
 
-export default connect(
-  state => {
-    return { state: state.auth };
-  },
-  dispatch => {
-    return {
-      login: (email, password) => dispatch(login(email, password)),
-      dispatch,
-    };
-  }
-)(AddExpense);
+export default connect()(AddExpense);
