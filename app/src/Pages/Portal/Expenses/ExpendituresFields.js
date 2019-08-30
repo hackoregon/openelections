@@ -26,7 +26,9 @@ export const FormSectionEnum = Object.freeze({
 export const mapExpenditureDataToForm = expenditure => {
   const {
     id,
-    // buttonSubmitted,
+    updatedAt,
+    createdAt,
+    buttonSubmitted,
     amount,
     date,
     type,
@@ -45,7 +47,9 @@ export const mapExpenditureDataToForm = expenditure => {
   } = expenditure;
   return {
     id,
-    // buttonSubmitted: buttonSubmitted || '',
+    updatedAt,
+    createdAt,
+    buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
     date: format(new Date(date), 'YYYY-MM-DD'),
     expenditureType: type || '',
