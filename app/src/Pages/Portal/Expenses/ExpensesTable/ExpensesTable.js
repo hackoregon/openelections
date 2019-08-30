@@ -38,7 +38,7 @@ const columns = [
     type: 'currency',
   },
   {
-    field: 'type',
+    field: 'paymentMethod',
     title: 'Payment',
   },
 ];
