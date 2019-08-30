@@ -9,11 +9,8 @@ import { getGovOrCampIdAttributes } from '../../../state/ducks/auth';
 
 class ExpensesPage extends React.Component {
   componentDidMount() {
-    if (this.props.expendituresList.length < 1) {
-      // fetch data only if it's not in redux
-      const attibutes = this.props.getGovOrCampIdAttributes; // Get list based on current role of user
-      this.props.getExpenditures({ ...attibutes });
-    }
+    const attibutes = this.props.getGovOrCampIdAttributes;
+    this.props.getExpenditures({ ...attibutes });
   }
 
   render() {

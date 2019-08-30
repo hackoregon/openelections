@@ -1,10 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 // import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
-import { getExpendituresList } from '../../../../state/ducks/expenditures';
+import {
+  getExpendituresList,
+  getExpenditures,
+} from '../../../../state/ducks/expenditures';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -89,7 +93,7 @@ const ExpensesTable = ({ ...props }) => {
         options={options}
         actions={actions}
         components={components}
-        data={isLoading ? [{}] : props.expendituresList}
+        data={props.expendituresList}
       />
     </PageHoc>
   );

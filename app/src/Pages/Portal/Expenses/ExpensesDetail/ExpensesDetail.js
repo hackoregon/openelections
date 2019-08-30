@@ -24,9 +24,9 @@ class AddExpense extends Component {
       history,
       currentExpenditure,
     } = this.props;
-    const data = expendituresEmptyState;
+    let data = expendituresEmptyState;
     if (currentExpenditure) {
-      data - mapExpenditureDataToForm(currentExpenditure);
+      data = mapExpenditureDataToForm(currentExpenditure);
     }
     return (
       <PageHoc>
