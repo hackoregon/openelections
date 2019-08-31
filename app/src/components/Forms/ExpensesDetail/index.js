@@ -82,7 +82,6 @@ class ExpensesDetailForm extends React.Component {
   }
 
   render() {
-    console.log('mscotto Props', this.props);
     return (
       <AddExpenseForm
         onSubmit={data => onSubmit(data, this.props)}
