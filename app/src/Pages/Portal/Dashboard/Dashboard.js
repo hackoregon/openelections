@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../components/PageHoc/PageHoc';
-import ContributionsCard from './cards/ContributionsCard';
+import SummaryCard from './cards/SummaryCard';
 import LinksCard from './cards/LinksCard';
 import SearchCard from './cards/SearchCard';
 
@@ -59,7 +59,7 @@ const DashboardPage = props => {
         <div className="cards-wrapper">
           <div className="left-cards">
             <div className="card large">
-              <ContributionsCard />
+              <SummaryCard />
             </div>
           </div>
           <div className="right-cards">
