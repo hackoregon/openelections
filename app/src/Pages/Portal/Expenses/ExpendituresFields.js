@@ -42,6 +42,8 @@ export const mapExpenditureDataToForm = expenditure => {
     state,
     zip,
     notes,
+    status,
+    updatedAt,
   } = expenditure;
   return {
     id,
@@ -61,7 +63,54 @@ export const mapExpenditureDataToForm = expenditure => {
     state: state || '',
     zipcode: zip || '',
     notes: notes || '',
+    status,
+    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
   };
+};
+
+export const mapExpenditureFormToData = data => {
+  const {
+    amount,
+    date,
+    expenditureType,
+    expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purposeType,
+    payeeType,
+    payeeName,
+    streetAddress,
+    addressLine2,
+    city,
+    state,
+    zipcode,
+    notes,
+    status,
+    // isPerson = !!(
+    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
+    //   payeeType === PayeeTypeEnum.FAMILY
+    // ),
+  } = data;
+
+  const transformed = {
+    amount: parseFloat(amount),
+    date: new Date(date).getTime(),
+    type: expenditureType,
+    subType: expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purpose: purposeType,
+    payeeType,
+    name: payeeName,
+    address1: streetAddress,
+    address2: addressLine2,
+    city,
+    state,
+    zip: zipcode,
+    notes,
+    status,
+  };
+  return transformed;
 };
 
 export const expendituresEmptyState = {

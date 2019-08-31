@@ -9,16 +9,16 @@ import {
 } from '../../../state/ducks/auth';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddExpenseForm from './AddExpenseForm';
-import {
-  ExpenditureStatusEnum,
-  mapExpenditureFormToData,
-} from '../../../api/api';
+import { ExpenditureStatusEnum } from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
-import { expendituresEmptyState } from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import {
+  expendituresEmptyState,
+  mapExpenditureFormToData,
+} from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createExpenditure } = props;
