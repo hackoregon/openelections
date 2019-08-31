@@ -88,7 +88,7 @@ export const mapExpenditureFormToData = data => {
     zipcode,
     notes,
     status,
-	// TODO: Check to see if we need to determine a person or an entity
+    // TODO: Check to see if we need to determine a person or an entity
     // isPerson = !!(
     //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
     //   payeeType === PayeeTypeEnum.FAMILY
