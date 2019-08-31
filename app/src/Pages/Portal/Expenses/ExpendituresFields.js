@@ -278,10 +278,7 @@ export const fields = {
         { value: PurposeTypeEnum.UTILITIES, label: 'Utilities' },
       ],
     },
-    validation: Yup.string().required(
-      'A description of the purpose is required'
-    ),
-    // purposeType IS REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
+    validation: Yup.string(),
   },
 
   // PAYEE SECTION
@@ -375,7 +372,7 @@ export const validate = values => {
     expenditureSubType,
     paymentMethod,
     checkNumber,
-    // purposeType,
+    purposeType,
 
     // // PAYEE INFO
     payeeType,
@@ -405,7 +402,7 @@ export const validate = values => {
 
   // Default to visible
   visible.paymentMethod = true;
-  visible.showPurposeType = true;
+  visible.purposeType = true;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
   if (visible.checkSelected && isEmpty(checkNumber)) {
@@ -420,6 +417,12 @@ export const validate = values => {
     expenditureSubType ===
     ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT
   );
+
+  if (visible.showPurposeType) {
+    visible.purposeType = false;
+    if (isEmpty(purposeType))
+      error.purposeType = 'A description of type of purpose is required';
+  }
 
   values._visibleIf = visible;
   return error;
