@@ -124,6 +124,7 @@ class ExpensesDetailForm extends React.Component {
                 checkSelected={visibleIf.checkSelected}
                 showInKindFields={visibleIf.showInKindFields}
                 showPaymentMethod={visibleIf.paymentMethod}
+                showPurposeType={visibleIf.showPurposeType}
               />
               <PayeeInfoSection
                 isSubmited={isSubmited}

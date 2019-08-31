@@ -118,6 +118,7 @@ export const mapExpenditureFormToData = data => {
 
 export const expendituresEmptyState = {
   // BASICS VALUES
+  id: '',
   amount: '',
   date: '',
   expenditureType: '',
@@ -132,7 +133,7 @@ export const expendituresEmptyState = {
   streetAddress: '',
   addressLine2: '',
   city: '',
-  state: '',
+  state: 'OR',
   zipcode: '',
   notes: '',
 };
@@ -255,6 +256,7 @@ export const fields = {
     label: 'Purpose of Expenditure',
     section: FormSectionEnum.BASIC,
     component: SelectField,
+    validation: Yup.string(),
     options: {
       values: [
         { value: PurposeTypeEnum.WAGES, label: 'Wages' },
@@ -278,7 +280,6 @@ export const fields = {
         { value: PurposeTypeEnum.UTILITIES, label: 'Utilities' },
       ],
     },
-    // validation: Yup.string(),
   },
 
   // PAYEE SECTION
@@ -366,16 +367,13 @@ export const fields = {
 
 export const validate = values => {
   const {
-    // amount,
-    // dateOfExpenditure,
-    // expenditureType,
     expenditureSubType,
     paymentMethod,
     checkNumber,
-    // purposeType,
+    purposeType,
 
     // // PAYEE INFO
-    payeeType,
+    // payeeType,
     // payeeName,
     // streetAddress,
     // addressLine2,
@@ -414,14 +412,14 @@ export const validate = values => {
   );
 
   if (visible.showPurposeType) {
-    if (values.purposeType && values.purposeType === '') {
+    if (isEmpty(purposeType)) {
       error.purposeType = 'A description of type of purpose is required';
     }
   }
 
   values._visibleIf = visible;
   console.log('error; ', error);
-  console.log('visible.purposeType', visible.purposeType);
+  console.log('values.purposeType', values.purposeType);
   console.log('visible.showPurposeType: ', visible.showPurposeType);
   return error;
 };
