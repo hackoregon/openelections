@@ -26,7 +26,7 @@ export const FormSectionEnum = Object.freeze({
 export const mapExpenditureDataToForm = expenditure => {
   const {
     id,
-    updatedAt,
+    createdAt,
     buttonSubmitted,
     amount,
     date,
@@ -44,9 +44,11 @@ export const mapExpenditureDataToForm = expenditure => {
     zip,
     notes,
     status,
+    updatedAt,
   } = expenditure;
   return {
     id,
+    createdAt,
     buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
     date: format(new Date(date), 'YYYY-MM-DD'),
@@ -306,7 +308,7 @@ export const fields = {
   },
   payeeName: {
     // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
-    label: "Payee's Full Name",
+    label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
     validation: Yup.string().required("The payee's name is required"),
@@ -348,7 +350,7 @@ export const fields = {
     section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: { values: stateList },
-    alidation: Yup.string().required('Your state is required'),
+    validation: Yup.string().required('Your state is required'),
   },
   zipcode: {
     label: 'Zipcode',
