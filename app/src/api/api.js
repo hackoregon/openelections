@@ -410,49 +410,6 @@ export const mapContributionFormToData = data => {
   return transformed;
 };
 
-export const mapExpenditureFormToData = data => {
-  const {
-    amount,
-    date,
-    expenditureType,
-    expenditureSubType,
-    checkNumber,
-    paymentMethod,
-    purposeType,
-    payeeType,
-    payeeName,
-    streetAddress,
-    addressLine2,
-    city,
-    state,
-    zipcode,
-    notes,
-    // isPerson = !!(
-    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
-    //   payeeType === PayeeTypeEnum.FAMILY
-    // ),
-  } = data;
-
-  const transformed = {
-    amount: parseFloat(amount),
-    date: new Date(date).getTime(),
-    type: expenditureType,
-    subType: expenditureSubType,
-    checkNumber,
-    paymentMethod,
-    purpose: purposeType,
-    payeeType,
-    name: payeeName,
-    address1: streetAddress,
-    address2: addressLine2,
-    city,
-    state,
-    zip: zipcode,
-    notes,
-  };
-  return transformed;
-};
-
 export function post(url, data) {
   const headers = {
     'Content-Type': 'application/json',

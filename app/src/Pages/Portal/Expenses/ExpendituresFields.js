@@ -26,7 +26,6 @@ export const FormSectionEnum = Object.freeze({
 export const mapExpenditureDataToForm = expenditure => {
   const {
     id,
-    updatedAt,
     createdAt,
     buttonSubmitted,
     amount,
@@ -44,10 +43,11 @@ export const mapExpenditureDataToForm = expenditure => {
     state,
     zip,
     notes,
+    status,
+    updatedAt,
   } = expenditure;
   return {
     id,
-    updatedAt,
     createdAt,
     buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
@@ -65,7 +65,55 @@ export const mapExpenditureDataToForm = expenditure => {
     state: state || '',
     zipcode: zip || '',
     notes: notes || '',
+    status,
+    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
   };
+};
+
+export const mapExpenditureFormToData = data => {
+  const {
+    amount,
+    date,
+    expenditureType,
+    expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purposeType,
+    payeeType,
+    payeeName,
+    streetAddress,
+    addressLine2,
+    city,
+    state,
+    zipcode,
+    notes,
+    status,
+    // TODO: Check to see if we need to determine a person or an entity
+    // isPerson = !!(
+    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
+    //   payeeType === PayeeTypeEnum.FAMILY
+    // ),
+  } = data;
+
+  const transformed = {
+    amount: parseFloat(amount),
+    date: new Date(date).getTime(),
+    type: expenditureType,
+    subType: expenditureSubType,
+    checkNumber,
+    paymentMethod,
+    purpose: purposeType,
+    payeeType,
+    name: payeeName,
+    address1: streetAddress,
+    address2: addressLine2,
+    city,
+    state,
+    zip: zipcode,
+    notes,
+    status,
+  };
+  return transformed;
 };
 
 export const expendituresEmptyState = {
