@@ -23,6 +23,7 @@ import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/Expendi
 const onSubmit = (data, props) => {
   const initialData = props.data;
   const expenditureData = mapExpenditureFormToData(data);
+  // TODO remove next line when GH-#725 is closed
   delete expenditureData.date;
   expenditureData.id = data.id;
   expenditureData.currentUserId = props.currentUserId;

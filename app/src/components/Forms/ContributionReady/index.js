@@ -17,17 +17,16 @@ import {
   ContributorSection,
   OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import { mapContributionFormToData } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
-import {
-  ContributionStatusEnum,
-  mapContributionFormToData,
-} from '../../../api/api';
+import { ContributionStatusEnum } from '../../../api/api';
 
 const onSubmit = (data, props) => {
   const initialData = props.data;
   const contributionData = mapContributionFormToData(data);
+  // TODO remove next 2 lines when GH-#725 is closed
   delete contributionData.date;
+  delete contributionData.occupationLetterDate;
   delete contributionData.calendarYearAggregate;
   contributionData.id = data.id;
   contributionData.currentUserId = props.currentUserId;
