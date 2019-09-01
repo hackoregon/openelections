@@ -341,6 +341,18 @@ export const PurposeTypeEnum = Object.freeze({
   UTILITIES: 'utilities',
 });
 
+export const ActivityTypeEnum = Object.freeze({
+  USER: 'user',
+  PERMISSION: 'permission',
+  CAMPAIGN: 'campaign',
+  GOVERNMENT: 'government',
+  INVITATION_EMAIL: 'invitation email',
+  CONTRIBUTION: 'contribution',
+  EXPENDITURE: 'expenditure',
+  COMMENT_CONTR: 'commentcontr',
+  COMMENT_EXP: 'commentexp',
+});
+
 export function post(url, data) {
   const headers = {
     'Content-Type': 'application/json',

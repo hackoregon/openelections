@@ -30,6 +30,7 @@ import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
 import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
+import ActivityStreamForm from '../ActivityStream/index';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -184,6 +185,13 @@ class ContributionReadyForm extends React.Component {
                   />
                 </div>
               ) : null}
+              {/* {isSubmited && this.props.isGovAdmin ? ( */}
+              <ActivityStreamForm
+                isValid={isValid}
+                onSubmit={onSubmit}
+                contributionId={this.props.id}
+              />
+              {/* ) : null} */}
             </>
           );
         }}
