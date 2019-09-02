@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { parseFromTimeZone } from 'date-fns-timezone';
+import { format } from 'date-fns';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
@@ -20,13 +22,12 @@ const columns = [
     field: 'date',
     title: 'Date',
     render: rowData =>
-      new Date(rowData.date)
-        .toLocaleString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-        .split(', ')[0],
+      format(
+        new Date(
+          parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
+        ),
+        'MM-DD-YYYY'
+      ),
   },
   {
     field: 'name',
@@ -52,7 +53,7 @@ const ContributionsTable = ({ ...props }) => {
   const rowCount = Array.isArray(props.contributionList)
     ? props.contributionList.length
     : 0;
-  const title = `${rowCount} Submitted Contributions`;
+  const title = `${rowCount} Contributions`;
   const options = {
     search: false,
     actionCellStyle: {

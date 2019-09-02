@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
+import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
@@ -75,12 +76,20 @@ export const mapContributionDataToForm = contribution => {
     status,
     notes,
   } = contribution;
-  return {
+  const transformed = {
     // BASICS VALUES
     id,
     buttonSubmitted: buttonSubmitted || '',
-    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
-    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
+    dateOfContribution: format(
+      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
+      'YYYY-MM-DD'
+    ),
+    updatedAt: format(
+      new Date(
+        parseFromTimeZone(updatedAt, { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YY hh:mm a'
+    ),
     typeOfContribution: type,
     subTypeOfContribution: subType,
     typeOfContributor: contributorType,
@@ -110,10 +119,100 @@ export const mapContributionDataToForm = contribution => {
     electionAggregate: calendarYearAggregate || '',
     inKindDescription: inKindDescription || '',
     paymentMethod: paymentMethod || '',
-    occupationLetterDate: occupationLetterDate || '',
+    occupationLetterDate: occupationLetterDate
+      ? format(
+          new Date(
+            parseFromTimeZone(occupationLetterDate, {
+              timeZone: 'America/Los_Angeles',
+            })
+          ),
+          'YYYY-MM-DD'
+        )
+      : '',
     status,
     notes: notes || '',
   };
+  return transformed;
+};
+
+export const mapContributionFormToData = data => {
+  const {
+    streetAddress,
+    amountOfContribution,
+    city,
+    dateOfContribution,
+    addressLine2,
+    firstName,
+    lastName,
+    entityName,
+    state,
+    zipcode,
+    employerName,
+    employerCity,
+    employerState,
+    occupation,
+    occupationLetterDate,
+    inKindDescription,
+    electionAggregate,
+    email,
+    phone,
+    phoneType,
+    checkNumber,
+    typeOfContributor,
+    subTypeOfContribution,
+    typeOfContribution,
+    inKindType,
+    oaeType,
+    submitForMatch,
+    paymentMethod,
+    notes,
+    isPerson = !!(
+      typeOfContributor === ContributorTypeEnum.INDIVIDUAL ||
+      typeOfContributor === ContributorTypeEnum.FAMILY
+    ),
+  } = data;
+
+  const transformed = {
+    city,
+    firstName: isPerson && firstName ? firstName : null,
+    middleInitial: '',
+    lastName: isPerson && lastName ? lastName : null,
+    name: entityName || null,
+    state,
+    occupation,
+    occupationLetterDate: occupationLetterDate
+      ? new Date(
+          convertToTimeZone(occupationLetterDate, {
+            timeZone: 'America/Los_Angeles',
+          })
+        ).getTime()
+      : null,
+    employerName,
+    employerCity,
+    employerState,
+    checkNumber,
+    contributorType: typeOfContributor,
+    subType: subTypeOfContribution,
+    type: typeOfContribution,
+    inKindType: inKindType || null,
+    oaeType,
+    address1: streetAddress,
+    address2: addressLine2,
+    email,
+    phone,
+    phoneType: phoneType || null,
+    amount: parseFloat(amountOfContribution),
+    date: new Date(
+      convertToTimeZone(dateOfContribution, { timeZone: 'America/Los_Angeles' })
+    ).getTime(),
+    zip: zipcode,
+    inKindDescription,
+    calendarYearAggregate: electionAggregate,
+    submitForMatch: submitForMatch === 'Yes',
+    paymentMethod,
+    notes,
+  };
+  return transformed;
 };
 
 export const contributionsEmptyState = {
