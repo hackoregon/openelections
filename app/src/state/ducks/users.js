@@ -7,7 +7,7 @@ import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addEntities, ADD_ENTITIES } from './common';
+import { addEntities, ADD_ENTITIES, resetState, RESET_STATE } from './common';
 import { removePermission } from './permissions';
 import { clearModal } from './modal';
 
@@ -29,7 +29,12 @@ export const initialState = {
 };
 
 // Reducer
+export const resetUserState = resetState;
+// Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, ...action.payload.users };
   },

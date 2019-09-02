@@ -5,7 +5,7 @@ import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addEntities, ADD_ENTITIES } from './common';
+import { addEntities, ADD_ENTITIES, resetState, RESET_STATE } from './common';
 import { inviteUser } from './users';
 import { getCurrentCampaignId } from './auth';
 
@@ -26,8 +26,12 @@ export const initialState = {
   list: {},
 };
 
+export const resetCampaignState = resetState;
 // Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, list: action.payload.campaigns };
   },

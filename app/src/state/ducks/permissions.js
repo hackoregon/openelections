@@ -1,6 +1,6 @@
 // permissions.js
 import createReducer from '../utils/createReducer';
-import { ADD_ENTITIES } from './common';
+import { ADD_ENTITIES, resetState, RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
 
@@ -18,8 +18,12 @@ export const initialState = {
   error: null,
 };
 
+export const resetPermissionState = resetState;
 // Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_ENTITIES]: (state, action) => {
     return { ...state, ...action.payload.permissions };
   },

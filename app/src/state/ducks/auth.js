@@ -5,10 +5,16 @@ import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import * as campaigns from './campaigns';
 import * as governments from './governments';
 import { getStatusSummaryAction } from './summary';
-
+import { resetContributionState } from './contributions';
+import { resetExpenditureState } from './expenditures';
+import { resetUserState } from './users';
+import { resetPermissionState } from './permissions';
+import {
+  resetCampaignState,
+  actionCreators as campaignsActionCreators,
+} from './campaigns';
 // Export State Key
 export const STATE_KEY = 'auth';
 
@@ -141,7 +147,7 @@ export function me() {
         });
         if (campaignPermission.length) {
           dispatch(
-            campaigns.actionCreators.setCampaign.success(
+            campaignsActionCreators.setCampaign.success(
               me.permissions[0].campaignId
             )
           );
@@ -211,6 +217,11 @@ export function login(email, password) {
 export function logout() {
   return dispatch => {
     dispatch(actionCreators.me.success(null));
+    dispatch(resetContributionState());
+    dispatch(resetExpenditureState());
+    dispatch(resetUserState());
+    dispatch(resetCampaignState());
+    dispatch(resetPermissionState());
     if (!window.location.hostname.includes('localhost')) {
       document.cookie =
         'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';
