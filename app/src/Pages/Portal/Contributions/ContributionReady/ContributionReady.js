@@ -14,7 +14,7 @@ import {
 class AddContribution extends Component {
   componentDidMount() {
     const { getContributionById, contributionId } = this.props;
-    getContributionById(parseInt(contributionId));
+    if (contributionId) getContributionById(parseInt(contributionId));
   }
 
   render() {

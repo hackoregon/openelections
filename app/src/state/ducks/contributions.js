@@ -232,7 +232,7 @@ export function getContributionById(id) {
       const response = await api.getContributionById(id);
       if (response.status === 200) {
         // TODO look into why response.json() is removing data
-        const data = normalize(await response, schema.contribution);
+        const data = normalize(await response.json(), schema.contribution);
         dispatch(addContributionEntities(data.entities));
         dispatch(actionCreators.getContributionById.success(id));
       } else {
