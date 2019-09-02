@@ -28,7 +28,6 @@ export const initialState = {
   error: null,
 };
 
-// Reducer
 export const resetUserState = resetState;
 // Reducer
 export default createReducer(initialState, {
