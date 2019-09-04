@@ -19,7 +19,7 @@ import {
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import { mapContributionFormToData } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
-import { ContributionStatusEnum } from '../../../api/api';
+import { ContributionStatusEnum, ContributorTypeEnum } from '../../../api/api';
 
 const onSubmit = (data, props) => {
   const initialData = props.data;
@@ -138,6 +138,8 @@ class ContributionReadyForm extends React.Component {
                 showEmployerSection={visibleIf.showEmployerSection}
                 isPerson={visibleIf.isPerson}
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
+                isGovAdmin={this.props.isGovAdmin}
+                contributionId={values.id}
               />
               {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection
