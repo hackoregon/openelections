@@ -28,7 +28,7 @@ export default createReducer(initialState, {
       ...state,
       isActive: true,
       currentModal: action.payload.component,
-      _props: action.payload.props,
+      _props: action.payload.data,
       state: action.payload.state,
     };
   },
