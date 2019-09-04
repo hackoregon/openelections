@@ -136,8 +136,8 @@ class SummaryCard extends React.Component {
               Total: {data.totalContributions.total}
             </Link>
             {delete data.totalContributions.total}
-            {Object.keys(data.totalContributions).map(key => (
-              <Link to={`/contributions?status=${key.toLowerCase()}`}>
+            {Object.keys(data.totalContributions).map((key, i) => (
+              <Link key={i} to={`/contributions?status=${key.toLowerCase()}`}>
                 {key}: {data.totalContributions[key]}
               </Link>
             ))}
