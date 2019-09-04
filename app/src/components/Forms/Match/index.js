@@ -1,35 +1,51 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { css, jsx } from '@emotion/core';
-
 import { MatchPicker } from '../../MatchPicker/MatchPicker';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
 import FormModal from '../../FormModal/FormModal';
-/** @jsx jsx */
 
-const removeUserStyle = css`
-  word-break: break-word;
-  max-width: 300px;
-`;
-const buttonContainer = css`
-  display: flex;
-  margin-top: 30px;
-  button {
-    margin: 10px;
-  }
-`;
-const removeUserTitle = css`
-  font-size: 36px;
-`;
+export const getMatchesById = () => {
+  return [
+    {
+      currentPage: 1,
+      totalPages: 2,
+      selected: true,
+      matchStrength: 0,
+      id: 'a',
+      name: 'Noah Fence',
+      street1: '123 Main Street',
+      street2: '',
+      city: 'Portland',
+      state: 'OR',
+      zip: '97203',
+    },
+    {
+      currentPage: 2,
+      totalPages: 2,
+      selected: false,
+      matchStrength: 0,
+      id: 'b',
+      name: 'Noah Fence',
+      street1: '123 Main Street',
+      street2: 'Apt 456',
+      city: 'Portland',
+      state: 'OR',
+      zip: '97203',
+    },
+  ];
+};
 
 const MatchPickerForm = props => {
+  const { contributionId } = props;
+  const matches = getMatchesById(contributionId);
+  const match = matches[1];
   return (
     <FormModal>
-      <MatchPicker />
+      <MatchPicker {...match} />
     </FormModal>
   );
 };
-// export default RemoveUser;
+
 export default connect(
   state => ({
     getModalState: getModalState(state),

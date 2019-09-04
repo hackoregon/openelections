@@ -139,6 +139,7 @@ class ContributionReadyForm extends React.Component {
                 isPerson={visibleIf.isPerson}
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
                 isGovAdmin={this.props.isGovAdmin}
+                contributionId={values.id}
               />
               {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection

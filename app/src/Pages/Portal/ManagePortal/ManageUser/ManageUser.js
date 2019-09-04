@@ -27,8 +27,6 @@ const ManageUserPage = props => {
     props.resendUserInvite(id);
     props.flashMessage('Email Resent', { props: { variant: 'success' } });
   };
-  // Props passed as Data to the modal
-  const data = props;
   return (
     <PageHoc>
       <h1>
@@ -62,7 +60,7 @@ const ManageUserPage = props => {
           <Button
             buttonType="remove"
             onClick={() =>
-              props.dispatch(showModal({ component: 'RemoveUser', data }))
+              props.dispatch(showModal({ component: 'RemoveUser', props }))
             }
           >
             Remove User

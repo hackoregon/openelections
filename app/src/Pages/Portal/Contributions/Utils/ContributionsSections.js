@@ -148,11 +148,12 @@ export const ContributorSection = ({
   emptyOccupationLetterDate,
   isSubmited,
   isGovAdmin,
+  contributionId,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
       {isPerson && isGovAdmin ? (
-        <MatchPickerHeader form="RemoveUser" />
+        <MatchPickerHeader form="RemoveUser" contributionId={contributionId} />
       ) : (
         <h3 css={sectionStyles.title}>Contributor</h3>
       )}
