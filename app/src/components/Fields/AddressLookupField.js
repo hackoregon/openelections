@@ -20,7 +20,8 @@ import parseGooglePlace from 'parse-google-place';
  *    },
  *    myAddressLookupField: {
  *      label: "Address Lookup",
-        component: (props) => 
+        // eslint-disable-next-line react/display-name
+        component: props => (
           <AddressLookupField
             {...props.field} {...props}
             updateFields = {{
@@ -29,7 +30,8 @@ import parseGooglePlace from 'parse-google-place';
                 city: "myCityField",     
               }}
           />
-        }
+        )
+      }
  *  };
  *
  * */
@@ -53,23 +55,25 @@ class AddressLookupField extends React.Component {
   }
 
   handleFieldChange(e) {
+    const { formik, id } = this.props;
     // Ensure that any changes mad by hand are reflected in posted values
-    this.props.formik.values[this.props.id] = e.currentTarget.value;
+    formik.values[id] = e.currentTarget.value;
   }
 
   handlePlaceChanged() {
     const place = this.autocomplete.getPlace();
     const addressFields = parseGooglePlace(place);
     addressFields.street = addressFields.address;
-    const { updateFields } = this.props;
+    const { updateFields, id, formik } = this.props;
+    // eslint-disable-next-line no-restricted-syntax
     for (const updateField in updateFields) {
       if (updateFields[updateField]) {
         // If the update field is the lookup field update though the ref
-        if (updateFields[updateField] === this.props.id) {
+        if (updateFields[updateField] === id) {
           this.autocompleteInput.current.value = addressFields[updateField];
           // Otherwise update through formik
         } else {
-          this.props.formik.setFieldValue(
+          formik.setFieldValue(
             updateFields[updateField],
             addressFields[updateField],
             false

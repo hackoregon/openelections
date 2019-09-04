@@ -10,7 +10,14 @@ import {
 } from '../services/expenditureService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { checkDto } from './helpers';
-import { ExpenditureStatus, ExpenditureType, ExpenditureSubType, PayeeType } from '../models/entity/Expenditure';
+import {
+    ExpenditureStatus,
+    ExpenditureType,
+    ExpenditureSubType,
+    PayeeType,
+    PurposeType
+} from '../models/entity/Expenditure';
+import { PaymentMethod } from '../models/entity/Expenditure';
 
 export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsNumber()
@@ -66,6 +73,14 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsEnum(ExpenditureType)
     @IsOptional()
     type: ExpenditureType;
+
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
+
+    @IsEnum(PurposeType)
+    @IsOptional()
+    purpose: PurposeType;
 
     @IsNumber()
     date: number;

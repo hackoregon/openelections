@@ -5,7 +5,9 @@ import {
     getContributionsAsync,
     IAddContributionAttrs,
     addContributionAsync,
-    getContributionByIdAsync, archiveContributionAsync, createContributionCommentAsync
+    getContributionByIdAsync,
+    archiveContributionAsync,
+    createContributionCommentAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -15,7 +17,11 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType, InKindDescriptionType, OaeType
+    ContributorType,
+    InKindDescriptionType,
+    OaeType,
+    PaymentMethod,
+    PhoneType
 } from '../models/entity/Contribution';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
@@ -52,6 +58,10 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsEnum(ContributorType)
     @IsOptional()
     contributorType: ContributorType;
+
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
 
     @IsString()
     @IsOptional()
@@ -112,6 +122,42 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsEnum(ContributionType)
     @IsOptional()
     type: ContributionType;
+
+    @IsString()
+    @IsOptional()
+    phone: string;
+
+    @IsNumber()
+    @IsOptional()
+    occupationLetterDate: number;
+
+    @IsString()
+    @IsOptional()
+    occupation: string;
+
+    @IsString()
+    @IsOptional()
+    employerName: string;
+
+    @IsString()
+    @IsOptional()
+    employerCity: string;
+
+    @IsString()
+    @IsOptional()
+    employerState: string;
+
+    @IsString()
+    @IsOptional()
+    phoneType: string;
+
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
+
+    @IsString()
+    @IsOptional()
+    notes: string;
 }
 
 export async function updateContribution(request: IRequest, response: Response, next: Function) {
@@ -271,8 +317,48 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsOptional()
     oaeType: OaeType;
 
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
+
     @IsNumber()
     date: number;
+
+    @IsString()
+    @IsOptional()
+    phone: string;
+
+    @IsNumber()
+    @IsOptional()
+    occupationLetterDate: number;
+
+    @IsString()
+    @IsOptional()
+    occupation: string;
+
+    @IsString()
+    @IsOptional()
+    employerName: string;
+
+    @IsString()
+    @IsOptional()
+    employerCity: string;
+
+    @IsString()
+    @IsOptional()
+    employerState: string;
+
+    @IsEnum(PhoneType)
+    @IsOptional()
+    phoneType: PhoneType;
+
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
+
+    @IsString()
+    @IsOptional()
+    notes: string;
 }
 
 export async function addContribution(request: IRequest, response: Response, next: Function) {
@@ -291,7 +377,6 @@ export async function addContribution(request: IRequest, response: Response, nex
 }
 
 export class GetContributionByIdDto {
-
     @IsNumber()
     contributionId: number;
 
@@ -315,13 +400,11 @@ export async function getContributionById(request: IRequest, response: Response,
 }
 
 export class ArchiveContributionDto {
-
     @IsNumber()
     currentUserId: number;
 
     @IsNumber()
     contributionId: number;
-
 }
 
 export async function archiveContribution(request: IRequest, response: Response, next: Function) {
@@ -340,7 +423,6 @@ export async function archiveContribution(request: IRequest, response: Response,
 }
 
 export class ContributionCommentDto {
-
     currentUserId: number;
 
     @IsNumber()
@@ -348,7 +430,6 @@ export class ContributionCommentDto {
 
     @IsString()
     comment: string;
-
 }
 
 export async function createContributionComment(request: IRequest, response: Response, next: Function) {

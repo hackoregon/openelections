@@ -1,5 +1,4 @@
 import jwtDecode from 'jwt-decode';
-import { format } from 'date-fns';
 
 export const UserRoleEnum = Object.freeze({
   GOVERNMENT_ADMIN: 'government_admin',
@@ -48,6 +47,23 @@ export const ContributionSubTypeFieldEnum = Object.freeze({
   INKIND_FORGIVEN_ACCOUNT: 'In-Kind Forgiven Accounts Payable',
   INKIND_FORGIVEN_PERSONAL: 'In-Kind /Forgiven Personal Expenditure',
   CASH_CONTRIBUTION: 'Cash Contribution',
+});
+
+export const InKindDescriptionTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRINTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
 });
 
 export const DataToContributionSubTypeFieldMap = new Map([
@@ -242,6 +258,14 @@ export const PhoneTypeFieldEnum = Object.freeze({
   HOME_PHONE: 'Home Phone',
 });
 
+export const PaymentMethodEnum = Object.freeze({
+  CASH: 'cash',
+  CHECK: 'check',
+  MONEY_ORDER: 'money_order',
+  CREDIT_CARD_ONLINE: 'credit_card_online',
+  CREDIT_CARD_PAPER: 'credit_card_paper',
+});
+
 export const DataToPhoneTypeFieldMap = new Map([
   [PhoneTypeEnum.MOBILE, PhoneTypeFieldEnum.MOBILE_PHONE],
   [PhoneTypeEnum.WORK, PhoneTypeFieldEnum.WORK_PHONE],
@@ -296,140 +320,24 @@ export const ExpenditureStatusEnum = Object.freeze({
   IN_COMPLIANCE: 'in_compliance',
 });
 
-// TODO: need to get data for the following:
-// - paymentMethod
-// - employerZipcode
-// - occupationLetterDate
-// - linkToDocumentation
-// - notes
-export const mapContributionDataToForm = contribution => {
-  const {
-    date,
-    // createdAt,
-    type,
-    subtype,
-    contributorType,
-    oaeType,
-    amount,
-    checkNumber,
-    name,
-    firstName,
-    lastName,
-    address1,
-    address2,
-    city,
-    state,
-    zip,
-    email,
-    phone,
-    phoneType,
-    occupation,
-    employerName,
-    employerCity,
-    employerState,
-    calendarYearAggregate,
-    inKindDescription,
-    employerZipcode,
-    submitForMatch,
-  } = contribution;
-  return {
-    // BASICS VALUES
-    dateOfContribution: format(new Date(date), 'YYYY-MM-DD'),
-    typeOfContribution: DataToContributionTypeFieldMap.get(type),
-    subTypeOfContribution: DataToContributionSubTypeFieldMap.get(subtype) || '',
-    typeOfContributor: DataToContributorTypeFieldMap.get(contributorType),
-    oaeType: DataToOaeTypeTypeFieldMap.get(oaeType),
-    amountOfContribution: amount,
-    checkNumber,
-    submitForMatch: submitForMatch ? 'Yes' : 'No',
-
-    // CONTRIBUTOR VALUES
-    firstName,
-    lastName,
-    entityName: name || '',
-    streetAddress: address1,
-    addressLine2: address2,
-    city,
-    state,
-    zipcode: zip,
-    email: email || '',
-    phone: phone || '',
-    phoneType: phoneType || '',
-    occupation: occupation || '',
-    employerName: employerName || '',
-    employerCity: employerCity || '',
-    employerState: employerState || '',
-    employerZipcode: employerZipcode || '',
-
-    // OTHER DETAILS VALUES
-    electionAggregate: calendarYearAggregate,
-    description: inKindDescription || '',
-    paymentMethod: '',
-  };
-};
-
-// TODO: need to fix some of the fields here.
-export const mapContributionFormToData = data => {
-  const {
-    streetAddress,
-    amountOfContribution,
-    city,
-    dateOfContribution,
-    addressLine2,
-    firstName,
-    lastName,
-    entityName,
-    state,
-    zipcode,
-    employerName,
-    employerCity,
-    employerState,
-    occupation,
-    description,
-    electionAggregate,
-    email,
-    phone,
-    phoneType,
-    checkNumber,
-    typeOfContributor,
-    subTypeOfContribution,
-    typeOfContribution,
-    oaeType,
-    submitForMatch,
-  } = data;
-
-  return {
-    city,
-    firstName: firstName || null,
-    state,
-    occupation,
-    employerName,
-    employerCity,
-    employerState,
-    checkNumber,
-    contributorType: ContributorTypeFieldToDataMap.get(typeOfContributor),
-    subType: ContributionSubTypeFieldToDataMap.get(subTypeOfContribution),
-    type: ContributionTypeFieldToDataMap.get(typeOfContribution),
-    oaeType: OaeTypeFieldToDataMap.get(oaeType),
-    address1: streetAddress,
-    address2: addressLine2,
-    email,
-    phone,
-    phoneType,
-    amount: parseFloat(amountOfContribution),
-    date: new Date(dateOfContribution).getTime(),
-    middleInitial: '',
-    lastName: lastName || null,
-    name: entityName || null,
-    // type: ContributionTypeEnum.CONTRIBUTION,
-    // subType: ContributionSubTypeEnum.CASH,
-    zip: zipcode,
-    //   contributorType: ContributorTypeEnum.INDIVIDUAL,
-    inKindDescription: description,
-    calendarYearAggregate: electionAggregate,
-    submitForMatch: submitForMatch === 'Yes',
-  };
-};
+export const PurposeTypeEnum = Object.freeze({
+  WAGES: 'wages',
+  CASH: 'cash_contribution',
+  REIMBURSEMENT: 'personal_reimbursement',
+  BROADCAST: 'broadcast_advertising',
+  FUNDRAISING: 'fundraising_event_expenses',
+  GENERAL_OPERATING: 'general_operating_expenses',
+  PRIMTING: 'printing',
+  MANAGEMENT: 'management',
+  NEWSPAPER: 'print_advertising',
+  OTHER_AD: 'other_advertising',
+  PETITION: 'petition_circulators',
+  POSTAGE: 'postage',
+  PREP_AD: 'preparation_of_advertising',
+  POLLING: 'surveys_and_polls',
+  TRAVEL: 'travel_expenses',
+  UTILITIES: 'utilities',
+});
 
 export function post(url, data) {
   const headers = {
@@ -718,4 +626,11 @@ export function updateExpenditure(expenditureAttrs) {
     `${baseUrl()}/expenditures/${expenditureAttrs.id}`,
     expenditureAttrs
   );
+}
+
+// path: '/summary'
+//   method: 'post',
+// summaryArttrs = {governmentId: integer OR campaignId: integer}
+export function getStatusSummary(summaryAttrs) {
+  return post(`${baseUrl()}/summary`, summaryAttrs);
 }

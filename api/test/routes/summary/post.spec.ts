@@ -15,41 +15,39 @@ import {
     ContributionSubType,
     ContributionStatus,
     ContributorType,
-    PaymentMethod,
+    PaymentMethod
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
 
 let app: express.Express;
-let campaignStaff: User;
-let campaignStaff2: User;
+let campaignAdmin2: User;
 let campaignAdmin: User;
 let govAdmin: User;
 let government: Government;
 let campaign: Campaign;
+let campaign2: Campaign;
 let govAdminToken: string;
 let campaignAdminToken: string;
-let campaignStaffToken: string;
-let campaignStaff2Token: string;
-let contribution1: Contribution;
+let campaignAdmin2Token: string;
 
-describe('Routes delete /contributions/:id', () => {
+describe('Routes post /contributions', () => {
     before(async () => {
         app = express();
         setupRoutes(app);
     });
 
     beforeEach(async () => {
-        campaignStaff = await newActiveUserAsync();
-        campaignStaff2 = await newActiveUserAsync();
+        campaignAdmin2 = await newActiveUserAsync();
         campaignAdmin = await newActiveUserAsync();
         govAdmin = await newActiveUserAsync();
 
         government = await newGovernmentAsync();
         campaign = await newCampaignAsync(government);
+        campaign2 = await newCampaignAsync(government);
 
         await addPermissionAsync({
-            userId: campaignStaff.id,
-            campaignId: campaign.id,
+            userId: campaignAdmin2.id,
+            campaignId: campaign2.id,
             role: UserRole.CAMPAIGN_STAFF
         });
 
@@ -66,16 +64,15 @@ describe('Routes delete /contributions/:id', () => {
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
-        campaignStaffToken = await generateJWTokenAsync(campaignStaff.id);
         campaignAdminToken = await generateJWTokenAsync(campaignAdmin.id);
-        campaignStaff2Token = await generateJWTokenAsync(campaignStaff2.id);
+        campaignAdmin2Token = await generateJWTokenAsync(campaignAdmin2.id);
 
-        contribution1 = await addContributionAsync({
+        await addContributionAsync({
             address1: '123 ABC ST',
             amount: 250,
             campaignId: campaign.id,
             city: 'Portland',
-            currentUserId: campaignStaff.id,
+            currentUserId: campaignAdmin.id,
             date: Date.now(),
             firstName: 'John',
             middleInitial: '',
@@ -83,10 +80,29 @@ describe('Routes delete /contributions/:id', () => {
             governmentId: government.id,
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
-            paymentMethod: PaymentMethod.CASH,
             state: 'OR',
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH
+        });
+
+        await addContributionAsync({
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignAdmin2.id,
+            date: Date.now(),
+            firstName: 'John',
+            middleInitial: '',
+            lastName: 'Doe',
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            state: 'OR',
+            zip: '97214',
+            contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH
         });
     });
 
@@ -94,41 +110,48 @@ describe('Routes delete /contributions/:id', () => {
         await truncateAll();
     });
 
-    context('delete /contributions/:id', () => {
+    context('post /summary', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
-                .delete(`/contributions/${contribution1.id}`)
+                .post(`/summary`)
+                .send({ governmentId: government.id, currentUserId: govAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
             expect(response.status).to.equal(200);
             expect(response.body.message).to.be.undefined;
+            expect(response.body.contributions[0].amount).to.equal(500);
+            expect(response.body.contributions[0].total).to.equal(2);
         });
 
-        it('success as campaign admin', async () => {
+        it('success as campaign admin 1', async () => {
             const response = await request(app)
-                .delete(`/contributions/${contribution1.id}`)
+                .post(`/summary`)
+                .send({ campaignId: campaign.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
             expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.body.contributions[0].amount).to.equal(250);
+            expect(response.body.contributions[0].total).to.equal(1);
         });
 
-        it('success as campaign staff', async () => {
+        it('success as campaign admin 2', async () => {
             const response = await request(app)
-                .delete(`/contributions/${contribution1.id}`)
+                .post(`/summary`)
+                .send({ campaignId: campaign2.id, currentUserId: campaignAdmin2.id })
                 .set('Accept', 'application/json')
-                .set('Cookie', [`token=${campaignStaffToken}`]);
+                .set('Cookie', [`token=${campaignAdmin2Token}`]);
             expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.body.contributions[0].amount).to.equal(250);
+            expect(response.body.contributions[0].total).to.equal(1);
         });
 
-        it('error does not have permissions', async () => {
+        it('error permissions', async () => {
             const response = await request(app)
-                .delete(`/contributions/${contribution1.id}`)
+                .post(`/summary`)
+                .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
-                .set('Cookie', [`token=${campaignStaff2Token}`]);
+                .set('Cookie', [`token=${campaignAdminToken}`]);
             expect(response.status).to.equal(422);
-            expect(response.body.message);
         });
     });
 });

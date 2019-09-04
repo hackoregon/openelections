@@ -1,46 +1,47 @@
 import React from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { format } from 'date-fns';
-import { ContributionStatusEnum } from '../../../../api/api';
-import Button from '../../../../components/Button/Button';
+import { ExpenditureStatusEnum } from '../../../api/api';
+import Button from '../../../components/Button/Button';
 
 const containers = {
   header: css`
-    width: 96%;
+    width: 96%%;
     min-height: 100%;
     display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(auto-fit(15px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     grid-gap: 20px;
-    margin-right: 38px;
   `,
   main: css`
     display: grid;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
+    margin-bottom: 20px;
   `,
   sectionTwo: css`
     display: grid;
-    width: 100%;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 20px;
+    margin-bottom: 20px;
   `,
   fullWidth: css`
     display: grid;
     grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: 1fr;
     grid-gap: 20px;
-\  `,
+    margin-bottom: 20px;
+  `,
   cityStateZip: css`
-    width: 100%;
+    width: 96%%;
     min-height: 25px;
     display: grid;
     grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 22% 24%;
     grid-gap: 20px;
+    margin-bottom: 20px;
   `,
 };
 
@@ -58,7 +59,6 @@ const headerStyles = {
   `,
   rightColumn: css`
     display: flex;
-    flex-direction: row-reverse;
     align-items: flex-end;
   `,
   invoice: css`
@@ -72,17 +72,7 @@ const headerStyles = {
     font-size: 16px;
     line-height: 19px;
     margin-top: 0px;
-    width: 360px;
   `,
-  // labelBlock: css`
-  //   margin-right: 40px;
-  // `,
-  // labels: css`
-  //   font-size: 13px;
-  //   line-height: 15px;
-  //   color: #979797;
-  //   margin-bottom: 4px;
-  // `,
   smallBlueText: css`
     font-size: 13px;
     line-height: 15px;
@@ -108,7 +98,7 @@ const headerStyles = {
     line-height: 25px;
     color: #000000;
     margin-top: 0px;
-    margin-bottom: 20px;
+    margin: 0px;
   `,
   statusBlock: css`
     flex-direction: column;
@@ -120,28 +110,18 @@ const headerStyles = {
     align-self: flex-end;
   `,
   submitButton: css`
-    background-color: #42b44a;
+    background-color: #d8d8d8;
     border-radius: 5px;
     color: white;
-    width: 225px;
+    width: 165px;
     height: 50px;
-    margin: 5px;
   `,
   draftButton: css`
-    background-color: #d8d8d8;
+    // HAVING ZERO IMPACT
+    background-color: #5f5fff;
     border-radius: 5px;
-    color: white;
     width: 165px;
     height: 50px;
-    margin-right: 8px !important;
-  `,
-  trashButton: css`
-    background-color: #d8d8d8;
-    border-radius: 5px;
-    color: white;
-    width: 165px;
-    height: 50px;
-    margin-right: 8px !important;
   `,
 };
 
@@ -181,18 +161,6 @@ const buttonBar = {
     margin: 1px;
   `,
 };
-// TODO: make a separate component for this checkmark component, find out what it indicates?
-const CheckmarkComponent = ({}) => (
-  <p
-    css={css`
-      margin-right: 8px;
-    `}
-  >
-    {' '}
-    ✅
-  </p>
-);
-
 export const ViewHeaderSection = ({
   isValid,
   handleSubmit,
@@ -202,6 +170,7 @@ export const ViewHeaderSection = ({
   formValues,
   isCampAdmin,
   isCampStaff,
+  campaignName,
 }) => (
   <>
     <div css={containers.header}>
@@ -210,12 +179,12 @@ export const ViewHeaderSection = ({
           #{id} {status}
         </p>
         <p css={headerStyles.subheading}>
-          Campaign | {`Last Edited ${updatedAt}`}
+          {`${campaignName} | Last Edited ${updatedAt}`}
         </p>
       </div>
       <div css={buttonBar.wrapper}>
         <div css={buttonBar.container}>
-          {status === ContributionStatusEnum.DRAFT ? (
+          {status === ExpenditureStatusEnum.DRAFT ? (
             <>
               {isCampStaff || isCampAdmin ? (
                 <>
@@ -258,7 +227,7 @@ export const ViewHeaderSection = ({
               ) : null}
             </>
           ) : null}
-          {status === ContributionStatusEnum.ARCHIVED &&
+          {status === ExpenditureStatusEnum.ARCHIVED &&
           (isCampStaff || isCampAdmin) ? (
             <Button
               css={headerStyles.submitButton}
@@ -280,7 +249,7 @@ export const ViewHeaderSection = ({
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>
-    <h1>New Contribution</h1>
+    <h1 style={{ fontFamily: "Poppins',sans-serif" }}>New Expense</h1>
     <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
       <Button
         css={headerStyles.submitButton}
@@ -298,111 +267,47 @@ export const AddHeaderSection = ({ isValid, handleSubmit }) => (
 export const BasicsSection = ({
   formFields,
   checkSelected,
-  showInKindFields,
-  isSubmited,
   showPaymentMethod,
+  showPurposeType,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
-    <div css={sectionStyles.main}>
-      <h3 css={sectionStyles.title}>Basics</h3>
-      <div css={containers.main}>
-        <h2>{formFields.dateOfContribution}</h2>
-        <h2>{formFields.typeOfContribution}</h2>
-        <h2>{formFields.subTypeOfContribution}</h2>
-        <h2>{formFields.amountOfContribution}</h2>
-        <h2>{formFields.oaeType}</h2>
-        <h2>{formFields.submitForMatch}</h2>
-        {showInKindFields ? <h2>{formFields.inKindType}</h2> : null}
-        {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
-        {checkSelected && !showInKindFields ? (
-          <h2>{formFields.checkNumber}</h2>
-        ) : null}
-      </div>
+  <div css={sectionStyles.main}>
+    <h3 css={sectionStyles.title}>Basics</h3>
+    <div css={containers.main}>
+      <h2>{formFields.amount}</h2>
+      <h2>{formFields.date}</h2>
+      <h2>{formFields.expenditureType}</h2>
+      <h2>{formFields.expenditureSubType}</h2>
+      {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
+      {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
     </div>
+    {showPurposeType ? (
+      <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
+    ) : null}
   </div>
 );
 
-export const ContributorSection = ({
-  formFields,
-  showEmployerSection,
-  isPerson,
-  emptyOccupationLetterDate,
-  isSubmited,
-}) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+export const PayeeInfoSection = ({ formFields }) => (
+  <>
     <div css={sectionStyles.main}>
-      <h3 css={sectionStyles.title}>Contributor</h3>
+      <h3 css={sectionStyles.title}>Payee Information</h3>
       <div css={containers.sectionTwo}>
-        <h2>{formFields.typeOfContributor}</h2>
-        {isPerson ? (
-          <>
-            <h2>{formFields.firstName}</h2>
-            <h2>{formFields.lastName}</h2>
-          </>
-        ) : (
-          <h2>{formFields.entityName}</h2>
-        )}
+        <h2>{formFields.payeeType}</h2>
+        <h2>{formFields.payeeName}</h2>
       </div>
       <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
       <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
       <div css={containers.cityStateZip}>
         <h2>{formFields.city}</h2>
         <h2>{formFields.state}</h2>
-        <h2>{formFields.zipcode}</h2>
       </div>
       <div css={containers.sectionTwo}>
-        <h2>{formFields.email}</h2>
-        <h2>{formFields.phone}</h2>
-        <h2>{formFields.phoneType}</h2>
-        {isPerson ? <h2>{formFields.occupation}</h2> : null}
-      </div>
-      {isPerson ? (
-        <div css={containers.cityStateZip}>
-          {showEmployerSection ? (
-            <>
-              {emptyOccupationLetterDate ? (
-                <>
-                  <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
-                  <h2>{formFields.employerCity}</h2>
-                  <h2>{formFields.employerState}</h2>
-                  {/* <h2>{formFields.employerZipcode}</h2> */}
-                </>
-              ) : null}
-              <h2 css={containers.fullWidth}>
-                {formFields.occupationLetterDate}
-              </h2>
-            </>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  </div>
-);
-
-export const OtherDetailsSection = ({
-  formFields,
-  formValues,
-  handleSubmit,
-}) => (
-  <div css={sectionStyles.main}>
-    <h3 css={sectionStyles.title}>Other Details</h3>
-    <div css={containers.main}>
-      {/* <h2>{formFields.electionAggregate}</h2>
-      <h2>{formFields.description}</h2> */}
-      <h2>{formFields.linkToDocumentation}</h2>
-      <h2>{formFields.notes}</h2>
-      <div css={containers.header}>
-        <Button
-          css={headerStyles.submitButton}
-          buttonType="submit"
-          onClick={() => {
-            formValues.buttonSubmitted = 'submit';
-            handleSubmit();
-          }}
-        >
-          Save other details
-        </Button>
+        <h2>{formFields.zipcode}</h2>
       </div>
     </div>
-  </div>
+    <div css={sectionStyles.main}>
+      <h2 css={[containers.fullWidth, sectionStyles.notes]}>
+        {formFields.notes}
+      </h2>
+    </div>
+  </>
 );

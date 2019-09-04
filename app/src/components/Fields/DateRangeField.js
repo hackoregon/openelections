@@ -218,6 +218,7 @@ function Popover(props) {
       </Tabs>
       <div className="tab-content" hidden={tab !== 0}>
         <DateField
+          picker="true"
           label="Date"
           id="from-date"
           formik={formik}
@@ -226,6 +227,7 @@ function Popover(props) {
         />
         <div className="spacer" />
         <TimeField
+          picker="true"
           label="Time"
           formik={formik}
           id="from-time"
@@ -235,6 +237,7 @@ function Popover(props) {
       </div>
       <div className="tab-content" hidden={tab !== 1}>
         <DateField
+          picker="true"
           label="Date"
           formik={formik}
           id="to-date"
@@ -243,6 +246,7 @@ function Popover(props) {
         />
         <div className="spacer" />
         <TimeField
+          piker="true"
           label="Time"
           formik={formik}
           id="to-time"

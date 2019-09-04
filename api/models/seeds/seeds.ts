@@ -1,22 +1,17 @@
-import { getConnection } from 'typeorm';
-import { createUserAsync } from '../../services/userService';
-import {
-    newCampaignAsync,
-    newExpenditureAsync,
-    newGovernmentAsync,
-    truncateAll
-} from '../../test/factories';
-import { addPermissionAsync } from '../../services/permissionService';
-import { UserRole } from '../entity/Permission';
-import { User, UserStatus } from '../../models/entity/User';
-import { Address } from '../../models/entity/Address';
+import {getConnection} from 'typeorm';
+import {createUserAsync} from '../../services/userService';
+import {newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll} from '../../test/factories';
+import {addPermissionAsync} from '../../services/permissionService';
+import {UserRole} from '../entity/Permission';
+import {User, UserStatus} from '../../models/entity/User';
+import {Address} from '../../models/entity/Address';
 import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
-import { addContributionAsync } from '../../services/contributionService';
-import { ContributionSubType, ContributionType, ContributorType } from '../entity/Contribution';
+import {addContributionAsync} from '../../services/contributionService';
+import {ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType} from '../entity/Contribution';
 import * as faker from 'faker';
-import { Government } from '../entity/Government';
-import { Campaign } from '../entity/Campaign';
+import {Government} from '../entity/Government';
+import {Campaign} from '../entity/Campaign';
 
 export async function seedAddresses() {
     let data: any;
@@ -92,7 +87,10 @@ export async function addContributions(user: User, government: Government, campa
             date: faker.date.past(1),
             governmentId: government.id,
             campaignId: campaign.id,
-            currentUserId: user.id
+            currentUserId: user.id,
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 
@@ -113,7 +111,10 @@ export async function addContributions(user: User, government: Government, campa
             date: faker.date.past(1),
             governmentId: government.id,
             campaignId: campaign.id,
-            currentUserId: user.id
+            currentUserId: user.id,
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 
@@ -134,7 +135,10 @@ export async function addContributions(user: User, government: Government, campa
             date: faker.date.past(1),
             governmentId: government.id,
             campaignId: campaign.id,
-            currentUserId: user.id
+            currentUserId: user.id,
+            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+            oaeType: OaeType.ALLOWABLE,
+            occupation: 'Other'
         }));
     });
 

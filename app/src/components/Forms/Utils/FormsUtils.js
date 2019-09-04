@@ -32,6 +32,7 @@ export const formField = (
  * @param {string} requiredMessage
  * @param {string[]} values
  */
+
 export const requiredFormField = (
   label,
   section,
@@ -40,7 +41,7 @@ export const requiredFormField = (
   requiredMessage,
   values = undefined
 ) => {
-  validation = validation.required(requiredMessage);
+  // validation = validation.required(requiredMessage);
   return values
     ? { label, section, component, validation, options: { values } }
     : { label, section, component, validation };

@@ -29,10 +29,17 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function CurrencyField({ id, label, formik }) {
+export default function CurrencyField({
+  id,
+  label,
+  formik,
+  options,
+  isRequired,
+}) {
   return (
     <TextFieldMaterial
       id={id}
+      required={isRequired}
       name={id}
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
@@ -44,6 +51,7 @@ export default function CurrencyField({ id, label, formik }) {
       fullWidth
       InputProps={{
         inputComponent: NumberFormatCustom,
+        inputProps: { allowNegative: options.allowNegative },
       }}
     />
   );

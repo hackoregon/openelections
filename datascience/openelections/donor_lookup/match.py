@@ -60,7 +60,7 @@ def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     return set(ADDRESS_MAP.get(tkn, tkn) for tkn in address_tokens if tkn != '') - ADDRESS_IGNORE
 
 
-def in_portland(longitude: str, latitude: str) -> bool:
+def in_portland(longitude: Optional[str], latitude: Optional[str]) -> bool:
     """
     Returns true if lat/long are within city limits
     NB PostGIS places longitude first!
@@ -68,6 +68,9 @@ def in_portland(longitude: str, latitude: str) -> bool:
     :param zip_code:
     :return:
     """
+
+    if longitude is None or latitude is None:
+        return False
 
     with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
@@ -252,8 +255,8 @@ def cli() -> None:
         aparser.add_argument("--addr1", dest="addr1", type=str)
         aparser.add_argument("--addr2", dest="addr2", default=None, type=str)
         aparser.add_argument("--city", dest="city", default=None, type=str)
-        aparser.add_argument("--latitude", dest="latitude", type=str)
-        aparser.add_argument("--longitude", dest="longitude", type=str)
+        aparser.add_argument("--latitude", dest="latitude", default=None, type=str)
+        aparser.add_argument("--longitude", dest="longitude", default=None, type=str)
         aparser.add_argument("--max_matches", dest="max_matches", default=10, type=int)
 
         options = vars(aparser.parse_args())

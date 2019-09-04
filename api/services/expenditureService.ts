@@ -6,7 +6,7 @@ import {
     ExpenditureType,
     getExpendituresByGovernmentIdAsync,
     IExpenditureSummary,
-    PayeeType
+    PayeeType, PaymentMethod, PurposeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { getConnection } from 'typeorm';
@@ -28,7 +28,8 @@ export interface IAddExpenditureAttrs {
     state: string;
     zip: string;
     amount: number;
-    description: string;
+    paymentMethod?: PaymentMethod;
+    purpose?: PurposeType;
     currentUserId: number;
     campaignId: number;
     governmentId: number;
@@ -58,7 +59,8 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
 
             expenditure.type = expenditureAttrs.type;
             expenditure.subType = expenditureAttrs.subType;
-            expenditure.description = expenditureAttrs.description;
+            expenditure.paymentMethod = expenditureAttrs.paymentMethod;
+            expenditure.purpose = expenditureAttrs.purpose;
 
             expenditure.address1 = expenditureAttrs.address1;
             expenditure.address2 = expenditureAttrs.address2;
@@ -102,6 +104,10 @@ export interface IGetExpenditureAttrs {
     status?: string;
     from?: string;
     to?: string;
+    sort?: {
+        field: 'campaignId' | 'status' | 'date';
+        direction: 'ASC' | 'DESC';
+    };
 }
 
 export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs) {
@@ -148,6 +154,8 @@ export interface IUpdateExpenditureAttrs {
     amount?: number;
     description?: string;
     status?: ExpenditureStatus;
+    paymentMethod?: PaymentMethod;
+    purpose?: PurposeType;
 }
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {

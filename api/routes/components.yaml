@@ -70,6 +70,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+    ContributionStatusSummary:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Draft,Submitted,Processed]
+        matchAmount:
+          type: integer
+        amount:
+          type: integer
+    ExpenditureStatusSummary:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [draft,submitted,processed, in_compliance, out_of_compliance]
+        amount:
+          type: integer
+    StatusSummary:
+      type: object
+      properties:
+        contributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContributionStatusSummary'
+        expenditures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenditureStatusSummary'
     Contribution:
       type: object
       properties:
@@ -226,6 +255,17 @@ components:
                 properties:
                   governmentId:
                     type: integer
+    GetStatusSummaryBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              campaignId:
+                type: integer
+              governmentId:
+                type: integer
     RedeemInviteBody:
       required: true
       content:
@@ -282,6 +322,9 @@ components:
               inKindType:
                 type: string
                 enum: [wages,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,print_advertising,other_advertising,petition_Circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
+              paymentMethod:
+                type: string
+                enum: [cash,check,money_order,credit_card_online,credit_card_paper]
               email:
                 type: string
               firstName:
@@ -374,6 +417,9 @@ components:
               type:
                 type: string
                 enum: [contribution,other]
+              paymentMethod:
+                type: string
+                enum: [cash,check,money_order,credit_card_online,credit_card_paper]
               date:
                 type: number
     GetContributionBody:
@@ -401,6 +447,49 @@ components:
                 type: string
               to:
                 type: string
+              sort:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    enum: [date,campaignId,status]
+                  direction:
+                    type: string
+                    enum: ['ASC','DESC']
+            required:
+              - governmentId
+    GetExpenditureBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              governmentId:
+                type: integer
+              currentUserId:
+                type: integer
+              campaignId:
+                type: integer
+              perPage:
+                type: integer
+              page:
+                type: integer
+              status:
+                type: string
+              from:
+                type: string
+              to:
+                type: string
+              sort:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    enum: [date,campaignId,status]
+                  direction:
+                    type: string
+                    enum: [ASC,DESC]
             required:
               - governmentId
     GetContributionByIdBody:
@@ -452,6 +541,49 @@ components:
               type:
                 type: string
                 enum: [expenditure,other,other_disbursement]
+              paymentMethod:
+                type: string
+                enum: [cash,check,money_order,credit_card_online,credit_card_paper]
+              purpose:
+                type: string
+                enum: [wages,cash_contribution,personal_reimbursement,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,other_advertising,petition_circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
+              date:
+                type: integer
+    UpdateExpenditureBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              address1:
+                type: string
+              address2:
+                type: string
+              amount:
+                type: integer
+              city:
+                type: string
+              state:
+                type: string
+              zip:
+                type: string
+              name:
+                type: string
+              status:
+                type: string
+                enum: [Archived,Draft,Submitted,Processed]
+              subType:
+                type: string
+                enum: [accounts_payable,cash_expenditure,personal_expenditure,accounts_payable_rescinded,cash_balance_adjustment,miscellaneous_other_disbursement,refund_of_expenditure]
+              type:
+                type: string
+                enum: [expenditure,other,other_disbursement]
+              paymentMethod:
+                type: string
+                enum: [cash,check,money_order,credit_card_online,credit_card_paper]
+              purpose:
+                type: string
+                enum: [wages,cash_contribution,personal_reimbursement,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,other_advertising,petition_circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
               date:
                 type: integer
 

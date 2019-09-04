@@ -11,7 +11,7 @@ import PageHoc from '../../components/PageHoc/PageHoc';
 import Sidebar from '../../components/Sidebar';
 import WithPermissions from '../../components/WithPermissions';
 import ManageCampaignPage from './ManageCampaign';
-import ContributionsPage from './Contributions';
+import ContributionsPage from './Contributions/index';
 
 /* @jsx jsx */
 import { mediaQueryRanges } from '../../assets/styles/variables';
@@ -91,16 +91,12 @@ const Portal = props => {
                           exact
                           path="/dashboard"
                           component={DashboardPage}
-                        />{' '}
+                        />
                         <Route
                           path="/contributions"
                           component={ContributionsPage}
                         />
-                        <Route
-                          exact
-                          path="/expenses"
-                          component={ExpensesPage}
-                        />
+                        <Route path="/expenses" component={ExpensesPage} />
                         <Route
                           exact
                           path="/campaigns"

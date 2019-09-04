@@ -272,7 +272,7 @@ const ContributionNeedsReview = () => (
 
         // OTHER DETAILS VALUES
         electionAggregate: '2019',
-        description: 'Some Description',
+        inKindDescription: 'Some Description',
         occupationLetterDate: '',
         linkToDocumentation: '',
         notes: '',
@@ -329,7 +329,7 @@ const ContributionNeedsReview = () => (
             <h3 css={sectionStyles.title}>Other Details</h3>
             <div css={containers.main}>
               <h2>{formFields.electionAggregate}</h2>
-              <h2>{formFields.description}</h2>
+              <h2>{formFields.inKindDescription}</h2>
               <h2>{formFields.occupationLetterDate}</h2>
               <h2>{formFields.linkToDocumentation}</h2>
               <h2>{formFields.notes}</h2>

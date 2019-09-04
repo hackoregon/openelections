@@ -2,22 +2,23 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import AddContributionForm from './AddContributionForm';
 import { createContribution } from '../../../state/ducks/contributions';
 import {
-  ContributionTypeFieldEnum,
-  ContributionStatusEnum,
-  mapContributionFormToData,
-  ContributionSubTypeFieldEnum,
-  ContributorTypeFieldEnum,
-} from '../../../api/api';
+  getCurrentCampaignId,
+  getCurrentUserId,
+} from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
+import AddContributionForm from './AddContributionForm';
+import { ContributionStatusEnum } from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
-  OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import { contributionsEmptyState } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import {
+  contributionsEmptyState,
+  mapContributionFormToData,
+} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createContribution } = props;
@@ -39,37 +40,22 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, values }) => {
-      const checkSelected = values.paymentMethod === 'Check';
-      const isPerson = !!(
-        values.typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
-        values.typeOfContributor ===
-          ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
-      );
-      if (values.submitForMatch !== 'No') {
-        if (
-          // Set submitForMatch to No under these conditions
-          values.amountOfContribution > 500 ||
-          values.typeOfContribution !==
-            ContributionTypeFieldEnum.CONTRIBUTION ||
-          values.subTypeOfContribution !==
-            ContributionSubTypeFieldEnum.CASH_CONTRIBUTION ||
-          (values.typeOfContributor !==
-            ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY &&
-            values.typeOfContributor !== ContributorTypeFieldEnum.INDIVIDUAL)
-        ) {
-          values.submitForMatch = 'No';
-        }
-      }
+    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
             formFields={formFields}
-            checkSelected={checkSelected}
+            checkSelected={visibleIf.checkSelected}
+            showInKindFields={visibleIf.showInKindFields}
+            showPaymentMethod={visibleIf.paymentMethod}
           />
-          <ContributorSection formFields={formFields} isPerson={isPerson} />
-          <OtherDetailsSection formFields={formFields} />
+          <ContributorSection
+            formFields={formFields}
+            showEmployerSection={visibleIf.showEmployerSection}
+            isPerson={visibleIf.isPerson}
+            emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
+          />
         </>
       );
     }}
@@ -78,9 +64,9 @@ const AddContribution = ({ ...props }) => (
 
 export default connect(
   state => ({
-    currentUserId: state.auth.me.id,
-    governmentId: state.auth.me.permissions[0].id,
-    campaignId: state.auth.me.permissions[0].campaignId,
+    currentUserId: getCurrentUserId(state),
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
   }),
   dispatch => ({
     createContribution: data => dispatch(createContribution(data)),

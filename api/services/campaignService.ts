@@ -1,8 +1,19 @@
 import { getConnection } from 'typeorm';
 import { Campaign, getCampaignSummariesByGovernmentIdAsync, ICampaignSummary } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
-import { addUserToCampaignAsync, isGovernmentAdminAsync } from './permissionService';
+import {
+    addUserToCampaignAsync,
+    isCampaignAdminAsync,
+    isCampaignStaffAsync,
+    isGovernmentAdminAsync
+} from './permissionService';
 import { UserRole } from '../models/entity/Permission';
+import { ExpenditureSummaryByStatus, getExpenditureSummaryByStatusAsync } from '../models/entity/Expenditure';
+import {
+    Contribution,
+    ContributionSummaryByStatus,
+    getContributionsSummaryByStatusAsync
+} from '../models/entity/Contribution';
 
 export interface ICreateCampaign {
     name: string;
@@ -64,4 +75,53 @@ export async function getCampaignsAsync({currentUserId, governmentId}: IGetCampa
     } catch (e) {
         throw new Error(e.message);
     }
+}
+
+export interface GetStatusSummaryAttrs {
+    currentUserId: number;
+    campaignId?: number;
+    governmentId?: number;
+}
+
+export interface StatusSummary {
+    contributions: ContributionSummaryByStatus[];
+    expenditures: ExpenditureSummaryByStatus[];
+}
+
+export async function getStatusSummary(attrs: GetStatusSummaryAttrs): Promise<StatusSummary> {
+    if (attrs.campaignId) {
+        const repository = getConnection('default').getRepository('Campaign');
+        const campaign = (await repository.findOneOrFail(attrs.campaignId, {
+            relations: ['government']
+        })) as Campaign;
+        const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id);
+        const hasCampaignPermissions = await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isCampaignStaffAsync(attrs.currentUserId, attrs.campaignId);
+        if (hasGovPermissions || hasCampaignPermissions) {
+            const contributions = await getContributionsSummaryByStatusAsync({
+                campaignId: attrs.campaignId
+            });
+            const expenditures = await getExpenditureSummaryByStatusAsync({
+                campaignId: attrs.campaignId
+            });
+            return {
+                expenditures,
+                contributions
+            };
+        } else {
+            throw new Error('User does not have permissions for this campaign');
+        }
+    } else if (attrs.governmentId) {
+        const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, attrs.governmentId);
+        const contributions = await getContributionsSummaryByStatusAsync({
+            governmentId: attrs.governmentId
+        });
+        const expenditures = await getExpenditureSummaryByStatusAsync({
+            governmentId: attrs.governmentId
+        });
+        return {
+            expenditures,
+            contributions
+        };
+    }
+    throw new Error('Either governmentId or campaignId must be present');
 }

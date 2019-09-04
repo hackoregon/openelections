@@ -81,8 +81,7 @@ describe('Routes post /expenditures/new', () => {
                 state: 'OR',
                 zip: '97214',
                 payeeType: PayeeType.INDIVIDUAL,
-                name: 'Test Expenditure',
-                description: 'This is a test'
+                name: 'Test Expenditure'
             };
             const response = await request(app)
                 .post(`/expenditures/new`)

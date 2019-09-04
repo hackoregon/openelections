@@ -10,8 +10,12 @@ import {
 import {
     Activity,
     ActivityTypeEnum,
-    getActivityByCampaignAsync, getActivityByContributionAsync, getActivityByExpenditureAsync,
-    getActivityByGovernmentAsync, getActivityByUserAsync
+    getActivityByCampaignAsync,
+    getActivityByCampaignByTimeAsync,
+    getActivityByContributionAsync,
+    getActivityByExpenditureAsync,
+    getActivityByGovernmentAsync,
+    getActivityByUserAsync
 } from '../../models/entity/Activity';
 import { Government } from '../../models/entity/Government';
 import { createActivityRecordAsync } from '../../services/activityService';
@@ -195,7 +199,7 @@ describe('Activity', () => {
         expect(activities.length).to.equal(2);
     });
 
-    it('getActivityByExpenditureAsync testme', async () => {
+    it('getActivityByExpenditureAsync', async () => {
         const gov = await newGovernmentAsync();
         const campaign = await newCampaignAsync(gov);
         const exp = await newExpenditureAsync(campaign, gov);
@@ -219,5 +223,48 @@ describe('Activity', () => {
         });
         const activities = await getActivityByExpenditureAsync(exp.id, 100, 0);
         expect(activities.length).to.equal(2);
+    });
+
+    it('getActivityByCampaignByTimeAsync testme', async () => {
+        const gov = await newGovernmentAsync();
+        const campaign = await newCampaignAsync(gov);
+        const contr = await newContributionAsync(campaign, gov);
+        const user = await newActiveUserAsync();
+        await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        const activity1 = await createActivityRecordAsync({
+            currentUser: user,
+            notes: `${user.name()} added a new contribution (${contr.id})`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.CONTRIBUTION,
+            activityId: contr.id
+        });
+
+        const activity2 = await createActivityRecordAsync({
+            currentUser: user,
+            notes: `Note from ${user.name()}: There is a problem with this contribution, please resubmit.`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.COMMENT_CONTR,
+            activityId: contr.id
+        });
+
+        activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
+        activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
+        const activities = await getActivityByContributionAsync(contr.id, 100, 0);
+        expect(activities.length).to.equal(2);
+        let from = new Date(2018, 12, 31);
+        let to = new Date(2019, 1, 31);
+        let activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
+        expect(activitiesTime.length).to.equal(1);
+        from = new Date(2018, 12, 31);
+        to = new Date(2020, 1, 31);
+        activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
+        expect(activitiesTime.length).to.equal(2);
+
+        from = new Date(2017, 12, 31);
+        to = new Date(2018, 1, 31);
+        activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
+        expect(activitiesTime.length).to.equal(0);
     });
 });
