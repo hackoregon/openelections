@@ -2,32 +2,51 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
-import { login } from '../../../../state/ducks/auth';
+import {
+  getExpenditureById,
+  getCurrentExpenditure,
+} from '../../../../state/ducks/expenditures';
+import {
+  expendituresEmptyState,
+  mapExpenditureDataToForm,
+} from '../ExpendituresFields';
 
-class ExpensesDetail extends Component {
-  componentWillUpdate(newprops) {
-    if (!(typeof newprops.state.me === 'undefined' || !newprops.state.me)) {
-      this.props.history.push('/dashboard');
-    }
+class AddExpense extends Component {
+  componentDidMount() {
+    const { getExpenditureById, expenditureId } = this.props;
+    getExpenditureById(parseInt(expenditureId));
   }
 
   render() {
+    const {
+      expenditures,
+      expenditureId,
+      history,
+      currentExpenditure,
+    } = this.props;
+    let data = expendituresEmptyState;
+    if (currentExpenditure) {
+      data = mapExpenditureDataToForm(currentExpenditure);
+    }
     return (
       <PageHoc>
-        <ExpensesDetailForm {...this.props} />
+        <ExpensesDetailForm
+          data={data}
+          expenditureId={expenditureId}
+          history={history}
+        />
       </PageHoc>
     );
   }
 }
-
 export default connect(
-  state => {
-    return { state: state.auth };
-  },
-  dispatch => {
-    return {
-      login: (email, password) => dispatch(login(email, password)),
-      dispatch,
-    };
-  }
-)(ExpensesDetail);
+  (state, ownProps) => ({
+    expenditureId: parseInt(ownProps.match.params.id),
+    expenditures: state.expenditures,
+    history: ownProps.history,
+    currentExpenditure: getCurrentExpenditure(state),
+  }),
+  dispatch => ({
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
+  })
+)(AddExpense);

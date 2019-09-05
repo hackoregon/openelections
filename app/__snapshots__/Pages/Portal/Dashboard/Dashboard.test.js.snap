@@ -67,7 +67,7 @@ exports[`<Dashboard/> should be defined 1`] = `
         <div
           className="card large"
         >
-          <ContributionsCard />
+          <Connect(SummaryCard) />
         </div>
       </div>
       <div

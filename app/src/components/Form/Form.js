@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 
-export const formFromFields = (fields, formikProps) =>
+export const formFromFields = (fields, formikProps, dynamicRequire) =>
   Object.keys(fields).map(id =>
     React.createElement(fields[id].component, {
       key: id,
@@ -12,7 +12,10 @@ export const formFromFields = (fields, formikProps) =>
       label: fields[id].label,
       options: { ...fields[id].options },
       formik: formikProps,
-      isRequired: _.get(fields[id], 'validation._exclusive.required'),
+      isRequired: !!(
+        dynamicRequire[id] ||
+        _.get(fields[id], 'validation._exclusive.required')
+      ),
     })
   );
 
@@ -26,7 +29,7 @@ class Form extends React.Component {
     const validationSchema = Yup.object(validations);
     return (
       <Formik
-        validate={validate || null}
+        validate={validate}
         initialValues={initialValues}
         enableReinitialize
         validationSchema={validationSchema}
@@ -49,7 +52,13 @@ class Form extends React.Component {
           return this.props.onSubmit(values, addHandlers);
         }}
         render={formikProps => {
-          const form = <>{formFromFields(fields, formikProps)}</>;
+          const dynamicRequire = validate ? validate(formikProps.values) : {};
+          const visibleIf = formikProps.values._visibleIf
+            ? formikProps.values._visibleIf
+            : {};
+          const form = (
+            <>{formFromFields(fields, formikProps, dynamicRequire)}</>
+          );
           const formSections =
             sections && sections.length > 0
               ? Object.fromEntries(
@@ -58,7 +67,8 @@ class Form extends React.Component {
                     <>
                       {formFromFields(
                         _.pickBy(fields, field => field.section === section),
-                        formikProps
+                        formikProps,
+                        dynamicRequire
                       )}
                     </>,
                   ])
@@ -69,10 +79,18 @@ class Form extends React.Component {
               ? Object.fromEntries(
                   fieldIds.map(id => [
                     id,
-                    <>{formFromFields(_.pick(fields, id), formikProps)}</>,
+                    <>
+                      {formFromFields(
+                        _.pick(fields, id),
+                        formikProps,
+                        dynamicRequire
+                      )}
+                    </>,
                   ])
                 )
               : {};
+          // Uncomment next line to see what formik can pass to the form
+          // console.log('formikProps', formikProps);
           return children({
             form,
             formSections,
@@ -83,6 +101,9 @@ class Form extends React.Component {
             handleSubmit: formikProps.handleSubmit,
             handleCancel: formikProps.handleReset,
             values: formikProps.values,
+            visibleIf,
+            formErrors: formikProps.errors,
+            initialValues: formikProps.initialValues,
             /* could return more formikProps if needed */
           });
         }}

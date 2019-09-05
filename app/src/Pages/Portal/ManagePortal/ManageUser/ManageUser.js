@@ -27,7 +27,6 @@ const ManageUserPage = props => {
     props.resendUserInvite(id);
     props.flashMessage('Email Resent', { props: { variant: 'success' } });
   };
-
   return (
     <PageHoc>
       <h1>

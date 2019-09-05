@@ -9,22 +9,15 @@ import {
 } from '../../../state/ducks/auth';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddContributionForm from './AddContributionForm';
-import {
-  ContributionTypeFieldEnum,
-  ContributionStatusEnum,
-  mapContributionFormToData,
-  ContributionSubTypeFieldEnum,
-  ContributorTypeFieldEnum,
-} from '../../../api/api';
+import { ContributionStatusEnum } from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
-  OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import {
   contributionsEmptyState,
-  inKindContributionValues,
+  mapContributionFormToData,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
@@ -47,54 +40,22 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, values }) => {
-      const isPerson = !!(
-        values.typeOfContributor === ContributorTypeFieldEnum.INDIVIDUAL ||
-        values.typeOfContributor ===
-          ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY
-      );
-      const checkSelected =
-        values.paymentMethod === 'Check' ||
-        values.paymentMethod === 'Money Order';
-
-      // Only show Employer section if the contributor type is Individual OR Family AND Occupation is 'Employed'
-      const emptyOccupationLetterDate = values.occupationLetterDate === '';
-      const showEmployerSection = values.occupation === 'Employed';
-      const showInKindFields = !!inKindContributionValues.includes(
-        values.subTypeOfContribution
-      );
-
-      if (values.submitForMatch !== 'No') {
-        if (
-          // Set submitForMatch to No under these conditions
-          values.amountOfContribution > 500 ||
-          values.typeOfContribution !==
-            ContributionTypeFieldEnum.CONTRIBUTION ||
-          values.subTypeOfContribution !==
-            ContributionSubTypeFieldEnum.CASH_CONTRIBUTION ||
-          (values.typeOfContributor !==
-            ContributorTypeFieldEnum.CANDIDATE_IMMEDIATE_FAMILY &&
-            values.typeOfContributor !== ContributorTypeFieldEnum.INDIVIDUAL)
-        ) {
-          values.submitForMatch = 'No';
-        }
-      }
-
+    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
             formFields={formFields}
-            checkSelected={checkSelected}
-            showInKindFields={showInKindFields}
+            checkSelected={visibleIf.checkSelected}
+            showInKindFields={visibleIf.showInKindFields}
+            showPaymentMethod={visibleIf.paymentMethod}
           />
           <ContributorSection
             formFields={formFields}
-            showEmployerSection={showEmployerSection}
-            isPerson={isPerson}
-            emptyOccupationLetterDate={emptyOccupationLetterDate}
+            showEmployerSection={visibleIf.showEmployerSection}
+            isPerson={visibleIf.isPerson}
+            emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
           />
-          {/* <OtherDetailsSection formFields={formFields} /> */}
         </>
       );
     }}

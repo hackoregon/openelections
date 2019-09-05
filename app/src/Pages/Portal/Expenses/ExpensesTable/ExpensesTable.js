@@ -1,8 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
+// import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Table from '../../../../components/Table';
-import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Button from '../../../../components/Button/Button';
+import {
+  getExpendituresList,
+  getExpenditures,
+} from '../../../../state/ducks/expenditures';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -32,7 +38,7 @@ const columns = [
     type: 'currency',
   },
   {
-    field: 'type',
+    field: 'paymentMethod',
     title: 'Payment',
   },
 ];
@@ -65,15 +71,16 @@ const ExpensesTable = ({ ...props }) => {
     ),
   ];
   const components = {
+    // eslint-disable-next-line react/display-name
     Action: props => (
-      <WithAdminPermissions>
-        <Button
-          onClick={event => props.action.onClick(event, props.data)}
-          buttonType={props.action.buttonType}
-        >
-          {props.action.name}
-        </Button>
-      </WithAdminPermissions>
+      // <WithAdminPermissions>
+      <Button
+        onClick={event => props.action.onClick(event, props.data)}
+        buttonType={props.action.buttonType}
+      >
+        {props.action.name}
+      </Button>
+      // </WithAdminPermissions>
     ),
   };
   return (
@@ -86,10 +93,13 @@ const ExpensesTable = ({ ...props }) => {
         options={options}
         actions={actions}
         components={components}
-        data={isLoading ? [{}] : props.expendituresList}
+        data={props.expendituresList}
       />
     </PageHoc>
   );
 };
 
-export default ExpensesTable;
+export default connect(state => ({
+  isListLoading: state.campaigns.isLoading,
+  expendituresList: getExpendituresList(state),
+}))(ExpensesTable);

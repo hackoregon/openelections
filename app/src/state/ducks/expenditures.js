@@ -1,11 +1,12 @@
 // campaigns.js
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
-import { get } from 'lodash';
+import { isEmpty } from 'lodash';
+import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addEntities, ADD_ENTITIES } from './common';
+import { addExpenditureEntities, ADD_EXPENDITURE_ENTITIES } from './common';
 
 export const STATE_KEY = 'expenditures';
 
@@ -21,12 +22,14 @@ export const actionTypes = {
 export const initialState = {
   isLoading: false,
   error: null,
+  list: null,
+  currentId: null,
 };
 
 // Reducer
 export default createReducer(initialState, {
-  [ADD_ENTITIES]: (state, action) => {
-    return { ...state, ...action.payload.expenditures };
+  [ADD_EXPENDITURE_ENTITIES]: (state, action) => {
+    return { ...state, list: { ...action.payload.expenditures } };
   },
   [actionTypes.CREATE_EXPENDITURE.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -59,7 +62,11 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return {
+      ...state,
+      isLoading: false,
+      currentId: action.id,
+    };
   },
   [actionTypes.GET_EXPENDITURE_BY_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -85,7 +92,7 @@ export const actionCreators = {
   },
   getExpenditureById: {
     request: () => action(actionTypes.GET_EXPENDITURE_BY_ID.REQUEST),
-    success: () => action(actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS),
+    success: id => action(actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS, { id }),
     failure: error =>
       action(actionTypes.GET_EXPENDITURE_BY_ID.FAILURE, { error }),
   },
@@ -99,13 +106,26 @@ export function createExpenditure(expenditureAttrs) {
       const response = await api.createExpenditure(expenditureAttrs);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.expenditure);
-        dispatch(addEntities(data.entities));
+        dispatch(addExpenditureEntities(data.entities));
         dispatch(actionCreators.createExpenditure.success());
-      } else {
-        dispatch(actionCreators.createExpenditure.failure());
+        dispatch(
+          flashMessage(`Contribution Added`, {
+            props: { variant: 'success' },
+          })
+        );
+        return data.result;
       }
+      dispatch(actionCreators.createExpenditure.failure());
+      dispatch(
+        flashMessage(`Error - ${response.status} status returned`, {
+          props: { variant: 'error' },
+        })
+      );
     } catch (error) {
       dispatch(actionCreators.createExpenditure.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
     }
   };
 }
@@ -133,7 +153,7 @@ export function getExpenditures(expenditureSearchAttrs) {
       const response = await api.getExpenditures(expenditureSearchAttrs);
       if (response.status === 200) {
         const data = normalize(await response.json(), [schema.expenditure]);
-        dispatch(addEntities(data.entities));
+        dispatch(addExpenditureEntities(data.entities));
         dispatch(actionCreators.getExpenditures.success());
       } else {
         dispatch(actionCreators.getExpenditures.failure());
@@ -151,8 +171,8 @@ export function getExpenditureById(id) {
       const response = await api.getExpenditureById(id);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.expenditure);
-        dispatch(addEntities(data.entities));
-        dispatch(actionCreators.getExpenditureById.success());
+        dispatch(addExpenditureEntities(data.entities));
+        dispatch(actionCreators.getExpenditureById.success(id));
       } else {
         dispatch(actionCreators.getExpenditureById.failure());
       }
@@ -167,6 +187,21 @@ export const rootState = state => state || {};
 
 export const getExpendituresList = createSelector(
   rootState,
-  state =>
-    Object.values(state.expenditures).filter(withId => !!get(withId, 'id'))
+  state => {
+    if (isEmpty(state.expenditures.list)) {
+      return [];
+    }
+    return Object.values(state.expenditures.list);
+  }
 );
+
+export const isLoggedIn = state => {
+  return state.auth.me !== null;
+};
+export const getCurrentExpenditure = state => {
+  return state.expenditures &&
+    state.expenditures.list &&
+    state.expenditures.currentId
+    ? state.expenditures.list[state.expenditures.currentId]
+    : false;
+};

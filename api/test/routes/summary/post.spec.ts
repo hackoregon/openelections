@@ -14,7 +14,8 @@ import {
     ContributionType,
     ContributionSubType,
     ContributionStatus,
-    ContributorType
+    ContributorType,
+    PaymentMethod
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
 
@@ -81,7 +82,8 @@ describe('Routes post /contributions', () => {
             subType: ContributionSubType.CASH,
             state: 'OR',
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH
         });
 
         await addContributionAsync({
@@ -99,7 +101,8 @@ describe('Routes post /contributions', () => {
             subType: ContributionSubType.CASH,
             state: 'OR',
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
+            paymentMethod: PaymentMethod.CASH
         });
     });
 

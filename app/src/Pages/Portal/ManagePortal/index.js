@@ -4,22 +4,27 @@ import ManagePortal from './ManagePortal';
 import {
   getUsers,
   getCampaignUsers,
+  getGovernmentUsers,
   isUsersLoading,
 } from '../../../state/ducks/users';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
+import { isGovAdmin, getCurrentCampaignId } from '../../../state/ducks/auth';
 import { showModal } from '../../../state/ducks/modal';
 
 class ManagePortalPage extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    this.props.getCampaignUsers(this.props.campaignId);
-  }
+    const {
+      governmentId,
+      campaignId,
+      isGovAdmin,
+      getCampaignUsers,
+      getGovernmentUsers,
+    } = this.props;
 
-  componentDidUpdate(prevProps) {
-    if (this.props.campaignId !== prevProps.campaignId) {
-      this.props.getCampaignUsers(this.props.campaignId);
+    if (isGovAdmin) {
+      getGovernmentUsers(governmentId);
+    } else {
+      getCampaignUsers(campaignId);
     }
   }
 
@@ -30,13 +35,16 @@ class ManagePortalPage extends React.Component {
 
 export default connect(
   state => ({
+    isGovAdmin: isGovAdmin(state),
     isUserListLoading: isUsersLoading(state),
     userList: getUsers(state),
-    campaignId: state.campaigns.currentCampaignId,
+    campaignId: getCurrentCampaignId(state),
+    governmentId: getCurrentGovernmentId(state),
   }),
   dispatch => {
     return {
       getCampaignUsers: id => dispatch(getCampaignUsers(id)),
+      getGovernmentUsers: id => dispatch(getGovernmentUsers(id)),
       showModal: payload => {
         dispatch(showModal(payload));
       },

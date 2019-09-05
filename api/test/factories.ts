@@ -15,7 +15,9 @@ import {
     ExpenditureStatus,
     ExpenditureSubType,
     ExpenditureType,
-    PayeeType
+    PayeeType,
+    PaymentMethod,
+    PurposeType
 } from '../models/entity/Expenditure';
 
 export async function newActiveUserAsync(): Promise<User> {
@@ -79,6 +81,7 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.state = 'OR';
         contribution.status = ContributionStatus.DRAFT;
         contribution.zip = '97214';
+        contribution.paymentMethod = PaymentMethod.CASH;
         contribution.contributorType = ContributorType.INDIVIDUAL;
         contribution.date = faker.date.past(1);
     const contributionRepository = getConnection('default').getRepository('Contribution');
@@ -103,7 +106,8 @@ export async function newExpenditureAsync(campaign: Campaign, government: Govern
     expenditure.status = ExpenditureStatus.DRAFT;
     expenditure.zip = '97214';
     expenditure.payeeType = PayeeType.INDIVIDUAL;
-    expenditure.description = 'Pays for something';
+    expenditure.paymentMethod = PaymentMethod.CASH;
+    expenditure.purpose = PurposeType.GENERAL_OPERATING;
     expenditure.date = faker.date.past(90);
     const expenditureRepository = getConnection('default').getRepository('Expenditure');
     expenditure = await expenditureRepository.save(expenditure);

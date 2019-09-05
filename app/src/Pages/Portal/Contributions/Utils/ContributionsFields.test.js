@@ -25,7 +25,7 @@ const formFieldKeys = [
   'employerName',
   'employerCity',
   'employerState',
-  'employerZipcode',
+  // 'employerZipcode',
   'electionAggregate',
   'inKindDescription',
   'occupationLetterDate',

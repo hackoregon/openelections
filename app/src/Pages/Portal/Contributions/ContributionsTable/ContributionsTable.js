@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { parseFromTimeZone } from 'date-fns-timezone';
+import { format } from 'date-fns';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
-import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Button from '../../../../components/Button/Button';
 import { getContributionsList } from '../../../../state/ducks/contributions';
+import { isCampAdmin } from '../../../../state/ducks/auth';
 
 const columnInfo = (title, field, type = undefined) =>
   type ? { title, field, type } : { title, field };
@@ -20,15 +22,13 @@ const columns = [
     field: 'date',
     title: 'Date',
     render: rowData =>
-      new Date(rowData.date)
-        .toLocaleString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-        .split(', ')[0],
+      format(
+        new Date(
+          parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
+        ),
+        'MM-DD-YYYY'
+      ),
   },
-  // columnInfo("Date", "date", "date"),
   {
     field: 'name',
     title: 'Name',
@@ -53,7 +53,7 @@ const ContributionsTable = ({ ...props }) => {
   const rowCount = Array.isArray(props.contributionList)
     ? props.contributionList.length
     : 0;
-  const title = `${rowCount} Submitted Contributions`;
+  const title = `${rowCount} Contributions`;
   const options = {
     search: false,
     actionCellStyle: {
@@ -67,23 +67,27 @@ const ContributionsTable = ({ ...props }) => {
     actionInfo('View', 'primary', (event, rowData) => {
       props.history.push(`/contributions/${rowData.id}`);
     }),
-    actionInfo(
-      'Add New Contribution',
-      'primary',
-      () => props.history.push({ pathname: '/contributions/add' }),
-      true
-    ),
   ];
+  // Only campaign admins can create contributions
+  if (props.isCampAdmin) {
+    actions.push(
+      actionInfo(
+        'Add New Contribution',
+        'primary',
+        () => props.history.push({ pathname: '/contributions/add' }),
+        true
+      )
+    );
+  }
   const components = {
+    // eslint-disable-next-line react/display-name
     Action: props => (
-      <WithAdminPermissions>
-        <Button
-          onClick={event => props.action.onClick(event, props.data)}
-          buttonType={props.action.buttonType}
-        >
-          {props.action.name}
-        </Button>
-      </WithAdminPermissions>
+      <Button
+        onClick={event => props.action.onClick(event, props.data)}
+        buttonType={props.action.buttonType}
+      >
+        {props.action.name}
+      </Button>
     ),
   };
 
@@ -98,13 +102,14 @@ const ContributionsTable = ({ ...props }) => {
         options={options}
         actions={actions}
         components={components}
-        data={isLoading ? [{}] : props.contributionList}
+        data={props.contributionList}
       />
     </PageHoc>
   );
 };
 
 export default connect(state => ({
+  isCampAdmin: isCampAdmin(state),
   isListLoading: state.campaigns.isLoading,
   contributionList: getContributionsList(state),
 }))(ContributionsTable);

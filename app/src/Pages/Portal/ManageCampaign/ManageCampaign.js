@@ -24,9 +24,7 @@ const columnInfo = [
 
 const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const isLoading = isCampaignListLoading && !Array.isArray(campaignList);
-  // Check if campaign list has loaded, if not, return an empty list.
-  campaignList = campaignList || [];
-
+  const rowCount = Array.isArray(campaignList) ? campaignList.length : 0;
   return (
     <PageHoc>
       <h1>Manage Campaign</h1>
@@ -35,11 +33,9 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
           <div className="manage-users-table">
             <Table
               isLoading={isLoading}
-              title={`Campaigns (${
-                isLoading ? 'Loading' : campaignList.length
-              })`}
+              title={`Campaigns (${rowCount})`}
               columns={columnInfo}
-              data={isLoading ? [] : campaignList}
+              data={campaignList || [{}]}
               localization={{
                 body: {
                   emptyDataSourceMessage: 'No Users',

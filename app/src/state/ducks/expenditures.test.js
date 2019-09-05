@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import * as expenditures from './expenditures';
 import * as api from '../../api';
 import * as schema from '../../api/schema';
-import { ADD_ENTITIES } from './common';
+import { ADD_EXPENDITURE_ENTITIES } from './common';
 
 const { actionTypes, actionCreators } = expenditures;
 
@@ -16,13 +16,15 @@ describe('Reducer', () => {
     expect(reducer(undefined, {})).toEqual({
       isLoading: false,
       error: null,
+      list: null,
+      currentId: null,
     });
   });
 
   it('adds expenditure entities', () => {
     expect(
       reducer(undefined, {
-        type: ADD_ENTITIES,
+        type: ADD_EXPENDITURE_ENTITIES,
         payload: {
           expenditures: {
             '1': {},
@@ -30,7 +32,10 @@ describe('Reducer', () => {
         },
       })
     ).toEqual({
-      '1': {},
+      list: {
+        '1': {},
+      },
+      currentId: null,
       isLoading: false,
       error: null,
     });
@@ -107,7 +112,7 @@ describe('Side Effects', () => {
   it('creates expenditure testme', async () => {
     const expectedActions = [
       { type: actionTypes.CREATE_EXPENDITURE.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_EXPENDITURE_ENTITIES },
       { type: actionTypes.CREATE_EXPENDITURE.SUCCESS },
     ];
     const store = mockStore({});
@@ -144,7 +149,7 @@ describe('Side Effects', () => {
   it('gets expenditures', async () => {
     const expectedActions = [
       { type: actionTypes.GET_EXPENDITURES.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_EXPENDITURE_ENTITIES },
       { type: actionTypes.GET_EXPENDITURES.SUCCESS },
     ];
     const store = mockStore({});
@@ -213,7 +218,7 @@ describe('Side Effects', () => {
   it('gets expenditure', async () => {
     const expectedActions = [
       { type: actionTypes.GET_EXPENDITURE_BY_ID.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: ADD_EXPENDITURE_ENTITIES },
       { type: actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS },
     ];
     const store = mockStore({});

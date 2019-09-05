@@ -76,9 +76,9 @@ export enum InKindDescriptionType {
     GENERAL_OPERATING = 'general_operating_expenses',
     PRIMTING = 'printing',
     MANAGEMENT = 'management',
-    NEWSPAPER =  'print_advertising',
+    NEWSPAPER = 'print_advertising',
     OTHER_AD = 'other_advertising',
-    PETITION = 'petition_Circulators',
+    PETITION = 'petition_circulators',
     POSTAGE = 'postage',
     PREP_AD = 'preparation_of_advertising',
     POLLING = 'surveys_and_polls',
@@ -93,6 +93,14 @@ export enum OaeType {
     QUALIFYING = 'qualifying',
     ALLOWABLE = 'allowable',
     INKIND = 'inkind'
+}
+
+export enum PaymentMethod {
+    CASH = 'cash',
+    CHECK = 'check',
+    MONEY_ORDER = 'money_order',
+    CREDIT_CARD_ONLINE = 'credit_card_online',
+    CREDIT_CARD_PAPER = 'credit_card_paper'
 }
 
 @Entity({ name: 'contributions' })
@@ -126,9 +134,16 @@ export class Contribution {
     @Column({
         type: 'enum',
         enum: OaeType,
-        nullable: true,
+        nullable: true
     })
     oaeType: OaeType;
+
+    @Column({
+        type: 'enum',
+        enum: PaymentMethod
+    })
+    @IsDefined()
+    paymentMethod: PaymentMethod;
 
     @Column({
         type: 'enum',
@@ -186,6 +201,9 @@ export class Contribution {
     @Column({ nullable: true })
     phone?: string;
 
+    @Column({ nullable: true })
+    notes?: string;
+
     @Column({
         type: 'enum',
         enum: PhoneType,
@@ -236,9 +254,8 @@ export class Contribution {
     @Column({ nullable: true })
     matchAmount?: number;
 
-    @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType})
+    @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType })
     inKindType?: InKindDescriptionType;
-
 
     @Column({
         type: 'enum',
@@ -252,6 +269,9 @@ export class Contribution {
     @IsDefined()
     date: Date;
 
+    @Column({ nullable: true })
+    occupationLetterDate?: Date;
+
     @ManyToOne(type => Government, government => government.contributions)
     government: Government;
 
@@ -264,10 +284,10 @@ export class Contribution {
     @Column({ type: 'json', nullable: true })
     matchResult?: MatchAddressType;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     matchId?: string;
 
-    @Column({type: 'enum', enum: MatchStrength, nullable: true})
+    @Column({ type: 'enum', enum: MatchStrength, nullable: true })
     matchStrength?: MatchStrength;
 
     @Column({
@@ -329,14 +349,32 @@ export class Contribution {
 
     validateType() {
         if (this.type === ContributionType.CONTRIBUTION) {
-            if (![ContributionSubType.CASH, ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_PAID_SUPERVISION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL].includes(this.subType) ) {
+            if (
+                ![
+                    ContributionSubType.CASH,
+                    ContributionSubType.INKIND_CONTRIBUTION,
+                    ContributionSubType.INKIND_PAID_SUPERVISION,
+                    ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+                    ContributionSubType.INKIND_FORGIVEN_PERSONAL
+                ].includes(this.subType)
+            ) {
                 const error = new ValidationError();
                 error.property = 'subType';
-                error.constraints = { notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"' };
+                error.constraints = {
+                    notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"'
+                };
                 this.errors.push(error);
             }
         } else {
-            if ([ContributionSubType.CASH, ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_PAID_SUPERVISION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL].includes(this.subType)) {
+            if (
+                [
+                    ContributionSubType.CASH,
+                    ContributionSubType.INKIND_CONTRIBUTION,
+                    ContributionSubType.INKIND_PAID_SUPERVISION,
+                    ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+                    ContributionSubType.INKIND_FORGIVEN_PERSONAL
+                ].includes(this.subType)
+            ) {
                 const error = new ValidationError();
                 error.property = 'subType';
                 error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
@@ -412,7 +450,12 @@ export class Contribution {
     }
 
     isInKind() {
-        return [ContributionSubType.INKIND_CONTRIBUTION, ContributionSubType.INKIND_FORGIVEN_ACCOUNT, ContributionSubType.INKIND_FORGIVEN_PERSONAL, ContributionSubType.INKIND_PAID_SUPERVISION].includes(this.subType);
+        return [
+            ContributionSubType.INKIND_CONTRIBUTION,
+            ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+            ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+            ContributionSubType.INKIND_PAID_SUPERVISION
+        ].includes(this.subType);
     }
 
     validateInKindType() {
@@ -426,9 +469,11 @@ export class Contribution {
 
     toJSON() {
         const json: any = {};
-        contributionSummaryFields.forEach(( (key: string): void => {
-            json[key] = this[key];
-        }));
+        contributionSummaryFields.forEach(
+            (key: string): void => {
+                json[key] = this[key];
+            }
+        );
         return json as IContributionSummary;
     }
 }
@@ -470,7 +515,10 @@ export const contributionSummaryFields = <const>[
     'compliant',
     'matchAmount',
     'status',
-    'date'
+    'notes',
+    'paymentMethod',
+    'date',
+    'occupationLetterDate'
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
@@ -502,7 +550,7 @@ export async function getContributionsByGovernmentIdAsync(
             skip: page,
             take: perPage,
             order: {
-                'updatedAt': 'DESC'
+                updatedAt: 'DESC'
             }
         };
         if (sort) {
@@ -515,7 +563,6 @@ export async function getContributionsByGovernmentIdAsync(
             }
 
             query.order = { [sort.field]: sort.direction };
-
         }
         const contributions = await contributionRepository.find(removeUndefined(query));
         return contributions as IContributionSummary[];
@@ -547,26 +594,29 @@ export async function getContributionsSummaryByStatusAsync(
             .addSelect('coalesce(SUM(contributions.matchAmount), 0)', 'matchAmount')
             .addSelect('COUNT(contributions.*)', 'total')
             .addSelect('contributions.status', 'status')
-            .where('contributions.status != :status', {status: ContributionStatus.ARCHIVED})
+            .where('contributions.status != :status', { status: ContributionStatus.ARCHIVED })
             .groupBy('contributions.status');
         if (attrs.campaignId) {
-            contributionQuery.andWhere('contributions."campaignId" = :campaignId', {campaignId: attrs.campaignId});
+            contributionQuery.andWhere('contributions."campaignId" = :campaignId', { campaignId: attrs.campaignId });
         } else if (attrs.governmentId) {
-            contributionQuery.andWhere('contributions."governmentId" = :governmentId', {governmentId: attrs.governmentId});
+            contributionQuery.andWhere('contributions."governmentId" = :governmentId', {
+                governmentId: attrs.governmentId
+            });
         }
 
         const results: any = await contributionQuery.getRawMany();
         const summary: ContributionSummaryByStatus[] = [];
-        results.forEach((item: any): void => {
-            summary.push({
-                status: item.status,
-                total: parseInt(item.total),
-                amount: parseInt(item.amount),
-                matchAmount: parseInt(item.matchAmount)
-            });
-        });
+        results.forEach(
+            (item: any): void => {
+                summary.push({
+                    status: item.status,
+                    total: parseInt(item.total),
+                    amount: parseInt(item.amount),
+                    matchAmount: parseInt(item.matchAmount)
+                });
+            }
+        );
         return summary;
-
     } catch (err) {
         throw new Error('Error executing get contributions summary status query');
     }
