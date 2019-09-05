@@ -51,7 +51,8 @@ export enum PaymentMethod {
     CHECK = 'check',
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
-    CREDIT_CARD_PAPER = 'credit_card_paper'
+    CREDIT_CARD_PAPER = 'credit_card_paper',
+    ETF = 'electronic_funds_transfer'
 }
 
 export enum ExpenditureStatus {
@@ -116,10 +117,10 @@ export class Expenditure {
 
     @Column({
         type: 'enum',
-        enum: PaymentMethod
+        enum: PaymentMethod,
+        nullable: true
     })
-    @IsDefined()
-    paymentMethod: PaymentMethod;
+    paymentMethod?: PaymentMethod;
 
     @Column({
         type: 'enum',
