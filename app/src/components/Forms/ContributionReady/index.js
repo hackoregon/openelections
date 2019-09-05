@@ -10,6 +10,7 @@ import {
   isCampAdmin,
   isCampStaff,
 } from '../../../state/ducks/auth';
+import { getCampaignName } from '../../../state/ducks/campaigns';
 import {
   AddHeaderSection,
   ViewHeaderSection,
@@ -24,9 +25,6 @@ import { ContributionStatusEnum, ContributorTypeEnum } from '../../../api/api';
 const onSubmit = (data, props) => {
   const initialData = props.data;
   const contributionData = mapContributionFormToData(data);
-  // TODO remove next 2 lines when GH-#725 is closed
-  delete contributionData.date;
-  delete contributionData.occupationLetterDate;
   delete contributionData.calendarYearAggregate;
   contributionData.id = data.id;
   contributionData.currentUserId = props.currentUserId;
@@ -115,6 +113,7 @@ class ContributionReadyForm extends React.Component {
           return (
             <>
               <ViewHeaderSection
+                campaignName={this.props.campaignName}
                 isCampAdmin={this.props.isCampAdmin}
                 isCampStaff={this.props.isCampStaff}
                 isValid={isValid}
@@ -162,6 +161,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
+    campaignName: getCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>

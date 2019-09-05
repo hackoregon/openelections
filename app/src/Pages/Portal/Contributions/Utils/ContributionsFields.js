@@ -227,7 +227,7 @@ export const contributionsEmptyState = {
   inKindType: '',
   oaeType: '',
   submitForMatch: 'No',
-  paymentMethod: PaymentMethodEnum.CASH,
+  paymentMethod: '',
   checkNumber: '',
 
   // CONTRIBUTOR VALUES
