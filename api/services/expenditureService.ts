@@ -5,8 +5,10 @@ import {
     expenditureSummaryFields,
     ExpenditureType,
     getExpendituresByGovernmentIdAsync,
-    IExpenditureSummary,
-    PayeeType, PaymentMethod, PurposeType
+    IExpenditureSummary, IExpenditureSummaryResults,
+    PayeeType,
+    PaymentMethod,
+    PurposeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { getConnection } from 'typeorm';
@@ -110,7 +112,7 @@ export interface IGetExpenditureAttrs {
     };
 }
 
-export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs) {
+export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs): Promise<IExpenditureSummaryResults> {
     try {
         const { governmentId, ...options } = expendituresAttrs;
         if (options.campaignId) {
@@ -156,17 +158,21 @@ export interface IUpdateExpenditureAttrs {
     status?: ExpenditureStatus;
     paymentMethod?: PaymentMethod;
     purpose?: PurposeType;
+    date?: number | Date;
 }
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {
     try {
         const defaultConn = getConnection('default');
         const expenditureRepository = defaultConn.getRepository('Expenditure');
-        const expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
+        let expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
             relations: ['campaign', 'government']
         })) as Expenditure;
         const userRepository = defaultConn.getRepository('User');
         const attrs = Object.assign({}, expenditureAttrs);
+        if (attrs.date) {
+            attrs.date = new Date(attrs.date);
+        }
         delete attrs.currentUserId;
         delete attrs.id;
         const govAdmin = await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id);
@@ -175,11 +181,10 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
             (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
             (govAdmin);
         if (!govAdmin) {
-            if (expenditure.status !== ExpenditureStatus.DRAFT) {
+            if (attrs.status === ExpenditureStatus.OUT_OF_COMPLIANCE || attrs.status === ExpenditureStatus.IN_COMPLIANCE ) {
                 throw new Error('User does have permissions to change status on expenditure');
             }
         }
-
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 expenditureRepository.update(expenditureAttrs.id, attrs),
@@ -197,7 +202,8 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 activityType: ActivityTypeEnum.CONTRIBUTION,
                 activityId: expenditure.id
             });
-            return expenditureRepository.save(expenditure);
+            expenditure = await expenditureRepository.findOne(expenditure.id) as Expenditure;
+            return expenditure;
         } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
             throw new Error('User is not permitted to update expenditures for this campaign.');
         }

@@ -100,7 +100,8 @@ export enum PaymentMethod {
     CHECK = 'check',
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
-    CREDIT_CARD_PAPER = 'credit_card_paper'
+    CREDIT_CARD_PAPER = 'credit_card_paper',
+    ETF = 'electronic_funds_transfer'
 }
 
 @Entity({ name: 'contributions' })
@@ -140,9 +141,9 @@ export class Contribution {
 
     @Column({
         type: 'enum',
-        enum: PaymentMethod
+        enum: PaymentMethod,
+        nullable: true
     })
-    @IsDefined()
     paymentMethod: PaymentMethod;
 
     @Column({
@@ -324,6 +325,7 @@ export class Contribution {
         this.validateSubmitForMatch();
         this.validateMatchAmount();
         this.validateInKindType();
+        this.validatePaymentType();
         return this.errors;
     }
 
@@ -380,6 +382,17 @@ export class Contribution {
                 error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
                 this.errors.push(error);
             }
+        }
+    }
+
+    validatePaymentType() {
+        if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
+        const error = new ValidationError();
+        error.property = 'paymentMethod';
+        error.constraints = {
+            notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod'
+        };
+        this.errors.push(error);
         }
     }
 
@@ -522,31 +535,39 @@ export const contributionSummaryFields = <const>[
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
+export type IContributionSummaryResults = {
+    data: IContributionSummary[];
+    perPage: number;
+    page: number;
+    total: number;
+};
+
 export async function getContributionsByGovernmentIdAsync(
     governmentId: number,
     options?: IGetContributionOptions
-): Promise<IContributionSummary[]> {
+): Promise<IContributionSummaryResults> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
         const { page, perPage, campaignId, status, from, to, matchId, sort } = options;
         const relations = campaignId ? ['government', 'campaign'] : ['government'];
-        const query: any = {
-            select: contributionSummaryFields,
-            relations,
-            where: {
+        const where = {
                 government: {
                     id: governmentId
                 },
                 campaign: campaignId
                     ? {
-                          id: campaignId
-                      }
+                        id: campaignId
+                    }
                     : undefined,
                 matchId,
                 status,
                 date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
-            },
+            };
+        const query: any = {
+            select: contributionSummaryFields,
+            relations,
+            where,
             skip: page,
             take: perPage,
             order: {
@@ -564,8 +585,15 @@ export async function getContributionsByGovernmentIdAsync(
 
             query.order = { [sort.field]: sort.direction };
         }
-        const contributions = await contributionRepository.find(removeUndefined(query));
-        return contributions as IContributionSummary[];
+        const contributions = await contributionRepository.find(removeUndefined(query)) as IContributionSummary[];
+        const total = await contributionRepository.count(removeUndefined({ where }));
+
+        return {
+            data: contributions,
+            perPage,
+            page,
+            total
+        };
     } catch (err) {
         throw new Error('Error executing get contributions query');
     }
