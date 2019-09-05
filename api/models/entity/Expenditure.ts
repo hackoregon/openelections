@@ -330,30 +330,38 @@ export const expenditureSummaryFields = <const>[
 ];
 export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFields[number]>;
 
+export type IExpenditureSummaryResults = {
+    data: IExpenditureSummary[];
+    perPage: number;
+    page: number;
+    total: number;
+};
+
 export async function getExpendituresByGovernmentIdAsync(
     governmentId: number,
     options?: IGetExpenditureAttrs
-): Promise<IExpenditureSummary[]> {
+): Promise<IExpenditureSummaryResults> {
     try {
         const expenditureRepository = getConnection('default').getRepository('Expenditure');
         const { page, perPage, campaignId, status, from, to, sort } = options;
         const relations = campaignId ? ['government', 'campaign'] : ['government'];
-        const query: any = {
-            select: expenditureSummaryFields,
-            relations,
-            where: {
+        const where = {
                 government: {
                     id: governmentId
                 },
                 campaign: campaignId
                     ? {
-                          id: campaignId
-                      }
+                        id: campaignId
+                    }
                     : undefined,
                 status,
                 date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
-            },
+            };
+        const query: any = {
+            select: expenditureSummaryFields,
+            relations,
+            where,
             skip: page,
             take: perPage,
             order: { 'updatedAt': 'DESC'}
@@ -371,8 +379,14 @@ export async function getExpendituresByGovernmentIdAsync(
             query.order = { [sort.field]: sort.direction };
 
         }
-        const expenditures = await expenditureRepository.find(removeUndefined(query));
-        return expenditures as IExpenditureSummary[];
+        const expenditures = await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[];
+        const total = await expenditureRepository.count(removeUndefined(query));
+        return {
+            data: expenditures,
+            total,
+            perPage,
+            page
+        };
     } catch (err) {
         throw new Error('Error executing get expenditures query');
     }

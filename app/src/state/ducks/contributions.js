@@ -33,6 +33,7 @@ export const initialState = {
   isLoading: false,
   error: null,
   currentId: 0,
+  total: 0,
 };
 
 // Reducer
@@ -62,7 +63,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_CONTRIBUTIONS.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return { ...state, isLoading: false, total: action.total };
   },
   [actionTypes.GET_CONTRIBUTIONS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -116,7 +117,7 @@ export const actionCreators = {
   },
   getContributions: {
     request: () => action(actionTypes.GET_CONTRIBUTIONS.REQUEST),
-    success: () => action(actionTypes.GET_CONTRIBUTIONS.SUCCESS),
+    success: total => action(actionTypes.GET_CONTRIBUTIONS.SUCCESS, { total }),
     failure: error => action(actionTypes.GET_CONTRIBUTIONS.FAILURE, { error }),
   },
   getContributionById: {
@@ -212,10 +213,11 @@ export function getContributions(contributionSearchAttrs) {
       const response = await api.getContributions(contributionSearchAttrs);
 
       if (response.status === 200) {
-        const data = normalize(await response.json(), [schema.contribution]);
+        const contributions = await response.json();
+        const data = normalize(contributions.data, [schema.contribution]);
 
         dispatch(addContributionEntities(data.entities));
-        dispatch(actionCreators.getContributions.success());
+        dispatch(actionCreators.getContributions.success(contributions.total));
       } else {
         dispatch(actionCreators.getContributions.failure());
       }
@@ -289,6 +291,13 @@ export const getContributionsList = createSelector(
       return [];
     }
     return Object.values(state.contributions.list);
+  }
+);
+
+export const getContributionsTotal = createSelector(
+  rootState,
+  state => {
+    return state.contributions.total;
   }
 );
 

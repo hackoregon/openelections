@@ -19,6 +19,7 @@ describe('Reducer', () => {
       isLoading: false,
       error: null,
       currentId: 0,
+      total: 0,
     });
   });
 
@@ -39,6 +40,7 @@ describe('Reducer', () => {
       isLoading: false,
       error: null,
       currentId: 0,
+      total: 0,
     });
   });
 });
@@ -134,6 +136,7 @@ describe('Side Effects', () => {
           governmentId,
           type: api.ContributionTypeEnum.CONTRIBUTION,
           subType: api.ContributionSubTypeEnum.CASH,
+          paymentMethod: api.PaymentMethodEnum.CASH,
           state: 'OR',
           status: api.ContributionStatusEnum.DRAFT,
           zip: '97214',
@@ -170,6 +173,7 @@ describe('Side Effects', () => {
       governmentId,
       type: api.ContributionTypeEnum.CONTRIBUTION,
       subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
       state: 'OR',
       status: api.ContributionStatusEnum.DRAFT,
       zip: '97214',
@@ -241,6 +245,7 @@ describe('Side Effects', () => {
       governmentId,
       type: api.ContributionTypeEnum.CONTRIBUTION,
       subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
       state: 'OR',
       status: api.ContributionStatusEnum.DRAFT,
       zip: '97214',
@@ -279,6 +284,7 @@ describe('Side Effects', () => {
       governmentId,
       type: api.ContributionTypeEnum.CONTRIBUTION,
       subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
       state: 'OR',
       status: api.ContributionStatusEnum.DRAFT,
       zip: '97214',
@@ -319,6 +325,7 @@ describe('Side Effects', () => {
       governmentId,
       type: api.ContributionTypeEnum.CONTRIBUTION,
       subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
       state: 'OR',
       status: api.ContributionStatusEnum.DRAFT,
       zip: '97214',

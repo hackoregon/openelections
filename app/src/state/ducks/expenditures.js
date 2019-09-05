@@ -24,6 +24,7 @@ export const initialState = {
   error: null,
   list: null,
   currentId: null,
+  total: 0,
 };
 
 // Reducer
@@ -53,7 +54,7 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_EXPENDITURES.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    return { ...state, isLoading: false, total: action.total };
   },
   [actionTypes.GET_EXPENDITURES.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -87,7 +88,7 @@ export const actionCreators = {
   },
   getExpenditures: {
     request: () => action(actionTypes.GET_EXPENDITURES.REQUEST),
-    success: () => action(actionTypes.GET_EXPENDITURES.SUCCESS),
+    success: total => action(actionTypes.GET_EXPENDITURES.SUCCESS, { total }),
     failure: error => action(actionTypes.GET_EXPENDITURES.FAILURE, { error }),
   },
   getExpenditureById: {
@@ -152,9 +153,10 @@ export function getExpenditures(expenditureSearchAttrs) {
     try {
       const response = await api.getExpenditures(expenditureSearchAttrs);
       if (response.status === 200) {
-        const data = normalize(await response.json(), [schema.expenditure]);
+        const expenses = await response.json();
+        const data = normalize(expenses.data, [schema.expenditure]);
         dispatch(addExpenditureEntities(data.entities));
-        dispatch(actionCreators.getExpenditures.success());
+        dispatch(actionCreators.getExpenditures.success(expenses.total));
       } else {
         dispatch(actionCreators.getExpenditures.failure());
       }
@@ -192,6 +194,13 @@ export const getExpendituresList = createSelector(
       return [];
     }
     return Object.values(state.expenditures.list);
+  }
+);
+
+export const getExpendituresTotal = createSelector(
+  rootState,
+  state => {
+    return state.expenditures.total;
   }
 );
 

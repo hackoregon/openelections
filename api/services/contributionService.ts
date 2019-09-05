@@ -7,7 +7,7 @@ import {
     ContributionType,
     ContributorType,
     getContributionsByGovernmentIdAsync,
-    IContributionSummary,
+    IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
     OaeType,
@@ -164,7 +164,7 @@ export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
 }
 
-export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummary[]> {
+export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
     try {
         const { governmentId, ...options } = contributionAttrs;
         const govAdmin = await isGovernmentAdminAsync(options.currentUserId, governmentId);

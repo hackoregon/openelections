@@ -5,7 +5,7 @@ import {
     expenditureSummaryFields,
     ExpenditureType,
     getExpendituresByGovernmentIdAsync,
-    IExpenditureSummary,
+    IExpenditureSummary, IExpenditureSummaryResults,
     PayeeType,
     PaymentMethod,
     PurposeType
@@ -112,7 +112,7 @@ export interface IGetExpenditureAttrs {
     };
 }
 
-export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs) {
+export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs): Promise<IExpenditureSummaryResults> {
     try {
         const { governmentId, ...options } = expendituresAttrs;
         if (options.campaignId) {
