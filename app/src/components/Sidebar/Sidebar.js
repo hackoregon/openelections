@@ -88,7 +88,6 @@ export default class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.setLinks();
-    props.getCampaignUsers(props.campaignId);
   }
 
   // eslint-disable-next-line react/sort-comp
