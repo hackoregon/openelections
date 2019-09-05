@@ -130,10 +130,10 @@ export class Expenditure {
 
     @Column({
         type: 'enum',
-        enum: PurposeType
+        enum: PurposeType,
+        nullable: true
     })
-    @IsDefined()
-    purpose: PurposeType;
+    purpose?: PurposeType;
 
     @IsDefined()
     @Column({ nullable: true })
