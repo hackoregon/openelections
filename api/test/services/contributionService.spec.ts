@@ -1264,7 +1264,7 @@ describe('contributionService', () => {
                 status: ContributionStatus.PROCESSED
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change attributes on a contribution with submitted status');
+            expect(e.message).to.equal('User does not have permissions to change status to processed');
         }
 
         await updateContributionAsync({
