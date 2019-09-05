@@ -21,6 +21,7 @@ export const ViewHeaderSection = ({
   formValues,
   isCampAdmin,
   isCampStaff,
+  campaignName,
 }) => (
   <>
     <div css={containers.header}>
@@ -29,7 +30,7 @@ export const ViewHeaderSection = ({
           #{id} {status}
         </p>
         <p css={headerStyles.subheading}>
-          Campaign | {`Last Edited ${updatedAt}`}
+          {`${campaignName} | Last Edited ${updatedAt}`}
         </p>
       </div>
       <div css={buttonBar.wrapper}>

@@ -10,6 +10,7 @@ import {
   isCampAdmin,
   isCampStaff,
 } from '../../../state/ducks/auth';
+import { getCampaignName } from '../../../state/ducks/campaigns';
 import {
   AddHeaderSection,
   ViewHeaderSection,
@@ -112,6 +113,7 @@ class ContributionReadyForm extends React.Component {
           return (
             <>
               <ViewHeaderSection
+                campaignName={this.props.campaignName}
                 isCampAdmin={this.props.isCampAdmin}
                 isCampStaff={this.props.isCampStaff}
                 isValid={isValid}
@@ -159,6 +161,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
+    campaignName: getCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>
