@@ -7,7 +7,7 @@ import {
     ContributionType,
     ContributorType,
     getContributionsByGovernmentIdAsync,
-    IContributionSummary,
+    IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
     OaeType,
@@ -164,7 +164,7 @@ export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
 }
 
-export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummary[]> {
+export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
     try {
         const { governmentId, ...options } = contributionAttrs;
         const govAdmin = await isGovernmentAdminAsync(options.currentUserId, governmentId);
@@ -223,6 +223,8 @@ export interface IUpdateContributionAttrs {
     oaeType?: OaeType;
     inKindType?: InKindDescriptionType;
     paymentMethod?: PaymentMethod;
+    date?: number | Date;
+    occupationLetterDate?: number | Date;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
@@ -234,6 +236,14 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             relations: ['campaign', 'government']
         })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
+        if (attrs.date) {
+            attrs.date = new Date(attrs.date);
+        }
+
+        if (attrs.occupationLetterDate) {
+            attrs.occupationLetterDate = new Date(attrs.occupationLetterDate);
+        }
+
         delete attrs.currentUserId;
         delete attrs.id;
         const isGovAdmin = await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id);
@@ -243,7 +253,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             isGovAdmin;
 
         if (contribution.status === ContributionStatus.SUBMITTED) {
-            if (!isGovAdmin) {
+            if (!hasCampaignPermissions) {
                 throw new Error(
                     'User does not have permissions to change attributes on a contribution with submitted status'
                 );

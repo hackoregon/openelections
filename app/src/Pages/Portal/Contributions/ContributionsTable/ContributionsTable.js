@@ -6,7 +6,10 @@ import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
-import { getContributionsList } from '../../../../state/ducks/contributions';
+import {
+  getContributionsList,
+  getContributionsTotal,
+} from '../../../../state/ducks/contributions';
 import { isCampAdmin } from '../../../../state/ducks/auth';
 
 const columnInfo = (title, field, type = undefined) =>
@@ -50,10 +53,7 @@ const columns = [
 const ContributionsTable = ({ ...props }) => {
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
-  const rowCount = Array.isArray(props.contributionList)
-    ? props.contributionList.length
-    : 0;
-  const title = `${rowCount} Contributions`;
+  const title = `${props.total} Contributions`;
   const options = {
     search: false,
     actionCellStyle: {
@@ -112,4 +112,5 @@ export default connect(state => ({
   isCampAdmin: isCampAdmin(state),
   isListLoading: state.campaigns.isLoading,
   contributionList: getContributionsList(state),
+  total: getContributionsTotal(state),
 }))(ContributionsTable);

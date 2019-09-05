@@ -16,6 +16,7 @@ import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
 import { Contribution } from '../../../models/entity/Contribution';
+import { getConnection } from 'typeorm';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -29,10 +30,12 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 let campaignStaff2Token: string;
 let contribution1: Contribution;
+let repository: any;
 
 describe('Routes put /contributions/:id', () => {
     before(async () => {
         app = express();
+        repository = getConnection('default').getRepository('Contribution');
         setupRoutes(app);
     });
 

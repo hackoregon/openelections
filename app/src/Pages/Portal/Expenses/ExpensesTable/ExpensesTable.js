@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 // import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
   getExpendituresList,
-  getExpenditures,
+  getExpendituresTotal,
 } from '../../../../state/ducks/expenditures';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
@@ -46,10 +45,7 @@ const columns = [
 const ExpensesTable = ({ ...props }) => {
   const isLoading =
     props.isListLoading && !Array.isArray(props.expendituresList);
-  const rowCount = Array.isArray(props.expendituresList)
-    ? props.expendituresList.length
-    : 0;
-  const title = `${rowCount} Submitted Expenditures`;
+  const title = `${props.total} Submitted Expenditures`;
   const options = {
     search: false,
     actionCellStyle: {
@@ -102,4 +98,5 @@ const ExpensesTable = ({ ...props }) => {
 export default connect(state => ({
   isListLoading: state.campaigns.isLoading,
   expendituresList: getExpendituresList(state),
+  total: getExpendituresTotal(state),
 }))(ExpensesTable);
