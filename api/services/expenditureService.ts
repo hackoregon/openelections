@@ -165,7 +165,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
     try {
         const defaultConn = getConnection('default');
         const expenditureRepository = defaultConn.getRepository('Expenditure');
-        const expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
+        let expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
             relations: ['campaign', 'government']
         })) as Expenditure;
         const userRepository = defaultConn.getRepository('User');
@@ -185,7 +185,6 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 throw new Error('User does have permissions to change status on expenditure');
             }
         }
-
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 expenditureRepository.update(expenditureAttrs.id, attrs),
@@ -203,7 +202,8 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 activityType: ActivityTypeEnum.CONTRIBUTION,
                 activityId: expenditure.id
             });
-            return expenditureRepository.save(expenditure);
+            expenditure = await expenditureRepository.findOne(expenditure.id) as Expenditure;
+            return expenditure;
         } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
             throw new Error('User is not permitted to update expenditures for this campaign.');
         }

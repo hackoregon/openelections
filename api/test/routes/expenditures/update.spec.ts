@@ -15,6 +15,7 @@ import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
 import { Expenditure } from '../../../models/entity/Expenditure';
+import { getConnection } from 'typeorm';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -28,11 +29,13 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 let campaignStaff2Token: string;
 let expenditure1: Expenditure;
+let expenditureRepository: any;
 
 describe('Routes put /expenditures/:id', () => {
     before(async () => {
         app = express();
         setupRoutes(app);
+        expenditureRepository = getConnection('default').getRepository('Expenditure');
     });
 
     beforeEach(async () => {
@@ -75,7 +78,7 @@ describe('Routes put /expenditures/:id', () => {
     });
 
     context('put /expenditures/:id', () => {
-        it('success', async () => {
+        it('success testme', async () => {
             const response = await request(app)
                 .put(`/expenditures/${expenditure1.id}`)
                 .send({
@@ -86,6 +89,9 @@ describe('Routes put /expenditures/:id', () => {
                 .set('Cookie', [`token=${campaignStaffToken}`]);
             expect(response.status).to.equal(204);
             expect(response.body.message).to.be.undefined;
+            const exp = await expenditureRepository.findOne(expenditure1.id) as Expenditure;
+            expect(exp.amount).to.equal(500);
+
         });
 
         it('error id not found', async () => {

@@ -217,6 +217,7 @@ export async function updateExpenditure(request: IRequest, response: Response, n
         });
         await checkDto(updateExpenditureDto);
         const expenditure = await updateExpenditureAsync(updateExpenditureDto);
+
         return response.status(204).send(expenditure);
     } catch (err) {
         console.log(err);
