@@ -200,26 +200,10 @@ describe('Contribution', () => {
         await repository.update(contr3.id, {status: ContributionStatus.ARCHIVED, amount: 1});
         await repository.update(contr4.id, {amount: 1});
         const summary = await getContributionsSummaryByStatusAsync({governmentId: government.id});
-        expect(summary).to.deep.equal([
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Draft',
-                'total': 1,
-            },
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Submitted',
-                'total': 1
-            },
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Processed',
-                'total': 1
-            }
-        ]);
+        expect(summary.map(item => item.amount)).to.deep.equal([1, 1, 1]);
+        expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0, 0]);
+        expect(summary.map(item => item.status)).to.deep.equal(['Draft', 'Submitted', 'Processed']);
+        expect(summary.map(item => item.total)).to.deep.equal([1, 1, 1]);
     });
 
     it('getContributionsSummaryByStatusAsync campaign', async () => {
@@ -235,28 +219,16 @@ describe('Contribution', () => {
         await repository.update(contr3.id, {status: ContributionStatus.ARCHIVED, amount: 1});
         await repository.update(contr4.id, {amount: 1});
         let summary = await getContributionsSummaryByStatusAsync({campaignId: campaign2.id});
-        expect(summary).to.deep.equal([
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Draft',
-                'total': 1,
-            }]);
+        expect(summary.map(item => item.amount)).to.deep.equal([1]);
+        expect(summary.map(item => item.matchAmount)).to.deep.equal([0]);
+        expect(summary.map(item => item.status)).to.deep.equal(['Draft']);
+        expect(summary.map(item => item.total)).to.deep.equal([1]);
 
         summary = await getContributionsSummaryByStatusAsync({campaignId: campaign.id});
-        expect(summary).to.deep.equal([
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Submitted',
-                'total': 1
-            },
-            {
-                'amount': 1,
-                'matchAmount': 0,
-                'status': 'Processed',
-                'total': 1
-            }]);
+        expect(summary.map(item => item.amount)).to.deep.equal([1, 1]);
+        expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0]);
+        expect(summary.map(item => item.status)).to.deep.equal(['Submitted', 'Processed']);
+        expect(summary.map(item => item.total)).to.deep.equal([1, 1]);
     });
 });
 

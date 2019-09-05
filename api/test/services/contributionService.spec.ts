@@ -1,5 +1,5 @@
-import {expect} from 'chai';
-import {getConnection} from 'typeorm';
+import { expect } from 'chai';
+import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
     archiveContributionAsync,
@@ -12,8 +12,8 @@ import {
     updateContributionAsync,
     updateMatchResultAsync
 } from '../../services/contributionService';
-import {addPermissionAsync} from '../../services/permissionService';
-import {UserRole} from '../../models/entity/Permission';
+import { addPermissionAsync } from '../../services/permissionService';
+import { UserRole } from '../../models/entity/Permission';
 import {
     Contribution,
     ContributionStatus,
@@ -31,8 +31,8 @@ import {
     truncateAll
 } from '../factories';
 
-import {getActivityByContributionAsync} from '../../models/entity/Activity';
-import {addGISBoundaries, seedAddresses} from '../../models/seeds/seeds';
+import { getActivityByContributionAsync } from '../../models/entity/Activity';
+import { addGISBoundaries, seedAddresses } from '../../models/seeds/seeds';
 
 let campaignAdmin;
 let campaignStaff;
@@ -240,7 +240,7 @@ describe('contributionService', () => {
             })
         ]);
         expect(
-            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).length
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).data.length
         ).to.equal(2);
     });
 
@@ -284,7 +284,7 @@ describe('contributionService', () => {
             });
           contributionRepository.update(contribution.id, {matchId: 2});
         expect(
-            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: 1 })).length
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: 1 })).data.length
         ).to.equal(1);
     });
 
@@ -388,7 +388,7 @@ describe('contributionService', () => {
                 currentUserId: govAdmin.id,
                 page: 0,
                 perPage: 1
-            })).length
+            })).data.length
         ).to.equal(1);
     });
 
@@ -437,7 +437,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 currentUserId: govAdmin.id,
                 to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()
-            })).length
+            })).data.length
         ).to.equal(0);
 
         expect(
@@ -446,7 +446,7 @@ describe('contributionService', () => {
                 currentUserId: govAdmin.id,
                 from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
                 to: new Date().toISOString()
-            })).length
+            })).data.length
         ).to.equal(2);
     });
 
@@ -515,7 +515,7 @@ describe('contributionService', () => {
                 governmentId: government.id,
                 currentUserId: govAdmin.id,
                 status: ContributionStatus.DRAFT
-            })).length
+            })).data.length
         ).to.equal(2);
     });
 
@@ -568,7 +568,7 @@ describe('contributionService', () => {
             from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
             to: new Date().toISOString()
         });
-        expect(contributions.length).to.equal(1);
+        expect(contributions.data.length).to.equal(1);
     });
 
     it('Gets contributions for a campaign as gov admin', async () => {
@@ -620,7 +620,7 @@ describe('contributionService', () => {
                 perPage: 10,
                 from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
                 to: new Date().toISOString()
-            })).length
+            })).data.length
         ).to.equal(2);
     });
 

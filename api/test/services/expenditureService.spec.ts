@@ -1,8 +1,8 @@
-import {expect} from 'chai';
-import {getConnection} from 'typeorm';
-import {addPermissionAsync} from '../../services/permissionService';
-import {UserRole} from '../../models/entity/Permission';
-import {newActiveUserAsync, newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll} from '../factories';
+import { expect } from 'chai';
+import { getConnection } from 'typeorm';
+import { addPermissionAsync } from '../../services/permissionService';
+import { UserRole } from '../../models/entity/Permission';
+import { newActiveUserAsync, newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll } from '../factories';
 import {
     addExpenditureAsync,
     createExpenditureCommentAsync,
@@ -19,7 +19,7 @@ import {
     PayeeType,
     PaymentMethod, PurposeType
 } from '../../models/entity/Expenditure';
-import {getActivityByExpenditureAsync} from '../../models/entity/Activity';
+import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
 
 let campaignAdmin;
 let campaignStaff;
@@ -97,7 +97,7 @@ describe('expenditureService', () => {
             governmentId: government.id
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.length).equal(2);
+        expect(expenditures.data.length).equal(2);
     });
 
     it('Gets expenditures for a campaign as admin', async () => {
@@ -127,7 +127,7 @@ describe('expenditureService', () => {
             governmentId: government.id
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.length).equal(2);
+        expect(expenditures.data.length).equal(2);
     });
 
     it('Gets all expenditures as gov admin', async () => {
@@ -178,7 +178,7 @@ describe('expenditureService', () => {
             governmentId: government.id
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.length).equal(3);
+        expect(expenditures.data.length).equal(3);
     });
 
     it('Throws an error requesting expenditures as campaign admin or staff', async () => {
@@ -549,7 +549,7 @@ describe('expenditureService', () => {
 
     it('getExpenditureByIdAsync testme', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
-        const summary = await getExpenditureByIdAsync({ currentUserId: campaignAdmin.id, expenditureId: expenditure.id })
+        const summary = await getExpenditureByIdAsync({ currentUserId: campaignAdmin.id, expenditureId: expenditure.id });
 
         expect(summary.id).to.equal(expenditure.id);
     });
