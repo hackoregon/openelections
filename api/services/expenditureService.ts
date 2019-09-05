@@ -156,6 +156,7 @@ export interface IUpdateExpenditureAttrs {
     status?: ExpenditureStatus;
     paymentMethod?: PaymentMethod;
     purpose?: PurposeType;
+    date?: number | Date;
 }
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {
@@ -167,6 +168,9 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
         })) as Expenditure;
         const userRepository = defaultConn.getRepository('User');
         const attrs = Object.assign({}, expenditureAttrs);
+        if (attrs.date) {
+            attrs.date = new Date(attrs.date);
+        }
         delete attrs.currentUserId;
         delete attrs.id;
         const govAdmin = await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id);

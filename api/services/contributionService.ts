@@ -223,6 +223,8 @@ export interface IUpdateContributionAttrs {
     oaeType?: OaeType;
     inKindType?: InKindDescriptionType;
     paymentMethod?: PaymentMethod;
+    date?: number | Date;
+    occupationLetterDate?: number | Date;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
@@ -234,6 +236,14 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             relations: ['campaign', 'government']
         })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
+        if (attrs.date) {
+            attrs.date = new Date(attrs.date);
+        }
+
+        if (attrs.occupationLetterDate) {
+            attrs.occupationLetterDate = new Date(attrs.occupationLetterDate);
+        }
+
         delete attrs.currentUserId;
         delete attrs.id;
         const isGovAdmin = await isGovernmentAdminAsync(contributionAttrs.currentUserId, contribution.government.id);
