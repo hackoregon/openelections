@@ -39,12 +39,11 @@ describe('Contribution', () => {
         it('isDefined Columns', async () => {
             const newRecord = new Contribution();
             await newRecord.validateAsync();
-            expect(newRecord.errors.length).to.equal(13);
+            expect(newRecord.errors.length).to.equal(12);
             const isDefinedFields = newRecord.errors.map(item => item.property);
             expect(isDefinedFields).to.deep.equal([
                 'type',
                 'subType',
-                'paymentMethod',
                 'contributorType',
                 'address1',
                 'city',
@@ -68,6 +67,17 @@ describe('Contribution', () => {
             expect(newRecord.errors.length).to.equal(1);
             expect(newRecord.errors[0].property).to.equal('subType');
             expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a valid subType of "cash or an inkind value"');
+        });
+
+        it('validatePaymentType CONTRIBUTION CASH', async () => {
+            const newRecord = new Contribution();
+            newRecord.type = ContributionType.CONTRIBUTION;
+            newRecord.subType = ContributionSubType.CASH;
+            expect(newRecord.errors.length).to.equal(0);
+            await newRecord.validatePaymentType();
+            expect(newRecord.errors.length).to.equal(1);
+            expect(newRecord.errors[0].property).to.equal('paymentMethod');
+            expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" with subType "cash" must have a paymentMethod');
         });
 
         it('validateType OTHER', async () => {

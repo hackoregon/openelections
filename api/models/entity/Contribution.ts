@@ -100,7 +100,8 @@ export enum PaymentMethod {
     CHECK = 'check',
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
-    CREDIT_CARD_PAPER = 'credit_card_paper'
+    CREDIT_CARD_PAPER = 'credit_card_paper',
+    ETF = 'electronic_funds_transfer'
 }
 
 @Entity({ name: 'contributions' })
@@ -140,9 +141,9 @@ export class Contribution {
 
     @Column({
         type: 'enum',
-        enum: PaymentMethod
+        enum: PaymentMethod,
+        nullable: true
     })
-    @IsDefined()
     paymentMethod: PaymentMethod;
 
     @Column({
@@ -324,6 +325,7 @@ export class Contribution {
         this.validateSubmitForMatch();
         this.validateMatchAmount();
         this.validateInKindType();
+        this.validatePaymentType();
         return this.errors;
     }
 
@@ -380,6 +382,17 @@ export class Contribution {
                 error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
                 this.errors.push(error);
             }
+        }
+    }
+
+    validatePaymentType() {
+        if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
+        const error = new ValidationError();
+        error.property = 'paymentMethod';
+        error.constraints = {
+            notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod'
+        };
+        this.errors.push(error);
         }
     }
 
