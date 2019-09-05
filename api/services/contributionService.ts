@@ -253,7 +253,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             isGovAdmin;
 
         if (contribution.status === ContributionStatus.SUBMITTED) {
-            if (!isGovAdmin) {
+            if (!hasCampaignPermissions) {
                 throw new Error(
                     'User does not have permissions to change attributes on a contribution with submitted status'
                 );

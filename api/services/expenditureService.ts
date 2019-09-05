@@ -6,7 +6,9 @@ import {
     ExpenditureType,
     getExpendituresByGovernmentIdAsync,
     IExpenditureSummary,
-    PayeeType, PaymentMethod, PurposeType
+    PayeeType,
+    PaymentMethod,
+    PurposeType
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { getConnection } from 'typeorm';
@@ -179,7 +181,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
             (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
             (govAdmin);
         if (!govAdmin) {
-            if (expenditure.status !== ExpenditureStatus.DRAFT) {
+            if (attrs.status === ExpenditureStatus.OUT_OF_COMPLIANCE || attrs.status === ExpenditureStatus.IN_COMPLIANCE ) {
                 throw new Error('User does have permissions to change status on expenditure');
             }
         }
