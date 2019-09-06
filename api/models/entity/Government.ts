@@ -11,7 +11,7 @@ import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Activity } from './Activity';
 import { Contribution } from './Contribution';
-import {Expenditure} from "./Expenditure";
+import { Expenditure } from './Expenditure';
 
 @Entity()
 export class Government {

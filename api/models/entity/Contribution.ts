@@ -549,7 +549,6 @@ export async function getContributionsByGovernmentIdAsync(
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
         const { page, perPage, campaignId, status, from, to, matchId, sort } = options;
-        const relations = campaignId ? ['government', 'campaign'] : ['government'];
         const where = {
                 government: {
                     id: governmentId
@@ -566,12 +565,19 @@ export async function getContributionsByGovernmentIdAsync(
             };
         const query: any = {
             select: contributionSummaryFields,
-            relations,
+            relations: ['campaign', 'government'],
             where,
             skip: page,
             take: perPage,
             order: {
                 updatedAt: 'DESC'
+            },
+            join: {
+                alias: 'contribution',
+                leftJoinAndSelect: {
+                    government: 'contribution.government',
+                    campaign: 'contribution.campaign'
+                }
             }
         };
         if (sort) {
@@ -585,9 +591,17 @@ export async function getContributionsByGovernmentIdAsync(
 
             query.order = { [sort.field]: sort.direction };
         }
-        const contributions = await contributionRepository.find(removeUndefined(query)) as IContributionSummary[];
+        const contributions = (await contributionRepository.find(removeUndefined(query)) as IContributionSummary[]).map((item: any): any => {
+            const json = item.toJSON();
+            json.campaign = {
+                id: item.campaign.id,
+                name: item.campaign.name};
+            json.government = {
+                id: item.government.id,
+                name: item.government.name};
+            return json;
+        });
         const total = await contributionRepository.count(removeUndefined({ where }));
-
         return {
             data: contributions,
             perPage,

@@ -220,7 +220,7 @@ export async function getContributions(request: IRequest, response: Response, ne
         });
         await checkDto(getContributionsDto);
         const contributions = await getContributionsAsync(getContributionsDto);
-        return response.status(200).send(contributions);
+        return response.status(200).send(JSON.stringify(contributions));
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }
