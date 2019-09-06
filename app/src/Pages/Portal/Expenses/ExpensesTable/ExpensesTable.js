@@ -8,13 +8,14 @@ import {
   getExpendituresList,
   getExpendituresTotal,
 } from '../../../../state/ducks/expenditures';
+import { isGovAdmin } from '../../../../state/ducks/auth';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
     : { icon: 'none', name, buttonType, onClick };
 
-const columns = [
+const columns = isGovAdmin => [
   {
     field: 'date',
     title: 'Date',
@@ -26,6 +27,17 @@ const columns = [
           day: '2-digit',
         })
         .split(', ')[0],
+  },
+  {
+    ...(isGovAdmin
+      ? {
+          field: 'campaign',
+          title: 'Campaign',
+          render: rowData => {
+            return rowData.campaign.name;
+          },
+        }
+      : {}),
   },
   {
     field: 'name',
@@ -85,7 +97,7 @@ const ExpensesTable = ({ ...props }) => {
       <Table
         isLoading={isLoading}
         title={title}
-        columns={columns}
+        columns={columns(props.isGovAdmin)}
         options={options}
         actions={actions}
         components={components}
@@ -99,4 +111,5 @@ export default connect(state => ({
   isListLoading: state.campaigns.isLoading,
   expendituresList: getExpendituresList(state),
   total: getExpendituresTotal(state),
+  isGovAdmin: isGovAdmin(state),
 }))(ExpensesTable);
