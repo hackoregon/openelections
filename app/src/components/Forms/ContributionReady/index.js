@@ -139,14 +139,15 @@ class ContributionReadyForm extends React.Component {
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
                 isGovAdmin={this.props.isGovAdmin}
                 contributionId={values.id}
+                showOccupationLetter={visibleIf.showOccupationLetter}
               />
-              {isSubmited && this.props.isGovAdmin ? (
+              {/* {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection
                   formFields={formFields}
                   formValues={values}
                   handleSubmit={handleSubmit}
                 />
-              ) : null}
+              ) : null} */}
             </>
           );
         }}
