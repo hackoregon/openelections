@@ -229,24 +229,25 @@ export interface IToken {
         type: PermissionEntity,
         role: UserRole,
         campaignId?: number,
-        governmentId?: number
+        governmentId?: number,
+        governmentName?: string,
+        campaignName?: string
     }[];
 }
 
-export interface PermissionsRawQueryResult {
-    permission_id: number;
-    permission_role: UserRole;
-    permission_governmentId?: number;
-    permission_campaignId?: number;
-    permission_userId: number;
-}
 
 export async function createTokenObjectAsync(userId: number): Promise<IToken> {
     const userRepository = getConnection('default').getRepository('User');
     const permissionRepository = getConnection('default').getRepository('Permission');
     const user = await userRepository.findOneOrFail(userId) as User;
-    const permissions = (await permissionRepository.createQueryBuilder('permission')
-        .where('"userId" = :userId', {userId}).getRawAndEntities()).raw as PermissionsRawQueryResult[];
+    const permissions = (await permissionRepository.find({
+        where: {
+            user: {
+                id: userId
+            }
+        },
+        relations: ['campaign', 'government', 'user']
+    })) as Permission[];
     const exp = Date.now() + (72 * 60 * 60 * 1000); // 72 hours from now in miliseconds
     return {
         id: userId,
@@ -255,21 +256,15 @@ export async function createTokenObjectAsync(userId: number): Promise<IToken> {
         lastName: user.lastName,
         email: user.email,
         permissions: permissions.map(item => {
-            if (item.permission_campaignId) {
-                return {
-                    role: item.permission_role,
-                    type: PermissionEntity.CAMPAIGN,
-                    id: item.permission_id,
-                    campaignId: item.permission_campaignId
-                };
-            } else if (item.permission_governmentId) {
-                return {
-                    role: item.permission_role,
-                    type: PermissionEntity.GOVERNMENT,
-                    id: item.permission_id,
-                    governmentId: item.permission_governmentId
-                };
-            }
+            return {
+                role: item.role,
+                type: item.role === UserRole.GOVERNMENT_ADMIN ?  PermissionEntity.GOVERNMENT : PermissionEntity.CAMPAIGN,
+                id: item.id,
+                campaignId: item.campaign ? item.campaign.id : undefined,
+                campaignName: item.campaign ? item.campaign.name : undefined,
+                governmentId: item.government.id,
+                governmentName: item.government.name
+            };
         })
     };
 }
