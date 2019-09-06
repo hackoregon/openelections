@@ -56,19 +56,6 @@ const columns = isGovAdmin => [
       return rowData.name;
     },
   },
-  {
-    field: 'name',
-    title: 'Name',
-    render: rowData => {
-      if (
-        rowData.contributorType === 'individual' ||
-        rowData.contributorType === 'family'
-      ) {
-        return `${rowData.firstName} ${rowData.lastName}`;
-      }
-      return rowData.name;
-    },
-  },
   columnInfo('Amount', 'amount', 'currency'),
   columnInfo('Status', 'status'),
   // columnInfo("Labels", "NotSet")
