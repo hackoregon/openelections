@@ -6,11 +6,11 @@ import { flashMessage } from 'redux-flash';
 import { updateContribution } from '../../../state/ducks/contributions';
 import {
   getCurrentUserId,
+  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
 } from '../../../state/ducks/auth';
-import { getCampaignName } from '../../../state/ducks/campaigns';
 import {
   AddHeaderSection,
   ViewHeaderSection,
@@ -161,7 +161,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
-    campaignName: getCampaignName(state),
+    campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>
