@@ -71,7 +71,6 @@ export const mapContributionDataToForm = contribution => {
     calendarYearAggregate,
     inKindDescription,
     // employerZipcode,
-    submitForMatch,
     occupationLetterDate,
     status,
     notes,
@@ -97,7 +96,6 @@ export const mapContributionDataToForm = contribution => {
     oaeType: oaeType || '',
     amountOfContribution: amount,
     checkNumber: checkNumber || '',
-    submitForMatch: submitForMatch ? 'Yes' : 'No',
 
     // CONTRIBUTOR VALUES
     firstName,
@@ -163,7 +161,6 @@ export const mapContributionFormToData = data => {
     typeOfContribution,
     inKindType,
     oaeType,
-    submitForMatch,
     paymentMethod,
     notes,
     isPerson = !!(
@@ -208,7 +205,6 @@ export const mapContributionFormToData = data => {
     zip: zipcode,
     inKindDescription,
     calendarYearAggregate: electionAggregate,
-    submitForMatch: submitForMatch === 'Yes',
     paymentMethod: paymentMethod || null,
     notes,
   };
@@ -226,7 +222,6 @@ export const contributionsEmptyState = {
   amountOfContribution: '',
   inKindType: '',
   oaeType: '',
-  submitForMatch: 'No',
   paymentMethod: '',
   checkNumber: '',
 
@@ -340,13 +335,6 @@ export const fields = {
     options: {
       values: mapToSelectOptions(DataToOaeTypeTypeFieldMap),
     },
-  },
-  submitForMatch: {
-    label: 'Submit for Match?',
-    section: FormSectionEnum.BASIC,
-    component: SelectField,
-    validation: Yup.string().required('Required'),
-    options: { values: ['Yes', 'No'] },
   },
   paymentMethod: {
     label: 'Payment Method',
@@ -713,19 +701,6 @@ export const validate = values => {
       // if (isEmpty(employerZipcode)) {
       //   error.employerZipcode = 'Employer zipcode is required.';
       // }
-    }
-  }
-
-  // Conditionally Set Values
-  if (values.submitForMatch !== 'No') {
-    if (
-      // Set submitForMatch to No under these conditions
-      amountOfContribution > 500 ||
-      typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
-      subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
-      !visible.isPerson
-    ) {
-      values.submitForMatch = 'No';
     }
   }
 
