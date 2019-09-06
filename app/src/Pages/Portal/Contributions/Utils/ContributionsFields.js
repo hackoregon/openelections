@@ -384,20 +384,20 @@ export const fields = {
     label: "Contributor's First Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {
     label: "Contributor's Last Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   entityName: {
     label: 'Entity Name',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   streetAddress: {
     label: 'Street Address',
