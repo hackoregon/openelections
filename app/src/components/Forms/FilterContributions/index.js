@@ -33,6 +33,9 @@ const filterOuter = css`
   > div {
     margin: 0 5px;
   }
+  @media screen and (max-width: 900px) {
+    flex-direction: column;
+  }
 `;
 
 const filterInner = css`
@@ -40,6 +43,24 @@ const filterInner = css`
   flex-direction: row;
   align-items: center;
   width: 100%;
+  // flex-wrap: wrap;
+  > div {
+    margin: 5px;
+  }
+  @media screen and (max-width: 900px) {
+    flex-wrap: wrap;
+    > div {
+      width: calc(50% - 10px);
+    }
+  }
+`;
+
+const btnContainer = css`
+  display: flex;
+  flex-direction: row;
+  > button {
+    margin: 5px;
+  }
 `;
 
 const FilterContribution = props => (
@@ -96,7 +117,7 @@ const FilterContribution = props => (
       }) => (
         <div className="nark" css={filterOuter}>
           <div css={filterInner}>{formSections.filter}</div>
-          <div>
+          <div css={btnContainer}>
             <Button
               buttonType="submit"
               disabled={!isValid}
