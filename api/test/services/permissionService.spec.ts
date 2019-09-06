@@ -69,8 +69,6 @@ describe('Permission', () => {
     });
 
 
-    describe('permissionChecks', () => {
-
         context('isGovernmentAdminAsync', async () => {
             it('true', async () => {
                 expect(await (isGovernmentAdminAsync(govUser.id, government.id))).to.be.true;
@@ -124,7 +122,6 @@ describe('Permission', () => {
                 expect(await (isCampaignStaffAsync(campaignAdminUser.id, campaign.id))).to.be.false;
             });
         });
-    });
 
     context('addPermissionAsync', () => {
         context('fails', () => {
@@ -523,9 +520,11 @@ describe('Permission', () => {
             expect(decodedToken.email).to.equal(govUser.email);
             expect(decodedToken.exp > Date.now()).to.be.true;
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions.length).to.equal(1);
             expect(decodedToken.permissions[0].role).to.equal(UserRole.GOVERNMENT_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.GOVERNMENT);
             expect(decodedToken.permissions[0].governmentId).to.equal(government.id);
+            expect(decodedToken.permissions[0].governmentName).to.equal(government.name);
         });
 
         it('campaign admin', async () => {
@@ -537,9 +536,11 @@ describe('Permission', () => {
             expect(decodedToken.email).to.equal(campaignAdminUser.email);
             expect(decodedToken.exp > Date.now()).to.be.true;
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions.length).to.equal(1);
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_ADMIN);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
             expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignName).to.equal(campaign.name);
         });
 
         it('campaign staff', async () => {
@@ -551,9 +552,11 @@ describe('Permission', () => {
             expect(decodedToken.email).to.equal(campaignStaffUser.email);
             expect(decodedToken.exp > Date.now()).to.be.true;
             expect(decodedToken.exp < (Date.now() + 72.5 * 60 * 60 * 1000)).to.be.true;
+            expect(decodedToken.permissions.length).to.equal(1);
             expect(decodedToken.permissions[0].role).to.equal(UserRole.CAMPAIGN_STAFF);
             expect(decodedToken.permissions[0].type).to.equal(PermissionEntity.CAMPAIGN);
             expect(decodedToken.permissions[0].campaignId).to.equal(campaign.id);
+            expect(decodedToken.permissions[0].campaignName).to.equal(campaign.name);
         });
     });
 
