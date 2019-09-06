@@ -150,11 +150,16 @@ export const ContributorSection = ({
   isSubmited,
   isGovAdmin,
   contributionId,
+  showOccupationLetter,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
-      {isPerson && isGovAdmin ? (
-        <MatchPickerHeader form="RemoveUser" contributionId={contributionId} />
+      {/* TODO Remove false when match endpoints are hooked up */}
+      {isPerson && isGovAdmin && false ? (
+        <MatchPickerHeader
+          form="MatchPickerForm"
+          contributionId={contributionId}
+        />
       ) : (
         <h3 css={sectionStyles.title}>Contributor</h3>
       )}
@@ -180,25 +185,31 @@ export const ContributorSection = ({
         <h2>{formFields.email}</h2>
         <h2>{formFields.phone}</h2>
         <h2>{formFields.phoneType}</h2>
-        {isPerson ? <h2>{formFields.occupation}</h2> : null}
       </div>
       {isPerson ? (
-        <div css={containers.cityStateZip}>
-          {showEmployerSection ? (
-            <>
-              {emptyOccupationLetterDate ? (
-                <>
-                  <h2 css={containers.fullWidth}>{formFields.employerName}</h2>
-                  <h2>{formFields.employerCity}</h2>
-                  <h2>{formFields.employerState}</h2>
-                  {/* <h2>{formFields.employerZipcode}</h2> */}
-                </>
-              ) : null}
-              <h2 css={containers.fullWidth}>
-                {formFields.occupationLetterDate}
-              </h2>
-            </>
-          ) : null}
+        <div>
+          <div css={containers.sectionTwo} style={{ marginTop: '25px' }}>
+            <h2>{formFields.occupation}</h2>
+            {showOccupationLetter ? (
+              <h2>{formFields.occupationLetterDate}</h2>
+            ) : null}
+          </div>
+          <div css={containers.cityStateZip}>
+            {showEmployerSection ? (
+              <>
+                {emptyOccupationLetterDate ? (
+                  <>
+                    <h2 css={containers.fullWidth}>
+                      {formFields.employerName}
+                    </h2>
+                    <h2>{formFields.employerCity}</h2>
+                    <h2>{formFields.employerState}</h2>
+                    {/* <h2>{formFields.employerZipcode}</h2> */}
+                  </>
+                ) : null}
+              </>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </div>
