@@ -256,7 +256,7 @@ export const fields = {
     label: 'Purpose of Expenditure',
     section: FormSectionEnum.BASIC,
     component: SelectField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
     options: {
       values: [
         { value: PurposeTypeEnum.WAGES, label: 'Wages' },
