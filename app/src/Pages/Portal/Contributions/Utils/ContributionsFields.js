@@ -403,25 +403,20 @@ export const fields = {
     label: 'Street Address',
     section: FormSectionEnum.CONTRIBUTOR,
     // TODO Catch error if google places lib cannot load
-    //    and load TextField instead of <AddressLookupField ...>.
-    // TODO Apply default input to google AddressLookupField whne a form is loaded
-    // To developing without internet access
-    // Uncomment component: TextField
-    // Comment component: props => <AddressLookupField ...>).
-    component: TextField,
+    //    and load <TextField> instead of <AddressLookupField ...>.
     // eslint-disable-next-line react/display-name
-    // component: props => (
-    //   <AddressLookupField
-    //     {...props.field}
-    //     {...props}
-    //     updateFields={{
-    //       street: 'streetAddress',
-    //       stateShort: 'state',
-    //       city: 'city',
-    //       zipCode: 'zipcode',
-    //     }}
-    //   />
-    // ),
+    component: props => (
+      <AddressLookupField
+        {...props.field}
+        {...props}
+        updateFields={{
+          address: 'streetAddress',
+          stateShort: 'state',
+          city: 'city',
+          zipCode: 'zipcode',
+        }}
+      />
+    ),
     validation: Yup.string().required('Your street address is required'),
   },
   addressLine2: {
