@@ -34,7 +34,8 @@ const styles = css`
   }
 `;
 const TopNavigation = props => {
-  const { isLoggedIn } = { props };
+  const { isLoggedIn } = props;
+
   return (
     <header css={styles}>
       <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
@@ -45,4 +46,5 @@ const TopNavigation = props => {
     </header>
   );
 };
+
 export default TopNavigation;
