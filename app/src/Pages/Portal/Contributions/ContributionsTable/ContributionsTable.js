@@ -10,7 +10,7 @@ import {
   getContributionsList,
   getContributionsTotal,
 } from '../../../../state/ducks/contributions';
-import { isCampAdmin } from '../../../../state/ducks/auth';
+import { isCampAdmin, isGovAdmin } from '../../../../state/ducks/auth';
 
 const columnInfo = (title, field, type = undefined) =>
   type ? { title, field, type } : { title, field };
@@ -20,7 +20,7 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
     : { icon: 'none', name, buttonType, onClick };
 
-const columns = [
+const columns = isGovAdmin => [
   {
     field: 'date',
     title: 'Date',
@@ -31,6 +31,30 @@ const columns = [
         ),
         'MM-DD-YYYY'
       ),
+  },
+  {
+    ...(isGovAdmin
+      ? {
+          field: 'campaign',
+          title: 'Campaign',
+          render: rowData => {
+            return rowData.campaign.name;
+          },
+        }
+      : {}),
+  },
+  {
+    field: 'name',
+    title: 'Name',
+    render: rowData => {
+      if (
+        rowData.contributorType === 'individual' ||
+        rowData.contributorType === 'family'
+      ) {
+        return `${rowData.firstName} ${rowData.lastName}`;
+      }
+      return rowData.name;
+    },
   },
   {
     field: 'name',
@@ -98,7 +122,7 @@ const ContributionsTable = ({ ...props }) => {
       <Table
         isLoading={isLoading}
         title={title}
-        columns={columns}
+        columns={columns(props.isGovAdmin)}
         options={options}
         actions={actions}
         components={components}
@@ -110,6 +134,7 @@ const ContributionsTable = ({ ...props }) => {
 
 export default connect(state => ({
   isCampAdmin: isCampAdmin(state),
+  isGovAdmin: isGovAdmin(state),
   isListLoading: state.campaigns.isLoading,
   contributionList: getContributionsList(state),
   total: getContributionsTotal(state),
