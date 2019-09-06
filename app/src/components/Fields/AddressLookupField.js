@@ -54,31 +54,40 @@ class AddressLookupField extends React.Component {
     this.autocomplete.addListener('place_changed', this.handlePlaceChanged);
   }
 
+  componentDidUpdate(prevProps) {
+    const { id, formik } = this.props;
+    const isEditForm = !!formik.initialValues.id;
+    const hasValue = !!formik.values[id];
+    const onlyOnce = prevProps.formik.initialValues.id !== formik.values[id];
+    if (isEditForm && hasValue && onlyOnce) {
+      this.autocompleteInput.current.value = formik.values[id];
+    }
+  }
+
   handleFieldChange(e) {
     const { formik, id } = this.props;
-    // Ensure that any changes mad by hand are reflected in posted values
+    // Ensure that any changes made by hand are reflected in posted values
     formik.values[id] = e.currentTarget.value;
   }
 
   handlePlaceChanged() {
     const place = this.autocomplete.getPlace();
     const addressFields = parseGooglePlace(place);
-    addressFields.street = addressFields.address;
     const { updateFields, id, formik } = this.props;
+
     // eslint-disable-next-line no-restricted-syntax
     for (const updateField in updateFields) {
       if (updateFields[updateField]) {
         // If the update field is the lookup field update though the ref
         if (updateFields[updateField] === id) {
           this.autocompleteInput.current.value = addressFields[updateField];
-          // Otherwise update through formik
-        } else {
-          formik.setFieldValue(
-            updateFields[updateField],
-            addressFields[updateField],
-            false
-          );
         }
+        // Set each to it's formik value
+        formik.setFieldValue(
+          updateFields[updateField],
+          addressFields[updateField],
+          false
+        );
       }
     }
   }
@@ -91,6 +100,8 @@ class AddressLookupField extends React.Component {
         id={id}
         name={id}
         label={label}
+        // TODO If it is a form that has no pre-filled value set shrink to false
+        InputLabelProps={{ shrink: true }}
         helperText={formik.touched[id] ? formik.errors[id] : ''}
         error={formik.touched[id] && Boolean(formik.errors[id])}
         onChange={this.handleFieldChange}
