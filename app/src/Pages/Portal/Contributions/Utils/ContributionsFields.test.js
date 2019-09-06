@@ -8,7 +8,6 @@ const formFieldKeys = [
   'typeOfContributor',
   'amountOfContribution',
   'oaeType',
-  'submitForMatch',
   'paymentMethod',
   'checkNumber',
   'firstName',

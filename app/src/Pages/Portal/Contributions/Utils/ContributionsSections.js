@@ -145,7 +145,6 @@ export const BasicsSection = ({
         <h2>{formFields.subTypeOfContribution}</h2>
         <h2>{formFields.amountOfContribution}</h2>
         <h2>{formFields.oaeType}</h2>
-        <h2>{formFields.submitForMatch}</h2>
         {showInKindFields ? <h2>{formFields.inKindType}</h2> : null}
         {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
         {checkSelected && !showInKindFields ? (
