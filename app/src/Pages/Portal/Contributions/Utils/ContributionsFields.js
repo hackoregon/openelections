@@ -652,6 +652,10 @@ export const validate = values => {
     subTypeOfContribution
   );
 
+  visible.showOccupationLetter = !!(
+    isEmpty(occupation) || occupation === 'Employed'
+  );
+
   // These fields are conditionally required
   if (values.phone && isEmpty(values.phoneType)) {
     error.phoneType = 'Please select a phone type';

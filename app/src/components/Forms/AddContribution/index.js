@@ -55,6 +55,7 @@ const AddContribution = ({ ...props }) => (
             showEmployerSection={visibleIf.showEmployerSection}
             isPerson={visibleIf.isPerson}
             emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
+            showOccupationLetter={visibleIf.showOccupationLetter}
           />
         </>
       );
