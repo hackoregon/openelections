@@ -371,16 +371,6 @@ export const validate = values => {
     paymentMethod,
     checkNumber,
     purposeType,
-
-    // // PAYEE INFO
-    // payeeType,
-    // payeeName,
-    // streetAddress,
-    // addressLine2,
-    // city,
-    // state,
-    // zipcode,
-    // notes,
   } = values;
   const error = {};
   const visible = {};
@@ -411,15 +401,10 @@ export const validate = values => {
     ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT
   );
 
-  if (visible.showPurposeType) {
-    if (isEmpty(purposeType)) {
-      error.purposeType = 'A description of type of purpose is required';
-    }
+  if (visible.showPurposeType && isEmpty(purposeType)) {
+    error.purposeType = 'A description of type of purpose is required';
   }
 
   values._visibleIf = visible;
-  console.log('error; ', error);
-  console.log('values.purposeType', values.purposeType);
-  console.log('visible.showPurposeType: ', visible.showPurposeType);
   return error;
 };

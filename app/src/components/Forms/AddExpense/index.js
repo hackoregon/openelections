@@ -40,8 +40,9 @@ const AddExpense = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={expendituresEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
-      console.log('Required fields', Object.keys(formErrors));
+    {({ formFields, isValid, handleSubmit, visibleIf }) => {
+      // uncomment line below & pass formErrors to line above to see required fields
+      // console.log('Required fields', Object.keys(formErrors));
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
