@@ -91,6 +91,20 @@ export const ViewHeaderSection = ({
               Move to Draft
             </Button>
           ) : null}
+          {status === ContributionStatusEnum.SUBMITTED &&
+          (isCampStaff || isCampAdmin) ? (
+            <Button
+              css={headerStyles.submitButton}
+              style={{ margin: 1 }}
+              buttonType="submit"
+              onClick={() => {
+                formValues.buttonSubmitted = 'archive';
+                handleSubmit();
+              }}
+            >
+              Archive
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>
