@@ -34,6 +34,24 @@ const fields = {
       }
     ),
   },
+  orderBy: {
+    label: 'Order By',
+    section: 'filter',
+    options: {
+      values: ['Descending', 'Ascending'],
+    },
+    component: SelectField,
+    validation: Yup.string('Choose the order of the filtered response'),
+  },
+  sortBy: {
+    label: 'Sort By',
+    section: 'filter',
+    options: {
+      values: ['Campaign Id', 'Status', 'Date'],
+    },
+    component: SelectField,
+    validation: Yup.string('Choose the order of the filtered response'),
+  },
 };
 
 const FilterContributionForm = ({ initialValues, onSubmit, children }) => (

@@ -15,13 +15,31 @@ const STATUS_OPTIONS = {
   Processed: 'Processed',
 };
 
-const wtf = css`
+const ORDER_OPTIONS = {
+  Descending: 'DESC',
+  Ascending: 'ASC',
+};
+
+const SORT_OPTIONS = {
+  'Campaign Id': 'campaignId',
+  Status: 'status',
+  Date: 'date',
+};
+
+const filterOuter = css`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   > div {
     margin: 0 5px;
   }
+`;
+
+const filterInner = css`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
 `;
 
 const FilterContribution = props => (
@@ -38,6 +56,14 @@ const FilterContribution = props => (
           data.status = STATUS_OPTIONS[filterOptions.status];
         }
 
+        if (filterOptions.sortBy || filterOptions.orderBy) {
+          data.sort = {
+            field: SORT_OPTIONS[filterOptions.sortBy] || SORT_OPTIONS.Date,
+            direction:
+              ORDER_OPTIONS[filterOptions.orderBy] || ORDER_OPTIONS.Descending,
+          };
+        }
+
         if (filterOptions.range) {
           if (filterOptions.range.from) {
             data.from = filterOptions.range.from;
@@ -47,6 +73,7 @@ const FilterContribution = props => (
             data.to = filterOptions.range.to;
           }
         }
+        console.log('Sending: ', { data });
         props.getContributions(data);
       }}
       initialValues={{
@@ -55,6 +82,8 @@ const FilterContribution = props => (
           to: '',
           from: '',
         },
+        orderBy: '',
+        sortBy: '',
       }}
     >
       {({
@@ -65,8 +94,8 @@ const FilterContribution = props => (
         /* isSubmitting */
         handleCancel,
       }) => (
-        <div className="nark" css={wtf}>
-          {formSections.filter}
+        <div className="nark" css={filterOuter}>
+          <div css={filterInner}>{formSections.filter}</div>
           <div>
             <Button
               buttonType="submit"
