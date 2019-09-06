@@ -209,7 +209,7 @@ export const mapContributionFormToData = data => {
     inKindDescription,
     calendarYearAggregate: electionAggregate,
     submitForMatch: submitForMatch === 'Yes',
-    paymentMethod,
+    paymentMethod: paymentMethod || null,
     notes,
   };
   return transformed;
