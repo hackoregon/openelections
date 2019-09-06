@@ -366,6 +366,10 @@ export const fields = {
           value: PaymentMethodEnum.CREDIT_CARD_PAPER,
           label: 'Credit Card (Paper Form)',
         },
+        {
+          value: PaymentMethodEnum.ETF,
+          label: 'Electronic Funds Transfer',
+        },
       ],
     },
   },
