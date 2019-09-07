@@ -34,20 +34,20 @@ const filterControls = css`
 `;
 
 const FilterContribution = props => {
-  const { location } = props;
+  const { location, history } = props;
 
   // eslint-disable-next-line no-use-before-define
-  const query = getQueryParams(location);
+  const urlQuery = getQueryParams(location);
 
   const defaultValues = {
     status: 'all',
     range: { to: '', from: '' },
   };
   const [initialValues, setInitialValues] = useState({
-    status: query.status || defaultValues.status,
+    status: urlQuery.status || defaultValues.status,
     range: {
-      to: query.to || '',
-      from: query.from || '',
+      to: urlQuery.to || '',
+      from: urlQuery.from || '',
     },
   });
 
@@ -63,19 +63,25 @@ const FilterContribution = props => {
 
           if (filterOptions.status && filterOptions.status !== 'all') {
             data.status = filterOptions.status;
+            urlQuery.status = filterOptions.status;
           }
 
           if (filterOptions.range) {
             if (filterOptions.range.from) {
               data.from = filterOptions.range.from;
+              urlQuery.from = filterOptions.range.from;
             }
 
             if (filterOptions.range.to) {
               data.to = filterOptions.range.to;
+              urlQuery.to = filterOptions.range.to;
             }
           }
 
           props.getContributions(data);
+
+          // eslint-disable-next-line no-use-before-define
+          history.push(`${location.pathname}?${makeIntoQueryParams(urlQuery)}`);
           setInitialValues(filterOptions);
         }}
         initialValues={initialValues}
@@ -122,10 +128,19 @@ function getQueryParams(location) {
   const result = {};
 
   rawParams.split('&').forEach(item => {
-    result[item.split('=')[0]] = item.split('=')[1];
+    if (item) {
+      const [key, val] = item.split('=');
+      result[key] = val;
+    }
   });
 
   return result;
+}
+
+function makeIntoQueryParams(paramsObject) {
+  return Object.keys(paramsObject)
+    .map(param => `${param}=${paramsObject[param]}`)
+    .join('&');
 }
 
 // export default FilterContribution;
