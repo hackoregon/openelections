@@ -103,3 +103,5 @@ elections2019_login.json
 /2019-openelections-data/data/
 
 .env
+docker-compose-q.yml
+docker-compose-p.yml
