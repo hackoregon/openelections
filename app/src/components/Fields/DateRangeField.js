@@ -48,46 +48,17 @@ const helperTextStyles = css`
 export default function DateRangeField(props) {
   const { formik, label, id, isRequired } = props;
 
-  const [dateTimeRangeValue, setDateTimeRangeValue] = React.useState({
-    from: { date: '', time: '00:00' },
-    to: { date: '', time: '00:00' },
-  });
-
   function renderSelectValue(value) {
-    if (value.to.date || value.from.date) {
-      return `${value.from.date || 'All dates'} to ${value.to.date ||
-        'All dates'}`;
+    if (value.to || value.from) {
+      return `${
+        value.from ? extractTimeAndDate(value.from).date : 'All dates'
+      } to ${value.to ? extractTimeAndDate(value.to).date : 'All dates'}`;
     }
     return 'All dates';
   }
 
-  function formatFieldValue(range) {
-    const result = {
-      from: '',
-      to: '',
-    };
-
-    if (range.from.date) {
-      const dateFrom = new Date(range.from.date);
-      const [hourFrom, minFrom] = range.from.time.split(':');
-      dateFrom.setHours(hourFrom, minFrom);
-      result.from = dateFrom.toISOString();
-    }
-
-    if (range.to.date) {
-      const dateTo = new Date(range.to.date);
-      const [hourTo, minTo] = range.to.time.split(':');
-      dateTo.setHours(hourTo, minTo);
-      result.to = dateTo.toISOString();
-    }
-
-    return result;
-  }
-
   function onDateRangeChange(newDateRange) {
-    setDateTimeRangeValue(newDateRange);
-
-    formik.setFieldValue(id, formatFieldValue(newDateRange));
+    formik.setFieldValue(id, newDateRange);
     formik.setFieldTouched(id, true);
   }
 
@@ -97,7 +68,7 @@ export default function DateRangeField(props) {
         {label}
       </InputLabel>
       <Select
-        value={dateTimeRangeValue}
+        value={formik.values[id]}
         renderValue={renderSelectValue}
         displayEmpty
         error={formik.touched[id] && Boolean(formik.errors[id])}
@@ -105,7 +76,7 @@ export default function DateRangeField(props) {
       >
         <MenuItem css={hack} />
         <Popover
-          rangeValues={dateTimeRangeValue}
+          rangeValues={formik.values[id]}
           onDateRangeChange={onDateRangeChange}
           formik={formik}
         />
@@ -143,26 +114,72 @@ function Popover(props) {
   const { formik, onDateRangeChange, rangeValues } = props;
   const [tab, setTab] = React.useState(0);
 
-  function setupInitialState(rangeValue) {
-    return {
-      dateFrom: rangeValue.from.date,
-      timeFrom: rangeValue.from.time,
-      dateTo: rangeValue.to.date,
-      timeTo: rangeValue.to.time,
-    };
-  }
-
+  /* eslint no-use-before-define:0 */
   const { dateFrom, timeFrom, dateTo, timeTo } = setupInitialState(rangeValues);
+
+  function setupInitialState(rangeValue) {
+    const result = {
+      dateFrom: '',
+      timeFrom: '',
+      dateTo: '',
+      timeTo: '',
+    };
+    if (rangeValue.from) {
+      const { date: dateFrom, time: timeFrom } = extractTimeAndDate(
+        rangeValue.from
+      );
+      result.dateFrom = dateFrom;
+      result.timeFrom = timeFrom;
+    }
+    if (rangeValue.to) {
+      const { date: dateTo, time: timeTo } = extractTimeAndDate(rangeValue.to);
+      result.dateTo = dateTo;
+      result.timeTo = timeTo;
+    }
+    return result;
+  }
 
   function handleTabChange(event, newValue) {
     setTab(newValue);
+  }
+
+  function formatFieldValue(range) {
+    const result = {
+      from: '',
+      to: '',
+    };
+
+    if (range.from.date) {
+      const dateFrom = new Date(range.from.date);
+      const [hourFrom, minFrom] = range.from.time.split(':');
+      dateFrom.setHours(hourFrom, minFrom);
+      result.from = dateFrom.toISOString();
+    }
+
+    if (range.to.date) {
+      const dateTo = new Date(range.to.date);
+      const [hourTo, minTo] = range.to.time.split(':');
+      dateTo.setHours(hourTo, minTo);
+      result.to = dateTo.toISOString();
+    }
+
+    return result;
   }
 
   function handleDateTimeChange(event) {
     const elementId = event.target.id;
     const { value } = event.target;
 
-    const range = rangeValues;
+    const range = {
+      from: {
+        date: dateFrom,
+        time: timeFrom || '00:00',
+      },
+      to: {
+        date: dateTo,
+        time: timeTo || '00:00',
+      },
+    };
 
     switch (elementId) {
       case 'from-date':
@@ -179,7 +196,7 @@ function Popover(props) {
         break;
     }
 
-    onDateRangeChange(range);
+    onDateRangeChange(formatFieldValue(range));
   }
 
   function a11yProps(index) {
@@ -239,4 +256,18 @@ function Popover(props) {
       </div>
     </div>
   );
+}
+
+function extractTimeAndDate(ISODate) {
+  const dateObj = new Date(ISODate);
+  return {
+    date: `${dateObj.getFullYear()}-${addZero(dateObj.getMonth())}-${addZero(
+      dateObj.getDate()
+    )}`,
+    time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
+  };
+
+  function addZero(number) {
+    return number.toString().padStart(2, '0');
+  }
 }

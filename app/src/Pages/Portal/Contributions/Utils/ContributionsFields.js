@@ -71,7 +71,6 @@ export const mapContributionDataToForm = contribution => {
     calendarYearAggregate,
     inKindDescription,
     // employerZipcode,
-    submitForMatch,
     occupationLetterDate,
     status,
     notes,
@@ -97,7 +96,6 @@ export const mapContributionDataToForm = contribution => {
     oaeType: oaeType || '',
     amountOfContribution: amount,
     checkNumber: checkNumber || '',
-    submitForMatch: submitForMatch ? 'Yes' : 'No',
 
     // CONTRIBUTOR VALUES
     firstName,
@@ -163,7 +161,6 @@ export const mapContributionFormToData = data => {
     typeOfContribution,
     inKindType,
     oaeType,
-    submitForMatch,
     paymentMethod,
     notes,
     isPerson = !!(
@@ -208,8 +205,7 @@ export const mapContributionFormToData = data => {
     zip: zipcode,
     inKindDescription,
     calendarYearAggregate: electionAggregate,
-    submitForMatch: submitForMatch === 'Yes',
-    paymentMethod,
+    paymentMethod: paymentMethod || null,
     notes,
   };
   return transformed;
@@ -226,8 +222,7 @@ export const contributionsEmptyState = {
   amountOfContribution: '',
   inKindType: '',
   oaeType: '',
-  submitForMatch: 'No',
-  paymentMethod: PaymentMethodEnum.CASH,
+  paymentMethod: '',
   checkNumber: '',
 
   // CONTRIBUTOR VALUES
@@ -341,13 +336,6 @@ export const fields = {
       values: mapToSelectOptions(DataToOaeTypeTypeFieldMap),
     },
   },
-  submitForMatch: {
-    label: 'Submit for Match?',
-    section: FormSectionEnum.BASIC,
-    component: SelectField,
-    validation: Yup.string().required('Required'),
-    options: { values: ['Yes', 'No'] },
-  },
   paymentMethod: {
     label: 'Payment Method',
     section: FormSectionEnum.BASIC,
@@ -366,6 +354,10 @@ export const fields = {
           value: PaymentMethodEnum.CREDIT_CARD_PAPER,
           label: 'Credit Card (Paper Form)',
         },
+        {
+          value: PaymentMethodEnum.ETF,
+          label: 'Electronic Funds Transfer',
+        },
       ],
     },
   },
@@ -380,44 +372,39 @@ export const fields = {
     label: "Contributor's First Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {
     label: "Contributor's Last Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   entityName: {
     label: 'Entity Name',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   streetAddress: {
     label: 'Street Address',
     section: FormSectionEnum.CONTRIBUTOR,
     // TODO Catch error if google places lib cannot load
-    //    and load TextField instead of <AddressLookupField ...>.
-    // TODO Apply default input to google AddressLookupField whne a form is loaded
-    // To developing without internet access
-    // Uncomment component: TextField
-    // Comment component: props => <AddressLookupField ...>).
-    component: TextField,
+    //    and load <TextField> instead of <AddressLookupField ...>.
     // eslint-disable-next-line react/display-name
-    // component: props => (
-    //   <AddressLookupField
-    //     {...props.field}
-    //     {...props}
-    //     updateFields={{
-    //       street: 'streetAddress',
-    //       stateShort: 'state',
-    //       city: 'city',
-    //       zipCode: 'zipcode',
-    //     }}
-    //   />
-    // ),
+    component: props => (
+      <AddressLookupField
+        {...props.field}
+        {...props}
+        updateFields={{
+          address: 'streetAddress',
+          stateShort: 'state',
+          city: 'city',
+          zipCode: 'zipcode',
+        }}
+      />
+    ),
     validation: Yup.string().required('Your street address is required'),
   },
   addressLine2: {
@@ -652,6 +639,10 @@ export const validate = values => {
     subTypeOfContribution
   );
 
+  visible.showOccupationLetter = !!(
+    isEmpty(occupation) || occupation === 'Employed'
+  );
+
   // These fields are conditionally required
   if (values.phone && isEmpty(values.phoneType)) {
     error.phoneType = 'Please select a phone type';
@@ -705,19 +696,6 @@ export const validate = values => {
       // if (isEmpty(employerZipcode)) {
       //   error.employerZipcode = 'Employer zipcode is required.';
       // }
-    }
-  }
-
-  // Conditionally Set Values
-  if (values.submitForMatch !== 'No') {
-    if (
-      // Set submitForMatch to No under these conditions
-      amountOfContribution > 500 ||
-      typeOfContribution !== ContributionTypeEnum.CONTRIBUTION ||
-      subTypeOfContribution !== ContributionSubTypeEnum.CASH ||
-      !visible.isPerson
-    ) {
-      values.submitForMatch = 'No';
     }
   }
 

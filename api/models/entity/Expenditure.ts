@@ -345,7 +345,6 @@ export async function getExpendituresByGovernmentIdAsync(
     try {
         const expenditureRepository = getConnection('default').getRepository('Expenditure');
         const { page, perPage, campaignId, status, from, to, sort } = options;
-        const relations = campaignId ? ['government', 'campaign'] : ['government'];
         const where = {
                 government: {
                     id: governmentId
@@ -356,12 +355,19 @@ export async function getExpendituresByGovernmentIdAsync(
                     }
                     : undefined,
                 status,
+                join: {
+                    alias: 'contribution',
+                    leftJoinAndSelect: {
+                        government: 'contribution.government',
+                        campaign: 'contribution.campaign'
+                    }
+                },
                 date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             };
         const query: any = {
             select: expenditureSummaryFields,
-            relations,
+            relations: ['campaign', 'government'],
             where,
             skip: page,
             take: perPage,
@@ -380,7 +386,16 @@ export async function getExpendituresByGovernmentIdAsync(
             query.order = { [sort.field]: sort.direction };
 
         }
-        const expenditures = await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[];
+        const expenditures = (await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[]).map((item: any): any => {
+            const json = item.toJSON();
+            json.campaign = {
+                id: item.campaign.id,
+                name: item.campaign.name};
+            json.government = {
+                id: item.government.id,
+                name: item.government.name};
+            return json;
+        });
         const total = await expenditureRepository.count(removeUndefined(query));
         return {
             data: expenditures,

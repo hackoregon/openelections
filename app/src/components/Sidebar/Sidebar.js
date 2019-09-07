@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 // eslint-disable-next-line
 import React, { Component } from "react";
 import { NavLink } from 'react-router-dom';
@@ -89,6 +90,7 @@ export default class Sidebar extends Component {
     this.setLinks();
   }
 
+  // eslint-disable-next-line react/sort-comp
   setLinks() {
     this.links = [
       { url: '/dashboard', label: 'Dashboard' },
@@ -103,9 +105,13 @@ export default class Sidebar extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.isGovAdmin !== this.props.isGovAdmin) {
+    const { campaignId, getCampaignUsers, isGovAdmin } = this.props;
+    if (prevProps.isGovAdmin !== isGovAdmin) {
       this.setLinks();
-      this.setState({ is_gov_admin: this.props.isGovAdmin });
+      this.setState({ is_gov_admin: isGovAdmin });
+    }
+    if (!isGovAdmin && prevProps.campaignId !== campaignId) {
+      getCampaignUsers(campaignId);
     }
   }
 
@@ -114,18 +120,20 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    const { governmentId, campaignName } = this.props;
+    const { campaignName, isGovAdmin } = this.props;
+    const { isToggledOn } = this.state;
 
     return (
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         css={styles}
         onClick={this.toggleSidebar.bind(this)}
-        className={this.state.isToggledOn ? 'dropdown-active' : ''}
+        className={isToggledOn ? 'dropdown-active' : ''}
       >
         <div className="sidebar-top">
           <ArrowDropDown className="arrow" />
           <h2 className="campaign-name">
-            {governmentId ? 'City Portal' : campaignName}
+            {isGovAdmin ? 'City Portal' : campaignName}
           </h2>
         </div>
         <ul>

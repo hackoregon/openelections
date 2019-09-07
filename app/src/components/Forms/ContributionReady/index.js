@@ -6,6 +6,7 @@ import { flashMessage } from 'redux-flash';
 import { updateContribution } from '../../../state/ducks/contributions';
 import {
   getCurrentUserId,
+  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
@@ -24,9 +25,6 @@ import { ContributionStatusEnum, ContributorTypeEnum } from '../../../api/api';
 const onSubmit = (data, props) => {
   const initialData = props.data;
   const contributionData = mapContributionFormToData(data);
-  // TODO remove next 2 lines when GH-#725 is closed
-  delete contributionData.date;
-  delete contributionData.occupationLetterDate;
   delete contributionData.calendarYearAggregate;
   contributionData.id = data.id;
   contributionData.currentUserId = props.currentUserId;
@@ -115,6 +113,7 @@ class ContributionReadyForm extends React.Component {
           return (
             <>
               <ViewHeaderSection
+                campaignName={this.props.campaignName}
                 isCampAdmin={this.props.isCampAdmin}
                 isCampStaff={this.props.isCampStaff}
                 isValid={isValid}
@@ -140,14 +139,15 @@ class ContributionReadyForm extends React.Component {
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
                 isGovAdmin={this.props.isGovAdmin}
                 contributionId={values.id}
+                showOccupationLetter={visibleIf.showOccupationLetter}
               />
-              {isSubmited && this.props.isGovAdmin ? (
+              {/* {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection
                   formFields={formFields}
                   formValues={values}
                   handleSubmit={handleSubmit}
                 />
-              ) : null}
+              ) : null} */}
             </>
           );
         }}
@@ -162,6 +162,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
+    campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>

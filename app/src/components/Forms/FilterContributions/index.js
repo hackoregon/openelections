@@ -4,7 +4,6 @@ import { css, jsx } from '@emotion/core';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
 import { getContributions } from '../../../state/ducks/contributions';
-
 /** @jsx jsx */
 import { isLoggedIn } from '../../../state/ducks/auth';
 
@@ -27,7 +26,6 @@ const wtf = css`
 
 const FilterContribution = props => (
   <>
-    {console.log({ props })}
     <FilterContributions
       onSubmit={filterOptions => {
         const data = {
@@ -62,22 +60,33 @@ const FilterContribution = props => (
       {({
         formSections,
         isValid,
-        handleSubmit /* isDirty, isSubmitting */,
+        handleSubmit,
+        isDirty,
+        /* isSubmitting */
+        handleCancel,
       }) => (
-        <React.Fragment>
-          <div className="nark" css={wtf}>
-            {formSections.filter}
-            <div>
-              <Button
-                buttonType="submit"
-                disabled={!isValid}
-                onClick={handleSubmit}
-              >
-                Filter
-              </Button>
-            </div>
+        <div className="nark" css={wtf}>
+          {formSections.filter}
+          <div>
+            <Button
+              buttonType="submit"
+              disabled={!isValid}
+              onClick={handleSubmit}
+            >
+              Filter
+            </Button>
+            <Button
+              buttonType="submit"
+              disabled={!isDirty}
+              onClick={() => {
+                handleCancel();
+                handleSubmit();
+              }}
+            >
+              Reset
+            </Button>
           </div>
-        </React.Fragment>
+        </div>
       )}
     </FilterContributions>
   </>

@@ -52,18 +52,18 @@ export const mapExpenditureDataToForm = expenditure => {
     buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
     date: format(new Date(date), 'YYYY-MM-DD'),
-    expenditureType: type || '',
+    expenditureType: type,
     expenditureSubType: subType,
-    paymentMethod: paymentMethod || '',
+    paymentMethod,
     checkNumber: checkNumber || '',
-    purposeType: purpose || '',
-    payeeType: payeeType || '',
-    payeeName: name || '',
-    streetAddress: address1 || '',
+    purposeType: purpose || null,
+    payeeType,
+    payeeName: name,
+    streetAddress: address1,
     addressLine2: address2 || '',
-    city: city || '',
-    state: state || '',
-    zipcode: zip || '',
+    city,
+    state,
+    zipcode: zip,
     notes: notes || '',
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
@@ -102,7 +102,7 @@ export const mapExpenditureFormToData = data => {
     subType: expenditureSubType,
     checkNumber,
     paymentMethod,
-    purpose: purposeType,
+    purpose: purposeType || null,
     payeeType,
     name: payeeName,
     address1: streetAddress,
@@ -118,6 +118,7 @@ export const mapExpenditureFormToData = data => {
 
 export const expendituresEmptyState = {
   // BASICS VALUES
+  id: '',
   amount: '',
   date: '',
   expenditureType: '',
@@ -132,7 +133,7 @@ export const expendituresEmptyState = {
   streetAddress: '',
   addressLine2: '',
   city: '',
-  state: '',
+  state: 'OR',
   zipcode: '',
   notes: '',
 };
@@ -255,6 +256,7 @@ export const fields = {
     label: 'Purpose of Expenditure',
     section: FormSectionEnum.BASIC,
     component: SelectField,
+    validation: Yup.string().nullable(),
     options: {
       values: [
         { value: PurposeTypeEnum.WAGES, label: 'Wages' },
@@ -278,10 +280,6 @@ export const fields = {
         { value: PurposeTypeEnum.UTILITIES, label: 'Utilities' },
       ],
     },
-    validation: Yup.string().required(
-      'A description of the purpose is required'
-    ),
-    // purposeType IS REQUIRED IF: Miscellaneous Other Disbursement is selected for Sub Type.
   },
 
   // PAYEE SECTION
@@ -369,33 +367,15 @@ export const fields = {
 
 export const validate = values => {
   const {
-    // amount,
-    // dateOfExpenditure,
-    // expenditureType,
     expenditureSubType,
     paymentMethod,
     checkNumber,
-    // purposeType,
-
-    // // PAYEE INFO
-    payeeType,
-    // payeeName,
-    // streetAddress,
-    // addressLine2,
-    // city,
-    // state,
-    // zipcode,
-    // notes,
+    purposeType,
   } = values;
   const error = {};
   const visible = {};
 
   // LOGIC FOR CONDITIONALLY VISIBLE FIELDS OR DROPDOWN SELECT OPTIONS:
-
-  // Make these areas visible
-  visible.isPerson = !!(
-    payeeType === PayeeTypeEnum.INDIVIDUAL || payeeType === PayeeTypeEnum.FAMILY
-  );
 
   // If PaymentMethod was check, show check number field
   visible.checkSelected = !!(
@@ -405,7 +385,7 @@ export const validate = values => {
 
   // Default to visible
   visible.paymentMethod = true;
-  visible.showPurposeType = true;
+  visible.showPurposeType = false;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
   if (visible.checkSelected && isEmpty(checkNumber)) {
@@ -415,11 +395,15 @@ export const validate = values => {
         : 'Money Order number is required.';
   }
 
-  // PurposeType only required if Miscellaneous Other Disbursement is selected for Sub Type.
+  // PurposeType only visble & required if Miscellaneous Other Disbursement is selected for Sub Type.
   visible.showPurposeType = !!(
     expenditureSubType ===
     ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT
   );
+
+  if (visible.showPurposeType && isEmpty(purposeType)) {
+    error.purposeType = 'A description of type of purpose is required';
+  }
 
   values._visibleIf = visible;
   return error;
