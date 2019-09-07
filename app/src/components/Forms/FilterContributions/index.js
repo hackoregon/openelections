@@ -1,19 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
+/** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import { withRouter } from 'react-router-dom';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
 import { getContributions } from '../../../state/ducks/contributions';
-/** @jsx jsx */
 import { isLoggedIn } from '../../../state/ducks/auth';
-
-const STATUS_OPTIONS = {
-  'All Statuses': 'all',
-  Archived: 'Archived',
-  Draft: 'Draft',
-  Submitted: 'Submitted',
-  Processed: 'Processed',
-};
 
 const wtf = css`
   display: flex;
@@ -24,73 +18,115 @@ const wtf = css`
   }
 `;
 
-const FilterContribution = props => (
-  <>
-    <FilterContributions
-      onSubmit={filterOptions => {
-        const data = {
-          governmentId: props.govId,
-          currentUserId: props.userId,
-          campaignId: props.campaignId,
-        };
+const filterControls = css`
+  text-align: center;
 
-        if (filterOptions.status && filterOptions.status !== 'All Statuses') {
-          data.status = STATUS_OPTIONS[filterOptions.status];
-        }
+  a.reset-button {
+    text-align: center;
+    font-size: 14px;
+    transition: opacity 0.1s;
+    cursor: pointer;
+    &[disabled] {
+      opacity: 0;
+      color: gray;
+    }
+  }
+`;
 
-        if (filterOptions.range) {
-          if (filterOptions.range.from) {
-            data.from = filterOptions.range.from;
+const FilterContribution = props => {
+  const { location } = props;
+
+  // eslint-disable-next-line no-use-before-define
+  const query = getQueryParams(location);
+
+  const defaultValues = {
+    status: 'all',
+    range: { to: '', from: '' },
+  };
+  const [initialValues, setInitialValues] = useState({
+    status: query.status || defaultValues.status,
+    range: {
+      to: query.to || '',
+      from: query.from || '',
+    },
+  });
+
+  return (
+    <>
+      <FilterContributions
+        onSubmit={filterOptions => {
+          const data = {
+            governmentId: props.govId,
+            currentUserId: props.userId,
+            campaignId: props.campaignId,
+          };
+
+          if (filterOptions.status && filterOptions.status !== 'all') {
+            data.status = filterOptions.status;
           }
 
-          if (filterOptions.range.to) {
-            data.to = filterOptions.range.to;
+          if (filterOptions.range) {
+            if (filterOptions.range.from) {
+              data.from = filterOptions.range.from;
+            }
+
+            if (filterOptions.range.to) {
+              data.to = filterOptions.range.to;
+            }
           }
-        }
-        props.getContributions(data);
-      }}
-      initialValues={{
-        status: '',
-        range: {
-          to: '',
-          from: '',
-        },
-      }}
-    >
-      {({
-        formSections,
-        isValid,
-        handleSubmit,
-        isDirty,
-        /* isSubmitting */
-        handleCancel,
-      }) => (
-        <div className="nark" css={wtf}>
-          {formSections.filter}
-          <div>
-            <Button
-              buttonType="submit"
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Filter
-            </Button>
-            <Button
-              buttonType="submit"
-              disabled={!isDirty}
-              onClick={() => {
-                handleCancel();
-                handleSubmit();
-              }}
-            >
-              Reset
-            </Button>
+
+          props.getContributions(data);
+          setInitialValues(filterOptions);
+        }}
+        initialValues={initialValues}
+      >
+        {({
+          formSections,
+          isValid,
+          handleSubmit,
+          isDirty,
+          /* isSubmitting */
+          handleCancel,
+          resetForm,
+        }) => (
+          <div className="nark" css={wtf}>
+            {formSections.filter}
+            <div css={filterControls}>
+              <Button
+                buttonType="submit"
+                disabled={!isValid}
+                onClick={handleSubmit}
+              >
+                Filter
+              </Button>
+              <a
+                className="reset-button"
+                disabled={isEqual(defaultValues, initialValues)}
+                onClick={() => {
+                  resetForm(defaultValues);
+                  handleSubmit();
+                }}
+              >
+                Reset
+              </a>
+            </div>
           </div>
-        </div>
-      )}
-    </FilterContributions>
-  </>
-);
+        )}
+      </FilterContributions>
+    </>
+  );
+};
+
+function getQueryParams(location) {
+  const rawParams = location.search.replace(/^\?/, '');
+  const result = {};
+
+  rawParams.split('&').forEach(item => {
+    result[item.split('=')[0]] = item.split('=')[1];
+  });
+
+  return result;
+}
 
 // export default FilterContribution;
 export default connect(
@@ -107,4 +143,4 @@ export default connect(
       getContributions: data => dispatch(getContributions(data)),
     };
   }
-)(FilterContribution);
+)(withRouter(FilterContribution));
