@@ -40,22 +40,34 @@ const AddContribution = ({ ...props }) => (
     onSubmit={data => onSubmit(data, props)}
     initialValues={contributionsEmptyState}
   >
-    {({ formFields, isValid, handleSubmit, visibleIf, formErrors }) => {
+    {({
+      formFields,
+      isValid,
+      handleSubmit,
+      visibleIf,
+      formErrors,
+      isSubmited,
+      values,
+    }) => {
       return (
         <>
           <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
           <BasicsSection
+            isSubmited={isSubmited}
             formFields={formFields}
             checkSelected={visibleIf.checkSelected}
             showInKindFields={visibleIf.showInKindFields}
             showPaymentMethod={visibleIf.paymentMethod}
           />
           <ContributorSection
+            isSubmited={isSubmited}
             formFields={formFields}
             showEmployerSection={visibleIf.showEmployerSection}
             isPerson={visibleIf.isPerson}
             emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
             showOccupationLetter={visibleIf.showOccupationLetter}
+            isGovAdmin={props.isGovAdmin}
+            contributionId={values.id}
           />
         </>
       );
