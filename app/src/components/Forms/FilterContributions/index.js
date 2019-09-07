@@ -113,7 +113,7 @@ const FilterContribution = props => {
                   handleSubmit();
                 }}
               >
-                Reset
+                Clear
               </a>
             </div>
           </div>
