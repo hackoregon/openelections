@@ -20,6 +20,7 @@ class ContributionsPage extends React.Component {
       governmentId,
       campaignId,
       currentUserId,
+      perPage: 50,
     });
   }
 

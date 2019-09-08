@@ -52,12 +52,21 @@ const fields = {
     component: SelectField,
     validation: Yup.string('Choose the order of the filtered response'),
   },
+  perPage: {
+    label: 'Results per page',
+    section: 'paginate',
+    options: {
+      values: ['50', '100', '150'],
+    },
+    component: SelectField,
+    validation: Yup.string('Choose number of results per page'),
+  },
 };
 
 const FilterContributionForm = ({ initialValues, onSubmit, children }) => (
   <Form
     fields={fields}
-    sections={['filter']}
+    sections={['filter', 'paginate']}
     initialValues={initialValues}
     onSubmit={onSubmit}
   >

@@ -64,7 +64,7 @@ const columns = isGovAdmin => [
 const ContributionsTable = ({ ...props }) => {
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
-  const title = `${props.total} Contributions`;
+  const title = `${props.total} Total Contributions`;
   const options = {
     search: false,
     actionCellStyle: {
@@ -73,6 +73,7 @@ const ContributionsTable = ({ ...props }) => {
     actionsColumnIndex: -1,
     pageSizeOptions: [20, 50, 100],
     pageSize: 50,
+    paging: false,
   };
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
