@@ -34,7 +34,9 @@ const columns = isGovAdmin => [
           field: 'campaign',
           title: 'Campaign',
           render: rowData => {
-            return rowData.campaign.name;
+            return rowData && rowData.campaign
+              ? rowData.campaign.name
+              : 'Loading...';
           },
         }
       : {}),
