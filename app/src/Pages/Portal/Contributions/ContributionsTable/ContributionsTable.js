@@ -64,7 +64,7 @@ const columns = isGovAdmin => [
 const ContributionsTable = ({ ...props }) => {
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
-  const title = `${props.total} Total Contributions`;
+  const title = `${props.total} Contributions`;
   const options = {
     search: false,
     actionCellStyle: {
