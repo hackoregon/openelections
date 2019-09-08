@@ -78,6 +78,7 @@ const paginateOptions = css`
 const pageNav = css`
   display: flex;
   flex-direction: row;
+  max-width: 100% !important;
 `;
 
 const btnContainer = css`
@@ -99,6 +100,14 @@ const btnContainer = css`
   }
   @media screen and (max-width: 900px) {
     width: 100%;
+  }
+`;
+
+const totalsSection = css`
+  width: 100%;
+  padding: 12px;
+  > p {
+    margin: 0;
   }
 `;
 
@@ -181,7 +190,6 @@ const FilterContribution = props => {
             page: 0,
           };
 
-          console.log({ pageNumber });
           if (filterOptions.sortBy || filterOptions.orderBy) {
             data.sort = {
               field: filterOptions.sortBy || 'date',
@@ -260,6 +268,13 @@ const FilterContribution = props => {
                       </IconButton>
                     </div>
                   </Tooltip>
+                  <div css={totalsSection}>
+                    <p>
+                      {pageNumber + 1} {' of '}
+                      {Math.ceil(props.totalResults / initialValues.perPage)}
+                      {' pages'}
+                    </p>
+                  </div>
                   <Tooltip title="Next Page">
                     <div>
                       <IconButton

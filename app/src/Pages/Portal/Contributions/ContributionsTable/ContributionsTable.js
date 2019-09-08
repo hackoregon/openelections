@@ -73,7 +73,7 @@ const ContributionsTable = ({ ...props }) => {
     actionsColumnIndex: -1,
     pageSizeOptions: [20, 50, 100],
     pageSize: 50,
-    paging: false,
+    // paging: false,
   };
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
