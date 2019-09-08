@@ -6,12 +6,23 @@ import TextField from '../../Fields/TextField';
 import SelectField from '../../Fields/SelectField';
 import DateRangeField from '../../Fields/DateRangeField';
 
+export const STATUS_OPTIONS = {
+  'All Statuses': 'all',
+  Archived: 'Archived',
+  Draft: 'Draft',
+  Submitted: 'Submitted',
+  Processed: 'Processed',
+};
+
 const fields = {
   status: {
     label: 'Status',
     section: 'filter',
     options: {
-      values: ['All Statuses', 'Archived', 'Draft', 'Submitted', 'Processed'],
+      values: Object.keys(STATUS_OPTIONS).map(key => ({
+        value: STATUS_OPTIONS[key],
+        label: key,
+      })),
     },
     component: SelectField,
     validation: Yup.string('Choose a status'),

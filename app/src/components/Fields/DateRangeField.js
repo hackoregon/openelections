@@ -49,7 +49,7 @@ export default function DateRangeField(props) {
   const { formik, label, id, isRequired } = props;
 
   function renderSelectValue(value) {
-    if (value.to || value.from) {
+    if (value && (value.to || value.from)) {
       return `${
         value.from ? extractTimeAndDate(value.from).date : 'All dates'
       } to ${value.to ? extractTimeAndDate(value.to).date : 'All dates'}`;
@@ -150,22 +150,29 @@ function Popover(props) {
     };
 
     if (range.from.date) {
-      const dateFrom = new Date(range.from.date);
+      const dateFrom = range.from.date;
       const [hourFrom, minFrom] = range.from.time.split(':');
-      dateFrom.setHours(hourFrom, minFrom);
-      result.from = dateFrom.toISOString();
+      result.from = getISOFromDateAndTime(dateFrom, hourFrom, minFrom);
     }
 
     if (range.to.date) {
-      const dateTo = new Date(range.to.date);
+      const dateTo = range.to.date;
       const [hourTo, minTo] = range.to.time.split(':');
-      dateTo.setHours(hourTo, minTo);
-      result.to = dateTo.toISOString();
+      result.to = getISOFromDateAndTime(dateTo, hourTo, minTo);
     }
 
     return result;
   }
 
+  function getISOFromDateAndTime(date, hours, minutes) {
+    const theDate = new Date(date);
+    const extraTime =
+      Number(hours) * 60 * 60 * 1000 + Number(minutes) * 60 * 1000;
+    theDate.setTime(
+      theDate.getTime() + theDate.getTimezoneOffset() * 60000 + extraTime
+    );
+    return theDate.toISOString();
+  }
   function handleDateTimeChange(event) {
     const elementId = event.target.id;
     const { value } = event.target;
@@ -260,14 +267,15 @@ function Popover(props) {
 
 function extractTimeAndDate(ISODate) {
   const dateObj = new Date(ISODate);
+
   return {
-    date: `${dateObj.getFullYear()}-${addZero(dateObj.getMonth())}-${addZero(
-      dateObj.getDate()
-    )}`,
+    date: `${dateObj.getFullYear()}-${addZero(
+      dateObj.getMonth() + 1
+    )}-${addZero(dateObj.getDate())}`,
     time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
   };
+}
 
-  function addZero(number) {
-    return number.toString().padStart(2, '0');
-  }
+function addZero(number) {
+  return number.toString().padStart(2, '0');
 }

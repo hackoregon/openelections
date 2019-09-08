@@ -6,6 +6,7 @@ import { flashMessage } from 'redux-flash';
 import { updateExpenditure } from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
+  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
@@ -17,7 +18,6 @@ import {
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import AddExpenseForm from '../AddExpense/AddExpenseForm';
 import { ExpenditureStatusEnum } from '../../../api/api';
-import { getCampaignName } from '../../../state/ducks/campaigns';
 import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const onSubmit = (data, props) => {
@@ -144,7 +144,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
-    campaignName: getCampaignName(state),
+    campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>

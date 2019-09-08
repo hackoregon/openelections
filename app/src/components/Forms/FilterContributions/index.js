@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
+/** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
 import Tooltip from '@material-ui/core/Tooltip';
@@ -9,10 +11,10 @@ import IconButton from '@material-ui/core/IconButton';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
+import { withRouter } from 'react-router-dom';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
 import { getContributions } from '../../../state/ducks/contributions';
-/** @jsx jsx */
 import { isLoggedIn } from '../../../state/ducks/auth';
 
 const STATUS_OPTIONS = {
@@ -91,6 +93,20 @@ const btnContainer = css`
   flex-direction: row;
   > button {
     margin: 5px;
+`;
+
+const filterControls = css`
+  text-align: center;
+
+  a.reset-button {
+    text-align: center;
+    font-size: 14px;
+    transition: opacity 0.1s;
+    cursor: pointer;
+    &[disabled] {
+      opacity: 0;
+      color: gray;
+    }
   }
 `;
 
@@ -104,7 +120,6 @@ const FilterContribution = props => {
     props.totalResults /
     (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
   function submitPageChange(currentPage) {
-    // let data = {};
     const data = {
       governmentId: campaignDataPersistence
         ? campaignDataPersistence.governmentId
@@ -130,12 +145,28 @@ const FilterContribution = props => {
     if (campaignDataPersistence && campaignDataPersistence.sort) {
       data.sort = campaignDataPersistence.sort;
     }
-    console.log({ data });
     props.getContributions(data);
     setCampaignDataPersistence(data);
   }
-  useEffect(() => {
-    console.log('doin shitttt');
+ 
+  const { location, history } = props;
+
+  // eslint-disable-next-line no-use-before-define
+  const urlQuery = getQueryParams(location);
+
+  const defaultValues = {
+    status: 'all',
+    range: { to: '', from: '' },
+  };
+  const [initialValues, setInitialValues] = useState({
+    status: urlQuery.status || defaultValues.status,
+    range: {
+      to: urlQuery.to || '',
+      from: urlQuery.from || '',
+    },
+    orderBy: '',
+    sortBy: '',
+    perPage: '50',
   });
 
   return (
@@ -151,10 +182,7 @@ const FilterContribution = props => {
               : 50,
             page: 0,
           };
-
-          if (filterOptions.status && filterOptions.status !== 'All Statuses') {
-            data.status = STATUS_OPTIONS[filterOptions.status];
-          }
+          
           console.log({ pageNumber });
           if (filterOptions.sortBy || filterOptions.orderBy) {
             data.sort = {
@@ -163,32 +191,34 @@ const FilterContribution = props => {
                 ORDER_OPTIONS[filterOptions.orderBy] ||
                 ORDER_OPTIONS.Descending,
             };
+          };
+
+          if (filterOptions.status && filterOptions.status !== 'all') {
+            data.status = filterOptions.status;
+            urlQuery.status = filterOptions.status;
           }
 
           if (filterOptions.range) {
             if (filterOptions.range.from) {
               data.from = filterOptions.range.from;
+              urlQuery.from = filterOptions.range.from;
             }
 
             if (filterOptions.range.to) {
               data.to = filterOptions.range.to;
+              urlQuery.to = filterOptions.range.to;
             }
-          }
+
+        }
           console.log('Sending: ', { data });
           props.getContributions(data);
           setCampaignDataPersistence(data);
           setPageNumber(0);
-        }}
-        initialValues={{
-          status: '',
-          range: {
-            to: '',
-            from: '',
-          },
-          orderBy: '',
-          sortBy: '',
-          perPage: '50',
-        }}
+          // eslint-disable-next-line no-use-before-define
+          history.push(`${location.pathname}?${makeIntoQueryParams(urlQuery)}`);
+          setInitialValues(filterOptions);
+        }}   
+        initialValues={initialValues}
       >
         {({
           formSections,
@@ -197,6 +227,7 @@ const FilterContribution = props => {
           isDirty,
           /* isSubmitting */
           handleCancel,
+          resetForm,
         }) => (
           <div className="nark" css={filterOuter}>
             <div css={filterWrapper}>
@@ -272,7 +303,7 @@ const FilterContribution = props => {
               >
                 Filter
               </Button>
-              <Button
+              {/* <Button
                 buttonType="submit"
                 disabled={!isDirty}
                 onClick={() => {
@@ -282,7 +313,18 @@ const FilterContribution = props => {
                 }}
               >
                 Reset
-              </Button>
+              </Button> */}
+              <a
+                className="reset-button"
+                disabled={isEqual(defaultValues, initialValues)}
+                onClick={() => {
+                  resetForm(defaultValues);
+                  handleSubmit();
+                  setPageNumber(0);
+                }}
+              >
+                Clear
+              </a>
             </div>
           </div>
         )}
@@ -290,6 +332,26 @@ const FilterContribution = props => {
     </>
   );
 };
+
+function getQueryParams(location) {
+  const rawParams = location.search.replace(/^\?/, '');
+  const result = {};
+
+  rawParams.split('&').forEach(item => {
+    if (item) {
+      const [key, val] = item.split('=');
+      result[key] = val;
+    }
+  });
+
+  return result;
+}
+
+function makeIntoQueryParams(paramsObject) {
+  return Object.keys(paramsObject)
+    .map(param => `${param}=${paramsObject[param]}`)
+    .join('&');
+}
 
 // export default FilterContribution;
 export default connect(
@@ -307,4 +369,4 @@ export default connect(
       getContributions: data => dispatch(getContributions(data)),
     };
   }
-)(FilterContribution);
+)(withRouter(FilterContribution));

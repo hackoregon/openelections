@@ -6,11 +6,11 @@ import { flashMessage } from 'redux-flash';
 import { updateContribution } from '../../../state/ducks/contributions';
 import {
   getCurrentUserId,
+  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
 } from '../../../state/ducks/auth';
-import { getCampaignName } from '../../../state/ducks/campaigns';
 import {
   AddHeaderSection,
   ViewHeaderSection,
@@ -139,14 +139,15 @@ class ContributionReadyForm extends React.Component {
                 emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
                 isGovAdmin={this.props.isGovAdmin}
                 contributionId={values.id}
+                showOccupationLetter={visibleIf.showOccupationLetter}
               />
-              {isSubmited && this.props.isGovAdmin ? (
+              {/* {isSubmited && this.props.isGovAdmin ? (
                 <OtherDetailsSection
                   formFields={formFields}
                   formValues={values}
                   handleSubmit={handleSubmit}
                 />
-              ) : null}
+              ) : null} */}
             </>
           );
         }}
@@ -161,7 +162,7 @@ export default connect(
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
-    campaignName: getCampaignName(state),
+    campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
     flashMessage: (message, options) =>

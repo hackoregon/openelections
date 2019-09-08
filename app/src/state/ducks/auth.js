@@ -382,3 +382,14 @@ export const getCurrentCampaignId = state => {
   }
   return null;
 };
+
+export const getCurrentCampaignName = state => {
+  if (state.auth.me) {
+    if (
+      state.auth.me.permissions[0] &&
+      state.auth.me.permissions[0].campaignName
+    )
+      return state.auth.me.permissions[0].campaignName;
+  }
+  return 'Campaign';
+};
