@@ -17,29 +17,21 @@ import FilterContributions from './FilterContributions';
 import { getContributions } from '../../../state/ducks/contributions';
 import { isLoggedIn } from '../../../state/ducks/auth';
 
-const STATUS_OPTIONS = {
-  'All Statuses': 'all',
-  Archived: 'Archived',
-  Draft: 'Draft',
-  Submitted: 'Submitted',
-  Processed: 'Processed',
-};
+// const ORDER_OPTIONS = {
+//   Descending: 'DESC',
+//   Ascending: 'ASC',
+// };
 
-const ORDER_OPTIONS = {
-  Descending: 'DESC',
-  Ascending: 'ASC',
-};
-
-const SORT_OPTIONS = {
-  'Campaign Id': 'campaignId',
-  Status: 'status',
-  Date: 'date',
-};
+// const SORT_OPTIONS = {
+//   'Campaign Id': 'campaignId',
+//   Status: 'status',
+//   Date: 'date',
+// };
 
 const filterOuter = css`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: flex-start;
   > div {
     margin: 0 5px;
   }
@@ -90,14 +82,11 @@ const pageNav = css`
 
 const btnContainer = css`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   > button {
     margin: 5px;
-`;
-
-const filterControls = css`
-  text-align: center;
-
+  }
   a.reset-button {
     text-align: center;
     font-size: 14px;
@@ -108,6 +97,9 @@ const filterControls = css`
       color: gray;
     }
   }
+  @media screen and (max-width: 900px) {
+    width: 100%;
+  }
 `;
 
 const FilterContribution = props => {
@@ -115,7 +107,10 @@ const FilterContribution = props => {
   const [campaignDataPersistence, setCampaignDataPersistence] = useState(null);
   const prevDisabled = pageNumber <= 0;
   // TODO: update 50 to be dynamic
-  const nextDisabled = props.totalResults <= (pageNumber + 1) * 50;
+  const nextDisabled =
+    props.totalResults <=
+    (pageNumber + 1) *
+      (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
   const totalPages =
     props.totalResults /
     (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
@@ -148,7 +143,7 @@ const FilterContribution = props => {
     props.getContributions(data);
     setCampaignDataPersistence(data);
   }
- 
+
   const { location, history } = props;
 
   // eslint-disable-next-line no-use-before-define
@@ -157,6 +152,9 @@ const FilterContribution = props => {
   const defaultValues = {
     status: 'all',
     range: { to: '', from: '' },
+    orderBy: '',
+    sortBy: '',
+    perPage: '50',
   };
   const [initialValues, setInitialValues] = useState({
     status: urlQuery.status || defaultValues.status,
@@ -164,8 +162,8 @@ const FilterContribution = props => {
       to: urlQuery.to || '',
       from: urlQuery.from || '',
     },
-    orderBy: '',
-    sortBy: '',
+    orderBy: urlQuery.direction || '',
+    sortBy: urlQuery.field || '',
     perPage: '50',
   });
 
@@ -182,21 +180,21 @@ const FilterContribution = props => {
               : 50,
             page: 0,
           };
-          
+
           console.log({ pageNumber });
           if (filterOptions.sortBy || filterOptions.orderBy) {
             data.sort = {
-              field: SORT_OPTIONS[filterOptions.sortBy] || SORT_OPTIONS.Date,
-              direction:
-                ORDER_OPTIONS[filterOptions.orderBy] ||
-                ORDER_OPTIONS.Descending,
+              field: filterOptions.sortBy || 'date',
+              direction: filterOptions.orderBy || 'DESC',
             };
-          };
+            urlQuery.field = data.sort.field;
+            urlQuery.direction = data.sort.direction;
+          }
 
           if (filterOptions.status && filterOptions.status !== 'all') {
             data.status = filterOptions.status;
-            urlQuery.status = filterOptions.status;
           }
+          urlQuery.status = filterOptions.status;
 
           if (filterOptions.range) {
             if (filterOptions.range.from) {
@@ -208,8 +206,7 @@ const FilterContribution = props => {
               data.to = filterOptions.range.to;
               urlQuery.to = filterOptions.range.to;
             }
-
-        }
+          }
           console.log('Sending: ', { data });
           props.getContributions(data);
           setCampaignDataPersistence(data);
@@ -217,7 +214,7 @@ const FilterContribution = props => {
           // eslint-disable-next-line no-use-before-define
           history.push(`${location.pathname}?${makeIntoQueryParams(urlQuery)}`);
           setInitialValues(filterOptions);
-        }}   
+        }}
         initialValues={initialValues}
       >
         {({
@@ -303,17 +300,6 @@ const FilterContribution = props => {
               >
                 Filter
               </Button>
-              {/* <Button
-                buttonType="submit"
-                disabled={!isDirty}
-                onClick={() => {
-                  handleCancel();
-                  handleSubmit();
-                  setPageNumber(0);
-                }}
-              >
-                Reset
-              </Button> */}
               <a
                 className="reset-button"
                 disabled={isEqual(defaultValues, initialValues)}

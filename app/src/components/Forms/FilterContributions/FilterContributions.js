@@ -14,6 +14,17 @@ export const STATUS_OPTIONS = {
   Processed: 'Processed',
 };
 
+const ORDER_OPTIONS = {
+  Descending: 'DESC',
+  Ascending: 'ASC',
+};
+
+const SORT_OPTIONS = {
+  // 'Campaign-Id': 'campaignId',
+  Status: 'status',
+  Date: 'date',
+};
+
 const fields = {
   status: {
     label: 'Status',
@@ -49,7 +60,10 @@ const fields = {
     label: 'Order By',
     section: 'filter',
     options: {
-      values: ['Descending', 'Ascending'],
+      values: Object.keys(ORDER_OPTIONS).map(key => ({
+        value: ORDER_OPTIONS[key],
+        label: key,
+      })),
     },
     component: SelectField,
     validation: Yup.string('Choose the order of the filtered response'),
@@ -58,7 +72,10 @@ const fields = {
     label: 'Sort By',
     section: 'filter',
     options: {
-      values: ['Campaign Id', 'Status', 'Date'],
+      values: Object.keys(SORT_OPTIONS).map(key => ({
+        value: SORT_OPTIONS[key],
+        label: key,
+      })),
     },
     component: SelectField,
     validation: Yup.string('Choose the order of the filtered response'),
