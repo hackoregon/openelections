@@ -137,7 +137,7 @@ class SummaryCard extends React.Component {
             </Link>
             {delete data.totalContributions.total}
             {Object.keys(data.totalContributions).map((key, i) => (
-              <Link key={i} to={`/contributions?status=${key.toLowerCase()}`}>
+              <Link key={i} to={`/contributions?status=${key}`}>
                 {key}: {data.totalContributions[key]}
               </Link>
             ))}
@@ -163,7 +163,7 @@ class SummaryCard extends React.Component {
             </Link>
             {delete data.totalExpenditures.total}
             {Object.keys(data.totalExpenditures).map((key, index) => (
-              <Link key={index} to={`/expenses?status=${key.toLowerCase()}`}>
+              <Link key={index} to={`/expenses?status=${key}`}>
                 {key}: {data.totalExpenditures[key]}
               </Link>
             ))}
