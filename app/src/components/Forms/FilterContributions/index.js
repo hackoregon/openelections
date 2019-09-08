@@ -307,6 +307,7 @@ const FilterContribution = props => {
                   resetForm(defaultValues);
                   handleSubmit();
                   setPageNumber(0);
+                  history.push(`${location.pathname}`);
                 }}
               >
                 Clear

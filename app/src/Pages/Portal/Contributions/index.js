@@ -20,14 +20,22 @@ class ContributionsPage extends React.Component {
     } = this.props;
 
     const filterOptions = this.getQueryParams(location);
-
-    getContributions({
+    const data = {
       governmentId,
       campaignId,
       currentUserId,
       perPage: 50,
-      ...filterOptions,
-    });
+      from: filterOptions.from,
+      to: filterOptions.to,
+    };
+    if (filterOptions.field || filterOptions.direction) {
+      data.sort = {
+        field: filterOptions.field,
+        direction: filterOptions.direction,
+      };
+    }
+
+    getContributions(data);
   }
 
   getQueryParams(location) {
