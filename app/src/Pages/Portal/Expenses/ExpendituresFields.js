@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
 import { stateList } from '../../../components/Forms/Utils/FormsUtils';
 import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
@@ -52,7 +53,10 @@ export const mapExpenditureDataToForm = expenditure => {
     createdAt,
     buttonSubmitted: buttonSubmitted || '',
     amount: amount || '',
-    date: format(new Date(date), 'YYYY-MM-DD'),
+    date: format(
+      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
+      'YYYY-MM-DD'
+    ),
     expenditureType: type,
     expenditureSubType: subType,
     paymentMethod,
@@ -99,7 +103,9 @@ export const mapExpenditureFormToData = data => {
 
   const transformed = {
     amount: parseFloat(amount),
-    date: new Date(date).getTime(),
+    date: new Date(
+      convertToTimeZone(date, { timeZone: 'America/Los_Angeles' })
+    ).getTime(),
     type: expenditureType,
     subType: expenditureSubType,
     checkNumber,
