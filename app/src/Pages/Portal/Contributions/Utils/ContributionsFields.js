@@ -26,6 +26,7 @@ import {
   DataToOaeTypeTypeFieldMap,
   InKindDescriptionTypeEnum,
 } from '../../../../api/api';
+import { campaign } from '../../../../api/schema';
 
 export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
@@ -74,6 +75,7 @@ export const mapContributionDataToForm = contribution => {
     occupationLetterDate,
     status,
     notes,
+    campaign,
   } = contribution;
   const transformed = {
     // BASICS VALUES
@@ -129,6 +131,7 @@ export const mapContributionDataToForm = contribution => {
       : '',
     status,
     notes: notes || '',
+    campaignName: campaign && campaign.name ? campaign.name : null,
   };
   return transformed;
 };

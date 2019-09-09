@@ -38,7 +38,9 @@ const columns = isGovAdmin => [
           field: 'campaign',
           title: 'Campaign',
           render: rowData => {
-            return rowData.campaign.name;
+            return rowData && rowData.campaign
+              ? rowData.campaign.name
+              : 'Loading...';
           },
         }
       : {}),
@@ -73,6 +75,7 @@ const ContributionsTable = ({ ...props }) => {
     actionsColumnIndex: -1,
     pageSizeOptions: [20, 50, 100],
     pageSize: 50,
+    // paging: false,
   };
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
