@@ -28,6 +28,7 @@ const styles = css`
   }
 
   @media ${mediaQueryRanges.largeAndUp} {
+
     .sidebar-wrapper {
       padding-top: 20px;
     }
