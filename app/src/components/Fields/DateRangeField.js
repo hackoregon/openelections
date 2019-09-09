@@ -8,16 +8,11 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { css, jsx } from '@emotion/core';
-import TextFieldMaterial from '@material-ui/core/TextField/TextField';
 import DateField from './DateField';
 import TimeField from './TimeField';
-import Form from '../Form/Form';
-import { FormSectionEnum } from '../../Pages/Portal/Contributions/Utils/ContributionsFields';
-import Button from '../Button/Button';
 
 /** @jsx jsx */
 import { accents } from '../../assets/styles/variables';
@@ -51,8 +46,10 @@ export default function DateRangeField(props) {
   function renderSelectValue(value) {
     if (value && (value.to || value.from)) {
       return `${
-        value.from ? extractTimeAndDate(value.from).date : 'All dates'
-      } to ${value.to ? extractTimeAndDate(value.to).date : 'All dates'}`;
+        value.from ? extractTimeAndDateForDisplay(value.from).date : 'All dates'
+      } to ${
+        value.to ? extractTimeAndDateForDisplay(value.to).date : 'All dates'
+      }`;
     }
     return 'All dates';
   }
@@ -272,6 +269,17 @@ function extractTimeAndDate(ISODate) {
     date: `${dateObj.getFullYear()}-${addZero(
       dateObj.getMonth() + 1
     )}-${addZero(dateObj.getDate())}`,
+    time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
+  };
+}
+
+function extractTimeAndDateForDisplay(ISODate) {
+  const dateObj = new Date(ISODate);
+
+  return {
+    date: `${addZero(dateObj.getMonth() + 1)}-${addZero(
+      dateObj.getDate()
+    )}-${dateObj.getFullYear()}`,
     time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
   };
 }

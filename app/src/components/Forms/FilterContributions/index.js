@@ -1,32 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import { isEqual } from 'lodash';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
-import Tooltip from '@material-ui/core/Tooltip';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import LastPageIcon from '@material-ui/icons/LastPage';
-
 import { withRouter } from 'react-router-dom';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
-import { getContributions } from '../../../state/ducks/contributions';
-import { isLoggedIn } from '../../../state/ducks/auth';
-
-// const ORDER_OPTIONS = {
-//   Descending: 'DESC',
-//   Ascending: 'ASC',
-// };
-
-// const SORT_OPTIONS = {
-//   'Campaign Id': 'campaignId',
-//   Status: 'status',
-//   Date: 'date',
-// };
 
 const filterOuter = css`
   display: flex;
@@ -75,12 +54,6 @@ const paginateOptions = css`
   }
 `;
 
-const pageNav = css`
-  display: flex;
-  flex-direction: row;
-  max-width: 100% !important;
-`;
-
 const btnContainer = css`
   display: flex;
   flex-direction: column;
@@ -100,14 +73,6 @@ const btnContainer = css`
   }
   @media screen and (max-width: 900px) {
     width: 100%;
-  }
-`;
-
-const totalsSection = css`
-  width: 100%;
-  padding: 12px;
-  > p {
-    margin: 0;
   }
 `;
 
@@ -211,19 +176,4 @@ function getQueryParams(location) {
 }
 
 // export default FilterContribution;
-export default connect(
-  state => ({
-    orgId:
-      state.campaigns.currentCampaignId ||
-      state.governments.currentGovernmentId,
-    campaignId: state.campaigns.currentCampaignId,
-    govId: state.governments.currentGovernmentId || 1,
-    userId: isLoggedIn(state) ? state.auth.me.id : null,
-    totalResults: state.contributions.total,
-  }),
-  dispatch => {
-    return {
-      getContributions: data => dispatch(getContributions(data)),
-    };
-  }
-)(withRouter(FilterContribution));
+export default withRouter(FilterContribution);

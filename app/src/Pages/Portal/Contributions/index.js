@@ -30,7 +30,6 @@ class ContributionsPage extends React.Component {
       status: filterOptions.status,
     };
 
-    console.log(data);
     getContributions(data);
   }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import * as Yup from 'yup';
 
 import Form from '../../Form/Form';
-import TextField from '../../Fields/TextField';
 import SelectField from '../../Fields/SelectField';
 import DateRangeField from '../../Fields/DateRangeField';
 
@@ -12,17 +11,6 @@ export const STATUS_OPTIONS = {
   Draft: 'Draft',
   Submitted: 'Submitted',
   Processed: 'Processed',
-};
-
-const ORDER_OPTIONS = {
-  Descending: 'DESC',
-  Ascending: 'ASC',
-};
-
-const SORT_OPTIONS = {
-  // 'Campaign-Id': 'campaignId',
-  Status: 'status',
-  Date: 'date',
 };
 
 const fields = {
@@ -56,39 +44,6 @@ const fields = {
       }
     ),
   },
-  // orderBy: {
-  //   label: 'Order By',
-  //   section: 'filter',
-  //   options: {
-  //     values: Object.keys(ORDER_OPTIONS).map(key => ({
-  //       value: ORDER_OPTIONS[key],
-  //       label: key,
-  //     })),
-  //   },
-  //   component: SelectField,
-  //   validation: Yup.string('Choose the order of the filtered response'),
-  // },
-  // sortBy: {
-  //   label: 'Sort By',
-  //   section: 'filter',
-  //   options: {
-  //     values: Object.keys(SORT_OPTIONS).map(key => ({
-  //       value: SORT_OPTIONS[key],
-  //       label: key,
-  //     })),
-  //   },
-  //   component: SelectField,
-  //   validation: Yup.string('Choose the order of the filtered response'),
-  // },
-  // perPage: {
-  //   label: 'Results per page',
-  //   section: 'paginate',
-  //   options: {
-  //     values: ['50', '100', '150'],
-  //   },
-  //   component: SelectField,
-  //   validation: Yup.string('Choose number of results per page'),
-  // },
 };
 
 const FilterContributionForm = ({ initialValues, onSubmit, children }) => (

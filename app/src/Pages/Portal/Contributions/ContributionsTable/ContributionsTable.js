@@ -77,7 +77,6 @@ const ContributionsTable = ({ ...props }) => {
   const [sortFilter, setSortFilter] = useState({});
   const [filterOptions, setFilterOptions] = useState({});
   const [paginationOptions, setPaginationOptions] = useState({});
-  const [campaignDataPersistence, setCampaignDataPersistence] = useState({});
 
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
@@ -91,6 +90,7 @@ const ContributionsTable = ({ ...props }) => {
     pageSizeOptions: [20, 50, 100],
     pageSize: paginationOptions.perPage || 50,
     paging: false,
+    draggable: false,
   };
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
@@ -133,8 +133,6 @@ const ContributionsTable = ({ ...props }) => {
       <FilterContribution
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
-        campaignDataPersistence={campaignDataPersistence}
-        setCampaignDataPersistence={setCampaignDataPersistence}
         totalPages={totalPages}
         onFilterUpdate={newFilterOptions => {
           urlQuery = newFilterOptions;
@@ -237,7 +235,6 @@ const ContributionsTable = ({ ...props }) => {
       ...filterOptions,
       ...sortOptions,
     };
-    setCampaignDataPersistence(data);
     props.getContributions(data);
   }
 };
