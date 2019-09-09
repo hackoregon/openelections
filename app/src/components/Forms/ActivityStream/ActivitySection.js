@@ -96,8 +96,8 @@ const fakeData = {
   createdAt: Date.now(),
 };
 
-const getActivities = activities => {
-  const activityList = activities[0];
+const ActivityList = ({ activitiesArray }) => {
+  const activityList = activitiesArray;
   return Object.values(activityList).map((activity, index) => {
     return (
       <div key={index}>
@@ -124,7 +124,9 @@ export const ActivitySection = ({
   <div css={styles.main}>
     <hr css={styles.divider} />
     <h2 css={styles.title}>Transaction History</h2>
-    <ul css={styles.activityList}>{getActivities([activitiesArray])}</ul>
+    <ul css={styles.activityList}>
+      <ActivityList activitiesArray={activitiesArray} />
+    </ul>
     <MessageBox />
   </div>
 );
