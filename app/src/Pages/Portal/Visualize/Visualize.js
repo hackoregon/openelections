@@ -1,18 +1,19 @@
-import * as React from "react";
-import PageHoc from "../../../components/PageHoc/PageHoc";
-import ContributionsData from "./mock-contributions.json";
-import { civicFormat } from "@hackoregon/component-library/dist/utils";
+import * as React from 'react';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   HorizontalBarChart,
   BaseMap,
-  ScreenGridMap
-} from "@hackoregon/component-library";
+  ScreenGridMap,
+} from '@hackoregon/component-library';
 
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { mediaQueryRanges, accents } from "../../../assets/styles/variables";
+import PageHoc from '../../../components/PageHoc/PageHoc';
+import ContributionsData from './mock-contributions.json';
 
-const { numeric, dollars } = civicFormat;
+import { mediaQueryRanges, accents } from '../../../assets/styles/variables';
+
+const { dollars } = civicFormat;
 
 const styles = css`
   .cards-wrapper {
@@ -69,7 +70,7 @@ const titleCase = str =>
   str
     .split(/[_-]/)
     .map(word => word[0].toUpperCase() + word.substr(1))
-    .join(" ");
+    .join(' ');
 
 const summarizeBy = (data, key) =>
   data.reduce((hash, d) => {
@@ -81,23 +82,23 @@ const summarizeBy = (data, key) =>
     return hash;
   }, {});
 
-const arrFromHash = (hash, key = "key", value = "value") =>
+const arrFromHash = (hash, key = 'key', value = 'value') =>
   Object.keys(hash).map(entry => ({
     [key]: titleCase(entry),
-    [value]: hash[entry]
+    [value]: hash[entry],
   }));
 
-const uniqueDonorsCount = data => {
-  var s = new Set();
-  data.forEach(d => s.add(d.matchId || d.contributorName));
-  return s.size;
-};
+// const uniqueDonorsCount = data => {
+//   const s = new Set();
+//   data.forEach(d => s.add(d.matchId || d.contributorName));
+//   return s.size;
+// };
 
 const donationsByContributorType = data =>
-  arrFromHash(summarizeBy(data, "contributionSubType"), "type", "amount");
+  arrFromHash(summarizeBy(data, 'contributionSubType'), 'type', 'amount');
 
 const donationsByContributionType = data =>
-  arrFromHash(summarizeBy(data, "contributorType"), "type", "amount");
+  arrFromHash(summarizeBy(data, 'contributorType'), 'type', 'amount');
 
 const propertiesFrom = data => data.features.map(f => f.properties);
 
@@ -109,12 +110,11 @@ const OceanColorScheme = [
   [29, 145, 192],
   [34, 94, 168],
   [37, 52, 148],
-  [8, 29, 88]
+  [8, 29, 88],
 ];
 
-const VisualizePage = props => {
+const VisualizePage = () => {
   const table = propertiesFrom(ContributionsData);
-  const uniqueDonors = uniqueDonorsCount(table);
   const byContributorType = donationsByContributorType(table);
   const byContributionType = donationsByContributionType(table);
   return (

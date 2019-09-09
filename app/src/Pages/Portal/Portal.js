@@ -8,6 +8,10 @@ import DashboardPage from './Dashboard/Dashboard';
 import ManagePortalPage from './ManagePortal/index';
 import ManageUserPage from './ManagePortal/ManageUser/index';
 import ExpensesPage from './Expenses/index';
+<<<<<<< HEAD
+=======
+import VisualizePage from './Visualize/Visualize';
+>>>>>>> Prettier etc.
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Sidebar from '../../components/Sidebar';
 import WithPermissions from '../../components/WithPermissions';
@@ -28,7 +32,6 @@ const styles = css`
   }
 
   @media ${mediaQueryRanges.largeAndUp} {
-
     .sidebar-wrapper {
       padding-top: 20px;
     }
