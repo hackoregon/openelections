@@ -111,6 +111,19 @@ class ExpensesDetailForm extends React.Component {
             const campaignName = values.campaignName || this.props.campaignName;
             return (
               <>
+                <div className="compliance-reason">
+                  <Button
+                    buttontype="compliance"
+                    onClick={() =>
+                      showModal({
+                        component: 'ComplianceReason',
+                      })
+                    }
+                  >
+                    Fake Compliance Reason Button
+                  </Button>
+                </div>
+                <ComplianceReason />
                 <ViewHeaderSection
                   isCampAdmin={this.props.isCampAdmin}
                   isCampStaff={this.props.isCampStaff}
@@ -139,23 +152,6 @@ class ExpensesDetailForm extends React.Component {
             );
           }}
         </AddExpenseForm>
-        <div className="compliance-reason">
-          <Button
-            buttontype="compliance"
-            onClick={
-              () => {
-                <ComplianceReason />;
-              }
-              // props.dispatch.showModal({
-              //   component: 'Compliance Reason',
-              //   props,
-              // })
-            }
-          >
-            Fake Compliance Reason Button
-          </Button>
-        </div>
-        <ComplianceReason />
       </>
     );
   }

@@ -1,17 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
-import {
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  Radio,
-} from '@material-ui/core';
 import Button from '../../Button/Button';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
 import FormModal from '../../FormModal/FormModal';
-import RadioButtonGroup from '../../Fields/RadioButtons/RadioButtonGroup';
 import ComplianceRadioButtons from './ComplianceRadioButtons';
+import TextField from '../../Fields/TextField';
 /** @jsx jsx */
 
 const complianceReasonStyle = css`
@@ -39,7 +33,7 @@ const modalStyle = css`
   align-items: center;
 `;
 
-const ComplianceReason = props => {
+const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
   return (
     <div css={modalStyle}>
       <FormModal>
@@ -48,6 +42,19 @@ const ComplianceReason = props => {
           <p>Choose Compliance Status</p>
           <>
             <ComplianceRadioButtons />
+            {/* <TextField
+              require={isRequired}
+              id={id}
+              name={id}
+              label="Please explain"
+              type="compliance"
+              helperText={formik.touched[id] ? formik.errors[id] : ''}
+              error={formik.touched[id] && Boolean(formik.error[id])}
+              value={formik.values[id]}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              fullWidth
+            /> */}
           </>
           <div css={buttonContainer}>
             <Button
