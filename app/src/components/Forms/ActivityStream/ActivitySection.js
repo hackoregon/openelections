@@ -7,11 +7,11 @@ const styles = {
   main: css`
     margin-top: 65px;
     margin-right: 34px;
-  `,
-  title: css`
     font-family: Rubik;
     font-style: normal;
     font-weight: normal;
+  `,
+  title: css`
     font-size: 28px;
     line-height: 33px;
     padding-top: 33px;
@@ -30,9 +30,6 @@ const styles = {
     margin-top: 0px;
   `,
   username: css`
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
     font-size: 21px;
     line-height: 25px;
     margin-top: 5px;
@@ -40,9 +37,6 @@ const styles = {
   `,
   reply: css`
     margin-right: 38px;
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
     font-size: 28px;
     line-height: 33px;
     color: #000000;
@@ -54,9 +48,6 @@ const styles = {
     padding: 23px 18px;
   `,
   message: css`
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
     font-size: 28px;
     line-height: 33px;
     color: #979797;
@@ -89,6 +80,9 @@ const styles = {
     height: 1px;
     background-color: #9f9f9f;
   `,
+  activityList: css`
+    padding-left: 0;
+  `,
 };
 
 const fakeData = {
@@ -119,17 +113,8 @@ const getActivities = activities => {
   });
 };
 
-export const ActivitySection = ({
-  formFields,
-  initialValues,
-  // activitiesSwaggerResponse,
-  activitiesArray,
-  ...props
-}) => (
-  <div css={styles.main}>
-    <hr css={styles.divider} />
-    <h2 css={styles.title}>Transaction History</h2>
-    <ul style={{ paddingLeft: '0px' }}>{getActivities([activitiesArray])}</ul>
+const messageBox = () => (
+  <>
     <div css={styles.timelineGroup}>
       <h2 css={styles.reply}>Reply</h2> <div css={styles.timeline} />
     </div>
@@ -141,5 +126,20 @@ export const ActivitySection = ({
         Submit Message to Campaign
       </Link>
     </div>
+  </>
+);
+
+export const ActivitySection = ({
+  formFields,
+  initialValues,
+  // activitiesSwaggerResponse,
+  activitiesArray,
+  ...props
+}) => (
+  <div css={styles.main}>
+    <hr css={styles.divider} />
+    <h2 css={styles.title}>Transaction History</h2>
+    <ul css={styles.activityList}>{getActivities([activitiesArray])}</ul>
+    {messageBox()}
   </div>
 );
