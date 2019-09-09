@@ -113,7 +113,7 @@ class ContributionReadyForm extends React.Component {
           return (
             <>
               <ViewHeaderSection
-                campaignName={this.props.campaignName}
+                campaignName={values.campaignName || this.props.campaignName}
                 isCampAdmin={this.props.isCampAdmin}
                 isCampStaff={this.props.isCampStaff}
                 isValid={isValid}

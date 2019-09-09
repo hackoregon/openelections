@@ -45,6 +45,7 @@ export const mapExpenditureDataToForm = expenditure => {
     notes,
     status,
     updatedAt,
+    campaign,
   } = expenditure;
   return {
     id,
@@ -67,6 +68,7 @@ export const mapExpenditureDataToForm = expenditure => {
     notes: notes || '',
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
+    campaignName: campaign && campaign.name ? campaign.name : null,
   };
 };
 
