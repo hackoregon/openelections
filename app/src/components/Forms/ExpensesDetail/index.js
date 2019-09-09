@@ -104,6 +104,7 @@ class ExpensesDetailForm extends React.Component {
               this.props.flashMessage(value, { props: { variant: 'error' } });
             }
           }
+          const campaignName = values.campaignName || this.props.campaignName;
           return (
             <>
               <ViewHeaderSection
@@ -116,7 +117,7 @@ class ExpensesDetailForm extends React.Component {
                 updatedAt={this.props.data.updatedAt}
                 status={this.props.data.status}
                 formValues={values}
-                campaignName={this.props.campaignName}
+                campaignName={campaignName}
               />
               <BasicsSection
                 isSubmited={isSubmited}

@@ -34,7 +34,9 @@ const columns = isGovAdmin => [
           field: 'campaign',
           title: 'Campaign',
           render: rowData => {
-            return rowData.campaign.name;
+            return rowData && rowData.campaign
+              ? rowData.campaign.name
+              : 'Loading...';
           },
         }
       : {}),
@@ -67,17 +69,23 @@ const ExpensesTable = ({ ...props }) => {
     pageSizeOptions: [20, 50, 100],
     pageSize: 50,
   };
+
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
       props.history.push(`/expenses/${rowData.id}`);
     }),
-    actionInfo(
-      'Add New Expense',
-      'primary',
-      () => props.history.push({ pathname: '/expenses/new' }),
-      true
-    ),
   ];
+  if (!props.isGovAdmin) {
+    actions.push(
+      actionInfo(
+        'Add New Expense',
+        'primary',
+        () => props.history.push({ pathname: '/expenses/new' }),
+        true
+      )
+    );
+  }
+
   const components = {
     // eslint-disable-next-line react/display-name
     Action: props => (
