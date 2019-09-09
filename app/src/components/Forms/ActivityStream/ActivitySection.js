@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import { MessageBox } from './MessageBox';
 
 const styles = {
   main: css`
@@ -113,22 +114,6 @@ const getActivities = activities => {
   });
 };
 
-const messageBox = () => (
-  <>
-    <div css={styles.timelineGroup}>
-      <h2 css={styles.reply}>Reply</h2> <div css={styles.timeline} />
-    </div>
-    <div css={styles.boxAndButton}>
-      <p css={styles.messageBox}>
-        <span css={styles.message}>Message to Campaign</span>
-      </p>
-      <Link to="#" css={styles.sendToCampaignButton}>
-        Submit Message to Campaign
-      </Link>
-    </div>
-  </>
-);
-
 export const ActivitySection = ({
   formFields,
   initialValues,
@@ -140,6 +125,6 @@ export const ActivitySection = ({
     <hr css={styles.divider} />
     <h2 css={styles.title}>Transaction History</h2>
     <ul css={styles.activityList}>{getActivities([activitiesArray])}</ul>
-    {messageBox()}
+    <MessageBox />
   </div>
 );
