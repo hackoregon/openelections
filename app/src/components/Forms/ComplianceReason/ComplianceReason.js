@@ -1,9 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
+import {
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  Radio,
+} from '@material-ui/core';
 import Button from '../../Button/Button';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
 import FormModal from '../../FormModal/FormModal';
+import RadioButtonGroup from '../../Fields/RadioButtons/RadioButtonGroup';
+import ComplianceRadioButtons from './ComplianceRadioButtons';
 /** @jsx jsx */
 
 const complianceReasonStyle = css`
@@ -38,6 +46,9 @@ const ComplianceReason = props => {
         <div css={complianceReasonStyle}>
           <h1 css={complianceReasonTitle}>Out of Compliance Reason </h1>
           <p>Choose Compliance Status</p>
+          <>
+            <ComplianceRadioButtons />
+          </>
           <div css={buttonContainer}>
             <Button
               buttonType="formDefaultOutlined"
@@ -47,11 +58,14 @@ const ComplianceReason = props => {
             </Button>
             <Button
               buttonType="formDefault"
-              onClick={() =>
-                props.complianceReason(
-                  props.location.state.id,
-                  props.location.state.roleId
-                )
+              onClick={
+                () => {
+                  console.log({ props });
+                }
+                // props.complianceReason(
+                //   props.location.state.id,
+                //   props.location.state.roleId
+                // )
               }
             >
               Submit
