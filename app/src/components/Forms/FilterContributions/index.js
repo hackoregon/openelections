@@ -120,7 +120,6 @@ const FilterContribution = props => {
   const defaultValues = {
     status: 'all',
     range: { to: '', from: '' },
-    perPage: '50',
   };
 
   const [initialValues, setInitialValues] = useState({
@@ -129,18 +128,13 @@ const FilterContribution = props => {
       to: urlQuery.to || '',
       from: urlQuery.from || '',
     },
-    perPage: '50',
   });
 
   return (
     <>
       <FilterContributions
         onSubmit={filterOptions => {
-          const data = {
-            perPage: filterOptions.perPage
-              ? parseInt(filterOptions.perPage)
-              : 50,
-          };
+          const data = {};
 
           if (filterOptions.status && filterOptions.status !== 'all') {
             data.status = filterOptions.status;

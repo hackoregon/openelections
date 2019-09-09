@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 import { withRouter } from 'react-router-dom';
+import { TableHead } from '@material-ui/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
-import TablePagination from './TablePagination';
 
+import TablePagination from './TablePagination';
 import {
   getContributions,
   getContributionsList,
@@ -88,7 +89,7 @@ const ContributionsTable = ({ ...props }) => {
     },
     actionsColumnIndex: -1,
     pageSizeOptions: [20, 50, 100],
-    pageSize: filterOptions.perPage || 50,
+    pageSize: paginationOptions.perPage || 50,
     paging: false,
   };
   const actions = [
@@ -158,16 +159,14 @@ const ContributionsTable = ({ ...props }) => {
         }}
       />
       <TablePagination
-        perPage={filterOptions.perPage || 50}
+        perPage={paginationOptions.perPage || 50}
         pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
+        totalRows={props.total}
         totalPages={totalPages}
-        onPageUpdate={newPaginationOptions => {
-          setPageNumber(newPaginationOptions.page);
-          setPaginationOptions(newPaginationOptions);
-          // eslint-disable-next-line no-use-before-define
-          fetchList(filterOptions, sortFilter, newPaginationOptions);
-        }}
+        // eslint-disable-next-line no-use-before-define
+        onChangePage={handleOnChangePage}
+        // eslint-disable-next-line no-use-before-define
+        onChangeRowsPerPage={handleOnRowsPerPageChange}
       />
       <Table
         isLoading={isLoading}
@@ -195,18 +194,39 @@ const ContributionsTable = ({ ...props }) => {
         }}
       />
       <TablePagination
-        perPage={filterOptions.perPage || 50}
+        perPage={paginationOptions.perPage || 50}
         pageNumber={pageNumber}
+        totalRows={props.total}
         totalPages={totalPages}
-        onPageUpdate={newPaginationOptions => {
-          setPageNumber(newPaginationOptions.page);
-          setPaginationOptions(newPaginationOptions);
-          // eslint-disable-next-line no-use-before-define
-          fetchList(filterOptions, sortFilter, newPaginationOptions);
-        }}
+        // eslint-disable-next-line no-use-before-define
+        onChangePage={handleOnChangePage}
+        // eslint-disable-next-line no-use-before-define
+        onChangeRowsPerPage={handleOnRowsPerPageChange}
       />
     </PageHoc>
   );
+
+  function handleOnChangePage(e, newPage) {
+    setPageNumber(newPage);
+    const newPaginationOptions = {
+      page: newPage,
+    };
+
+    setPaginationOptions(newPaginationOptions);
+    // eslint-disable-next-line no-use-before-define
+    fetchList(filterOptions, sortFilter, newPaginationOptions);
+  }
+
+  function handleOnRowsPerPageChange(e) {
+    const perPage = Number(e.target.value);
+    const newPaginationOptions = {
+      perPage,
+    };
+
+    setPaginationOptions(newPaginationOptions);
+    // eslint-disable-next-line no-use-before-define
+    fetchList(filterOptions, sortFilter, newPaginationOptions);
+  }
 
   function fetchList(filterOptions, sortOptions, paginationOptions) {
     const data = {

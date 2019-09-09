@@ -9,6 +9,7 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import MaterialTablePagination from '@material-ui/core/TablePagination/TablePagination';
 import SelectField from '../../../../components/Fields/SelectField';
 import { getContributions } from '../../../../state/ducks/contributions';
 import { isLoggedIn } from '../../../../state/ducks/auth';
@@ -42,7 +43,14 @@ const totalsSection = css`
 `;
 
 const TablePagination = props => {
-  const { pageNumber, totalPages, perPage, onPageUpdate } = props;
+  const {
+    pageNumber,
+    totalPages,
+    totalRows,
+    perPage,
+    onPageUpdate,
+    ...rest
+  } = props;
 
   const prevDisabled = pageNumber <= 0;
   const nextDisabled = totalPages <= pageNumber + 1;
@@ -51,6 +59,24 @@ const TablePagination = props => {
     onPageUpdate({ page: currentPage });
   }
 
+  if (true) {
+    return (
+      <div css={paginateOptions}>
+        <MaterialTablePagination
+          rowsPerPageOptions={[50, 100, 150]}
+          colSpan={6}
+          count={totalRows}
+          rowsPerPage={perPage || 50}
+          page={pageNumber}
+          SelectProps={{
+            inputProps: { 'aria-label': 'rows per page' },
+            native: true,
+          }}
+          {...rest}
+        />
+      </div>
+    );
+  }
   return (
     <>
       <div css={paginateOptions}>
