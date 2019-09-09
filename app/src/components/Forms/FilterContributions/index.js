@@ -112,17 +112,31 @@ const totalsSection = css`
 `;
 
 const FilterContribution = props => {
-  const [pageNumber, setPageNumber] = useState(0);
-  const [campaignDataPersistence, setCampaignDataPersistence] = useState(null);
-  const prevDisabled = pageNumber <= 0;
+  const {
+    location,
+    history,
+    setInitialValues,
+    defaultValues,
+    setPageNumber,
+    pageNumber,
+    prevDisabled,
+    nextDisabled,
+    totalPages,
+    initialValues,
+    campaignDataPersistence,
+    setCampaignDataPersistence,
+  } = props;
+  // const [pageNumber, setPageNumber] = useState(0);
+  // const [campaignDataPersistence, setCampaignDataPersistence] = useState(null);
+  // const prevDisabled = pageNumber <= 0;
   // TODO: update 50 to be dynamic
-  const nextDisabled =
-    props.totalResults <=
-    (pageNumber + 1) *
-      (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
-  const totalPages =
-    props.totalResults /
-    (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
+  // const nextDisabled =
+  //   props.totalResults <=
+  //   (pageNumber + 1) *
+  //     (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
+  // const totalPages =
+  //   props.totalResults /
+  //   (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
   function submitPageChange(currentPage) {
     const data = {
       governmentId: campaignDataPersistence
@@ -153,28 +167,26 @@ const FilterContribution = props => {
     setCampaignDataPersistence(data);
   }
 
-  const { location, history } = props;
-
   // eslint-disable-next-line no-use-before-define
   const urlQuery = getQueryParams(location);
 
-  const defaultValues = {
-    status: 'all',
-    range: { to: '', from: '' },
-    orderBy: '',
-    sortBy: '',
-    perPage: '50',
-  };
-  const [initialValues, setInitialValues] = useState({
-    status: urlQuery.status || defaultValues.status,
-    range: {
-      to: urlQuery.to || '',
-      from: urlQuery.from || '',
-    },
-    orderBy: urlQuery.direction || '',
-    sortBy: urlQuery.field || '',
-    perPage: '50',
-  });
+  // const defaultValues = {
+  //   status: 'all',
+  //   range: { to: '', from: '' },
+  //   orderBy: '',
+  //   sortBy: '',
+  //   perPage: '50',
+  // };
+  // const [initialValues, setInitialValues] = useState({
+  //   status: urlQuery.status || defaultValues.status,
+  //   range: {
+  //     to: urlQuery.to || '',
+  //     from: urlQuery.from || '',
+  //   },
+  //   orderBy: urlQuery.direction || '',
+  //   sortBy: urlQuery.field || '',
+  //   perPage: '50',
+  // });
 
   return (
     <>
