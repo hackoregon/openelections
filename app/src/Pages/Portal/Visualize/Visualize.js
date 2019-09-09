@@ -1,5 +1,6 @@
 import * as React from "react";
 import PageHoc from "../../../components/PageHoc/PageHoc";
+import ContributionsData from "./mock-contributions.json";
 
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
