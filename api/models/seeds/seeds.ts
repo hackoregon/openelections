@@ -1,17 +1,30 @@
-import {getConnection} from 'typeorm';
-import {createUserAsync} from '../../services/userService';
-import {newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll} from '../../test/factories';
-import {addPermissionAsync} from '../../services/permissionService';
-import {UserRole} from '../entity/Permission';
-import {User, UserStatus} from '../../models/entity/User';
-import {Address} from '../../models/entity/Address';
+import { getConnection } from 'typeorm';
+import { createUserAsync } from '../../services/userService';
+import { newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll } from '../../test/factories';
+import { addPermissionAsync } from '../../services/permissionService';
+import { UserRole } from '../entity/Permission';
+import { User, UserStatus } from '../../models/entity/User';
+import { Address } from '../../models/entity/Address';
 import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
-import {addContributionAsync} from '../../services/contributionService';
-import {ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType} from '../entity/Contribution';
+import { addContributionAsync } from '../../services/contributionService';
+import { ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType } from '../entity/Contribution';
 import * as faker from 'faker';
-import {Government} from '../entity/Government';
-import {Campaign} from '../entity/Campaign';
+import { Government } from '../entity/Government';
+import { Campaign } from '../entity/Campaign';
+
+function chunk(array, size) {
+    const chunked_arr = [];
+    for (let i = 0; i < array.length; i++) {
+        const last = chunked_arr[chunked_arr.length - 1];
+        if (!last || last.length === size) {
+            chunked_arr.push([array[i]]);
+        } else {
+            last.push(array[i]);
+        }
+    }
+    return chunked_arr;
+}
 
 export async function seedAddresses() {
     let data: any;
@@ -26,12 +39,21 @@ export async function seedAddresses() {
         skip_empty_lines: true
     });
 
-    return getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(Address)
-        .values(parsed)
-        .execute();
+    const chunks = chunk(parsed, 1000);
+    let i = 0;
+    const promises = [];
+    chunks.forEach((addressArray: any): void => {
+        console.log(`Writing address chunk ${i} of ${chunks.length}`);
+        const query = getConnection()
+            .createQueryBuilder()
+            .insert()
+            .into(Address)
+            .values(addressArray)
+            .execute();
+        promises.push(query);
+        i++;
+    });
+    await Promise.all(promises);
 }
 
 export function addGISBoundaries() {

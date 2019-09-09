@@ -10,47 +10,56 @@ import {
 export class Address {
 
     @Column({
-        name: 'first_name'
+        name: 'first_name',
+        nullable: true,
     })
     firstName: string;
 
     @Column({
-        name: 'last_name'
+        name: 'last_name',
+        nullable: true
     })
     lastName: string;
 
     @Column({
-        name: 'county'
+        name: 'county',
+        nullable: true
     })
     county: string;
 
     @Column({
-        name: 'address_1'
+        name: 'address_1',
+        nullable: true
     })
     address1: string;
 
     @Column({
-        name: 'address_2'
+        name: 'address_2',
+        nullable: true
     })
     address2: string;
 
     @Column({
-        name: 'city'
+        name: 'city',
+        nullable: true
     })
     city: string;
 
     @Column({
-        name: 'state'
+        name: 'state',
+        nullable: true
     })
     state: string;
 
     @Column({
-        name: 'zip_code'
+        name: 'zip_code',
+        nullable: true
     })
     zip: string;
 
     @Column({
-        name: 'zip_plus_four'
+        name: 'zip_plus_four',
+        nullable: true
     })
     zipPlusFour: string;
 
