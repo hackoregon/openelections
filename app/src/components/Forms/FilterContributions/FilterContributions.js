@@ -56,30 +56,30 @@ const fields = {
       }
     ),
   },
-  orderBy: {
-    label: 'Order By',
-    section: 'filter',
-    options: {
-      values: Object.keys(ORDER_OPTIONS).map(key => ({
-        value: ORDER_OPTIONS[key],
-        label: key,
-      })),
-    },
-    component: SelectField,
-    validation: Yup.string('Choose the order of the filtered response'),
-  },
-  sortBy: {
-    label: 'Sort By',
-    section: 'filter',
-    options: {
-      values: Object.keys(SORT_OPTIONS).map(key => ({
-        value: SORT_OPTIONS[key],
-        label: key,
-      })),
-    },
-    component: SelectField,
-    validation: Yup.string('Choose the order of the filtered response'),
-  },
+  // orderBy: {
+  //   label: 'Order By',
+  //   section: 'filter',
+  //   options: {
+  //     values: Object.keys(ORDER_OPTIONS).map(key => ({
+  //       value: ORDER_OPTIONS[key],
+  //       label: key,
+  //     })),
+  //   },
+  //   component: SelectField,
+  //   validation: Yup.string('Choose the order of the filtered response'),
+  // },
+  // sortBy: {
+  //   label: 'Sort By',
+  //   section: 'filter',
+  //   options: {
+  //     values: Object.keys(SORT_OPTIONS).map(key => ({
+  //       value: SORT_OPTIONS[key],
+  //       label: key,
+  //     })),
+  //   },
+  //   component: SelectField,
+  //   validation: Yup.string('Choose the order of the filtered response'),
+  // },
   perPage: {
     label: 'Results per page',
     section: 'paginate',

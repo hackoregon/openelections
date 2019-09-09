@@ -42,45 +42,13 @@ const totalsSection = css`
 `;
 
 const TablePagination = props => {
-  const {
-    setPageNumber,
-    pageNumber,
-    prevDisabled,
-    nextDisabled,
-    totalPages,
-    initialValues,
-    campaignDataPersistence,
-    setCampaignDataPersistence,
-  } = props;
+  const { pageNumber, totalPages, perPage, onPageUpdate } = props;
+
+  const prevDisabled = pageNumber <= 0;
+  const nextDisabled = totalPages <= pageNumber + 1;
 
   function submitPageChange(currentPage) {
-    const data = {
-      governmentId: campaignDataPersistence
-        ? campaignDataPersistence.governmentId
-        : props.govId,
-      currentUserId: campaignDataPersistence
-        ? campaignDataPersistence.currentUserId
-        : props.userId,
-      campaignId: campaignDataPersistence
-        ? campaignDataPersistence.campaignId
-        : props.campaignId,
-      perPage: campaignDataPersistence ? campaignDataPersistence.perPage : 50,
-      page: currentPage,
-    };
-    if (campaignDataPersistence && campaignDataPersistence.status) {
-      data.status = campaignDataPersistence.status;
-    }
-    if (campaignDataPersistence && campaignDataPersistence.from) {
-      data.from = campaignDataPersistence.from;
-    }
-    if (campaignDataPersistence && campaignDataPersistence.to) {
-      data.to = campaignDataPersistence.to;
-    }
-    if (campaignDataPersistence && campaignDataPersistence.sort) {
-      data.sort = campaignDataPersistence.sort;
-    }
-    props.getContributions(data);
-    setCampaignDataPersistence(data);
+    onPageUpdate({ page: currentPage });
   }
 
   return (
@@ -93,7 +61,6 @@ const TablePagination = props => {
               <IconButton
                 aria-label="first page"
                 onClick={() => {
-                  setPageNumber(0);
                   submitPageChange(pageNumber - 1);
                 }}
                 disabled={prevDisabled}
@@ -107,7 +74,6 @@ const TablePagination = props => {
               <IconButton
                 aria-label="previous page"
                 onClick={() => {
-                  setPageNumber(pageNumber - 1);
                   submitPageChange(pageNumber - 1);
                 }}
                 disabled={prevDisabled}
@@ -119,7 +85,7 @@ const TablePagination = props => {
           <div css={totalsSection}>
             <p>
               {pageNumber + 1} {' of '}
-              {Math.ceil(props.totalResults / initialValues.perPage)}
+              {Math.ceil(props.totalResults / perPage)}
               {' pages'}
             </p>
           </div>
@@ -128,7 +94,6 @@ const TablePagination = props => {
               <IconButton
                 aria-label="Next page"
                 onClick={() => {
-                  setPageNumber(pageNumber + 1);
                   submitPageChange(pageNumber + 1);
                 }}
                 disabled={nextDisabled}
@@ -143,9 +108,7 @@ const TablePagination = props => {
                 aria-label="last page"
                 onClick={() => {
                   const total = totalPages;
-                  console.log({ total });
-                  setPageNumber(total);
-                  submitPageChange(total);
+                  submitPageChange(total - 1);
                 }}
                 disabled={nextDisabled}
               >

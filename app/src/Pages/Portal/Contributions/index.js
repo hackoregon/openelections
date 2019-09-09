@@ -27,14 +27,10 @@ class ContributionsPage extends React.Component {
       perPage: 50,
       from: filterOptions.from,
       to: filterOptions.to,
+      status: filterOptions.status,
     };
-    if (filterOptions.field || filterOptions.direction) {
-      data.sort = {
-        field: filterOptions.field,
-        direction: filterOptions.direction,
-      };
-    }
 
+    console.log(data);
     getContributions(data);
   }
 

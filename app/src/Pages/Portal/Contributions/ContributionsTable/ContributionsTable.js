@@ -10,61 +10,74 @@ import Button from '../../../../components/Button/Button';
 import TablePagination from './TablePagination';
 
 import {
+  getContributions,
   getContributionsList,
   getContributionsTotal,
 } from '../../../../state/ducks/contributions';
-import { isCampAdmin, isGovAdmin } from '../../../../state/ducks/auth';
+import {
+  isCampAdmin,
+  isGovAdmin,
+  isLoggedIn,
+} from '../../../../state/ducks/auth';
 
-const columnInfo = (title, field, type = undefined) =>
-  type ? { title, field, type } : { title, field };
+const columnInfo = (title, field, options) => ({ title, field, ...options });
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
     : { icon: 'none', name, buttonType, onClick };
 
-const columns = isGovAdmin => [
-  {
-    field: 'date',
-    title: 'Date',
-    render: rowData =>
-      format(
-        new Date(
-          parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
+const columns = isGovAdmin => {
+  const cols = [
+    {
+      field: 'date',
+      title: 'Date',
+      render: rowData =>
+        format(
+          new Date(
+            parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
+          ),
+          'MM-DD-YYYY'
         ),
-        'MM-DD-YYYY'
-      ),
-  },
-  {
-    ...(isGovAdmin
-      ? {
-          field: 'campaign',
-          title: 'Campaign',
-          render: rowData => {
-            return rowData.campaign.name;
-          },
-        }
-      : {}),
-  },
-  {
-    field: 'name',
-    title: 'Name',
-    render: rowData => {
-      if (
-        rowData.contributorType === 'individual' ||
-        rowData.contributorType === 'family'
-      ) {
-        return `${rowData.firstName} ${rowData.lastName}`;
-      }
-      return rowData.name;
     },
-  },
-  columnInfo('Amount', 'amount', 'currency'),
-  columnInfo('Status', 'status'),
-  // columnInfo("Labels", "NotSet")
-];
+    {
+      field: 'name',
+      title: 'Name',
+      sorting: false,
+      render: rowData => {
+        if (
+          rowData.contributorType === 'individual' ||
+          rowData.contributorType === 'family'
+        ) {
+          return `${rowData.firstName} ${rowData.lastName}`;
+        }
+        return rowData.name;
+      },
+    },
+    columnInfo('Amount', 'amount', { type: 'currency', sorting: false }),
+    columnInfo('Status', 'status'),
+    // columnInfo("Labels", "NotSet")
+  ];
+
+  if (isGovAdmin)
+    cols.splice(1, 0, {
+      field: 'campaign',
+      title: 'Campaign',
+      sorting: false,
+      render: rowData => {
+        return rowData.campaign.name;
+      },
+    });
+
+  return cols;
+};
 
 const ContributionsTable = ({ ...props }) => {
+  const [sortFilter, setSortFilter] = useState({});
+  const [filterOptions, setFilterOptions] = useState({});
+  const [paginationOptions, setPaginationOptions] = useState({});
+  const [campaignDataPersistence, setCampaignDataPersistence] = useState({});
+
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
   const title = `${props.total} Contributions`;
@@ -75,7 +88,7 @@ const ContributionsTable = ({ ...props }) => {
     },
     actionsColumnIndex: -1,
     pageSizeOptions: [20, 50, 100],
-    pageSize: 50,
+    pageSize: filterOptions.perPage || 50,
     paging: false,
   };
   const actions = [
@@ -107,53 +120,54 @@ const ContributionsTable = ({ ...props }) => {
   };
 
   // eslint-disable-next-line no-use-before-define
-  const urlQuery = getQueryParams(props.location);
-  const defaultValues = {
-    status: 'all',
-    range: { to: '', from: '' },
-    orderBy: '',
-    sortBy: '',
-    perPage: '50',
-  };
-  const [initialValues, setInitialValues] = useState({
-    status: urlQuery.status || defaultValues.status,
-    range: {
-      to: urlQuery.to || '',
-      from: urlQuery.from || '',
-    },
-    orderBy: urlQuery.direction || '',
-    sortBy: urlQuery.field || '',
-    perPage: '50',
-  });
+  let urlQuery = getQueryParams(props.location);
+
   const [pageNumber, setPageNumber] = useState(0);
-  const [campaignDataPersistence, setCampaignDataPersistence] = useState(null);
-  const prevDisabled = pageNumber <= 0;
-  const nextDisabled =
-    props.total <=
-    (pageNumber + 1) *
-      (campaignDataPersistence ? campaignDataPersistence.perPage : 50);
-  const totalPages = Math.floor(
-    props.total /
-      (campaignDataPersistence ? campaignDataPersistence.perPage : 50)
-  );
-  useEffect(() => {
-    console.log({ initialValues });
-  });
+
+  const totalPages = Math.ceil(props.total / (filterOptions.perPage || 50));
 
   return (
     <PageHoc>
       <h1>Contributions</h1>
       <FilterContribution
-        initialValues={initialValues}
-        setInitialValues={setInitialValues}
-        defaultValues={defaultValues}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
         campaignDataPersistence={campaignDataPersistence}
         setCampaignDataPersistence={setCampaignDataPersistence}
-        prevDisabled={prevDisabled}
-        nextDisabled={nextDisabled}
         totalPages={totalPages}
+        onFilterUpdate={newFilterOptions => {
+          urlQuery = newFilterOptions;
+          setFilterOptions(newFilterOptions);
+          setPageNumber(0);
+
+          props.history.push(
+            // eslint-disable-next-line no-use-before-define
+            `${props.location.pathname}?${makeIntoQueryParams(urlQuery)}`
+          );
+          // eslint-disable-next-line no-use-before-define
+          fetchList(newFilterOptions, sortFilter, { page: 0 });
+        }}
+        onPageUpdate={currentPage => {
+          const newPaginationOptions = {
+            page: currentPage,
+          };
+
+          setPaginationOptions(newPaginationOptions);
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortFilter, newPaginationOptions);
+        }}
+      />
+      <TablePagination
+        perPage={filterOptions.perPage || 50}
+        pageNumber={pageNumber}
+        setPageNumber={setPageNumber}
+        totalPages={totalPages}
+        onPageUpdate={newPaginationOptions => {
+          setPageNumber(newPaginationOptions.page);
+          setPaginationOptions(newPaginationOptions);
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortFilter, newPaginationOptions);
+        }}
       />
       <Table
         isLoading={isLoading}
@@ -163,21 +177,49 @@ const ContributionsTable = ({ ...props }) => {
         actions={actions}
         components={components}
         data={props.contributionList}
+        onOrderChange={(item, direction) => {
+          const column = columns(props.isGovAdmin)[item];
+          let sortOptions = {};
+          if (column) {
+            sortOptions = {
+              sort: {
+                field: column.field,
+                direction: direction.toUpperCase(),
+              },
+            };
+          }
+
+          setSortFilter(sortOptions);
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortOptions, paginationOptions);
+        }}
       />
       <TablePagination
-        initialValues={initialValues}
-        setInitialValues={setInitialValues}
-        defaultValues={defaultValues}
+        perPage={filterOptions.perPage || 50}
         pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
-        campaignDataPersistence={campaignDataPersistence}
-        setCampaignDataPersistence={setCampaignDataPersistence}
-        prevDisabled={prevDisabled}
-        nextDisabled={nextDisabled}
         totalPages={totalPages}
+        onPageUpdate={newPaginationOptions => {
+          setPageNumber(newPaginationOptions.page);
+          setPaginationOptions(newPaginationOptions);
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortFilter, newPaginationOptions);
+        }}
       />
     </PageHoc>
   );
+
+  function fetchList(filterOptions, sortOptions, paginationOptions) {
+    const data = {
+      governmentId: props.govId,
+      currentUserId: props.userId,
+      campaignId: props.campaignId,
+      ...paginationOptions,
+      ...filterOptions,
+      ...sortOptions,
+    };
+    setCampaignDataPersistence(data);
+    props.getContributions(data);
+  }
 };
 
 function getQueryParams(location) {
@@ -194,10 +236,29 @@ function getQueryParams(location) {
   return result;
 }
 
-export default connect(state => ({
-  isCampAdmin: isCampAdmin(state),
-  isGovAdmin: isGovAdmin(state),
-  isListLoading: state.campaigns.isLoading,
-  contributionList: getContributionsList(state),
-  total: state.contributions.total,
-}))(withRouter(ContributionsTable));
+function makeIntoQueryParams(paramsObject) {
+  return Object.keys(paramsObject)
+    .map(param => `${param}=${paramsObject[param]}`)
+    .join('&');
+}
+
+export default connect(
+  state => ({
+    isCampAdmin: isCampAdmin(state),
+    isGovAdmin: isGovAdmin(state),
+    isListLoading: state.campaigns.isLoading,
+    contributionList: getContributionsList(state),
+    orgId:
+      state.campaigns.currentCampaignId ||
+      state.governments.currentGovernmentId,
+    campaignId: state.campaigns.currentCampaignId,
+    govId: state.governments.currentGovernmentId || 1,
+    userId: isLoggedIn(state) ? state.auth.me.id : null,
+    total: state.contributions.total,
+  }),
+  dispatch => {
+    return {
+      getContributions: data => dispatch(getContributions(data)),
+    };
+  }
+)(withRouter(ContributionsTable));
