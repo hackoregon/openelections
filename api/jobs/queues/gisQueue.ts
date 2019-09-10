@@ -2,7 +2,13 @@ import * as Bull from 'bull';
 
 import config from './config';
 import { renderError } from '../helpers/addJobs';
-const queue = new Bull('gis-queue', config.redis);
+
+const queue = (() => {
+    if (process.env.NODE_ENV !== 'test') {
+        return new Bull('gis-queue', config.redis);
+    }
+    return;
+})();
 
 queue
     .on('waiting', (jobId) => console.debug(`waiting id=${jobId}`))

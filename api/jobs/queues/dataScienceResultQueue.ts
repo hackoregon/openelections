@@ -2,10 +2,14 @@ import * as Bull from 'bull';
 import config from './config';
 import { renderError } from '../helpers/addJobs';
 
+const queue = (() => {
+    if (process.env.NODE_ENV !== 'test') {
+        return new Bull('ds-results-retriever', config.redis);
+    }
+    return;
+})();
 
-const dataScienceResultQueue = new Bull('ds-results-retriever', config.redis);
-
-dataScienceResultQueue
+queue
     .on('waiting', (jobId) => console.debug(`waiting id=${jobId}`))
     .on('active', (job) => console.debug(`active id=${job.id}`))
     .on('completed', (job, result) => console.debug(`completed(${result}) id=${job.id}`))
@@ -14,4 +18,4 @@ dataScienceResultQueue
     .on('stalled', (job) => console.warn(`stalled id=${job.id}`));
 
 
-export default dataScienceResultQueue;
+export default queue;
