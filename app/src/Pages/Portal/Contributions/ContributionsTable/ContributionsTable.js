@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 import { withRouter } from 'react-router-dom';
-import { TableHead } from '@material-ui/core';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
@@ -77,7 +76,12 @@ const columns = isGovAdmin => {
 };
 
 const ContributionsTable = ({ ...props }) => {
-  const [sortFilter, setSortFilter] = useState({});
+  const [sortFilter, setSortFilter] = useState({
+    sort: {
+      field: 'date',
+      direction: 'DESC',
+    },
+  });
   const [filterOptions, setFilterOptions] = useState({});
   const [paginationOptions, setPaginationOptions] = useState({
     perPage: 50,
@@ -105,8 +109,6 @@ const ContributionsTable = ({ ...props }) => {
   // eslint-disable-next-line no-use-before-define
   let urlQuery = getQueryParams(props.location);
 
-  const totalPages = Math.ceil(props.total / (filterOptions.perPage || 50));
-
   const components = {
     // eslint-disable-next-line react/display-name
     Action: props => (
@@ -126,7 +128,6 @@ const ContributionsTable = ({ ...props }) => {
         onChangePage={handleOnChangePage}
         // eslint-disable-next-line no-use-before-define
         onRowsPerPageChange={handleOnChangePage}
-        totalPages={totalPages}
         action={
           props.isCampAdmin ? (
             <Button
@@ -191,7 +192,6 @@ const ContributionsTable = ({ ...props }) => {
         perPage={paginationOptions.perPage}
         pageNumber={paginationOptions.page}
         totalRows={props.total}
-        totalPages={totalPages}
         // eslint-disable-next-line no-use-before-define
         onChangePage={handleOnChangePage}
         // eslint-disable-next-line no-use-before-define
@@ -203,6 +203,7 @@ const ContributionsTable = ({ ...props }) => {
   function handleOnChangePage(e, newPage) {
     const newPaginationOptions = {
       page: newPage,
+      perPage: paginationOptions.perPage,
     };
 
     setPaginationOptions(newPaginationOptions);
@@ -234,11 +235,10 @@ const ContributionsTable = ({ ...props }) => {
   }
 };
 
-function TableToolbar(props) {
+export function TableToolbar(props) {
   const {
     paginationOptions,
     totalRows,
-    totalPages,
     onChangePage,
     onRowsPerPageChange,
   } = props;
@@ -260,7 +260,6 @@ function TableToolbar(props) {
           perPage={paginationOptions.perPage || 50}
           pageNumber={paginationOptions.page}
           totalRows={totalRows}
-          totalPages={totalPages}
           // eslint-disable-next-line no-use-before-define
           onChangePage={onChangePage}
           // eslint-disable-next-line no-use-before-define

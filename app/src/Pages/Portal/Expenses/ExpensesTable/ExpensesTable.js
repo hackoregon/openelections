@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
-// import WithAdminPermissions from '../../../../components/WithAdminPermissions';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
+  getExpenditures,
   getExpendituresList,
   getExpendituresTotal,
 } from '../../../../state/ducks/expenditures';
-import { isGovAdmin } from '../../../../state/ducks/auth';
+import {
+  isCampAdmin,
+  isGovAdmin,
+  isLoggedIn,
+} from '../../../../state/ducks/auth';
+import FilterExpenses from '../../../../components/Forms/FilterExpenses';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -61,34 +66,33 @@ const columns = isGovAdmin => [
 ];
 
 const ExpensesTable = ({ ...props }) => {
+  const [sortFilter, setSortFilter] = useState({
+    sort: {
+      field: 'date',
+      direction: 'DESC',
+    },
+  });
+  const [filterOptions, setFilterOptions] = useState({});
+  const [paginationOptions, setPaginationOptions] = useState({
+    perPage: 50,
+    page: 0,
+  });
+
   const isLoading =
     props.isListLoading && !Array.isArray(props.expendituresList);
-  const title = `${props.total} Submitted Expenditures`;
+
   const options = {
-    search: false,
-    actionCellStyle: {
-      color: 'blue',
-    },
-    actionsColumnIndex: -1,
-    pageSizeOptions: [20, 50, 100],
-    pageSize: 50,
+    pageSize: paginationOptions.perPage,
   };
+
+  // eslint-disable-next-line no-use-before-define
+  let urlQuery = getQueryParams(props.location);
 
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
       props.history.push(`/expenses/${rowData.id}`);
     }),
   ];
-  if (!props.isGovAdmin) {
-    actions.push(
-      actionInfo(
-        'Add New Expense',
-        'primary',
-        () => props.history.push({ pathname: '/expenses/new' }),
-        true
-      )
-    );
-  }
 
   const components = {
     // eslint-disable-next-line react/display-name
@@ -103,25 +107,143 @@ const ExpensesTable = ({ ...props }) => {
       // </WithAdminPermissions>
     ),
   };
+
+  console.log(props.expendituresList);
+
   return (
     <PageHoc>
       <h1>Expenses</h1>
+      <FilterExpenses
+        onFilterUpdate={newFilterOptions => {
+          urlQuery = newFilterOptions;
+          setFilterOptions(newFilterOptions);
+
+          props.history.push(
+            // eslint-disable-next-line no-use-before-define
+            `${props.location.pathname}?${makeIntoQueryParams(urlQuery)}`
+          );
+          // eslint-disable-next-line no-use-before-define
+          fetchList(newFilterOptions, sortFilter, { page: 0 });
+        }}
+      />
       <Table
         isLoading={isLoading}
-        title={title}
+        showTitle={false}
         columns={columns(props.isGovAdmin)}
         options={options}
         actions={actions}
         components={components}
         data={props.expendituresList}
+        pagination
+        onOrderChange={(item, direction) => {
+          const column = columns(props.isGovAdmin)[item];
+          let sortOptions = {};
+          if (column) {
+            sortOptions = {
+              sort: {
+                field: column.field,
+                direction: direction.toUpperCase(),
+              },
+            };
+          }
+
+          setSortFilter(sortOptions);
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortOptions, paginationOptions);
+        }}
+        perPage={paginationOptions.perPage}
+        pageNumber={paginationOptions.page}
+        totalRows={props.total}
+        // eslint-disable-next-line no-use-before-define
+        onChangePage={handleOnChangePage}
+        // eslint-disable-next-line no-use-before-define
+        onChangeRowsPerPage={handleOnRowsPerPageChange}
+        toolbarAction={
+          !props.isGovAdmin ? (
+            <Button
+              buttonType="primary"
+              onClick={() => props.history.push({ pathname: '/expenses/new' })}
+            >
+              Add New Expense
+            </Button>
+          ) : null
+        }
       />
     </PageHoc>
   );
+
+  function handleOnChangePage(e, newPage) {
+    const newPaginationOptions = {
+      page: newPage,
+      perPage: paginationOptions.perPage,
+    };
+
+    setPaginationOptions(newPaginationOptions);
+    // eslint-disable-next-line no-use-before-define
+    fetchList(filterOptions, sortFilter, newPaginationOptions);
+  }
+
+  function handleOnRowsPerPageChange(e) {
+    const perPage = Number(e.target.value);
+    const newPaginationOptions = {
+      perPage,
+      page: 0,
+    };
+    setPaginationOptions(newPaginationOptions);
+    // eslint-disable-next-line no-use-before-define
+    fetchList(filterOptions, sortFilter, newPaginationOptions);
+  }
+
+  function fetchList(filterOptions, sortOptions, paginationOptions) {
+    const data = {
+      governmentId: props.govId,
+      currentUserId: props.userId,
+      campaignId: props.campaignId,
+      ...paginationOptions,
+      ...filterOptions,
+      ...sortOptions,
+    };
+    props.getExpenditures(data);
+  }
 };
 
-export default connect(state => ({
-  isListLoading: state.campaigns.isLoading,
-  expendituresList: getExpendituresList(state),
-  total: getExpendituresTotal(state),
-  isGovAdmin: isGovAdmin(state),
-}))(ExpensesTable);
+function getQueryParams(location) {
+  const rawParams = location.search.replace(/^\?/, '');
+  const result = {};
+
+  rawParams.split('&').forEach(item => {
+    if (item) {
+      const [key, val] = item.split('=');
+      result[key] = val;
+    }
+  });
+
+  return result;
+}
+
+function makeIntoQueryParams(paramsObject) {
+  return Object.keys(paramsObject)
+    .map(param => `${param}=${paramsObject[param]}`)
+    .join('&');
+}
+
+export default connect(
+  state => ({
+    isListLoading: state.campaigns.isLoading,
+    expendituresList: getExpendituresList(state),
+    total: getExpendituresTotal(state),
+    isGovAdmin: isGovAdmin(state),
+    isCampAdmin: isCampAdmin(state),
+    orgId:
+      state.campaigns.currentCampaignId ||
+      state.governments.currentGovernmentId,
+    campaignId: state.campaigns.currentCampaignId,
+    govId: state.governments.currentGovernmentId || 1,
+    userId: isLoggedIn(state) ? state.auth.me.id : null,
+  }),
+  dispatch => {
+    return {
+      getExpenditures: data => dispatch(getExpenditures(data)),
+    };
+  }
+)(ExpensesTable);
