@@ -5,16 +5,15 @@ import { css, jsx } from '@emotion/core';
 import MaterialTablePagination from '@material-ui/core/TablePagination/TablePagination';
 
 const paginateOptions = css`
-  margin: 10px 0;
-  display: flex;
-  justify-content: flex-end;
-  > div {
-    max-width: 25%;
+  .MuiToolbar-root,
+  .MuiTablePagination-root {
+    padding-left: 0;
+    border-bottom: none;
   }
-  @media screen and (max-width: 900px) {
-    > div {
-      max-width: 50%;
-    }
+
+  .MuiTablePagination-caption,
+  .MuiTablePagination-selectRoot {
+    font-size: 14px;
   }
 `;
 
@@ -25,7 +24,6 @@ const TablePagination = props => {
     <div css={paginateOptions}>
       <MaterialTablePagination
         rowsPerPageOptions={[50, 100, 150]}
-        colSpan={6}
         count={totalRows}
         rowsPerPage={perPage || 50}
         page={pageNumber}
