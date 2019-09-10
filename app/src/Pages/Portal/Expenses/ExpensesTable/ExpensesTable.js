@@ -54,6 +54,10 @@ const columns = isGovAdmin => [
     field: 'paymentMethod',
     title: 'Payment',
   },
+  {
+    field: 'status',
+    title: 'Status',
+  },
 ];
 
 const ExpensesTable = ({ ...props }) => {
