@@ -20,6 +20,8 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import TablePagination from './TablePagination';
+import { TableToolbar } from './TableToolbar';
 
 const tableWrapper = css`
   width: 100%;
@@ -52,6 +54,16 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
+const tableOptions = {
+  search: false,
+  draggable: false,
+  actionCellStyle: {
+    color: 'blue',
+  },
+  actionsColumnIndex: -1,
+  paging: false,
+};
+
 const Table = ({
   title,
   columns,
@@ -62,6 +74,12 @@ const Table = ({
   components,
   localization,
   isLoading,
+  perPage,
+  pageNumber,
+  totalRows,
+  onChangePage,
+  onChangeRowsPerPage,
+  toolbarAction,
   ...rest
 }) => (
   <div css={tableWrapper}>
@@ -71,12 +89,35 @@ const Table = ({
       data={data}
       editable={editable}
       icons={tableIcons}
-      options={options}
+      options={{ ...options, ...tableOptions }}
       actions={actions}
-      components={components}
+      components={{
+        Toolbar: toolBarProps => (
+          <TableToolbar
+            paginationOptions={{ page: pageNumber, perPage }}
+            totalRows={totalRows}
+            // eslint-disable-next-line no-use-before-define
+            onChangePage={onChangePage}
+            // eslint-disable-next-line no-use-before-define
+            onRowsPerPageChange={onChangeRowsPerPage}
+            action={toolbarAction}
+            {...toolBarProps}
+          />
+        ),
+        ...components,
+      }}
       localization={localization}
       isLoading={isLoading}
       {...rest}
+    />
+    <TablePagination
+      perPage={perPage}
+      pageNumber={pageNumber}
+      totalRows={totalRows}
+      // eslint-disable-next-line no-use-before-define
+      onChangePage={onChangePage}
+      // eslint-disable-next-line no-use-before-define
+      onChangeRowsPerPage={onChangeRowsPerPage}
     />
   </div>
 );

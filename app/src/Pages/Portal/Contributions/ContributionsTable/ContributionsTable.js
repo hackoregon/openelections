@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 import { withRouter } from 'react-router-dom';
-import { TableHead } from '@material-ui/core';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
@@ -11,7 +10,7 @@ import FilterContribution from '../../../../components/Forms/FilterContributions
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 
-import TablePagination from './TablePagination';
+import TablePagination from '../../../../components/Table/TablePagination';
 import {
   getContributions,
   getContributionsList,
@@ -77,7 +76,12 @@ const columns = isGovAdmin => {
 };
 
 const ContributionsTable = ({ ...props }) => {
-  const [sortFilter, setSortFilter] = useState({});
+  const [sortFilter, setSortFilter] = useState({
+    sort: {
+      field: 'date',
+      direction: 'DESC',
+    },
+  });
   const [filterOptions, setFilterOptions] = useState({});
   const [paginationOptions, setPaginationOptions] = useState({
     perPage: 50,
@@ -86,16 +90,11 @@ const ContributionsTable = ({ ...props }) => {
 
   const isLoading =
     props.isListLoading && !Array.isArray(props.contributionList);
+
   const options = {
-    search: false,
-    actionCellStyle: {
-      color: 'blue',
-    },
-    actionsColumnIndex: -1,
     pageSize: paginationOptions.perPage,
-    paging: false,
-    draggable: false,
   };
+
   const actions = [
     actionInfo('View', 'primary', (event, rowData) => {
       props.history.push(`/contributions/${rowData.id}`);
@@ -104,8 +103,6 @@ const ContributionsTable = ({ ...props }) => {
 
   // eslint-disable-next-line no-use-before-define
   let urlQuery = getQueryParams(props.location);
-
-  const totalPages = Math.ceil(props.total / (filterOptions.perPage || 50));
 
   const components = {
     // eslint-disable-next-line react/display-name
@@ -116,31 +113,6 @@ const ContributionsTable = ({ ...props }) => {
       >
         {props.action.name}
       </Button>
-    ),
-    // eslint-disable-next-line no-use-before-define
-    Toolbar: toolBarProps => (
-      <TableToolbar
-        paginationOptions={paginationOptions}
-        totalRows={props.total}
-        // eslint-disable-next-line no-use-before-define
-        onChangePage={handleOnChangePage}
-        // eslint-disable-next-line no-use-before-define
-        onRowsPerPageChange={handleOnChangePage}
-        totalPages={totalPages}
-        action={
-          props.isCampAdmin ? (
-            <Button
-              buttonType="primary"
-              onClick={() =>
-                props.history.push({ pathname: '/contributions/add' })
-              }
-            >
-              Add New Contribution
-            </Button>
-          ) : null
-        }
-        {...toolBarProps}
-      />
     ),
   };
 
@@ -186,16 +158,25 @@ const ContributionsTable = ({ ...props }) => {
           // eslint-disable-next-line no-use-before-define
           fetchList(filterOptions, sortOptions, paginationOptions);
         }}
-      />
-      <TablePagination
         perPage={paginationOptions.perPage}
         pageNumber={paginationOptions.page}
         totalRows={props.total}
-        totalPages={totalPages}
         // eslint-disable-next-line no-use-before-define
         onChangePage={handleOnChangePage}
         // eslint-disable-next-line no-use-before-define
         onChangeRowsPerPage={handleOnRowsPerPageChange}
+        toolbarAction={
+          props.isCampAdmin ? (
+            <Button
+              buttonType="primary"
+              onClick={() =>
+                props.history.push({ pathname: '/contributions/add' })
+              }
+            >
+              Add New Contribution
+            </Button>
+          ) : null
+        }
       />
     </PageHoc>
   );
@@ -203,6 +184,7 @@ const ContributionsTable = ({ ...props }) => {
   function handleOnChangePage(e, newPage) {
     const newPaginationOptions = {
       page: newPage,
+      perPage: paginationOptions.perPage,
     };
 
     setPaginationOptions(newPaginationOptions);
@@ -233,44 +215,6 @@ const ContributionsTable = ({ ...props }) => {
     props.getContributions(data);
   }
 };
-
-function TableToolbar(props) {
-  const {
-    paginationOptions,
-    totalRows,
-    totalPages,
-    onChangePage,
-    onRowsPerPageChange,
-  } = props;
-
-  const wrapperStyles = css`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    @media ${mediaQueryRanges.smallAndDown} {
-      flex-direction: column-reverse;
-      justify-content: center;
-    }
-  `;
-  return (
-    <div css={wrapperStyles}>
-      <div>
-        <TablePagination
-          perPage={paginationOptions.perPage || 50}
-          pageNumber={paginationOptions.page}
-          totalRows={totalRows}
-          totalPages={totalPages}
-          // eslint-disable-next-line no-use-before-define
-          onChangePage={onChangePage}
-          // eslint-disable-next-line no-use-before-define
-          onChangeRowsPerPage={onRowsPerPageChange}
-        />
-      </div>
-      <div>{props.action}</div>
-    </div>
-  );
-}
 
 function getQueryParams(location) {
   const rawParams = location.search.replace(/^\?/, '');
