@@ -10,3 +10,11 @@ export async function addGisJob(jobData: {id: number}) {
     await gisQueue.add(jobData);
     return;
 }
+
+export function renderError(e: Error): any {
+    return {
+        stack: e.stack,
+        message: e.message,
+        name: e.name
+    };
+}
