@@ -131,6 +131,25 @@ export const actionCreators = {
   },
 };
 
+export function logout() {
+  return dispatch => {
+    dispatch(actionCreators.me.success(null));
+    dispatch(resetContributionState());
+    dispatch(resetExpenditureState());
+    dispatch(resetUserState());
+    dispatch(resetCampaignState());
+    dispatch(resetPermissionState());
+    if (!window.location.hostname.includes('localhost')) {
+      document.cookie =
+        'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    } else {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+
+    dispatch(push('/sign-in'));
+  };
+}
+
 // Side Effects, e.g. thunks
 export function me() {
   return async (dispatch, getState, { api }) => {
@@ -141,6 +160,9 @@ export function me() {
     dispatch(actionCreators.me.request());
     try {
       const me = await api.me();
+      if (me.message && me.message === 'Token expired or incorrect') {
+        dispatch(logout);
+      }
       if (me && me.permissions) {
         const campaignPermission = me.permissions.filter(permission => {
           return (permission.type = 'campaign');
@@ -211,25 +233,6 @@ export function login(email, password) {
         flashMessage(`Signin Error - ${error}`, { props: { variant: 'error' } })
       );
     }
-  };
-}
-
-export function logout() {
-  return dispatch => {
-    dispatch(actionCreators.me.success(null));
-    dispatch(resetContributionState());
-    dispatch(resetExpenditureState());
-    dispatch(resetUserState());
-    dispatch(resetCampaignState());
-    dispatch(resetPermissionState());
-    if (!window.location.hostname.includes('localhost')) {
-      document.cookie =
-        'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    } else {
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    }
-
-    dispatch(push('/sign-in'));
   };
 }
 
@@ -338,6 +341,7 @@ export function redirectToLogin() {
   };
 }
 
+// TODO Dispatch this function from thunks to redirect on stale auth cookies
 export function checkForUnauthorizedResponse(response) {
   return dispatch => {
     if (response.status === 401 || response.status === 422) {
@@ -361,7 +365,7 @@ export const isAdmin = state => {
 };
 
 export const getMeRole = (state, role = 'campaign_admin') => {
-  if (state.auth.me) {
+  if (state.auth.me && state.auth.me.permissions) {
     return !!state.auth.me.permissions.find(permission => {
       return permission.role === role;
     });
@@ -380,7 +384,7 @@ export const isCampStaff = state => {
 };
 
 export const getGovOrCampIdAttributes = state => {
-  if (state.auth.me) {
+  if (state.auth.me && state.auth.me.permissions) {
     const { governmentId = 1, campaignId } = state.auth.me.permissions[0];
     return { governmentId, campaignId };
   }
@@ -395,7 +399,7 @@ export const getCurrentUserId = state => {
 
 // TODO: Assumes only one campaign. Add setter and adjust default to [0] permission
 export const getCurrentCampaignId = state => {
-  if (state.auth.me) {
+  if (state.auth.me && state.auth.me.permissions) {
     if (state.auth.me.permissions[0] && state.auth.me.permissions[0].campaignId)
       return state.auth.me.permissions[0].campaignId;
   }
@@ -403,7 +407,7 @@ export const getCurrentCampaignId = state => {
 };
 
 export const getCurrentCampaignName = state => {
-  if (state.auth.me) {
+  if (state.auth.me && state.auth.me.permissions) {
     if (
       state.auth.me.permissions[0] &&
       state.auth.me.permissions[0].campaignName
