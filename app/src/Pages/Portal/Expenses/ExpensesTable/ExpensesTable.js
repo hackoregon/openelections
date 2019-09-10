@@ -78,6 +78,8 @@ const ExpensesTable = ({ ...props }) => {
     page: 0,
   });
 
+  const title = `${props.total} Contributions`;
+
   const isLoading =
     props.isListLoading && !Array.isArray(props.expendituresList);
 
@@ -127,6 +129,7 @@ const ExpensesTable = ({ ...props }) => {
       <Table
         isLoading={isLoading}
         showTitle={false}
+        title={title}
         columns={columns(props.isGovAdmin)}
         options={options}
         actions={actions}
