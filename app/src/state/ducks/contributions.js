@@ -220,7 +220,6 @@ export function getContributions(contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
-
       if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);
