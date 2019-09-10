@@ -119,7 +119,7 @@ export function createExpenditure(expenditureAttrs) {
         dispatch(addExpenditureEntities(data.entities));
         dispatch(actionCreators.createExpenditure.success());
         dispatch(
-          flashMessage(`Contribution Added`, {
+          flashMessage(`Expenditure Added`, {
             props: { variant: 'success' },
           })
         );
@@ -146,12 +146,30 @@ export function updateExpenditure(expenditureAttrs) {
     try {
       const response = await api.updateExpenditure(expenditureAttrs);
       if (response.status === 204) {
+        let status = '';
+        if (expenditureAttrs.status) {
+          status = expenditureAttrs.status;
+        }
         dispatch(actionCreators.updateExpenditure.success());
+        dispatch(
+          flashMessage(`Expenditure Updated ${status}`, {
+            props: { variant: 'success' },
+          })
+        );
       } else {
         dispatch(actionCreators.updateExpenditure.failure());
+        const error = await response.json();
+        dispatch(
+          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+        );
+        return error;
       }
     } catch (error) {
       dispatch(actionCreators.updateExpenditure.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
+      return error;
     }
   };
 }
