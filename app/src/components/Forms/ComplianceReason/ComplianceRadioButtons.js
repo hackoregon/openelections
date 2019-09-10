@@ -20,7 +20,9 @@ const ComplianceRadioButtons = () => {
         <RadioGroup
           aria-label="compliance"
           name="Compliance"
-          onChange={console.log('hi')}
+          onChange={console.log(
+            '1. grab value and add as initial text in text field 2. create a comment with th reason using post comment expenditure duck'
+          )}
         >
           {/* the values should match the API status type for expenditures */}
           <FormControlLabel

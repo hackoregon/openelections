@@ -17,6 +17,7 @@ export default function SplitButton() {
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
+  //   Hook it up to the expenditure update duck, with the status field populated. - KELLY
   function handleClick() {
     let value = null;
     switch (options[selectedIndex]) {
@@ -30,6 +31,10 @@ export default function SplitButton() {
         break;
       case 'Out of Compliance':
         value = ExpenditureStatusEnum.OUT_OF_COMPLIANCE;
+        // onClick={() =>
+        //     this.props.showModal({
+        //       component: 'ComplianceReason',
+        //     })
         alert(
           `The modal should pop up because you clicked ${options[selectedIndex]}`
         );

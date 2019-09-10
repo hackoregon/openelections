@@ -31,6 +31,8 @@ const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
         <p>Choose Compliance Status</p>
         <>
           <ComplianceRadioButtons />
+          <p>Please explain:</p>
+          <p>Add textfield here</p>
           {/* <TextField
               require={isRequired}
               id={id}
@@ -54,6 +56,7 @@ const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
           </Button>
           <Button
             buttonType="formDefault"
+            // disable if textfield is blank
             onClick={
               () => {
                 console.log({ props });
