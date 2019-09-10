@@ -22,6 +22,7 @@ import {
   isGovAdmin,
   isLoggedIn,
 } from '../../../../state/ducks/auth';
+import { mediaQueryRanges } from '../../../../assets/styles/variables';
 
 const columnInfo = (title, field, options) => ({ title, field, ...options });
 
@@ -246,6 +247,11 @@ function TableToolbar(props) {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media ${mediaQueryRanges.smallAndDown} {
+      flex-direction: column-reverse;
+      justify-content: center;
+    }
   `;
   return (
     <div css={wrapperStyles}>
