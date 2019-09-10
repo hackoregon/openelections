@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 import Button from '../../Button/Button';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
+import Form from '../../Form/Form';
 import FormModal from '../../FormModal/FormModal';
 import ComplianceRadioButtons from './ComplianceRadioButtons';
 import TextField from '../../Fields/TextField';
@@ -23,8 +24,26 @@ const complianceReasonTitle = css`
   font-size: 24px;
 `;
 
-const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
-  return (
+const fields = {
+  complianceReason: {
+    label: 'Role',
+    component: TextField,
+    // validation: Yup.string('Please explain').required(
+    //   'An explanation is required'
+    // ),
+  },
+};
+
+const ComplianceReason = ({
+  id,
+  label,
+  formik,
+  isRequired,
+  initialValues,
+  handleSubmit,
+  ...props
+}) => (
+  <Form fields={fields} initialValues={initialValues} onSubmit={handleSubmit}>
     <FormModal>
       <div css={complianceReasonStyle}>
         <h1 css={complianceReasonTitle}>Out of Compliance Reason </h1>
@@ -33,19 +52,7 @@ const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
           <ComplianceRadioButtons />
           <p>Please explain:</p>
           <p>Add textfield here</p>
-          {/* <TextField
-              require={isRequired}
-              id={id}
-              name={id}
-              label="Please explain"
-              type="compliance"
-              helperText={formik.touched[id] ? formik.errors[id] : ''}
-              error={formik.touched[id] && Boolean(formik.error[id])}
-              value={formik.values[id]}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              fullWidth
-            /> */}
+          {fields.complianceReason}
         </>
         <div css={buttonContainer}>
           <Button
@@ -72,8 +79,8 @@ const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
         </div>
       </div>
     </FormModal>
-  );
-};
+  </Form>
+);
 // export default ComplianceReason;
 export default connect(
   state => ({
