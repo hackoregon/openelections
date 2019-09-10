@@ -526,6 +526,7 @@ export const contributionSummaryFields = <const>[
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
+<<<<<<< HEAD
 export const contributionGovSummaryFields = <const>[
     'id',
     'amount',
@@ -575,6 +576,8 @@ export const contributionGovSummaryFields = <const>[
 
 export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
 
+=======
+>>>>>>> adding format geoJson to getContributions
 export interface IContributionGeoJson {
     type: 'Feature';
     properties: {
@@ -605,9 +608,14 @@ export interface IContributionsGeoJson {
 }
 
 export type IContributionSummaryResults = {
+<<<<<<< HEAD
     data: IContributionSummary[] | IContributionGovSummary[];
     geoJson?: IContributionsGeoJson;
     csv?: string;
+=======
+    data?: IContributionSummary[];
+    geoJson?: IContributionsGeoJson;
+>>>>>>> adding format geoJson to getContributions
     perPage: number;
     page: number;
     total: number;
@@ -687,6 +695,7 @@ export async function getContributionsByGovernmentIdAsync(
             total
         };
     } catch (err) {
+        console.log(err)
         throw new Error('Error executing get contributions query');
     }
 }

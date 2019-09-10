@@ -192,7 +192,6 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             perPage: options.perPage || 100
         });
 
-
         if (contributionAttrs.format === 'geoJson') {
             contributions.geoJson = convertToGeoJson(contributions);
         } else if (contributionAttrs.format === 'csv') {
