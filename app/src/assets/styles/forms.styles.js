@@ -10,6 +10,8 @@ export const containers = {
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
     margin-right: 38px;
+    z-index: 1;
+    position: relative;
   `,
   main: css`
     display: grid;

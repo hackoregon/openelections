@@ -128,6 +128,7 @@ class ExpensesDetailForm extends React.Component {
                 <ViewHeaderSection
                   isCampAdmin={this.props.isCampAdmin}
                   isCampStaff={this.props.isCampStaff}
+                  isGovAdmin={this.props.isGovAdmin}
                   isValid={isValid}
                   handleSubmit={handleSubmit}
                   onSubmitSave={onSubmitSave}

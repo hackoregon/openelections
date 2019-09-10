@@ -23,26 +23,15 @@ const complianceReasonTitle = css`
   font-size: 24px;
 `;
 
-const modalStyle = css`
-  position: absolute;
-  width: 350px;
-  background: white;
-  top: 8vh;
-  left: calc(50vw - 175px);
-  display: flex;
-  align-items: center;
-`;
-
 const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
   return (
-    <div css={modalStyle}>
-      <FormModal>
-        <div css={complianceReasonStyle}>
-          <h1 css={complianceReasonTitle}>Out of Compliance Reason </h1>
-          <p>Choose Compliance Status</p>
-          <>
-            <ComplianceRadioButtons />
-            {/* <TextField
+    <FormModal>
+      <div css={complianceReasonStyle}>
+        <h1 css={complianceReasonTitle}>Out of Compliance Reason </h1>
+        <p>Choose Compliance Status</p>
+        <>
+          <ComplianceRadioButtons />
+          {/* <TextField
               require={isRequired}
               id={id}
               name={id}
@@ -55,32 +44,31 @@ const ComplianceReason = ({ id, label, formik, isRequired, ...props }) => {
               onBlur={formik.handleBlur}
               fullWidth
             /> */}
-          </>
-          <div css={buttonContainer}>
-            <Button
-              buttonType="formDefaultOutlined"
-              onClick={() => props.clearModal()}
-            >
-              Cancel
-            </Button>
-            <Button
-              buttonType="formDefault"
-              onClick={
-                () => {
-                  console.log({ props });
-                }
-                // props.complianceReason(
-                //   props.location.state.id,
-                //   props.location.state.roleId
-                // )
+        </>
+        <div css={buttonContainer}>
+          <Button
+            buttonType="formDefaultOutlined"
+            onClick={() => props.clearModal()}
+          >
+            Cancel
+          </Button>
+          <Button
+            buttonType="formDefault"
+            onClick={
+              () => {
+                console.log({ props });
               }
-            >
-              Submit
-            </Button>
-          </div>
+              // props.complianceReason(
+              //   props.location.state.id,
+              //   props.location.state.roleId
+              // )
+            }
+          >
+            Submit
+          </Button>
         </div>
-      </FormModal>
-    </div>
+      </div>
+    </FormModal>
   );
 };
 // export default ComplianceReason;
