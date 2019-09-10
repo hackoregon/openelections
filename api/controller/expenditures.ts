@@ -214,7 +214,7 @@ export class UpdateExpenditureDto implements IUpdateExpenditureAttrs {
     @IsEnum(PaymentMethod)
     @IsOptional()
     paymentMethod: PaymentMethod;
-    
+
     @IsString()
     @IsOptional()
     checkNumber: string;
