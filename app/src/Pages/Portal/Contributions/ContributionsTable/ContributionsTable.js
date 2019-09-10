@@ -165,6 +165,18 @@ const ContributionsTable = ({ ...props }) => {
         onChangePage={handleOnChangePage}
         // eslint-disable-next-line no-use-before-define
         onChangeRowsPerPage={handleOnRowsPerPageChange}
+        toolbarAction={
+          props.isCampAdmin ? (
+            <Button
+              buttonType="primary"
+              onClick={() =>
+                props.history.push({ pathname: '/contributions/add' })
+              }
+            >
+              Add New Contribution
+            </Button>
+          ) : null
+        }
       />
     </PageHoc>
   );

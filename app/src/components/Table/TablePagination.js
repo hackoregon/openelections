@@ -7,7 +7,6 @@ import {
   Tooltip,
   IconButton,
 } from '@material-ui/core';
-import { MTablePagination } from 'material-table';
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
@@ -18,6 +17,10 @@ import {
 } from '@material-ui/icons';
 
 const paginateOptions = css`
+  .MuiTablePagination-root {
+    display: inline-block;
+  }
+
   .MuiToolbar-root,
   .MuiTablePagination-root {
     padding-left: 0;
@@ -103,23 +106,9 @@ const TablePagination = props => {
         }}
         labelRowsPerPage=""
         ActionsComponent={TablePaginationActions}
+        component="div"
         {...rest}
       />
-      {false && (
-        <MTablePagination
-          rowsPerPage={[50, 100, 150]}
-          count={totalRows}
-          // rowsPerPage={perPage || 50}
-          page={pageNumber}
-          icons={{
-            NextPage: NextPageIcon,
-            PreviousPage: PreviousPageIcon,
-            FirstPage: FirstPageIcon,
-            LastPage: LastPageIcon,
-          }}
-          {...rest}
-        />
-      )}
     </div>
   );
 };
