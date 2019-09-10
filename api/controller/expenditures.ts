@@ -84,6 +84,10 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
 
     @IsNumber()
     date: number;
+
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
 }
 
 export async function addExpenditure(request: IRequest, response: Response, next: Function) {
@@ -206,6 +210,14 @@ export class UpdateExpenditureDto implements IUpdateExpenditureAttrs {
     @IsNumber()
     @IsOptional()
     date: number;
+
+    @IsEnum(PaymentMethod)
+    @IsOptional()
+    paymentMethod: PaymentMethod;
+
+    @IsString()
+    @IsOptional()
+    checkNumber: string;
 }
 
 export async function updateExpenditure(request: IRequest, response: Response, next: Function) {
