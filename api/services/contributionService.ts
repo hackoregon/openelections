@@ -129,8 +129,14 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityType: ActivityTypeEnum.CONTRIBUTION,
                     activityId: saved.id
                 });
-                addGisJob({ id: saved.id } );
-                addDataScienceJob({id: saved.id });
+                if (process.env.NODE_ENV !== 'test') {
+                    addGisJob({ id: saved.id } );
+                    addDataScienceJob({id: saved.id });
+                } else {
+                    getGISCoordinates(saved.id);
+                    retrieveAndSaveMatchResultAsync(saved.id);
+                }
+
                 return saved;
             }
             throw new Error('Contribution is missing one or more required properties.');
