@@ -75,8 +75,43 @@ exports[`<Dashboard/> should be defined 1`] = `
       >
         <div
           className="card small"
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
         >
           <SearchCard />
+          <EmotionCssPropInternal
+            __EMOTION_LABEL_PLEASE_DO_NOT_USE__="DashboardPage"
+            __EMOTION_TYPE_PLEASE_DO_NOT_USE__="div"
+            css={
+              Object {
+                "map": undefined,
+                "name": "n6rjmm",
+                "next": undefined,
+                "styles": "
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(240, 240, 240, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+
+  &:before {
+    content: 'Coming Soon ...';
+    font-size: 20px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+",
+              }
+            }
+          />
         </div>
         <div
           className="card small"
