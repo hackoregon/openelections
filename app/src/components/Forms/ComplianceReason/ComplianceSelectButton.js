@@ -9,22 +9,39 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import { ExpenditureStatusEnum } from '../../../api/api';
 
 const options = ['Draft', 'Submitted', 'Out of Compliance', 'In Compliance'];
-
 export default function SplitButton() {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   function handleClick() {
-    if (options[selectedIndex] === 'Out of Compliance') {
-      alert(
-        `The modal should pop up because you clicked ${options[selectedIndex]}`
-      );
-    } else {
-      alert(`You clicked ${options[selectedIndex]}`);
+    let value = null;
+    switch (options[selectedIndex]) {
+      case 'Draft':
+        value = ExpenditureStatusEnum.DRAFT;
+        alert(`You clicked ${options[selectedIndex]}`);
+        break;
+      case 'Submitted':
+        value = ExpenditureStatusEnum.SUBMITTED;
+        alert(`You clicked ${options[selectedIndex]}`);
+        break;
+      case 'Out of Compliance':
+        value = ExpenditureStatusEnum.OUT_OF_COMPLIANCE;
+        alert(
+          `The modal should pop up because you clicked ${options[selectedIndex]}`
+        );
+        break;
+      case 'In Compliance':
+        value = ExpenditureStatusEnum.IN_COMPLIANCE;
+        alert(`You clicked ${options[selectedIndex]}`);
+        break;
+      default:
+        alert('fix me');
     }
+    return value;
   }
 
   function handleMenuItemClick(event, index) {
