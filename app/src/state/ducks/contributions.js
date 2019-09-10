@@ -13,6 +13,7 @@ import {
   RESET_STATE,
 } from './common';
 import { getContributionActivities } from './activities';
+import { checkForUnauthorizedResponse } from './auth';
 
 export const STATE_KEY = 'contributions';
 
@@ -220,7 +221,7 @@ export function getContributions(contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
-
+      dispatch(checkForUnauthorizedResponse(response));
       if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);

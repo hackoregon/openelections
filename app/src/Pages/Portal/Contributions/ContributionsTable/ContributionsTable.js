@@ -21,6 +21,7 @@ import {
   isCampAdmin,
   isGovAdmin,
   isLoggedIn,
+  getCurrentUserId,
 } from '../../../../state/ducks/auth';
 import { mediaQueryRanges } from '../../../../assets/styles/variables';
 
@@ -303,7 +304,7 @@ export default connect(
       state.governments.currentGovernmentId,
     campaignId: state.campaigns.currentCampaignId,
     govId: state.governments.currentGovernmentId || 1,
-    userId: isLoggedIn(state) ? state.auth.me.id : null,
+    userId: getCurrentUserId(state),
     total: state.contributions.total,
   }),
   dispatch => {

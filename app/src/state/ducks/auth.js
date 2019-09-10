@@ -338,6 +338,14 @@ export function redirectToLogin() {
   };
 }
 
+export function checkForUnauthorizedResponse(response) {
+  return dispatch => {
+    if (response.status === 401 || response.status === 422) {
+      dispatch(logout());
+    }
+  };
+}
+
 // Selectors
 export const rootState = state => state || {};
 
