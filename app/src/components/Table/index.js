@@ -62,6 +62,7 @@ const Table = ({
   components,
   localization,
   isLoading,
+  ...rest
 }) => (
   <div css={tableWrapper}>
     <MaterialTable
@@ -75,6 +76,7 @@ const Table = ({
       components={components}
       localization={localization}
       isLoading={isLoading}
+      {...rest}
     />
   </div>
 );
