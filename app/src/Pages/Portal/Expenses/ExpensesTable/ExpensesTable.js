@@ -108,8 +108,6 @@ const ExpensesTable = ({ ...props }) => {
     ),
   };
 
-  console.log(props.expendituresList);
-
   return (
     <PageHoc>
       <h1>Expenses</h1>
