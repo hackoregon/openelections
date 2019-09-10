@@ -531,12 +531,43 @@ export const contributionSummaryFields = <const>[
     'notes',
     'paymentMethod',
     'date',
-    'occupationLetterDate'
+    'occupationLetterDate',
+    'addressPoint'
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
+export interface IContributionGeoJson {
+    type: 'Feature';
+    properties: {
+        city: string;
+        state: string;
+        zip: string;
+        amount: number;
+        contributorType: ContributorType;
+        contributionType: ContributionType;
+        contributionSubType: ContributionSubType;
+        date: string;
+        campaign: {
+            name: string;
+            id: string
+        };
+        contributorName: string
+    };
+    geometry: {
+        type: 'Point';
+        coordinates: [number, number]
+    };
+}
+
+
+export interface IContributionsGeoJson {
+    type: 'FeatureCollection';
+    features: IContributionGeoJson[];
+}
+
 export type IContributionSummaryResults = {
-    data: IContributionSummary[];
+    data?: IContributionSummary[];
+    geoJson?: IContributionsGeoJson;
     perPage: number;
     page: number;
     total: number;
@@ -599,6 +630,9 @@ export async function getContributionsByGovernmentIdAsync(
             json.government = {
                 id: item.government.id,
                 name: item.government.name};
+            if (json.coordinates) {
+                json.coordinates = item.addressPoint.coordinates;
+            }
             return json;
         });
         const total = await contributionRepository.count(removeUndefined({ where }));
@@ -609,9 +643,43 @@ export async function getContributionsByGovernmentIdAsync(
             total
         };
     } catch (err) {
+        console.log(err)
         throw new Error('Error executing get contributions query');
     }
 }
+
+export function convertToGeoJson(contributions: IContributionSummaryResults): IContributionsGeoJson {
+    const data  = contributions
+        .data
+        .map((contribution: Pick<Contribution, typeof contributionSummaryFields[number]>): IContributionGeoJson => {
+            return {
+                type: 'Feature',
+                properties: {
+                    city: contribution.city,
+                    state: contribution.state,
+                    zip: contribution.zip,
+                    amount: contribution.amount,
+                    contributorType: contribution.contributorType,
+                    contributionType: contribution.type,
+                    contributionSubType: contribution.subType,
+                    date: contribution.date.toISOString(),
+                    contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
+                    // @ts-ignore
+                    campaign: contribution.campaign,
+                },
+                geometry: {
+                    type: 'Point',
+                    // @ts-ignore
+                    coordinates: contribution.coordinates
+                }
+            };
+        });
+    return {
+            type: 'FeatureCollection',
+            features: data,
+        };
+}
+
 
 export interface SummaryAttrs {
     campaignId?: number;

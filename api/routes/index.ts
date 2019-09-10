@@ -808,7 +808,6 @@ export const AppRoutes = [
             return response.status(200).json(message);
         }
     }
-
 ];
 
 export const setupRoutes = (app: express.Express) => {

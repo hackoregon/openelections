@@ -447,6 +447,9 @@ components:
                 type: string
               to:
                 type: string
+              format:
+                type: string
+                enum: [json, csv, geoJson]
               sort:
                 type: object
                 properties:

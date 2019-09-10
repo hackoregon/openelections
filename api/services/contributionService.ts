@@ -5,7 +5,7 @@ import {
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType,
+    ContributorType, convertToGeoJson,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
@@ -161,11 +161,13 @@ export interface IGetContributionOptions {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
+    format?: 'json' | 'csv' | 'geoJson';
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
 }
+
 
 export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
     try {
@@ -189,11 +191,18 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
-        return getContributionsByGovernmentIdAsync(governmentId, {
+        const contributions = await getContributionsByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100
         });
+
+        if (!contributionAttrs.format || contributionAttrs.format === 'json') {
+            return contributions;
+        } else if (contributionAttrs.format === 'geoJson') {
+            contributions.geoJson = convertToGeoJson(contributions);
+            return contributions;
+        }
     } catch (e) {
         throw new Error(e.message);
     }
