@@ -20,8 +20,8 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import TablePagination from '../../Pages/Portal/Contributions/ContributionsTable/TablePagination';
-import { TableToolbar } from '../../Pages/Portal/Contributions/ContributionsTable/ContributionsTable';
+import TablePagination from './TablePagination';
+import { TableToolbar } from './TableToolbar';
 
 const tableWrapper = css`
   width: 100%;
@@ -56,6 +56,7 @@ const tableIcons = {
 
 const tableOptions = {
   search: false,
+  draggable: false,
   actionCellStyle: {
     color: 'blue',
   },
@@ -73,7 +74,6 @@ const Table = ({
   components,
   localization,
   isLoading,
-  pagination = false,
   perPage,
   pageNumber,
   totalRows,
@@ -110,17 +110,15 @@ const Table = ({
       isLoading={isLoading}
       {...rest}
     />
-    {pagination && (
-      <TablePagination
-        perPage={perPage}
-        pageNumber={pageNumber}
-        totalRows={totalRows}
-        // eslint-disable-next-line no-use-before-define
-        onChangePage={onChangePage}
-        // eslint-disable-next-line no-use-before-define
-        onChangeRowsPerPage={onChangeRowsPerPage}
-      />
-    )}
+    <TablePagination
+      perPage={perPage}
+      pageNumber={pageNumber}
+      totalRows={totalRows}
+      // eslint-disable-next-line no-use-before-define
+      onChangePage={onChangePage}
+      // eslint-disable-next-line no-use-before-define
+      onChangeRowsPerPage={onChangeRowsPerPage}
+    />
   </div>
 );
 
