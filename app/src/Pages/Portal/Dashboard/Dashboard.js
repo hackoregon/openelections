@@ -51,6 +51,26 @@ const styles = css`
   }
 `;
 
+const TemporaryOverlayStyles = css`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(240, 240, 240, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+
+  &:before {
+    content: 'Coming Soon ...';
+    font-size: 20px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+`;
+
 const DashboardPage = props => {
   return (
     <PageHoc>
@@ -63,8 +83,9 @@ const DashboardPage = props => {
             </div>
           </div>
           <div className="right-cards">
-            <div className="card small">
+            <div className="card small" style={{ position: 'relative' }}>
               <SearchCard />
+              <div css={TemporaryOverlayStyles} />
             </div>
             <div className="card small">
               {/* Jaron links go here */}

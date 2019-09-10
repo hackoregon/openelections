@@ -7,6 +7,8 @@ import Form from '../../../../components/Form/Form';
 import SearchBox from '../../../../components/SearchBox/SearchBox';
 
 const styles = css`
+  position: relative;
+  pointer-events: none;
   .search-box {
     font-size: 16px;
   }
@@ -30,16 +32,14 @@ class SearchCard extends React.Component {
     }
 
     // Pretend to search
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-        searchResults: [
-          { label: 'Expense', value: 'Example' },
-          { label: 'Contribution', value: 'Example contribution' },
-          { label: 'Other', value: 'Other type of content' },
-        ],
-      });
-    }, 2000);
+    this.setState({
+      isLoading: false,
+      searchResults: [
+        // { label: 'Expense', value: 'Example' },
+        // { label: 'Contribution', value: 'Example contribution' },
+        // { label: 'Other', value: 'Other type of content' },
+      ],
+    });
   }
 
   render() {
