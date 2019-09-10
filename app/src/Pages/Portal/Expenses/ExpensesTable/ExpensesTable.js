@@ -78,7 +78,7 @@ const ExpensesTable = ({ ...props }) => {
     page: 0,
   });
 
-  const title = `${props.total} Contributions`;
+  const title = `${props.total} Expenses`;
 
   const isLoading =
     props.isListLoading && !Array.isArray(props.expendituresList);
