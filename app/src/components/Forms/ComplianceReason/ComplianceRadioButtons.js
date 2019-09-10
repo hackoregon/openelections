@@ -13,18 +13,15 @@ const useStyles = makeStyles(theme => ({
 
 const ComplianceRadioButtons = () => {
   const classes = useStyles();
-  }
+
   return (
     <div>
-      {/* If a govAdmin selects out of compliance on an expenditure, 
-      pop up a modal, and ask for the reason. */}
-
       <FormControl component="fieldset" className={classes.formControl}>
         <RadioGroup
           aria-label="compliance"
           name="Compliance"
-          value={value}
-          onChange={handleChange}
+          value="compliance"
+          onChange={console.log('hi')}
         >
           <FormControlLabel
             value="overLimit"

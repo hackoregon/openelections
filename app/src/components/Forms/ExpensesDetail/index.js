@@ -111,11 +111,13 @@ class ExpensesDetailForm extends React.Component {
             const campaignName = values.campaignName || this.props.campaignName;
             return (
               <>
+                {/*  If a govAdmin selects out of compliance on an expenditure, 
+                pop up a modal, and ask for the reason. */}
                 <div className="compliance-reason">
                   <Button
                     buttontype="compliance"
                     onClick={() =>
-                      showModal({
+                      this.props.showModal({
                         component: 'ComplianceReason',
                       })
                     }
@@ -123,7 +125,6 @@ class ExpensesDetailForm extends React.Component {
                     Fake Compliance Reason Button
                   </Button>
                 </div>
-                <ComplianceReason />
                 <ViewHeaderSection
                   isCampAdmin={this.props.isCampAdmin}
                   isCampStaff={this.props.isCampStaff}
