@@ -1,4 +1,5 @@
-export default (job: any): Promise<any> => {
-    console.log(job.data);
-    return Promise.resolve();
+import { retrieveAndSaveMatchResultAsync } from '../../services/contributionService';
+
+export default (job: {data: any}): Promise<any> => {
+    return retrieveAndSaveMatchResultAsync(job.data.id);
 };

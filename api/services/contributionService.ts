@@ -23,6 +23,7 @@ import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
+import { addDataScienceJob, addGisJob } from '../jobs/helpers/addJobs';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -128,12 +129,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityType: ActivityTypeEnum.CONTRIBUTION,
                     activityId: saved.id
                 });
-                if (process.env.NODE_ENV === 'production') {
-                    // replace with a background job creation;
-                } else {
-                    await getGISCoordinates(saved.id);
-                    await retrieveAndSaveMatchResultAsync(saved.id);
-                }
+                addGisJob({ id: saved.id } );
+                addDataScienceJob({id: saved.id });
                 return saved;
             }
             throw new Error('Contribution is missing one or more required properties.');
