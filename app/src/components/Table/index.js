@@ -81,46 +81,66 @@ const Table = ({
   onChangeRowsPerPage,
   toolbarAction,
   ...rest
-}) => (
-  <div css={tableWrapper}>
-    <MaterialTable
-      title={title}
-      columns={columns}
-      data={data}
-      editable={editable}
-      icons={tableIcons}
-      options={{ ...options, ...tableOptions }}
-      actions={actions}
-      components={{
-        Toolbar: toolBarProps => (
-          <TableToolbar
-            paginationOptions={{ page: pageNumber, perPage }}
-            totalRows={totalRows}
-            // eslint-disable-next-line no-use-before-define
-            onChangePage={onChangePage}
-            // eslint-disable-next-line no-use-before-define
-            onRowsPerPageChange={onChangeRowsPerPage}
-            action={toolbarAction}
-            {...toolBarProps}
-          />
-        ),
-        ...components,
-      }}
-      localization={localization}
-      isLoading={isLoading}
-      {...rest}
-    />
-    <TablePagination
-      perPage={perPage}
-      pageNumber={pageNumber}
-      totalRows={totalRows}
-      // eslint-disable-next-line no-use-before-define
-      onChangePage={onChangePage}
-      // eslint-disable-next-line no-use-before-define
-      onChangeRowsPerPage={onChangeRowsPerPage}
-    />
-  </div>
-);
+}) => {
+  const enableCustomPagination = Boolean(
+    perPage !== undefined &&
+      pageNumber !== undefined &&
+      totalRows !== undefined &&
+      onChangePage !== undefined &&
+      onChangeRowsPerPage !== undefined
+  );
+
+  return (
+    <div css={tableWrapper}>
+      <MaterialTable
+        title={title}
+        columns={columns}
+        data={data}
+        editable={editable}
+        icons={tableIcons}
+        options={{
+          ...tableOptions,
+          ...options,
+          paging: !enableCustomPagination || options.paging,
+        }}
+        actions={actions}
+        components={{
+          Toolbar: toolBarProps => (
+            <TableToolbar
+              paginationOptions={
+                enableCustomPagination
+                  ? {
+                      page: pageNumber,
+                      perPage,
+                      totalRows,
+                      onChangePage,
+                      onChangeRowsPerPage,
+                    }
+                  : undefined
+              }
+              {...toolBarProps}
+            />
+          ),
+          ...components,
+        }}
+        localization={localization}
+        isLoading={isLoading}
+        {...rest}
+      />
+      {enableCustomPagination && (
+        <TablePagination
+          perPage={perPage}
+          pageNumber={pageNumber}
+          totalRows={totalRows || data.length}
+          // eslint-disable-next-line no-use-before-define
+          onChangePage={onChangePage}
+          // eslint-disable-next-line no-use-before-define
+          onChangeRowsPerPage={onChangeRowsPerPage}
+        />
+      )}
+    </div>
+  );
+};
 
 Table.propTypes = {
   title: PropTypes.string.isRequired,
