@@ -119,9 +119,7 @@ class ExpensesDetailForm extends React.Component {
                     onClick={() =>
                       this.props.showModal({
                         component: 'ComplianceReason',
-                        props: (handleSubmit = () => {
-                          console.log('onsubmit');
-                        }),
+                        props: { id: values.id },
                       })
                     }
                   >

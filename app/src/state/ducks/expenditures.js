@@ -3,6 +3,7 @@ import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
+import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -21,6 +22,10 @@ export const actionTypes = {
   UPDATE_EXPENDITURE: createActionTypes(STATE_KEY, 'UPDATE_EXPENDITURE'),
   GET_EXPENDITURES: createActionTypes(STATE_KEY, 'GET_EXPENDITURES'),
   GET_EXPENDITURE_BY_ID: createActionTypes(STATE_KEY, 'GET_EXPENDITURE_BY_ID'),
+  POST_EXPENDITURE_COMMENT: createActionTypes(
+    STATE_KEY,
+    'POST_EXPENDITURE_COMMENT'
+  ),
 };
 
 // Initial State
@@ -81,6 +86,15 @@ export default createReducer(initialState, {
   [actionTypes.GET_EXPENDITURE_BY_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
+  [actionTypes.POST_EXPENDITURE_COMMENT.REQUEST]: state => {
+    return { ...state, isLoading: true };
+  },
+  [actionTypes.POST_EXPENDITURE_COMMENT.SUCCESS]: state => {
+    return { ...state, isLoading: false };
+  },
+  [actionTypes.POST_EXPENDITURE_COMMENT.FAILURE]: state => {
+    return { ...state, isLoading: false, error: action.error };
+  },
 });
 
 // Action Creators
@@ -105,6 +119,12 @@ export const actionCreators = {
     success: id => action(actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS, { id }),
     failure: error =>
       action(actionTypes.GET_EXPENDITURE_BY_ID.FAILURE, { error }),
+  },
+  postExpenditureComment: {
+    request: () => action(actionTypes.POST_EXPENDITURE_COMMENT.REQUEST),
+    success: () => action(actionTypes.POST_EXPENDITURE_COMMENT.SUCCESS),
+    failure: error =>
+      action(actionTypes.POST_EXPENDITURE_COMMENT.FAILURE, { error }),
   },
 };
 
@@ -207,6 +227,24 @@ export function getExpenditureById(id) {
       }
     } catch (error) {
       dispatch(actionCreators.getExpenditureById.failure(error));
+    }
+  };
+}
+
+export function postExpenditureComment(id, comment) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.postExpenditureComment.request());
+    try {
+      const response = await api.postExpenditureComment(id, comment);
+      if (response.status === 204) {
+        // await dispatch(getEXPENDITUREActivities(id));
+        dispatch(actionCreators.postExpenditureComment.success());
+        dispatch(push('/expenses'));
+      } else {
+        dispatch(actionCreators.postExpenditureComment.failure());
+      }
+    } catch (error) {
+      dispatch(actionCreators.postExpenditureComment.failure(error));
     }
   };
 }
