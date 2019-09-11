@@ -222,9 +222,10 @@ export function getContributions(contributionSearchAttrs) {
       const response = await api.getContributions(contributionSearchAttrs);
       if (response.status === 200) {
         const contributions = await response.json();
-        const data = normalize(contributions.data, [schema.contribution]);
-
-        dispatch(addContributionEntities(data.entities));
+        // const data = normalize(contributions.data, [schema.contribution]);
+        dispatch(
+          addContributionEntities({ contributions: contributions.data })
+        );
         dispatch(actionCreators.getContributions.success(contributions.total));
       } else {
         dispatch(actionCreators.getContributions.failure());
