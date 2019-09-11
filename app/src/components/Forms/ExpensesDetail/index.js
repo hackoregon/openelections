@@ -21,7 +21,6 @@ import AddExpenseForm from '../AddExpense/AddExpenseForm';
 import { ExpenditureStatusEnum } from '../../../api/api';
 import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 import { showModal } from '../../../state/ducks/modal';
-import ComplianceReason from '../ComplianceReason/ComplianceReason';
 
 const onSubmit = (data, props) => {
   const initialData = props.data;

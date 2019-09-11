@@ -35,7 +35,7 @@ export const ViewHeaderSection = ({
       </div>
       <div css={buttonBar.wrapper}>
         <div css={buttonBar.container}>
-          {isGovAdmin ? <ComplianceSelectButton /> : null}
+          {isGovAdmin ? <ComplianceSelectButton id={id} /> : null}
           {status === ExpenditureStatusEnum.DRAFT ? (
             <>
               {isCampStaff || isCampAdmin ? (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -10,20 +11,32 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { ExpenditureStatusEnum } from '../../../api/api';
+import { updateExpenditure } from '../../../state/ducks/expenditures';
+import { showModal } from '../../../state/ducks/modal';
 
-const options = ['Draft', 'Submitted', 'Out of Compliance', 'In Compliance'];
-export default function SplitButton() {
+const options = [
+  'Select Compliance',
+  'Draft',
+  'Submitted',
+  'Out of Compliance',
+  'In Compliance',
+];
+
+const SplitButton = ({ id, updateExpenditure, showModal }) => {
+  // const SplitButton = ({ id, updateExpenditure, showModal }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   //   Hook it up to the expenditure update duck, with the status field populated. - KELLY
-  function handleClick() {
+  function updateStatus(index) {
+    console.log(index, id);
     let value = null;
-    switch (options[selectedIndex]) {
+    switch (options[index]) {
       case 'Draft':
         value = ExpenditureStatusEnum.DRAFT;
-        alert(`You clicked ${options[selectedIndex]}`);
+        updateExpenditure({ id, status: value });
+        // alert(`You clicked ${options[selectedIndex]}`);
         break;
       case 'Submitted':
         value = ExpenditureStatusEnum.SUBMITTED;
@@ -31,27 +44,31 @@ export default function SplitButton() {
         break;
       case 'Out of Compliance':
         value = ExpenditureStatusEnum.OUT_OF_COMPLIANCE;
-        // onClick={() =>
-        //     this.props.showModal({
-        //       component: 'ComplianceReason',
-        //     })
-        alert(
-          `The modal should pop up because you clicked ${options[selectedIndex]}`
-        );
+        showModal({
+          component: 'ComplianceReason',
+          props: { id },
+        });
+        // alert(
+        //   `The modal should pop up because you clicked ${options[selectedIndex]}`
+        // );
         break;
       case 'In Compliance':
         value = ExpenditureStatusEnum.IN_COMPLIANCE;
         alert(`You clicked ${options[selectedIndex]}`);
         break;
       default:
-        alert('fix me');
+        alert('Nothing Happens');
     }
     return value;
   }
 
+  function handleClick(event) {
+    console.log('No clicking');
+  }
   function handleMenuItemClick(event, index) {
     setSelectedIndex(index);
     setOpen(false);
+    updateStatus(index);
   }
 
   function handleToggle() {
@@ -121,4 +138,25 @@ export default function SplitButton() {
       </Grid>
     </Grid>
   );
+};
+
+function SplitButtony(props) {
+  const { id, updateExpenditure, showModal } = props;
+  return (
+    <SplitButton
+      id={id}
+      updateExpenditure={updateExpenditure}
+      showModal={showModal}
+    />
+  );
 }
+
+export default connect(
+  state => ({}),
+  dispatch => {
+    return {
+      updateExpenditure: data => dispatch(updateExpenditure(data)),
+      showModal: data => dispatch(showModal(data)),
+    };
+  }
+)(SplitButtony);
