@@ -1,6 +1,6 @@
-import { config, dataScienceResultQueue } from './queues';
-import { dataScienceRetrieverProcessor } from './processors';
+import { config, dataScienceResultQueue, gisQueue } from './queues';
+import { dataScienceRetrieverProcessor, gisProcessor } from './processors';
 
 dataScienceResultQueue.process(config.concurrency, dataScienceRetrieverProcessor);
 
-export * from './helpers';
+gisQueue.process(config.concurrency, gisProcessor);

@@ -66,8 +66,7 @@ services:
     user: root
     build:
       context: 'api'
-      dockerfile: 'Dockerfile.development'
-    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
+      dockerfile: 'Dockerfile.jobs'
     env_file:
       - .env
     environment:

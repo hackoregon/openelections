@@ -3,7 +3,7 @@ import db from '../db';
 import { truncateAll } from '../../test/factories';
 
 (async () => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production' && process.env.APP_ENV === 'production') {
         console.log('Can only seed in test, qa, or development mode');
         return;
     }
