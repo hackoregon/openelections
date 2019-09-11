@@ -1,5 +1,6 @@
 import { dataScienceResultQueue } from '../queues';
 import { gisQueue } from '../queues';
+import { bugsnagClient } from '../../services/bugsnagService';
 
 export async function addDataScienceJob(jobData: {id: number}) {
     if (process.env.NODE_ENV === 'test') {
@@ -18,6 +19,9 @@ export async function addGisJob(jobData: {id: number}) {
 }
 
 export function renderError(e: Error): any {
+    if (process.env.NODE_ENV === 'production') {
+        bugsnagClient.notify(e);
+    }
     return {
         stack: e.stack,
         message: e.message,

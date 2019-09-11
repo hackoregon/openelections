@@ -14,6 +14,7 @@ import {
     IAddUserGovAttrs
 } from '../services/permissionService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
+import {bugsnagClient} from "../services/bugsnagService";
 
 export async function login(request: IRequest, response: Response, next: Function) {
     try {
@@ -28,6 +29,9 @@ export async function login(request: IRequest, response: Response, next: Functio
         response.cookie('token', token, { expires: new Date(tokenObj.exp), domain} );
         return response.status(204).json({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(401).json({message: 'No user found with email or password'});
     }
 }
@@ -49,6 +53,9 @@ export async function invite(request: IRequest, response: Response, next: Functi
             throw new Error('No government or campaign id present');
         }
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -63,6 +70,9 @@ export async function redeemInvite(request: IRequest, response: Response, next: 
         });
         return response.status(204).json({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -74,6 +84,9 @@ export async function resendInvite(request: IRequest, response: Response, next: 
         await resendInvitationAsync(request.body.userId);
         response.status(204).send({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -86,6 +99,9 @@ export async function getUsers(request: IRequest, response: Response, next: Func
         const users = await retrieveUserPermissionsAsync(body);
         return response.status(200).json(users);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -95,6 +111,9 @@ export async function sendPasswordReset(request: IRequest, response: Response, n
         await generatePasswordResetAsync(request.body.email);
         response.status(204).send({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -104,6 +123,9 @@ export async function resetPassword(request: IRequest, response: Response, next:
         await passwordResetAsync(request.body.invitationCode, request.body.password);
         response.status(204).send({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }
@@ -115,6 +137,9 @@ export async function updatePassword(request: IRequest, response: Response, next
         await updateUserPasswordAsync(currentUserId, request.body.currentPassword, request.body.newPassword);
         return response.status(204).send({});
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({message: err.message});
     }
 }

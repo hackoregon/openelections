@@ -2,6 +2,37 @@
 # yarn lockfile v1
 
 
+"@bugsnag/browser@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/browser/-/browser-6.4.0.tgz#96211bd3fcff48c91f91fdc270c02d2665585189"
+  integrity sha512-f6KUTIQ4hvJ35MxU35ORsyWwbLPxQ/vFOJdmYwvqrpH1FJSMJjTEmjW4pZbXY0iFkyJ0utYdMVek4ezY7xLtJg==
+
+"@bugsnag/js@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/js/-/js-6.4.0.tgz#1690cc0de987198819c4cea4446f2a8119a034dc"
+  integrity sha512-4wcNz3fY4Cos3JPWxHz0IADRqFVIIPclX5peihQmSRJgPqpKuZlnwNVzIpp3VPw00cHjEAXKKID7CCv9NuQObA==
+  dependencies:
+    "@bugsnag/browser" "^6.4.0"
+    "@bugsnag/node" "^6.4.0"
+
+"@bugsnag/node@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/node/-/node-6.4.0.tgz#946af87eb2dd284901ac3c05faf979d8664198a2"
+  integrity sha512-vr/1u59oQ0batGfPGzlk9Mhg2n7TV/pwEpbaYBA8nsdMF3wiEsJkvpkq1tvixOSClzdVfI1h85v1IrHOFOgXaQ==
+  dependencies:
+    byline "^5.0.0"
+    error-stack-parser "^2.0.2"
+    iserror "^0.0.2"
+    pump "^3.0.0"
+    stack-generator "^2.0.3"
+
+"@bugsnag/plugin-express@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@bugsnag/plugin-express/-/plugin-express-6.4.0.tgz#395db1fd94bc0434b9e79d9675adf009f3cb176f"
+  integrity sha512-/34JqD+1H8l5HtNgSUKV2f380d38T2SCAU4Qi6eJ4+AToZ9APuE4ZFwceVsUFX5vS7agHOthX31TjblDi9gqIA==
+  dependencies:
+    iserror "^0.0.2"
+
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.0.2", "@sinonjs/commons@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.4.0.tgz#7b3ec2d96af481d7a0321252e7b1c94724ec5a78"
@@ -491,6 +522,11 @@ bull@^3.10.0:
     semver "^6.1.1"
     util.promisify "^1.0.0"
     uuid "^3.2.1"
+
+byline@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/byline/-/byline-5.0.0.tgz#741c5216468eadc457b03410118ad77de8c1ddb1"
+  integrity sha1-dBxSFkaOrcRXsDQQEYrXfejB3bE=
 
 bytes@3.0.0:
   version "3.0.0"
@@ -1056,6 +1092,13 @@ end-of-stream@^1.1.0:
   integrity sha512-1MkrZNvWTKCaigbn+W15elq2BB/L22nqrSY5DKlo3X6+vclJm8Bb5djXJBmEX6fS3+zCh/F4VBK5Z2KxJt4s2Q==
   dependencies:
     once "^1.4.0"
+
+error-stack-parser@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/error-stack-parser/-/error-stack-parser-2.0.3.tgz#9d3c000fb9f5c461f7c4e63c1aa75373ac7aaa36"
+  integrity sha512-vRC4rKv87twMZy92X4+TmUdv3iYMsmePbpG/YguHsfzmZ8bYJZYYep7yrXH09yFUaCEPKgNK5X79+Yq7hwLVOA==
+  dependencies:
+    stackframe "^1.0.4"
 
 es-abstract@^1.5.1, es-abstract@^1.9.0:
   version "1.13.0"
@@ -2035,6 +2078,11 @@ isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
   integrity sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
+
+iserror@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/iserror/-/iserror-0.0.2.tgz#bd53451fe2f668b9f2402c1966787aaa2c7c0bf5"
+  integrity sha1-vVNFH+L2aLnyQCwZZnh6qix8C/U=
 
 isexe@^2.0.0:
   version "2.0.0"
@@ -3591,6 +3639,18 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
+
+stack-generator@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/stack-generator/-/stack-generator-2.0.3.tgz#bb74385c67ffc4ccf3c4dee5831832d4e509c8a0"
+  integrity sha512-kdzGoqrnqsMxOEuXsXyQTmvWXZmG0f3Ql2GDx5NtmZs59sT2Bt9Vdyq0XdtxUi58q/+nxtbF9KOQ9HkV1QznGg==
+  dependencies:
+    stackframe "^1.0.4"
+
+stackframe@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.0.4.tgz#357b24a992f9427cba6b545d96a14ed2cbca187b"
+  integrity sha512-to7oADIniaYwS3MhtCa/sQhrxidCCQiF/qp4/m5iN3ipf0Y7Xlri0f6eG29r08aL7JYl8n32AF3Q5GYBZ7K8vw==
 
 standard-as-callback@^2.0.0, standard-as-callback@^2.0.1:
   version "2.0.1"

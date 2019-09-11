@@ -23,6 +23,7 @@ import {
     PaymentMethod,
     PhoneType
 } from '../models/entity/Contribution';
+import { bugsnagClient } from '../services/bugsnagService';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -171,6 +172,9 @@ export async function updateContribution(request: IRequest, response: Response, 
         const contribution = await updateContributionAsync(updateContributionDto);
         return response.status(204).send(contribution);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }
@@ -222,6 +226,9 @@ export async function getContributions(request: IRequest, response: Response, ne
         const contributions = await getContributionsAsync(getContributionsDto);
         return response.status(200).send(JSON.stringify(contributions));
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }
@@ -372,6 +379,9 @@ export async function addContribution(request: IRequest, response: Response, nex
         const contribution = await addContributionAsync(addContributionDto);
         return response.status(201).json(contribution);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }
@@ -418,6 +428,9 @@ export async function archiveContribution(request: IRequest, response: Response,
         const contribution = await archiveContributionAsync(archiveContributionDto);
         return response.status(200).json(contribution);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }
@@ -444,6 +457,9 @@ export async function createContributionComment(request: IRequest, response: Res
         const comment = await createContributionCommentAsync(contributionCommentDto);
         return response.status(204).json(comment);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }

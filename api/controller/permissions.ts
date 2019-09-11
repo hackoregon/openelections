@@ -1,6 +1,7 @@
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { IRemovePermissionAsyncAttrs, removePermissionAsync } from '../services/permissionService';
+import { bugsnagClient } from '../services/bugsnagService';
 
 export async function removePermission(request: IRequest, response: Response, next: Function) {
     try {
@@ -14,6 +15,9 @@ export async function removePermission(request: IRequest, response: Response, ne
         await removePermissionAsync(attrs);
         return response.status(200).send();
     } catch (error) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(error);
+        }
         return response.status(422).json({message: error.message});
     }
 }

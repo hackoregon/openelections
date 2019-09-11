@@ -3,6 +3,7 @@ import { IsString, IsNumber } from 'class-validator';
 import { checkDto } from './helpers';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { ICreateCampaign, IGetCampaigns, createCampaignAsync, getCampaignsAsync } from '../services/campaignService';
+import { bugsnagClient } from '../services/bugsnagService';
 
 class CreateCampaignDto implements ICreateCampaign {
     @IsString()
@@ -29,6 +30,9 @@ export async function addCampaign(request: IRequest, response: Response, next: F
         const campaign = await createCampaignAsync(createCampaignDto);
         return response.status(201).send(campaign);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }
@@ -51,6 +55,9 @@ export async function getCampaigns(request: IRequest, response: Response, next: 
         const campaigns = await getCampaignsAsync(getCampaignsDto);
         return response.status(200).json(campaigns);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
         return response.status(422).json({ message: err.message });
     }
 }

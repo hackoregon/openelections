@@ -20,6 +20,8 @@
         "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs"
     },
     "dependencies": {
+        "@bugsnag/js": "^6.4.0",
+        "@bugsnag/plugin-express": "^6.4.0",
         "@types/bcrypt": "^3.0.0",
         "@types/bcryptjs": "^2.4.2",
         "@types/express": "^4.16.1",
