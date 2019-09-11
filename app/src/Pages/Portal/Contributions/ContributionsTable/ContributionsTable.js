@@ -91,6 +91,7 @@ const ContributionsTable = ({ ...props }) => {
 
   const options = {
     pageSize: paginationOptions.perPage,
+    showTitle: false,
   };
 
   const actions = [

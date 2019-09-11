@@ -57,6 +57,14 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                 actionsColumnIndex: -1,
                 pageSize: 10,
               }}
+              toolbarAction={
+                <Button
+                  buttonType="primary"
+                  onClick={() => props.showModal({ component: 'AddUser' })}
+                >
+                  Add New User
+                </Button>
+              }
               actions={[
                 {
                   icon: 'none', // icon is needed here or it will error.
@@ -67,15 +75,6 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                       pathname: '/manage-portal/manage-user',
                       state: rowData,
                     });
-                  },
-                },
-                {
-                  icon: 'none',
-                  name: 'Add New User',
-                  buttonType: 'primary',
-                  isFreeAction: true,
-                  onClick: () => {
-                    props.showModal({ component: 'AddUser' });
                   },
                 },
               ]}

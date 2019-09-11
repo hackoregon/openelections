@@ -80,6 +80,7 @@ const ExpensesTable = ({ ...props }) => {
 
   const options = {
     pageSize: paginationOptions.perPage,
+    showTitle: false,
   };
 
   // eslint-disable-next-line no-use-before-define
