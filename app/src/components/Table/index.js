@@ -118,6 +118,7 @@ const Table = ({
                     }
                   : undefined
               }
+              action={toolbarAction}
               {...toolBarProps}
             />
           ),
