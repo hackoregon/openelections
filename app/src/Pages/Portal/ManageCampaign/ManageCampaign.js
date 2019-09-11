@@ -48,14 +48,15 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                 },
                 actionsColumnIndex: -1,
               }}
+              toolbarAction={
+                <Button
+                  buttonType="primary"
+                  onClick={() => props.showModal({ component: 'AddCampaign' })}
+                >
+                  Add New Expense
+                </Button>
+              }
               actions={[
-                {
-                  icon: 'none',
-                  name: 'Add New Campaign',
-                  buttonType: 'primary',
-                  isFreeAction: true,
-                  onClick: () => props.showModal({ component: 'AddCampaign' }),
-                },
                 {
                   icon: 'none', // icon is needed here or it will error.
                   name: 'Manage',
