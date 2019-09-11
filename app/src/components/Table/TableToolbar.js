@@ -5,12 +5,7 @@ import { mediaQueryRanges } from '../../assets/styles/variables';
 import TablePagination from './TablePagination';
 
 export function TableToolbar(props) {
-  const {
-    paginationOptions,
-    totalRows,
-    onChangePage,
-    onRowsPerPageChange,
-  } = props;
+  const { paginationOptions, action } = props;
 
   const wrapperStyles = css`
     display: flex;
@@ -25,17 +20,19 @@ export function TableToolbar(props) {
   return (
     <div css={wrapperStyles}>
       <div>
-        <TablePagination
-          perPage={paginationOptions.perPage || 50}
-          pageNumber={paginationOptions.page}
-          totalRows={totalRows}
-          // eslint-disable-next-line no-use-before-define
-          onChangePage={onChangePage}
-          // eslint-disable-next-line no-use-before-define
-          onChangeRowsPerPage={onRowsPerPageChange}
-        />
+        {paginationOptions && (
+          <TablePagination
+            perPage={paginationOptions.perPage || 50}
+            pageNumber={paginationOptions.page}
+            totalRows={paginationOptions.totalRows}
+            // eslint-disable-next-line no-use-before-define
+            onChangePage={paginationOptions.onChangePage}
+            // eslint-disable-next-line no-use-before-define
+            onChangeRowsPerPage={paginationOptions.onChangeRowsPerPage}
+          />
+        )}
       </div>
-      <div>{props.action}</div>
+      <div>{action}</div>
     </div>
   );
 }
