@@ -11,7 +11,7 @@ import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
 import * as expenditures from '../controller/expenditures';
 import * as summary from '../controller/summary';
-import { seedDb } from '../models/seeds';
+import { seedDb } from '../models/seeds/qaseed';
 
 export const AppRoutes = [
     /**

@@ -167,13 +167,13 @@ export async function addContributions(user: User, government: Government, campa
     return Promise.all(promises);
 }
 
-export default async () => {
+export default async (onlyData?: boolean) => {
     if (process.env.NODE_ENV === 'production' && process.env.APP_ENV !== 'staging') {
         return console.log('Can only seed in staging, test or development mode');
     }
 
     await truncateAll();
-    if (process.env.NODE_ENV !== 'production') {
+    if (onlyData) {
         console.log('Adding a gis boundaries admin');
         addGISBoundaries();
     }
@@ -287,7 +287,9 @@ export default async () => {
         campaignId: campaign.id
     });
 
-    await seedAddresses();
+    if (onlyData) {
+        await seedAddresses();
+    }
 
     const promises = [];
     await addContributions(campaignAdmin, government, campaign);
