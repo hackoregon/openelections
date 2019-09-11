@@ -52,7 +52,7 @@ export const mapExpenditureDataToForm = expenditure => {
     id,
     createdAt,
     buttonSubmitted: buttonSubmitted || '',
-    amount: amount || '',
+    amount: amount.toFixed(2) || '',
     date: format(
       new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
       'YYYY-MM-DD'
