@@ -53,7 +53,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   buttonType="primary"
                   onClick={() => props.showModal({ component: 'AddCampaign' })}
                 >
-                  Add New Expense
+                  Add New Campaign
                 </Button>
               }
               actions={[
