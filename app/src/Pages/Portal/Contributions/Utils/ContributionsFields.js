@@ -96,7 +96,7 @@ export const mapContributionDataToForm = contribution => {
     typeOfContributor: contributorType,
     inKindType: inKindType || '',
     oaeType: oaeType || '',
-    amountOfContribution: amount,
+    amountOfContribution: amount.toFixed(2),
     checkNumber: checkNumber || '',
 
     // CONTRIBUTOR VALUES

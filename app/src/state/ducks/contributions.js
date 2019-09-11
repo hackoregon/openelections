@@ -6,7 +6,12 @@ import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addContributionEntities, ADD_CONTRIBUTION_ENTITIES } from './common';
+import {
+  addContributionEntities,
+  ADD_CONTRIBUTION_ENTITIES,
+  resetState,
+  RESET_STATE,
+} from './common';
 import { getContributionActivities } from './activities';
 
 export const STATE_KEY = 'contributions';
@@ -36,8 +41,12 @@ export const initialState = {
   total: 0,
 };
 
+export const resetContributionState = resetState;
 // Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
     return { ...state, list: { ...action.payload.contributions } };
   },
@@ -211,7 +220,6 @@ export function getContributions(contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
-
       if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);

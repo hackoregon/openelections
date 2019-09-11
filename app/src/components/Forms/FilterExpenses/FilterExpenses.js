@@ -7,10 +7,10 @@ import DateRangeField from '../../Fields/DateRangeField';
 
 export const STATUS_OPTIONS = {
   'All Statuses': 'all',
-  Archived: 'Archived',
-  Draft: 'Draft',
-  Submitted: 'Submitted',
-  Processed: 'Processed',
+  Archived: 'archived',
+  Draft: 'draft',
+  'Out of Compliance': 'out_of_compliance',
+  'In Compliance': 'in_compliance',
 };
 
 const fields = {

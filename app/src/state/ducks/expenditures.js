@@ -6,7 +6,12 @@ import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addExpenditureEntities, ADD_EXPENDITURE_ENTITIES } from './common';
+import {
+  addExpenditureEntities,
+  ADD_EXPENDITURE_ENTITIES,
+  resetState,
+  RESET_STATE,
+} from './common';
 
 export const STATE_KEY = 'expenditures';
 
@@ -27,8 +32,12 @@ export const initialState = {
   total: 0,
 };
 
+export const resetExpenditureState = resetState;
 // Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_EXPENDITURE_ENTITIES]: (state, action) => {
     return { ...state, list: { ...action.payload.expenditures } };
   },
@@ -110,7 +119,7 @@ export function createExpenditure(expenditureAttrs) {
         dispatch(addExpenditureEntities(data.entities));
         dispatch(actionCreators.createExpenditure.success());
         dispatch(
-          flashMessage(`Contribution Added`, {
+          flashMessage(`Expenditure Added`, {
             props: { variant: 'success' },
           })
         );
@@ -137,12 +146,30 @@ export function updateExpenditure(expenditureAttrs) {
     try {
       const response = await api.updateExpenditure(expenditureAttrs);
       if (response.status === 204) {
+        let status = '';
+        if (expenditureAttrs.status) {
+          status = expenditureAttrs.status;
+        }
         dispatch(actionCreators.updateExpenditure.success());
+        dispatch(
+          flashMessage(`Expenditure Updated ${status}`, {
+            props: { variant: 'success' },
+          })
+        );
       } else {
         dispatch(actionCreators.updateExpenditure.failure());
+        const error = await response.json();
+        dispatch(
+          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+        );
+        return error;
       }
     } catch (error) {
       dispatch(actionCreators.updateExpenditure.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
+      return error;
     }
   };
 }

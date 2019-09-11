@@ -5,7 +5,7 @@ import { css, jsx } from '@emotion/core';
 
 import { withRouter } from 'react-router-dom';
 import Button from '../../Button/Button';
-import FilterContributions from './FilterContributions';
+import FilterExpensess from './FilterExpenses';
 
 const filterOuter = css`
   display: flex;
@@ -76,7 +76,7 @@ const btnContainer = css`
   }
 `;
 
-const FilterContribution = props => {
+const FilterExpenses = props => {
   const { location, history, onFilterUpdate } = props;
 
   // eslint-disable-next-line no-use-before-define
@@ -97,7 +97,7 @@ const FilterContribution = props => {
 
   return (
     <>
-      <FilterContributions
+      <FilterExpensess
         onSubmit={filterOptions => {
           const data = {};
 
@@ -156,7 +156,7 @@ const FilterContribution = props => {
             </div>
           </div>
         )}
-      </FilterContributions>
+      </FilterExpensess>
     </>
   );
 };
@@ -175,5 +175,5 @@ function getQueryParams(location) {
   return result;
 }
 
-// export default FilterContribution;
-export default withRouter(FilterContribution);
+// export default FilterExpenses;
+export default withRouter(FilterExpenses);

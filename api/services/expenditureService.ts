@@ -32,6 +32,7 @@ export interface IAddExpenditureAttrs {
     amount: number;
     paymentMethod?: PaymentMethod;
     purpose?: PurposeType;
+    checkNumber?: string;
     currentUserId: number;
     campaignId: number;
     governmentId: number;
@@ -62,6 +63,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             expenditure.type = expenditureAttrs.type;
             expenditure.subType = expenditureAttrs.subType;
             expenditure.paymentMethod = expenditureAttrs.paymentMethod;
+            expenditure.checkNumber = expenditureAttrs.checkNumber;
             expenditure.purpose = expenditureAttrs.purpose;
 
             expenditure.address1 = expenditureAttrs.address1;
