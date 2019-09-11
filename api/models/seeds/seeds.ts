@@ -173,7 +173,7 @@ export default async (onlyData?: boolean) => {
     }
 
     await truncateAll();
-    if (onlyData) {
+    if (!onlyData) {
         console.log('Adding a gis boundaries admin');
         addGISBoundaries();
     }
@@ -287,9 +287,7 @@ export default async (onlyData?: boolean) => {
         campaignId: campaign.id
     });
 
-    if (onlyData) {
-        await seedAddresses();
-    }
+    await seedAddresses();
 
     const promises = [];
     await addContributions(campaignAdmin, government, campaign);
