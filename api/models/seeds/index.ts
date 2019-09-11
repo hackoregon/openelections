@@ -17,7 +17,7 @@ import { truncateAll } from '../../test/factories';
     process.exit();
 })();
 
-export async function seed() {
+export async function seedDb() {
     if (process.env.NODE_ENV === 'production' && process.env.APP_ENV === 'production') {
         console.log('Can only seed in test, qa, or development mode');
         return;

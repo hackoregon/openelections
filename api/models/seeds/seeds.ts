@@ -173,9 +173,10 @@ export default async () => {
     }
 
     await truncateAll();
-
-    console.log('Adding a gis boundaries admin');
-    addGISBoundaries();
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('Adding a gis boundaries admin');
+        addGISBoundaries();
+    }
 
     console.log('Adding a government admin');
     const govAdmin = await createUserAsync({
