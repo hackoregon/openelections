@@ -10,9 +10,10 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { ExpenditureStatusEnum } from '../../../api/api';
 import { updateExpenditure } from '../../../state/ducks/expenditures';
-import { showModal } from '../../../state/ducks/modal';
+import { showModal, modalIsActive } from '../../../state/ducks/modal';
 
 const options = [
   'Select Compliance',
@@ -22,25 +23,22 @@ const options = [
   'In Compliance',
 ];
 
-const SplitButton = ({ id, updateExpenditure, showModal }) => {
-  // const SplitButton = ({ id, updateExpenditure, showModal }) => {
+const SplitButton = ({ id, updateExpenditure, showModal, modalIsActive }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [isSubmitting, setSubmitting] = React.useState(false);
 
-  //   Hook it up to the expenditure update duck, with the status field populated. - KELLY
   function updateStatus(index) {
-    console.log(index, id);
     let value = null;
     switch (options[index]) {
       case 'Draft':
         value = ExpenditureStatusEnum.DRAFT;
         updateExpenditure({ id, status: value });
-        // alert(`You clicked ${options[selectedIndex]}`);
         break;
       case 'Submitted':
         value = ExpenditureStatusEnum.SUBMITTED;
-        alert(`You clicked ${options[selectedIndex]}`);
+        updateExpenditure({ id, status: value });
         break;
       case 'Out of Compliance':
         value = ExpenditureStatusEnum.OUT_OF_COMPLIANCE;
@@ -48,25 +46,23 @@ const SplitButton = ({ id, updateExpenditure, showModal }) => {
           component: 'ComplianceReason',
           props: { id },
         });
-        // alert(
-        //   `The modal should pop up because you clicked ${options[selectedIndex]}`
-        // );
+        setSubmitting(false);
         break;
       case 'In Compliance':
         value = ExpenditureStatusEnum.IN_COMPLIANCE;
-        alert(`You clicked ${options[selectedIndex]}`);
+        updateExpenditure({ id, status: value });
         break;
       default:
-        alert('Nothing Happens');
+        setSubmitting(false);
     }
     return value;
   }
 
   function handleClick(event) {
-    console.log('No clicking');
+    setOpen(true);
   }
   function handleMenuItemClick(event, index) {
-    setSelectedIndex(index);
+    setSubmitting(true);
     setOpen(false);
     updateStatus(index);
   }
@@ -79,84 +75,90 @@ const SplitButton = ({ id, updateExpenditure, showModal }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   }
 
   return (
     <Grid container>
-      <Grid item xs={12} align="center">
-        <ButtonGroup
-          variant="contained"
-          color="primary"
-          ref={anchorRef}
-          aria-label="split button"
-        >
-          <Button onClick={handleClick}>{options[selectedIndex]}</Button>
-          <Button
+      {!isSubmitting && !modalIsActive ? (
+        <Grid item xs={12} align="center">
+          <ButtonGroup
+            variant="contained"
             color="primary"
-            size="small"
-            aria-owns={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
+            ref={anchorRef}
+            aria-label="split button"
           >
-            <ArrowDropDownIcon />
-          </Button>
-        </ButtonGroup>
-        <Popper
-          open={open}
-          anchorEl={anchorRef.current}
-          transition
-          disablePortal
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === 'bottom' ? 'center top' : 'center bottom',
-              }}
+            <Button onClick={handleClick}>{options[selectedIndex]}</Button>
+            <Button
+              color="primary"
+              size="small"
+              aria-owns={open ? 'menu-list-grow' : undefined}
+              aria-haspopup="true"
+              onClick={handleToggle}
             >
-              <Paper id="menu-list-grow">
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList>
-                    {options.map((option, index) => (
-                      <MenuItem
-                        key={option}
-                        selected={index === selectedIndex}
-                        onClick={event => handleMenuItemClick(event, index)}
-                      >
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </Grid>
+              <ArrowDropDownIcon />
+            </Button>
+          </ButtonGroup>
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            transition
+            disablePortal
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin:
+                    placement === 'bottom' ? 'center top' : 'center bottom',
+                }}
+              >
+                <Paper id="menu-list-grow">
+                  <ClickAwayListener onClickAway={handleClose}>
+                    <MenuList>
+                      {options.map((option, index) => (
+                        <MenuItem
+                          key={option}
+                          selected={index === selectedIndex}
+                          onClick={event => handleMenuItemClick(event, index)}
+                        >
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+        </Grid>
+      ) : (
+        <CircularProgress />
+      )}
     </Grid>
   );
 };
 
-function SplitButtony(props) {
-  const { id, updateExpenditure, showModal } = props;
+function ComplianceSelectButton(props) {
+  const { id, updateExpenditure, showModal, modalIsActive } = props;
   return (
     <SplitButton
       id={id}
       updateExpenditure={updateExpenditure}
       showModal={showModal}
+      modalIsActive={modalIsActive}
     />
   );
 }
 
 export default connect(
-  state => ({}),
+  state => ({
+    modalIsActive: modalIsActive(state),
+  }),
   dispatch => {
     return {
       updateExpenditure: data => dispatch(updateExpenditure(data)),
       showModal: data => dispatch(showModal(data)),
     };
   }
-)(SplitButtony);
+)(ComplianceSelectButton);

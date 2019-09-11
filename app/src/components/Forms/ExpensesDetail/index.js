@@ -54,9 +54,7 @@ const onSubmit = (data, props) => {
   //   }
   // }
   if (expenditureData.status) {
-    props
-      .updateExpenditure(expenditureData)
-      .then(() => props.history.push('/expenses'));
+    props.updateExpenditure(expenditureData);
   } else {
     props.history.push('/expenses');
   }

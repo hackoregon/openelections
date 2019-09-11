@@ -176,6 +176,7 @@ export function updateExpenditure(expenditureAttrs) {
             props: { variant: 'success' },
           })
         );
+        dispatch(push('/expenses'));
       } else {
         dispatch(actionCreators.updateExpenditure.failure());
         const error = await response.json();
@@ -239,7 +240,6 @@ export function postExpenditureComment(id, comment) {
       if (response.status === 204) {
         // await dispatch(getEXPENDITUREActivities(id));
         dispatch(actionCreators.postExpenditureComment.success());
-        dispatch(push('/expenses'));
       } else {
         dispatch(actionCreators.postExpenditureComment.failure());
       }
