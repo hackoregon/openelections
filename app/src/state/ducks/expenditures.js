@@ -182,7 +182,7 @@ export function getExpenditures(expenditureSearchAttrs) {
       if (response.status === 200) {
         const expenses = await response.json();
         const data = normalize(expenses.data, [schema.expenditure]);
-        dispatch(addExpenditureEntities(data.entities));
+        dispatch(addExpenditureEntities({ expenditures: expenses.data }));
         dispatch(actionCreators.getExpenditures.success(expenses.total));
       } else {
         dispatch(actionCreators.getExpenditures.failure());

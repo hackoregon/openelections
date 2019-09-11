@@ -79,12 +79,7 @@ const columns = isGovAdmin => {
 };
 
 const ContributionsTable = ({ ...props }) => {
-  const [sortFilter, setSortFilter] = useState({
-    sort: {
-      field: 'date',
-      direction: 'DESC',
-    },
-  });
+  const [sortFilter, setSortFilter] = useState({});
   const [filterOptions, setFilterOptions] = useState({});
   const [paginationOptions, setPaginationOptions] = useState({
     perPage: 50,
