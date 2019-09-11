@@ -69,7 +69,9 @@ const columns = isGovAdmin => {
       title: 'Campaign',
       sorting: false,
       render: rowData => {
-        return rowData.campaign.name;
+        return rowData && rowData.campaign
+          ? rowData.campaign.name
+          : 'Loading...';
       },
     });
 
