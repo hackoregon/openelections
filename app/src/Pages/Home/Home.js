@@ -3,12 +3,13 @@ import * as React from 'react';
 import { css, jsx } from '@emotion/core';
 import PageHoc from '../../components/PageHoc/PageHoc';
 
+import OAELogo from '../../assets/OAE Logo Cropped.jpg';
+
 const slideShowStyles = css`
-  iframe {
-    display: block;
-    margin: auto;
-    max-width: 100%;
-    margin-top: 4vw;
+  padding: 14vw;
+  text-align: center;
+  img {
+    max-width: 400px;
   }
 `;
 
@@ -16,16 +17,7 @@ const HomePage = props => {
   return (
     <PageHoc>
       <div css={slideShowStyles} className="slideshow-wrapper">
-        <iframe
-          title="Demo Slideshow"
-          src="https://docs.google.com/presentation/d/e/2PACX-1vRj0QE82D4Iml7BCBaZxdo37pAZOnDyHqCTmFzFO7091GhuTOpOpSj0SU9GqDYewZlU5uL6uqZzbQ7K/embed?start=true&loop=true&delayms=5000"
-          frameBorder="0"
-          allowFullScreen="true"
-          width="960"
-          height="569"
-          mozallowfullscreen="true"
-          webkitallowfullscreen="true"
-        />
+        <img src={OAELogo} alt="OAE Logo" />
       </div>
     </PageHoc>
   );
