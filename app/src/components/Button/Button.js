@@ -81,6 +81,12 @@ const buttonTypes = {
     size: 'large',
   },
   green: { type: 'button', variant: 'contained', style: greenStyle },
+  complianceDisabled: {
+    type: 'submit',
+    variant: 'contained',
+    color: 'primary',
+    fullWidth: true,
+  },
 };
 
 const Button = ({ buttonType, onClick, disabled, style, children }) => {

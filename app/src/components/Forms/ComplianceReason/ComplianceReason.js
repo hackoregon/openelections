@@ -101,7 +101,7 @@ const ComplianceReason = ({
           <Button
             // TODO enable when
             disabled={!!(!reasonPicked || !reasonText)}
-            buttonType="formDefault"
+            buttonType="complianceDisabled"
             onClick={() => {
               clearModal();
               updateExpenditure({
