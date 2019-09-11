@@ -108,7 +108,7 @@ export async function newExpenditureAsync(campaign: Campaign, government: Govern
     expenditure.payeeType = PayeeType.INDIVIDUAL;
     expenditure.paymentMethod = PaymentMethod.CASH;
     expenditure.purpose = PurposeType.GENERAL_OPERATING;
-    expenditure.date = faker.date.past(90);
+    expenditure.date = faker.date.past(1);
     const expenditureRepository = getConnection('default').getRepository('Expenditure');
     expenditure = await expenditureRepository.save(expenditure);
     if (process.env.NODE_ENV != 'test') {

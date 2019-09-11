@@ -11,6 +11,7 @@ import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
 import * as expenditures from '../controller/expenditures';
 import * as summary from '../controller/summary';
+import {seed} from "../models/seeds";
 
 export const AppRoutes = [
     /**
@@ -799,6 +800,14 @@ export const AppRoutes = [
         method: 'post',
         action: summary.getSummary
     },
+    {
+        path: '/seed',
+        method: 'get',
+        action: async (request: IRequest, response: express.Response) => {
+            const message = await seed();
+            return response.status(200).json(message);
+        }
+    }
 
 ];
 
