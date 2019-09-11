@@ -13,9 +13,9 @@ before_deploy:
   - sudo apt-get install jq -y
   - pip install --user awscli
 
-deploy:
-  provider: script
-  script: sh scripts/deploy.sh
-  skip_cleanup: true
-  on:
-    branch: develop
+#deploy:
+#  provider: script
+#  script: sh scripts/deploy.sh
+#  skip_cleanup: true
+#  on:
+#    branch: develop
