@@ -18,6 +18,7 @@ describe('Reducer', () => {
       error: null,
       list: null,
       currentId: null,
+      listOrder: [],
       total: 0,
     });
   });
@@ -27,8 +28,10 @@ describe('Reducer', () => {
       reducer(undefined, {
         type: ADD_EXPENDITURE_ENTITIES,
         payload: {
-          expenditures: {
-            '1': {},
+          entities: {
+            expenditures: {
+              '1': {},
+            },
           },
         },
       })
