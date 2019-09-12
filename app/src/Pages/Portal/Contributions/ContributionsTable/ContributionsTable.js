@@ -170,7 +170,7 @@ const ContributionsTable = ({ ...props }) => {
         // eslint-disable-next-line no-use-before-define
         onChangeRowsPerPage={handleOnRowsPerPageChange}
         toolbarAction={
-          props.isCampAdmin ? (
+          !props.isGovAdmin ? (
             <Button
               buttonType="primary"
               onClick={() =>
