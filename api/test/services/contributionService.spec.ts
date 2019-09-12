@@ -624,6 +624,60 @@ describe('contributionService', () => {
         ).to.equal(2);
     });
 
+    it('Gets contributions for a campaign as gov admin csv', async () => {
+        await Promise.all([
+            addContributionAsync({
+                address1: '123 ABC ST',
+                amount: 250,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
+                state: 'OR',
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
+            }),
+            addContributionAsync({
+                address1: '456 ABC ST',
+                amount: 100,
+                campaignId: campaign2.id,
+                city: 'Portland',
+                currentUserId: campaignStaff.id,
+                firstName: 'John',
+                middleInitial: '',
+                lastName: 'Doe',
+                governmentId: government.id,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                paymentMethod: PaymentMethod.CASH,
+                state: 'OR',
+                zip: '97214',
+                contributorType: ContributorType.INDIVIDUAL,
+                date: Date.now()
+            })
+        ]);
+        const data = await getContributionsAsync({
+            governmentId: government.id,
+            campaignId: campaign2.id,
+            currentUserId: govAdmin.id,
+            page: 0,
+            perPage: 10,
+            from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+            to: new Date().toISOString(),
+            format: 'csv'
+        });
+        expect(
+            data.csv.split(',').length
+        ).to.equal(118);
+    });
+
     it('Does not get a contribution if user does not belong to campaign or is not a gov admin', async () => {
         await Promise.all([
             addContributionAsync({

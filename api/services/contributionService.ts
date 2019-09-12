@@ -5,7 +5,7 @@ import {
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType, convertToGeoJson,
+    ContributorType, convertToCsv, convertToGeoJson,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
@@ -133,8 +133,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     addGisJob({ id: saved.id } );
                     addDataScienceJob({id: saved.id });
                 } else {
-                    getGISCoordinates(saved.id);
-                    retrieveAndSaveMatchResultAsync(saved.id);
+                    await getGISCoordinates(saved.id);
+                    await retrieveAndSaveMatchResultAsync(saved.id);
                 }
 
                 return saved;
@@ -143,7 +143,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
-        console.log(e);
         throw new Error(e.message);
     }
 }
@@ -180,14 +179,9 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
                 (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
                 govAdmin;
-            if (hasCampaignPermissions) {
-                return getContributionsByGovernmentIdAsync(governmentId, {
-                    ...options,
-                    page: options.page || 0,
-                    perPage: options.perPage || 100
-                });
+            if (!hasCampaignPermissions) {
+                throw new Error('User is not permitted to get contributions for this campaign.');
             }
-            throw new Error('User is not permitted to get contributions for this campaign.');
         } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
@@ -197,12 +191,14 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             perPage: options.perPage || 100
         });
 
-        if (!contributionAttrs.format || contributionAttrs.format === 'json') {
-            return contributions;
-        } else if (contributionAttrs.format === 'geoJson') {
+
+        if (contributionAttrs.format === 'geoJson') {
             contributions.geoJson = convertToGeoJson(contributions);
-            return contributions;
+        } else if (contributionAttrs.format === 'csv') {
+            contributions.csv = convertToCsv(contributions);
         }
+
+        return contributions;
     } catch (e) {
         throw new Error(e.message);
     }

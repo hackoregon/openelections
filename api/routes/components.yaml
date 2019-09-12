@@ -147,8 +147,6 @@ components:
         status:
           type: string
           enum: [Archived,Draft,Submitted,Processed]
-        submitForMatch:
-          type: boolean
         subType:
           type: string
           enum: [cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
@@ -346,8 +344,6 @@ components:
               status:
                 type: string
                 enum: [Archived,Draft,Submitted,Processed]
-              submitForMatch:
-                type: boolean
               subType:
                 type: string
                 enum: [cash,inkind_contribution,inkind_paid_supervision,inkind_forgiven_account,inkind_forgiven_personal,item_sold_fair_market,item_returned_check,item_misc,item_refund]
@@ -406,8 +402,6 @@ components:
                 type: string
               title:
                 type: string
-              submitForMatch:
-                type: boolean
               oaeType:
                 type: string
                 enum: [seed,matchable,public_matching_contribution,qualifying,allowable,inkind]

@@ -134,6 +134,16 @@ describe('Routes post /contributions', () => {
             expect(response.status).to.equal(422);
             expect(response.body.message);
         });
+
+        it('csv success as gov admin', async () => {
+            const response = await request(app)
+                .post(`/contributions`)
+                .send({ governmentId: government.id, currentUserId: govAdmin.id, format: 'csv' })
+                .set('Accept', 'application/json')
+                .set('Cookie', [`token=${govAdminToken}`]);
+            expect(response.status).to.equal(200);
+            expect(response.text.split(',').length).to.equal(79)
+        });
     });
 
     context('get /contributions/:id', () => {
