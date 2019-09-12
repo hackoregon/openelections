@@ -208,10 +208,12 @@ export const ContributorSection = ({
     <div css={sectionStyles.main}>
       {/* TODO Remove false when match endpoints are hooked up */}
       {isPerson && isGovAdmin && false ? (
-        <MatchPickerHeader
-          form="MatchPickerForm"
-          contributionId={contributionId}
-        />
+        <div style={{ pointerEvents: 'all' }}>
+          <MatchPickerHeader
+            form="MatchPickerForm"
+            contributionId={contributionId}
+          />
+        </div>
       ) : (
         <h3 css={sectionStyles.title}>Contributor</h3>
       )}
