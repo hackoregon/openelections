@@ -86,26 +86,19 @@ const styles = {
   `,
 };
 
-const fakeData = {
-  id: 67,
-  userId: 2,
-  notes: 'Campaign Admin added a contribution (64).',
-  campaignId: 1,
-  activityId: 64,
-  activityType: 'contribution',
-  createdAt: Date.now(),
-};
-
 const ActivityList = ({ activitiesArray }) => {
   const activityList = activitiesArray;
   return Object.values(activityList).map((activity, index) => {
+    const capitalizedActivity =
+      activity.activityType.charAt(0).toUpperCase() +
+      activity.activityType.slice(1);
     return (
       <div key={index}>
         <div css={styles.timelineGroup}>
-          <h3
-            css={styles.timestamp}
-          >{`created at date here: ${fakeData.createdAt}`}</h3>
-          {/* ^^^^ NEEDS REAL DATA */}
+          <p css={styles.timestamp}>
+            {`${activity.createdAt} ${capitalizedActivity} Activity`}
+            {/* ^^^ Format date:  eg->  05/19/2019 @5:55pm Contribution Activity */}
+          </p>
           <div css={styles.timeline} />
         </div>
         <p css={styles.username}>{activity.notes}</p>
@@ -123,7 +116,7 @@ export const ActivitySection = ({
 }) => (
   <div css={styles.main}>
     <hr css={styles.divider} />
-    <h2 css={styles.title}>Transaction History</h2>
+    <h3 css={styles.title}>Transaction History</h3>
     <ul css={styles.activityList}>
       <ActivityList activitiesArray={activitiesArray} />
     </ul>

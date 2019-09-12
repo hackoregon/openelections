@@ -66,6 +66,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 64,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
   {
     id: 66,
@@ -74,6 +75,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 65,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
   {
     id: 65,
@@ -82,6 +84,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 68,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
   {
     id: 64,
@@ -90,6 +93,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 67,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
   {
     id: 63,
@@ -98,6 +102,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 60,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
   {
     id: 62,
@@ -106,6 +111,7 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 63,
     activityType: 'contribution',
+    createdAt: Date.now(),
   },
 ];
 
