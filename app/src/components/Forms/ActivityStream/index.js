@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { getContributionActivities } from '../../../state/ducks/activities';
+import { getExpenditureActivities } from '../../../state/ducks/activities';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import ActivityStreamForm from './ActivityStreamForm';
 import { ActivitySection } from './ActivitySection';
@@ -119,7 +119,7 @@ const onSubmit = (data, props) => {
   const activitiesData = mapActivityDataToForm(data);
   mapActivityDataToForm.id = data.id;
   mapActivityDataToForm.currentUserId = props.currentUserId;
-  getContributionActivities(activitiesData).then(
+  getExpenditureActivities(activitiesData).then(
     data => props.history.push(`/contributions/${data}`) // Add /comments path?
   );
 };
@@ -145,45 +145,54 @@ const Activity = ({ ...props }) => (
 const ActivityStream = ({
   contributionId,
   data,
-  getAllContributionActivities,
-  props,
-}) => (
-  <>
-    <ActivityStreamForm
-      onSubmit={data => onSubmit(data, props)}
-      initialValues={activitiesEmptyState}
-      activitiesSwaggerResponse={activitiesSwaggerResponse}
-      activitiesArray={activitiesSwaggerResponse}
-    >
-      {({
-        formFields,
-        isValid,
-        initialValues,
-        onSubmit,
-        activitiesSwaggerResponse,
-      }) => {
-        // console.log(getAllContributionActivities());
-        return (
-          <ActivitySection
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-            formFields={formFields}
-            isValid={isValid}
-            activitiesSwaggerResponse={activitiesSwaggerResponse}
-            activitiesArray={activitiesArray}
-          />
-        );
-      }}
-    </ActivityStreamForm>
-  </>
-);
+  getAllExpenditureActivities,
+  activitiesById,
+  ...props
+}) => {
+  //   function fetchList(filterOptions, sortOptions, paginationOptions) {
+  //     const data = {
+  //       governmentId: props.govId,
+  //       currentUserId: props.userId,
+  //       campaignId: props.campaignId,
+  //       ...paginationOptions,
+  //       ...filterOptions,
+  //       ...sortOptions,
+  //     };
+  //     props.getExpenditures(data);
+  //   }
+  // };
+  console.log(props);
+  console.log('getAllExpenditureActivities: ', getAllExpenditureActivities());
+  return (
+    <>
+      <ActivityStreamForm
+        onSubmit={data => onSubmit(data, props)}
+        initialValues={activitiesEmptyState}
+      >
+        {({ formFields, isValid, initialValues, onSubmit }) => {
+          return (
+            <ActivitySection
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              formFields={formFields}
+              isValid={isValid}
+              activitiesSwaggerResponse={activitiesSwaggerResponse}
+              activitiesArray={activitiesArray}
+            />
+          );
+        }}
+      </ActivityStreamForm>
+    </>
+  );
+};
 
 export default connect(
   (props, state) => ({
     governmentId: getCurrentGovernmentId(state),
     contributionId: props.id,
+    activitiesById: getExpenditureActivities,
   }),
   dispatch => ({
-    getAllContributionActivities: () => dispatch(getContributionActivities(1)),
+    getAllExpenditureActivities: () => dispatch(getExpenditureActivities(1)),
   })
 )(ActivityStream);
