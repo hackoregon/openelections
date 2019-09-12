@@ -312,7 +312,6 @@ export const getContributionsList = createSelector(
     return state.contributions.listOrder.map(
       id => state.contributions.list[id]
     );
-    // return Object.values(state.contributions.list);
   }
 );
 
