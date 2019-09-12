@@ -99,7 +99,6 @@ const ComplianceReason = ({
             Cancel
           </Button>
           <Button
-            // TODO enable when
             disabled={!!(!reasonPicked || !reasonText)}
             buttonType="complianceDisabled"
             onClick={() => {

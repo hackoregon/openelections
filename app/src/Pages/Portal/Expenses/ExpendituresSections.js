@@ -106,11 +106,6 @@ export const ViewHeaderSection = ({
               Archive
             </Button>
           ) : null}
-
-          {/* Draft
-Submitted
-Out of Compliance
-In Compliance */}
         </div>
       </div>
     </div>

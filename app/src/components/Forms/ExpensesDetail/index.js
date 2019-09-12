@@ -20,7 +20,6 @@ import {
 import AddExpenseForm from '../AddExpense/AddExpenseForm';
 import { ExpenditureStatusEnum } from '../../../api/api';
 import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
-import { showModal } from '../../../state/ducks/modal';
 
 const onSubmit = (data, props) => {
   const initialData = props.data;
@@ -108,21 +107,6 @@ class ExpensesDetailForm extends React.Component {
             const campaignName = values.campaignName || this.props.campaignName;
             return (
               <>
-                {/*  If a govAdmin selects out of compliance on an expenditure, 
-                pop up a modal, and ask for the reason. */}
-                <div className="compliance-reason">
-                  <Button
-                    buttontype="compliance"
-                    onClick={() =>
-                      this.props.showModal({
-                        component: 'ComplianceReason',
-                        props: { id: values.id },
-                      })
-                    }
-                  >
-                    Fake Compliance Reason Button
-                  </Button>
-                </div>
                 <ViewHeaderSection
                   isCampAdmin={this.props.isCampAdmin}
                   isCampStaff={this.props.isCampStaff}
@@ -169,6 +153,5 @@ export default connect(
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
-    showModal: data => dispatch(showModal(data)),
   })
 )(ExpensesDetailForm);
