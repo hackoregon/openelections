@@ -124,30 +124,33 @@ class ContributionReadyForm extends React.Component {
                 status={this.props.data.status}
                 formValues={values}
               />
-              <BasicsSection
-                isSubmited={isSubmited}
-                formFields={formFields}
-                checkSelected={visibleIf.checkSelected}
-                showInKindFields={visibleIf.showInKindFields}
-                showPaymentMethod={visibleIf.paymentMethod}
-              />
-              <ContributorSection
-                isSubmited={isSubmited}
-                formFields={formFields}
-                showEmployerSection={visibleIf.showEmployerSection}
-                isPerson={visibleIf.isPerson}
-                emptyOccupationLetterDate={visibleIf.emptyOccupationLetterDate}
-                isGovAdmin={this.props.isGovAdmin}
-                contributionId={values.id}
-                showOccupationLetter={visibleIf.showOccupationLetter}
-              />
-              {/* {isSubmited && this.props.isGovAdmin ? (
-                <OtherDetailsSection
+              <div
+                style={
+                  this.props.isGovAdmin
+                    ? { pointerEvents: 'none', opacity: '0.7' }
+                    : null
+                }
+              >
+                <BasicsSection
+                  isSubmited={isSubmited}
                   formFields={formFields}
-                  formValues={values}
-                  handleSubmit={handleSubmit}
+                  checkSelected={visibleIf.checkSelected}
+                  showInKindFields={visibleIf.showInKindFields}
+                  showPaymentMethod={visibleIf.paymentMethod}
                 />
-              ) : null} */}
+                <ContributorSection
+                  isSubmited={isSubmited}
+                  formFields={formFields}
+                  showEmployerSection={visibleIf.showEmployerSection}
+                  isPerson={visibleIf.isPerson}
+                  emptyOccupationLetterDate={
+                    visibleIf.emptyOccupationLetterDate
+                  }
+                  isGovAdmin={this.props.isGovAdmin}
+                  contributionId={values.id}
+                  showOccupationLetter={visibleIf.showOccupationLetter}
+                />
+              </div>
             </>
           );
         }}
