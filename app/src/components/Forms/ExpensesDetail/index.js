@@ -28,6 +28,7 @@ import {
 } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 import { PageTransitionImage } from '../../PageTransistion';
 import ReadOnly from '../../ReadOnly';
+import ActivityStreamForm from '../ActivityStream/index';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -157,6 +158,13 @@ class ExpensesDetail extends React.Component {
                   formFields={formFields}
                 />
               </ReadOnly>
+              {isSubmited && this.props.isGovAdmin ? (
+                <ActivityStreamForm
+                  isValid={isValid}
+                  onSubmit={onSubmit}
+                  contributionId={this.props.id}
+                />
+              ) : null}
             </>
           );
         }}

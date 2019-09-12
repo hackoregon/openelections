@@ -174,7 +174,6 @@ class ContributionReadyForm extends React.Component {
                   matchId={currentContribution.matchId}
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
-<<<<<<< HEAD
               </ReadOnly>
               {isGovAdmin ? (
                 <div style={{ paddingTop: '50px' }}>
@@ -193,17 +192,6 @@ class ContributionReadyForm extends React.Component {
                 contributionId={this.props.id}
               />
               {/* ) : null} */}
-=======
-              ) : null}
-              */}
-              {isSubmited && this.props.isGovAdmin ? (
-                <ActivityStreamForm
-                  isValid={isValid}
-                  onSubmit={onSubmit}
-                  contributionId={this.props.id}
-                />
-              ) : null}
->>>>>>> only show ActivityStream if submitted & govAdmin
             </>
           );
         }}
