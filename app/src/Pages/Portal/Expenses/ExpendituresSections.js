@@ -9,6 +9,7 @@ import {
   sectionStyles,
   buttonBar,
 } from '../../../assets/styles/forms.styles';
+import ComplianceSelectButton from '../../../components/Forms/ComplianceReason/ComplianceSelectButton';
 
 export const ViewHeaderSection = ({
   isValid,
@@ -17,6 +18,7 @@ export const ViewHeaderSection = ({
   updatedAt,
   status,
   formValues,
+  isGovAdmin,
   isCampAdmin,
   isCampStaff,
   campaignName,
@@ -33,6 +35,7 @@ export const ViewHeaderSection = ({
       </div>
       <div css={buttonBar.wrapper}>
         <div css={buttonBar.container}>
+          {isGovAdmin ? <ComplianceSelectButton id={id} /> : null}
           {status === ExpenditureStatusEnum.DRAFT ? (
             <>
               {isCampStaff || isCampAdmin ? (

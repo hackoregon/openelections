@@ -3,6 +3,7 @@ import React from 'react';
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
+import { Button } from '@material-ui/core';
 import { updateExpenditure } from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
@@ -52,9 +53,7 @@ const onSubmit = (data, props) => {
   //   }
   // }
   if (expenditureData.status) {
-    props
-      .updateExpenditure(expenditureData)
-      .then(() => props.history.push('/expenses'));
+    props.updateExpenditure(expenditureData);
   } else {
     props.history.push('/expenses');
   }
@@ -82,59 +81,62 @@ class ExpensesDetailForm extends React.Component {
 
   render() {
     return (
-      <AddExpenseForm
-        onSubmit={data => onSubmit(data, this.props)}
-        initialValues={this.props.data}
-      >
-        {({
-          formFields,
-          isValid,
-          handleSubmit,
-          visibleIf,
-          formErrors,
-          values,
-        }) => {
-          // TODO Next line used to disable sections move to fields object and dynamic validate
-          const isSubmited = !!(
-            values.status === ExpenditureStatusEnum.SUBMITTED
-          );
-          if (values.buttonSubmitted && !isValid) {
-            for (const [key, value] of Object.entries(formErrors)) {
-              values.buttonSubmitted = '';
-              this.props.flashMessage(value, { props: { variant: 'error' } });
+      <>
+        <AddExpenseForm
+          onSubmit={data => onSubmit(data, this.props)}
+          initialValues={this.props.data}
+        >
+          {({
+            formFields,
+            isValid,
+            handleSubmit,
+            visibleIf,
+            formErrors,
+            values,
+          }) => {
+            // TODO Next line used to disable sections move to fields object and dynamic validate
+            const isSubmited = !!(
+              values.status === ExpenditureStatusEnum.SUBMITTED
+            );
+            if (values.buttonSubmitted && !isValid) {
+              for (const [key, value] of Object.entries(formErrors)) {
+                values.buttonSubmitted = '';
+                this.props.flashMessage(value, { props: { variant: 'error' } });
+              }
             }
-          }
-          const campaignName = values.campaignName || this.props.campaignName;
-          return (
-            <>
-              <ViewHeaderSection
-                isCampAdmin={this.props.isCampAdmin}
-                isCampStaff={this.props.isCampStaff}
-                isValid={isValid}
-                handleSubmit={handleSubmit}
-                onSubmitSave={onSubmitSave}
-                id={this.props.data.id}
-                updatedAt={this.props.data.updatedAt}
-                status={this.props.data.status}
-                formValues={values}
-                campaignName={campaignName}
-              />
-              <BasicsSection
-                isSubmited={isSubmited}
-                formFields={formFields}
-                checkSelected={visibleIf.checkSelected}
-                showInKindFields={visibleIf.showInKindFields}
-                showPaymentMethod={visibleIf.paymentMethod}
-                showPurposeType={visibleIf.showPurposeType}
-              />
-              <PayeeInfoSection
-                isSubmited={isSubmited}
-                formFields={formFields}
-              />
-            </>
-          );
-        }}
-      </AddExpenseForm>
+            const campaignName = values.campaignName || this.props.campaignName;
+            return (
+              <>
+                <ViewHeaderSection
+                  isCampAdmin={this.props.isCampAdmin}
+                  isCampStaff={this.props.isCampStaff}
+                  isGovAdmin={this.props.isGovAdmin}
+                  isValid={isValid}
+                  handleSubmit={handleSubmit}
+                  onSubmitSave={onSubmitSave}
+                  id={this.props.data.id}
+                  updatedAt={this.props.data.updatedAt}
+                  status={this.props.data.status}
+                  formValues={values}
+                  campaignName={campaignName}
+                />
+                <BasicsSection
+                  isSubmited={isSubmited}
+                  formFields={formFields}
+                  checkSelected={visibleIf.checkSelected}
+                  showInKindFields={visibleIf.showInKindFields}
+                  showPaymentMethod={visibleIf.paymentMethod}
+                  showPurposeType={visibleIf.showPurposeType}
+                />
+                <PayeeInfoSection
+                  isSubmited={isSubmited}
+                  formFields={formFields}
+                />
+              </>
+            );
+          }}
+        </AddExpenseForm>
+      </>
     );
   }
 }
