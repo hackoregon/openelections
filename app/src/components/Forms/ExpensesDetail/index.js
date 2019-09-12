@@ -120,18 +120,26 @@ class ExpensesDetailForm extends React.Component {
                   formValues={values}
                   campaignName={campaignName}
                 />
-                <BasicsSection
-                  isSubmited={isSubmited}
-                  formFields={formFields}
-                  checkSelected={visibleIf.checkSelected}
-                  showInKindFields={visibleIf.showInKindFields}
-                  showPaymentMethod={visibleIf.paymentMethod}
-                  showPurposeType={visibleIf.showPurposeType}
-                />
-                <PayeeInfoSection
-                  isSubmited={isSubmited}
-                  formFields={formFields}
-                />
+                <div
+                  style={
+                    this.props.isGovAdmin
+                      ? { pointerEvents: 'none', opacity: '0.7' }
+                      : null
+                  }
+                >
+                  <BasicsSection
+                    isSubmited={isSubmited}
+                    formFields={formFields}
+                    checkSelected={visibleIf.checkSelected}
+                    showInKindFields={visibleIf.showInKindFields}
+                    showPaymentMethod={visibleIf.paymentMethod}
+                    showPurposeType={visibleIf.showPurposeType}
+                  />
+                  <PayeeInfoSection
+                    isSubmited={isSubmited}
+                    formFields={formFields}
+                  />
+                </div>
               </>
             );
           }}
