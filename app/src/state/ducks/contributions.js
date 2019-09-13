@@ -220,7 +220,20 @@ export function getContributions(contributionSearchAttrs) {
     dispatch(actionCreators.getContributions.request());
     try {
       const response = await api.getContributions(contributionSearchAttrs);
-      if (response.status === 200) {
+      if (contributionSearchAttrs.format === 'csv' && response.status === 200) {
+        const contributions = await response.text();
+        const encodedUri = encodeURI(contributions);
+        const link = document.createElement('a');
+        link.setAttribute('href', `data:text/csv;charset=utf-8,${encodedUri}`);
+        link.setAttribute(
+          'download',
+          `contributions-download-${Date.now()}.csv`
+        );
+        document.body.appendChild(link); // Required for FF
+        link.click();
+        link.click();
+        document.body.removeChild(link);
+      } else if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);
 

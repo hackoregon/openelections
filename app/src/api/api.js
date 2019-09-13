@@ -345,6 +345,11 @@ export function post(url, data) {
     'Content-Type': 'application/json',
     Accept: 'application/json',
   };
+
+  if (data.format === 'csv') {
+    headers.Accept = 'text/csv';
+  }
+
   if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
     headers.Cookie = `token=${process.env.TOKEN}`;
   }

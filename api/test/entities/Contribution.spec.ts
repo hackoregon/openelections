@@ -117,53 +117,12 @@ describe('Contribution', () => {
             expect(newRecord.errors[0].property).to.equal('name');
         });
 
-        it('validateAmount', async () => {
-            const newRecord = new Contribution();
-            newRecord.type = ContributionType.CONTRIBUTION;
-            newRecord.subType = ContributionSubType.CASH;
-            newRecord.paymentMethod = PaymentMethod.CASH;
-            newRecord.contributorType = ContributorType.INDIVIDUAL;
-            newRecord.submitForMatch = true;
-            newRecord.amount = 0;
-            expect(newRecord.errors.length).to.equal(0);
-            await newRecord.validateAmount();
-            expect(newRecord.errors.length).to.equal(1);
-            expect(newRecord.errors[0].property).to.equal('amount');
-        });
-
-        it('validateSubmitForMatch not cash', async () => {
-            const newRecord = new Contribution();
-            newRecord.type = ContributionType.CONTRIBUTION;
-            newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
-            newRecord.paymentMethod = PaymentMethod.CASH;
-            newRecord.contributorType = ContributorType.INDIVIDUAL;
-            newRecord.submitForMatch = true;
-            expect(newRecord.errors.length).to.equal(0);
-            await newRecord.validateSubmitForMatch();
-            expect(newRecord.errors.length).to.equal(1);
-            expect(newRecord.errors[0].property).to.equal('submitForMatch');
-        });
-
-        it('validateSubmitForMatch not an individual', async () => {
-            const newRecord = new Contribution();
-            newRecord.type = ContributionType.CONTRIBUTION;
-            newRecord.subType = ContributionSubType.INKIND_CONTRIBUTION;
-            newRecord.paymentMethod = PaymentMethod.CASH;
-            newRecord.contributorType = ContributorType.FAMILY;
-            newRecord.submitForMatch = true;
-            expect(newRecord.errors.length).to.equal(0);
-            await newRecord.validateSubmitForMatch();
-            expect(newRecord.errors.length).to.equal(1);
-            expect(newRecord.errors[0].property).to.equal('submitForMatch');
-        });
-
         it('validateMatchAmount', async () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
             newRecord.contributorType = ContributorType.INDIVIDUAL;
             newRecord.paymentMethod = PaymentMethod.CASH;
-            newRecord.submitForMatch = true;
             newRecord.amount = 1.00;
             newRecord.matchAmount = 10.00;
             expect(newRecord.errors.length).to.equal(0);

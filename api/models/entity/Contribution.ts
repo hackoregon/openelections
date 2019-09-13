@@ -20,6 +20,8 @@ import { Activity } from './Activity';
 import { IGetContributionOptions } from '../../services/contributionService';
 import { removeUndefined } from './helpers';
 import { MatchAddressType } from '../../services/dataScienceService';
+import { Parser } from 'json2csv';
+import * as dateFormat from 'dateformat';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -229,9 +231,6 @@ export class Contribution {
     amount: number;
 
     @Column({ nullable: true })
-    calendarYearAggregate?: number;
-
-    @Column({ nullable: true })
     inKindDescription?: string;
 
     @Column({ nullable: true })
@@ -245,9 +244,6 @@ export class Contribution {
 
     @Column({ nullable: true })
     employerState?: string;
-
-    @Column({ nullable: true })
-    submitForMatch?: boolean;
 
     @Column({ nullable: true })
     compliant?: boolean;
@@ -322,7 +318,6 @@ export class Contribution {
         await this.validateGovernmentAsync();
         this.validateType();
         this.validateName();
-        this.validateSubmitForMatch();
         this.validateMatchAmount();
         this.validateInKindType();
         this.validatePaymentType();
@@ -421,33 +416,8 @@ export class Contribution {
         }
     }
 
-    validateSubmitForMatch() {
-        if (this.submitForMatch && this.subType !== ContributionSubType.CASH) {
-            const error = new ValidationError();
-            error.property = 'submitForMatch';
-            error.constraints = { notAllowed: 'Cannot submit non-cash contribution for match' };
-            this.errors.push(error);
-        } else if (this.submitForMatch && this.contributorType !== ContributorType.INDIVIDUAL) {
-            const error = new ValidationError();
-            error.property = 'contributorType';
-            error.constraints = { notAllowed: 'Only individual cash contributions can be submitted for match' };
-            this.errors.push(error);
-        } else {
-            this.validateAmount();
-        }
-    }
-
-    validateAmount() {
-        if (this.submitForMatch && (!this.amount || this.amount === 0)) {
-            const error = new ValidationError();
-            error.property = 'amount';
-            error.constraints = { notAllowed: 'Cannot submit 0 amount for match' };
-            this.errors.push(error);
-        }
-    }
-
     validateMatchAmount() {
-        if (this.submitForMatch && this.matchAmount && this.matchAmount > this.amount) {
+        if (this.matchAmount && this.matchAmount > this.amount) {
             const error = new ValidationError();
             error.property = 'matchAmount';
             error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
@@ -518,25 +488,103 @@ export const contributionSummaryFields = <const>[
     'phone',
     'phoneType',
     'checkNumber',
-    'calendarYearAggregate',
     'inKindType',
     'occupation',
     'employerName',
     'employerCity',
     'employerState',
-    'submitForMatch',
     'compliant',
     'matchAmount',
     'status',
     'notes',
     'paymentMethod',
     'date',
-    'occupationLetterDate'
+    'occupationLetterDate',
+    'addressPoint'
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
 
+export const contributionGovSummaryFields = <const>[
+    'id',
+    'amount',
+    'createdAt',
+    'updatedAt',
+    'type',
+    'subType',
+    'inKindType',
+    'contributorType',
+    'oaeType',
+    'contrPrefix',
+    'firstName',
+    'middleInitial',
+    'lastName',
+    'suffix',
+    'title',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state',
+    'zip',
+    'county',
+    'email',
+    'phone',
+    'phoneType',
+    'checkNumber',
+    'inKindType',
+    'occupation',
+    'employerName',
+    'employerCity',
+    'employerState',
+    'compliant',
+    'status',
+    'notes',
+    'paymentMethod',
+    'date',
+    'occupationLetterDate',
+    'addressPoint',
+    'compliant',
+    'matchId',
+    'matchAmount',
+    'matchStrength',
+    'matchResult'
+];
+
+export type IContributionGovSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+
+export interface IContributionGeoJson {
+    type: 'Feature';
+    properties: {
+        city: string;
+        state: string;
+        zip: string;
+        amount: number;
+        contributorType: ContributorType;
+        contributionType: ContributionType;
+        contributionSubType: ContributionSubType;
+        date: string;
+        campaign: {
+            name: string;
+            id: string
+        };
+        contributorName: string
+    };
+    geometry: {
+        type: 'Point';
+        coordinates: [number, number]
+    };
+}
+
+
+export interface IContributionsGeoJson {
+    type: 'FeatureCollection';
+    features: IContributionGeoJson[];
+}
+
 export type IContributionSummaryResults = {
-    data: IContributionSummary[];
+    data?: IContributionSummary[] | IContributionGovSummary[];
+    geoJson?: IContributionsGeoJson;
+    csv?: string;
     perPage: number;
     page: number;
     total: number;
@@ -548,7 +596,8 @@ export async function getContributionsByGovernmentIdAsync(
 ): Promise<IContributionSummaryResults> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
-        const { page, perPage, campaignId, status, from, to, matchId, sort } = options;
+        const { page, perPage, campaignId, status, from, to, matchId, sort, format } = options;
+        const isGovQuery = !options.campaignId;
         const where = {
                 government: {
                     id: governmentId
@@ -564,11 +613,11 @@ export async function getContributionsByGovernmentIdAsync(
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             };
         const query: any = {
-            select: contributionSummaryFields,
+            select: isGovQuery ? contributionGovSummaryFields : contributionSummaryFields,
             relations: ['campaign', 'government'],
             where,
-            skip: page,
-            take: perPage,
+            skip: format === 'csv' ? undefined : page,
+            take:  format === 'csv' ? undefined : perPage,
             order: {
                 updatedAt: 'DESC'
             },
@@ -581,8 +630,8 @@ export async function getContributionsByGovernmentIdAsync(
             }
         };
         if (sort) {
-            if (!['date', 'status', 'campaignId'].includes(sort.field)) {
-                throw new Error('Sort.field must be one of date, status or campaignid');
+            if (!['date', 'status', 'campaignId', 'matchAmount', 'amount'].includes(sort.field)) {
+                throw new Error('Sort.field must be one of date, status, matchAmount, amount or campaignid');
             }
 
             if (!['ASC', 'DESC'].includes(sort.direction)) {
@@ -599,6 +648,9 @@ export async function getContributionsByGovernmentIdAsync(
             json.government = {
                 id: item.government.id,
                 name: item.government.name};
+            if (json.coordinates) {
+                json.coordinates = item.addressPoint.coordinates;
+            }
             return json;
         });
         const total = await contributionRepository.count(removeUndefined({ where }));
@@ -611,6 +663,51 @@ export async function getContributionsByGovernmentIdAsync(
     } catch (err) {
         throw new Error('Error executing get contributions query');
     }
+}
+
+export function convertToGeoJson(contributions: IContributionSummaryResults): IContributionsGeoJson {
+    const data  = contributions
+        .data
+        .map((contribution: Pick<Contribution, typeof contributionSummaryFields[number]>): IContributionGeoJson => {
+            return {
+                type: 'Feature',
+                properties: {
+                    city: contribution.city,
+                    state: contribution.state,
+                    zip: contribution.zip,
+                    amount: contribution.amount,
+                    contributorType: contribution.contributorType,
+                    contributionType: contribution.type,
+                    contributionSubType: contribution.subType,
+                    date: contribution.date.toISOString(),
+                    contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
+                    // @ts-ignore
+                    campaign: contribution.campaign,
+                },
+                geometry: {
+                    type: 'Point',
+                    // @ts-ignore
+                    coordinates: contribution.coordinates
+                }
+            };
+        });
+    return {
+            type: 'FeatureCollection',
+            features: data,
+        };
+}
+
+export function convertToCsv(contributions: IContributionSummaryResults): string {
+    const json2csvParser = new Parser();
+    contributions.data.map( (item: any ): any => {
+        item.campaignId = item.campaign.id;
+        item.campaignName = item.campaign.name;
+        item.date = dateFormat(item.date, 'yyyy/mm/dd');
+        delete item.campaign;
+        delete item.government;
+        return item;
+    });
+    return json2csvParser.parse(contributions.data);
 }
 
 export interface SummaryAttrs {

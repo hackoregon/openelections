@@ -138,6 +138,14 @@ const ContributionsTable = ({ ...props }) => {
           fetchList(newFilterOptions, sortFilter, { page: 0 });
         }}
       />
+      <Button
+        onClick={() => {
+          // eslint-disable-next-line no-use-before-define
+          fetchList(filterOptions, sortFilter, { format: 'csv' });
+        }}
+      >
+        Export
+      </Button>
       <Table
         isLoading={isLoading}
         title={title}

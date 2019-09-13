@@ -5,7 +5,7 @@ import {
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType,
+    ContributorType, convertToCsv, convertToGeoJson,
     getContributionsByGovernmentIdAsync,
     IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
@@ -116,7 +116,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
-            contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             contribution.notes = contributionAttrs.notes;
             if (await contribution.isValidAsync()) {
@@ -133,8 +132,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     addGisJob({ id: saved.id } );
                     addDataScienceJob({id: saved.id });
                 } else {
-                    getGISCoordinates(saved.id);
-                    retrieveAndSaveMatchResultAsync(saved.id);
+                    await getGISCoordinates(saved.id);
+                    await retrieveAndSaveMatchResultAsync(saved.id);
                 }
 
                 return saved;
@@ -143,7 +142,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
-        console.log(e);
         throw new Error(e.message);
     }
 }
@@ -161,11 +159,13 @@ export interface IGetContributionOptions {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
+    format?: 'json' | 'csv' | 'geoJson';
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
 }
+
 
 export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
     try {
@@ -178,22 +178,26 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
                 (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
                 govAdmin;
-            if (hasCampaignPermissions) {
-                return getContributionsByGovernmentIdAsync(governmentId, {
-                    ...options,
-                    page: options.page || 0,
-                    perPage: options.perPage || 100
-                });
+            if (!hasCampaignPermissions) {
+                throw new Error('User is not permitted to get contributions for this campaign.');
             }
-            throw new Error('User is not permitted to get contributions for this campaign.');
         } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
-        return getContributionsByGovernmentIdAsync(governmentId, {
+        const contributions = await getContributionsByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100
         });
+
+
+        if (contributionAttrs.format === 'geoJson') {
+            contributions.geoJson = convertToGeoJson(contributions);
+        } else if (contributionAttrs.format === 'csv') {
+            contributions.csv = convertToCsv(contributions);
+        }
+
+        return contributions;
     } catch (e) {
         throw new Error(e.message);
     }
