@@ -232,6 +232,7 @@ export interface IUpdateContributionAttrs {
     paymentMethod?: PaymentMethod;
     date?: number | Date;
     occupationLetterDate?: number | Date;
+    notes?: string;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
