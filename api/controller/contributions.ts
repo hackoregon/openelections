@@ -159,6 +159,10 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsString()
     @IsOptional()
     notes: string;
+
+    @IsBoolean()
+    @IsOptional()
+    compliant: boolean;
 }
 
 export async function updateContribution(request: IRequest, response: Response, next: Function) {
@@ -371,6 +375,7 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsString()
     @IsOptional()
     notes: string;
+
 }
 
 export async function addContribution(request: IRequest, response: Response, next: Function) {
