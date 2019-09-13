@@ -225,9 +225,9 @@ export async function getContributions(request: IRequest, response: Response, ne
         await checkDto(getContributionsDto);
         const contributions = await getContributionsAsync(getContributionsDto);
         if (contributions.csv) {
-            response.setHeader('Content-Type', 'text/csv');
-            response.setHeader('Content-Disposition', 'attachment; filename=\"' + 'download-contributions-' + Date.now() + '.csv\"');
-            response.status(200).send(contributions.csv);
+            response.type('text/csv');
+            response.attachment('download-contributions-' + Date.now() + '.csv');
+            return response.status(200).send(Buffer.from(contributions.csv));
         }
         return response.status(200).send(JSON.stringify(contributions));
     } catch (err) {

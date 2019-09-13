@@ -596,7 +596,7 @@ export async function getContributionsByGovernmentIdAsync(
 ): Promise<IContributionSummaryResults> {
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
-        const { page, perPage, campaignId, status, from, to, matchId, sort } = options;
+        const { page, perPage, campaignId, status, from, to, matchId, sort, format } = options;
         const isGovQuery = !options.campaignId;
         const where = {
                 government: {
@@ -616,8 +616,8 @@ export async function getContributionsByGovernmentIdAsync(
             select: isGovQuery ? contributionGovSummaryFields : contributionSummaryFields,
             relations: ['campaign', 'government'],
             where,
-            skip: page,
-            take: perPage,
+            skip: format === 'csv' ? undefined : page,
+            take:  format === 'csv' ? undefined : perPage,
             order: {
                 updatedAt: 'DESC'
             },

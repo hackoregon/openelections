@@ -116,7 +116,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
             contribution.amount = contributionAttrs.amount;
-            contribution.submitForMatch = contributionAttrs.submitForMatch ? contributionAttrs.submitForMatch : false;
             contribution.date = new Date(contributionAttrs.date);
             contribution.notes = contributionAttrs.notes;
             if (await contribution.isValidAsync()) {
