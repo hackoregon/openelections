@@ -184,6 +184,11 @@ export const buttonBar = {
   button: css`
     margin: 1px;
   `,
+  modal: css`
+    position: absolute;
+    right: 4;
+    bottom: 4;
+  `,
 };
 
 export const matchColors = {
