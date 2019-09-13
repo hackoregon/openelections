@@ -231,7 +231,6 @@ export function getContributions(contributionSearchAttrs) {
         );
         document.body.appendChild(link); // Required for FF
         link.click();
-        link.click();
         document.body.removeChild(link);
       } else if (response.status === 200) {
         const contributions = await response.json();
