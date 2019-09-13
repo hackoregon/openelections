@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import { css, jsx } from '@emotion/core';
 
 const formModalWrapper = css`
-  max-width: 350px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;

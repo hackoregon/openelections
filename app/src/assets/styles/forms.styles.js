@@ -191,6 +191,36 @@ export const buttonBar = {
   `,
 };
 
+export const matchPickerModal = {
+  wrapper: css`
+    width: 320px;
+  `,
+  container: css`
+    display: flex;
+    justify-content: space-between;
+  `,
+  addressContainer: css`
+    line-height: 0.5;
+  `,
+  address: css`
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+  `,
+  acceptButtonContainer: css`
+    display: flex;
+    align-items: center;
+  `,
+  acceptButton: css`
+    height: 35px;
+  `,
+  linksContainer: css`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  `,
+};
+
 export const matchColors = {
   no: css`
     color: red;

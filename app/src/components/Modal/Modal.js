@@ -9,7 +9,7 @@ import * as ModalOptions from '../Forms/ModalForms';
 
 const modalStyle = css`
   position: absolute;
-  width: 350px;
+  width: 400px;
   background: white;
   top: 8vh;
   left: calc(50vw - 175px);
