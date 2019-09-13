@@ -580,7 +580,7 @@ export const fields = {
   },
   notes: {
     label: 'Notes?',
-    section: FormSectionEnum.OTHER_DETAILS,
+    section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
     validation: Yup.string(),
   },
