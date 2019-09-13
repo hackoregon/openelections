@@ -6,6 +6,7 @@ import { css, jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import NoMatchIcon from '@material-ui/icons/ErrorOutlineSharp';
 import MatchIcon from '@material-ui/icons/CheckCircleOutlineSharp';
+import { Link } from 'react-router-dom';
 import Button from '../Button/Button';
 import {
   containers,
@@ -58,29 +59,48 @@ export const MatchPicker = ({
 }) => {
   const matchStrengthText = `${matchStrength} Match Selected`;
   return (
-    <FormModal>
-      <div css={containers.main}>
-        <div>
-          <div>{name}</div>
-          <div>{street1}</div>
-          {street2 || <div>{street2}</div>}
-          <div>
-            <div>
-              <div css={containers.cityStateZip}>
-                <div>
-                  {city}, {state} {zip}
-                </div>
-              </div>
+    <FormModal style={{ padding: '0px' }}>
+      <div>
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          <div
+            style={{
+              lineHeight: 0.5,
+              display: 'flex',
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {name}
+              <p>{street1}</p>
+              {street2 || <p>{street2}</p>}
+              <p>
+                {city}, {state} {zip}
+              </p>
             </div>
           </div>
-        </div>
-        <div>{selected ? matchStrengthText : <Button>Accept</Button>}</div>
-        <div css={buttonBar.wrapper}>
-          <div css={buttonBar.container}>
-            {currentPage > 1 ? <Button>Previous</Button> : null}
-            {currentPage === totalPages ? null : <Button>Next</Button>}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {selected ? (
+              <span>matchStrengthText</span>
+            ) : (
+              <Button style={{ height: '35px' }} buttonType="manage">
+                Accept
+              </Button>
+            )}
           </div>
         </div>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        {currentPage > 1 ? <Link>Previous</Link> : null}
+        <Link>Next</Link>
       </div>
     </FormModal>
   );
