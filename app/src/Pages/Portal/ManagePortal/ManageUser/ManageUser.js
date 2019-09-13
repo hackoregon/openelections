@@ -21,7 +21,7 @@ const divSpacer = css`
 `;
 
 const ManageUserPage = props => {
-  const { id, email, userStatus } = props.location.state;
+  const { id, name, email, userStatus } = props.location.state;
 
   const handleReSendEmail = () => {
     props.resendUserInvite(id);
@@ -40,8 +40,8 @@ const ManageUserPage = props => {
       </h1>
       <div className="manage-user-container">
         <div className="manage-user-intro">
-          <h1>User Name</h1>
-          <p>{email}</p>
+          <h3>{`User Name: ${name || 'not on record'}`}</h3>
+          <h3>{`Email: ${email || 'not on record'}`}</h3>
           {userStatus === 'invited' && (
             <React.Fragment>
               <p className="fine-print" css={finePrint}>

@@ -8,7 +8,6 @@ import FormModal from '../../FormModal/FormModal';
 
 const removeUserStyle = css`
   word-break: break-word;
-  max-width: 300px;
 `;
 const buttonContainer = css`
   display: flex;
@@ -27,7 +26,8 @@ const RemoveUser = props => {
       <div css={removeUserStyle}>
         <h1 css={removeUserTitle}>Remove User </h1>
         <p>
-          {props.location.state.email} will no longer have access to the portal.
+          {props.location.state.email || props.location.state.name} will no
+          longer have access to the portal.
         </p>
         <p>Are you sure you want to remove them?</p>
         <div css={buttonContainer}>
