@@ -14,7 +14,7 @@ import {
     IAddUserGovAttrs
 } from '../services/permissionService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
-import {bugsnagClient} from "../services/bugsnagService";
+import { bugsnagClient } from '../services/bugsnagService';
 
 export async function login(request: IRequest, response: Response, next: Function) {
     try {
