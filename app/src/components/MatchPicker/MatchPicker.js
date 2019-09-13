@@ -59,11 +59,12 @@ export const MatchPicker = ({
 }) => {
   const matchStrengthText = `${matchStrength} Match Selected`;
   return (
-    <FormModal style={{ padding: '0px' }}>
+    <FormModal style={{ paddingTop: '20px', paddingBottom: '10px' }}>
       <div>
         <div
           style={{
             display: 'flex',
+            jusifyContent: 'space-between',
           }}
         >
           <div
@@ -81,11 +82,21 @@ export const MatchPicker = ({
               </p>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            style={{ display: 'flex', alignItems: 'center', padding: '40px' }}
+          >
             {selected ? (
-              <span>matchStrengthText</span>
+              <span>{matchStrengthText}</span>
             ) : (
-              <Button style={{ height: '35px' }} buttonType="manage">
+              <Button
+                style={{ height: '35px' }}
+                buttonType="manage"
+                onClick={() =>
+                  console.log(
+                    'post contributionId, matchResult strength and id to update match result duct. If the user selects none, update the matchResultStrength to None and post the id'
+                  )
+                }
+              >
                 Accept
               </Button>
             )}
@@ -99,8 +110,8 @@ export const MatchPicker = ({
           justifyContent: 'space-between',
         }}
       >
-        {currentPage > 1 ? <Link>Previous</Link> : null}
-        <Link>Next</Link>
+        {currentPage > 1 ? <Link to="/">Previous</Link> : null}
+        <Link to="/">Next</Link>
       </div>
     </FormModal>
   );
