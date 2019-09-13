@@ -223,6 +223,11 @@ export const ContributorSection = ({
               </>
             ) : null}
           </div>
+          <div css={sectionStyles.main}>
+            <h2 css={[containers.fullWidth, sectionStyles.notes]}>
+              {formFields.notes}
+            </h2>
+          </div>{' '}
         </div>
       ) : null}
     </div>
@@ -240,7 +245,6 @@ export const OtherDetailsSection = ({
       {/* <h2>{formFields.electionAggregate}</h2>
       <h2>{formFields.description}</h2> */}
       <h2>{formFields.linkToDocumentation}</h2>
-      <h2>{formFields.notes}</h2>
       <div css={containers.header}>
         <Button
           css={headerStyles.submitButton}
