@@ -9,13 +9,10 @@ import MatchIcon from '@material-ui/icons/CheckCircleOutlineSharp';
 import { Link } from 'react-router-dom';
 import Button from '../Button/Button';
 import {
-  containers,
-  headerStyles,
   sectionStyles,
-  buttonBar,
+  matchPickerModal,
   matchColors,
 } from '../../assets/styles/forms.styles';
-import FormModal from '../FormModal/FormModal';
 import { clearModal, showModal } from '../../state/ducks/modal';
 
 const Header = ({ matchStrength, showModal, form, contributionId }) => {
@@ -59,21 +56,11 @@ export const MatchPicker = ({
 }) => {
   const matchStrengthText = `${matchStrength} Match Selected`;
   return (
-    <FormModal style={{ paddingTop: '20px', paddingBottom: '10px' }}>
+    <div css={matchPickerModal.wrapper}>
       <div>
-        <div
-          style={{
-            display: 'flex',
-            jusifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{
-              lineHeight: 0.5,
-              display: 'flex',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div css={matchPickerModal.container}>
+          <div css={matchPickerModal.addressContainer}>
+            <div css={matchPickerModal.address}>
               {name}
               <p>{street1}</p>
               {street2 || <p>{street2}</p>}
@@ -82,14 +69,12 @@ export const MatchPicker = ({
               </p>
             </div>
           </div>
-          <div
-            style={{ display: 'flex', alignItems: 'center', padding: '40px' }}
-          >
+          <div css={matchPickerModal.acceptButtonContainer}>
             {selected ? (
               <span>{matchStrengthText}</span>
             ) : (
               <Button
-                style={{ height: '35px' }}
+                css={matchPickerModal.acceptButton}
                 buttonType="manage"
                 onClick={() =>
                   console.log(
@@ -103,17 +88,11 @@ export const MatchPicker = ({
           </div>
         </div>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div css={matchPickerModal.linksContainer}>
         {currentPage > 1 ? <Link to="/">Previous</Link> : null}
         <Link to="/">Next</Link>
       </div>
-    </FormModal>
+    </div>
   );
 };
 

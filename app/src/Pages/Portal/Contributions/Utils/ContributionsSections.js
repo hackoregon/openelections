@@ -10,15 +10,10 @@ import {
   sectionStyles,
   buttonBar,
 } from '../../../../assets/styles/forms.styles';
-<<<<<<< HEAD
-import { MatchPickerHeader } from '../../../../components/MatchPicker/MatchPicker';
-import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
-=======
 import {
   MatchPickerHeader,
   MatchPicker,
 } from '../../../../components/MatchPicker/MatchPicker';
->>>>>>> temporary styling
 
 export const ViewHeaderSection = ({
   isValid,

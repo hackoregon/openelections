@@ -8,7 +8,6 @@ import FormModal from '../../FormModal/FormModal';
 
 const removeUserStyle = css`
   word-break: break-word;
-  max-width: 300px;
 `;
 const buttonContainer = css`
   display: flex;
