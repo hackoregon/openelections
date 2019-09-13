@@ -36,6 +36,7 @@ export interface IAddExpenditureAttrs {
     currentUserId: number;
     campaignId: number;
     governmentId: number;
+    notes: string;
 }
 
 export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs): Promise<Expenditure> {
@@ -77,6 +78,8 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             expenditure.amount = expenditureAttrs.amount;
             expenditure.date = new Date(expenditureAttrs.date);
             expenditure.status = ExpenditureStatus.DRAFT;
+            expenditure.notes = expenditureAttrs.notes;
+
             if (await expenditure.isValidAsync()) {
                 const saved = await expenditureRepository.save(expenditure);
                 const user = await userRepository.findOneOrFail(expenditureAttrs.currentUserId) as User;
@@ -161,6 +164,7 @@ export interface IUpdateExpenditureAttrs {
     paymentMethod?: PaymentMethod;
     purpose?: PurposeType;
     date?: number | Date;
+    notes?: string;
 }
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {

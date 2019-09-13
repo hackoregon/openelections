@@ -63,6 +63,10 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsOptional()
     name: string;
 
+    @IsString()
+    @IsOptional()
+    notes: string;
+
     @IsEnum(PayeeType)
     @IsOptional()
     payeeType: PayeeType;
@@ -225,6 +229,10 @@ export class UpdateExpenditureDto implements IUpdateExpenditureAttrs {
     @IsString()
     @IsOptional()
     checkNumber: string;
+
+    @IsString()
+    @IsOptional()
+    notes: string;
 }
 
 export async function updateExpenditure(request: IRequest, response: Response, next: Function) {

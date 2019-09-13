@@ -352,6 +352,8 @@ components:
                 enum: [contribution,other]
               date:
                 type: integer
+              notes:
+                type: string
               oaeType:
                 type: string
                 enum: [seed,matchable,public_matching_contribution,qualifying,allowable,inkind]
@@ -416,6 +418,8 @@ components:
                 enum: [cash,check,money_order,credit_card_online,credit_card_paper]
               date:
                 type: number
+              notes:
+                type: string
     GetContributionBody:
       required: true
       content:
@@ -546,6 +550,8 @@ components:
                 enum: [wages,cash_contribution,personal_reimbursement,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,other_advertising,petition_circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
               date:
                 type: integer
+              notes:
+                type: string
     UpdateExpenditureBody:
       content:
         application/json:
@@ -583,6 +589,8 @@ components:
                 enum: [wages,cash_contribution,personal_reimbursement,broadcast_advertising,fundraising_event_expenses,general_operating_expenses,printing,management,other_advertising,petition_circulators,postage,preparation_of_advertising,surveys_and_polls,travel_expenses,utilities]
               date:
                 type: integer
+              notes:
+                type: string
 
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:
