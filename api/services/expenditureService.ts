@@ -36,7 +36,7 @@ export interface IAddExpenditureAttrs {
     currentUserId: number;
     campaignId: number;
     governmentId: number;
-    notes: string;
+    notes?: string;
 }
 
 export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs): Promise<Expenditure> {
