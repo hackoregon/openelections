@@ -18,6 +18,8 @@ import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetExpenditureAttrs } from '../../services/expenditureService';
+import { Parser } from 'json2csv';
+import * as dateFormat from 'dateformat';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',
@@ -333,6 +335,7 @@ export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFie
 
 export type IExpenditureSummaryResults = {
     data: IExpenditureSummary[];
+    csv?: string;
     perPage: number;
     page: number;
     total: number;
@@ -344,7 +347,7 @@ export async function getExpendituresByGovernmentIdAsync(
 ): Promise<IExpenditureSummaryResults> {
     try {
         const expenditureRepository = getConnection('default').getRepository('Expenditure');
-        const { page, perPage, campaignId, status, from, to, sort } = options;
+        const { page, perPage, campaignId, status, from, to, sort, format } = options;
         const where = {
                 government: {
                     id: governmentId
@@ -369,8 +372,8 @@ export async function getExpendituresByGovernmentIdAsync(
             select: expenditureSummaryFields,
             relations: ['campaign', 'government'],
             where,
-            skip: page,
-            take: perPage,
+            skip: format === 'csv' ? undefined : page,
+            take:  format === 'csv' ? undefined : perPage,
             order: { 'updatedAt': 'DESC'}
         };
 
@@ -406,6 +409,19 @@ export async function getExpendituresByGovernmentIdAsync(
     } catch (err) {
         throw new Error('Error executing get expenditures query');
     }
+}
+
+export function convertToCsv(expenditures: IExpenditureSummaryResults): string {
+    const json2csvParser = new Parser();
+    expenditures.data.map( (item: any ): any => {
+        item.campaignId = item.campaign.id;
+        item.campaignName = item.campaign.name;
+        item.date = dateFormat(item.date, 'yyyy/mm/dd');
+        delete item.campaign;
+        delete item.government;
+        return item;
+    });
+    return json2csvParser.parse(expenditures.data);
 }
 
 const removeUndefined = obj => {

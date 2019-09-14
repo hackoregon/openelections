@@ -1,4 +1,5 @@
 import {
+    convertToCsv,
     Expenditure,
     ExpenditureStatus,
     ExpenditureSubType,
@@ -115,6 +116,7 @@ export interface IGetExpenditureAttrs {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
+    format?: 'json' | 'csv';
 }
 
 export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs): Promise<IExpenditureSummaryResults> {
@@ -125,22 +127,22 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
                 (await isCampaignAdminAsync(options.currentUserId, options.campaignId)) ||
                 (await isCampaignStaffAsync(options.currentUserId, options.campaignId)) ||
                 (await isGovernmentAdminAsync(options.currentUserId, governmentId));
-            if (hasCampaignPermissions) {
-                return getExpendituresByGovernmentIdAsync(governmentId, {
-                    ...options,
-                    page: options.page || 0,
-                    perPage: options.perPage || 100
-                });
+            if (!hasCampaignPermissions) {
+                throw new Error('User is not permitted to get expenditures for this campaign.');
             }
-            throw new Error('User is not permitted to get expenditures for this campaign.');
         } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
             throw new Error('Must be a government admin to see all expenditures');
         }
-        return getExpendituresByGovernmentIdAsync(governmentId, {
+        const expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100
         });
+
+        if (expendituresAttrs.format === 'csv') {
+            expenditures.csv = convertToCsv(expenditures);
+        }
+        return expenditures;
     } catch (e) {
         throw new Error(e.message);
     }
@@ -196,6 +198,9 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 expenditureRepository.update(expenditureAttrs.id, attrs),
                 (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
                 Object.keys(attrs)
+                    .filter(key => attrs[key] && attrs[key] !== '')
+                    .filter(key => expenditure[key] && expenditure[key] !== '')
+                    .filter(key => expenditure[key] !== attrs[key])
                     .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
                     .join(' ')
             ]);
@@ -205,7 +210,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 notes: `${user.name()} updated expenditure ${expenditureAttrs.id} fields. ${changeNotes}`,
                 campaign: expenditure.campaign,
                 government: expenditure.government,
-                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityType: ActivityTypeEnum.EXPENDITURE,
                 activityId: expenditure.id
             });
             expenditure = await expenditureRepository.findOne(expenditure.id) as Expenditure;

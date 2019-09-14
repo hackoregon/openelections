@@ -9,6 +9,7 @@ export const STATUS_OPTIONS = {
   'All Statuses': 'all',
   Archived: 'archived',
   Draft: 'draft',
+  Submitted: 'submitted',
   'Out of Compliance': 'out_of_compliance',
   'In Compliance': 'in_compliance',
 };

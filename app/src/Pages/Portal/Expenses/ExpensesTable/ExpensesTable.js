@@ -127,6 +127,17 @@ const ExpensesTable = ({ ...props }) => {
           fetchList(newFilterOptions, sortFilter, { page: 0 });
         }}
       />
+
+      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Button
+          onClick={() => {
+            // eslint-disable-next-line no-use-before-define
+            fetchList(filterOptions, sortFilter, { format: 'csv' });
+          }}
+        >
+          Export
+        </Button>
+      </div>
       <Table
         isLoading={isLoading}
         showTitle={false}

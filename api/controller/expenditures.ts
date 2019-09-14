@@ -143,6 +143,10 @@ export class GetExpendituresDto implements IGetExpenditureAttrs {
     @IsOptional()
     @IsString()
     to?: string;
+
+    @IsOptional()
+    @IsString()
+    format?: 'csv' | 'json';
 }
 
 export async function getExpenditures(request: IRequest, response: Response, next: Function) {
@@ -154,6 +158,11 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         });
         await checkDto(getExpendituresDto);
         const expenditures = await getExpendituresAsync(getExpendituresDto);
+        if (expenditures.csv) {
+            response.type('text/csv');
+            response.attachment('download-expenditures-' + Date.now() + '.csv');
+            return response.status(200).send(Buffer.from(expenditures.csv));
+        }
         return response.status(200).send(expenditures);
     } catch (err) {
         if (process.env.NODE_ENV === 'production') {

@@ -189,7 +189,7 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
             });
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.name} was sent an invitation email to ${user.email}`,
+                notes: `${user.name()} was sent an invitation email to ${user.email}`,
                 government: government,
                 activityType: ActivityTypeEnum.INVITATION_EMAIL,
                 activityId: user.id
@@ -203,7 +203,7 @@ export async function addUserToGovernmentAsync(attrs: IAddUserGovAttrs): Promise
         const permission =  await addPermissionAsync({userId: user.id, role: attrs.role, governmentId: government.id});
         await createActivityRecordAsync({
             currentUser: user,
-            notes: `${currentUser.name} added ${user.name()} to ${government.name} as a ${permission.role}`,
+            notes: `${currentUser.name()} added ${user.name()} to ${government.name} as a ${permission.role}`,
             government: government,
             activityType: ActivityTypeEnum.PERMISSION,
             activityId: permission.id
