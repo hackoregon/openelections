@@ -550,7 +550,7 @@ export const contributionGovSummaryFields = <const>[
     'matchResult'
 ];
 
-export type IContributionGovSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
 
 export interface IContributionGeoJson {
     type: 'Feature';

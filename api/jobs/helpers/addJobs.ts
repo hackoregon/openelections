@@ -19,6 +19,9 @@ export async function addGisJob(jobData: {id: number}) {
 }
 
 export function renderError(e: Error): any {
+    if (!e) {
+        return;
+    }
     if (process.env.NODE_ENV === 'production') {
         bugsnagClient.notify(e);
     }

@@ -129,8 +129,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityId: saved.id
                 });
                 if (process.env.NODE_ENV !== 'test') {
-                    addGisJob({ id: saved.id } );
-                    addDataScienceJob({id: saved.id });
+                    await addGisJob({ id: saved.id } );
+                    await addDataScienceJob({id: saved.id });
                 } else {
                     await getGISCoordinates(saved.id);
                     await retrieveAndSaveMatchResultAsync(saved.id);
