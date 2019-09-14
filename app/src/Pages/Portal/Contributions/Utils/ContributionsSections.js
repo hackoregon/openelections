@@ -11,7 +11,7 @@ import {
   buttonBar,
 } from '../../../../assets/styles/forms.styles';
 import { MatchPickerHeader } from '../../../../components/MatchPicker/MatchPicker';
-import ComplianceSelectButton from '../../../../components/Forms/ComplianceReason/ComplianceSelectButton';
+import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
 
 export const ViewHeaderSection = ({
   isValid,
@@ -37,7 +37,7 @@ export const ViewHeaderSection = ({
       </div>
       <div css={buttonBar.wrapper}>
         <div css={buttonBar.container}>
-          {isGovAdmin ? <ComplianceSelectButton id={id} /> : null}
+          {isGovAdmin ? <MatchContributionSelector id={id} /> : null}
           {status === ContributionStatusEnum.DRAFT ? (
             <>
               {isCampStaff || isCampAdmin ? (
