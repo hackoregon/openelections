@@ -13,6 +13,7 @@ import {
   RESET_STATE,
 } from './common';
 import { getContributionActivities } from './activities';
+import { downloadFile } from '../utils/helpers';
 
 export const STATE_KEY = 'contributions';
 
@@ -222,16 +223,7 @@ export function getContributions(contributionSearchAttrs) {
       const response = await api.getContributions(contributionSearchAttrs);
       if (contributionSearchAttrs.format === 'csv' && response.status === 200) {
         const contributions = await response.text();
-        const encodedUri = encodeURI(contributions);
-        const link = document.createElement('a');
-        link.setAttribute('href', `data:text/csv;charset=utf-8,${encodedUri}`);
-        link.setAttribute(
-          'download',
-          `contributions-download-${Date.now()}.csv`
-        );
-        document.body.appendChild(link); // Required for FF
-        link.click();
-        document.body.removeChild(link);
+        downloadFile(contributions, `contributions-download-${Date.now()}.csv`);
       } else if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);
