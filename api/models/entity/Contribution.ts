@@ -582,7 +582,7 @@ export interface IContributionsGeoJson {
 }
 
 export type IContributionSummaryResults = {
-    data?: IContributionSummary[] | IContributionGovSummary[];
+    data: IContributionSummary[] | IContributionGovSummary[];
     geoJson?: IContributionsGeoJson;
     csv?: string;
     perPage: number;
@@ -665,10 +665,8 @@ export async function getContributionsByGovernmentIdAsync(
     }
 }
 
-export function convertToGeoJson(contributions: IContributionSummaryResults): IContributionsGeoJson {
-    const data  = contributions
-        .data
-        .map((contribution: Pick<Contribution, typeof contributionSummaryFields[number]>): IContributionGeoJson => {
+export function convertToGeoJson(contributions: any): IContributionsGeoJson {
+    const data  = contributions.data.map((contribution: any): IContributionGeoJson => {
             return {
                 type: 'Feature',
                 properties: {
@@ -697,7 +695,7 @@ export function convertToGeoJson(contributions: IContributionSummaryResults): IC
         };
 }
 
-export function convertToCsv(contributions: IContributionSummaryResults): string {
+export function convertToCsv(contributions: any): string {
     const json2csvParser = new Parser();
     contributions.data.map( (item: any ): any => {
         item.campaignId = item.campaign.id;
