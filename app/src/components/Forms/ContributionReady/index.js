@@ -132,6 +132,7 @@ class ContributionReadyForm extends React.Component {
                 campaignName={values.campaignName || campaignName}
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
+                isGovAdmin={this.props.isGovAdmin}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 id={initialFormData.id}
