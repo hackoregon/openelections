@@ -91,9 +91,7 @@ export async function addContributions(user: User, government: Government, campa
         skip_empty_lines: true
     });
 
-    let records: Address[] = parsed.filter( () => Math.random() >= 0.5).slice(0, 50);
-
-    records.forEach((address: Address) => {
+    parsed.forEach((address: Address) => {
         promises.push(addContributionAsync({
             firstName: address.firstName,
             lastName: address.lastName,
@@ -106,54 +104,6 @@ export async function addContributions(user: User, government: Government, campa
             type: ContributionType.CONTRIBUTION,
             subType: ContributionSubType.CASH,
             amount: faker.finance.amount(1, 500, 2),
-            date: faker.date.past(1),
-            governmentId: government.id,
-            campaignId: campaign.id,
-            currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
-            oaeType: OaeType.ALLOWABLE,
-            occupation: 'Other'
-        }));
-    });
-
-    records = parsed.filter( () => Math.random() >= 0.5).slice(0, 10);
-    records.forEach((address: Address) => {
-        promises.push(addContributionAsync({
-            firstName: faker.name.firstName(),
-            lastName: address.lastName,
-            address1: address.address1,
-            address2: address.address2,
-            city: address.city,
-            state: address.state,
-            zip: address.zip,
-            contributorType: ContributorType.INDIVIDUAL,
-            type: ContributionType.CONTRIBUTION,
-            subType: ContributionSubType.CASH,
-            amount: faker.finance.amount(1, 50, 2),
-            date: faker.date.past(1),
-            governmentId: government.id,
-            campaignId: campaign.id,
-            currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
-            oaeType: OaeType.ALLOWABLE,
-            occupation: 'Other'
-        }));
-    });
-
-    records = parsed.filter( () => Math.random() >= 0.5).slice(0, 10);
-    records.forEach((address: Address) => {
-        promises.push(addContributionAsync({
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
-            address1: address.address1,
-            address2: address.address2,
-            city: address.city,
-            state: address.state,
-            zip: address.zip,
-            contributorType: ContributorType.INDIVIDUAL,
-            type: ContributionType.CONTRIBUTION,
-            subType: ContributionSubType.CASH,
-            amount: faker.finance.amount(1, 50, 2),
             date: faker.date.past(1),
             governmentId: government.id,
             campaignId: campaign.id,

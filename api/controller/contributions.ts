@@ -217,6 +217,10 @@ export class GetContributionsDto implements IGetContributionAttrs {
     @IsOptional()
     @IsString()
     to?: string;
+
+    @IsOptional()
+    @IsString()
+    format?: 'csv' | 'json' | 'geoJson';
 }
 
 export async function getContributions(request: IRequest, response: Response, next: Function) {

@@ -13,6 +13,7 @@ import {
   resetState,
   RESET_STATE,
 } from './common';
+import { downloadFile } from '../utils/helpers';
 
 export const STATE_KEY = 'expenditures';
 
@@ -200,7 +201,10 @@ export function getExpenditures(expenditureSearchAttrs) {
     dispatch(actionCreators.getExpenditures.request());
     try {
       const response = await api.getExpenditures(expenditureSearchAttrs);
-      if (response.status === 200) {
+      if (expenditureSearchAttrs.format === 'csv' && response.status === 200) {
+        const expenditures = await response.text();
+        downloadFile(expenditures, `expenditures-download-${Date.now()}.csv`);
+      } else if (response.status === 200) {
         const expenses = await response.json();
         const data = normalize(expenses.data, [schema.expenditure]);
         dispatch(addExpenditureEntities(data.entities));
