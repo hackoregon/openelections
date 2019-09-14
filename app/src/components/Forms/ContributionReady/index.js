@@ -63,6 +63,11 @@ const onSubmit = (data, props) => {
     case 'submit':
       alteredValues.status = ContributionStatusEnum.SUBMITTED;
       break;
+    case 'processed':
+      alteredValues.status = ContributionStatusEnum.PROCESSED;
+      break;
+    // Button that does not set buttonSubmitted would return to the
+    // contributions list without updating the record
     default:
   }
 

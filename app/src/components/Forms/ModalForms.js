@@ -7,3 +7,6 @@ export { default as MatchPickerForm } from './Match';
 export {
   default as ComplianceReason,
 } from './ComplianceReason/ComplianceReason';
+export {
+  default as MatchContribution,
+} from './MatchContribution/MatchContribution';
