@@ -130,7 +130,6 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
             if (!hasCampaignPermissions) {
                 throw new Error('User is not permitted to get expenditures for this campaign.');
             }
-            throw new Error('User is not permitted to get expenditures for this campaign.');
         } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
             throw new Error('Must be a government admin to see all expenditures');
         }
@@ -199,6 +198,9 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 expenditureRepository.update(expenditureAttrs.id, attrs),
                 (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
                 Object.keys(attrs)
+                    .filter(key => attrs[key] && attrs[key] !== '')
+                    .filter(key => expenditure[key] && expenditure[key] !== '')
+                    .filter(key => expenditure[key] !== attrs[key])
                     .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
                     .join(' ')
             ]);
@@ -208,7 +210,7 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 notes: `${user.name()} updated expenditure ${expenditureAttrs.id} fields. ${changeNotes}`,
                 campaign: expenditure.campaign,
                 government: expenditure.government,
-                activityType: ActivityTypeEnum.CONTRIBUTION,
+                activityType: ActivityTypeEnum.EXPENDITURE,
                 activityId: expenditure.id
             });
             expenditure = await expenditureRepository.findOne(expenditure.id) as Expenditure;

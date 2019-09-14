@@ -295,6 +295,9 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
                 contributionRepository.update(contributionAttrs.id, attrs),
                 (userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown) as User,
                 Object.keys(attrs)
+                    .filter(key => attrs[key] && attrs[key] !== '')
+                    .filter(key => contribution[key] && contribution[key] !== '')
+                    .filter(key => contribution[key] !== attrs[key])
                     .map(k => `${k} changed from ${contribution[k]} to ${attrs[k]}.`)
                     .join(' ')
             ]);
