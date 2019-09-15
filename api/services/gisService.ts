@@ -83,6 +83,8 @@ export async function geocodeAddressAsync(attrs: {
         if (json.status === 'OK' && json.results[0] ) {
             return [json.results[0].geometry.location.lng, json.results[0].geometry.location.lat];
         }
+    } else {
+        throw new Error('Error geocoding');
     }
     return;
 }

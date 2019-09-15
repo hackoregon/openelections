@@ -426,7 +426,7 @@ export class Contribution {
     }
 
     validateContributorAddress() {
-        if (this.contributorType === ContributorType.INDIVIDUAL) {
+        if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
             return this.address1 && this.city && this.zip && this.state;
         }
         return true;

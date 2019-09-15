@@ -23,7 +23,7 @@ import { createActivityRecordAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
-import { addDataScienceJob, addGisJob } from '../jobs/helpers/addJobs';
+import { addDataScienceJob } from '../jobs/helpers/addJobs';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -129,7 +129,6 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityId: saved.id
                 });
                 if (process.env.NODE_ENV !== 'test') {
-                    await addGisJob({ id: saved.id } );
                     await addDataScienceJob({id: saved.id });
                 } else {
                     await getGISCoordinates(saved.id);
