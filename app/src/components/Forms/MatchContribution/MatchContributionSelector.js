@@ -25,12 +25,17 @@ const options = [
   'In Compliance',
 ];
 
-const SplitButton = ({ id, updateContribution, showModal, modalIsActive }) => {
+const SplitButton = ({
+  id,
+  updateContribution,
+  showModal,
+  modalIsActive,
+  donationAmount,
+}) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isSubmitting, setSubmitting] = React.useState(false);
-
   function updateStatus(index) {
     let value = null;
     switch (options[index]) {
@@ -38,7 +43,7 @@ const SplitButton = ({ id, updateContribution, showModal, modalIsActive }) => {
         value = ContributionStatusEnum.OUT_OF_COMPLIANCE;
         showModal({
           component: 'MatchContribution',
-          props: { id },
+          props: { id, donationAmount },
         });
         setSubmitting(false);
         break;
@@ -153,14 +158,21 @@ const SplitButton = ({ id, updateContribution, showModal, modalIsActive }) => {
   );
 };
 
-function ComplianceSelectButton(props) {
-  const { id, updateContribution, showModal, modalIsActive } = props;
+function MatchContributionSelector(props) {
+  const {
+    id,
+    updateContribution,
+    showModal,
+    modalIsActive,
+    donationAmount,
+  } = props;
   return (
     <SplitButton
       id={id}
       updateContribution={updateContribution}
       showModal={showModal}
       modalIsActive={modalIsActive}
+      donationAmount={donationAmount}
     />
   );
 }
@@ -175,4 +187,4 @@ export default connect(
       showModal: data => dispatch(showModal(data)),
     };
   }
-)(ComplianceSelectButton);
+)(MatchContributionSelector);

@@ -37,7 +37,12 @@ export const ViewHeaderSection = ({
       </div>
       <div css={buttonBar.wrapper}>
         <div css={buttonBar.container}>
-          {isGovAdmin ? <MatchContributionSelector id={id} /> : null}
+          {isGovAdmin ? (
+            <MatchContributionSelector
+              id={id}
+              donationAmount={formValues.amountOfContribution}
+            />
+          ) : null}
           {status === ContributionStatusEnum.DRAFT ? (
             <>
               {isCampStaff || isCampAdmin ? (

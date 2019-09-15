@@ -40,14 +40,16 @@ const MatchContribution = ({
   clearModal,
   updateContribution,
   postContributionComment,
+  donationAmount,
 }) => {
   const classes = useStyles();
   const isRequired = true;
-  const [matchAmount, setMatchAmount] = React.useState('');
+  const [matchAmount, setMatchAmount] = React.useState(
+    parseFloat(donationAmount) < 50.01 ? donationAmount : '50.00'
+  );
   function handleTextChange(event) {
     setMatchAmount(event.target.value);
   }
-
   return (
     <FormModal>
       <div css={matchContributionStyle}>
