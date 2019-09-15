@@ -13,6 +13,7 @@
         "testone": "mocha --timeout 5000 --require ts-node/register test/setup.ts",
         "test-watch": "mocha --watch --require ts-node/register --watch-extensions ts test/setup.ts test/**/*.spec.ts",
         "seed": "ts-node models/seeds/index.ts",
+        "queue": "ts-node models/seeds/index.ts",
         "console": "ts-node",
         "jobs": "ts-node jobs/index.ts",
         "buildprocessors": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/",
