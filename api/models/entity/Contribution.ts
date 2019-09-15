@@ -450,8 +450,16 @@ export class Contribution {
         }
     }
 
-    toJSON() {
+    toJSON(isGov: boolean = false) {
         const json: any = {};
+        if (isGov) {
+            contributionGovSummaryFields.forEach(
+                (key: string): void => {
+                    json[key] = this[key];
+                }
+            );
+            return json as IContributionGovSummary;
+        }
         contributionSummaryFields.forEach(
             (key: string): void => {
                 json[key] = this[key];
@@ -640,8 +648,10 @@ export async function getContributionsByGovernmentIdAsync(
 
             query.order = { [sort.field]: sort.direction };
         }
-        const contributions = (await contributionRepository.find(removeUndefined(query)) as IContributionSummary[]).map((item: any): any => {
-            const json = item.toJSON();
+
+
+        const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((item: any): any => {
+            const json = item.toJSON(isGovQuery);
             json.campaign = {
                 id: item.campaign.id,
                 name: item.campaign.name};
@@ -653,6 +663,7 @@ export async function getContributionsByGovernmentIdAsync(
             }
             return json;
         });
+
         const total = await contributionRepository.count(removeUndefined({ where }));
         return {
             data: contributions,

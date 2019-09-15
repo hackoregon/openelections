@@ -43,7 +43,6 @@ export async function seedAddresses() {
     let i = 0;
     const promises = [];
     chunks.forEach((addressArray: any): void => {
-        console.log(`Writing address chunk ${i} of ${chunks.length}`);
         const query = getConnection()
             .createQueryBuilder()
             .insert()
