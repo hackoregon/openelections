@@ -40,7 +40,7 @@ const SplitButton = ({
     let value = null;
     switch (options[index]) {
       case 'Match Contribution':
-        value = ContributionStatusEnum.OUT_OF_COMPLIANCE;
+        value = ContributionStatusEnum.PROCESSED;
         showModal({
           component: 'MatchContribution',
           props: { id, donationAmount },
@@ -48,11 +48,15 @@ const SplitButton = ({
         setSubmitting(false);
         break;
       case 'Archived':
-        value - ContributionStatusEnum.ARCHIVED;
+        value = ContributionStatusEnum.ARCHIVED;
         updateContribution({ id, status: value });
         break;
       case 'Draft':
         value = ContributionStatusEnum.DRAFT;
+        updateContribution({ id, status: value });
+        break;
+      case 'Processed':
+        value = ContributionStatusEnum.PROCESSED;
         updateContribution({ id, status: value });
         break;
       case 'Submitted':
