@@ -65,8 +65,7 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
         }
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
         const addressInfo: MatchAddressType = await response.json();
-
-        if (addressInfo.donor_info.eligible_address === 'true') {
+        if (addressInfo.donor_info.eligible_address === 'True') {
             addressInfo.donor_info.eligible_address = true;
         } else {
             addressInfo.donor_info.eligible_address = false;
@@ -75,7 +74,7 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
     } catch (error) {
         const errorReturnAttrs: any = attrs;
         errorReturnAttrs.max_matches = 10;
-        errorReturnAttrs.eligibile_address = 'False';
+        errorReturnAttrs.eligibile_address = false;
 
         return {
             exact: [],
