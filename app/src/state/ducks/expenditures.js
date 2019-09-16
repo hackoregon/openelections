@@ -269,9 +269,6 @@ export const getExpendituresTotal = createSelector(
   }
 );
 
-export const isLoggedIn = state => {
-  return state.auth.me !== null;
-};
 export const getCurrentExpenditure = state => {
   return state.expenditures &&
     state.expenditures.list &&
