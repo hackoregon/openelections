@@ -414,7 +414,7 @@ export const fields = {
     label: 'Address Line 2',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   city: {
     label: 'City',

@@ -57,7 +57,7 @@ const styles = css`
   }
 
   .oe-page-container,
-  .oe-portal-container {
+  .oe-portal-containerxxx {
     position: relative;
     min-height: 100vh;
     transform: translateZ(0);

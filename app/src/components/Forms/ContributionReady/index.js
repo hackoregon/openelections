@@ -55,9 +55,7 @@ const onSubmit = (data, props) => {
   //   }
   // }
   if (contributionData.status) {
-    props
-      .updateContribution(contributionData)
-      .then(() => props.history.push('/contributions'));
+    props.updateContribution(contributionData);
   } else {
     props.history.push('/contributions');
   }
@@ -100,7 +98,6 @@ class ContributionReadyForm extends React.Component {
           formErrors,
           values,
         }) => {
-          // TODO Next line used to disable sections move to fields object and dynamic validate
           const isSubmited = !!(
             values.status === ContributionStatusEnum.SUBMITTED
           );

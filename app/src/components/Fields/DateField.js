@@ -15,7 +15,7 @@ const DateField = props => {
       type="date"
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
-      value={formik.values[id]}
+      value={formik.values[id] || ''}
       onChange={onChange || formik.handleChange}
       onBlur={formik.handleBlur}
       autoComplete="on"

@@ -1,52 +1,51 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
 import {
   getExpenditureById,
   getCurrentExpenditure,
 } from '../../../../state/ducks/expenditures';
-import {
-  expendituresEmptyState,
-  mapExpenditureDataToForm,
-} from '../ExpendituresFields';
+import { mapExpenditureDataToForm } from '../ExpendituresFields';
+import { PageTransitionImage } from '../../../../components/PageTransistion';
 
-class AddExpense extends Component {
+class ExpensesDetail extends Component {
   componentDidMount() {
     const { getExpenditureById, expenditureId } = this.props;
-    getExpenditureById(parseInt(expenditureId));
+    if (expenditureId) getExpenditureById(parseInt(expenditureId));
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !!(nextProps.currentExpenditure !== this.props.currentExpenditure);
   }
 
   render() {
-    const {
-      expenditures,
-      expenditureId,
-      history,
-      currentExpenditure,
-    } = this.props;
-    let data = expendituresEmptyState;
+    const { expenditureId, currentExpenditure } = this.props;
     if (currentExpenditure) {
-      data = mapExpenditureDataToForm(currentExpenditure);
+      const data = mapExpenditureDataToForm(currentExpenditure);
+      return (
+        <PageHoc>
+          <ExpensesDetailForm data={data} expenditureId={expenditureId} />
+        </PageHoc>
+      );
     }
-    return (
-      <PageHoc>
-        <ExpensesDetailForm
-          data={data}
-          expenditureId={expenditureId}
-          history={history}
-        />
-      </PageHoc>
-    );
+    return <PageTransitionImage />;
   }
 }
+
+ExpensesDetail.propTypes = {
+  getExpenditureById: PropTypes.func,
+  expenditureId: PropTypes.number,
+  currentExpenditure: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+};
+
 export default connect(
   (state, ownProps) => ({
     expenditureId: parseInt(ownProps.match.params.id),
-    expenditures: state.expenditures,
-    history: ownProps.history,
     currentExpenditure: getCurrentExpenditure(state),
   }),
   dispatch => ({
     getExpenditureById: id => dispatch(getExpenditureById(id)),
   })
-)(AddExpense);
+)(ExpensesDetail);

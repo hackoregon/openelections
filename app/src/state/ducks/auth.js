@@ -225,6 +225,7 @@ export function login(email, password) {
           dispatch(
             flashMessage('Signin Error', { props: { variant: 'error' } })
           );
+          dispatch(push('/dashboard'));
         }
       });
     } catch (error) {
@@ -232,6 +233,7 @@ export function login(email, password) {
       dispatch(
         flashMessage(`Signin Error - ${error}`, { props: { variant: 'error' } })
       );
+      dispatch(push('/dashboard'));
     }
   };
 }

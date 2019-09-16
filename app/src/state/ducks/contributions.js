@@ -3,6 +3,7 @@ import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
+import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -197,6 +198,7 @@ export function updateContribution(contributionAttrs) {
             props: { variant: 'success' },
           })
         );
+        dispatch(push('/contributions'));
       } else {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();
