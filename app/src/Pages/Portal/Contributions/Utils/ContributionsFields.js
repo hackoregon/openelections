@@ -602,7 +602,6 @@ export const validate = values => {
     employerName,
     employerCity,
     employerState,
-    // employerZipcode,
     subTypeOfContribution,
     inKindType,
     lastName,
@@ -633,7 +632,7 @@ export const validate = values => {
   // );
   // OR show when not just payment type
 
-  visible.emptyOccupationLetterDate = occupationLetterDate === '';
+  visible.emptyOccupationLetterDate = isEmpty(occupationLetterDate);
 
   visible.showEmployerSection =
     values.occupation === 'Employed' && visible.isPerson;
@@ -696,9 +695,6 @@ export const validate = values => {
       if (isEmpty(employerState)) {
         error.employerState = 'Employer state is required.';
       }
-      // if (isEmpty(employerZipcode)) {
-      //   error.employerZipcode = 'Employer zipcode is required.';
-      // }
     }
   }
 
