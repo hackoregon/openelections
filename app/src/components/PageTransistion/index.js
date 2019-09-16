@@ -21,7 +21,7 @@ class PageTransition extends React.Component {
   render() {
     const { show = true, children } = this.props;
     return (
-      <Fade in={show} timeout={{ enter: 1000, exit: 0 }}>
+      <Fade in={show} timeout={{ enter: 800, exit: 200 }}>
         <div>{children}</div>
       </Fade>
     );

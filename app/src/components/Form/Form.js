@@ -100,13 +100,6 @@ class Form extends React.Component {
               : {};
           // Uncomment next line to see what formik can pass to the form
           // console.log('formikProps', formikProps);
-          if (formikProps.isSubmitting) {
-            return (
-              <PageTransition>
-                <PageTransitionImage />
-              </PageTransition>
-            );
-          }
           return (
             <PageTransition>
               <div>

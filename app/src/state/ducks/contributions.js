@@ -165,6 +165,7 @@ export function createContribution(contributionAttrs) {
             props: { variant: 'success' },
           })
         );
+        dispatch(push(`/contributions/${data.result}`));
         return data.result;
       }
       dispatch(actionCreators.createContribution.failure());
@@ -311,9 +312,6 @@ export const getContributionsTotal = createSelector(
   }
 );
 
-export const isLoggedIn = state => {
-  return state.auth.me !== null;
-};
 export const getCurrentContribution = state => {
   return state.contributions &&
     state.contributions.list &&
