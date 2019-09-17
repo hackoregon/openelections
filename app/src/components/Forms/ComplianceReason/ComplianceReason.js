@@ -100,7 +100,7 @@ const ComplianceReason = ({
           </Button>
           <Button
             disabled={!!(!reasonPicked || !reasonText)}
-            buttonType="complianceDisabled"
+            buttonType="disabledModalButton"
             onClick={() => {
               clearModal();
               updateExpenditure({
