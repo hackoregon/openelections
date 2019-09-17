@@ -84,11 +84,6 @@ class ExpensesDetail extends React.Component {
     getExpenditureById(parseInt(expenditureId));
   }
 
-  // componentDidMount() {
-  //   const { getExpenditureById, expenditureId } = this.props;
-  //   if (expenditureId) getExpenditureById(parseInt(expenditureId));
-  // }
-
   render() {
     const {
       expenditureId,
