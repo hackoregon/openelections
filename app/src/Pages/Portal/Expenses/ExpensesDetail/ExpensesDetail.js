@@ -1,51 +1,29 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import PropTypes from 'prop-types';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
-import {
-  getExpenditureById,
-  getCurrentExpenditure,
-} from '../../../../state/ducks/expenditures';
-import { mapExpenditureDataToForm } from '../ExpendituresFields';
-import { PageTransitionImage } from '../../../../components/PageTransistion';
 
-class ExpensesDetail extends Component {
-  componentDidMount() {
-    const { getExpenditureById, expenditureId } = this.props;
-    if (expenditureId) getExpenditureById(parseInt(expenditureId));
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return !!(nextProps.currentExpenditure !== this.props.currentExpenditure);
-  }
-
+class ExpensesDetail extends React.PureComponent {
   render() {
-    const { expenditureId, currentExpenditure } = this.props;
-    if (currentExpenditure) {
-      const data = mapExpenditureDataToForm(currentExpenditure);
+    const { match } = this.props;
+    let expenditureId = false;
+    if (match.params && match.params.id) {
+      expenditureId = match.params.id;
       return (
         <PageHoc>
-          <ExpensesDetailForm data={data} expenditureId={expenditureId} />
+          <ExpensesDetailForm expenditureId={expenditureId} />
         </PageHoc>
       );
     }
-    return <PageTransitionImage />;
   }
 }
 
 ExpensesDetail.propTypes = {
-  getExpenditureById: PropTypes.func,
-  expenditureId: PropTypes.number,
-  currentExpenditure: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  }),
 };
 
-export default connect(
-  (state, ownProps) => ({
-    expenditureId: parseInt(ownProps.match.params.id),
-    currentExpenditure: getCurrentExpenditure(state),
-  }),
-  dispatch => ({
-    getExpenditureById: id => dispatch(getExpenditureById(id)),
-  })
-)(ExpensesDetail);
+export default ExpensesDetail;

@@ -269,10 +269,16 @@ export const getExpendituresTotal = createSelector(
   }
 );
 
-export const getCurrentExpenditure = state => {
+export const getCurrentExpenditureId = state => {
   return state.expenditures &&
     state.expenditures.list &&
     state.expenditures.currentId
-    ? state.expenditures.list[state.expenditures.currentId]
+    ? state.expenditures.currentId
+    : false;
+};
+
+export const getCurrentExpenditure = state => {
+  return getCurrentExpenditureId(state)
+    ? state.expenditures.list[getCurrentExpenditureId(state)]
     : false;
 };

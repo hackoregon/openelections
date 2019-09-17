@@ -1,9 +1,12 @@
 import React from 'react';
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
-import { updateExpenditure } from '../../../state/ducks/expenditures';
+import {
+  updateExpenditure,
+  getExpenditureById,
+  getCurrentExpenditure,
+  getCurrentExpenditureId,
+} from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
   getCurrentCampaignName,
@@ -18,8 +21,12 @@ import {
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import ExpensesDetailForm from './ExpensesDetailForm';
 import { ExpenditureStatusEnum } from '../../../api/api';
-import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
-import { PageTransition } from '../../PageTransistion';
+import {
+  mapExpenditureFormToData,
+  mapExpenditureDataToForm,
+} from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import { PageTransitionImage } from '../../PageTransistion';
+import ReadOnly from '../../ReadOnly';
 
 const onSubmit = (data, props) => {
   const expenditureData = mapExpenditureFormToData(data);
@@ -71,21 +78,36 @@ const onSubmitSave = (data, props) => {
 };
 
 class ExpensesDetail extends React.Component {
+  constructor(props) {
+    super(props);
+    const { getExpenditureById, expenditureId } = props;
+    getExpenditureById(parseInt(expenditureId));
+  }
+
+  // componentDidMount() {
+  //   const { getExpenditureById, expenditureId } = this.props;
+  //   if (expenditureId) getExpenditureById(parseInt(expenditureId));
+  // }
+
   render() {
     const {
-      data,
+      expenditureId,
+      currentExpenditure,
       flashMessage,
       isCampAdmin,
       isCampStaff,
       isGovAdmin,
       campaignName,
     } = this.props;
-    return !data ? (
-      <PageTransition />
-    ) : (
+    let data = {};
+    if (currentExpenditure) {
+      data = mapExpenditureDataToForm(currentExpenditure);
+    }
+    return (
       <ExpensesDetailForm
         onSubmit={data => onSubmit(data, this.props)}
         initialValues={data}
+        key={expenditureId}
       >
         {({
           formFields,
@@ -104,8 +126,13 @@ class ExpensesDetail extends React.Component {
               flashMessage(value, { props: { variant: 'error' } });
             }
           }
-          const campaignName = values.campaignName || this.props.campaignName;
-          return (
+          const isReadOnly = !!(
+            isGovAdmin || data.status === ExpenditureStatusEnum.SUBMITTED
+          );
+
+          return parseInt(values.id) !== parseInt(expenditureId) ? (
+            <PageTransitionImage />
+          ) : (
             <>
               <ViewHeaderSection
                 isCampAdmin={isCampAdmin}
@@ -118,13 +145,9 @@ class ExpensesDetail extends React.Component {
                 updatedAt={data.updatedAt}
                 status={data.status}
                 formValues={values}
-                campaignName={campaignName}
+                campaignName={values.campaignName || campaignName} // Remove ` || campaignName` when api returns campaignName on single row request.
               />
-              <div
-                style={
-                  isGovAdmin ? { pointerEvents: 'none', opacity: '0.7' } : null
-                }
-              >
+              <ReadOnly ro={isReadOnly}>
                 <BasicsSection
                   isSubmited={isSubmited}
                   formFields={formFields}
@@ -137,7 +160,7 @@ class ExpensesDetail extends React.Component {
                   isSubmited={isSubmited}
                   formFields={formFields}
                 />
-              </div>
+              </ReadOnly>
             </>
           );
         }}
@@ -148,6 +171,8 @@ class ExpensesDetail extends React.Component {
 
 export default connect(
   state => ({
+    currentExpenditureId: getCurrentExpenditureId(state),
+    currentExpenditure: getCurrentExpenditure(state),
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
@@ -155,6 +180,7 @@ export default connect(
     campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
