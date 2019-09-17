@@ -29,7 +29,7 @@ export const ViewHeaderSection = ({
         <p css={headerStyles.invoice}>
           #{id} {status}
         </p>
-        <p css={headerStyles.subheading}>
+        <p css={headerStyles.subheadingWide}>
           {`${campaignName} | Last Edited ${updatedAt}`}
         </p>
       </div>
