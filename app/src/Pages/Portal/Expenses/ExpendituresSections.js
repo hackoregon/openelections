@@ -22,12 +22,14 @@ export const ViewHeaderSection = ({
   isCampAdmin,
   isCampStaff,
   campaignName,
+  statusText = status.replace(/_/g, ' '),
 }) => (
   <>
     <div css={containers.header}>
       <div>
         <p css={headerStyles.invoice}>
-          #{id} {status}
+          #{id}{' '}
+          <span style={{ textTransform: 'capitalize' }}>{statusText}</span>
         </p>
         <p css={headerStyles.subheadingWide}>
           {`${campaignName} | Last Edited ${updatedAt}`}

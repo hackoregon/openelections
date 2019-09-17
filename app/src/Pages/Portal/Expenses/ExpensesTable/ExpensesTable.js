@@ -62,6 +62,9 @@ const columns = isGovAdmin => [
   {
     field: 'status',
     title: 'Status',
+    render: rowData => {
+      return rowData.status ? rowData.status.replace(/_/g, ' ') : '';
+    },
   },
 ];
 
