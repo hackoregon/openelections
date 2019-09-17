@@ -1,10 +1,12 @@
 import React from 'react';
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
-import { Button } from '@material-ui/core';
-import { updateExpenditure } from '../../../state/ducks/expenditures';
+import {
+  updateExpenditure,
+  getExpenditureById,
+  getCurrentExpenditure,
+  getCurrentExpenditureId,
+} from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
   getCurrentCampaignName,
@@ -17,12 +19,16 @@ import {
   PayeeInfoSection,
   ViewHeaderSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
-import AddExpenseForm from '../AddExpense/AddExpenseForm';
+import ExpensesDetailForm from './ExpensesDetailForm';
 import { ExpenditureStatusEnum } from '../../../api/api';
-import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import {
+  mapExpenditureFormToData,
+  mapExpenditureDataToForm,
+} from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import { PageTransitionImage } from '../../PageTransistion';
+import ReadOnly from '../../ReadOnly';
 
 const onSubmit = (data, props) => {
-  const initialData = props.data;
   const expenditureData = mapExpenditureFormToData(data);
   expenditureData.id = data.id;
   expenditureData.currentUserId = props.currentUserId;
@@ -71,86 +77,97 @@ const onSubmitSave = (data, props) => {
   );
 };
 
-class ExpensesDetailForm extends React.Component {
+class ExpensesDetail extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isLoading: true,
-    };
+    const { getExpenditureById, expenditureId } = props;
+    getExpenditureById(parseInt(expenditureId));
   }
 
   render() {
+    const {
+      expenditureId,
+      currentExpenditure,
+      flashMessage,
+      isCampAdmin,
+      isCampStaff,
+      isGovAdmin,
+      campaignName,
+    } = this.props;
+    let data = {};
+    if (currentExpenditure) {
+      data = mapExpenditureDataToForm(currentExpenditure);
+    }
     return (
-      <>
-        <AddExpenseForm
-          onSubmit={data => onSubmit(data, this.props)}
-          initialValues={this.props.data}
-        >
-          {({
-            formFields,
-            isValid,
-            handleSubmit,
-            visibleIf,
-            formErrors,
-            values,
-          }) => {
-            // TODO Next line used to disable sections move to fields object and dynamic validate
-            const isSubmited = !!(
-              values.status === ExpenditureStatusEnum.SUBMITTED
-            );
-            if (values.buttonSubmitted && !isValid) {
-              for (const [key, value] of Object.entries(formErrors)) {
-                values.buttonSubmitted = '';
-                this.props.flashMessage(value, { props: { variant: 'error' } });
-              }
+      <ExpensesDetailForm
+        onSubmit={data => onSubmit(data, this.props)}
+        initialValues={data}
+        key={expenditureId}
+      >
+        {({
+          formFields,
+          isValid,
+          handleSubmit,
+          visibleIf,
+          formErrors,
+          values,
+        }) => {
+          const isSubmited = !!(
+            values.status === ExpenditureStatusEnum.SUBMITTED
+          );
+          if (values.buttonSubmitted && !isValid) {
+            for (const [key, value] of Object.entries(formErrors)) {
+              values.buttonSubmitted = '';
+              flashMessage(value, { props: { variant: 'error' } });
             }
-            const campaignName = values.campaignName || this.props.campaignName;
-            return (
-              <>
-                <ViewHeaderSection
-                  isCampAdmin={this.props.isCampAdmin}
-                  isCampStaff={this.props.isCampStaff}
-                  isGovAdmin={this.props.isGovAdmin}
-                  isValid={isValid}
-                  handleSubmit={handleSubmit}
-                  onSubmitSave={onSubmitSave}
-                  id={this.props.data.id}
-                  updatedAt={this.props.data.updatedAt}
-                  status={this.props.data.status}
-                  formValues={values}
-                  campaignName={campaignName}
+          }
+          const isReadOnly = !!(
+            isGovAdmin || data.status === ExpenditureStatusEnum.SUBMITTED
+          );
+
+          return parseInt(values.id) !== parseInt(expenditureId) ? (
+            <PageTransitionImage />
+          ) : (
+            <>
+              <ViewHeaderSection
+                isCampAdmin={isCampAdmin}
+                isCampStaff={isCampStaff}
+                isGovAdmin={isGovAdmin}
+                isValid={isValid}
+                handleSubmit={handleSubmit}
+                onSubmitSave={onSubmitSave}
+                id={data.id}
+                updatedAt={data.updatedAt}
+                status={data.status}
+                formValues={values}
+                campaignName={values.campaignName || campaignName} // Remove ` || campaignName` when api returns campaignName on single row request.
+              />
+              <ReadOnly ro={isReadOnly}>
+                <BasicsSection
+                  isSubmited={isSubmited}
+                  formFields={formFields}
+                  checkSelected={visibleIf.checkSelected}
+                  showInKindFields={visibleIf.showInKindFields}
+                  showPaymentMethod={visibleIf.paymentMethod}
+                  showPurposeType={visibleIf.showPurposeType}
                 />
-                <div
-                  style={
-                    this.props.isGovAdmin
-                      ? { pointerEvents: 'none', opacity: '0.7' }
-                      : null
-                  }
-                >
-                  <BasicsSection
-                    isSubmited={isSubmited}
-                    formFields={formFields}
-                    checkSelected={visibleIf.checkSelected}
-                    showInKindFields={visibleIf.showInKindFields}
-                    showPaymentMethod={visibleIf.paymentMethod}
-                    showPurposeType={visibleIf.showPurposeType}
-                  />
-                  <PayeeInfoSection
-                    isSubmited={isSubmited}
-                    formFields={formFields}
-                  />
-                </div>
-              </>
-            );
-          }}
-        </AddExpenseForm>
-      </>
+                <PayeeInfoSection
+                  isSubmited={isSubmited}
+                  formFields={formFields}
+                />
+              </ReadOnly>
+            </>
+          );
+        }}
+      </ExpensesDetailForm>
     );
   }
 }
 
 export default connect(
   state => ({
+    currentExpenditureId: getCurrentExpenditureId(state),
+    currentExpenditure: getCurrentExpenditure(state),
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
@@ -158,8 +175,9 @@ export default connect(
     campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
   })
-)(ExpensesDetailForm);
+)(ExpensesDetail);

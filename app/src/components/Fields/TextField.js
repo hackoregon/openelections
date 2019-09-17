@@ -11,7 +11,7 @@ const TextField = ({ id, label, formik, isRequired }) => {
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
-      value={formik.values[id]}
+      value={formik.values[id] || ''}
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       autoComplete="on"

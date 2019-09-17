@@ -1,52 +1,29 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import PropTypes from 'prop-types';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/index';
-import {
-  getExpenditureById,
-  getCurrentExpenditure,
-} from '../../../../state/ducks/expenditures';
-import {
-  expendituresEmptyState,
-  mapExpenditureDataToForm,
-} from '../ExpendituresFields';
 
-class AddExpense extends Component {
-  componentDidMount() {
-    const { getExpenditureById, expenditureId } = this.props;
-    getExpenditureById(parseInt(expenditureId));
-  }
-
+class ExpensesDetail extends React.PureComponent {
   render() {
-    const {
-      expenditures,
-      expenditureId,
-      history,
-      currentExpenditure,
-    } = this.props;
-    let data = expendituresEmptyState;
-    if (currentExpenditure) {
-      data = mapExpenditureDataToForm(currentExpenditure);
+    const { match } = this.props;
+    let expenditureId = false;
+    if (match.params && match.params.id) {
+      expenditureId = match.params.id;
+      return (
+        <PageHoc>
+          <ExpensesDetailForm expenditureId={expenditureId} />
+        </PageHoc>
+      );
     }
-    return (
-      <PageHoc>
-        <ExpensesDetailForm
-          data={data}
-          expenditureId={expenditureId}
-          history={history}
-        />
-      </PageHoc>
-    );
   }
 }
-export default connect(
-  (state, ownProps) => ({
-    expenditureId: parseInt(ownProps.match.params.id),
-    expenditures: state.expenditures,
-    history: ownProps.history,
-    currentExpenditure: getCurrentExpenditure(state),
+
+ExpensesDetail.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
   }),
-  dispatch => ({
-    getExpenditureById: id => dispatch(getExpenditureById(id)),
-  })
-)(AddExpense);
+};
+
+export default ExpensesDetail;

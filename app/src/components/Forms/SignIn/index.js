@@ -49,15 +49,20 @@ const SignIn = props => (
               <Link to="/forgot-password">Forgot Password</Link>
             </div>
             <div css={buttonWrapper}>
-              <Button buttonType="cancel" onClick={handleCancel}>
+              <Button
+                buttonType="cancel"
+                onClick={handleCancel}
+                style={{ margin: '1px' }}
+              >
                 Cancel
               </Button>
               <Button
                 buttonType="submit"
-                disabled={!isValid}
+                // disabled={!isValid}
                 onClick={handleSubmit}
+                style={{ margin: '1px' }}
               >
-                Submit
+                Sign in
               </Button>
             </div>
           </>

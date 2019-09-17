@@ -46,12 +46,14 @@ class AddressLookupField extends React.Component {
   }
 
   componentDidMount() {
+    const { formik, id } = this.props;
     this.autocomplete = new google.maps.places.Autocomplete(
       this.autocompleteInput.current,
       { types: ['geocode'] }
     );
     this.autocomplete.getFields('address_components');
     this.autocomplete.addListener('place_changed', this.handlePlaceChanged);
+    this.autocompleteInput.current.value = formik.values[id] || '';
   }
 
   componentDidUpdate(prevProps) {

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AddContribution from './AddContribution/AddContribution';
 import ContributionReady from './ContributionReady/ContributionReady';
-import ContributionSubmitted from './ContributionSubmitted/ContributionSubmitted';
 import ContributionsTable from './ContributionsTable/ContributionsTable';
 // import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
@@ -23,11 +22,6 @@ const Contributions = props => {
               exact
               path={`${match.url}/:id`}
               component={ContributionReady}
-            />
-            <Route
-              exact
-              path={`${match.url}/submitted/:id`}
-              component={ContributionSubmitted}
             />
             <Route
               exact

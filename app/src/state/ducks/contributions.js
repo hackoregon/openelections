@@ -3,6 +3,7 @@ import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
+import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -170,6 +171,7 @@ export function createContribution(contributionAttrs) {
             props: { variant: 'success' },
           })
         );
+        dispatch(push(`/contributions/${data.result}`));
         return data.result;
       }
       dispatch(actionCreators.createContribution.failure());
@@ -203,6 +205,7 @@ export function updateContribution(contributionAttrs) {
             props: { variant: 'success' },
           })
         );
+        dispatch(push('/contributions'));
       } else {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();
@@ -322,9 +325,6 @@ export const getContributionsTotal = createSelector(
   }
 );
 
-export const isLoggedIn = state => {
-  return state.auth.me !== null;
-};
 export const getCurrentContribution = state => {
   return state.contributions &&
     state.contributions.list &&

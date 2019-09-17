@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { PageTransitionImage, PageTransition } from '../PageTransistion';
 
 export const formFromFields = (fields, formikProps, dynamicRequire) =>
   Object.keys(fields).map(id =>
@@ -99,22 +100,28 @@ class Form extends React.Component {
               : {};
           // Uncomment next line to see what formik can pass to the form
           // console.log('formikProps', formikProps);
-          return children({
-            form,
-            formSections,
-            formFields,
-            isValid: formikProps.isValid,
-            isDirty: formikProps.dirty,
-            isSubmitting: formikProps.isSubmitting,
-            handleSubmit: formikProps.handleSubmit,
-            handleCancel: formikProps.handleReset,
-            resetForm: formikProps.resetForm,
-            values: formikProps.values,
-            visibleIf,
-            formErrors: formikProps.errors,
-            initialValues: formikProps.initialValues,
-            /* could return more formikProps if needed */
-          });
+          return (
+            <PageTransition>
+              <div>
+                {children({
+                  form,
+                  formSections,
+                  formFields,
+                  isValid: formikProps.isValid,
+                  isDirty: formikProps.dirty,
+                  isSubmitting: formikProps.isSubmitting,
+                  handleSubmit: formikProps.handleSubmit,
+                  handleCancel: formikProps.handleReset,
+                  resetForm: formikProps.resetForm,
+                  values: formikProps.values,
+                  visibleIf,
+                  formErrors: formikProps.errors,
+                  initialValues: formikProps.initialValues,
+                  /* could return more formikProps if needed */
+                })}
+              </div>
+            </PageTransition>
+          );
         }}
       />
     );
@@ -132,7 +139,7 @@ Form.propTypes = {
       // sections: PropTypes.arrayOf(PropTypes.string) <- optional
     })
   ).isRequired,
-  initialValues: PropTypes.shape({}).isRequired,
+  initialValues: PropTypes.shape({}),
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
   validate: PropTypes.func,
