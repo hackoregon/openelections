@@ -56,19 +56,19 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
                   Add New Campaign
                 </Button>
               }
-              actions={[
-                {
-                  icon: 'none', // icon is needed here or it will error.
-                  name: 'Manage',
-                  buttonType: 'manage',
-                  onClick: (event, rowData) => {
-                    props.history.push({
-                      pathname: '/manage-portal/manage-user',
-                      state: rowData,
-                    });
-                  },
-                },
-              ]}
+              // actions={[
+              //   {
+              //     icon: 'none', // icon is needed here or it will error.
+              //     name: 'Manage',
+              //     buttonType: 'manage',
+              //     onClick: (event, rowData) => {
+              //       props.history.push({
+              //         pathname: '/manage-portal/manage-user',
+              //         state: rowData,
+              //       });
+              //     },
+              //   },
+              // ]}
               components={{
                 Action: props => (
                   <Button
