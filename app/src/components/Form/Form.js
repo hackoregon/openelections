@@ -58,6 +58,8 @@ class Form extends React.Component {
                 throw error;
               }
             );
+          // Check here for only updated fields
+          console.log(formikBag);
           return this.props.onSubmit(values, addHandlers);
         }}
         render={formikProps => {
