@@ -36,6 +36,7 @@ export const actionTypes = {
 // Initial State
 export const initialState = {
   list: null,
+  listOrder: [],
   isLoading: false,
   error: null,
   currentId: 0,
@@ -49,7 +50,11 @@ export default createReducer(initialState, {
     return { ...initialState };
   },
   [ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
-    return { ...state, list: { ...action.payload.contributions } };
+    return {
+      ...state,
+      list: { ...action.payload.entities.contributions },
+      listOrder: action.payload.result,
+    };
   },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
@@ -158,7 +163,7 @@ export function createContribution(contributionAttrs) {
       const response = await api.createContribution(contributionAttrs);
       if (response.status === 201) {
         const data = normalize(await response.json(), schema.contribution);
-        dispatch(addContributionEntities(data.entities));
+        dispatch(addContributionEntities(data));
         dispatch(actionCreators.createContribution.success());
         dispatch(
           flashMessage(`Contribution Added`, {
@@ -227,8 +232,7 @@ export function getContributions(contributionSearchAttrs) {
       } else if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);
-
-        dispatch(addContributionEntities(data.entities));
+        dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributions.success(contributions.total));
       } else {
         dispatch(actionCreators.getContributions.failure());
@@ -247,7 +251,7 @@ export function getContributionById(id) {
       if (response.status === 200) {
         // TODO look into why response.json() is removing data
         const data = normalize(await response.json(), schema.contribution);
-        dispatch(addContributionEntities(data.entities));
+        dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributionById.success(id));
       } else {
         dispatch(actionCreators.getContributionById.failure());
@@ -265,7 +269,7 @@ export function archiveContribution(id) {
       const response = await api.archiveContribution(id);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.contribution);
-        dispatch(addContributionEntities(data.entities));
+        dispatch(addContributionEntities(data));
         dispatch(actionCreators.archiveContribution.success());
       } else {
         dispatch(actionCreators.archiveContribution.failure());
@@ -299,10 +303,15 @@ export const rootState = state => state || {};
 export const getContributionsList = createSelector(
   rootState,
   state => {
-    if (isEmpty(state.contributions.list)) {
+    if (
+      isEmpty(state.contributions.list) ||
+      isEmpty(state.contributions.listOrder)
+    ) {
       return [];
     }
-    return Object.values(state.contributions.list);
+    return state.contributions.listOrder.map(
+      id => state.contributions.list[id]
+    );
   }
 );
 
