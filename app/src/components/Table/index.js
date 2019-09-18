@@ -22,6 +22,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import { css, jsx } from '@emotion/core';
 import TablePagination from './TablePagination';
 import { TableToolbar } from './TableToolbar';
+import { PageTransition } from '../PageTransistion';
 
 const tableWrapper = css`
   width: 100%;
@@ -91,55 +92,57 @@ const Table = ({
   );
 
   return (
-    <div css={tableWrapper}>
-      <MaterialTable
-        title={title}
-        columns={columns}
-        data={data}
-        editable={editable}
-        icons={tableIcons}
-        options={{
-          ...tableOptions,
-          ...options,
-          paging: !enableCustomPagination || options.paging,
-        }}
-        actions={actions}
-        components={{
-          Toolbar: toolBarProps => (
-            <TableToolbar
-              paginationOptions={
-                enableCustomPagination
-                  ? {
-                      page: pageNumber,
-                      perPage,
-                      totalRows,
-                      onChangePage,
-                      onChangeRowsPerPage,
-                    }
-                  : undefined
-              }
-              action={toolbarAction}
-              {...toolBarProps}
-            />
-          ),
-          ...components,
-        }}
-        localization={localization}
-        isLoading={isLoading}
-        {...rest}
-      />
-      {enableCustomPagination && (
-        <TablePagination
-          perPage={perPage}
-          pageNumber={pageNumber}
-          totalRows={totalRows || data.length}
-          // eslint-disable-next-line no-use-before-define
-          onChangePage={onChangePage}
-          // eslint-disable-next-line no-use-before-define
-          onChangeRowsPerPage={onChangeRowsPerPage}
+    <PageTransition>
+      <div css={tableWrapper}>
+        <MaterialTable
+          title={title}
+          columns={columns}
+          data={data}
+          editable={editable}
+          icons={tableIcons}
+          options={{
+            ...tableOptions,
+            ...options,
+            paging: !enableCustomPagination || options.paging,
+          }}
+          actions={actions}
+          components={{
+            Toolbar: toolBarProps => (
+              <TableToolbar
+                paginationOptions={
+                  enableCustomPagination
+                    ? {
+                        page: pageNumber,
+                        perPage,
+                        totalRows,
+                        onChangePage,
+                        onChangeRowsPerPage,
+                      }
+                    : undefined
+                }
+                action={toolbarAction}
+                {...toolBarProps}
+              />
+            ),
+            ...components,
+          }}
+          localization={localization}
+          isLoading={isLoading}
+          {...rest}
         />
-      )}
-    </div>
+        {enableCustomPagination && (
+          <TablePagination
+            perPage={perPage}
+            pageNumber={pageNumber}
+            totalRows={totalRows || data.length}
+            // eslint-disable-next-line no-use-before-define
+            onChangePage={onChangePage}
+            // eslint-disable-next-line no-use-before-define
+            onChangeRowsPerPage={onChangeRowsPerPage}
+          />
+        )}
+      </div>
+    </PageTransition>
   );
 };
 

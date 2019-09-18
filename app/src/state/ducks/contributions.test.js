@@ -19,6 +19,7 @@ describe('Reducer', () => {
       isLoading: false,
       error: null,
       currentId: 0,
+      listOrder: [],
       total: 0,
     });
   });
@@ -28,8 +29,10 @@ describe('Reducer', () => {
       reducer(undefined, {
         type: ADD_CONTRIBUTION_ENTITIES,
         payload: {
-          contributions: {
-            '1': {},
+          entities: {
+            contributions: {
+              '1': {},
+            },
           },
         },
       })

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import { isEmpty } from 'lodash';
@@ -68,26 +69,27 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
     );
   }
   return (
-    <FormControl fullWidth>
-      <InputLabel htmlFor={id} required={isRequired}>
-        {label}
-      </InputLabel>
-      <Select
-        value={formik.values[id]}
-        onChange={formik.handleChange}
-        inputProps={{
-          name: id,
-          id,
-        }}
-        fullWidth
-      >
-        {optionValues.map((option, key) => (
-          <MenuItem value={option.value} key={key} className={classes.root}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <TextField
+      select
+      id={id}
+      label={label}
+      helperText={formik.touched[id] ? formik.errors[id] : ''}
+      error={formik.touched[id] && Boolean(formik.errors[id])}
+      value={formik.values[id] || ''}
+      onChange={formik.handleChange(id)}
+      onBlur={formik.handleBlur}
+      inputProps={{
+        name: id,
+        id,
+      }}
+      fullWidth
+    >
+      {optionValues.map((option, key) => (
+        <MenuItem value={option.value} key={key} className={classes.root}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
   );
 };
 

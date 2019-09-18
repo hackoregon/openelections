@@ -63,49 +63,32 @@ const Portal = props => {
           <WithPermissions>
             <Route
               render={({ location }) => (
-                <>
-                  <TransitionGroup className="oe-portal-container">
-                    <CSSTransition
-                      key={location.pathname}
-                      timeout={{ enter: 500, exit: 300 }}
-                      classNames="page"
-                      appear
-                    >
-                      <Switch location={location}>
-                        <Route
-                          exact
-                          path="/dashboard"
-                          component={DashboardPage}
-                        />
-                        <Route
-                          exact
-                          path="/manage-portal"
-                          component={ManagePortalPage}
-                        />
-                        <Route
-                          exact
-                          path="/manage-portal/manage-user"
-                          component={ManageUserPage}
-                        />
-                        <Route
-                          exact
-                          path="/dashboard"
-                          component={DashboardPage}
-                        />
-                        <Route
-                          path="/contributions"
-                          component={ContributionsPage}
-                        />
-                        <Route path="/expenses" component={ExpensesPage} />
-                        <Route
-                          exact
-                          path="/campaigns"
-                          component={ManageCampaignPage}
-                        />
-                      </Switch>
-                    </CSSTransition>
-                  </TransitionGroup>
-                </>
+                <div key={location.pathname}>
+                  <Switch location={location}>
+                    <Route exact path="/dashboard" component={DashboardPage} />
+                    <Route
+                      exact
+                      path="/manage-portal"
+                      component={ManagePortalPage}
+                    />
+                    <Route
+                      exact
+                      path="/manage-portal/manage-user"
+                      component={ManageUserPage}
+                    />
+                    <Route exact path="/dashboard" component={DashboardPage} />
+                    <Route
+                      path="/contributions"
+                      component={ContributionsPage}
+                    />
+                    <Route path="/expenses" component={ExpensesPage} />
+                    <Route
+                      exact
+                      path="/campaigns"
+                      component={ManageCampaignPage}
+                    />
+                  </Switch>
+                </div>
               )}
             />
           </WithPermissions>

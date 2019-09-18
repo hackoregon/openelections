@@ -15,10 +15,7 @@ import {
   BasicsSection,
   PayeeInfoSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
-import {
-  expendituresEmptyState,
-  mapExpenditureFormToData,
-} from '../../../Pages/Portal/Expenses/ExpendituresFields';
+import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createExpenditure } = props;
@@ -36,16 +33,14 @@ const onSubmit = (data, props) => {
 };
 
 const AddExpense = ({ ...props }) => (
-  <AddExpenseForm
-    onSubmit={data => onSubmit(data, props)}
-    initialValues={expendituresEmptyState}
-  >
-    {({ formFields, isValid, handleSubmit, visibleIf }) => {
-      // uncomment line below & pass formErrors to line above to see required fields
-      // console.log('Required fields', Object.keys(formErrors));
+  <AddExpenseForm onSubmit={data => onSubmit(data, props)}>
+    {({ formFields, isValid, handleSubmit, visibleIf, values }) => {
       return (
         <>
-          <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+          <AddHeaderSection
+            isValid={!!(isValid && values.amount)}
+            handleSubmit={handleSubmit}
+          />
           <BasicsSection
             formFields={formFields}
             checkSelected={visibleIf.checkSelected}

@@ -94,11 +94,6 @@ export const mapExpenditureFormToData = data => {
     zipcode,
     notes,
     status,
-    // TODO: Check to see if we need to determine a person or an entity
-    // isPerson = !!(
-    //   payeeType === PayeeTypeEnum.INDIVIDUAL ||
-    //   payeeType === PayeeTypeEnum.FAMILY
-    // ),
   } = data;
 
   const transformed = {
@@ -164,6 +159,7 @@ export const fields = {
     label: 'Expenditure Type',
     section: FormSectionEnum.BASIC,
     component: SelectField,
+    InputLabelProps: { shrink: true },
     options: {
       values: [
         { value: ExpenditureTypeEnum.EXPENDITURE, label: 'Expenditure' },
@@ -213,19 +209,16 @@ export const fields = {
       ],
       limitByField: 'expenditureType',
       limitByValues: {
-        // If Expenditure Type is “Expenditure,” drop down says: Accounts Payable, Cash Expenditure, Personal Expenditure for Reimbursement.
         expenditure: [
           ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE,
           ExpenditureSubTypeEnum.CASH_EXPENDITURE,
           ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE,
         ],
-        // If Expenditure Type is “Other.” drop down says: Accounts Payable Rescinded, Cash Balance Adjustment (maybe)
         other: [
           ExpenditureSubTypeEnum.ACCOUNTS_PAYABLE_RESCINDED,
           ExpenditureSubTypeEnum.CASH_BALANCE_ADJUSTMENT,
         ],
         other_disbursement: [
-          // If Expenditure Type is “Other Disbursement,” drop down says: Miscellaneous Other Disbursement, Return or Refund of Contribution.
           ExpenditureSubTypeEnum.MISCELLANEOUS_OTHER_DISBURSEMENT,
           ExpenditureSubTypeEnum.REFUND_OF_CONTRIBUTION,
         ],
@@ -292,8 +285,8 @@ export const fields = {
 
   // PAYEE SECTION
   payeeType: {
-    // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: 'Payee Type',
+    defaultValue: '',
     section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: {
@@ -314,7 +307,6 @@ export const fields = {
     validation: Yup.string().required('The payee type is required'),
   },
   payeeName: {
-    // IF ENTITY SELECTED, WILL REQUIRE ENTITY INSTEAD OF FIRST/LAST NAME
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
@@ -323,19 +315,6 @@ export const fields = {
   streetAddress: {
     label: 'Street Address',
     section: FormSectionEnum.PAYEE_INFO,
-    // eslint-disable-next-line react/display-name
-    // component: props => (
-    //   <AddressLookupField
-    //     {...props.field}
-    //     {...props}
-    //     updateFields={{
-    //       street: 'streetAddress',
-    //       stateShort: 'state',
-    //       city: 'city',
-    //       zipCode: 'zipcode',
-    //     }}
-    //   />
-    // ),
     component: TextField,
     validation: Yup.string().required('Your street address is required'),
   },
@@ -344,7 +323,6 @@ export const fields = {
     label: 'Address Line 2',
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    // NO VALIDATION BECAUSE NOT REQUIRED?
   },
   city: {
     label: 'City',

@@ -1,8 +1,9 @@
 import React from 'react';
+import { PageTransition } from '../PageTransistion';
 
 const PageHoc = props => (
-  <div {...props} className="oe-page-container-inner">
-    {props.children}
-  </div>
+  <PageTransition>
+    <div {...props}>{props.children}</div>
+  </PageTransition>
 );
 export default PageHoc;

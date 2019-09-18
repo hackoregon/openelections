@@ -15,10 +15,7 @@ import {
   BasicsSection,
   ContributorSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
-import {
-  contributionsEmptyState,
-  mapContributionFormToData,
-} from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
+import { mapContributionFormToData } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
 const onSubmit = (data, props) => {
   const { currentUserId, governmentId, campaignId, createContribution } = props;
@@ -30,28 +27,18 @@ const onSubmit = (data, props) => {
     currentUserId,
     ...contributionData,
   };
-  createContribution(payload).then(data =>
-    props.history.push(`/contributions/${data}`)
-  );
+  createContribution(payload);
 };
 
 const AddContribution = ({ ...props }) => (
-  <AddContributionForm
-    onSubmit={data => onSubmit(data, props)}
-    initialValues={contributionsEmptyState}
-  >
-    {({
-      formFields,
-      isValid,
-      handleSubmit,
-      visibleIf,
-      formErrors,
-      isSubmited,
-      values,
-    }) => {
+  <AddContributionForm onSubmit={data => onSubmit(data, props)}>
+    {({ formFields, isValid, handleSubmit, visibleIf, isSubmited, values }) => {
       return (
         <>
-          <AddHeaderSection isValid={isValid} handleSubmit={handleSubmit} />
+          <AddHeaderSection
+            isValid={!!(isValid && values.amountOfContribution)}
+            handleSubmit={handleSubmit}
+          />
           <BasicsSection
             isSubmited={isSubmited}
             formFields={formFields}

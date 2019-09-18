@@ -72,6 +72,11 @@ export const headerStyles = {
     margin-top: 0px;
     width: 360px;
   `,
+  subheadingWide: css`
+    font-size: 16px;
+    line-height: 19px;
+    margin-top: 0px;
+  `,
   // labelBlock: css`
   //   margin-right: 40px;
   // `,
