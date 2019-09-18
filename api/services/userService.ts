@@ -112,7 +112,7 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
             const token = generateJWTokenAsync(user.id);
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.name} logged in`,
+                notes: `${user.name()} logged in`,
                 activityType: ActivityTypeEnum.USER,
                 activityId: user.id
             });
