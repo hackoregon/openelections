@@ -15,27 +15,47 @@ import { ContributionStatusEnum } from '../../../api/api';
 import { updateContribution } from '../../../state/ducks/contributions';
 import { showModal, modalIsActive } from '../../../state/ducks/modal';
 
-const options = [
-  'Match Contribution',
-  'Archived',
-  'Draft',
-  'Processed',
-  'Submitted',
-  'Out of Compliance',
-  'In Compliance',
-];
-
 const SplitButton = ({
   id,
   updateContribution,
   showModal,
   modalIsActive,
   donationAmount,
+  showMatchOption,
 }) => {
+  console.log('before: ', showMatchOption);
   const [open, setOpen] = React.useState(false);
+  let options;
+  if (showMatchOption === 'hide') {
+    options = [
+      'Select Status',
+      'Archived',
+      'Draft',
+      'Processed',
+      'Submitted',
+      'Out of Compliance',
+      'In Compliance',
+    ];
+  }
+  if (showMatchOption === 'show') {
+    options = [
+      'Select Status',
+      'Archived',
+      'Draft',
+      'Processed',
+      'Submitted',
+      'Out of Compliance',
+      'In Compliance',
+      'Match Contribution',
+    ];
+  }
+
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isSubmitting, setSubmitting] = React.useState(false);
+
+  console.log('after: ', showMatchOption);
+
   function updateStatus(index) {
     let value = null;
     switch (options[index]) {
@@ -43,7 +63,7 @@ const SplitButton = ({
         value = ContributionStatusEnum.PROCESSED;
         showModal({
           component: 'MatchContribution',
-          props: { id, donationAmount },
+          props: { id, donationAmount, showMatchOption },
         });
         setSubmitting(false);
         break;
@@ -169,6 +189,7 @@ function MatchContributionSelector(props) {
     showModal,
     modalIsActive,
     donationAmount,
+    showMatchOption,
   } = props;
   return (
     <SplitButton
@@ -177,6 +198,7 @@ function MatchContributionSelector(props) {
       showModal={showModal}
       modalIsActive={modalIsActive}
       donationAmount={donationAmount}
+      showMatchOption={showMatchOption}
     />
   );
 }

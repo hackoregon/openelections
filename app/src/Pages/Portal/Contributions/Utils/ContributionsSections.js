@@ -25,17 +25,26 @@ export const ViewHeaderSection = ({
   isCampStaff,
   campaignName,
 }) => {
-  const showMatchableOption = () => {
-    return (
-      isGovAdmin &&
-      formValues.typeOfContributor === 'individual' &&
-      status !== 'Archived' &&
-      status !== 'Draft' &&
-      status !== 'Processed' &&
-      status !== 'Out of compliance' && // compliant is not false?
-      formValues.oaeType === 'matchable'
-    );
+  let showMatchOption = null;
+  const showMatchableSelector = () => {
+    if (isGovAdmin) {
+      if (
+        formValues.typeOfContributor === 'individual' &&
+        status !== 'Archived' &&
+        status !== 'Draft' &&
+        status !== 'Processed' &&
+        status !== 'Out of compliance' && // compliant is not false?
+        formValues.oaeType === 'matchable'
+      ) {
+        return (showMatchOption = 'show');
+      }
+      return (showMatchOption = 'hide');
+    }
+    return showMatchOption;
   };
+
+  showMatchableSelector();
+  console.log('in the selector: ', showMatchOption);
 
   return (
     <>
@@ -50,10 +59,11 @@ export const ViewHeaderSection = ({
         </div>
         <div css={buttonBar.wrapper}>
           <div css={buttonBar.container}>
-            {showMatchableOption() ? (
+            {showMatchOption === 'show' || showMatchOption === 'hide' ? (
               <MatchContributionSelector
                 id={id}
                 donationAmount={formValues.amountOfContribution}
+                showMatchOption={showMatchOption}
               />
             ) : null}
             {status === ContributionStatusEnum.DRAFT ? (

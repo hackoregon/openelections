@@ -38,8 +38,8 @@ const MatchContribution = ({
   const [matchAmount, setMatchAmount] = React.useState(
     parseFloat(donationAmount) < 50 ? donationAmount : '50.00'
   );
-  function handleTextChange() {
-    setMatchAmount();
+  function handleTextChange(event) {
+    setMatchAmount(event.target.value);
   }
 
   return (
