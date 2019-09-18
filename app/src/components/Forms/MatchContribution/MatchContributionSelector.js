@@ -23,7 +23,6 @@ const SplitButton = ({
   donationAmount,
   showMatchOption,
 }) => {
-  console.log('before: ', showMatchOption);
   const [open, setOpen] = React.useState(false);
   let options;
   if (showMatchOption === 'hide') {
@@ -53,8 +52,6 @@ const SplitButton = ({
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isSubmitting, setSubmitting] = React.useState(false);
-
-  console.log('after: ', showMatchOption);
 
   function updateStatus(index) {
     let value = null;
@@ -87,13 +84,23 @@ const SplitButton = ({
         value = ContributionStatusEnum.OUT_OF_COMPLIANCE;
         showModal({
           component: 'ComplianceReason',
-          props: { id },
+          props: {
+            id,
+            status: value,
+            compliant: false,
+            contribution: 'contribution',
+          },
         });
         setSubmitting(false);
         break;
       case 'In Compliance':
         value = ContributionStatusEnum.IN_COMPLIANCE;
-        updateContribution({ id, status: value });
+        updateContribution({
+          id,
+          status: value,
+          compliant: true,
+          contribution: 'contribution',
+        });
         break;
       default:
         setSubmitting(false);

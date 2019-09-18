@@ -44,7 +44,6 @@ export const ViewHeaderSection = ({
   };
 
   showMatchableSelector();
-  console.log('in the selector: ', showMatchOption);
 
   return (
     <>

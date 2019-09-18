@@ -15,6 +15,7 @@ import {
   updateExpenditure,
   postExpenditureComment,
 } from '../../../state/ducks/expenditures';
+import { updateContribution } from '../../../state/ducks/contributions';
 import { ExpenditureStatusEnum } from '../../../api/api';
 
 const useStyles = makeStyles(theme => ({
@@ -43,6 +44,8 @@ const ComplianceReason = ({
   clearModal,
   updateExpenditure,
   postExpenditureComment,
+  updateContribution,
+  contribution,
 }) => {
   const classes = useStyles();
   const isRequired = true;
@@ -53,6 +56,20 @@ const ComplianceReason = ({
   }
   function handleTextChange(event) {
     setText(event.target.value);
+  }
+  function updateContributionOrExpenditure() {
+    contribution
+      ? updateContribution({
+          id,
+          compliant: false,
+        })
+      : [
+          updateExpenditure({
+            id,
+            status: ExpenditureStatusEnum.OUT_OF_COMPLIANCE,
+          }),
+          postExpenditureComment(id, reasonText),
+        ];
   }
 
   return (
@@ -103,11 +120,7 @@ const ComplianceReason = ({
             buttonType="disabledModalButton"
             onClick={() => {
               clearModal();
-              updateExpenditure({
-                id,
-                status: ExpenditureStatusEnum.OUT_OF_COMPLIANCE,
-              });
-              postExpenditureComment(id, reasonText);
+              updateContributionOrExpenditure();
             }}
           >
             Submit
@@ -124,6 +137,7 @@ export default connect(
   }),
   dispatch => {
     return {
+      updateContribution: data => dispatch(updateContribution(data)),
       updateExpenditure: data => dispatch(updateExpenditure(data)),
       postExpenditureComment: (id, comment) =>
         dispatch(postExpenditureComment(id, comment)),
