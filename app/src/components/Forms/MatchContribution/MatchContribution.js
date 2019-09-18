@@ -54,18 +54,16 @@ const MatchContribution = ({
           name="matchAmount"
           value={matchAmount}
           label="Match Amount"
-          onValueChange={handleTextChange}
+          onChange={handleTextChange}
           thousandSeparator
           prefix="$"
           decimalScale="2"
           isNumericString
           allowNegative={false}
-          // onValueChange={values => {
-          //   const { formattedValue } = values;
-          //   formattedValue > 50.0
-          //     ? console.log('more than 50')
-          //     : console.log('formatted & value: ', formattedValue);
-          // }}
+          isAllowed={values => {
+            const { floatValue } = values;
+            return floatValue <= 50;
+          }}
         />
 
         <div css={buttonContainer}>
