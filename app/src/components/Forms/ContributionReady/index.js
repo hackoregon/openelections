@@ -99,7 +99,8 @@ class ContributionReadyForm extends React.Component {
     const isReadOnly = !!(
       isGovAdmin ||
       initialFormData.status === ContributionStatusEnum.SUBMITTED ||
-      initialFormData.status === ContributionStatusEnum.ARCHIVED
+      initialFormData.status === ContributionStatusEnum.ARCHIVED ||
+      initialFormData.status === ContributionStatusEnum.PROCESSED
     );
     return (
       <AddContributionForm
