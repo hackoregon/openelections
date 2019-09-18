@@ -242,8 +242,6 @@ export const OtherDetailsSection = ({
   <div css={sectionStyles.main}>
     <h3 css={sectionStyles.title}>Other Details</h3>
     <div css={containers.main}>
-      {/* <h2>{formFields.electionAggregate}</h2>
-      <h2>{formFields.description}</h2> */}
       <h2>{formFields.linkToDocumentation}</h2>
       <div css={containers.header}>
         <Button

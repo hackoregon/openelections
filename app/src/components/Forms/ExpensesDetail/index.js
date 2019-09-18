@@ -45,36 +45,14 @@ const onSubmit = (data, props) => {
     case 'submit':
       expenditureData.status = ExpenditureStatusEnum.SUBMITTED;
       break;
-    // Button that does not set buttonSubmitted would return to the
-    // contributions list without updating the record
     default:
       expenditureData.status = false;
   }
-  // TODO only send dirty fields
-  // for (const key of Object.keys(data)) {
-  //   if (initialData[key]) {
-  //     if (data[key] !== initialData[key]) {
-  //       updateAttributes[key] = data[key];
-  //     }
-  //   }
-  // }
   if (expenditureData.status) {
     props.updateExpenditure(expenditureData);
   } else {
     props.history.push('/expenses');
   }
-};
-
-const onSubmitSave = (data, props) => {
-  const { updateExpenditure } = props;
-  const expenditureData = mapExpenditureFormToData(data);
-  const payload = {
-    status: ExpenditureStatusEnum.DRAFT,
-    ...expenditureData,
-  };
-  updateExpenditure(payload).then(data =>
-    props.history.push(`/expenses/${data}`)
-  );
 };
 
 class ExpensesDetail extends React.Component {
@@ -122,7 +100,11 @@ class ExpensesDetail extends React.Component {
             }
           }
           const isReadOnly = !!(
-            isGovAdmin || data.status === ExpenditureStatusEnum.SUBMITTED
+            isGovAdmin ||
+            data.status === ExpenditureStatusEnum.SUBMITTED ||
+            data.status === ExpenditureStatusEnum.ARCHIVED ||
+            ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
+            ExpenditureStatusEnum.IN_COMPLIANCE
           );
 
           return parseInt(values.id) !== parseInt(expenditureId) ? (
@@ -135,7 +117,6 @@ class ExpensesDetail extends React.Component {
                 isGovAdmin={isGovAdmin}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
-                onSubmitSave={onSubmitSave}
                 id={data.id}
                 updatedAt={data.updatedAt}
                 status={data.status}
