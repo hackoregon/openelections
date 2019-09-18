@@ -164,7 +164,7 @@ class SummaryCard extends React.Component {
             {delete data.totalExpenditures.total}
             {Object.keys(data.totalExpenditures).map((key, index) => (
               <Link key={index} to={`/expenses?status=${key}`}>
-                {key}: {data.totalExpenditures[key]}
+                {key.replace(/_/g, ' ')}: {data.totalExpenditures[key]}
               </Link>
             ))}
           </p>
