@@ -555,4 +555,31 @@ describe('API', () => {
     );
     expect(response.status).toEqual(204);
   });
+
+  it('getMatchesByContributionId', async () => {
+    process.env.TOKEN = campaignStaffToken;
+    let contribution = await api.createContribution({
+      address1: '123 ABC ST',
+      amount: 250,
+      campaignId,
+      city: 'Portland',
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      firstName: 'John',
+      middleInitial: '',
+      lastName: 'Doe',
+      governmentId,
+      type: api.ContributionTypeEnum.CONTRIBUTION,
+      subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
+      state: 'OR',
+      status: api.ContributionStatusEnum.DRAFT,
+      zip: '97214',
+      contributorType: api.ContributorTypeEnum.INDIVIDUAL,
+    });
+    contribution = await contribution.json();
+
+    const response = await api.getMatchesByContributionId(contribution.id);
+    expect(response.status).toEqual(200);
+  });
 });
