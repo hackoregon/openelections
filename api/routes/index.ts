@@ -778,10 +778,6 @@ export const AppRoutes = [
      * /summary:
      *   post:
      *     summary: Get the summary of status for expenditures and contributions by campaingId or governmentId
-     *     security:
-     *       - cookieAuth: []
-     *     produces:
-     *       - application/json
      *     requestBody:
      *       $ref: '#/components/requestBodies/GetStatusSummaryBody'
      *     responses:
@@ -807,6 +803,34 @@ export const AppRoutes = [
             const message = await seedDb();
             return response.status(200).json(message);
         }
+    },
+    /**
+     * @swagger
+     *
+     * /matches/{id}:
+     *   get:
+     *     summary: Get matches by contribution id
+     *     tags:
+     *       - Contribution
+     *       - Match
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     */
+    {
+        path: '/matches/:id',
+        method: 'get',
+        action: contributions.getMatchesByContributionId
     }
 ];
 

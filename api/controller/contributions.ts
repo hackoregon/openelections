@@ -7,7 +7,8 @@ import {
     addContributionAsync,
     getContributionByIdAsync,
     archiveContributionAsync,
-    createContributionCommentAsync
+    createContributionCommentAsync,
+    getMatchResultAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -474,6 +475,28 @@ export async function createContributionComment(request: IRequest, response: Res
         if (process.env.NODE_ENV === 'production') {
             bugsnagClient.notify(err);
         }
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export class GetContributionMatchesDto {
+    currentUserId: number;
+
+    @IsNumber()
+    contributionId: number;
+}
+
+export async function getMatchesByContributionId(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const getContributionMatchesDto = Object.assign(new GetContributionMatchesDto(), {
+            contributionId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(getContributionMatchesDto);
+        const matches = await getMatchResultAsync(getContributionMatchesDto);
+        return response.status(200).send(matches);
+    } catch (err) {
         return response.status(422).json({ message: err.message });
     }
 }

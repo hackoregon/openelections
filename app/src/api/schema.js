@@ -17,3 +17,5 @@ export const activity = new schema.Entity('activities');
 export const contribution = new schema.Entity('contributions');
 
 export const expenditure = new schema.Entity('expenditures');
+
+export const match = new schema.Entity('matches');

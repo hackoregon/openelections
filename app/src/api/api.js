@@ -640,3 +640,9 @@ export function updateExpenditure(expenditureAttrs) {
 export function getStatusSummary(summaryAttrs) {
   return post(`${baseUrl()}/summary`, summaryAttrs);
 }
+
+// path '/matches/:id'
+// method: 'get'
+export function getMatchesByContributionId(id) {
+  return get(`${baseUrl()}/matches/${id}`);
+}
