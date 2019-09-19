@@ -2,12 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Contributions from './Contributions';
-import { getContributions } from '../../../state/ducks/contributions';
-import {
-  getCurrentCampaignId,
-  getCurrentUserId,
-} from '../../../state/ducks/auth';
-import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 class ContributionsPage extends React.Component {
   componentDidMount() {
@@ -29,8 +23,8 @@ class ContributionsPage extends React.Component {
       to: filterOptions.to,
       status: filterOptions.status,
     };
-
-    getContributions(data);
+    console.log('mscotto ON THE INDEX');
+    // getContributions(data);
   }
 
   getQueryParams(location) {
@@ -51,11 +45,4 @@ class ContributionsPage extends React.Component {
     return <Contributions {...this.props} />;
   }
 }
-export default connect(
-  state => ({
-    currentUserId: getCurrentUserId(state),
-    governmentId: getCurrentGovernmentId(state),
-    campaignId: getCurrentCampaignId(state),
-  }),
-  dispatch => ({ getContributions: data => dispatch(getContributions(data)) })
-)(withRouter(ContributionsPage));
+export default connect()(withRouter(ContributionsPage));

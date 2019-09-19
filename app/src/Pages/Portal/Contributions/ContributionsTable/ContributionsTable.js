@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 import { withRouter } from 'react-router-dom';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import queryString from 'query-string';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
-
 import TablePagination from '../../../../components/Table/TablePagination';
 import {
   getContributions,
@@ -33,6 +34,10 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 
 const columns = isGovAdmin => {
   const cols = [
+    {
+      field: 'id', // MSCOTTO TODO remove this field from table
+      title: 'ID',
+    },
     {
       field: 'date',
       title: 'Date',
@@ -122,6 +127,25 @@ const ContributionsTable = ({ ...props }) => {
 
   const title = `${props.total} Contributions`;
 
+  function fetchList(filterOptions, sortOptions, paginationOptions) {
+    const data = {
+      governmentId: props.govId,
+      currentUserId: props.userId,
+      campaignId: props.campaignId,
+      page:
+        paginationOptions.startPage || // This is a change page size
+        paginationOptions.page * paginationOptions.perPage,
+      perPage: paginationOptions.perPage,
+      ...filterOptions,
+      ...sortOptions,
+    };
+    console.log('mscotto CONTRI ATRI', data);
+    props.getContributions(data);
+  }
+  // console.log(props.contributionList);
+  // if (isEmpty(props.contributionList) && !props.isListLoading) {
+  //   fetchList(filterOptions, sortFilter, paginationOptions);
+  // }
   return (
     <PageHoc>
       <h1>Contributions</h1>
@@ -134,14 +158,12 @@ const ContributionsTable = ({ ...props }) => {
             // eslint-disable-next-line no-use-before-define
             `${props.location.pathname}?${makeIntoQueryParams(urlQuery)}`
           );
-          // eslint-disable-next-line no-use-before-define
           fetchList(newFilterOptions, sortFilter, { page: 0 });
         }}
       />
       <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
         <Button
           onClick={() => {
-            // eslint-disable-next-line no-use-before-define
             fetchList(filterOptions, sortFilter, { format: 'csv' });
           }}
         >
@@ -169,7 +191,6 @@ const ContributionsTable = ({ ...props }) => {
           }
 
           setSortFilter(sortOptions);
-          // eslint-disable-next-line no-use-before-define
           fetchList(filterOptions, sortOptions, paginationOptions);
         }}
         perPage={paginationOptions.perPage}
@@ -202,7 +223,6 @@ const ContributionsTable = ({ ...props }) => {
     };
 
     setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
     fetchList(filterOptions, sortFilter, newPaginationOptions);
   }
 
@@ -210,38 +230,27 @@ const ContributionsTable = ({ ...props }) => {
     const perPage = Number(e.target.value);
     const newPaginationOptions = {
       perPage,
-      page: 0,
+      page: paginationOptions.page,
+      startPage: paginationOptions.page * paginationOptions.perPage,
     };
     setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
     fetchList(filterOptions, sortFilter, newPaginationOptions);
-  }
-
-  function fetchList(filterOptions, sortOptions, paginationOptions) {
-    const data = {
-      governmentId: props.govId,
-      currentUserId: props.userId,
-      campaignId: props.campaignId,
-      ...paginationOptions,
-      ...filterOptions,
-      ...sortOptions,
-    };
-    props.getContributions(data);
   }
 };
 
 function getQueryParams(location) {
-  const rawParams = location.search.replace(/^\?/, '');
-  const result = {};
+  // const rawParams = location.search.replace(/^\?/, '');
+  // const result = {};
 
-  rawParams.split('&').forEach(item => {
-    if (item) {
-      const [key, val] = item.split('=');
-      result[key] = val;
-    }
-  });
+  // rawParams.split('&').forEach(item => {
+  //   if (item) {
+  //     const [key, val] = item.split('=');
+  //     result[key] = val;
+  //   }
+  // });
 
-  return result;
+  // return result;
+  return queryString.parse(location.search);
 }
 
 function makeIntoQueryParams(paramsObject) {

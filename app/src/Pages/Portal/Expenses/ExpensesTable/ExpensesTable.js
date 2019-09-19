@@ -22,6 +22,10 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 
 const columns = isGovAdmin => [
   {
+    field: 'id', // MSCOTTO TODO remove this field from table
+    title: 'ID',
+  },
+  {
     field: 'date',
     title: 'Date',
     render: rowData =>
@@ -103,16 +107,29 @@ const ExpensesTable = ({ ...props }) => {
   const components = {
     // eslint-disable-next-line react/display-name
     Action: props => (
-      // <WithAdminPermissions>
       <Button
         onClick={event => props.action.onClick(event, props.data)}
         buttonType={props.action.buttonType}
       >
         {props.action.name}
       </Button>
-      // </WithAdminPermissions>
     ),
   };
+
+  function fetchList(filterOptions, sortOptions, paginationOptions) {
+    const data = {
+      governmentId: props.govId,
+      currentUserId: props.userId,
+      campaignId: props.campaignId,
+      page:
+        paginationOptions.startPage || // This is a change page size
+        paginationOptions.page * paginationOptions.perPage,
+      perPage: paginationOptions.perPage,
+      ...filterOptions,
+      ...sortOptions,
+    };
+    props.getExpenditures(data);
+  }
 
   return (
     <PageHoc>
@@ -126,7 +143,6 @@ const ExpensesTable = ({ ...props }) => {
             // eslint-disable-next-line no-use-before-define
             `${props.location.pathname}?${makeIntoQueryParams(urlQuery)}`
           );
-          // eslint-disable-next-line no-use-before-define
           fetchList(newFilterOptions, sortFilter, { page: 0 });
         }}
       />
@@ -134,7 +150,6 @@ const ExpensesTable = ({ ...props }) => {
       <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
         <Button
           onClick={() => {
-            // eslint-disable-next-line no-use-before-define
             fetchList(filterOptions, sortFilter, { format: 'csv' });
           }}
         >
@@ -164,7 +179,6 @@ const ExpensesTable = ({ ...props }) => {
           }
 
           setSortFilter(sortOptions);
-          // eslint-disable-next-line no-use-before-define
           fetchList(filterOptions, sortOptions, paginationOptions);
         }}
         perPage={paginationOptions.perPage}
@@ -195,7 +209,6 @@ const ExpensesTable = ({ ...props }) => {
     };
 
     setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
     fetchList(filterOptions, sortFilter, newPaginationOptions);
   }
 
@@ -203,23 +216,12 @@ const ExpensesTable = ({ ...props }) => {
     const perPage = Number(e.target.value);
     const newPaginationOptions = {
       perPage,
-      page: 0,
+      page: paginationOptions.page,
+      // Pass in the previous starting record number
+      startPage: paginationOptions.page * paginationOptions.perPage,
     };
     setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
     fetchList(filterOptions, sortFilter, newPaginationOptions);
-  }
-
-  function fetchList(filterOptions, sortOptions, paginationOptions) {
-    const data = {
-      governmentId: props.govId,
-      currentUserId: props.userId,
-      campaignId: props.campaignId,
-      ...paginationOptions,
-      ...filterOptions,
-      ...sortOptions,
-    };
-    props.getExpenditures(data);
   }
 };
 

@@ -45,6 +45,17 @@ export const actionTypes = {
 export const initialState = {
   list: null,
   listOrder: [],
+  listFilterOptions: {
+    from: null,
+    to: null,
+    status: null,
+    page: 0,
+    perPage: 50,
+  },
+  listSortOptions: {
+    direction: 'DESC', // ASC || DESC
+    field: 'date',
+  },
   isLoading: false,
   error: null,
   currentId: 0,
@@ -345,3 +356,31 @@ export const getCurrentContribution = state => {
     ? state.contributions.list[state.contributions.currentId]
     : false;
 };
+
+export const getFilterList = state => {
+  const filter = state.contributions.listFilterOptions;
+  const sort = state.contributions.listFilterOptions.sort;
+  const returnObj = {};
+  Object.entries(filter).forEach(([key, value]) => {
+    if (value !== null) returnObj[key] = value;
+  });
+  if (sort.field) {
+    returnObj.sort = {
+      field: sort.field,
+      direction: sort.direction || 'DESC',
+    };
+  }
+  return returnObj;
+};
+
+// listFilterOptions: {
+//   from: null,
+//   to: null,
+//   status: null,
+//   page: 0,
+//   perPage: 50,
+//   sort: {
+//     direction: 'DESC', // ASC || DESC
+//     field: 'date',
+//   },
+// },

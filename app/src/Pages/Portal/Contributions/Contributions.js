@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import AddContribution from './AddContribution/AddContribution';
 import ContributionReady from './ContributionReady/ContributionReady';
-import ContributionsTable from './ContributionsTable/ContributionsTable';
+import ContributionsTable from './ContributionsTable';
 // import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
 const Contributions = props => {
