@@ -38,8 +38,10 @@ const MatchContribution = ({
   const [matchAmount, setMatchAmount] = React.useState(
     parseFloat(donationAmount) < 50 ? donationAmount : '50.00'
   );
-  function handleTextChange(event) {
-    setMatchAmount(event.target.value);
+  function handleTextChange(values) {
+    const { formattedValue } = values;
+    setMatchAmount(formattedValue);
+    return formattedValue;
   }
 
   return (
@@ -54,7 +56,7 @@ const MatchContribution = ({
           name="matchAmount"
           value={matchAmount}
           label="Match Amount"
-          onChange={handleTextChange}
+          onValueChange={handleTextChange}
           thousandSeparator
           prefix="$"
           decimalScale="2"
@@ -71,11 +73,9 @@ const MatchContribution = ({
             Cancel
           </Button>
           <Button
-            disabled={!matchAmount || matchAmount > 50}
             type="submit"
             buttonType="disabledModalButton"
             onClick={() => {
-              matchAmount > 50 ? alert('nope') : 'yep';
               clearModal();
               updateContribution({
                 id,
