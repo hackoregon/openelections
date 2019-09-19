@@ -44,6 +44,20 @@ const MatchContribution = ({
     return value;
   }
 
+  function submitOnEnter(e) {
+    if (e.code === 'Enter') {
+      clearModal();
+      updateContribution({
+        id,
+        status: ContributionStatusEnum.PROCESSED,
+        matchAmount: parseInt(matchAmount),
+        compliant: true,
+      });
+    }
+  }
+
+  document.addEventListener('keydown', submitOnEnter);
+
   return (
     <FormModal>
       <div css={matchContributionStyle}>
