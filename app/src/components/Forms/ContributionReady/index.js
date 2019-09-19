@@ -3,6 +3,7 @@ import React from 'react';
 import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
+import { push } from 'connected-react-router';
 import {
   updateContribution,
   getContributionById,
@@ -16,73 +17,62 @@ import {
   isCampStaff,
 } from '../../../state/ducks/auth';
 import {
-  AddHeaderSection,
   ViewHeaderSection,
   BasicsSection,
   ContributorSection,
-  OtherDetailsSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import {
   mapContributionFormToData,
   mapContributionDataToForm,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
-import { ContributionStatusEnum, ContributorTypeEnum } from '../../../api/api';
+import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
 
 const onSubmit = (data, props) => {
-  const initialData = props.data;
-  const contributionData = mapContributionFormToData(data);
-  delete contributionData.calendarYearAggregate;
-  contributionData.id = data.id;
-  contributionData.currentUserId = props.currentUserId;
+  // Only PUT changed fields by comparing initialValues to submitted values
+  const initialValues = props.currentContribution;
+  const submittedValues = mapContributionFormToData(data);
+  const alteredValues = {};
+
+  // All dates must be converted to microtime to compare
+  if (initialValues.occupationLetterDate) {
+    initialValues.occupationLetterDate = dateToMicroTime(
+      initialValues.occupationLetterDate
+    );
+  }
+  initialValues.date = dateToMicroTime(initialValues.date);
+  for (const [field, value] of Object.entries(submittedValues)) {
+    if (value !== initialValues[field]) {
+      if (!(!alteredValues[field] && !value)) alteredValues[field] = value;
+    }
+  }
+
   switch (data.buttonSubmitted) {
     case 'archive':
-      contributionData.status = ContributionStatusEnum.ARCHIVED;
+      alteredValues.status = ContributionStatusEnum.ARCHIVED;
       break;
     case 'move_to_draft':
-      contributionData.status = ContributionStatusEnum.DRAFT;
+      alteredValues.status = ContributionStatusEnum.DRAFT;
       break;
     case 'save':
-      contributionData.status = ContributionStatusEnum.DRAFT;
+      // The record should be in draft whne save is available.
+      // alteredValues.status = ContributionStatusEnum.DRAFT;
       break;
     case 'submit':
-      contributionData.status = ContributionStatusEnum.SUBMITTED;
+      alteredValues.status = ContributionStatusEnum.SUBMITTED;
       break;
-    // Button that does not set buttonSubmitted would return to the
-    // contributions list without updating the record
     default:
-      contributionData.status = false;
   }
-  // TODO only send dirty fields
-  // for (const key of Object.keys(data)) {
-  //   if (initialData[key]) {
-  //     if (data[key] !== initialData[key]) {
-  //       updateAttributes[key] = data[key];
-  //     }
-  //   }
-  // }
-  if (contributionData.status) {
-    props.updateContribution(contributionData);
-  } else {
-    props.history.push('/contributions');
-  }
-};
 
-const onSubmitSave = (data, props) => {
-  const { currentUserId, governmentId, campaignId, createContribution } = props;
-  const contributionData = mapContributionFormToData(data);
-  const payload = {
-    status: ContributionStatusEnum.DRAFT,
-    governmentId,
-    campaignId,
-    currentUserId,
-    ...contributionData,
-  };
-  createContribution(payload).then(data =>
-    props.history.push(`/contributions/${data}`)
-  );
+  if (Object.keys(alteredValues).length) {
+    alteredValues.id = data.id;
+    alteredValues.currentUserId = props.currentUserId;
+    props.updateContribution(alteredValues);
+  } else {
+    props.push('/contributions');
+  }
 };
 
 class ContributionReadyForm extends React.Component {
@@ -102,17 +92,20 @@ class ContributionReadyForm extends React.Component {
       isGovAdmin,
       campaignName,
     } = this.props;
-    let data = {};
+    let initialFormData = {};
     if (currentContribution) {
-      data = mapContributionDataToForm(currentContribution);
+      initialFormData = mapContributionDataToForm(currentContribution);
     }
     const isReadOnly = !!(
-      isGovAdmin || data.status === ContributionStatusEnum.SUBMITTED
+      isGovAdmin ||
+      initialFormData.status === ContributionStatusEnum.SUBMITTED ||
+      initialFormData.status === ContributionStatusEnum.ARCHIVED ||
+      initialFormData.status === ContributionStatusEnum.PROCESSED
     );
     return (
       <AddContributionForm
         onSubmit={data => onSubmit(data, this.props)}
-        initialValues={data}
+        initialValues={initialFormData}
       >
         {({
           formFields,
@@ -141,10 +134,9 @@ class ContributionReadyForm extends React.Component {
                 isCampStaff={isCampStaff}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
-                onSubmitSave={onSubmitSave}
-                id={data.id}
-                updatedAt={data.updatedAt}
-                status={data.status}
+                id={initialFormData.id}
+                updatedAt={initialFormData.updatedAt}
+                status={initialFormData.status}
                 formValues={values}
               />
               <ReadOnly ro={isReadOnly}>
@@ -186,6 +178,7 @@ export default connect(
     currentContribution: getCurrentContribution(state),
   }),
   dispatch => ({
+    push: url => dispatch(push(url)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateContribution: data => dispatch(updateContribution(data)),

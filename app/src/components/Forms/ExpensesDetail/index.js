@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import { flashMessage } from 'redux-flash';
 import {
   updateExpenditure,
@@ -20,7 +21,7 @@ import {
   ViewHeaderSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import ExpensesDetailForm from './ExpensesDetailForm';
-import { ExpenditureStatusEnum } from '../../../api/api';
+import { ExpenditureStatusEnum, dateToMicroTime } from '../../../api/api';
 import {
   mapExpenditureFormToData,
   mapExpenditureDataToForm,
@@ -29,52 +30,41 @@ import { PageTransitionImage } from '../../PageTransistion';
 import ReadOnly from '../../ReadOnly';
 
 const onSubmit = (data, props) => {
-  const expenditureData = mapExpenditureFormToData(data);
-  expenditureData.id = data.id;
-  expenditureData.currentUserId = props.currentUserId;
+  // Only PUT changed fields by comparing initialValues to submitted values
+  const initialValues = props.currentExpenditure;
+  const submittedValues = mapExpenditureFormToData(data);
+  const alteredValues = {};
+
+  // All dates must be converted to microtime to compare
+  initialValues.date = dateToMicroTime(initialValues.date);
+  for (const [field, value] of Object.entries(submittedValues)) {
+    if (value !== initialValues[field]) {
+      if (!(!alteredValues[field] && !value)) alteredValues[field] = value;
+    }
+  }
+
   switch (data.buttonSubmitted) {
     case 'archive':
-      expenditureData.status = ExpenditureStatusEnum.ARCHIVED;
+      alteredValues.status = ExpenditureStatusEnum.ARCHIVED;
       break;
     case 'move_to_draft':
-      expenditureData.status = ExpenditureStatusEnum.DRAFT;
+      alteredValues.status = ExpenditureStatusEnum.DRAFT;
       break;
     case 'save':
-      expenditureData.status = ExpenditureStatusEnum.DRAFT;
+      // alteredValues.status = ExpenditureStatusEnum.DRAFT;
       break;
     case 'submit':
-      expenditureData.status = ExpenditureStatusEnum.SUBMITTED;
+      alteredValues.status = ExpenditureStatusEnum.SUBMITTED;
       break;
-    // Button that does not set buttonSubmitted would return to the
-    // contributions list without updating the record
     default:
-      expenditureData.status = false;
   }
-  // TODO only send dirty fields
-  // for (const key of Object.keys(data)) {
-  //   if (initialData[key]) {
-  //     if (data[key] !== initialData[key]) {
-  //       updateAttributes[key] = data[key];
-  //     }
-  //   }
-  // }
-  if (expenditureData.status) {
-    props.updateExpenditure(expenditureData);
+  if (Object.keys(alteredValues).length) {
+    alteredValues.id = data.id;
+    alteredValues.currentUserId = props.currentUserId;
+    props.updateExpenditure(alteredValues);
   } else {
-    props.history.push('/expenses');
+    props.push('/expenses');
   }
-};
-
-const onSubmitSave = (data, props) => {
-  const { updateExpenditure } = props;
-  const expenditureData = mapExpenditureFormToData(data);
-  const payload = {
-    status: ExpenditureStatusEnum.DRAFT,
-    ...expenditureData,
-  };
-  updateExpenditure(payload).then(data =>
-    props.history.push(`/expenses/${data}`)
-  );
 };
 
 class ExpensesDetail extends React.Component {
@@ -94,14 +84,14 @@ class ExpensesDetail extends React.Component {
       isGovAdmin,
       campaignName,
     } = this.props;
-    let data = {};
+    let initialFormData = {};
     if (currentExpenditure) {
-      data = mapExpenditureDataToForm(currentExpenditure);
+      initialFormData = mapExpenditureDataToForm(currentExpenditure);
     }
     return (
       <ExpensesDetailForm
         onSubmit={data => onSubmit(data, this.props)}
-        initialValues={data}
+        initialValues={initialFormData}
         key={expenditureId}
       >
         {({
@@ -122,7 +112,12 @@ class ExpensesDetail extends React.Component {
             }
           }
           const isReadOnly = !!(
-            isGovAdmin || data.status === ExpenditureStatusEnum.SUBMITTED
+            isGovAdmin ||
+            initialFormData.status === ExpenditureStatusEnum.SUBMITTED ||
+            initialFormData.status === ExpenditureStatusEnum.ARCHIVED ||
+            initialFormData.status ===
+              ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
+            initialFormData.status === ExpenditureStatusEnum.IN_COMPLIANCE
           );
 
           return parseInt(values.id) !== parseInt(expenditureId) ? (
@@ -135,10 +130,9 @@ class ExpensesDetail extends React.Component {
                 isGovAdmin={isGovAdmin}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
-                onSubmitSave={onSubmitSave}
-                id={data.id}
-                updatedAt={data.updatedAt}
-                status={data.status}
+                id={initialFormData.id}
+                updatedAt={initialFormData.updatedAt}
+                status={initialFormData.status}
                 formValues={values}
                 campaignName={values.campaignName || campaignName} // Remove ` || campaignName` when api returns campaignName on single row request.
               />
@@ -175,6 +169,7 @@ export default connect(
     campaignName: getCurrentCampaignName(state),
   }),
   dispatch => ({
+    push: url => dispatch(push(url)),
     getExpenditureById: id => dispatch(getExpenditureById(id)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
