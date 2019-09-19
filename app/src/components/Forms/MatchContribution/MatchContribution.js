@@ -39,9 +39,9 @@ const MatchContribution = ({
     parseFloat(donationAmount) < 50 ? donationAmount : '50.00'
   );
   function handleTextChange(values) {
-    const { formattedValue } = values;
-    setMatchAmount(formattedValue);
-    return formattedValue;
+    const { value } = values;
+    setMatchAmount(value);
+    return value;
   }
 
   return (
@@ -63,8 +63,8 @@ const MatchContribution = ({
           isNumericString
           allowNegative={false}
           isAllowed={values => {
-            const { floatValue } = values;
-            return floatValue <= 50;
+            const { value } = values;
+            return value <= 50;
           }}
         />
 
@@ -73,7 +73,6 @@ const MatchContribution = ({
             Cancel
           </Button>
           <Button
-            type="submit"
             buttonType="disabledModalButton"
             onClick={() => {
               clearModal();
@@ -83,7 +82,6 @@ const MatchContribution = ({
                 matchAmount: parseInt(matchAmount),
                 compliant: true,
               });
-              postContributionComment(id, matchAmount);
             }}
           >
             Submit
