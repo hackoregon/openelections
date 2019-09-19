@@ -69,9 +69,7 @@ export const mapContributionDataToForm = contribution => {
     employerName,
     employerCity,
     employerState,
-    calendarYearAggregate,
     inKindDescription,
-    // employerZipcode,
     occupationLetterDate,
     status,
     notes,
@@ -115,8 +113,6 @@ export const mapContributionDataToForm = contribution => {
     employerName: employerName || '',
     employerCity: employerCity || '',
     employerState: employerState || '',
-    // employerZipcode: employerZipcode || '',
-    electionAggregate: calendarYearAggregate || '',
     inKindDescription: inKindDescription || '',
     paymentMethod: paymentMethod || '',
     occupationLetterDate: occupationLetterDate
@@ -154,7 +150,6 @@ export const mapContributionFormToData = data => {
     occupation,
     occupationLetterDate,
     inKindDescription,
-    electionAggregate,
     email,
     phone,
     phoneType,
@@ -207,7 +202,6 @@ export const mapContributionFormToData = data => {
     ).getTime(),
     zip: zipcode,
     inKindDescription,
-    calendarYearAggregate: electionAggregate,
     paymentMethod: paymentMethod || null,
     notes,
   };
@@ -244,10 +238,8 @@ export const contributionsEmptyState = {
   employerName: '',
   employerCity: '',
   employerState: '',
-  // employerZipcode: '',
 
   // OTHER DETAILS VALUES
-  electionAggregate: '',
   inKindDescription: '',
   occupationLetterDate: '',
   linkToDocumentation: '',
@@ -481,21 +473,6 @@ export const fields = {
     component: SelectField,
     validation: Yup.string(),
     options: { values: stateList },
-  },
-  // employerZipcode: {
-  //   label: 'Employer Zip Code',
-  //   section: FormSectionEnum.CONTRIBUTOR,
-  //   component: TextField,
-  //   validation: Yup.string(),
-  // },
-
-  // OTHER DETAILS SECTION
-  electionAggregate: {
-    label: 'Election Aggregate',
-    section: FormSectionEnum.OTHER_DETAILS,
-    component: TextField,
-    validation: Yup.number(),
-    // 'Election aggregate is required'
   },
   // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
   // or In-Kind Forgiven Personal Expenditure was selection.

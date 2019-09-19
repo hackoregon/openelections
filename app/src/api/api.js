@@ -1,4 +1,5 @@
 import jwtDecode from 'jwt-decode';
+import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
 
 export const UserRoleEnum = Object.freeze({
   GOVERNMENT_ADMIN: 'government_admin',
@@ -433,6 +434,14 @@ export function login(email, password) {
 // returns the jwt session token
 export function me() {
   return get(`${baseUrl()}/me`).then(response => response.json());
+}
+
+export function dateToMicroTime(formatedDate) {
+  return new Date(
+    convertToTimeZone(formatedDate, {
+      timeZone: 'America/Los_Angeles',
+    })
+  ).getTime();
 }
 
 export function inviteUsertoGovernment(
