@@ -15,7 +15,10 @@ import {
   updateExpenditure,
   postExpenditureComment,
 } from '../../../state/ducks/expenditures';
-import { updateContribution } from '../../../state/ducks/contributions';
+import {
+  updateContribution,
+  postContributionComment,
+} from '../../../state/ducks/contributions';
 import { ExpenditureStatusEnum } from '../../../api/api';
 
 const useStyles = makeStyles(theme => ({
@@ -45,6 +48,7 @@ const ComplianceReason = ({
   updateExpenditure,
   postExpenditureComment,
   updateContribution,
+  postContributionComment,
   contribution,
 }) => {
   const classes = useStyles();
@@ -59,10 +63,13 @@ const ComplianceReason = ({
   }
   function updateContributionOrExpenditure() {
     contribution
-      ? updateContribution({
-          id,
-          compliant: false,
-        })
+      ? [
+          updateContribution({
+            id,
+            compliant: false,
+          }),
+          postContributionComment(id, reasonText),
+        ]
       : [
           updateExpenditure({
             id,
@@ -141,6 +148,8 @@ export default connect(
       updateExpenditure: data => dispatch(updateExpenditure(data)),
       postExpenditureComment: (id, comment) =>
         dispatch(postExpenditureComment(id, comment)),
+      postContributionComment: (id, comment) =>
+        dispatch(postContributionComment(id, comment)),
       clearModal: () => dispatch(clearModal()),
     };
   }
