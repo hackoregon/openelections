@@ -22,6 +22,7 @@ import permissions, {
 import expenditures, {
   STATE_KEY as EXPENDITURES_STATE_KEY,
 } from './state/ducks/expenditures';
+import matches, { STATE_KEY as MATCHES_STATE_KEY } from './state/ducks/matches';
 import summary, { STATE_KEY as SUMMARY_STATE_KEY } from './state/ducks/summary';
 import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
@@ -44,6 +45,7 @@ export default function configureStore(history) {
       [AUTH_STATE_KEY]: auth,
       [CAMPAIGNS_STATE_KEY]: campaigns,
       [CONTRIBUTIONS_STATE_KEY]: contributions,
+      [MATCHES_STATE_KEY]: matches,
       [GOVERNMENTS_STATE_KEY]: governments,
       [PERMISSIONS_STATE_KEY]: permissions,
       [USERS_STATE_KEY]: users,

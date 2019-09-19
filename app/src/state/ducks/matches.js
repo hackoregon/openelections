@@ -1,7 +1,7 @@
 // matches.js
-import { normalize } from 'normalizr';
+import { cloneDeep } from 'lodash';
 import createReducer from '../utils/createReducer';
-import { ADD_ENTITIES, resetState, RESET_STATE, addEntities } from './common';
+import { RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
 
@@ -19,23 +19,22 @@ export const actionTypes = {
 export const initialState = {
   isLoading: false,
   error: null,
-  list: null,
+  list: {},
 };
 
-export const resetGovernmentState = resetState;
 // Reducer
 export default createReducer(initialState, {
   [RESET_STATE]: () => {
     return { ...initialState };
   },
-  [ADD_ENTITIES]: (state, action) => {
-    return { ...state, list: action.payload.matches };
-  },
   [actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.REQUEST]: (state, action) => {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false };
+    const newState = cloneDeep(state);
+    const match = action.match;
+    newState.list[match.id] = match;
+    return { ...state, isLoading: false, list: newState.list };
   },
   [actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -47,7 +46,8 @@ export default createReducer(initialState, {
 export const actionCreators = {
   getMatchesByContributionId: {
     request: () => action(actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.REQUEST),
-    success: () => action(actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.SUCCESS),
+    success: match =>
+      action(actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.SUCCESS, { match }),
     failure: error =>
       action(actionTypes.GET_MATCHES_BY_CONTRIBUTION_ID.FAILURE, { error }),
   },
@@ -60,10 +60,9 @@ export function getMatchesByContributionId(contributionId) {
     try {
       const response = await api.getMatchesByContributionId(contributionId);
       if (response.status === 200) {
-        const matches = await response.json();
-        const data = normalize(matches.data, [schema.matches]);
-        dispatch(addEntities(data.entities));
-        dispatch(actionCreators.getMatchesByContributionId.success());
+        const match = await response.json();
+        match.id = contributionId;
+        dispatch(actionCreators.getMatchesByContributionId.success(match));
       } else {
         dispatch(actionCreators.getMatchesByContributionId.failure());
       }

@@ -15,6 +15,8 @@ import {
 } from './common';
 import { getContributionActivities } from './activities';
 import { downloadFile } from '../utils/helpers';
+import { isGovAdmin } from './auth';
+import { getMatchesByContributionId } from './matches';
 
 export const STATE_KEY = 'contributions';
 
@@ -31,6 +33,10 @@ export const actionTypes = {
   POST_CONTRIBUTION_COMMENT: createActionTypes(
     STATE_KEY,
     'POST_CONTRIBUTION_COMMENT'
+  ),
+  GET_MATCHES_BY_CONTRIBUTION_ID: createActionTypes(
+    STATE_KEY,
+    'GET_MATCHES_BY_CONTRIBUTION_ID'
   ),
 };
 
@@ -252,10 +258,12 @@ export function getContributionById(id) {
     try {
       const response = await api.getContributionById(id);
       if (response.status === 200) {
-        // TODO look into why response.json() is removing data
         const data = normalize(await response.json(), schema.contribution);
         dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributionById.success(id));
+        if (isGovAdmin(getState())) {
+          dispatch(getMatchesByContributionId(id));
+        }
       } else {
         dispatch(actionCreators.getContributionById.failure());
       }
