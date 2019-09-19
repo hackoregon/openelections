@@ -80,7 +80,7 @@ const MatchContribution = ({
               updateContribution({
                 id,
                 status: ContributionStatusEnum.PROCESSED,
-                matchAmount: parseFloat(matchAmount),
+                matchAmount: parseInt(matchAmount),
                 compliant: true,
               });
               postContributionComment(id, matchAmount);
