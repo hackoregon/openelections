@@ -36,7 +36,7 @@ const MatchContribution = ({
 }) => {
   const isRequired = true;
   const [matchAmount, setMatchAmount] = React.useState(
-    parseFloat(donationAmount) < 50 ? donationAmount : '50.00'
+    parseFloat(donationAmount)
   );
   function handleTextChange(values) {
     const { value } = values;
@@ -76,10 +76,6 @@ const MatchContribution = ({
           decimalScale="2"
           isNumericString
           allowNegative={false}
-          isAllowed={values => {
-            const { value } = values;
-            return value <= 50;
-          }}
         />
 
         <div css={buttonContainer}>
