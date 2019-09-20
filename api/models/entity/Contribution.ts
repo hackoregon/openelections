@@ -392,7 +392,7 @@ export class Contribution {
     }
 
     validateName() {
-        if (this.contributorType === ContributorType.INDIVIDUAL) {
+        if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
             if (!this.lastName || this.lastName.trim() === '') {
                 const error = new ValidationError();
                 error.property = 'lastName';
