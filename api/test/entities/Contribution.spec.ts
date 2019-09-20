@@ -1,21 +1,17 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
+import {expect} from 'chai';
+import {getConnection} from 'typeorm';
 import {
-    Contribution, ContributionStatus,
+    Contribution,
+    ContributionStatus,
     ContributionSubType,
     ContributionType,
     ContributorType,
     getContributionsSummaryByStatusAsync
 } from '../../models/entity/Contribution';
-import {
-    newCampaignAsync,
-    newContributionAsync,
-    newGovernmentAsync,
-    truncateAll
-} from '../factories';
-import { Government } from '../../models/entity/Government';
-import { Campaign } from '../../models/entity/Campaign';
-import { PaymentMethod } from '../../models/entity/Expenditure';
+import {newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll} from '../factories';
+import {Government} from '../../models/entity/Government';
+import {Campaign} from '../../models/entity/Campaign';
+import {PaymentMethod} from '../../models/entity/Expenditure';
 
 let repository: any;
 let government: Government;
@@ -105,12 +101,25 @@ describe('Contribution', () => {
             expect(newRecord.errors[1].property).to.equal('firstName');
         });
 
-        it('validateName not Individual', async () => {
+        it('validateName Family', async () => {
             const newRecord = new Contribution();
             newRecord.type = ContributionType.CONTRIBUTION;
             newRecord.subType = ContributionSubType.CASH;
             newRecord.paymentMethod = PaymentMethod.CASH;
             newRecord.contributorType = ContributorType.FAMILY;
+            expect(newRecord.errors.length).to.equal(0);
+            await newRecord.validateName();
+            expect(newRecord.errors.length).to.equal(2);
+            expect(newRecord.errors[0].property).to.equal('lastName');
+            expect(newRecord.errors[1].property).to.equal('firstName');
+        });
+
+        it('validateName not Individual', async () => {
+            const newRecord = new Contribution();
+            newRecord.type = ContributionType.CONTRIBUTION;
+            newRecord.subType = ContributionSubType.CASH;
+            newRecord.paymentMethod = PaymentMethod.CASH;
+            newRecord.contributorType = ContributorType.BUSINESS;
             expect(newRecord.errors.length).to.equal(0);
             await newRecord.validateName();
             expect(newRecord.errors.length).to.equal(1);

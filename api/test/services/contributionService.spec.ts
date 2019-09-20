@@ -284,13 +284,13 @@ describe('contributionService', () => {
             });
           contributionRepository.update(contribution.id, {matchId: 2});
         expect(
-            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: 1 })).data.length
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: '1' })).data.length
         ).to.equal(1);
     });
 
     it('Gets all contributions for a matchId as campaign', async () => {
         try {
-            await getContributionsAsync({ governmentId: government.id, currentUserId: campaignAdmin.id, matchId: 1 });
+            await getContributionsAsync({ governmentId: government.id, currentUserId: campaignAdmin.id, matchId: '1' });
         } catch (e) {
             expect(e.message).to.equal('User is not permitted to get contributions by matchId.');
         }

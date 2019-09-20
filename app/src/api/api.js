@@ -655,3 +655,16 @@ export function getStatusSummary(summaryAttrs) {
 export function getMatchesByContributionId(id) {
   return get(`${baseUrl()}/matches/${id}`);
 }
+
+/*
+path '/matches'
+method: 'post'
+@attrs {
+contributionId: number,
+matchId: string,
+matchStrength: enum[exact, strong, weak, none]
+ }
+ */
+export function updateMatchForContribution(attrs) {
+  return post(`${baseUrl()}/matches`, attrs);
+}

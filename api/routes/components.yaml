@@ -293,6 +293,20 @@ components:
             type: onbject
             properties:
               comment: string
+    PostMatchBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contributionId:
+                type: integer
+              matchId:
+                type: string
+              matchStrength:
+                type: string
+                enum: [strong,exact,weak,none]
     UpdateContributionBody:
       required: true
       content:
