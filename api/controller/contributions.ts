@@ -8,7 +8,7 @@ import {
     getContributionByIdAsync,
     archiveContributionAsync,
     createContributionCommentAsync,
-    getMatchResultAsync
+    getMatchResultAsync, updateMatchResultAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -19,7 +19,7 @@ import {
     ContributionSubType,
     ContributionType,
     ContributorType,
-    InKindDescriptionType,
+    InKindDescriptionType, MatchStrength,
     OaeType,
     PaymentMethod,
     PhoneType
@@ -479,6 +479,7 @@ export async function createContributionComment(request: IRequest, response: Res
 }
 
 export class GetContributionMatchesDto {
+    @IsNumber()
     currentUserId: number;
 
     @IsNumber()
@@ -496,6 +497,38 @@ export async function getMatchesByContributionId(request: IRequest, response: Re
         const matches = await getMatchResultAsync(getContributionMatchesDto);
         return response.status(200).send(matches);
     } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export class PostMatchResultDTO {
+    @IsNumber()
+    currentUserId: number;
+
+    @IsString()
+    matchStrength: MatchStrength;
+
+    @IsString()
+    matchId: string;
+
+    @IsNumber()
+    contributionId: number;
+}
+
+export async function postMatchResult(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const PostMatchResult = Object.assign(new PostMatchResultDTO(), {
+            contributionId: parseInt(request.body.contributionId),
+            currentUserId: request.currentUser.id,
+            matchStrength: request.body.matchStrength,
+            matchId: request.body.matchId
+        });
+        await checkDto(PostMatchResult);
+        const matches = await updateMatchResultAsync(PostMatchResult);
+        return response.status(200).send(matches);
+    } catch (err) {
+        console.log(err)
         return response.status(422).json({ message: err.message });
     }
 }

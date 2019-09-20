@@ -831,6 +831,32 @@ export const AppRoutes = [
         path: '/matches/:id',
         method: 'get',
         action: contributions.getMatchesByContributionId
+    },
+    /**
+     * @swagger
+     *
+     * /matches:
+     *   post:
+     *     summary: Updates a contribution with match information
+     *     tags:
+     *       - Contribution
+     *       - Match
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/PostMatchBody'
+     *     responses:
+     *       204:
+     *         description: match successful
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     */
+    {
+        path: '/matches',
+        method: 'post',
+        action: contributions.postMatchResult
     }
 ];
 
