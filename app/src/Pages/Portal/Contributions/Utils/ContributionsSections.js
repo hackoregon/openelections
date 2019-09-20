@@ -11,6 +11,7 @@ import {
   buttonBar,
 } from '../../../../assets/styles/forms.styles';
 import { MatchPickerHeader } from '../../../../components/MatchPicker/MatchPicker';
+import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
 
 export const ViewHeaderSection = ({
   isValid,
@@ -19,98 +20,128 @@ export const ViewHeaderSection = ({
   updatedAt,
   status,
   formValues,
+  isGovAdmin,
   isCampAdmin,
   isCampStaff,
   campaignName,
-}) => (
-  <>
-    <div css={containers.header}>
-      <div>
-        <p css={headerStyles.invoice}>
-          #{id} {status}
-        </p>
-        <p css={headerStyles.subheadingWide}>
-          {`${campaignName} | Last Edited ${updatedAt}`}
-        </p>
-      </div>
-      <div css={buttonBar.wrapper}>
-        <div css={buttonBar.container}>
-          {status === ContributionStatusEnum.DRAFT ? (
-            <>
-              {isCampStaff || isCampAdmin ? (
-                <>
+}) => {
+  let showMatchOption = null;
+  const showMatchableSelector = () => {
+    if (isGovAdmin) {
+      if (
+        formValues.typeOfContributor === 'individual' &&
+        status !== 'Archived' &&
+        status !== 'Draft' &&
+        status !== 'Processed' &&
+        status !== 'Out of compliance' && // compliant is not false?
+        formValues.oaeType === 'matchable'
+      ) {
+        return (showMatchOption = 'show');
+      }
+      return (showMatchOption = 'hide');
+    }
+    return showMatchOption;
+  };
+
+  showMatchableSelector();
+
+  return (
+    <>
+      <div css={containers.header}>
+        <div>
+          <p css={headerStyles.invoice}>
+            #{id} {status}
+          </p>
+          <p css={headerStyles.subheadingWide}>
+            {`${campaignName} | Last Edited ${updatedAt}`}
+          </p>
+        </div>
+        <div css={buttonBar.wrapper}>
+          <div css={buttonBar.container}>
+            {showMatchOption === 'show' || showMatchOption === 'hide' ? (
+              <MatchContributionSelector
+                id={id}
+                donationAmount={formValues.amountOfContribution}
+                showMatchOption={showMatchOption}
+              />
+            ) : null}
+            {status === ContributionStatusEnum.DRAFT ? (
+              <>
+                {isCampStaff || isCampAdmin ? (
+                  <>
+                    <Button
+                      css={headerStyles.submitButton}
+                      style={{ margin: 1 }}
+                      buttonType="submit"
+                      onClick={() => {
+                        formValues.buttonSubmitted = 'archive';
+                        handleSubmit();
+                      }}
+                    >
+                      Archive
+                    </Button>
+                    <Button
+                      css={headerStyles.submitButton}
+                      style={{ margin: 1 }}
+                      buttonType="submit"
+                      onClick={() => {
+                        formValues.buttonSubmitted = 'save';
+                        handleSubmit();
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </>
+                ) : null}
+                {isCampAdmin ? (
                   <Button
                     css={headerStyles.submitButton}
                     style={{ margin: 1 }}
                     buttonType="submit"
                     onClick={() => {
-                      formValues.buttonSubmitted = 'archive';
+                      formValues.buttonSubmitted = 'submit';
                       handleSubmit();
                     }}
                   >
-                    Archive
+                    Submit
                   </Button>
-                  <Button
-                    css={headerStyles.submitButton}
-                    style={{ margin: 1 }}
-                    buttonType="submit"
-                    onClick={() => {
-                      formValues.buttonSubmitted = 'save';
-                      handleSubmit();
-                    }}
-                  >
-                    Save
-                  </Button>
-                </>
-              ) : null}
-              {isCampAdmin ? (
-                <Button
-                  css={headerStyles.submitButton}
-                  style={{ margin: 1 }}
-                  buttonType="submit"
-                  onClick={() => {
-                    formValues.buttonSubmitted = 'submit';
-                    handleSubmit();
-                  }}
-                >
-                  Submit
-                </Button>
-              ) : null}
-            </>
-          ) : null}
-          {status === ContributionStatusEnum.ARCHIVED &&
-          (isCampStaff || isCampAdmin) ? (
-            <Button
-              css={headerStyles.submitButton}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'move_to_draft';
-                handleSubmit();
-              }}
-            >
-              Move to Draft
-            </Button>
-          ) : null}
-          {status === ContributionStatusEnum.SUBMITTED &&
-          (isCampStaff || isCampAdmin) ? (
-            <Button
-              css={headerStyles.submitButton}
-              style={{ margin: 1 }}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'archive';
-                handleSubmit();
-              }}
-            >
-              Archive
-            </Button>
-          ) : null}
+                ) : null}
+              </>
+            ) : null}
+            {status === ContributionStatusEnum.ARCHIVED &&
+            (isCampStaff || isCampAdmin) ? (
+              <Button
+                css={headerStyles.submitButton}
+                buttonType="submit"
+                onClick={() => {
+                  formValues.buttonSubmitted = 'move_to_draft';
+                  handleSubmit();
+                }}
+              >
+                Move to Draft
+              </Button>
+            ) : null}
+            {status === ContributionStatusEnum.SUBMITTED &&
+            (isCampStaff || isCampAdmin) ? (
+              <Button
+                css={headerStyles.submitButton}
+                style={{ margin: 1 }}
+                buttonType="submit"
+                onClick={() => {
+                  formValues.buttonSubmitted = 'archive';
+                  handleSubmit();
+                }}
+              >
+                Archive
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
-    </div>
-    <hr css={sectionStyles.dividerLine} />
-  </>
-);
+      <hr css={sectionStyles.dividerLine} />
+    </>
+  );
+};
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>

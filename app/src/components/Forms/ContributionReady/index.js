@@ -63,6 +63,11 @@ const onSubmit = (data, props) => {
     case 'submit':
       alteredValues.status = ContributionStatusEnum.SUBMITTED;
       break;
+    case 'processed':
+      alteredValues.status = ContributionStatusEnum.PROCESSED;
+      break;
+    // Button that does not set buttonSubmitted would return to the
+    // contributions list without updating the record
     default:
   }
 
@@ -132,6 +137,7 @@ class ContributionReadyForm extends React.Component {
                 campaignName={values.campaignName || campaignName}
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
+                isGovAdmin={this.props.isGovAdmin}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 id={initialFormData.id}

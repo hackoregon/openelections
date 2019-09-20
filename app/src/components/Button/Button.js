@@ -81,7 +81,7 @@ const buttonTypes = {
     size: 'large',
   },
   green: { type: 'button', variant: 'contained', style: greenStyle },
-  complianceDisabled: {
+  disabledModalButton: {
     type: 'submit',
     variant: 'contained',
     color: 'primary',
