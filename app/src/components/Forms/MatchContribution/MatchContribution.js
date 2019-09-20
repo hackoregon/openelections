@@ -44,19 +44,25 @@ const MatchContribution = ({
     return value;
   }
 
-  // function submitOnEnter(e) {
-  //   if (e.code === 'Enter') {
-  //     clearModal();
-  //     updateContribution({
-  //       id,
-  //       status: ContributionStatusEnum.PROCESSED,
-  //       matchAmount: parseInt(matchAmount),
-  //       compliant: true,
-  //     });
-  //   }
-  // }
+  function submitModal() {
+    clearModal();
+    updateContribution({
+      id,
+      status: ContributionStatusEnum.PROCESSED,
+      matchAmount: parseInt(matchAmount),
+      compliant: true,
+    });
+  }
 
-  // document.addEventListener('keydown', submitOnEnter);
+  function submitOnEnter(e) {
+    if (e.code === 'Enter') {
+      submitModal();
+      // Removing the Enter event listener after submission
+      document.removeEventListener('keydown', submitOnEnter);
+    }
+  }
+
+  document.addEventListener('keydown', submitOnEnter);
 
   return (
     <FormModal>
@@ -77,22 +83,14 @@ const MatchContribution = ({
           isNumericString
           allowNegative={false}
         />
-
         <div css={buttonContainer}>
           <Button buttonType="formDefaultOutlined" onClick={() => clearModal()}>
             Cancel
           </Button>
           <Button
+            type="submit"
             buttonType="disabledModalButton"
-            onClick={() => {
-              clearModal();
-              updateContribution({
-                id,
-                status: ContributionStatusEnum.PROCESSED,
-                matchAmount: parseInt(matchAmount),
-                compliant: true,
-              });
-            }}
+            onClick={submitModal}
           >
             Submit
           </Button>
