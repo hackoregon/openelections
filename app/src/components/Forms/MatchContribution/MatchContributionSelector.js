@@ -99,7 +99,6 @@ const SplitButton = ({
           id,
           status: value,
           compliant: true,
-          contribution: 'contribution',
         });
         break;
       default:
