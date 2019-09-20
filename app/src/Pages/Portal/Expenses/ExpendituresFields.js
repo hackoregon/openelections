@@ -11,6 +11,7 @@ import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
+import ZipField from '../../../components/Fields/ZipField';
 import {
   ExpenditureTypeEnum,
   ExpenditureSubTypeEnum,
@@ -340,7 +341,7 @@ export const fields = {
   zipcode: {
     label: 'Zipcode',
     section: FormSectionEnum.PAYEE_INFO,
-    component: TextField,
+    component: ZipField,
     validation: Yup.number().required('A zipcode is required'),
   },
   notes: {
