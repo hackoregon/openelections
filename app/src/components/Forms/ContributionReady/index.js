@@ -96,11 +96,13 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
+      matchAmount,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
       initialFormData = mapContributionDataToForm(currentContribution);
     }
+
     const isReadOnly = !!(
       isGovAdmin ||
       initialFormData.status === ContributionStatusEnum.SUBMITTED ||
@@ -152,6 +154,8 @@ class ContributionReadyForm extends React.Component {
                   checkSelected={visibleIf.checkSelected}
                   showInKindFields={visibleIf.showInKindFields}
                   showPaymentMethod={visibleIf.paymentMethod}
+                  showMatchAmount={currentContribution.matchAmount}
+                  showCompliant={currentContribution.compliant}
                 />
                 <ContributorSection
                   isSubmited={isSubmited}
