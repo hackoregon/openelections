@@ -96,13 +96,11 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
-      matchAmount,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
       initialFormData = mapContributionDataToForm(currentContribution);
     }
-
     const isReadOnly = !!(
       isGovAdmin ||
       initialFormData.status === ContributionStatusEnum.SUBMITTED ||
