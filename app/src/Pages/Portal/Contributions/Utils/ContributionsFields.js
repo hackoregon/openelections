@@ -9,6 +9,7 @@ import { stateList } from '../../../../components/Forms/Utils/FormsUtils';
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
+import NameField from '../../../../components/Fields/NameField';
 import PhoneField from '../../../../components/Fields/PhoneField';
 import EmailField from '../../../../components/Fields/EmailField';
 import CurrencyField from '../../../../components/Fields/CurrencyField';
@@ -366,14 +367,14 @@ export const fields = {
   firstName: {
     label: "Contributor's First Name",
     section: FormSectionEnum.CONTRIBUTOR,
-    component: TextField,
+    component: NameField,
     validation: Yup.string().nullable(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {
     label: "Contributor's Last Name",
     section: FormSectionEnum.CONTRIBUTOR,
-    component: TextField,
+    component: NameField,
     validation: Yup.string().nullable(),
   },
   entityName: {

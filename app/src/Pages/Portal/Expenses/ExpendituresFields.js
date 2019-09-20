@@ -10,6 +10,7 @@ import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
+import NameField from '../../../components/Fields/NameField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
 import {
   ExpenditureTypeEnum,
@@ -309,7 +310,7 @@ export const fields = {
   payeeName: {
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
-    component: TextField,
+    component: NameField,
     validation: Yup.string().required("The payee's name is required"),
   },
   streetAddress: {
