@@ -166,8 +166,16 @@ export const BasicsSection = ({
   showInKindFields,
   isSubmited,
   showPaymentMethod,
+  showMatchAmount,
+  showCompliant,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+    {showCompliant ? (
+      <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
+    ) : null}
+    {showMatchAmount ? (
+      <p style={{ margin: '0px' }}>{`Match Amount: $${showMatchAmount}`}</p>
+    ) : null}
     <div css={sectionStyles.main}>
       <h3 css={sectionStyles.title}>Basics</h3>
       <div css={containers.main}>

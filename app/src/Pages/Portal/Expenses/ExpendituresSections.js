@@ -137,21 +137,27 @@ export const BasicsSection = ({
   checkSelected,
   showPaymentMethod,
   showPurposeType,
+  showCompliant,
 }) => (
-  <div css={sectionStyles.main}>
-    <h3 css={sectionStyles.title}>Basics</h3>
-    <div css={containers.main}>
-      <h2>{formFields.amount}</h2>
-      <h2>{formFields.date}</h2>
-      <h2>{formFields.expenditureType}</h2>
-      <h2>{formFields.expenditureSubType}</h2>
-      {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
-      {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
-    </div>
-    {showPurposeType ? (
-      <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
+  <>
+    {showCompliant === 'in_compliance' ? (
+      <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
     ) : null}
-  </div>
+    <div css={sectionStyles.main}>
+      <h3 css={sectionStyles.title}>Basics</h3>
+      <div css={containers.main}>
+        <h2>{formFields.amount}</h2>
+        <h2>{formFields.date}</h2>
+        <h2>{formFields.expenditureType}</h2>
+        <h2>{formFields.expenditureSubType}</h2>
+        {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
+        {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
+      </div>
+      {showPurposeType ? (
+        <h2 css={containers.fullWidth}>{formFields.purposeType}</h2>
+      ) : null}
+    </div>
+  </>
 );
 
 export const PayeeInfoSection = ({ formFields }) => (

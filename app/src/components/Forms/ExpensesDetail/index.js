@@ -144,6 +144,7 @@ class ExpensesDetail extends React.Component {
                   showInKindFields={visibleIf.showInKindFields}
                   showPaymentMethod={visibleIf.paymentMethod}
                   showPurposeType={visibleIf.showPurposeType}
+                  showCompliant={currentExpenditure.status}
                 />
                 <PayeeInfoSection
                   isSubmited={isSubmited}

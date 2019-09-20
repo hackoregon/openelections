@@ -152,6 +152,8 @@ class ContributionReadyForm extends React.Component {
                   checkSelected={visibleIf.checkSelected}
                   showInKindFields={visibleIf.showInKindFields}
                   showPaymentMethod={visibleIf.paymentMethod}
+                  showMatchAmount={currentContribution.matchAmount}
+                  showCompliant={currentContribution.compliant}
                 />
                 <ContributorSection
                   isSubmited={isSubmited}
