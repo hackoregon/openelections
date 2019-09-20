@@ -1,12 +1,12 @@
 import { getConnection } from 'typeorm';
 import {
-    Contribution,
+    Contribution, contributionGovSummaryFields,
     ContributionStatus,
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
     ContributorType, convertToCsv, convertToGeoJson,
-    getContributionsByGovernmentIdAsync,
+    getContributionsByGovernmentIdAsync, IContributionGovSummary,
     IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
@@ -148,7 +148,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
 export interface IGetContributionOptions {
     currentUserId?: number;
     campaignId?: number;
-    matchId?: number;
+    matchId?: string;
     perPage?: number;
     page?: number;
     status?: string;
@@ -323,7 +323,7 @@ export interface IGetContributionByIdAttrs {
 
 export async function getContributionByIdAsync(
     contributionAttrs: IGetContributionByIdAttrs
-): Promise<IContributionSummary> {
+): Promise<IContributionSummary | IContributionGovSummary> {
     try {
         const { contributionId, currentUserId } = contributionAttrs;
         const contributionRepository = getConnection('default').getRepository('Contribution');
@@ -332,18 +332,18 @@ export async function getContributionByIdAsync(
         })) as Contribution;
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(currentUserId, contribution.campaign.id)) ||
-            (await isCampaignStaffAsync(currentUserId, contribution.campaign.id)) ||
-            (await isGovernmentAdminAsync(currentUserId, contribution.government.id));
-        if (hasCampaignPermissions) {
+            (await isCampaignStaffAsync(currentUserId, contribution.campaign.id));
+        const hasGovPermissions = await isGovernmentAdminAsync(currentUserId, contribution.government.id);
+        if (hasCampaignPermissions || hasGovPermissions) {
             contribution = (await contributionRepository.findOne({
-                select: contributionSummaryFields,
+                select: hasGovPermissions ? contributionGovSummaryFields : contributionSummaryFields,
                 where: { id: contributionId },
                 relations: ['campaign', 'government']
             })) as Contribution;
         } else {
             throw new Error('User does not have permissions');
         }
-        return contribution as IContributionSummary;
+        return contribution.toJSON(hasGovPermissions);
     } catch (e) {
         throw new Error(e.message);
     }

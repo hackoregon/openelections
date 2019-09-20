@@ -196,8 +196,7 @@ export class GetContributionsDto implements IGetContributionAttrs {
     campaignId?: number;
 
     @IsOptional()
-    @IsNumber()
-    matchId?: number;
+    matchId?: string;
 
     @IsOptional()
     @IsNumber()
@@ -418,7 +417,7 @@ export async function getContributionById(request: IRequest, response: Response,
         });
         await checkDto(getContributionByIdDto);
         const contribution = await getContributionByIdAsync(getContributionByIdDto);
-        return response.status(200).json(contribution);
+        return response.status(200).send(contribution);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }

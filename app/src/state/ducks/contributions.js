@@ -17,6 +17,7 @@ import { getContributionActivities } from './activities';
 import { downloadFile } from '../utils/helpers';
 import { isGovAdmin } from './auth';
 import { getMatchesByContributionId } from './matches';
+import { getContributionsByMatchId } from './pastContributions';
 
 export const STATE_KEY = 'contributions';
 
@@ -258,11 +259,15 @@ export function getContributionById(id) {
     try {
       const response = await api.getContributionById(id);
       if (response.status === 200) {
-        const data = normalize(await response.json(), schema.contribution);
+        const json = await response.json();
+        const data = normalize(json, schema.contribution);
         dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributionById.success(id));
         if (isGovAdmin(getState())) {
           dispatch(getMatchesByContributionId(id));
+          if (json.matchId) {
+            dispatch(getContributionsByMatchId(json.matchId));
+          }
         }
       } else {
         dispatch(actionCreators.getContributionById.failure());
