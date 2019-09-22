@@ -27,78 +27,93 @@ const matchContributionTitle = css`
   font-size: 24px;
 `;
 
-const MatchContribution = ({
-  id,
-  clearModal,
-  updateContribution,
-  postContributionComment,
-  donationAmount,
-}) => {
-  const isRequired = true;
-  const [matchAmount, setMatchAmount] = React.useState(
-    parseFloat(donationAmount)
-  );
-  function handleTextChange(values) {
+class MatchContribution extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.isRequired = true;
+    this.state = {
+      matchAmount: parseFloat(props.donationAmount),
+    };
+
+    this.submitModal = this.submitModal.bind(this);
+    this.submitOnEnter = this.submitOnEnter.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.submitOnEnter);
+  }
+
+  componentWillUnmount() {
+    // Removing the Enter event listener after submission
+    document.removeEventListener('keydown', this.submitOnEnter);
+  }
+
+  handleTextChange(values) {
     const { value } = values;
-    setMatchAmount(value);
+    this.setState({ matchAmount: value });
     return value;
   }
 
-  function submitModal() {
+  submitModal() {
+    const { id, clearModal, updateContribution } = this.props;
     clearModal();
     updateContribution({
       id,
       status: ContributionStatusEnum.PROCESSED,
-      matchAmount: parseInt(matchAmount),
+      matchAmount: parseInt(this.state.matchAmount),
       compliant: true,
     });
   }
 
-  function submitOnEnter(e) {
+  submitOnEnter(e) {
     if (e.code === 'Enter') {
-      submitModal();
-      // Removing the Enter event listener after submission
-      document.removeEventListener('keydown', submitOnEnter);
+      this.submitModal();
     }
   }
 
-  document.addEventListener('keydown', submitOnEnter);
-
-  return (
-    <FormModal>
-      <div css={matchContributionStyle}>
-        <h1 css={matchContributionTitle}>Match Contribution</h1>
-        <p>Enter Amount of Match</p>
-        <NumberFormat
-          style={{ height: '50px', width: '100%', fontSize: '24px' }}
-          required={isRequired}
-          id="matchAmount"
-          name="matchAmount"
-          value={matchAmount}
-          label="Match Amount"
-          onValueChange={handleTextChange}
-          thousandSeparator
-          prefix="$"
-          decimalScale="2"
-          isNumericString
-          allowNegative={false}
-        />
-        <div css={buttonContainer}>
-          <Button buttonType="formDefaultOutlined" onClick={() => clearModal()}>
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            buttonType="disabledModalButton"
-            onClick={submitModal}
-          >
-            Submit
-          </Button>
+  render() {
+    const { clearModal } = this.props;
+    return (
+      <FormModal>
+        <div css={matchContributionStyle}>
+          <h1 css={matchContributionTitle}>Match Contribution</h1>
+          <p>Enter Amount of Match</p>
+          <NumberFormat
+            style={{ height: '50px', width: '100%', fontSize: '24px' }}
+            required={this.isRequired}
+            id="matchAmount"
+            name="matchAmount"
+            value={this.state.matchAmount}
+            label="Match Amount"
+            onValueChange={this.handleTextChange}
+            thousandSeparator
+            prefix="$"
+            decimalScale="2"
+            isNumericString
+            allowNegative={false}
+          />
+          <div css={buttonContainer}>
+            <Button
+              buttonType="formDefaultOutlined"
+              onClick={() => clearModal()}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              buttonType="disabledModalButton"
+              onClick={this.submitModal}
+            >
+              Submit
+            </Button>
+          </div>
         </div>
-      </div>
-    </FormModal>
-  );
-};
+      </FormModal>
+    );
+  }
+}
 
 export default connect(
   state => ({
