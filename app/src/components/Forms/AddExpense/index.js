@@ -46,6 +46,7 @@ const AddExpense = ({ ...props }) => (
             checkSelected={visibleIf.checkSelected}
             showPaymentMethod={visibleIf.paymentMethod}
             showPurposeType={visibleIf.showPurposeType}
+            showOriginalDateAndVendor={visibleIf.showOriginalDateAndVendor}
           />
           <PayeeInfoSection
             formFields={formFields}

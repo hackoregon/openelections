@@ -48,6 +48,8 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt,
     campaign,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = expenditure;
   return {
     id,
@@ -74,6 +76,11 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
+    dateOriginalTransaction: format(
+      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
+      'YYYY-MM-DD'
+    ),
+    vendorForOriginalPurchase: '',
   };
 };
 
@@ -95,6 +102,8 @@ export const mapExpenditureFormToData = data => {
     zipcode,
     notes,
     status,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = data;
 
   const transformed = {
@@ -116,6 +125,8 @@ export const mapExpenditureFormToData = data => {
     zip: zipcode,
     notes,
     status,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   };
   return transformed;
 };
@@ -130,6 +141,8 @@ export const expendituresEmptyState = {
   paymentMethod: '',
   checkNumber: '',
   purposeType: '',
+  dateOriginalTransaction: '',
+  vendorForOriginalPurchase: '',
 
   // PAYEE INFO
   payeeType: PayeeTypeEnum.INDIVIDUAL,
@@ -226,6 +239,18 @@ export const fields = {
       },
     },
     validation: Yup.string().required('The Expenditure subtype is required'),
+  },
+  dateOriginalTransaction: {
+    label: 'Date of Original Transaction',
+    section: FormSectionEnum.BASIC,
+    component: TextField,
+    validation: Yup.string(),
+  },
+  vendorForOriginalPurchase: {
+    label: 'Vendor for Original Purchase',
+    section: FormSectionEnum.BASIC,
+    component: TextField,
+    validation: Yup.string(),
   },
   paymentMethod: {
     label: 'Payment Method',
@@ -366,6 +391,8 @@ export const validate = values => {
     paymentMethod,
     checkNumber,
     purposeType,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = values;
   const error = {};
   const visible = {};
@@ -378,9 +405,24 @@ export const validate = values => {
     paymentMethod === PaymentMethodEnum.MONEY_ORDER
   );
 
+  visible.showOriginalDateAndVendor = !!(
+    expenditureSubType === ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE
+  );
+
+  // If Expenditure Subtype is personal expenditure
+  if (visible.showOriginalDateAndVendor && isEmpty(dateOriginalTransaction)) {
+    error.dateOriginalTransaction =
+      'Date of the original transaction is required';
+  }
+  if (visible.showOriginalDateAndVendor && isEmpty(vendorForOriginalPurchase)) {
+    error.vendorForOriginalPurchase =
+      'Name of vendor for original purchase is required';
+  }
+
   // Default to visible
   visible.paymentMethod = true;
   visible.showPurposeType = false;
+  // visible.dateOriginalTransaction = false;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
   if (visible.checkSelected && isEmpty(checkNumber)) {
