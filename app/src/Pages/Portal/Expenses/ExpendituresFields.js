@@ -10,7 +10,6 @@ import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
-import NameField from '../../../components/Fields/NameField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
 import {
   ExpenditureTypeEnum,
@@ -108,7 +107,7 @@ export const mapExpenditureFormToData = data => {
     paymentMethod,
     purpose: purposeType || null,
     payeeType,
-    name: payeeName,
+    name: payeeName.trim(),
     address1: streetAddress,
     address2: addressLine2,
     city,
@@ -310,8 +309,16 @@ export const fields = {
   payeeName: {
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
-    component: NameField,
-    validation: Yup.string().required("The payee's name is required"),
+    component: TextField,
+    validation: Yup.string()
+      .matches(
+        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
+        'Names must only contain letters or hyphens.',
+        {
+          excludeEmptyString: true,
+        }
+      )
+      .nullable(),
   },
   streetAddress: {
     label: 'Street Address',
