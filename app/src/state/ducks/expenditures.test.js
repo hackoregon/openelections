@@ -20,6 +20,14 @@ describe('Reducer', () => {
       currentId: null,
       listOrder: [],
       total: 0,
+      listFilterOptions: {
+        from: '',
+        to: '',
+        status: 'all',
+        page: 0,
+        perPage: 50,
+        sort: {},
+      },
     });
   });
 
@@ -43,6 +51,14 @@ describe('Reducer', () => {
       isLoading: false,
       error: null,
       total: 0,
+      listFilterOptions: {
+        from: '',
+        to: '',
+        status: 'all',
+        page: 0,
+        perPage: 50,
+        sort: {},
+      },
     });
   });
 });

@@ -367,15 +367,7 @@ export const fields = {
     label: "Contributor's First Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string()
-      .matches(
-        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
-        'Names must only contain letters or hyphens.',
-        {
-          excludeEmptyString: true,
-        }
-      )
-      .nullable(),
+    validation: Yup.string().nullable(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {

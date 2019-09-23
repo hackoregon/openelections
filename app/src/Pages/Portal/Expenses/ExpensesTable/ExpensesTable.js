@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import Table from '../../../../components/Table';
@@ -7,6 +7,8 @@ import {
   getExpenditures,
   getExpendituresList,
   getExpendituresTotal,
+  getFilterOptions,
+  updateFilter,
 } from '../../../../state/ducks/expenditures';
 import {
   isCampAdmin,
@@ -21,6 +23,10 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
     : { icon: 'none', name, buttonType, onClick };
 
 const columns = isGovAdmin => [
+  {
+    field: 'id', // MSCOTTO TODO remove this field from table
+    title: 'ID',
+  },
   {
     field: 'date',
     title: 'Date',
@@ -68,183 +74,152 @@ const columns = isGovAdmin => [
   },
 ];
 
-const ExpensesTable = ({ ...props }) => {
-  const [sortFilter, setSortFilter] = useState({
-    sort: {
-      field: 'date',
-      direction: 'DESC',
-    },
-  });
-  const [filterOptions, setFilterOptions] = useState({});
-  const [paginationOptions, setPaginationOptions] = useState({
-    perPage: 50,
-    page: 0,
-  });
-
-  const title = `${props.total} Expenses`;
-
-  const isLoading =
-    props.isListLoading && !Array.isArray(props.expendituresList);
-
-  const options = {
-    pageSize: paginationOptions.perPage,
-    showTitle: false,
-  };
-
-  // eslint-disable-next-line no-use-before-define
-  let urlQuery = getQueryParams(props.location);
-
-  const actions = [
-    actionInfo('View', 'primary', (event, rowData) => {
-      props.history.push(`/expenses/${rowData.id}`);
-    }),
-  ];
-
-  const components = {
-    // eslint-disable-next-line react/display-name
-    Action: props => (
-      // <WithAdminPermissions>
-      <Button
-        onClick={event => props.action.onClick(event, props.data)}
-        buttonType={props.action.buttonType}
-      >
-        {props.action.name}
-      </Button>
-      // </WithAdminPermissions>
-    ),
-  };
-
-  return (
-    <PageHoc>
-      <h1>Expenses</h1>
-      <FilterExpenses
-        onFilterUpdate={newFilterOptions => {
-          urlQuery = newFilterOptions;
-          setFilterOptions(newFilterOptions);
-
-          props.history.push(
-            // eslint-disable-next-line no-use-before-define
-            `${props.location.pathname}?${makeIntoQueryParams(urlQuery)}`
-          );
-          // eslint-disable-next-line no-use-before-define
-          fetchList(newFilterOptions, sortFilter, { page: 0 });
-        }}
-      />
-
-      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        <Button
-          onClick={() => {
-            // eslint-disable-next-line no-use-before-define
-            fetchList(filterOptions, sortFilter, { format: 'csv' });
-          }}
-        >
-          Export
-        </Button>
-      </div>
-      <Table
-        isLoading={isLoading}
-        showTitle={false}
-        title={title}
-        columns={columns(props.isGovAdmin)}
-        options={options}
-        actions={actions}
-        components={components}
-        data={props.expendituresList}
-        pagination
-        onOrderChange={(item, direction) => {
-          const column = columns(props.isGovAdmin)[item];
-          let sortOptions = {};
-          if (column) {
-            sortOptions = {
-              sort: {
-                field: column.field,
-                direction: direction.toUpperCase(),
-              },
-            };
-          }
-
-          setSortFilter(sortOptions);
-          // eslint-disable-next-line no-use-before-define
-          fetchList(filterOptions, sortOptions, paginationOptions);
-        }}
-        perPage={paginationOptions.perPage}
-        pageNumber={paginationOptions.page}
-        totalRows={props.total}
-        // eslint-disable-next-line no-use-before-define
-        onChangePage={handleOnChangePage}
-        // eslint-disable-next-line no-use-before-define
-        onChangeRowsPerPage={handleOnRowsPerPageChange}
-        toolbarAction={
-          !props.isGovAdmin ? (
-            <Button
-              buttonType="primary"
-              onClick={() => props.history.push({ pathname: '/expenses/new' })}
-            >
-              Add New Expense
-            </Button>
-          ) : null
-        }
-      />
-    </PageHoc>
-  );
-
-  function handleOnChangePage(e, newPage) {
-    const newPaginationOptions = {
-      page: newPage,
-      perPage: paginationOptions.perPage,
-    };
-
-    setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
-    fetchList(filterOptions, sortFilter, newPaginationOptions);
-  }
-
-  function handleOnRowsPerPageChange(e) {
-    const perPage = Number(e.target.value);
-    const newPaginationOptions = {
-      perPage,
-      page: 0,
-    };
-    setPaginationOptions(newPaginationOptions);
-    // eslint-disable-next-line no-use-before-define
-    fetchList(filterOptions, sortFilter, newPaginationOptions);
-  }
-
-  function fetchList(filterOptions, sortOptions, paginationOptions) {
-    const data = {
+class ExpensesTable extends React.Component {
+  constructor(props) {
+    super(props);
+    props.getExpenditures({
       governmentId: props.govId,
       currentUserId: props.userId,
       campaignId: props.campaignId,
-      ...paginationOptions,
-      ...filterOptions,
-      ...sortOptions,
-    };
-    props.getExpenditures(data);
+    });
   }
-};
 
-function getQueryParams(location) {
-  const rawParams = location.search.replace(/^\?/, '');
-  const result = {};
+  render() {
+    const {
+      getExpenditures,
+      filterOptions,
+      updateFilter,
+      isListLoading,
+      expendituresList,
+      history,
+      total,
+      govId,
+      userId,
+      campaignId,
+      isGovAdmin,
+    } = this.props;
 
-  rawParams.split('&').forEach(item => {
-    if (item) {
-      const [key, val] = item.split('=');
-      result[key] = val;
+    const isLoading = isListLoading && !Array.isArray(expendituresList);
+
+    const actions = [
+      actionInfo('View', 'primary', (event, rowData) => {
+        history.push(`/expenses/${rowData.id}`);
+      }),
+    ];
+
+    const components = {
+      // eslint-disable-next-line react/display-name
+      Action: props => (
+        <Button
+          onClick={event => props.action.onClick(event, props.data)}
+          buttonType={props.action.buttonType}
+        >
+          {props.action.name}
+        </Button>
+      ),
+    };
+    function fetchCSV() {
+      const data = {
+        governmentId: govId,
+        currentUserId: userId,
+        campaignId,
+        format: 'csv',
+      };
+      getExpenditures(data);
     }
-  });
+    function fetchList() {
+      getExpenditures({
+        governmentId: govId,
+        currentUserId: userId,
+        campaignId,
+      });
+    }
+    function handleOnChangePage(e, newPage) {
+      updateFilter({ page: newPage });
+      fetchList();
+    }
 
-  return result;
-}
+    function handleOnRowsPerPageChange(e) {
+      const perPage = Number(e.target.value);
+      updateFilter({ perPage });
+      fetchList();
+    }
 
-function makeIntoQueryParams(paramsObject) {
-  return Object.keys(paramsObject)
-    .map(param => `${param}=${paramsObject[param]}`)
-    .join('&');
+    return (
+      <PageHoc>
+        <h1>Expenses</h1>
+        <FilterExpenses
+          onFilterUpdate={newFilterOptions => {
+            // Filter button has been pressed
+            const reset = { status: 'all', to: '', from: '', page: 0 };
+            updateFilter(reset);
+            updateFilter(newFilterOptions);
+            fetchList();
+          }}
+        />
+
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button
+            onClick={() => {
+              fetchCSV();
+            }}
+          >
+            Export
+          </Button>
+        </div>
+        <Table
+          isLoading={isLoading}
+          showTitle={false}
+          title={`${total} Expenses`}
+          columns={columns(isGovAdmin)}
+          options={{
+            pageSize: filterOptions.perPage || 50,
+            showTitle: false,
+          }}
+          actions={actions}
+          components={components}
+          data={expendituresList}
+          onOrderChange={(item, direction) => {
+            const column = columns(isGovAdmin)[item];
+            let sortOptions = {};
+            if (column) {
+              sortOptions = {
+                sort: {
+                  field: column.field,
+                  direction: direction.toUpperCase(),
+                },
+              };
+            }
+
+            updateFilter(sortOptions);
+            fetchList();
+          }}
+          perPage={filterOptions.perPage}
+          pageNumber={filterOptions.page}
+          totalRows={total}
+          // eslint-disable-next-line no-use-before-define
+          onChangePage={handleOnChangePage}
+          // eslint-disable-next-line no-use-before-define
+          onChangeRowsPerPage={handleOnRowsPerPageChange}
+          toolbarAction={
+            !isGovAdmin ? (
+              <Button
+                buttonType="primary"
+                onClick={() => history.push({ pathname: '/expenses/new' })}
+              >
+                Add New Expense
+              </Button>
+            ) : null
+          }
+        />
+      </PageHoc>
+    );
+  }
 }
 
 export default connect(
   state => ({
+    filterOptions: getFilterOptions(state),
     isListLoading: state.campaigns.isLoading,
     expendituresList: getExpendituresList(state),
     total: getExpendituresTotal(state),
@@ -259,7 +234,9 @@ export default connect(
   }),
   dispatch => {
     return {
-      getExpenditures: data => dispatch(getExpenditures(data)),
+      getFilterOptions,
+      updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
+      getExpenditures: data => dispatch(getExpenditures(data, true)),
     };
   }
 )(ExpensesTable);

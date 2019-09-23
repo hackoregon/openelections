@@ -88,7 +88,7 @@ function TablePaginationActions(props) {
 
 const TablePagination = props => {
   const { pageNumber, totalRows, perPage, ...rest } = props;
-
+  const maxPages = 100; // Math.floor(totalRows / perPage);
   return (
     <div css={paginateOptions}>
       <MaterialTablePagination
@@ -98,8 +98,9 @@ const TablePagination = props => {
         rowsPerPageOptions={[50, 100, 150]}
         count={totalRows}
         rowsPerPage={perPage || 50}
-        page={pageNumber}
+        page={pageNumber <= maxPages ? pageNumber : maxPages}
         SelectProps={{
+          // eslint-disable-next-line react/display-name
           renderValue: value => (
             <div style={{ padding: '0px 5px' }}>{value} rows</div>
           ),

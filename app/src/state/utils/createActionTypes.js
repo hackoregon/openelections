@@ -8,3 +8,10 @@ export default function createActionTypes(stateKey, base) {
     return acc;
   }, {});
 }
+
+export function createCustomActionTypes(stateKey, base, actions) {
+  return [...actions].reduce((acc, type) => {
+    acc[type] = `openelections/${stateKey}/${base}_${type}`;
+    return acc;
+  }, {});
+}
