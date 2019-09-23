@@ -6,7 +6,6 @@ import ContributionReadyForm from '../../../../components/Forms/ContributionRead
 class ContributionReadyPage extends React.Component {
   render() {
     const { match } = this.props;
-    console.log(match);
     let contributionId = false;
     if (match.params && match.params.id) {
       contributionId = match.params.id;

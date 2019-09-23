@@ -5,15 +5,10 @@ import PageHoc from '../../../../components/PageHoc/PageHoc';
 
 class ContributionsTablePage extends React.Component {
   render() {
+    const { history } = this.props;
     return (
       <PageHoc>
-        <ContributionsTable
-        //   filterOptions={{
-        //     from: match.from,
-        //     to: match.to,
-        //     status: match.status,
-        //   }}
-        />
+        <ContributionsTable history={history} />
       </PageHoc>
     );
   }

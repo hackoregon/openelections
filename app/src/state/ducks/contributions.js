@@ -5,7 +5,9 @@ import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
 import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
-import createActionTypes from '../utils/createActionTypes';
+import createActionTypes, {
+  createCustomActionTypes,
+} from '../utils/createActionTypes';
 import action from '../utils/action';
 import {
   addContributionEntities,
@@ -39,6 +41,7 @@ export const actionTypes = {
     STATE_KEY,
     'GET_MATCHES_BY_CONTRIBUTION_ID'
   ),
+  FILTER: createCustomActionTypes(STATE_KEY, 'FILTER', ['UPDATE']),
 };
 
 // Initial State
@@ -46,15 +49,12 @@ export const initialState = {
   list: null,
   listOrder: [],
   listFilterOptions: {
-    from: null,
-    to: null,
-    status: null,
+    from: '',
+    to: '',
+    status: 'all',
     page: 0,
     perPage: 50,
-  },
-  listSortOptions: {
-    direction: 'DESC', // ASC || DESC
-    field: 'date',
+    sort: {},
   },
   isLoading: false,
   error: null,
@@ -97,7 +97,11 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_CONTRIBUTIONS.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, total: action.total };
+    return {
+      ...state,
+      isLoading: false,
+      total: action.total,
+    };
   },
   [actionTypes.GET_CONTRIBUTIONS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -130,8 +134,11 @@ export default createReducer(initialState, {
   [actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: state => {
+  [actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.FILTER.UPDATE]: (state, action) => {
+    return { ...state, listFilterOptions: action.listFilterOptions };
   },
 });
 
@@ -172,9 +179,62 @@ export const actionCreators = {
     failure: error =>
       action(actionTypes.POST_CONTRIBUTION_COMMENT.FAILURE, { error }),
   },
+  filter: {
+    update: listFilterOptions => {
+      return action(actionTypes.FILTER.UPDATE, { listFilterOptions });
+    },
+  },
 };
 
 // Side Effects, e.g. thunks
+export function updateFilter(newFilterOptions) {
+  return (dispatch, getState) => {
+    // eslint-disable-next-line prefer-const
+    let filterOptions = getState().contributions.listFilterOptions;
+    if (newFilterOptions.perPage) {
+      filterOptions.page = Math.floor(
+        (filterOptions.page * filterOptions.perPage) / newFilterOptions.perPage
+      );
+    }
+    Object.entries(filterOptions).forEach(([key, value]) => {
+      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key))
+        filterOptions[key] = newFilterOptions[key];
+    });
+    dispatch(actionCreators.filter.update(filterOptions));
+  };
+}
+
+export const getFilterOptionsForRequest = state => {
+  const filter = state.contributions.listFilterOptions;
+  const sort = state.contributions.listFilterOptions.sort || {};
+  const returnObj = {};
+
+  Object.entries(filter).forEach(([key, value]) => {
+    // Look for any filters such as status
+    if (value) {
+      returnObj[key] = value;
+    }
+  });
+  if (sort.field) {
+    // If the sort field is set make sure there is also a direction
+    returnObj.sort = {
+      field: sort.field,
+      direction: sort.direction || 'DESC',
+    };
+  } else {
+    // Remove sort if there isn't any, defauts to last modified DESC
+    delete returnObj.sort;
+  }
+
+  // API defaults to all statuses but all is not a status
+  if (returnObj.status === 'all') delete returnObj.status;
+
+  // Always pass in the pagination to maintain sync with table
+  returnObj.perPage = filter.perPage;
+  returnObj.page = filter.page * filter.perPage;
+  return returnObj;
+};
+
 export function createContribution(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.createContribution.request());
@@ -242,11 +302,15 @@ export function updateContribution(contributionAttrs) {
   };
 }
 
-export function getContributions(contributionSearchAttrs) {
+export function getContributions(contributionSearchAttrs, applyFilter = true) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
     try {
-      const response = await api.getContributions(contributionSearchAttrs);
+      const filter = applyFilter ? getFilterOptionsForRequest(getState()) : {};
+      const response = await api.getContributions({
+        ...contributionSearchAttrs,
+        ...filter,
+      });
       if (contributionSearchAttrs.format === 'csv' && response.status === 200) {
         const contributions = await response.text();
         downloadFile(contributions, `contributions-download-${Date.now()}.csv`);
@@ -357,30 +421,8 @@ export const getCurrentContribution = state => {
     : false;
 };
 
-export const getFilterList = state => {
+export const getFilterOptions = state => {
   const filter = state.contributions.listFilterOptions;
-  const sort = state.contributions.listFilterOptions.sort;
-  const returnObj = {};
-  Object.entries(filter).forEach(([key, value]) => {
-    if (value !== null) returnObj[key] = value;
-  });
-  if (sort.field) {
-    returnObj.sort = {
-      field: sort.field,
-      direction: sort.direction || 'DESC',
-    };
-  }
-  return returnObj;
+  const sort = state.contributions.listFilterOptions.sort || {};
+  return { ...filter, sort };
 };
-
-// listFilterOptions: {
-//   from: null,
-//   to: null,
-//   status: null,
-//   page: 0,
-//   perPage: 50,
-//   sort: {
-//     direction: 'DESC', // ASC || DESC
-//     field: 'date',
-//   },
-// },

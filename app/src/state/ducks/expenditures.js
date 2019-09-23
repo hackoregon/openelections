@@ -5,7 +5,9 @@ import { isEmpty } from 'lodash';
 import { flashMessage } from 'redux-flash';
 import { push } from 'connected-react-router';
 import createReducer from '../utils/createReducer';
-import createActionTypes from '../utils/createActionTypes';
+import createActionTypes, {
+  createCustomActionTypes,
+} from '../utils/createActionTypes';
 import action from '../utils/action';
 import {
   addExpenditureEntities,
@@ -27,6 +29,7 @@ export const actionTypes = {
     STATE_KEY,
     'POST_EXPENDITURE_COMMENT'
   ),
+  FILTER: createCustomActionTypes(STATE_KEY, 'FILTER', ['UPDATE']),
 };
 
 // Initial State
@@ -34,6 +37,14 @@ export const initialState = {
   isLoading: false,
   error: null,
   list: null,
+  listFilterOptions: {
+    from: '',
+    to: '',
+    status: 'all',
+    page: 0,
+    perPage: 50,
+    sort: {},
+  },
   listOrder: [],
   currentId: null,
   total: 0,
@@ -98,8 +109,11 @@ export default createReducer(initialState, {
   [actionTypes.POST_EXPENDITURE_COMMENT.SUCCESS]: state => {
     return { ...state, isLoading: false };
   },
-  [actionTypes.POST_EXPENDITURE_COMMENT.FAILURE]: state => {
+  [actionTypes.POST_EXPENDITURE_COMMENT.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.FILTER.UPDATE]: (state, action) => {
+    return { ...state, listFilterOptions: action.listFilterOptions };
   },
 });
 
@@ -132,6 +146,59 @@ export const actionCreators = {
     failure: error =>
       action(actionTypes.POST_EXPENDITURE_COMMENT.FAILURE, { error }),
   },
+  filter: {
+    update: listFilterOptions => {
+      return action(actionTypes.FILTER.UPDATE, { listFilterOptions });
+    },
+  },
+};
+
+export function updateFilter(newFilterOptions) {
+  return (dispatch, getState) => {
+    // eslint-disable-next-line prefer-const
+    let filterOptions = getState().expenditures.listFilterOptions;
+    if (newFilterOptions.perPage) {
+      filterOptions.page = Math.floor(
+        (filterOptions.page * filterOptions.perPage) / newFilterOptions.perPage
+      );
+    }
+    Object.entries(filterOptions).forEach(([key, value]) => {
+      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key))
+        filterOptions[key] = newFilterOptions[key];
+    });
+    dispatch(actionCreators.filter.update(filterOptions));
+  };
+}
+
+export const getFilterOptionsForRequest = state => {
+  const filter = state.expenditures.listFilterOptions;
+  const sort = state.expenditures.listFilterOptions.sort || {};
+  const returnObj = {};
+
+  Object.entries(filter).forEach(([key, value]) => {
+    // Look for any filters such as status
+    if (value) {
+      returnObj[key] = value;
+    }
+  });
+  if (sort.field) {
+    // If the sort field is set make sure there is also a direction
+    returnObj.sort = {
+      field: sort.field,
+      direction: sort.direction || 'DESC',
+    };
+  } else {
+    // Remove sort if there isn't any, defauts to last modified DESC
+    delete returnObj.sort;
+  }
+
+  // API defaults to all statuses but all is not a status
+  if (returnObj.status === 'all') delete returnObj.status;
+
+  // Always pass in the pagination to maintain sync with table
+  returnObj.perPage = filter.perPage;
+  returnObj.page = filter.page * filter.perPage;
+  return returnObj;
 };
 
 // Side Effects, e.g. thunks
@@ -201,11 +268,15 @@ export function updateExpenditure(expenditureAttrs) {
   };
 }
 
-export function getExpenditures(expenditureSearchAttrs) {
+export function getExpenditures(expenditureSearchAttrs, applyFilter = true) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getExpenditures.request());
     try {
-      const response = await api.getExpenditures(expenditureSearchAttrs);
+      const filter = applyFilter ? getFilterOptionsForRequest(getState()) : {};
+      const response = await api.getExpenditures({
+        ...expenditureSearchAttrs,
+        ...filter,
+      });
       if (expenditureSearchAttrs.format === 'csv' && response.status === 200) {
         const expenditures = await response.text();
         downloadFile(expenditures, `expenditures-download-${Date.now()}.csv`);
@@ -293,4 +364,10 @@ export const getCurrentExpenditure = state => {
   return getCurrentExpenditureId(state)
     ? state.expenditures.list[getCurrentExpenditureId(state)]
     : false;
+};
+
+export const getFilterOptions = state => {
+  const filter = state.expenditures.listFilterOptions;
+  const sort = state.expenditures.listFilterOptions.sort || {};
+  return { ...filter, sort };
 };
