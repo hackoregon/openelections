@@ -11,6 +11,7 @@ import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
 import PhoneField from '../../../../components/Fields/PhoneField';
 import EmailField from '../../../../components/Fields/EmailField';
+import ZipField from '../../../../components/Fields/ZipField';
 import CurrencyField from '../../../../components/Fields/CurrencyField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
@@ -428,7 +429,7 @@ export const fields = {
   zipcode: {
     label: 'Zip Code',
     section: FormSectionEnum.CONTRIBUTOR,
-    component: TextField,
+    component: ZipField,
     validation: Yup.number().required('Your zipcode is required'),
   },
   email: {
