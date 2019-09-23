@@ -243,7 +243,7 @@ export const fields = {
   dateOriginalTransaction: {
     label: 'Date of Original Transaction',
     section: FormSectionEnum.BASIC,
-    component: TextField,
+    component: DateField,
     validation: Yup.string(),
   },
   vendorForOriginalPurchase: {
