@@ -108,7 +108,7 @@ export const mapExpenditureFormToData = data => {
     paymentMethod,
     purpose: purposeType || null,
     payeeType,
-    name: payeeName,
+    name: payeeName.trim(),
     address1: streetAddress,
     address2: addressLine2,
     city,
@@ -311,7 +311,15 @@ export const fields = {
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string().required("The payee's name is required"),
+    validation: Yup.string()
+      .matches(
+        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
+        'Names must only contain letters or hyphens.',
+        {
+          excludeEmptyString: true,
+        }
+      )
+      .nullable(),
   },
   streetAddress: {
     label: 'Street Address',
