@@ -1,61 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Contributions from './Contributions';
-import { getContributions } from '../../../state/ducks/contributions';
-import {
-  getCurrentCampaignId,
-  getCurrentUserId,
-} from '../../../state/ducks/auth';
-import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 class ContributionsPage extends React.Component {
-  componentDidMount() {
-    const {
-      getContributions,
-      currentUserId,
-      governmentId,
-      campaignId,
-      location,
-    } = this.props;
-
-    const filterOptions = this.getQueryParams(location);
-    const data = {
-      governmentId,
-      campaignId,
-      currentUserId,
-      perPage: 50,
-      from: filterOptions.from,
-      to: filterOptions.to,
-      status: filterOptions.status,
-    };
-
-    getContributions(data);
-  }
-
-  getQueryParams(location) {
-    const rawParams = location.search.replace(/^\?/, '');
-    const result = {};
-
-    rawParams.split('&').forEach(item => {
-      if (item) {
-        const [key, val] = item.split('=');
-        result[key] = val;
-      }
-    });
-
-    return result;
-  }
-
   render() {
-    return <Contributions {...this.props} />;
+    const { history, match } = this.props;
+    return <Contributions history={history} match={match} />;
   }
 }
-export default connect(
-  state => ({
-    currentUserId: getCurrentUserId(state),
-    governmentId: getCurrentGovernmentId(state),
-    campaignId: getCurrentCampaignId(state),
-  }),
-  dispatch => ({ getContributions: data => dispatch(getContributions(data)) })
-)(withRouter(ContributionsPage));
+export default withRouter(ContributionsPage);
