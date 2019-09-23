@@ -302,7 +302,7 @@ export function updateContribution(contributionAttrs) {
   };
 }
 
-export function getContributions(contributionSearchAttrs, applyFilter = true) {
+export function getContributions(contributionSearchAttrs, applyFilter = false) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());
     try {

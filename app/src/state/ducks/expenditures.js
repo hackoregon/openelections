@@ -268,7 +268,7 @@ export function updateExpenditure(expenditureAttrs) {
   };
 }
 
-export function getExpenditures(expenditureSearchAttrs, applyFilter = true) {
+export function getExpenditures(expenditureSearchAttrs, applyFilter = false) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getExpenditures.request());
     try {
