@@ -339,8 +339,10 @@ export function getContributionById(id) {
         dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributionById.success(id));
         if (isGovAdmin(getState())) {
+          console.log('mscotto A', id, json);
           dispatch(getMatchesByContributionId(id));
           if (json.matchId) {
+            console.log('mscotto B', id, json);
             dispatch(getContributionsByMatchId(json.matchId));
           }
         }
