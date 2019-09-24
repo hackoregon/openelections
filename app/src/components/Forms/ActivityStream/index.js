@@ -2,7 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { getExpenditureActivities } from '../../../state/ducks/activities';
+import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
+import { format } from 'date-fns';
+import {
+  getContributionActivities,
+  getExpenditureActivities,
+} from '../../../state/ducks/activities';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import ActivityStreamForm from './ActivityStreamForm';
 import { ActivitySection } from './ActivitySection';
@@ -66,7 +71,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 64,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
   {
     id: 66,
@@ -75,7 +85,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 65,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
   {
     id: 65,
@@ -84,7 +99,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 68,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
   {
     id: 64,
@@ -93,7 +113,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 67,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
   {
     id: 63,
@@ -102,7 +127,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 60,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
   {
     id: 62,
@@ -111,7 +141,12 @@ const activitiesSwaggerResponse = [
     campaignId: 1,
     activityId: 63,
     activityType: 'contribution',
-    createdAt: Date.now(),
+    createdAt: format(
+      new Date(
+        parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+      ),
+      'MM-DD-YYYY @hh:mm'
+    ),
   },
 ];
 
@@ -119,8 +154,11 @@ const onSubmit = (data, props) => {
   const activitiesData = mapActivityDataToForm(data);
   mapActivityDataToForm.id = data.id;
   mapActivityDataToForm.currentUserId = props.currentUserId;
+  getContributionActivities(activitiesData).then(data =>
+    props.history.push(`/activities/${data}`)
+  );
   getExpenditureActivities(activitiesData).then(
-    data => props.history.push(`/contributions/${data}`) // Add /comments path?
+    data => props.history.push(`/activities/${data}`) // Add /comments path?
   );
 };
 
@@ -145,24 +183,27 @@ const Activity = ({ ...props }) => (
 const ActivityStream = ({
   contributionId,
   data,
+  getAllContributionActivities,
   getAllExpenditureActivities,
-  activitiesById,
   ...props
 }) => {
-  //   function fetchList(filterOptions, sortOptions, paginationOptions) {
-  //     const data = {
-  //       governmentId: props.govId,
-  //       currentUserId: props.userId,
-  //       campaignId: props.campaignId,
-  //       ...paginationOptions,
-  //       ...filterOptions,
-  //       ...sortOptions,
-  //     };
-  //     props.getExpenditures(data);
-  //   }
+  // function fetchList(filterOptions, sortOptions, paginationOptions) {
+  //   const data = {
+  //     governmentId: props.govId,
+  //     currentUserId: props.userId,
+  //     campaignId: props.campaignId,
+  //     ...paginationOptions,
+  //     ...filterOptions,
+  //     ...sortOptions,
+  //   };
+  //   getAllContributionActivities(data);
+  // }
   // };
-  console.log(props);
-  console.log('getAllExpenditureActivities: ', getAllExpenditureActivities());
+  console.log(
+    'getAllActivities: ',
+    getAllContributionActivities,
+    props.getAllExpenditureActivities
+  );
   return (
     <>
       <ActivityStreamForm
@@ -190,9 +231,11 @@ export default connect(
   (props, state) => ({
     governmentId: getCurrentGovernmentId(state),
     contributionId: props.id,
-    activitiesById: getExpenditureActivities,
+    contributionActivitiesById: getContributionActivities(1),
+    expenditureActivitiesById: getExpenditureActivities(1),
   }),
   dispatch => ({
+    getAllContributionActivities: () => dispatch(getContributionActivities(1)),
     getAllExpenditureActivities: () => dispatch(getExpenditureActivities(1)),
   })
 )(ActivityStream);
