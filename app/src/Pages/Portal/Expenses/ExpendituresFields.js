@@ -77,7 +77,11 @@ export const mapExpenditureDataToForm = expenditure => {
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
     dateOriginalTransaction: format(
-      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
+      new Date(
+        parseFromTimeZone(dateOriginalTransaction, {
+          timeZone: 'America/Los_Angeles',
+        })
+      ),
       'YYYY-MM-DD'
     ),
     vendorForOriginalPurchase: '',
