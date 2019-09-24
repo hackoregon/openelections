@@ -3,7 +3,6 @@ import thunk from 'redux-thunk';
 import * as activities from './activities';
 import * as api from '../../api';
 import * as schema from '../../api/schema';
-import { ADD_ENTITIES } from './common';
 
 const { actionTypes, actionCreators } = activities;
 
@@ -30,6 +29,8 @@ describe('Reducer', () => {
   const reducer = activities.default;
   it('initial state', () => {
     expect(reducer(undefined, {})).toEqual({
+      list: null,
+      listOrder: [],
       isLoading: false,
       error: null,
     });
@@ -38,15 +39,19 @@ describe('Reducer', () => {
   it('adds activity entities', () => {
     expect(
       reducer(undefined, {
-        type: ADD_ENTITIES,
+        type: activities.ADD_ACTIVITY_ENTITIES,
         payload: {
-          activities: {
-            '1': {},
+          entities: {
+            activities: {
+              '1': {},
+            },
           },
         },
       })
     ).toEqual({
-      '1': {},
+      list: {
+        '1': {},
+      },
       isLoading: false,
       error: null,
     });
@@ -123,7 +128,7 @@ describe('Side Effects', () => {
   it('gets campaign activities', async () => {
     const expectedActions = [
       { type: actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: activities.ADD_ACTIVITY_ENTITIES },
       { type: actionTypes.GET_CAMPAIGN_ACTIVITIES.SUCCESS },
     ];
     const store = mockStore({});
@@ -143,7 +148,7 @@ describe('Side Effects', () => {
   it('gets CONTRIBUTION activities', async () => {
     const expectedActions = [
       { type: actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: activities.ADD_ACTIVITY_ENTITIES },
       { type: actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS },
     ];
     const store = mockStore({});
@@ -161,7 +166,7 @@ describe('Side Effects', () => {
   it('gets EXPENDITURE activities', async () => {
     const expectedActions = [
       { type: actionTypes.GET_EXPENDITURE_ACTIVITIES.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: activities.ADD_ACTIVITY_ENTITIES },
       { type: actionTypes.GET_EXPENDITURE_ACTIVITIES.SUCCESS },
     ];
     const store = mockStore({});
