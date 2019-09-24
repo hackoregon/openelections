@@ -38,6 +38,8 @@ export interface IAddExpenditureAttrs {
     campaignId: number;
     governmentId: number;
     notes?: string;
+    vendorForOriginalPurchase?: string;
+    dateOriginalTransaction?: number;
 }
 
 export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs): Promise<Expenditure> {
@@ -80,6 +82,10 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
             expenditure.date = new Date(expenditureAttrs.date);
             expenditure.status = ExpenditureStatus.DRAFT;
             expenditure.notes = expenditureAttrs.notes;
+            expenditure.vendorForOriginalPurchase = expenditureAttrs.vendorForOriginalPurchase;
+            if (expenditureAttrs.dateOriginalTransaction) {
+                expenditure.dateOriginalTransaction = new Date(expenditureAttrs.dateOriginalTransaction);
+            }
 
             if (await expenditure.isValidAsync()) {
                 const saved = await expenditureRepository.save(expenditure);
@@ -167,6 +173,8 @@ export interface IUpdateExpenditureAttrs {
     purpose?: PurposeType;
     date?: number | Date;
     notes?: string;
+    vendorForOriginalPurchase?: string;
+    dateOriginalTransaction?: number | Date;
 }
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {
@@ -180,6 +188,9 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
         const attrs = Object.assign({}, expenditureAttrs);
         if (attrs.date) {
             attrs.date = new Date(attrs.date);
+        }
+        if (attrs.dateOriginalTransaction) {
+            attrs.dateOriginalTransaction = new Date(attrs.dateOriginalTransaction);
         }
         delete attrs.currentUserId;
         delete attrs.id;

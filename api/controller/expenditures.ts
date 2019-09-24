@@ -93,6 +93,14 @@ export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsString()
     @IsOptional()
     checkNumber: string;
+
+    @IsNumber()
+    @IsOptional()
+    dateOriginalTransaction: number;
+
+    @IsString()
+    @IsOptional()
+    vendorForOriginalPurchase: string;
 }
 
 export async function addExpenditure(request: IRequest, response: Response, next: Function) {
@@ -242,6 +250,14 @@ export class UpdateExpenditureDto implements IUpdateExpenditureAttrs {
     @IsString()
     @IsOptional()
     notes: string;
+
+    @IsNumber()
+    @IsOptional()
+    dateOriginalTransaction: number;
+
+    @IsString()
+    @IsOptional()
+    vendorForOriginalPurchase: string;
 }
 
 export async function updateExpenditure(request: IRequest, response: Response, next: Function) {
