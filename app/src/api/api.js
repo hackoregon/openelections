@@ -416,6 +416,10 @@ export function baseUrl() {
   if (process.env.NODE_ENV === 'test') {
     return 'http://localhost:3000';
   }
+  if (process.env.NODE_ENV === 'development') {
+    // mscotto return 'http://localhost:3000';
+    return 'https://api-qa.openelectionsportland.org';
+  }
 
   if (window && window.location.hostname.includes('qa')) {
     return 'https://api-qa.openelectionsportland.org';

@@ -16,9 +16,11 @@ import {
 import { clearModal, showModal } from '../../state/ducks/modal';
 
 const Header = ({ matchStrength, showModal, form, contributionId }) => {
-  // Switch color and symbol based on matchStrength. Examples:
-  // const MatchIcon = <NoMatchIcon css={matchColors.no} />;
-  const matchIcon = <MatchIcon css={matchColors.exact} />;
+  // Switch color and symbol based on matchStrength
+  let matchIcon = <NoMatchIcon css={matchColors.no} />;
+  if (matchStrength !== 'no') {
+    matchIcon = <MatchIcon css={matchColors[matchStrength]} />;
+  }
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <h3
@@ -32,6 +34,36 @@ const Header = ({ matchStrength, showModal, form, contributionId }) => {
     </h3>
   );
 };
+
+const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
+
+const data = {
+  matchId: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
+  matchStrength: 'exact',
+  results: {
+    exact: [
+      {
+        id: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
+        first_name: 'ASHLEY',
+        last_name: 'DAVID',
+        address_1: '19100 E BURNSIDE ST APT E232',
+        address_2: '',
+        city: 'PORTLAND',
+        state: 'OR',
+        zip: '97233',
+        address_sim: '1.0',
+        zip_sim: '1.0',
+        first_name_sim: '1.0',
+        last_name_sim: '1.0',
+      },
+    ],
+    strong: [],
+    weak: [],
+    none: '54a80b958cb6ea7b38e1bab403b84efd',
+  },
+  inPortland: false,
+};
+
 export const MatchPickerHeader = connect(
   state => ({}),
   dispatch => {
@@ -94,6 +126,12 @@ export const MatchPicker = ({
       </div>
     </div>
   );
+};
+
+Header.propTypes = {
+  matchStrength: PropTypes.string,
+  showModal: PropTypes.func,
+  contributionId: PropTypes.number,
 };
 
 MatchPicker.propTypes = {
