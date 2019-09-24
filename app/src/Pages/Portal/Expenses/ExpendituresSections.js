@@ -137,7 +137,6 @@ export const BasicsSection = ({
   checkSelected,
   showPaymentMethod,
   showOriginalDateAndVendor,
-  vendorForOriginalPurchase,
   showPurposeType,
   showCompliant,
 }) => (
