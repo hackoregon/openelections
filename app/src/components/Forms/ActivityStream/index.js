@@ -2,12 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
+import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
-import {
-  getContributionActivities,
-  getExpenditureActivities,
-} from '../../../state/ducks/activities';
+import { getActivities } from '../../../state/ducks/activities';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import ActivityStreamForm from './ActivityStreamForm';
 import { ActivitySection } from './ActivitySection';
@@ -154,11 +151,8 @@ const onSubmit = (data, props) => {
   const activitiesData = mapActivityDataToForm(data);
   mapActivityDataToForm.id = data.id;
   mapActivityDataToForm.currentUserId = props.currentUserId;
-  getContributionActivities(activitiesData).then(data =>
+  getActivities(activitiesData).then(data =>
     props.history.push(`/activities/${data}`)
-  );
-  getExpenditureActivities(activitiesData).then(
-    data => props.history.push(`/activities/${data}`) // Add /comments path?
   );
 };
 
@@ -183,8 +177,7 @@ const Activity = ({ ...props }) => (
 const ActivityStream = ({
   contributionId,
   data,
-  getAllContributionActivities,
-  getAllExpenditureActivities,
+  getAllActivities,
   ...props
 }) => {
   // function fetchList(filterOptions, sortOptions, paginationOptions) {
@@ -196,14 +189,10 @@ const ActivityStream = ({
   //     ...filterOptions,
   //     ...sortOptions,
   //   };
-  //   getAllContributionActivities(data);
+  //   getAllActivities(data);
   // }
   // };
-  console.log(
-    'getAllActivities: ',
-    getAllContributionActivities,
-    props.getAllExpenditureActivities
-  );
+  console.log('getAllActivities: ', getAllActivities);
   return (
     <>
       <ActivityStreamForm
@@ -217,7 +206,6 @@ const ActivityStream = ({
               initialValues={initialValues}
               formFields={formFields}
               isValid={isValid}
-              activitiesSwaggerResponse={activitiesSwaggerResponse}
               activitiesArray={activitiesArray}
             />
           );
@@ -230,12 +218,10 @@ const ActivityStream = ({
 export default connect(
   (props, state) => ({
     governmentId: getCurrentGovernmentId(state),
-    contributionId: props.id,
-    contributionActivitiesById: getContributionActivities(1),
-    expenditureActivitiesById: getExpenditureActivities(1),
+    contributionOrExpenditureId: props.id,
+    getActivitiesById: getActivities(1),
   }),
   dispatch => ({
-    getAllContributionActivities: () => dispatch(getContributionActivities(1)),
-    getAllExpenditureActivities: () => dispatch(getExpenditureActivities(1)),
+    getAllActivities: () => dispatch(getActivities(1)),
   })
 )(ActivityStream);
