@@ -82,7 +82,7 @@ export const mapExpenditureDataToForm = expenditure => {
       }),
       'YYYY-MM-DD'
     ),
-    vendorForOriginalPurchase: '',
+    vendorForOriginalPurchase,
   };
 };
 
@@ -127,7 +127,9 @@ export const mapExpenditureFormToData = data => {
     zip: zipcode,
     notes,
     status,
-    dateOriginalTransaction,
+    dateOriginalTransaction: convertToTimeZone(dateOriginalTransaction, {
+      timeZone: 'America/Los_Angeles',
+    }).getTime(),
     vendorForOriginalPurchase,
   };
   return transformed;
