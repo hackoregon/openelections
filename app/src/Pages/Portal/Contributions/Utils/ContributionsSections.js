@@ -10,7 +10,7 @@ import {
   sectionStyles,
   buttonBar,
 } from '../../../../assets/styles/forms.styles';
-import { MatchPickerHeader } from '../../../../components/MatchPicker/MatchPicker';
+import { MatchPickerHeader } from '../../../../components/ContributorMatchPicker';
 import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
 
 export const ViewHeaderSection = ({
