@@ -3,90 +3,10 @@ import { Link } from 'react-router-dom';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { MessageBox } from './MessageBox';
+import { activitySectionStyles } from '../../../assets/styles/forms.styles';
 
-const styles = {
-  main: css`
-    margin-top: 65px;
-    margin-right: 34px;
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
-  `,
-  title: css`
-    font-size: 28px;
-    line-height: 33px;
-    padding-top: 33px;
-    margin-bottom: 34px;
-    color: #000000;
-  `,
-  timestamp: css`
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 19px;
-    color: #979797;
-    margin-right: 5px;
-    margin-bottom: 0px;
-    margin-top: 0px;
-  `,
-  username: css`
-    font-size: 21px;
-    line-height: 25px;
-    margin-top: 5px;
-    color: #979797;
-  `,
-  reply: css`
-    margin-right: 38px;
-    font-size: 28px;
-    line-height: 33px;
-    color: #000000;
-  `,
-  messageBox: css`
-    height: 281px;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 5px;
-    padding: 23px 18px;
-  `,
-  message: css`
-    font-size: 28px;
-    line-height: 33px;
-    color: #979797;
-  `,
-  divider: css`
-    border: 1px solid #d8d8d8;
-  `,
-  boxAndButton: css`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-right: 38px;
-  `,
-  sendToCampaignButton: css`
-    padding: 30px 30px;
-    width: 100%;
-    height: 91px;
-    border: 1px solid blue;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 38px;
-  `,
-  timelineGroup: css`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  `,
-  timeline: css`
-    flex-grow: 1;
-    height: 1px;
-    background-color: #9f9f9f;
-  `,
-  activityList: css`
-    padding-left: 0;
-  `,
-};
-
-const ActivityList = ({ activitiesArray }) => {
+const ActivityList = ({ activitiesArray, activities }) => {
+  console.log(activities);
   const activityList = activitiesArray;
   return Object.values(activityList).map((activity, index) => {
     const capitalizedActivity =
@@ -94,14 +14,13 @@ const ActivityList = ({ activitiesArray }) => {
       activity.activityType.slice(1);
     return (
       <div key={index}>
-        <div css={styles.timelineGroup}>
-          <p css={styles.timestamp}>
+        <div css={activitySectionStyles.timelineGroup}>
+          <p css={activitySectionStyles.timestamp}>
             {`${activity.createdAt} ${capitalizedActivity} Activity`}
-            {/* ^^^ Format date:  eg->  05/19/2019 @5:55pm Contribution Activity */}
           </p>
-          <div css={styles.timeline} />
+          <div css={activitySectionStyles.timeline} />
         </div>
-        <p css={styles.username}>{activity.notes}</p>
+        <p css={activitySectionStyles.username}>{activity.notes}</p>
       </div>
     );
   });
@@ -114,10 +33,10 @@ export const ActivitySection = ({
   activitiesArray,
   ...props
 }) => (
-  <div css={styles.main}>
-    <hr css={styles.divider} />
-    <h3 css={styles.title}>Transaction History</h3>
-    <ul css={styles.activityList}>
+  <div css={activitySectionStyles.main}>
+    <hr css={activitySectionStyles.divider} />
+    <h3 css={activitySectionStyles.title}>Transaction History</h3>
+    <ul css={activitySectionStyles.activityList}>
       <ActivityList activitiesArray={activitiesArray} />
     </ul>
     <MessageBox />
