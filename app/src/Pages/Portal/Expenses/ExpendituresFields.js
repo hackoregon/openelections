@@ -225,7 +225,7 @@ export const fields = {
         ],
       },
     },
-    validation: Yup.string().required('The Expenditure subtype is required'),
+    validation: Yup.string().required('Expenditure subtype is required'),
   },
   paymentMethod: {
     label: 'Payment Method',
@@ -246,7 +246,7 @@ export const fields = {
         },
       ],
     },
-    validation: Yup.string().required('The payment method is required'),
+    validation: Yup.string().required('Payment method is required'),
   },
   checkNumber: {
     label: 'Check Number',
@@ -311,21 +311,13 @@ export const fields = {
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string()
-      .matches(
-        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
-        'Names must only contain letters or hyphens.',
-        {
-          excludeEmptyString: true,
-        }
-      )
-      .nullable(),
+    validation: Yup.string().required('The payee name is required'),
   },
   streetAddress: {
     label: 'Street Address',
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string().required('Your street address is required'),
+    validation: Yup.string().required('Street address is required'),
   },
 
   addressLine2: {
@@ -344,13 +336,13 @@ export const fields = {
     section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: { values: stateList },
-    validation: Yup.string().required('Your state is required'),
+    validation: Yup.string().required('State is required'),
   },
   zipcode: {
     label: 'Zipcode',
     section: FormSectionEnum.PAYEE_INFO,
     component: ZipField,
-    validation: Yup.number().required('A zipcode is required'),
+    validation: Yup.number().required('Zipcode is required'),
   },
   notes: {
     label: 'Notes',
