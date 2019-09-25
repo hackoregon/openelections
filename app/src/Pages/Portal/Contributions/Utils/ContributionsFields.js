@@ -173,7 +173,7 @@ export const mapContributionFormToData = data => {
     firstName: isPerson && firstName ? firstName.trim() : null,
     middleInitial: '',
     lastName: isPerson && lastName.trim() ? lastName : null,
-    name: entityName.trim() || null,
+    name: entityName ? entityName.trim() : null,
     state,
     occupation,
     occupationLetterDate: occupationLetterDate
@@ -368,7 +368,15 @@ export const fields = {
     label: "Contributor's First Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string().nullable(),
+    validation: Yup.string()
+      .matches(
+        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
+        'Names must only contain letters or hyphens.',
+        {
+          excludeEmptyString: true,
+        }
+      )
+      .nullable(),
   },
   // If entity selected, will require entity instead of first/last name
   lastName: {
