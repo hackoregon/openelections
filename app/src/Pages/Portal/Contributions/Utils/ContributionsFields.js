@@ -173,7 +173,7 @@ export const mapContributionFormToData = data => {
     firstName: isPerson && firstName ? firstName.trim() : null,
     middleInitial: '',
     lastName: isPerson && lastName.trim() ? lastName : null,
-    name: entityName.trim() || null,
+    name: entityName || null,
     state,
     occupation,
     occupationLetterDate: occupationLetterDate
@@ -377,8 +377,8 @@ export const fields = {
     component: TextField,
     validation: Yup.string()
       .matches(
-        /^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u,
-        'Names must only contain letters or hyphens.',
+        /^[^<&>?!)(@#+%$}.{[\]\n]+/,
+        'Names must only contain letters, hyphens, apostrophes, or spaces.',
         {
           excludeEmptyString: true,
         }
@@ -658,8 +658,19 @@ export const validate = values => {
   // If it's a person require first and last name
   // else require entity name
   if (visible.isPerson) {
+    const s = 's';
+    const regex = RegExp("^[ \\p{L}'][ \\p{L}'-]*[ \\p{L}]+", 'u');
+    console.log('test', regex.test(firstName));
+    console.log('s', firstName.match(/[s]+/g));
+    console.log('fn', firstName.match(/^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u));
+    console.log('A', firstName.match(/[^<&>?!)(@#+%$}.{[\]\n]+/g));
+    console.log('B', firstName.match(/[^<&>`#]+$/g));
+    console.log('C', firstName.match(/[^<&>?!)(@#+%$}.{]+/g));
     if (isEmpty(firstName)) {
       error.firstName = 'First name is required.';
+    } else if (firstName.match(/^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u) === null) {
+      error.firstName =
+        'Test Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
     if (isEmpty(lastName)) {
       error.lastName = 'Last name is required.';
