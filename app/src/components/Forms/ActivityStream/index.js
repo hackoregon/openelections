@@ -16,6 +16,12 @@ export const activitiesEmptyState = {
   campaignId: null,
   activityId: null,
   activityType: '',
+  createdAt: format(
+    new Date(
+      parseFromTimeZone(Date.now(), { timeZone: 'America/Los_Angeles' })
+    ),
+    'MM-DD-YYYY @hh:mm'
+  ),
 };
 
 // const payload = {    REQUEST PAYLOAD EXAMPLE
@@ -26,15 +32,6 @@ export const activitiesEmptyState = {
 // perPage: 6,
 // page: 1,
 // };
-
-// {                    RESPONSE BODY EXAMPLE
-//   "id": 65,
-//   "userId": 2,
-//   "notes": "Campaign Admin added a contribution (68).",
-//   "campaignId": 1,
-//   "activityId": 68,
-//   "activityType": "contribution"
-// },
 
 export const mapActivityDataToForm = activity => {
   const {
@@ -178,21 +175,9 @@ const ActivityStream = ({
   contributionId,
   data,
   getAllActivities,
+  activitiesList,
   ...props
 }) => {
-  // function fetchList(filterOptions, sortOptions, paginationOptions) {
-  //   const data = {
-  //     governmentId: props.govId,
-  //     currentUserId: props.userId,
-  //     campaignId: props.campaignId,
-  //     ...paginationOptions,
-  //     ...filterOptions,
-  //     ...sortOptions,
-  //   };
-  //   getAllActivities(data);
-  // }
-  // };
-  console.log('getAllActivities: ', getAllActivities);
   return (
     <>
       <ActivityStreamForm
@@ -206,7 +191,7 @@ const ActivityStream = ({
               initialValues={initialValues}
               formFields={formFields}
               isValid={isValid}
-              activitiesArray={activitiesArray}
+              activitiesArray={activitiesList}
             />
           );
         }}
@@ -215,13 +200,7 @@ const ActivityStream = ({
   );
 };
 
-export default connect(
-  (props, state) => ({
-    governmentId: getCurrentGovernmentId(state),
-    contributionOrExpenditureId: props.id,
-    getActivitiesById: getActivities(1),
-  }),
-  dispatch => ({
-    getAllActivities: () => dispatch(getActivities(1)),
-  })
-)(ActivityStream);
+export default connect((props, state) => ({
+  governmentId: getCurrentGovernmentId(state),
+  contributionOrExpenditureId: props.id,
+}))(ActivityStream);

@@ -190,6 +190,7 @@ class ContributionReadyForm extends React.Component {
                 isValid={isValid}
                 onSubmit={onSubmit}
                 contributionId={this.props.id}
+                activitiesList={this.props.activitiesList}
               />
               {/* ) : null} */}
             </>

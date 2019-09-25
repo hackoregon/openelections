@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { jsx } from '@emotion/core';
 import { MessageBox } from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
 
-const ActivityList = ({ activitiesArray, activities }) => {
-  console.log(activities);
+const ActivityList = ({ activitiesArray }) => {
   const activityList = activitiesArray;
   return Object.values(activityList).map((activity, index) => {
     const capitalizedActivity =
@@ -29,7 +28,6 @@ const ActivityList = ({ activitiesArray, activities }) => {
 export const ActivitySection = ({
   formFields,
   initialValues,
-  // activitiesSwaggerResponse,
   activitiesArray,
   ...props
 }) => (
