@@ -15,7 +15,13 @@ import {
 } from '../../assets/styles/forms.styles';
 import { clearModal, showModal } from '../../state/ducks/modal';
 
-const Header = ({ matchStrength, showModal, form, contributionId }) => {
+const Header = ({
+  currentMatchId,
+  showModal,
+  form,
+  contributionId,
+  matchStrength,
+}) => {
   // Switch color and symbol based on matchStrength
   let matchIcon = <NoMatchIcon css={matchColors.no} />;
   if (matchStrength !== 'no') {
@@ -27,41 +33,15 @@ const Header = ({ matchStrength, showModal, form, contributionId }) => {
       css={sectionStyles.title}
       // Data will auto propigate to props of modal so
       onClick={() =>
-        showModal({ component: 'MatchPickerForm', props: { contributionId } })
+        showModal({
+          component: 'MatchPickerForm',
+          props: { contributionId, currentMatchId },
+        })
       }
     >
       Contributor {matchIcon}
     </h3>
   );
-};
-
-const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
-
-const data = {
-  matchId: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
-  matchStrength: 'exact',
-  results: {
-    exact: [
-      {
-        id: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
-        first_name: 'ASHLEY',
-        last_name: 'DAVID',
-        address_1: '19100 E BURNSIDE ST APT E232',
-        address_2: '',
-        city: 'PORTLAND',
-        state: 'OR',
-        zip: '97233',
-        address_sim: '1.0',
-        zip_sim: '1.0',
-        first_name_sim: '1.0',
-        last_name_sim: '1.0',
-      },
-    ],
-    strong: [],
-    weak: [],
-    none: '54a80b958cb6ea7b38e1bab403b84efd',
-  },
-  inPortland: false,
 };
 
 export const MatchPickerHeader = connect(
@@ -86,6 +66,7 @@ export const MatchPicker = ({
   state = 'OR',
   zip = '97203',
 }) => {
+  // Add state to hold current match
   const matchStrengthText = `${matchStrength} Match Selected`;
   return (
     <div css={matchPickerModal.wrapper}>

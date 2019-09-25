@@ -35,13 +35,51 @@ export const getMatchesById = () => {
   ];
 };
 
+const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
+
+const data = {
+  matchId: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
+  matchStrength: 'exact',
+  results: {
+    exact: [
+      {
+        id: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
+        first_name: 'ASHLEY',
+        last_name: 'DAVID',
+        address_1: '19100 E BURNSIDE ST APT E232',
+        address_2: '',
+        city: 'PORTLAND',
+        state: 'OR',
+        zip: '97233',
+        address_sim: '1.0',
+        zip_sim: '1.0',
+        first_name_sim: '1.0',
+        last_name_sim: '1.0',
+      },
+    ],
+    strong: [],
+    weak: [],
+    none: '54a80b958cb6ea7b38e1bab403b84efd',
+  },
+  inPortland: false,
+};
+
+// 1002 none
+
 const MatchPickerForm = props => {
-  const { contributionId } = props;
+  const { contributionId, contributorMatches, currentMatchId } = props;
   const matches = getMatchesById(contributionId);
   const match = matches[1];
+  console.log('mscotto A', contributionId);
+  console.log('mscotto B', contributorMatches[contributionId]);
+
   return (
     <FormModal>
-      <MatchPicker {...match} />
+      <MatchPicker
+        currentMatchId={currentMatchId}
+        matches={contributorMatches[contributionId]}
+        {...match}
+      />
     </FormModal>
   );
 };
@@ -49,6 +87,7 @@ const MatchPickerForm = props => {
 export default connect(
   state => ({
     getModalState: getModalState(state),
+    contributorMatches: state.matches.list,
   }),
   dispatch => {
     return {

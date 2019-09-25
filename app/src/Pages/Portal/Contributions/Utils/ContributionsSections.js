@@ -195,6 +195,7 @@ export const BasicsSection = ({
 );
 
 export const ContributorSection = ({
+  matchStrength,
   formFields,
   showEmployerSection,
   isPerson,
@@ -203,15 +204,19 @@ export const ContributorSection = ({
   isGovAdmin,
   contributionId,
   showOccupationLetter,
+  matchId,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
       {/* TODO Remove false when match endpoints are hooked up */}
       {isPerson && isGovAdmin ? (
         <div style={{ pointerEvents: 'all' }}>
+          {console.log(matchStrength)}
           <MatchPickerHeader
             form="MatchPickerForm"
             contributionId={contributionId}
+            currentMatchId={matchId}
+            matchStrength={matchStrength}
           />
         </div>
       ) : (

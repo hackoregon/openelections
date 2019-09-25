@@ -89,6 +89,7 @@ class ContributionReadyForm extends React.Component {
 
   render() {
     const {
+      contributorMatches,
       contributionId,
       currentContribution,
       flashMessage,
@@ -98,6 +99,10 @@ class ContributionReadyForm extends React.Component {
       campaignName,
     } = this.props;
     let initialFormData = {};
+    let matchStrength = 'no';
+    if (contributorMatches[contributionId]) {
+      matchStrength = contributorMatches[contributionId].matchStrength;
+    }
     if (currentContribution) {
       initialFormData = mapContributionDataToForm(currentContribution);
     }
@@ -156,6 +161,7 @@ class ContributionReadyForm extends React.Component {
                   showCompliant={currentContribution.compliant}
                 />
                 <ContributorSection
+                  matchStrength={matchStrength}
                   isSubmited={isSubmited}
                   formFields={formFields}
                   showEmployerSection={visibleIf.showEmployerSection}
@@ -178,6 +184,7 @@ class ContributionReadyForm extends React.Component {
 
 export default connect(
   state => ({
+    contributorMatches: state.matches.list,
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
