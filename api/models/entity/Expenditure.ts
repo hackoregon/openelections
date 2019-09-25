@@ -142,6 +142,12 @@ export class Expenditure {
     @Column({ nullable: true })
     name: string;
 
+    @Column({ nullable: true })
+    vendorForOriginalPurchase?: string;
+
+    @Column({ nullable: true })
+    dateOriginalTransaction?: Date;
+
     @IsDefined()
     @Column()
     address1: string;
@@ -328,6 +334,8 @@ export const expenditureSummaryFields = <const>[
     'payeeType',
     'checkNumber',
     'purpose',
+    'dateOriginalTransaction',
+    'vendorForOriginalPurchase',
     'status',
     'date'
 ];

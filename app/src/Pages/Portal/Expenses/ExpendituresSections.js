@@ -136,6 +136,7 @@ export const BasicsSection = ({
   formFields,
   checkSelected,
   showPaymentMethod,
+  showOriginalDateAndVendor,
   showPurposeType,
   showCompliant,
 }) => (
@@ -150,6 +151,12 @@ export const BasicsSection = ({
         <h2>{formFields.date}</h2>
         <h2>{formFields.expenditureType}</h2>
         <h2>{formFields.expenditureSubType}</h2>
+        {showOriginalDateAndVendor ? (
+          <>
+            <h2>{formFields.dateOriginalTransaction}</h2>
+            <h2>{formFields.vendorForOriginalPurchase}</h2>
+          </>
+        ) : null}
         {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
         {checkSelected ? <h2>{formFields.checkNumber}</h2> : null}
       </div>
