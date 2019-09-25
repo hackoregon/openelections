@@ -1,12 +1,18 @@
 // activities.js
 import { normalize } from 'normalizr';
+import { isEmpty } from 'lodash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { addEntities, ADD_ENTITIES } from './common';
-import { expenditure } from '../../api/schema';
 
 export const STATE_KEY = 'activities';
+export const ADD_ACTIVITY_ENTITIES = 'ADD_ACTIVITY_ENTITIES';
+export const addActivityEntities = entities => {
+  return {
+    type: ADD_ACTIVITY_ENTITIES,
+    payload: entities,
+  };
+};
 
 // Action Types
 export const actionTypes = {
@@ -30,14 +36,20 @@ export const actionTypes = {
 
 // Initial State
 export const initialState = {
+  list: null,
+  listOrder: [],
   isLoading: false,
   error: null,
 };
 
 // Reducer
 export default createReducer(initialState, {
-  [ADD_ENTITIES]: (state, action) => {
-    return { ...state, ...action.payload.activities };
+  [ADD_ACTIVITY_ENTITIES]: (state, action) => {
+    return {
+      ...state,
+      list: { ...action.payload.entities.activities },
+      listOrder: action.payload.result,
+    };
   },
   [actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST]: state => {
     return { ...state, isLoading: true };
@@ -112,7 +124,7 @@ export function getCampaignActivities(campaignId) {
     try {
       const response = await api.getCampaignActivities(campaignId);
       const data = normalize(response, [schema.activity]);
-      dispatch(addEntities(data.entities));
+      dispatch(addActivityEntities(data));
       dispatch(actionCreators.getCampaignActivities.success());
     } catch (error) {
       dispatch(actionCreators.getCampaignActivities.failure(error));
@@ -126,7 +138,7 @@ export function getGovernmentActivities(governmentId) {
     try {
       const response = await api.getGovernmentActivities(governmentId);
       const data = normalize(response, [schema.activity]);
-      dispatch(addEntities(data.entities));
+      dispatch(addActivityEntities(data));
       dispatch(actionCreators.getGovernmentActivities.success());
     } catch (error) {
       dispatch(actionCreators.getGovernmentActivities.failure(error));
@@ -140,7 +152,7 @@ export function getContributionActivities(contributionId) {
     try {
       const response = await api.getContributionActivities(contributionId);
       const data = normalize(response, [schema.activity]);
-      dispatch(addEntities(data.entities));
+      dispatch(addActivityEntities(data));
       dispatch(actionCreators.getContributionActivities.success());
     } catch (error) {
       dispatch(actionCreators.getContributionActivities.failure(error));
@@ -154,10 +166,17 @@ export function getExpenditureActivities(expenditureId) {
     try {
       const response = await api.getExpenditureActivities(expenditureId);
       const data = normalize(response, [schema.activity]);
-      dispatch(addEntities(data.entities));
+      dispatch(addActivityEntities(data));
       dispatch(actionCreators.getExpenditureActivities.success());
     } catch (error) {
       dispatch(actionCreators.getExpenditureActivities.failure(error));
     }
   };
 }
+
+export const getActivities = state => {
+  if (isEmpty(state.activities.list) || isEmpty(state.activities.listOrder)) {
+    return [];
+  }
+  return state.activities.listOrder.map(id => state.activities.list[id]);
+};

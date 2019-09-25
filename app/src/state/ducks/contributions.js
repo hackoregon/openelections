@@ -344,6 +344,7 @@ export function getContributionById(id) {
             dispatch(getContributionsByMatchId(json.matchId));
           }
         }
+        dispatch(getContributionActivities(id));
       } else {
         dispatch(actionCreators.getContributionById.failure());
       }
