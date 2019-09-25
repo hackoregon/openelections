@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { MessageBox } from './MessageBox';
+import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
 
 const ActivityList = ({ activitiesArray }) => {
@@ -29,6 +29,8 @@ export const ActivitySection = ({
   formFields,
   initialValues,
   activitiesArray,
+  postComment,
+  contributionId,
   ...props
 }) => (
   <div css={activitySectionStyles.main}>
@@ -37,6 +39,6 @@ export const ActivitySection = ({
     <ul css={activitySectionStyles.activityList}>
       <ActivityList activitiesArray={activitiesArray} />
     </ul>
-    <MessageBox />
+    <MessageBox postComment={postComment} id={contributionId} />
   </div>
 );

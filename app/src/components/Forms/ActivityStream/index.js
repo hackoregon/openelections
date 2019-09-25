@@ -176,6 +176,7 @@ const ActivityStream = ({
   data,
   getAllActivities,
   activitiesList,
+  postComment,
   ...props
 }) => {
   return (
@@ -192,6 +193,8 @@ const ActivityStream = ({
               formFields={formFields}
               isValid={isValid}
               activitiesArray={activitiesList}
+              postComment={postComment}
+              contributionId={contributionId}
             />
           );
         }}
