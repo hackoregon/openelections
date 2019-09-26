@@ -18,7 +18,7 @@ const MessageBox = ({
   function handleTextChange(event) {
     setText(event.target.value);
   }
-  function clearOnSubmit(messageText) {
+  function clearOnSubmit() {
     setText('');
   }
   function updateContributionOrExpenditure(messageText) {
@@ -43,7 +43,6 @@ const MessageBox = ({
           onChange={handleTextChange}
         >
           {/* <span css={messageBoxStyles.message}>Message to Campaign</span> */}
-          {/* <p>{comment}</p> */}
         </TextareaAutosize>
         <Link
           to="#"

@@ -1,13 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
 
 const ActivityList = ({ activitiesArray }) => {
-  const activityList = activitiesArray;
-  return Object.values(activityList).map((activity, index) => {
+  return Object.values(activitiesArray).map((activity, index) => {
     const capitalizedActivity =
       activity.activityType.charAt(0).toUpperCase() +
       activity.activityType.slice(1);
