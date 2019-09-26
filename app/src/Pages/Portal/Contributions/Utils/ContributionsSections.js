@@ -211,7 +211,7 @@ export const ContributorSection = ({
       {/* TODO Remove false when match endpoints are hooked up */}
       {isPerson && isGovAdmin ? (
         <div style={{ pointerEvents: 'all' }}>
-          {console.log(matchStrength)}
+          {console.log('mscotto', matchStrength)}
           <MatchPickerHeader
             form="MatchPickerForm"
             contributionId={contributionId}

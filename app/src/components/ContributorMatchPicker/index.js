@@ -53,61 +53,62 @@ export const MatchPickerHeader = connect(
   }
 )(Header);
 
-export const MatchPicker = ({
-  currentPage = 2,
-  totalPages = 10,
-  selected,
-  matchStrength,
-  id,
-  name = 'Noah Fence',
-  street1 = '123 Main Street',
-  street2,
-  city = 'Portland',
-  state = 'OR',
-  zip = '97203',
-}) => {
-  // Add state to hold current match
-  const matchStrengthText = `${matchStrength} Match Selected`;
-  return (
-    <div css={matchPickerModal.wrapper}>
-      <div>
-        <div css={matchPickerModal.container}>
-          <div css={matchPickerModal.addressContainer}>
-            <div css={matchPickerModal.address}>
-              {name}
-              <p>{street1}</p>
-              {street2 || <p>{street2}</p>}
-              <p>
-                {city}, {state} {zip}
-              </p>
+export class MatchPicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+    };
+  }
+
+  render() {
+    const { currentMatchId, matchStrength, matches } = this.props;
+    // Add state to hold current match
+    const matchStrengthText = `${matchStrength} Match Selected`;
+    const { name, street1, street2, city, state, zip } = matches;
+    const selected = false;
+    const currentPage = 1;
+    return (
+      <div css={matchPickerModal.wrapper}>
+        <div>
+          <div css={matchPickerModal.container}>
+            <div css={matchPickerModal.addressContainer}>
+              <div css={matchPickerModal.address}>
+                {name}
+                <p>{street1}</p>
+                {street2 || <p>{street2}</p>}
+                <p>
+                  {city}, {state} {zip}
+                </p>
+              </div>
+            </div>
+            <div css={matchPickerModal.acceptButtonContainer}>
+              {selected ? (
+                <span>{matchStrengthText}</span>
+              ) : (
+                <Button
+                  css={matchPickerModal.acceptButton}
+                  buttonType="manage"
+                  onClick={() =>
+                    console.log(
+                      'post contributionId, matchResult strength and id to update match result duct. If the user selects none, update the matchResultStrength to None and post the id'
+                    )
+                  }
+                >
+                  Accept
+                </Button>
+              )}
             </div>
           </div>
-          <div css={matchPickerModal.acceptButtonContainer}>
-            {selected ? (
-              <span>{matchStrengthText}</span>
-            ) : (
-              <Button
-                css={matchPickerModal.acceptButton}
-                buttonType="manage"
-                onClick={() =>
-                  console.log(
-                    'post contributionId, matchResult strength and id to update match result duct. If the user selects none, update the matchResultStrength to None and post the id'
-                  )
-                }
-              >
-                Accept
-              </Button>
-            )}
-          </div>
+        </div>
+        <div css={matchPickerModal.linksContainer}>
+          {currentPage > 1 ? <Link to="/">Previous</Link> : null}
+          <Link to="/">Next</Link>
         </div>
       </div>
-      <div css={matchPickerModal.linksContainer}>
-        {currentPage > 1 ? <Link to="/">Previous</Link> : null}
-        <Link to="/">Next</Link>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 Header.propTypes = {
   matchStrength: PropTypes.string,
