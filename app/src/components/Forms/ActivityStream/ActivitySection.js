@@ -39,6 +39,6 @@ export const ActivitySection = ({
     <ul css={activitySectionStyles.activityList}>
       <ActivityList activitiesArray={activitiesArray} />
     </ul>
-    <MessageBox postComment={postComment} id={contributionId} />
+    <MessageBox postComment={postComment} contributionId={contributionId} />
   </div>
 );

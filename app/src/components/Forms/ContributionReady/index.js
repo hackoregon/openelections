@@ -189,7 +189,7 @@ class ContributionReadyForm extends React.Component {
               <ActivityStreamForm
                 isValid={isValid}
                 onSubmit={onSubmit}
-                contributionId={this.props.id}
+                contributionId={contributionId}
                 activitiesList={this.props.activitiesList}
                 postComment={this.props.postComment}
               />

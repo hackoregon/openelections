@@ -4,22 +4,13 @@ import { jsx } from '@emotion/core';
 /** @jsx jsx */
 import { Link } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import {
-  updateExpenditure,
-  postExpenditureComment,
-} from '../../../state/ducks/expenditures';
-import {
-  updateContribution,
-  postContributionComment,
-} from '../../../state/ducks/contributions';
+import { postExpenditureComment } from '../../../state/ducks/expenditures';
+import { postContributionComment } from '../../../state/ducks/contributions';
 import { messageBoxStyles } from '../../../assets/styles/forms.styles';
 
 const MessageBox = ({
-  id,
   contributionId,
-  updateExpenditure,
   postExpenditureComment,
-  updateContribution,
   postContributionComment,
   contribution = true, // KELLY - need to pass in - also need for campaigns & ?
 }) => {
@@ -29,18 +20,8 @@ const MessageBox = ({
   }
   function updateContributionOrExpenditure(messageText) {
     contribution
-      ? [
-          updateContribution({
-            messageText,
-          }),
-          postContributionComment(id, messageText),
-        ]
-      : [
-          updateExpenditure({
-            messageText,
-          }),
-          postExpenditureComment(id, messageText),
-        ];
+      ? postContributionComment(contributionId, messageText)
+      : postExpenditureComment(contributionId, messageText);
   }
   return (
     <>
@@ -79,12 +60,10 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      updateContribution: data => dispatch(updateContribution(data)),
-      updateExpenditure: data => dispatch(updateExpenditure(data)),
-      postContributionComment: (id = 1001, message) =>
-        dispatch(postContributionComment(id, message)),
-      postExpenditureComment: (id, message) =>
-        dispatch(postExpenditureComment(id, message)),
+      postContributionComment: (contributionId, message) =>
+        dispatch(postContributionComment(contributionId, message)),
+      postExpenditureComment: (contributionId, message) =>
+        dispatch(postExpenditureComment(contributionId, message)),
     };
   }
 )(MessageBox);
