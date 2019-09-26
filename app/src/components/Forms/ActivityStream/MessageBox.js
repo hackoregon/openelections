@@ -10,9 +10,10 @@ import { messageBoxStyles } from '../../../assets/styles/forms.styles';
 
 const MessageBox = ({
   contributionId,
-  postExpenditureComment,
+  expenditureId,
+  type,
   postContributionComment,
-  contribution = true, // KELLY - need to pass in - also need for campaigns & ?
+  postExpenditureComment,
 }) => {
   const [messageText, setText] = React.useState('');
   function handleTextChange(event) {
@@ -22,9 +23,15 @@ const MessageBox = ({
     setText('');
   }
   function updateContributionOrExpenditure(messageText) {
-    contribution
-      ? postContributionComment(contributionId, messageText)
-      : postExpenditureComment(contributionId, messageText);
+    switch (type) {
+      case 'contribution':
+        postContributionComment(contributionId, messageText);
+        break;
+      case 'expenditure':
+        postExpenditureComment(expenditureId, messageText);
+        break;
+      default:
+    }
   }
   return (
     <>
@@ -65,8 +72,8 @@ export default connect(
     return {
       postContributionComment: (contributionId, message) =>
         dispatch(postContributionComment(contributionId, message)),
-      postExpenditureComment: (contributionId, message) =>
-        dispatch(postExpenditureComment(contributionId, message)),
+      postExpenditureComment: (expenditureId, message) =>
+        dispatch(postExpenditureComment(expenditureId, message)),
     };
   }
 )(MessageBox);

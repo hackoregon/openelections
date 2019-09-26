@@ -3,6 +3,7 @@ import React from 'react';
 import { jsx } from '@emotion/core';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
+import { postContributionComment } from '../../../api/api';
 
 const ActivityList = ({ activitiesArray }) => {
   return Object.values(activitiesArray).map((activity, index) => {
@@ -27,8 +28,9 @@ export const ActivitySection = ({
   formFields,
   initialValues,
   activitiesArray,
-  postComment,
   contributionId,
+  expenditureId,
+  type,
   ...props
 }) => (
   <div css={activitySectionStyles.main}>
@@ -37,6 +39,10 @@ export const ActivitySection = ({
     <ul css={activitySectionStyles.activityList}>
       <ActivityList activitiesArray={activitiesArray} />
     </ul>
-    <MessageBox postComment={postComment} contributionId={contributionId} />
+    <MessageBox
+      contributionId={contributionId}
+      expenditureId={expenditureId}
+      type={type}
+    />
   </div>
 );

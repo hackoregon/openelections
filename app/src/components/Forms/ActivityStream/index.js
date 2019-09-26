@@ -8,6 +8,7 @@ import { getActivities } from '../../../state/ducks/activities';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import ActivityStreamForm from './ActivityStreamForm';
 import { ActivitySection } from './ActivitySection';
+import { postContributionComment } from '../../../api/api';
 
 export const activitiesEmptyState = {
   id: null,
@@ -58,10 +59,11 @@ const onSubmit = (data, props) => {
 
 const ActivityStream = ({
   contributionId,
+  expenditureId,
+  type,
   data,
   getAllActivities,
   activitiesList,
-  postComment,
   ...props
 }) => {
   return (
@@ -78,8 +80,9 @@ const ActivityStream = ({
               formFields={formFields}
               isValid={isValid}
               activitiesArray={activitiesList}
-              postComment={postComment}
               contributionId={contributionId}
+              expenditureId={expenditureId}
+              type={type}
             />
           );
         }}
