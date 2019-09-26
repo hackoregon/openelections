@@ -192,8 +192,10 @@ components:
           enum: [expenditure,other,other_disbursement]
         date:
           type: integer
-
-
+        vendorForOriginalPurchase:
+          type: string
+        dateOriginalTransaction:
+          type: integer
 
   # Reusable path, query, header and cookie parameters
   parameters:
@@ -566,6 +568,10 @@ components:
                 type: integer
               notes:
                 type: string
+              vendorForOriginalPurchase:
+                type: string
+              dateOriginalTransaction:
+                type: integer
     UpdateExpenditureBody:
       content:
         application/json:
@@ -605,6 +611,10 @@ components:
                 type: integer
               notes:
                 type: string
+              vendorForOriginalPurchase:
+                type: string
+              dateOriginalTransaction:
+                type: integer
 
   # Reusable responses, such as 401 Unauthorized or 400 Bad Request
   responses:

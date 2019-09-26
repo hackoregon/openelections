@@ -171,7 +171,7 @@ export const mapContributionFormToData = data => {
     city,
     firstName: isPerson && firstName ? firstName.trim() : null,
     middleInitial: '',
-    lastName: isPerson && lastName.trim() ? lastName : null,
+    lastName: isPerson && lastName ? lastName.trim() : null,
     name: entityName || null,
     state,
     occupation,
@@ -632,11 +632,12 @@ export const validate = values => {
     if (isEmpty(inKindType)) error.inKindType = 'Inkind type is required';
   }
 
-  if (visible.checkSelected && isEmpty(checkNumber)) {
-    error.checkNumber =
-      paymentMethod === PaymentMethodEnum.CHECK
-        ? 'Check number is required.'
-        : 'Money Order number is required.';
+  if (
+    visible.checkSelected &&
+    paymentMethod === PaymentMethodEnum.MONEY_ORDER &&
+    isEmpty(checkNumber)
+  ) {
+    error.checkNumber = 'Money Order number is required.';
   }
 
   if (
