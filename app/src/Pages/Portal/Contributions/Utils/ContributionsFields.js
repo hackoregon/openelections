@@ -27,7 +27,6 @@ import {
   DataToOaeTypeTypeFieldMap,
   InKindDescriptionTypeEnum,
 } from '../../../../api/api';
-import { campaign } from '../../../../api/schema';
 
 export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
@@ -375,15 +374,7 @@ export const fields = {
     label: "Contributor's Last Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string()
-      .matches(
-        /^[^<&>?!)(@#+%$}.{[\]\n]+/,
-        'Names must only contain letters, hyphens, apostrophes, or spaces.',
-        {
-          excludeEmptyString: true,
-        }
-      )
-      .nullable(),
+    validation: Yup.string().nullable(),
   },
   entityName: {
     label: 'Entity Name',
@@ -658,22 +649,21 @@ export const validate = values => {
   // If it's a person require first and last name
   // else require entity name
   if (visible.isPerson) {
-    const s = 's';
-    const regex = RegExp("^[ \\p{L}'][ \\p{L}'-]*[ \\p{L}]+", 'u');
-    console.log('test', regex.test(firstName));
-    console.log('s', firstName.match(/[s]+/g));
-    console.log('fn', firstName.match(/^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u));
-    console.log('A', firstName.match(/[^<&>?!)(@#+%$}.{[\]\n]+/g));
-    console.log('B', firstName.match(/[^<&>`#]+$/g));
-    console.log('C', firstName.match(/[^<&>?!)(@#+%$}.{]+/g));
+    const nameX = new RegExp(
+      "^[\\p{Letter}][ \\p{Letter}'-]*[ \\p{Letter}'-]$",
+      'u'
+    );
     if (isEmpty(firstName)) {
       error.firstName = 'First name is required.';
-    } else if (firstName.match(/^[\p{L}'][ \p{L}'-]*[ \p{L}]$/u) === null) {
+    } else if (!nameX.test(firstName)) {
       error.firstName =
-        'Test Names must only contain letters, hyphens, apostrophes, or spaces.';
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
     if (isEmpty(lastName)) {
       error.lastName = 'Last name is required.';
+    } else if (!nameX.test(lastName)) {
+      error.lastName =
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
   } else if (isEmpty(entityName)) {
     error.entityName = 'Name of entity is required';
