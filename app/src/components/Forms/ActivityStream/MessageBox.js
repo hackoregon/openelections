@@ -18,6 +18,9 @@ const MessageBox = ({
   function handleTextChange(event) {
     setText(event.target.value);
   }
+  function clearOnSubmit(messageText) {
+    setText('');
+  }
   function updateContributionOrExpenditure(messageText) {
     contribution
       ? postContributionComment(contributionId, messageText)
@@ -47,6 +50,7 @@ const MessageBox = ({
           css={messageBoxStyles.sendToCampaignButton}
           onClick={() => {
             updateContributionOrExpenditure(messageText);
+            clearOnSubmit(messageText);
           }}
         >
           Submit Message to Campaign
