@@ -3,46 +3,30 @@ import { connect } from 'react-redux';
 import PageHoc from '../PageHoc/PageHoc';
 import Table from '../Table';
 import Button from '../Button/Button';
-import {
-  getContributionsList,
-  getContributionsTotal,
-  getFilterOptions,
-  updateFilter,
-} from '../../state/ducks/contributions';
-import { isCampAdmin, isGovAdmin, isLoggedIn } from '../../state/ducks/auth';
-import pastContributions from '../../state/ducks/pastContributions';
+import { getContributionsByMatchId } from '../../state/ducks/pastContributions';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
     : { icon: 'none', name, buttonType, onClick };
 
-const columns = isGovAdmin => [
+const columns = [
   {
     field: 'name',
-    title: 'Name',
+    title: 'name', // KELLY just temp, so I can see something
   },
   {
-    ...(isGovAdmin
-      ? {
-          field: 'campaign',
-          title: 'Campaign',
-          render: rowData => {
-            return rowData && rowData.campaign
-              ? rowData.campaign.name
-              : 'Loading...';
-          },
-        }
-      : {}),
+    field: 'campaign',
+    render: rowData => {
+      return rowData && rowData.campaign ? rowData.campaign.name : 'Loading...';
+    },
   },
   {
     field: 'amount',
-    title: 'Amount',
     type: 'currency',
   },
   {
     field: 'date',
-    title: 'Date',
     render: rowData =>
       new Date(rowData.date)
         .toLocaleString('en-US', {
@@ -55,26 +39,17 @@ const columns = isGovAdmin => [
 ];
 
 class PreviousDonationsTable extends React.Component {
-  constructor(props) {
-    super(props);
-    props.pastContributions({
-      matchId: props.matchId,
-    });
-  }
-
   render() {
     const {
-      pastContributions,
       isListLoading,
-      contributionsList,
       history,
       total,
-      isGovAdmin,
+      pastContributions,
       matchId,
     } = this.props;
 
-    console.log({ pastContributions });
-    const isLoading = isListLoading && !Array.isArray(contributionsList);
+    console.log({ matchId });
+    const isLoading = isListLoading && !Array.isArray(pastContributions);
 
     const actions = [
       actionInfo('View', 'primary', (event, rowData) => {
@@ -100,14 +75,13 @@ class PreviousDonationsTable extends React.Component {
           isLoading={isLoading}
           showTitle={false}
           title={`${total} Previous Contributions`}
-          columns={columns(isGovAdmin)}
+          columns={columns}
           options={{
             showTitle: false,
           }}
           actions={actions}
           components={components}
-          data={contributionsList}
-          totalRows={total}
+          data={pastContributions}
         />
       </PageHoc>
     );
@@ -115,25 +89,9 @@ class PreviousDonationsTable extends React.Component {
 }
 
 export default connect(
-  state => ({
-    filterOptions: getFilterOptions(state),
-    isListLoading: state.campaigns.isLoading,
-    contributionsList: getContributionsList(state),
-    total: getContributionsTotal(state),
-    isGovAdmin: isGovAdmin(state),
-    isCampAdmin: isCampAdmin(state),
-    orgId:
-      state.campaigns.currentCampaignId ||
-      state.governments.currentGovernmentId,
-    campaignId: state.campaigns.currentCampaignId,
-    govId: state.governments.currentGovernmentId || 1,
-    userId: isLoggedIn(state) ? state.auth.me.id : null,
-  }),
-  dispatch => {
-    return {
-      getFilterOptions,
-      updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
-      pastContributions: matchId => dispatch(pastContributions(matchId)),
-    };
-  }
+  state => ({}),
+  dispatch => ({
+    getContributionsByMatchId: matchId =>
+      dispatchEvent(getContributionsByMatchId(matchId)),
+  })
 )(PreviousDonationsTable);

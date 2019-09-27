@@ -9,7 +9,6 @@ import {
   getContributionById,
   getCurrentContribution,
 } from '../../../state/ducks/contributions';
-import pastContributions from '../../../state/ducks/pastContributions';
 import {
   getCurrentUserId,
   getCurrentCampaignName,
@@ -94,8 +93,7 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
-      matchId = currentContribution.matchId,
-      pastContributions,
+      matchId,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
@@ -169,13 +167,10 @@ class ContributionReadyForm extends React.Component {
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
                 {console.log({ matchId })}
-                {/* {isGovAdmin && matchId ? ( // ----KELLY - how call match id? */}
+                {/* {isGovAdmin ? ( // && matchId ? ----KELLY - how call match id? */}
                 <div>
                   <h2>Previous Donations</h2>
-                  <PreviousDonationsTable
-                    pastContributions={pastContributions}
-                    matchId={matchId}
-                  />
+                  <PreviousDonationsTable />
                 </div>
                 {/* ) : (
                   <div>
@@ -207,6 +202,5 @@ export default connect(
       dispatch(flashMessage(message, options)),
     updateContribution: data => dispatch(updateContribution(data)),
     getContributionById: id => dispatch(getContributionById(id)),
-    pastContributions: matchId => dispatch(pastContributions[matchId]),
   })
 )(ContributionReadyForm);
