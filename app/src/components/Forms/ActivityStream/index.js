@@ -8,7 +8,6 @@ import { getActivities } from '../../../state/ducks/activities';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import ActivityStreamForm from './ActivityStreamForm';
 import { ActivitySection } from './ActivitySection';
-import { postContributionComment } from '../../../api/api';
 
 export const activitiesEmptyState = {
   id: null,

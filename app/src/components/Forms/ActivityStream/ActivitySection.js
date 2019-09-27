@@ -3,9 +3,8 @@ import React from 'react';
 import { jsx } from '@emotion/core';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
-import { postContributionComment } from '../../../api/api';
 
-const ActivityList = ({ activitiesArray }) => {
+export const ActivityList = ({ activitiesArray }) => {
   return Object.values(activitiesArray).map((activity, index) => {
     const capitalizedActivity =
       activity.activityType.charAt(0).toUpperCase() +
