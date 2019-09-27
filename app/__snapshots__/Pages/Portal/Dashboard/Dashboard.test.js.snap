@@ -8,7 +8,7 @@ exports[`<Dashboard/> should be defined 1`] = `
     css={
       Object {
         "map": undefined,
-        "name": "keaam0",
+        "name": "1b36yd",
         "next": undefined,
         "styles": "
   .cards-wrapper {
@@ -48,6 +48,9 @@ exports[`<Dashboard/> should be defined 1`] = `
 
       .card.small {
         height: 48%;
+      }
+      .card.bottom {
+        flex: 5;
       }
     }
   }
@@ -139,6 +142,17 @@ exports[`<Dashboard/> should be defined 1`] = `
             }
           />
         </div>
+      </div>
+    </div>
+    <div
+      className="cards-wrapper"
+    >
+      <div
+        className="card bottom"
+      >
+        <Connect(ActivityStreamCard)
+          type="dashboard"
+        />
       </div>
     </div>
   </EmotionCssPropInternal>
