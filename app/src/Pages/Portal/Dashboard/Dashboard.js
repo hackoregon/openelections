@@ -4,6 +4,7 @@ import PageHoc from '../../../components/PageHoc/PageHoc';
 import SummaryCard from './cards/SummaryCard';
 import LinksCard from './cards/LinksCard';
 import SearchCard from './cards/SearchCard';
+import ActivityStreamCard from './cards/ActivityStreamCard';
 
 /** @jsx jsx */
 import { mediaQueryRanges, accents } from '../../../assets/styles/variables';
@@ -46,6 +47,9 @@ const styles = css`
 
       .card.small {
         height: 48%;
+      }
+      .card.bottom {
+        flex: 5;
       }
     }
   }
@@ -98,6 +102,11 @@ const DashboardPage = props => {
                 ]}
               />
             </div>
+          </div>
+        </div>
+        <div className="cards-wrapper">
+          <div className="card bottom">
+            <ActivityStreamCard />
           </div>
         </div>
       </div>
