@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { MatchPicker } from '../../ContributorMatchPicker';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
 import FormModal from '../../FormModal/FormModal';
+import { getCurrentMatchResults } from '../../../state/ducks/matches';
 
 export const getMatchesById = () => {
   return [
@@ -35,8 +36,6 @@ export const getMatchesById = () => {
   ];
 };
 
-const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
-
 const data = {
   matchId: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
   matchStrength: 'exact',
@@ -64,21 +63,15 @@ const data = {
   inPortland: false,
 };
 
-// 1002 none
-
 const MatchPickerForm = props => {
-  const { contributionId, contributorMatches, currentMatchId } = props;
-  const matches = getMatchesById(contributionId);
-  const match = matches[1];
-  console.log('mscotto A', contributionId);
-  console.log('mscotto B', contributorMatches[contributionId]);
+  const { currentMatchResults, currentMatchId } = props;
+  console.log('mscotto B', currentMatchResults);
 
   return (
     <FormModal>
       <MatchPicker
         currentMatchId={currentMatchId}
-        matches={contributorMatches[contributionId]}
-        {...match}
+        matches={currentMatchResults}
       />
     </FormModal>
   );
@@ -87,7 +80,7 @@ const MatchPickerForm = props => {
 export default connect(
   state => ({
     getModalState: getModalState(state),
-    contributorMatches: state.matches.list,
+    currentMatchResults: getCurrentMatchResults(state),
   }),
   dispatch => {
     return {

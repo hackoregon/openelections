@@ -219,6 +219,9 @@ export const matchPickerModal = {
     width: 100%;
     justify-content: space-between;
   `,
+  addressFields: css`
+    margin: 11px;
+  `,
 };
 
 export const matchColors = {

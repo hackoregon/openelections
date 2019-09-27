@@ -123,41 +123,42 @@ export const getCurrentMatchResults = state => {
   const matches = [];
   const results = currentMatches.results;
   if (results) {
-    // Create a easy to trevers structure
+    const selectedMatchId =
+      state.contributions.list[state.contributions.currentId].matchId;
+    const matchId = currentMatches.matchId;
+    console.log('mscotto', results);
+    // Create a easy to traverse structure
     for (const matchStrength of matchStrengthEnum) {
-      if (results[matchStrength] && results[matchStrength].length > 0) {
+      if (
+        results[matchStrength] &&
+        Array.isArray(results[matchStrength]) &&
+        results[matchStrength].length > 0
+      ) {
+        // Use camel case to be pretty happy
         for (const result of results[matchStrength]) {
-          matches.push(result);
+          const match = {
+            id: result.id,
+            bestMatch: !!(matchId === result.id),
+            matchStrength: result.matchStrength,
+            selected: !!(selectedMatchId === result.id),
+            firstName: result.first_name,
+            lastName: result.last_name,
+            address1: result.address_1,
+            address2: result.address_2,
+            city: result.city,
+            state: result.state,
+            zip: result.zip,
+          };
+          // Ensure the selected or best matched result is first
+          console.log('mscotto', matchId, '===', result.id);
+          if (match.selected || (match.bestMatch && !selectedMatchId)) {
+            matches.unshift(match);
+          } else {
+            matches.push(match);
+          }
         }
       }
     }
   }
-  return state.matches && state.matches.list && state.contributions.currentId
-    ? state.matches.list[state.contributions.currentId]
-    : {};
+  return matches;
 };
-
-// matchId: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
-//   matchStrength: 'exact',
-//   results: {
-//     exact: [
-//       {
-//         id: '4d3cb3df-0055-4e05-b091-ddf65f48b35a',
-//         first_name: 'ASHLEY',
-//         last_name: 'DAVID',
-//         address_1: '19100 E BURNSIDE ST APT E232',
-//         address_2: '',
-//         city: 'PORTLAND',
-//         state: 'OR',
-//         zip: '97233',
-//         address_sim: '1.0',
-//         zip_sim: '1.0',
-//         first_name_sim: '1.0',
-//         last_name_sim: '1.0',
-//       },
-//     ],
-//     strong: [],
-//     weak: [],
-//     none: '54a80b958cb6ea7b38e1bab403b84efd',
-//   },
-//   inPortland: false,

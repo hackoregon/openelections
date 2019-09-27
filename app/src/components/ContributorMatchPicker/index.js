@@ -16,12 +16,16 @@ import {
 import { clearModal, showModal } from '../../state/ducks/modal';
 
 const Header = ({
+  contributorMatches,
   currentMatchId,
   showModal,
   form,
   contributionId,
-  matchStrength,
 }) => {
+  let matchStrength = 'no';
+  if (contributorMatches[contributionId]) {
+    matchStrength = contributorMatches[contributionId].matchStrength;
+  }
   // Switch color and symbol based on matchStrength
   let matchIcon = <NoMatchIcon css={matchColors.no} />;
   if (matchStrength !== 'no') {
@@ -45,7 +49,9 @@ const Header = ({
 };
 
 export const MatchPickerHeader = connect(
-  state => ({}),
+  state => ({
+    contributorMatches: state.matches.list,
+  }),
   dispatch => {
     return {
       showModal: payload => dispatch(showModal(payload)),
@@ -57,27 +63,43 @@ export class MatchPicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
+      totalPages: props.matches.length,
+      currentPage: 0,
+      pages: props.matches || [],
     };
   }
 
   render() {
-    const { currentMatchId, matchStrength, matches } = this.props;
+    const { matchStrength, matches } = this.props;
     // Add state to hold current match
+    console.log('mscotto matches', matches);
     const matchStrengthText = `${matchStrength} Match Selected`;
-    const { name, street1, street2, city, state, zip } = matches;
-    const selected = false;
-    const currentPage = 1;
+    const {
+      id,
+      bestMatch,
+      selected,
+      firstName,
+      lastName,
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+    } = this.state.pages[this.state.currentPage];
     return (
       <div css={matchPickerModal.wrapper}>
         <div>
           <div css={matchPickerModal.container}>
             <div css={matchPickerModal.addressContainer}>
               <div css={matchPickerModal.address}>
-                {name}
-                <p>{street1}</p>
-                {street2 || <p>{street2}</p>}
-                <p>
+                <p css={matchPickerModal.addressFields}>
+                  {firstName} {lastName}
+                </p>
+                <p css={matchPickerModal.addressFields}>{address1}</p>
+                {address2 && (
+                  <p css={matchPickerModal.addressFields}>{address2}</p>
+                )}
+                <p css={matchPickerModal.addressFields}>
                   {city}, {state} {zip}
                 </p>
               </div>
@@ -102,7 +124,7 @@ export class MatchPicker extends React.Component {
           </div>
         </div>
         <div css={matchPickerModal.linksContainer}>
-          {currentPage > 1 ? <Link to="/">Previous</Link> : null}
+          {this.currentPage > 1 ? <Link to="/">Previous</Link> : null}
           <Link to="/">Next</Link>
         </div>
       </div>
@@ -111,7 +133,6 @@ export class MatchPicker extends React.Component {
 }
 
 Header.propTypes = {
-  matchStrength: PropTypes.string,
   showModal: PropTypes.func,
   contributionId: PropTypes.number,
 };
