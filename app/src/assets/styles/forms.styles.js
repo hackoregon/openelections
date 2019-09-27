@@ -270,13 +270,14 @@ export const activitySectionStyles = {
   timestamp: css`
     font-family: Rubik;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 500;
     font-size: 16px;
     line-height: 19px;
     color: #979797;
     margin-right: 5px;
     margin-bottom: 0px;
     margin-top: 0px;
+    color: #000000;
   `,
   username: css`
     font-size: 21px;

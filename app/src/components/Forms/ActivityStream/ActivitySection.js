@@ -13,7 +13,9 @@ export const ActivityList = ({ activitiesArray }) => {
       <div key={index}>
         <div css={activitySectionStyles.timelineGroup}>
           <p css={activitySectionStyles.timestamp}>
-            {`${activity.createdAt} ${capitalizedActivity} Activity`}
+            {/* {`$ */}
+            {activity.createdAt}
+            {/* ${capitalizedActivity} Activity`} */}
           </p>
           <div css={activitySectionStyles.timeline} />
         </div>
