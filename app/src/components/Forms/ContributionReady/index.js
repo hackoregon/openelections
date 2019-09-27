@@ -9,6 +9,7 @@ import {
   getContributionById,
   getCurrentContribution,
 } from '../../../state/ducks/contributions';
+import pastContributions from '../../../state/ducks/pastContributions';
 import {
   getCurrentUserId,
   getCurrentCampaignName,
@@ -29,6 +30,7 @@ import AddContributionForm from '../AddContribution/AddContributionForm';
 import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
+import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -92,6 +94,8 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
+      matchId = currentContribution.matchId,
+      pastContributions,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
@@ -164,6 +168,21 @@ class ContributionReadyForm extends React.Component {
                   matchId={currentContribution.matchId}
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
+                {console.log({ matchId })}
+                {/* {isGovAdmin && matchId ? ( // ----KELLY - how call match id? */}
+                <div>
+                  <h2>Previous Donations</h2>
+                  <PreviousDonationsTable
+                    pastContributions={pastContributions}
+                    matchId={matchId}
+                  />
+                </div>
+                {/* ) : (
+                  <div>
+                    <h2>Previous Donations</h2>
+                    <p>No previous donations found</p>
+                  </div>
+                )} */}
               </ReadOnly>
             </>
           );
@@ -188,5 +207,6 @@ export default connect(
       dispatch(flashMessage(message, options)),
     updateContribution: data => dispatch(updateContribution(data)),
     getContributionById: id => dispatch(getContributionById(id)),
+    pastContributions: matchId => dispatch(pastContributions[matchId]),
   })
 )(ContributionReadyForm);
