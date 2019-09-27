@@ -8,16 +8,14 @@ export const ActivityList = ({
   activitiesArray,
   contributionId,
   expenditureId,
-  currentId = contributionId || expenditureId,
+  governmentId,
+  currentId = contributionId || expenditureId || governmentId,
   filteredArray = [],
 }) => {
   activitiesArray.forEach(activity => {
     // How to do more efficiently? KELLY
     if (activity.activityId === parseInt(currentId)) {
-      console.log('matches: ', currentId, activity.activityId);
       filteredArray.push(activity);
-      // }
-      console.log({ filteredArray });
     }
   });
 

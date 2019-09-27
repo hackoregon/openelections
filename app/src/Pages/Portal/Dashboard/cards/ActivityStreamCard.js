@@ -2,6 +2,7 @@ import * as React from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
+import { getCurrentGovernmentId } from '../../../../state/ducks/governments';
 import { getActivities } from '../../../../state/ducks/activities';
 import { ActivityList } from '../../../../components/Forms/ActivityStream/ActivitySection';
 
@@ -14,18 +15,15 @@ const styles = css`
 `;
 
 class ActivityStreamCard extends React.Component {
-  componentDidMount() {
-    this.setState({
-      activitiesList: this.props.getActivities,
-    });
-  }
-
   render() {
-    const { match, getActivities } = this.props;
+    const { governmentActivities, governmentId } = this.props;
     return (
       <div css={styles}>
         <h3>Recent Activity</h3>
-        <ActivityList activitiesArray={getActivities} />
+        <ActivityList
+          activitiesArray={governmentActivities}
+          governmentId={governmentId}
+        />
       </div>
     );
   }
@@ -33,5 +31,6 @@ class ActivityStreamCard extends React.Component {
 
 export default connect(state => ({
   isLoading: state.summary.isLoading,
-  getActivities: getActivities(state),
+  governmentId: getCurrentGovernmentId(state),
+  governmentActivities: getActivities(state),
 }))(ActivityStreamCard);

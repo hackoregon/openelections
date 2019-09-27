@@ -74,7 +74,7 @@ const onSubmit = (data, props) => {
 class ExpensesDetail extends React.Component {
   constructor(props) {
     super(props);
-    const { getExpenditureById, expenditureId } = props;
+    const { getExpenditureById, expenditureId } = this.props;
     getExpenditureById(parseInt(expenditureId));
   }
 
