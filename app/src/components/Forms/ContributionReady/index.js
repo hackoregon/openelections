@@ -93,7 +93,8 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
-      matchId,
+      matchId = currentContribution.matchId,
+      pastContributions,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
@@ -166,19 +167,21 @@ class ContributionReadyForm extends React.Component {
                   matchId={currentContribution.matchId}
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
-                {console.log({ matchId })}
-                {/* {isGovAdmin ? ( // && matchId ? ----KELLY - how call match id? */}
+              </ReadOnly>
+              {isGovAdmin && matchId ? (
                 <div>
                   <h2>Previous Donations</h2>
-                  <PreviousDonationsTable />
+                  <PreviousDonationsTable
+                    matchId={matchId}
+                    pastContributions={pastContributions.list[matchId]}
+                  />
                 </div>
-                {/* ) : (
-                  <div>
-                    <h2>Previous Donations</h2>
-                    <p>No previous donations found</p>
-                  </div>
-                )} */}
-              </ReadOnly>
+              ) : (
+                <div>
+                  <h2>Previous Donations</h2>
+                  <p>No previous donations found</p>
+                </div>
+              )}
             </>
           );
         }}
@@ -188,13 +191,15 @@ class ContributionReadyForm extends React.Component {
 }
 
 export default connect(
-  state => ({
+  (state, matchId) => ({
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
     currentContribution: getCurrentContribution(state),
+    matchId: state.pastContributions[matchId],
+    pastContributions: state.pastContributions,
   }),
   dispatch => ({
     push: url => dispatch(push(url)),

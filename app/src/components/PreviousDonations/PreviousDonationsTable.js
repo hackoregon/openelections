@@ -44,11 +44,10 @@ class PreviousDonationsTable extends React.Component {
       isListLoading,
       history,
       total,
-      pastContributions,
       matchId,
+      pastContributions,
     } = this.props;
 
-    console.log({ matchId });
     const isLoading = isListLoading && !Array.isArray(pastContributions);
 
     const actions = [
@@ -88,10 +87,4 @@ class PreviousDonationsTable extends React.Component {
   }
 }
 
-export default connect(
-  state => ({}),
-  dispatch => ({
-    getContributionsByMatchId: matchId =>
-      dispatchEvent(getContributionsByMatchId(matchId)),
-  })
-)(PreviousDonationsTable);
+export default PreviousDonationsTable;
