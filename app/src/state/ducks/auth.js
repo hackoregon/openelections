@@ -153,8 +153,11 @@ export function logout() {
 // Side Effects, e.g. thunks
 export function me() {
   return async (dispatch, getState, { api }) => {
-    if (!document.cookie.includes('token') && !process.env.TOKEN) {
-      // dont attempt if there is no token.
+    if (
+      process.env.NODE_ENV !== 'development' &&
+      !document.cookie.includes('token') &&
+      !process.env.TOKEN
+    ) {
       return;
     }
     dispatch(actionCreators.me.request());
