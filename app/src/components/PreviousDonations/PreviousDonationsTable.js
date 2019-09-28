@@ -13,7 +13,16 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 const columns = [
   {
     field: 'name',
-    title: 'name', // KELLY just temp, so I can see something
+    sorting: false,
+    render: rowData => {
+      if (
+        rowData.contributorType === 'individual' ||
+        rowData.contributorType === 'family'
+      ) {
+        return `${rowData.firstName} ${rowData.lastName}`;
+      }
+      return rowData.name;
+    },
   },
   {
     field: 'campaign',
@@ -40,13 +49,7 @@ const columns = [
 
 class PreviousDonationsTable extends React.Component {
   render() {
-    const {
-      isListLoading,
-      history,
-      total,
-      matchId,
-      pastContributions,
-    } = this.props;
+    const { isListLoading, history, total, pastContributions } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(pastContributions);
 
