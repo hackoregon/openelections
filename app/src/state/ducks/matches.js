@@ -4,7 +4,7 @@ import createReducer from '../utils/createReducer';
 import { RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { getContributionById } from './contributions';
+import { getContributionById, getCurrentContribution } from './contributions';
 
 export const STATE_KEY = 'matches';
 
@@ -123,10 +123,11 @@ export const getCurrentMatchResults = state => {
   const matches = [];
   const results = currentMatches.results;
   if (results) {
-    const selectedMatchId =
-      state.contributions.list[state.contributions.currentId].matchId;
+    const currentContribution = getCurrentContribution(state);
+    const selectedMatchId = currentContribution
+      ? currentContribution.matchId
+      : '';
     const matchId = currentMatches.matchId;
-    console.log('mscotto', results);
     // Create a easy to traverse structure
     for (const matchStrength of matchStrengthEnum) {
       if (
@@ -139,7 +140,7 @@ export const getCurrentMatchResults = state => {
           const match = {
             id: result.id,
             bestMatch: !!(matchId === result.id),
-            matchStrength: result.matchStrength,
+            matchStrength,
             selected: !!(selectedMatchId === result.id),
             firstName: result.first_name,
             lastName: result.last_name,
@@ -150,12 +151,15 @@ export const getCurrentMatchResults = state => {
             zip: result.zip,
           };
           // Ensure the selected or best matched result is first
-          console.log('mscotto', matchId, '===', result.id);
           if (match.selected || (match.bestMatch && !selectedMatchId)) {
             matches.unshift(match);
           } else {
             matches.push(match);
           }
+          // mscotto remove these!
+          matches.push(match);
+          matches.push(match);
+          matches.push(match);
         }
       }
     }

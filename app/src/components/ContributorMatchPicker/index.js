@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import NoMatchIcon from '@material-ui/icons/ErrorOutlineSharp';
 import MatchIcon from '@material-ui/icons/CheckCircleOutlineSharp';
 import { Link } from 'react-router-dom';
+import { isThisMinute } from 'date-fns';
 import Button from '../Button/Button';
 import {
   sectionStyles,
@@ -43,7 +44,12 @@ const Header = ({
         })
       }
     >
-      Contributor {matchIcon}
+      Contributor {matchIcon}{' '}
+      {currentMatchId && (
+        <span css={matchColors[matchStrength]} style={{ fontSize: '.7em' }}>
+          Selected
+        </span>
+      )}
     </h3>
   );
 };
@@ -67,16 +73,32 @@ export class MatchPicker extends React.Component {
       currentPage: 0,
       pages: props.matches || [],
     };
+    this.nextClick = this.nextClick.bind(this);
+    this.prevClick = this.prevClick.bind(this);
+  }
+
+  nextClick(e) {
+    e.preventDefault();
+    this.setState(state => ({
+      currentPage: state.currentPage + 1,
+    }));
+  }
+
+  prevClick(e) {
+    e.preventDefault();
+    this.setState(state => ({
+      currentPage: state.currentPage - 1,
+    }));
   }
 
   render() {
-    const { matchStrength, matches } = this.props;
-    // Add state to hold current match
-    console.log('mscotto matches', matches);
-    const matchStrengthText = `${matchStrength} Match Selected`;
+    const { matches } = this.props;
+    const { totalPages, currentPage, pages } = this.state;
+
     const {
       id,
       bestMatch,
+      matchStrength,
       selected,
       firstName,
       lastName,
@@ -85,7 +107,7 @@ export class MatchPicker extends React.Component {
       city,
       state,
       zip,
-    } = this.state.pages[this.state.currentPage];
+    } = pages[currentPage];
     return (
       <div css={matchPickerModal.wrapper}>
         <div>
@@ -106,7 +128,9 @@ export class MatchPicker extends React.Component {
             </div>
             <div css={matchPickerModal.acceptButtonContainer}>
               {selected ? (
-                <span>{matchStrengthText}</span>
+                <span css={matchPickerModal.matchText}>
+                  {matchStrength} Match Selected
+                </span>
               ) : (
                 <Button
                   css={matchPickerModal.acceptButton}
@@ -124,8 +148,20 @@ export class MatchPicker extends React.Component {
           </div>
         </div>
         <div css={matchPickerModal.linksContainer}>
-          {this.currentPage > 1 ? <Link to="/">Previous</Link> : null}
-          <Link to="/">Next</Link>
+          {currentPage > 0 ? (
+            <Link to="?" onClick={this.prevClick}>
+              Previous
+            </Link>
+          ) : (
+            <div />
+          )}
+          {currentPage < totalPages - 1 ? (
+            <Link to="?" onClick={this.nextClick}>
+              Next
+            </Link>
+          ) : (
+            <div />
+          )}
         </div>
       </div>
     );

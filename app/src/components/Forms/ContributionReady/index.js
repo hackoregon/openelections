@@ -171,6 +171,7 @@ class ContributionReadyForm extends React.Component {
                   }
                   isGovAdmin={isGovAdmin}
                   contributionId={values.id}
+                  matchId={currentContribution.matchId}
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
               </ReadOnly>
