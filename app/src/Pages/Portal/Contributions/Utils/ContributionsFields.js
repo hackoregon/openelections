@@ -27,7 +27,6 @@ import {
   DataToOaeTypeTypeFieldMap,
   InKindDescriptionTypeEnum,
 } from '../../../../api/api';
-import { campaign } from '../../../../api/schema';
 
 export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
@@ -651,11 +650,21 @@ export const validate = values => {
   // If it's a person require first and last name
   // else require entity name
   if (visible.isPerson) {
+    const nameX = new RegExp(
+      "^[\\p{Letter}][ \\p{Letter}'-]*[ \\p{Letter}'-]$",
+      'u'
+    );
     if (isEmpty(firstName)) {
       error.firstName = 'First name is required.';
+    } else if (!nameX.test(firstName)) {
+      error.firstName =
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
     if (isEmpty(lastName)) {
       error.lastName = 'Last name is required.';
+    } else if (!nameX.test(lastName)) {
+      error.lastName =
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
   } else if (isEmpty(entityName)) {
     error.entityName = 'Name of entity is required';
