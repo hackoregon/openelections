@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
@@ -14,22 +15,35 @@ import {
   matchPickerModal,
   matchColors,
 } from '../../assets/styles/forms.styles';
-import { clearModal, showModal } from '../../state/ducks/modal';
+import { showModal, clearModal } from '../../state/ducks/modal';
+import { updateMatchForContribution } from '../../state/ducks/matches';
 
-const Header = ({
-  contributorMatches,
-  currentMatchId,
-  showModal,
-  form,
-  contributionId,
-}) => {
-  let matchStrength = 'no';
+const Header = props => {
+  const {
+    contributorMatches,
+    currentMatchId,
+    showModal,
+    form,
+    contributionId,
+  } = props;
+  let matchStrength = 'none';
+  let matchSelectedText = '';
+
   if (contributorMatches[contributionId]) {
     matchStrength = contributorMatches[contributionId].matchStrength;
   }
+  if (currentMatchId) {
+    matchSelectedText =
+      matchStrength === 'none'
+        ? 'No matches found'
+        : `${matchStrength} match selected`;
+  } else {
+    matchSelectedText = 'Click to select a match';
+  }
+
   // Switch color and symbol based on matchStrength
   let matchIcon = <NoMatchIcon css={matchColors.no} />;
-  if (matchStrength !== 'no') {
+  if (matchStrength !== 'none') {
     matchIcon = <MatchIcon css={matchColors[matchStrength]} />;
   }
   return (
@@ -46,9 +60,7 @@ const Header = ({
     >
       Contributor {matchIcon}{' '}
       {currentMatchId && (
-        <span css={matchColors[matchStrength]} style={{ fontSize: '.7em' }}>
-          Selected
-        </span>
+        <span style={{ fontSize: '.7em' }}>{matchSelectedText}</span>
       )}
     </h3>
   );
@@ -65,7 +77,7 @@ export const MatchPickerHeader = connect(
   }
 )(Header);
 
-export class MatchPicker extends React.Component {
+class contributorMatchPicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -75,6 +87,7 @@ export class MatchPicker extends React.Component {
     };
     this.nextClick = this.nextClick.bind(this);
     this.prevClick = this.prevClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   nextClick(e) {
@@ -91,10 +104,18 @@ export class MatchPicker extends React.Component {
     }));
   }
 
-  render() {
-    const { matches } = this.props;
-    const { totalPages, currentPage, pages } = this.state;
+  handleSubmit(e) {
+    this.props.updateMatchForContribution({
+      contributionId: this.props.contributionId,
+      matchId: this.state.pages[this.state.currentPage].id,
+      matchStrength: this.state.pages[this.state.currentPage].matchStrength,
+    });
+    this.props.clearModal();
+  }
 
+  render() {
+    const { totalPages, currentPage, pages } = this.state;
+    const page = !isEmpty(pages) ? pages[currentPage] : [{}];
     const {
       id,
       bestMatch,
@@ -107,8 +128,11 @@ export class MatchPicker extends React.Component {
       city,
       state,
       zip,
-    } = pages[currentPage];
-    return (
+    } = page;
+    console.log(selected);
+    return isEmpty(lastName) ? (
+      <div>No match</div>
+    ) : (
       <div css={matchPickerModal.wrapper}>
         <div>
           <div css={matchPickerModal.container}>
@@ -135,11 +159,7 @@ export class MatchPicker extends React.Component {
                 <Button
                   css={matchPickerModal.acceptButton}
                   buttonType="manage"
-                  onClick={() =>
-                    console.log(
-                      'post contributionId, matchResult strength and id to update match result duct. If the user selects none, update the matchResultStrength to None and post the id'
-                    )
-                  }
+                  onClick={this.handleSubmit}
                 >
                   Accept
                 </Button>
@@ -168,12 +188,23 @@ export class MatchPicker extends React.Component {
   }
 }
 
+export const MatchPicker = connect(
+  state => ({}),
+  dispatch => {
+    return {
+      updateMatchForContribution: matchAttr =>
+        dispatch(updateMatchForContribution(matchAttr)),
+      clearModal: () => dispatch(clearModal()),
+    };
+  }
+)(contributorMatchPicker);
+
 Header.propTypes = {
   showModal: PropTypes.func,
   contributionId: PropTypes.number,
 };
 
-MatchPicker.propTypes = {
+contributorMatchPicker.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   street1: PropTypes.string,

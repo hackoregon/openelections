@@ -6,12 +6,13 @@ import FormModal from '../../FormModal/FormModal';
 import { getCurrentMatchResults } from '../../../state/ducks/matches';
 
 const MatchPickerForm = props => {
-  const { currentMatchResults, currentMatchId } = props;
+  const { currentMatchResults, currentMatchId, contributionId } = props;
   console.log('mscotto B', currentMatchResults);
 
   return (
     <FormModal>
       <MatchPicker
+        contributionId={contributionId}
         currentMatchId={currentMatchId}
         matches={currentMatchResults}
       />

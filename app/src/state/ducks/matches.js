@@ -1,5 +1,5 @@
-// matches.js
 import { cloneDeep } from 'lodash';
+import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import { RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
@@ -99,14 +99,25 @@ export function updateMatchForContribution(attrs) {
     dispatch(actionCreators.updateMatchForContribution.request());
     try {
       const response = await api.updateMatchForContribution(attrs);
-      if (response.status === 204) {
+      if (response.status === 204 || response.status === 200) {
         dispatch(getMatchesByContributionId(attrs.contributionId));
         dispatch(getContributionById(attrs.contributionId));
+        dispatch(
+          flashMessage(`Match Updated`, {
+            props: { variant: 'success' },
+          })
+        );
       } else {
         dispatch(actionCreators.updateMatchForContribution.failure());
+        dispatch(
+          flashMessage(`Error - ${response.status} status returned`, {
+            props: { variant: 'error' },
+          })
+        );
       }
     } catch (error) {
       dispatch(actionCreators.updateMatchForContribution.failure(error));
+      flashMessage(`Error - ${error}`, { props: { variant: 'error' } });
     }
   };
 }
@@ -122,6 +133,7 @@ export const getCurrentMatchResults = state => {
   const currentMatches = getCurrentContributionMatch(state);
   const matches = [];
   const results = currentMatches.results;
+  let match = {};
   if (results) {
     const currentContribution = getCurrentContribution(state);
     const selectedMatchId = currentContribution
@@ -135,9 +147,9 @@ export const getCurrentMatchResults = state => {
         Array.isArray(results[matchStrength]) &&
         results[matchStrength].length > 0
       ) {
-        // Use camel case to be pretty happy
+        // Pass back camelcase to be pretty happy
         for (const result of results[matchStrength]) {
-          const match = {
+          match = {
             id: result.id,
             bestMatch: !!(matchId === result.id),
             matchStrength,
@@ -156,10 +168,6 @@ export const getCurrentMatchResults = state => {
           } else {
             matches.push(match);
           }
-          // mscotto remove these!
-          matches.push(match);
-          matches.push(match);
-          matches.push(match);
         }
       }
     }

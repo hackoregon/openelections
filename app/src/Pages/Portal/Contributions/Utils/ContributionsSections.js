@@ -208,7 +208,7 @@ export const ContributorSection = ({
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
       {isPerson && isGovAdmin ? (
-        <div style={{ pointerEvents: 'all' }}>
+        <div style={{ pointerEvents: 'all', opacity: '1' }}>
           <MatchPickerHeader
             form="MatchPickerForm"
             contributionId={contributionId}
