@@ -13,7 +13,7 @@ function TextMaskCustom(props) {
         inputRef(ref ? ref.inputElement : null);
       }}
       guide
-      mask={[/[1-9]/, /[1-9]/, /[1-9]/, /[1-9]/, /[1-9]/]}
+      mask={[/[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/]}
     />
   );
 }
