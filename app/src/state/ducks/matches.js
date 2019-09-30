@@ -1,10 +1,10 @@
-// matches.js
 import { cloneDeep } from 'lodash';
+import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
 import { RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
-import { getContributionById } from './contributions';
+import { getContributionById, getCurrentContribution } from './contributions';
 
 export const STATE_KEY = 'matches';
 
@@ -99,14 +99,78 @@ export function updateMatchForContribution(attrs) {
     dispatch(actionCreators.updateMatchForContribution.request());
     try {
       const response = await api.updateMatchForContribution(attrs);
-      if (response.status === 204) {
+      if (response.status === 204 || response.status === 200) {
         dispatch(getMatchesByContributionId(attrs.contributionId));
         dispatch(getContributionById(attrs.contributionId));
+        dispatch(
+          flashMessage(`Match Updated`, {
+            props: { variant: 'success' },
+          })
+        );
       } else {
         dispatch(actionCreators.updateMatchForContribution.failure());
+        dispatch(
+          flashMessage(`Error - ${response.status} status returned`, {
+            props: { variant: 'error' },
+          })
+        );
       }
     } catch (error) {
       dispatch(actionCreators.updateMatchForContribution.failure(error));
+      flashMessage(`Error - ${error}`, { props: { variant: 'error' } });
     }
   };
 }
+
+export const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
+export const getCurrentContributionMatch = state => {
+  return state.matches && state.matches.list && state.contributions.currentId
+    ? state.matches.list[state.contributions.currentId]
+    : false;
+};
+
+export const getCurrentMatchResults = state => {
+  const currentMatches = getCurrentContributionMatch(state);
+  const matches = [];
+  const results = currentMatches.results;
+  let match = {};
+  if (results) {
+    const currentContribution = getCurrentContribution(state);
+    const selectedMatchId = currentContribution
+      ? currentContribution.matchId
+      : '';
+    const matchId = currentMatches.matchId;
+    // Create a easy to traverse structure
+    for (const matchStrength of matchStrengthEnum) {
+      if (
+        results[matchStrength] &&
+        Array.isArray(results[matchStrength]) &&
+        results[matchStrength].length > 0
+      ) {
+        // Pass back camelcase to be pretty happy
+        for (const result of results[matchStrength]) {
+          match = {
+            id: result.id,
+            bestMatch: !!(matchId === result.id),
+            matchStrength,
+            selected: !!(selectedMatchId === result.id),
+            firstName: result.first_name,
+            lastName: result.last_name,
+            address1: result.address_1,
+            address2: result.address_2,
+            city: result.city,
+            state: result.state,
+            zip: result.zip,
+          };
+          // Ensure the selected or best matched result is first
+          if (match.selected || (match.bestMatch && !selectedMatchId)) {
+            matches.unshift(match);
+          } else {
+            matches.push(match);
+          }
+        }
+      }
+    }
+  }
+  return matches;
+};

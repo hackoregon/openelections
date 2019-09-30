@@ -8,6 +8,7 @@ import {
   updateContribution,
   getContributionById,
   getCurrentContribution,
+  createContribution,
 } from '../../../state/ducks/contributions';
 import {
   getCurrentUserId,
@@ -15,7 +16,9 @@ import {
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
+  getCurrentCampaignId,
 } from '../../../state/ducks/auth';
+import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import {
   ViewHeaderSection,
   BasicsSection,
@@ -30,7 +33,23 @@ import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
 
+const onSubmitAdd = (data, props) => {
+  const { currentUserId, governmentId, campaignId, createContribution } = props;
+  const contributionData = mapContributionFormToData(data);
+  const payload = {
+    status: ContributionStatusEnum.DRAFT,
+    governmentId,
+    campaignId,
+    currentUserId,
+    ...contributionData,
+  };
+  createContribution(payload);
+};
+
 const onSubmit = (data, props) => {
+  if (data.buttonSubmitted === 'save') {
+    return onSubmitAdd(data, props);
+  }
   // Only PUT changed fields by comparing initialValues to submitted values
   const initialValues = props.currentContribution;
   const submittedValues = mapContributionFormToData(data);
@@ -57,6 +76,8 @@ const onSubmit = (data, props) => {
       alteredValues.status = ContributionStatusEnum.DRAFT;
       break;
     case 'save':
+      // The record should be in draft whne save is available.
+      // alteredValues.status = ContributionStatusEnum.DRAFT;
       break;
     case 'submit':
       alteredValues.status = ContributionStatusEnum.SUBMITTED;
@@ -64,6 +85,8 @@ const onSubmit = (data, props) => {
     case 'processed':
       alteredValues.status = ContributionStatusEnum.PROCESSED;
       break;
+    // Button that does not set buttonSubmitted would return to the
+    // contributions list without updating the record
     default:
   }
 
@@ -175,6 +198,8 @@ class ContributionReadyForm extends React.Component {
 
 export default connect(
   state => ({
+    governmentId: getCurrentGovernmentId(state),
+    campaignId: getCurrentCampaignId(state),
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
@@ -188,5 +213,6 @@ export default connect(
       dispatch(flashMessage(message, options)),
     updateContribution: data => dispatch(updateContribution(data)),
     getContributionById: id => dispatch(getContributionById(id)),
+    createContribution: data => dispatch(createContribution(data)),
   })
 )(ContributionReadyForm);
