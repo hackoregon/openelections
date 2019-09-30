@@ -202,6 +202,9 @@ export const matchPickerModal = {
   addressContainer: css`
     line-height: 0.5;
   `,
+  addressFields: css`
+    margin: 10px;
+  `,
   address: css`
     display: flex;
     flex-direction: column;
