@@ -174,21 +174,15 @@ class ContributionReadyForm extends React.Component {
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
               </ReadOnly>
-              {isGovAdmin && matchId !== null ? (
+              {isGovAdmin ? (
                 <div>
-                  <h2>Previous Donations</h2>
                   <PreviousDonationsTable
                     matchId={matchId}
                     history={history}
                     pastContributions={pastContributions.list[matchId]}
                   />
                 </div>
-              ) : (
-                <div>
-                  <h2>Previous Donations</h2>
-                  <p>No previous donations found</p>
-                </div>
-              )}
+              ) : null}
             </>
           );
         }}

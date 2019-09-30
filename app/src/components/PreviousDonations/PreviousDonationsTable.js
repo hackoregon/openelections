@@ -48,7 +48,7 @@ const columns = [
 
 class PreviousDonationsTable extends React.Component {
   render() {
-    const { isListLoading, history, pastContributions } = this.props;
+    const { isListLoading, history, pastContributions, matchId } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(pastContributions);
 
@@ -72,18 +72,22 @@ class PreviousDonationsTable extends React.Component {
 
     return (
       <PageHoc>
-        <Table
-          isLoading={isLoading}
-          showTitle={false}
-          title="Previous Contributions"
-          columns={columns}
-          options={{
-            showTitle: false,
-          }}
-          actions={actions}
-          components={components}
-          data={pastContributions}
-        />
+        {matchId === null ? (
+          <div>
+            <h5>Previous Donations</h5>
+            <p>No previous donations found</p>
+          </div>
+        ) : (
+          <Table
+            isLoading={isLoading}
+            showTitle
+            title="Previous Donations"
+            columns={columns}
+            actions={actions}
+            components={components}
+            data={pastContributions}
+          />
+        )}
       </PageHoc>
     );
   }
