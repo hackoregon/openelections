@@ -57,11 +57,10 @@ class PreviousDonationsTable extends React.Component {
     } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(pastContributions);
-
     const actions = [
-      actionInfo('View', 'primary', (event, rowData) => {
+      actionInfo('View', 'tableButton', (event, rowData) => {
         rowData.id === currentId
-          ? alert('Already viewing this contribution record')
+          ? alert('You are already viewing this contribution record')
           : history.push(`/contributions/${rowData.id}`);
       }),
     ];
@@ -73,7 +72,7 @@ class PreviousDonationsTable extends React.Component {
           onClick={event => props.action.onClick(event, props.data)}
           buttonType={props.action.buttonType}
         >
-          {props.action.name}
+          {props.data.id === currentId ? 'Current' : props.action.name}
         </Button>
       ),
     };

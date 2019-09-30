@@ -56,6 +56,10 @@ const greenStyle = {
   color: '#fff',
 };
 
+const tableButton = {
+  width: '92px',
+};
+
 const buttonTypes = {
   submit: { type: 'submit', variant: 'contained', color: 'primary' },
   primary: { type: 'submit', variant: 'contained', style: primaryOverrides },
@@ -81,6 +85,12 @@ const buttonTypes = {
     size: 'large',
   },
   green: { type: 'button', variant: 'contained', style: greenStyle },
+  tableButton: {
+    type: 'button',
+    variant: 'contained',
+    color: 'primary',
+    style: tableButton,
+  },
   disabledModalButton: {
     type: 'submit',
     variant: 'contained',
