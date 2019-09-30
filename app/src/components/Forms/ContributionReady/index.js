@@ -179,6 +179,7 @@ class ContributionReadyForm extends React.Component {
                   <PreviousDonationsTable
                     matchId={matchId}
                     history={history}
+                    currentId={currentContribution.id}
                     pastContributions={pastContributions.list[matchId]}
                   />
                 </div>

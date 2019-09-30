@@ -48,13 +48,21 @@ const columns = [
 
 class PreviousDonationsTable extends React.Component {
   render() {
-    const { isListLoading, history, pastContributions, matchId } = this.props;
+    const {
+      isListLoading,
+      history,
+      pastContributions,
+      matchId,
+      currentId,
+    } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(pastContributions);
 
     const actions = [
       actionInfo('View', 'primary', (event, rowData) => {
-        history.push(`/contributions/${rowData.id}`);
+        rowData.id === currentId
+          ? alert('Already viewing this contribution record')
+          : history.push(`/contributions/${rowData.id}`);
       }),
     ];
 
