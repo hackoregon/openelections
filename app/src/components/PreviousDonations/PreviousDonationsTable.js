@@ -48,7 +48,7 @@ const columns = [
 
 class PreviousDonationsTable extends React.Component {
   render() {
-    const { isListLoading, history, total, pastContributions } = this.props;
+    const { isListLoading, history, pastContributions } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(pastContributions);
 
@@ -75,7 +75,7 @@ class PreviousDonationsTable extends React.Component {
         <Table
           isLoading={isLoading}
           showTitle={false}
-          title={`${total} Previous Contributions`}
+          title="Previous Contributions"
           columns={columns}
           options={{
             showTitle: false,

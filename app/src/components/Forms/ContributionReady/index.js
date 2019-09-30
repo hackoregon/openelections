@@ -94,6 +94,7 @@ class ContributionReadyForm extends React.Component {
       isGovAdmin,
       campaignName,
       pastContributions,
+      history,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
@@ -178,6 +179,7 @@ class ContributionReadyForm extends React.Component {
                   <h2>Previous Donations</h2>
                   <PreviousDonationsTable
                     matchId={matchId}
+                    history={history}
                     pastContributions={pastContributions.list[matchId]}
                   />
                 </div>

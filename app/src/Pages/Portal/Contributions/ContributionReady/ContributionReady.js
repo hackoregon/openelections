@@ -5,13 +5,16 @@ import ContributionReadyForm from '../../../../components/Forms/ContributionRead
 
 class ContributionReadyPage extends React.Component {
   render() {
-    const { match } = this.props;
+    const { match, history } = this.props;
     let contributionId = false;
     if (match.params && match.params.id) {
       contributionId = match.params.id;
       return (
         <PageHoc>
-          <ContributionReadyForm contributionId={contributionId} />
+          <ContributionReadyForm
+            contributionId={contributionId}
+            history={history}
+          />
         </PageHoc>
       );
     }
