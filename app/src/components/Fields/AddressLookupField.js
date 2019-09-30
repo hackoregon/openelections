@@ -86,7 +86,7 @@ class AddressLookupField extends React.Component {
           this.autocompleteInput.current.value = formik.values[id];
         }
         // If the street number is missing lets go with what street the user typed in.
-        if (updateFields[updateField] === id && !updateFields.streetNumber) {
+        if (updateFields[updateField] === id && !addressFields.streetNumber) {
           formik.setFieldValue(updateFields[id], formik.values[id], false);
         } else {
           // Else lets use the values from places API
