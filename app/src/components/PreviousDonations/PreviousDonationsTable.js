@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PageHoc from '../PageHoc/PageHoc';
 import Table from '../Table';
 import Button from '../Button/Button';
-import { getContributionsByMatchId } from '../../state/ducks/pastContributions';
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -90,4 +89,4 @@ class PreviousDonationsTable extends React.Component {
   }
 }
 
-export default PreviousDonationsTable;
+export default connect()(PreviousDonationsTable);

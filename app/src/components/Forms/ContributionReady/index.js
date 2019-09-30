@@ -93,12 +93,17 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
-      matchId = currentContribution.matchId,
       pastContributions,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
       initialFormData = mapContributionDataToForm(currentContribution);
+    }
+    let matchId = null;
+    if (currentContribution) {
+      matchId = currentContribution.matchId
+        ? currentContribution.matchId
+        : null;
     }
     const isReadOnly = !!(
       isGovAdmin ||
@@ -168,7 +173,7 @@ class ContributionReadyForm extends React.Component {
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
               </ReadOnly>
-              {isGovAdmin && matchId ? (
+              {isGovAdmin && matchId !== null ? (
                 <div>
                   <h2>Previous Donations</h2>
                   <PreviousDonationsTable
@@ -191,14 +196,13 @@ class ContributionReadyForm extends React.Component {
 }
 
 export default connect(
-  (state, matchId) => ({
+  state => ({
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
     currentContribution: getCurrentContribution(state),
-    matchId: state.pastContributions[matchId],
     pastContributions: state.pastContributions,
   }),
   dispatch => ({
