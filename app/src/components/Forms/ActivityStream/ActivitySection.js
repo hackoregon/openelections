@@ -1,4 +1,6 @@
 import React from 'react';
+import { parseFromTimeZone } from 'date-fns-timezone';
+import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import MessageBox from './MessageBox';
@@ -23,12 +25,21 @@ export const ActivityList = ({
     // const capitalizedActivity =
     //   activity.activityType.charAt(0).toUpperCase() +
     //   activity.activityType.slice(1);
+    const newDate = format(
+      new Date(
+        parseFromTimeZone(activity.createdAt, {
+          timeZone: 'America/Los_Angeles',
+        })
+      ),
+      'MM-DD-YYYY @ hh:mmaa'
+    );
+
     return (
       <div key={index}>
         <div css={activitySectionStyles.timelineGroup}>
           <p css={activitySectionStyles.timestamp}>
             {/* {`$ */}
-            {activity.createdAt}
+            {newDate}
             {/* ${capitalizedActivity} Activity`} */}
           </p>
           <div css={activitySectionStyles.timeline} />

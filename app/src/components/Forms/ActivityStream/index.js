@@ -36,14 +36,7 @@ export const mapActivityDataToForm = activity => {
     campaignId: campaign,
     activityId,
     activityType,
-    createdAt: format(
-      new Date(
-        parseFromTimeZone(createdAt, {
-          timeZone: 'America/Los_Angeles',
-        })
-      ),
-      'MM-DD-YYYY @hh:mm'
-    ),
+    createdAt,
   };
 };
 
