@@ -33,8 +33,9 @@ export const ViewHeaderSection = ({
         status !== 'Archived' &&
         status !== 'Draft' &&
         status !== 'Processed' &&
-        status !== 'Out of compliance' && // compliant is not false?
-        formValues.oaeType === 'matchable'
+        status !== 'Out of compliance' &&
+        (formValues.oaeType === 'matchable' ||
+          formValues.oaeType === 'qualifying')
       ) {
         return (showMatchOption = 'show');
       }
