@@ -16,7 +16,10 @@ import {
   matchColors,
 } from '../../assets/styles/forms.styles';
 import { showModal, clearModal } from '../../state/ducks/modal';
-import { updateMatchForContribution } from '../../state/ducks/matches';
+import {
+  updateMatchForContribution,
+  getCurrentContributionMatch,
+} from '../../state/ducks/matches';
 
 const Header = props => {
   const {
@@ -114,6 +117,7 @@ class contributorMatchPicker extends React.Component {
   }
 
   render() {
+    const inPortland = this.props.matchObj.inPortland;
     const { totalPages, currentPage, pages } = this.state;
     const page = !isEmpty(pages) ? pages[currentPage] : [{}];
     const {
@@ -134,6 +138,13 @@ class contributorMatchPicker extends React.Component {
     ) : (
       <div css={matchPickerModal.wrapper}>
         <div>
+          <div style={{ position: 'absolute', top: '16px' }}>
+            {inPortland ? (
+              <span css={matchColors.exact}>Address in Portland</span>
+            ) : (
+              <span css={matchColors.no}>Address not in Portland</span>
+            )}
+          </div>
           <div css={matchPickerModal.container}>
             <div css={matchPickerModal.addressContainer}>
               <div css={matchPickerModal.address}>
@@ -192,7 +203,9 @@ class contributorMatchPicker extends React.Component {
 }
 
 export const MatchPicker = connect(
-  state => ({}),
+  state => ({
+    matchObj: getCurrentContributionMatch(state),
+  }),
   dispatch => {
     return {
       updateMatchForContribution: matchAttr =>

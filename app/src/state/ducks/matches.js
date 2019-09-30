@@ -172,5 +172,6 @@ export const getCurrentMatchResults = state => {
       }
     }
   }
+
   return matches;
 };
