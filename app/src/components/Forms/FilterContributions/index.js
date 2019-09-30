@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
+import { merge, isEqual } from 'lodash';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import Button from '../../Button/Button';
@@ -23,12 +23,21 @@ import {
 
 const FilterContribution = props => {
   const { updateFilter, onFilterUpdate, initialFilterOptions } = props;
-  const defaultValues = initialState.listFilterOptions;
-  const initialValues = {
-    status: initialFilterOptions.status || 'all',
+  const { status = 'all', to, from } = initialFilterOptions;
+
+  const defaultValues = {
+    status: 'all',
     range: {
-      to: initialFilterOptions.to || '',
-      from: initialFilterOptions.from || '',
+      from: '',
+      to: '',
+    },
+  };
+
+  const initialValues = {
+    status,
+    range: {
+      to,
+      from,
     },
   };
 
@@ -79,7 +88,6 @@ const FilterContribution = props => {
                     from: '',
                     to: '',
                     status: 'all',
-                    page: 0,
                   });
                 }}
               >
