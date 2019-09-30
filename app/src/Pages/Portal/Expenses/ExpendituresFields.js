@@ -11,6 +11,7 @@ import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
 import AddressLookupField from '../../../components/Fields/AddressLookupField';
+import ZipField from '../../../components/Fields/ZipField';
 import {
   ExpenditureTypeEnum,
   ExpenditureSubTypeEnum,
@@ -47,6 +48,8 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt,
     campaign,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = expenditure;
   return {
     id,
@@ -73,6 +76,13 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
+    dateOriginalTransaction: format(
+      parseFromTimeZone(dateOriginalTransaction, {
+        timeZone: 'America/Los_Angeles',
+      }),
+      'YYYY-MM-DD'
+    ),
+    vendorForOriginalPurchase,
   };
 };
 
@@ -94,6 +104,8 @@ export const mapExpenditureFormToData = data => {
     zipcode,
     notes,
     status,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = data;
 
   const transformed = {
@@ -107,7 +119,7 @@ export const mapExpenditureFormToData = data => {
     paymentMethod,
     purpose: purposeType || null,
     payeeType,
-    name: payeeName,
+    name: payeeName.trim(),
     address1: streetAddress,
     address2: addressLine2,
     city,
@@ -115,6 +127,10 @@ export const mapExpenditureFormToData = data => {
     zip: zipcode,
     notes,
     status,
+    dateOriginalTransaction: convertToTimeZone(dateOriginalTransaction, {
+      timeZone: 'America/Los_Angeles',
+    }).getTime(),
+    vendorForOriginalPurchase,
   };
   return transformed;
 };
@@ -129,6 +145,8 @@ export const expendituresEmptyState = {
   paymentMethod: '',
   checkNumber: '',
   purposeType: '',
+  dateOriginalTransaction: '',
+  vendorForOriginalPurchase: '',
 
   // PAYEE INFO
   payeeType: PayeeTypeEnum.INDIVIDUAL,
@@ -224,7 +242,19 @@ export const fields = {
         ],
       },
     },
-    validation: Yup.string().required('The Expenditure subtype is required'),
+    validation: Yup.string().required('Expenditure subtype is required'),
+  },
+  dateOriginalTransaction: {
+    label: 'Date of Original Transaction',
+    section: FormSectionEnum.BASIC,
+    component: DateField,
+    validation: Yup.string(),
+  },
+  vendorForOriginalPurchase: {
+    label: 'Vendor for Original Purchase',
+    section: FormSectionEnum.BASIC,
+    component: TextField,
+    validation: Yup.string(),
   },
   paymentMethod: {
     label: 'Payment Method',
@@ -245,7 +275,7 @@ export const fields = {
         },
       ],
     },
-    validation: Yup.string().required('The payment method is required'),
+    validation: Yup.string().required('Payment method is required'),
   },
   checkNumber: {
     label: 'Check Number',
@@ -310,13 +340,13 @@ export const fields = {
     label: "Payee's Name",
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string().required("The payee's name is required"),
+    validation: Yup.string().required('The payee name is required'),
   },
   streetAddress: {
     label: 'Street Address',
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string().required('Your street address is required'),
+    validation: Yup.string().required('Street address is required'),
   },
 
   addressLine2: {
@@ -335,13 +365,13 @@ export const fields = {
     section: FormSectionEnum.PAYEE_INFO,
     component: SelectField,
     options: { values: stateList },
-    validation: Yup.string().required('Your state is required'),
+    validation: Yup.string().required('State is required'),
   },
   zipcode: {
     label: 'Zipcode',
     section: FormSectionEnum.PAYEE_INFO,
-    component: TextField,
-    validation: Yup.number().required('A zipcode is required'),
+    component: ZipField,
+    validation: Yup.number().required('Zipcode is required'),
   },
   notes: {
     label: 'Notes',
@@ -357,6 +387,8 @@ export const validate = values => {
     paymentMethod,
     checkNumber,
     purposeType,
+    dateOriginalTransaction,
+    vendorForOriginalPurchase,
   } = values;
   const error = {};
   const visible = {};
@@ -369,9 +401,24 @@ export const validate = values => {
     paymentMethod === PaymentMethodEnum.MONEY_ORDER
   );
 
+  visible.showOriginalDateAndVendor = !!(
+    expenditureSubType === ExpenditureSubTypeEnum.PERSONAL_EXPENDITURE
+  );
+
+  // If Expenditure Subtype is personal expenditure
+  if (visible.showOriginalDateAndVendor && isEmpty(dateOriginalTransaction)) {
+    error.dateOriginalTransaction =
+      'Date of the original transaction is required';
+  }
+  if (visible.showOriginalDateAndVendor && isEmpty(vendorForOriginalPurchase)) {
+    error.vendorForOriginalPurchase =
+      'Name of vendor for original purchase is required';
+  }
+
   // Default to visible
   visible.paymentMethod = true;
   visible.showPurposeType = false;
+  // visible.dateOriginalTransaction = false;
 
   // LOGIC FOR FOR FIELDS THAT ARE REQUIRED ONLY CONDITIONALLY:
   if (visible.checkSelected && isEmpty(checkNumber)) {

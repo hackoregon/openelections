@@ -528,7 +528,6 @@ export async function postMatchResult(request: IRequest, response: Response, nex
         const matches = await updateMatchResultAsync(PostMatchResult);
         return response.status(200).send(matches);
     } catch (err) {
-        console.log(err)
         return response.status(422).json({ message: err.message });
     }
 }

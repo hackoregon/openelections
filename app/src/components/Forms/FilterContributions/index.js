@@ -1,99 +1,36 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
-
-import { withRouter } from 'react-router-dom';
+import { jsx } from '@emotion/core';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
-
-const filterOuter = css`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  > div {
-    margin: 0 5px;
-  }
-  @media screen and (max-width: 900px) {
-    flex-direction: column;
-  }
-`;
-const filterWrapper = css`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const filterInner = css`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  // flex-wrap: wrap;
-  > div {
-    margin: 5px;
-  }
-  @media screen and (max-width: 900px) {
-    flex-wrap: wrap;
-    > div {
-      width: calc(50% - 10px);
-    }
-  }
-`;
-
-const paginateOptions = css`
-  margin: 10px 0;
-  display: flex;
-  > div {
-    max-width: 25%;
-  }
-  @media screen and (max-width: 900px) {
-    > div {
-      max-width: 50%;
-    }
-  }
-`;
-
-const btnContainer = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  > button {
-    margin: 5px;
-  }
-  a.reset-button {
-    text-align: center;
-    font-size: 14px;
-    transition: opacity 0.1s;
-    cursor: pointer;
-    &[disabled] {
-      opacity: 0;
-      color: gray;
-    }
-  }
-  @media screen and (max-width: 900px) {
-    width: 100%;
-  }
-`;
+import {
+  getFilterOptions,
+  initialState,
+  updateFilter,
+} from '../../../state/ducks/contributions';
+import {
+  paginateOptions,
+  filterInner,
+  filterWrapper,
+  filterOuter,
+  btnContainer,
+} from '../../../assets/styles/filter.styles';
 
 const FilterContribution = props => {
-  const { location, history, onFilterUpdate } = props;
-
-  // eslint-disable-next-line no-use-before-define
-  const urlQuery = getQueryParams(location);
-
-  const defaultValues = {
-    status: 'all',
-    range: { to: '', from: '' },
-  };
-
-  const [initialValues, setInitialValues] = useState({
-    status: urlQuery.status || 'all',
+  const { updateFilter, onFilterUpdate, initialFilterOptions } = props;
+  const defaultValues = initialState.listFilterOptions;
+  const initialValues = {
+    status: initialFilterOptions.status || 'all',
     range: {
-      to: urlQuery.to || '',
-      from: urlQuery.from || '',
+      to: initialFilterOptions.to || '',
+      from: initialFilterOptions.from || '',
     },
-  });
+  };
 
   return (
     <>
@@ -116,19 +53,10 @@ const FilterContribution = props => {
           }
 
           onFilterUpdate(data);
-          setInitialValues(filterOptions);
         }}
         initialValues={initialValues}
       >
-        {({
-          formSections,
-          isValid,
-          handleSubmit,
-          isDirty,
-          /* isSubmitting */
-          handleCancel,
-          resetForm,
-        }) => (
+        {({ formSections, isValid, handleSubmit, resetForm }) => (
           <div className="nark" css={filterOuter}>
             <div css={filterWrapper}>
               <div css={filterInner}>{formSections.filter}</div>
@@ -146,9 +74,13 @@ const FilterContribution = props => {
                 className="reset-button"
                 disabled={isEqual(defaultValues, initialValues)}
                 onClick={() => {
-                  resetForm(defaultValues);
                   handleSubmit();
-                  history.push(`${location.pathname}`);
+                  updateFilter({
+                    from: '',
+                    to: '',
+                    status: 'all',
+                    page: 0,
+                  });
                 }}
               >
                 Clear
@@ -161,19 +93,19 @@ const FilterContribution = props => {
   );
 };
 
-function getQueryParams(location) {
-  const rawParams = location.search.replace(/^\?/, '');
-  const result = {};
+FilterContribution.propTypes = {
+  initialFilterOptions: PropTypes.shape({}),
+  updateFilter: PropTypes.func,
+  onFilterUpdate: PropTypes.func,
+};
 
-  rawParams.split('&').forEach(item => {
-    if (item) {
-      const [key, val] = item.split('=');
-      result[key] = val;
-    }
-  });
-
-  return result;
-}
-
-// export default FilterContribution;
-export default withRouter(FilterContribution);
+export default connect(
+  state => ({
+    initialFilterOptions: getFilterOptions(state),
+  }),
+  dispatch => {
+    return {
+      updateFilter: filter => dispatch(updateFilter(filter)),
+    };
+  }
+)(FilterContribution);

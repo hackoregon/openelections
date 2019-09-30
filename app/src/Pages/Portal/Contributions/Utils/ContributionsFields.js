@@ -11,6 +11,7 @@ import SelectField from '../../../../components/Fields/SelectField';
 import TextField from '../../../../components/Fields/TextField';
 import PhoneField from '../../../../components/Fields/PhoneField';
 import EmailField from '../../../../components/Fields/EmailField';
+import ZipField from '../../../../components/Fields/ZipField';
 import CurrencyField from '../../../../components/Fields/CurrencyField';
 import AddressLookupField from '../../../../components/Fields/AddressLookupField';
 import {
@@ -26,7 +27,6 @@ import {
   DataToOaeTypeTypeFieldMap,
   InKindDescriptionTypeEnum,
 } from '../../../../api/api';
-import { campaign } from '../../../../api/schema';
 
 export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
@@ -169,9 +169,9 @@ export const mapContributionFormToData = data => {
 
   const transformed = {
     city,
-    firstName: isPerson && firstName ? firstName : null,
+    firstName: isPerson && firstName ? firstName.trim() : null,
     middleInitial: '',
-    lastName: isPerson && lastName ? lastName : null,
+    lastName: isPerson && lastName ? lastName.trim() : null,
     name: entityName || null,
     state,
     occupation,
@@ -424,7 +424,7 @@ export const fields = {
   zipcode: {
     label: 'Zip Code',
     section: FormSectionEnum.CONTRIBUTOR,
-    component: TextField,
+    component: ZipField,
     validation: Yup.number().required('Your zipcode is required'),
   },
   email: {
@@ -632,11 +632,12 @@ export const validate = values => {
     if (isEmpty(inKindType)) error.inKindType = 'Inkind type is required';
   }
 
-  if (visible.checkSelected && isEmpty(checkNumber)) {
-    error.checkNumber =
-      paymentMethod === PaymentMethodEnum.CHECK
-        ? 'Check number is required.'
-        : 'Money Order number is required.';
+  if (
+    visible.checkSelected &&
+    paymentMethod === PaymentMethodEnum.MONEY_ORDER &&
+    isEmpty(checkNumber)
+  ) {
+    error.checkNumber = 'Money Order number is required.';
   }
 
   if (
@@ -649,11 +650,21 @@ export const validate = values => {
   // If it's a person require first and last name
   // else require entity name
   if (visible.isPerson) {
+    const nameX = new RegExp(
+      "^[\\p{Letter}][ \\p{Letter}'-]*[ \\p{Letter}'-]$",
+      'u'
+    );
     if (isEmpty(firstName)) {
       error.firstName = 'First name is required.';
+    } else if (!nameX.test(firstName)) {
+      error.firstName =
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
     if (isEmpty(lastName)) {
       error.lastName = 'Last name is required.';
+    } else if (!nameX.test(lastName)) {
+      error.lastName =
+        'Names must only contain letters, hyphens, apostrophes, or spaces.';
     }
   } else if (isEmpty(entityName)) {
     error.entityName = 'Name of entity is required';

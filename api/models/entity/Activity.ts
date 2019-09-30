@@ -113,7 +113,7 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
     return (await activityRepository
         .createQueryBuilder('activity')
         .select(
-            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"'
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
         .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
         .orderBy('"activity"."createdAt"', 'DESC')
@@ -127,7 +127,7 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
     return (await activityRepository
         .createQueryBuilder('activity')
         .select(
-            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"'
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
         .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
         .orderBy('"activity"."createdAt"', 'DESC')
@@ -161,7 +161,7 @@ export async function getActivityByCampaignByTimeAsync(campaignId: number, from,
 export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResult[]> {
     const activityRepository = getConnection('default').getRepository('Activity');
     return await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."userId" = :userId', {userId})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
@@ -172,7 +172,7 @@ export async function getActivityByUserAsync(userId, perPage, page: number): Pro
 export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResult[]> {
     const activityRepository = getConnection('default').getRepository('Activity');
     return await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
         .andWhere('"activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
         .orderBy('"activity"."createdAt"', 'DESC')
@@ -184,7 +184,7 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
 export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResult[]> {
     const activityRepository = getConnection('default').getRepository('Activity');
     return await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
         .andWhere('"activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
         .orderBy('"activity"."createdAt"', 'DESC')

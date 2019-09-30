@@ -184,6 +184,48 @@ export const buttonBar = {
   button: css`
     margin: 1px;
   `,
+  modal: css`
+    position: absolute;
+    right: 4;
+    bottom: 4;
+  `,
+};
+
+export const matchPickerModal = {
+  wrapper: css`
+    width: 320px;
+  `,
+  container: css`
+    display: flex;
+    justify-content: space-between;
+  `,
+  addressContainer: css`
+    line-height: 0.5;
+  `,
+  addressFields: css`
+    margin: 10px;
+  `,
+  address: css`
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+  `,
+  acceptButtonContainer: css`
+    display: flex;
+    align-items: center;
+  `,
+  acceptButton: css`
+    height: 35px;
+  `,
+  linksContainer: css`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  `,
+  matchText: css`
+    text-align: center;
+    text-transform: capitalize;
+  `,
 };
 
 export const matchColors = {

@@ -19,7 +19,7 @@ export default async (): Promise<Connection> => {
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         entities,
-        synchronize: process.env.APP_ENV !== 'production',
+        synchronize: true,
         logging: process.env.NODE_ENV === 'development'
     });
 

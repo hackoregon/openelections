@@ -10,7 +10,7 @@ import {
   sectionStyles,
   buttonBar,
 } from '../../../../assets/styles/forms.styles';
-import { MatchPickerHeader } from '../../../../components/MatchPicker/MatchPicker';
+import { MatchPickerHeader } from '../../../../components/ContributorMatchPicker';
 import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
 
 export const ViewHeaderSection = ({
@@ -33,8 +33,9 @@ export const ViewHeaderSection = ({
         status !== 'Archived' &&
         status !== 'Draft' &&
         status !== 'Processed' &&
-        status !== 'Out of compliance' && // compliant is not false?
-        formValues.oaeType === 'matchable'
+        status !== 'Out of compliance' &&
+        (formValues.oaeType === 'matchable' ||
+          formValues.oaeType === 'qualifying')
       ) {
         return (showMatchOption = 'show');
       }
@@ -203,15 +204,18 @@ export const ContributorSection = ({
   isGovAdmin,
   contributionId,
   showOccupationLetter,
+  matchId,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
     <div css={sectionStyles.main}>
-      {/* TODO Remove false when match endpoints are hooked up */}
-      {isPerson && isGovAdmin && false ? (
-        <MatchPickerHeader
-          form="MatchPickerForm"
-          contributionId={contributionId}
-        />
+      {isPerson && isGovAdmin ? (
+        <div style={{ pointerEvents: 'all', opacity: '1' }}>
+          <MatchPickerHeader
+            form="MatchPickerForm"
+            contributionId={contributionId}
+            currentMatchId={matchId}
+          />
+        </div>
       ) : (
         <h3 css={sectionStyles.title}>Contributor</h3>
       )}

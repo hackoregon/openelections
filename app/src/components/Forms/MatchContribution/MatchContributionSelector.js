@@ -94,7 +94,7 @@ const SplitButton = ({
         setSubmitting(false);
         break;
       case 'In Compliance':
-        value = ContributionStatusEnum.IN_COMPLIANCE;
+        value = ContributionStatusEnum.PROCESSED;
         updateContribution({
           id,
           status: value,

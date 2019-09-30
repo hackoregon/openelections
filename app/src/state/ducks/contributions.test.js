@@ -4,7 +4,7 @@ import * as contributions from './contributions';
 import * as activities from './activities';
 import * as api from '../../api';
 import * as schema from '../../api/schema';
-import { ADD_CONTRIBUTION_ENTITIES, ADD_ENTITIES } from './common';
+import { ADD_CONTRIBUTION_ENTITIES } from './common';
 
 const { actionTypes, actionCreators } = contributions;
 
@@ -20,6 +20,14 @@ describe('Reducer', () => {
       error: null,
       currentId: 0,
       listOrder: [],
+      listFilterOptions: {
+        from: '',
+        to: '',
+        status: 'all',
+        page: 0,
+        perPage: 50,
+        sort: {},
+      },
       total: 0,
     });
   });
@@ -41,6 +49,14 @@ describe('Reducer', () => {
         '1': {},
       },
       isLoading: false,
+      listFilterOptions: {
+        from: '',
+        to: '',
+        status: 'all',
+        page: 0,
+        perPage: 50,
+        sort: {},
+      },
       error: null,
       currentId: 0,
       total: 0,
@@ -307,7 +323,7 @@ describe('Side Effects', () => {
     const expectedActions = [
       { type: actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST },
       { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },
-      { type: ADD_ENTITIES },
+      { type: activities.ADD_ACTIVITY_ENTITIES },
       { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS },
       { type: actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS },
     ];
