@@ -150,9 +150,7 @@ exports[`<Dashboard/> should be defined 1`] = `
       <div
         className="card bottom"
       >
-        <Connect(ActivityStreamCard)
-          type="dashboard"
-        />
+        <Connect(ActivityStreamCard) />
       </div>
     </div>
   </EmotionCssPropInternal>
