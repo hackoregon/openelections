@@ -129,9 +129,8 @@ class contributorMatchPicker extends React.Component {
       state,
       zip,
     } = page;
-    console.log(selected);
     return isEmpty(lastName) ? (
-      <div>No match</div>
+      <div>Could not find any matches</div>
     ) : (
       <div css={matchPickerModal.wrapper}>
         <div>
@@ -170,14 +169,18 @@ class contributorMatchPicker extends React.Component {
         <div css={matchPickerModal.linksContainer}>
           {currentPage > 0 ? (
             <Link to="?" onClick={this.prevClick}>
-              Previous
+              {'<'} Previous
             </Link>
           ) : (
             <div />
           )}
           {currentPage < totalPages - 1 ? (
             <Link to="?" onClick={this.nextClick}>
-              Next
+              {currentPage === 0 ? (
+                <span>Select another match {'>'} </span>
+              ) : (
+                <span>Next {'>'}</span>
+              )}
             </Link>
           ) : (
             <div />

@@ -198,6 +198,7 @@ export const matchPickerModal = {
   container: css`
     display: flex;
     justify-content: space-between;
+    padding: 15px 0px;
   `,
   addressContainer: css`
     line-height: 0.5;
