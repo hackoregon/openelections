@@ -336,6 +336,21 @@ export function getContributionById(id) {
       if (response.status === 200) {
         const json = await response.json();
         const data = normalize(json, schema.contribution);
+
+        // Grab campaign info from list before adding fetched record
+        const contributions = getState().contributions.list;
+        const campaign =
+          contributions && contributions[id] && contributions[id].campaign
+            ? contributions[id].campaign
+            : false;
+        if (
+          campaign &&
+          data.entities.contributions &&
+          !data.entities.contributions[id].campaign
+        )
+          data.entities.contributions[id].campaign = campaign;
+
+        // Add record
         dispatch(addContributionEntities(data));
         dispatch(actionCreators.getContributionById.success(id));
         if (isGovAdmin(getState())) {

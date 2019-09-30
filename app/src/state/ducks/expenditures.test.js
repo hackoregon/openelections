@@ -242,7 +242,7 @@ describe('Side Effects', () => {
       { type: ADD_EXPENDITURE_ENTITIES },
       { type: actionTypes.GET_EXPENDITURE_BY_ID.SUCCESS },
     ];
-    const store = mockStore({});
+    const store = mockStore({ expenditures: expenditures.initialState });
 
     process.env.TOKEN = campaignAdminToken;
 

@@ -302,6 +302,21 @@ export function getExpenditureById(id) {
       const response = await api.getExpenditureById(id);
       if (response.status === 200) {
         const data = normalize(await response.json(), schema.expenditure);
+
+        // Grab campaign info from list before adding fetched record
+        const expenditures = getState().expenditures.list;
+        const campaign =
+          expenditures && expenditures[id] && expenditures[id].campaign
+            ? expenditures[id].campaign
+            : false;
+        if (
+          campaign &&
+          data.entities.expenditures &&
+          !data.entities.expenditures[id].campaign
+        )
+          data.entities.expenditures[id].campaign = campaign;
+
+        // Add record
         dispatch(addExpenditureEntities(data));
         dispatch(actionCreators.getExpenditureById.success(id));
         dispatch(getExpenditureActivities(id));

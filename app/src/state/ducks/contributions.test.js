@@ -247,7 +247,7 @@ describe('Side Effects', () => {
       { type: ADD_CONTRIBUTION_ENTITIES },
       { type: actionTypes.GET_CONTRIBUTION_BY_ID.SUCCESS },
     ];
-    const store = mockStore({});
+    const store = mockStore({ contributions: contributions.initialState });
 
     process.env.TOKEN = campaignAdminToken;
 
