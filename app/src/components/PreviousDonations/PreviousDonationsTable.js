@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PageHoc from '../PageHoc/PageHoc';
 import Table from '../Table';
 import Button from '../Button/Button';
@@ -48,15 +47,8 @@ const columns = [
 
 class PreviousDonationsTable extends React.Component {
   render() {
-    const {
-      isListLoading,
-      history,
-      pastContributions,
-      matchId,
-      currentId,
-    } = this.props;
+    const { history, pastContributions, matchId, currentId } = this.props;
 
-    const isLoading = isListLoading && !Array.isArray(pastContributions);
     const actions = [
       actionInfo('View', 'tableButton', (event, rowData) => {
         rowData.id === currentId
@@ -71,6 +63,7 @@ class PreviousDonationsTable extends React.Component {
         <Button
           onClick={event => props.action.onClick(event, props.data)}
           buttonType={props.action.buttonType}
+          disabled={!!(props.data.id === currentId)}
         >
           {props.data.id === currentId ? 'Current' : props.action.name}
         </Button>
@@ -86,7 +79,6 @@ class PreviousDonationsTable extends React.Component {
           </div>
         ) : (
           <Table
-            isLoading={isLoading}
             showTitle
             title="Previous Donations"
             columns={columns}
@@ -100,4 +92,4 @@ class PreviousDonationsTable extends React.Component {
   }
 }
 
-export default connect()(PreviousDonationsTable);
+export default PreviousDonationsTable;
