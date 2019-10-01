@@ -14,6 +14,7 @@ export const ActivityList = ({
   currentId = contributionId || expenditureId || governmentId,
   filteredArray = [],
 }) => {
+  console.log({ currentId }, { activitiesArray });
   activitiesArray.forEach(activity => {
     // How to do more efficiently? KELLY
     if (activity.activityId === parseInt(currentId)) {
@@ -33,7 +34,12 @@ export const ActivityList = ({
       ),
       'MM-DD-YYYY @ hh:mmaa'
     );
-
+    console.log({ activity });
+    // const typeOfActivity =
+    //   capitalizedActivity === 'contribution' ||
+    //   capitalizedActivity === 'expenditure'
+    //     ? capitalizedActivity
+    //     : 'comment';
     return (
       <div key={index}>
         <div css={activitySectionStyles.timelineGroup}>
@@ -45,6 +51,10 @@ export const ActivityList = ({
           <div css={activitySectionStyles.timeline} />
         </div>
         <p css={activitySectionStyles.username}>{activity.notes}</p>
+        {/* OR some version of... 
+            <p css={activitySectionStyles.username}>
+              {`${activity.username} added a ${typeOfActivity}`}
+            </p> */}
       </div>
     );
   });

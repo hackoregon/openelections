@@ -6,7 +6,6 @@ import {
   updateExpenditure,
   getExpenditureById,
   getCurrentExpenditure,
-  getCurrentExpenditureId,
 } from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
@@ -75,7 +74,7 @@ class ExpensesDetail extends React.Component {
   constructor(props) {
     super(props);
     const { getExpenditureById, expenditureId } = this.props;
-    getExpenditureById(parseInt(expenditureId));
+    if (expenditureId) getExpenditureById(parseInt(expenditureId));
   }
 
   render() {
@@ -177,7 +176,6 @@ class ExpensesDetail extends React.Component {
 
 export default connect(
   state => ({
-    currentExpenditureId: getCurrentExpenditureId(state),
     currentExpenditure: getCurrentExpenditure(state),
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
@@ -187,9 +185,9 @@ export default connect(
   }),
   dispatch => ({
     push: url => dispatch(push(url)),
-    getExpenditureById: id => dispatch(getExpenditureById(id)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
   })
 )(ExpensesDetail);

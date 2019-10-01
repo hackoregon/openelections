@@ -2,9 +2,9 @@ import * as React from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
-import { getCurrentGovernmentId } from '../../../../state/ducks/governments';
 import { getActivities } from '../../../../state/ducks/activities';
 import { ActivityList } from '../../../../components/Forms/ActivityStream/ActivitySection';
+import { getCurrentGovernmentId } from '../../../../state/ducks/governments';
 
 const styles = css`
   ul {
@@ -15,14 +15,20 @@ const styles = css`
 `;
 
 class ActivityStreamCard extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    const { governmentActivities, governmentId } = this.props;
+    const { currentGovernmentId } = this.props;
+    console.log({ currentGovernmentId });
+    const { getActivities } = this.props;
     return (
       <div css={styles}>
         <h3>Recent Activity</h3>
         <ActivityList
-          activitiesArray={governmentActivities}
-          governmentId={governmentId}
+          governmentId={currentGovernmentId}
+          activitiesArray={getActivities}
         />
       </div>
     );
@@ -31,6 +37,6 @@ class ActivityStreamCard extends React.Component {
 
 export default connect(state => ({
   isLoading: state.summary.isLoading,
-  governmentId: getCurrentGovernmentId(state),
-  governmentActivities: getActivities(state),
+  currentGovernmentId: getCurrentGovernmentId(state),
+  getActivities: getActivities(state),
 }))(ActivityStreamCard);
