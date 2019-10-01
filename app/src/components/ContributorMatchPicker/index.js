@@ -21,6 +21,14 @@ import {
   getCurrentContributionMatch,
 } from '../../state/ducks/matches';
 
+function getMatchIcon(matchStrength) {
+  let matchIcon = <NoMatchIcon css={matchColors.no} />;
+  if (matchStrength !== 'none') {
+    matchIcon = <MatchIcon css={matchColors[matchStrength]} />;
+  }
+  return matchIcon;
+}
+
 const Header = props => {
   const {
     contributorMatches,
@@ -31,24 +39,30 @@ const Header = props => {
   } = props;
   let matchStrength = 'none';
   let matchSelectedText = '';
+  let hasMatches = false;
 
   if (contributorMatches[contributionId]) {
     matchStrength = contributorMatches[contributionId].matchStrength;
+    const x = contributorMatches[contributionId].results;
+    hasMatches = !!(x && [...x.exact, ...x.strong, ...x.weak].length);
   }
-  if (currentMatchId) {
+  if (hasMatches) {
+    if (currentMatchId) {
+      matchSelectedText =
+        matchStrength === 'none'
+          ? 'No Match (selected)'
+          : `${matchStrength} Match (selected)`;
+    } else {
+      matchSelectedText = 'Click to select a match';
+    }
+  } else {
     matchSelectedText =
       matchStrength === 'none'
-        ? 'No matches found'
-        : `${matchStrength} match selected`;
-  } else {
-    matchSelectedText = 'Click to select a match';
+        ? 'No Matches Found'
+        : `${matchStrength} Match (selected)`;
   }
-
   // Switch color and symbol based on matchStrength
-  let matchIcon = <NoMatchIcon css={matchColors.no} />;
-  if (matchStrength !== 'none') {
-    matchIcon = <MatchIcon css={matchColors[matchStrength]} />;
-  }
+  const matchIcon = getMatchIcon(matchStrength);
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <h3
@@ -63,7 +77,16 @@ const Header = props => {
     >
       Contributor {matchIcon}{' '}
       {currentMatchId && (
-        <span style={{ fontSize: '.7em' }}>{matchSelectedText}</span>
+        <span
+          style={{
+            fontSize: '.7em',
+            textTransform: 'capitalize',
+            display: 'inline-block',
+            verticalAlign: '5px',
+          }}
+        >
+          {matchSelectedText}
+        </span>
       )}
     </h3>
   );
@@ -133,47 +156,87 @@ class contributorMatchPicker extends React.Component {
       state,
       zip,
     } = page;
-    return isEmpty(lastName) ? (
-      <div>Could not find any matches</div>
-    ) : (
+    const matchIcon = getMatchIcon(matchStrength);
+    const noMatchText =
+      matchStrength === 'none' && pages.length === 1
+        ? 'Could not find any matches'
+        : 'No Match';
+    return (
       <div css={matchPickerModal.wrapper}>
         <div>
-          <div style={{ position: 'absolute', top: '16px' }}>
-            {inPortland ? (
-              <span css={matchColors.exact}>Address in Portland</span>
-            ) : (
-              <span css={matchColors.no}>Address not in Portland</span>
-            )}
-          </div>
-          <div css={matchPickerModal.container}>
-            <div css={matchPickerModal.addressContainer}>
-              <div css={matchPickerModal.address}>
-                <p css={matchPickerModal.addressFields}>
-                  {firstName} {lastName}
-                </p>
-                <p css={matchPickerModal.addressFields}>{address1}</p>
-                {address2 && (
-                  <p css={matchPickerModal.addressFields}>{address2}</p>
-                )}
-                <p css={matchPickerModal.addressFields}>
-                  {city}, {state} {zip}
-                </p>
+          <div id="matchHeader" style={{ position: 'absolute', top: '16px' }}>
+            <div style={{ paddingTop: '5px' }} css={matchPickerModal.matchText}>
+              <div>
+                {matchIcon}{' '}
+                <span style={{ display: 'inline-block', verticalAlign: '5px' }}>
+                  Match: {matchStrength}
+                </span>
               </div>
             </div>
-            <div css={matchPickerModal.acceptButtonContainer}>
-              {selected ? (
-                <span css={matchPickerModal.matchText}>
-                  {matchStrength} Match Selected
-                </span>
-              ) : (
+          </div>
+          <div css={matchPickerModal.container}>
+            <div id="matchAddress" css={matchPickerModal.addressContainer}>
+              <div css={matchPickerModal.address}>
+                {matchStrength === 'none' ? (
+                  <div
+                    css={matchPickerModal.addressFields}
+                    style={{
+                      padding: '15px 0px',
+                      width: '10em',
+                      lineHeight: '25px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {noMatchText}
+                  </div>
+                ) : (
+                  <div>
+                    {inPortland ? (
+                      <span
+                        css={[
+                          matchColors.exact,
+                          matchPickerModal.addressFields,
+                        ]}
+                      >
+                        Address in Portland
+                      </span>
+                    ) : (
+                      <span
+                        css={[matchColors.no, matchPickerModal.addressFields]}
+                      >
+                        Address not in Portland
+                      </span>
+                    )}
+                    <p css={matchPickerModal.addressFields}>
+                      {firstName} {lastName}
+                    </p>
+                    <p css={matchPickerModal.addressFields}>{address1}</p>
+                    {address2 && (
+                      <p css={matchPickerModal.addressFields}>{address2}</p>
+                    )}
+                    <p css={matchPickerModal.addressFields}>
+                      {city}, {state} {zip}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div id="matchAccept" css={matchPickerModal.acceptButtonContainer}>
+              <div>
                 <Button
+                  style={
+                    selected && {
+                      opacity: '0.4',
+                    }
+                  }
                   css={matchPickerModal.acceptButton}
                   buttonType="manage"
                   onClick={this.handleSubmit}
+                  disabled={selected}
                 >
-                  Accept
+                  {selected ? 'Accepted' : 'Accept'}
                 </Button>
-              )}
+              </div>
             </div>
           </div>
         </div>

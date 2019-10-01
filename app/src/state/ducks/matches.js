@@ -133,12 +133,11 @@ export const getCurrentMatchResults = state => {
   const currentMatches = getCurrentContributionMatch(state);
   const matches = [];
   const results = currentMatches.results;
+  const currentContribution = getCurrentContribution(state);
   let match = {};
+  let selectedMatchId = '';
   if (results) {
-    const currentContribution = getCurrentContribution(state);
-    const selectedMatchId = currentContribution
-      ? currentContribution.matchId
-      : '';
+    selectedMatchId = currentContribution ? currentContribution.matchId : '';
     const matchId = currentMatches.matchId;
     // Create a easy to traverse structure
     for (const matchStrength of matchStrengthEnum) {
@@ -172,6 +171,20 @@ export const getCurrentMatchResults = state => {
       }
     }
   }
-
+  if (currentMatches.matchStrength !== 'exact') {
+    if (currentContribution.matchStrength === 'none') {
+      matches.unshift({
+        id: results.none,
+        selected: true,
+        matchStrength: 'none',
+      });
+    } else {
+      matches.push({
+        id: results.none,
+        selected: false,
+        matchStrength: 'none',
+      });
+    }
+  }
   return matches;
 };
