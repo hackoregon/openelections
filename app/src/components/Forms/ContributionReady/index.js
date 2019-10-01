@@ -29,6 +29,7 @@ import AddContributionForm from '../AddContribution/AddContributionForm';
 import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
+import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -92,10 +93,18 @@ class ContributionReadyForm extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
+      pastContributions,
+      history,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
       initialFormData = mapContributionDataToForm(currentContribution);
+    }
+    let matchId = null;
+    if (currentContribution) {
+      matchId = currentContribution.matchId
+        ? currentContribution.matchId
+        : null;
     }
     const isReadOnly = !!(
       isGovAdmin ||
@@ -165,6 +174,16 @@ class ContributionReadyForm extends React.Component {
                   showOccupationLetter={visibleIf.showOccupationLetter}
                 />
               </ReadOnly>
+              {isGovAdmin ? (
+                <div style={{ paddingTop: '50px' }}>
+                  <PreviousDonationsTable
+                    matchId={matchId}
+                    history={history}
+                    currentId={currentContribution.id}
+                    pastContributions={pastContributions.list[matchId]}
+                  />
+                </div>
+              ) : null}
             </>
           );
         }}
@@ -181,6 +200,7 @@ export default connect(
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
     currentContribution: getCurrentContribution(state),
+    pastContributions: state.pastContributions,
   }),
   dispatch => ({
     push: url => dispatch(push(url)),
