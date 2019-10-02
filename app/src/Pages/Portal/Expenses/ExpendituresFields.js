@@ -10,7 +10,6 @@ import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';
 import SelectField from '../../../components/Fields/SelectField';
 import TextField from '../../../components/Fields/TextField';
-import AddressLookupField from '../../../components/Fields/AddressLookupField';
 import ZipField from '../../../components/Fields/ZipField';
 import {
   ExpenditureTypeEnum,
@@ -18,6 +17,7 @@ import {
   PayeeTypeEnum,
   PurposeTypeEnum,
   PaymentMethodEnum,
+  dateToMicroTime,
 } from '../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -76,12 +76,15 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
-    dateOriginalTransaction: format(
-      parseFromTimeZone(dateOriginalTransaction, {
-        timeZone: 'America/Los_Angeles',
-      }),
-      'YYYY-MM-DD'
-    ),
+    dateOriginalTransaction:
+      dateOriginalTransaction === null
+        ? null
+        : format(
+            parseFromTimeZone(dateOriginalTransaction, {
+              timeZone: 'America/Los_Angeles',
+            }),
+            'YYYY-MM-DD'
+          ),
     vendorForOriginalPurchase,
   };
 };
@@ -110,9 +113,7 @@ export const mapExpenditureFormToData = data => {
 
   const transformed = {
     amount: parseFloat(amount),
-    date: new Date(
-      convertToTimeZone(date, { timeZone: 'America/Los_Angeles' })
-    ).getTime(),
+    date: dateToMicroTime(date),
     type: expenditureType,
     subType: expenditureSubType,
     checkNumber,
@@ -127,36 +128,13 @@ export const mapExpenditureFormToData = data => {
     zip: zipcode,
     notes,
     status,
-    dateOriginalTransaction: convertToTimeZone(dateOriginalTransaction, {
-      timeZone: 'America/Los_Angeles',
-    }).getTime(),
+    dateOriginalTransaction:
+      dateOriginalTransaction === null
+        ? null
+        : dateToMicroTime(dateOriginalTransaction),
     vendorForOriginalPurchase,
   };
   return transformed;
-};
-
-export const expendituresEmptyState = {
-  // BASICS VALUES
-  id: '',
-  amount: '',
-  date: '',
-  expenditureType: '',
-  expenditureSubType: '',
-  paymentMethod: '',
-  checkNumber: '',
-  purposeType: '',
-  dateOriginalTransaction: '',
-  vendorForOriginalPurchase: '',
-
-  // PAYEE INFO
-  payeeType: PayeeTypeEnum.INDIVIDUAL,
-  payeeName: '',
-  streetAddress: '',
-  addressLine2: '',
-  city: '',
-  state: 'OR',
-  zipcode: '',
-  notes: '',
 };
 
 export const fields = {
@@ -248,13 +226,13 @@ export const fields = {
     label: 'Date of Original Transaction',
     section: FormSectionEnum.BASIC,
     component: DateField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   vendorForOriginalPurchase: {
     label: 'Vendor for Original Purchase',
     section: FormSectionEnum.BASIC,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   paymentMethod: {
     label: 'Payment Method',

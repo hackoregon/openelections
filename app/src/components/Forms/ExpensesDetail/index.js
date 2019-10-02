@@ -37,6 +37,9 @@ const onSubmit = (data, props) => {
 
   // All dates must be converted to microtime to compare
   initialValues.date = dateToMicroTime(initialValues.date);
+  initialValues.dateOriginalTransaction = dateToMicroTime(
+    initialValues.dateOriginalTransaction
+  );
   for (const [field, value] of Object.entries(submittedValues)) {
     if (value !== initialValues[field]) {
       if (!(!alteredValues[field] && !value)) alteredValues[field] = value;
