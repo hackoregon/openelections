@@ -26,8 +26,8 @@ export default function ZipField({ id, label, formik }) {
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
-      value={formik.values[id]}
-      onChange={formik.handleChange(id)}
+      value={formik.values[id] || ''}
+      onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       autoComplete="on"
       fullWidth

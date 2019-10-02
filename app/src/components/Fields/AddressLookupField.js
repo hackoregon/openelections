@@ -76,20 +76,24 @@ class AddressLookupField extends React.Component {
     const place = this.autocomplete.getPlace();
     const addressFields = parseGooglePlace(place);
     const { updateFields, id, formik } = this.props;
-
     // eslint-disable-next-line no-restricted-syntax
     for (const updateField in updateFields) {
       if (updateFields[updateField]) {
         // If the update field is the lookup field update though the ref
         if (updateFields[updateField] === id) {
-          this.autocompleteInput.current.value = addressFields[updateField];
+          this.autocompleteInput.current.value = formik.values[id];
         }
-        // Set each to it's formik value
-        formik.setFieldValue(
-          updateFields[updateField],
-          addressFields[updateField],
-          false
-        );
+        // If the street number is missing lets go with what street the user typed in.
+        if (updateFields[updateField] === id && !addressFields.streetNumber) {
+          formik.setFieldValue(updateFields[id], formik.values[id], false);
+        } else {
+          // Else lets use the values from places API
+          formik.setFieldValue(
+            updateFields[updateField],
+            addressFields[updateField],
+            false
+          );
+        }
       }
     }
   }
