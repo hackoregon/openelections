@@ -69,6 +69,7 @@ export const mapContributionDataToForm = contribution => {
     employerName,
     employerCity,
     employerState,
+    employerCountry,
     inKindDescription,
     occupationLetterDate,
     status,
@@ -113,6 +114,7 @@ export const mapContributionDataToForm = contribution => {
     employerName: employerName || '',
     employerCity: employerCity || '',
     employerState: employerState || '',
+    employerCountry: employerCountry || 'USA',
     inKindDescription: inKindDescription || '',
     paymentMethod: paymentMethod || '',
     occupationLetterDate: occupationLetterDate
@@ -147,6 +149,7 @@ export const mapContributionFormToData = data => {
     employerName,
     employerCity,
     employerState,
+    employerCountry,
     occupation,
     occupationLetterDate,
     inKindDescription,
@@ -185,6 +188,7 @@ export const mapContributionFormToData = data => {
     employerName,
     employerCity,
     employerState,
+    employerCountry,
     checkNumber,
     contributorType: typeOfContributor,
     subType: subTypeOfContribution,
@@ -416,7 +420,15 @@ export const fields = {
     section: FormSectionEnum.CONTRIBUTOR,
     component: SelectField,
     validation: Yup.string(),
-    options: { values: ['Employed', 'Self Employed', 'Not Employed', 'Other'] },
+    options: {
+      values: [
+        'Employed',
+        'Self Employed',
+        'Not Employed',
+        'Foreign Employment',
+        'Other',
+      ],
+    },
   },
   employerName: {
     label: "Employer's Name",
@@ -436,6 +448,12 @@ export const fields = {
     component: SelectField,
     validation: Yup.string(),
     options: { values: stateList },
+  },
+  employerCountry: {
+    label: 'Employer Country',
+    section: FormSectionEnum.CONTRIBUTOR,
+    component: TextField,
+    validation: Yup.string().nullable(),
   },
   // REQUIRED IF: In-Kind Contribution, In-Kind Forgiven Accounts Payable,
   // or In-Kind Forgiven Personal Expenditure was selection.
@@ -542,6 +560,7 @@ export const validate = values => {
     employerName,
     employerCity,
     employerState,
+    employerCountry,
     subTypeOfContribution,
     inKindType,
     lastName,
@@ -575,7 +594,9 @@ export const validate = values => {
   visible.emptyOccupationLetterDate = isEmpty(occupationLetterDate);
 
   visible.showEmployerSection =
-    values.occupation === 'Employed' && visible.isPerson;
+    (values.occupation === 'Employed' ||
+      values.occupation === 'Foreign Employment') &&
+    visible.isPerson;
 
   visible.showInKindFields = !!inKindContributionValues.includes(
     subTypeOfContribution
