@@ -194,13 +194,16 @@ export const buttonBar = {
 export const matchPickerModal = {
   wrapper: css`
     width: 320px;
+    min-height: 180px;
   `,
   container: css`
     display: flex;
     justify-content: space-between;
+    padding: 15px 0px;
   `,
   addressContainer: css`
-    line-height: 0.5;
+    line-height: 0.9;
+    min-height: 100px;
   `,
   addressFields: css`
     margin: 10px;
@@ -209,22 +212,34 @@ export const matchPickerModal = {
     display: flex;
     flex-direction: column;
     width: max-content;
+    padding: 15px 0px;
   `,
   acceptButtonContainer: css`
     display: flex;
-    align-items: center;
+    margin-top: 40px;
+    // align-items: center;
   `,
   acceptButton: css`
     height: 35px;
+    button:disabled,
+    button[disabled] {
+      border: 1px solid grey;
+      color: #grey;
+    }
   `,
   linksContainer: css`
     display: flex;
     width: 100%;
     justify-content: space-between;
   `,
-  matchText: css`
+  matchTextHeader: css`
     text-align: center;
     text-transform: capitalize;
+    font-size: 16px;
+  `,
+  matchText: css`
+    text-align: center;
+    text-transform: uppercase;
   `,
 };
 

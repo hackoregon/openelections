@@ -24,10 +24,6 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 
 const columns = isGovAdmin => [
   {
-    field: 'id', // MSCOTTO TODO remove this field from table
-    title: 'ID',
-  },
-  {
     field: 'date',
     title: 'Date',
     render: rowData =>
