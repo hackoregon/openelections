@@ -266,9 +266,7 @@ export const ContributorSection = ({
             ) : null}
           </div>
           <div>
-            <h2 css={[containers.fullWidth, sectionStyles.notes]}>
-              {formFields.notes}
-            </h2>
+            <h2 css={sectionStyles.notes}>{formFields.notes}</h2>
           </div>{' '}
         </div>
       ) : null}

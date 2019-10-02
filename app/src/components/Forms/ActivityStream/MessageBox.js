@@ -39,7 +39,7 @@ const MessageBox = ({
         <h2 css={messageBoxStyles.reply}>Reply</h2>
         <div css={messageBoxStyles.timeline} />
       </div>
-      <div css={messageBoxStyles.boxAndButton}>
+      <div css={messageBoxStyles.boxAndButton} style={{ marginRight: '0px' }}>
         <TextareaAutosize
           css={messageBoxStyles.messageBox}
           rows="20"

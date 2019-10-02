@@ -176,7 +176,7 @@ class ContributionReadyForm extends React.Component {
                 />
               </ReadOnly>
               {isGovAdmin ? (
-                <div style={{ paddingTop: '50px' }}>
+                <div style={{ paddingTop: '50px', marginRight: '38px' }}>
                   <PreviousDonationsTable
                     matchId={matchId}
                     history={history}

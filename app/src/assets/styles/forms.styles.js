@@ -286,7 +286,6 @@ export const activitySectionStyles = {
     color: #979797;
   `,
   reply: css`
-    margin-right: 38px;
     font-size: 28px;
     line-height: 33px;
     color: #000000;
@@ -309,7 +308,7 @@ export const activitySectionStyles = {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-right: 38px;
+    width: 100%;
   `,
   sendToCampaignButton: css`
     padding: 30px 30px;
