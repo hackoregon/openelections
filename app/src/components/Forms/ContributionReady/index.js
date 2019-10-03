@@ -186,13 +186,7 @@ class ContributionReadyForm extends React.Component {
                 </div>
               ) : null}
               {/* {isSubmited && this.props.isGovAdmin ? ( */}
-              <ActivityStreamForm
-                isValid={isValid}
-                onSubmit={onSubmit}
-                contributionId={contributionId}
-                activitiesList={this.props.activitiesList}
-                type="contribution"
-              />
+              <ActivityStreamForm id={contributionId} type="contribution" />
               {/* ) : null} */}
             </>
           );

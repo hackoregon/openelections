@@ -157,15 +157,7 @@ class ExpensesDetail extends React.Component {
                   formFields={formFields}
                 />
               </ReadOnly>
-              {/* {isSubmited && this.props.isGovAdmin ? ( */}
-              <ActivityStreamForm
-                isValid={isValid}
-                onSubmit={onSubmit}
-                expenditureId={expenditureId}
-                activitiesList={this.props.activitiesList}
-                type="expenditure"
-              />
-              {/* ) : null} */}
+              <ActivityStreamForm id={expenditureId} type="expenditure" />
             </>
           );
         }}

@@ -1,45 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { getActivities } from '../../../state/ducks/activities';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
 
-export const ActivityList = ({
-  activitiesArray,
-  contributionId,
-  expenditureId,
-  governmentId,
-  currentId = contributionId || expenditureId || governmentId,
-  filteredArray = [],
-}) => {
-  console.log({ currentId }, { activitiesArray });
-  activitiesArray.forEach(activity => {
-    // How to do more efficiently? KELLY
-    if (activity.activityId === parseInt(currentId)) {
-      filteredArray.push(activity);
-    }
-  });
-
-  return Object.values(filteredArray).map((activity, index) => {
-    // const capitalizedActivity =
-    //   activity.activityType.charAt(0).toUpperCase() +
-    //   activity.activityType.slice(1);
+const AList = ({ activities }) => {
+  return Object.values(activities).map((activity, index) => {
     const newDate = format(
       new Date(
         parseFromTimeZone(activity.createdAt, {
           timeZone: 'America/Los_Angeles',
         })
       ),
-      'MM-DD-YYYY @ hh:mmaa'
+      'MM-DD-YYYY @ hh:mma'
     );
-    console.log({ activity });
-    // const typeOfActivity =
-    //   capitalizedActivity === 'contribution' ||
-    //   capitalizedActivity === 'expenditure'
-    //     ? capitalizedActivity
-    //     : 'comment';
     return (
       <div key={index}>
         <div css={activitySectionStyles.timelineGroup}>
@@ -60,29 +38,17 @@ export const ActivityList = ({
   });
 };
 
-export const ActivitySection = ({
-  formFields,
-  initialValues,
-  activitiesArray,
-  contributionId,
-  expenditureId,
-  type,
-  ...props
-}) => (
+export const ActivityList = connect(state => ({
+  activities: getActivities(state),
+}))(AList);
+
+export const ActivitySection = ({ id, type }) => (
   <div css={activitySectionStyles.main}>
     <hr css={activitySectionStyles.divider} />
     <h3 css={activitySectionStyles.title}>Transaction History</h3>
     <ul css={activitySectionStyles.activityList}>
-      <ActivityList
-        activitiesArray={activitiesArray}
-        contributionId={contributionId}
-        expenditureId={expenditureId}
-      />
+      <ActivityList />
     </ul>
-    <MessageBox
-      contributionId={contributionId}
-      expenditureId={expenditureId}
-      type={type}
-    />
+    <MessageBox id={id} type={type} />
   </div>
 );

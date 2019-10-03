@@ -9,8 +9,7 @@ import { postContributionComment } from '../../../state/ducks/contributions';
 import { messageBoxStyles } from '../../../assets/styles/forms.styles';
 
 const MessageBox = ({
-  contributionId,
-  expenditureId,
+  id,
   type,
   postContributionComment,
   postExpenditureComment,
@@ -25,10 +24,10 @@ const MessageBox = ({
   function updateContributionOrExpenditure(messageText) {
     switch (type) {
       case 'contribution':
-        postContributionComment(contributionId, messageText);
+        postContributionComment(id, messageText);
         break;
       case 'expenditure':
-        postExpenditureComment(expenditureId, messageText);
+        postExpenditureComment(id, messageText);
         break;
       default:
     }
@@ -70,10 +69,10 @@ export default connect(
   state => ({}),
   dispatch => {
     return {
-      postContributionComment: (contributionId, message) =>
-        dispatch(postContributionComment(contributionId, message)),
-      postExpenditureComment: (expenditureId, message) =>
-        dispatch(postExpenditureComment(expenditureId, message)),
+      postContributionComment: (id, message) =>
+        dispatch(postContributionComment(id, message)),
+      postExpenditureComment: (id, message) =>
+        dispatch(postExpenditureComment(id, message)),
     };
   }
 )(MessageBox);

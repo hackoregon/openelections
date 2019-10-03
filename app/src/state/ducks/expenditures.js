@@ -321,6 +321,7 @@ export function postExpenditureComment(id, comment) {
       const response = await api.postExpenditureComment(id, comment);
       if (response.status === 204) {
         dispatch(actionCreators.postExpenditureComment.success());
+        dispatch(getExpenditureActivities(id));
       } else {
         dispatch(actionCreators.postExpenditureComment.failure());
       }
