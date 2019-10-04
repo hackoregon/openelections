@@ -144,11 +144,15 @@ export const BasicsSection = ({
     {showCompliant === 'in_compliance' ? (
       <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
     ) : null}
-    <div css={sectionStyles.main}>
+    <div>
       <h3 css={sectionStyles.title}>Basics</h3>
-      <div css={containers.main}>
-        <h2>{formFields.amount}</h2>
-        <h2>{formFields.date}</h2>
+      <div css={containers.fullWidth}>
+        <div css={containers.halfWidth}>
+          <h2>{formFields.amount}</h2>
+          <h2>{formFields.date}</h2>
+        </div>
+      </div>
+      <div css={containers.halfWidth}>
         <h2>{formFields.expenditureType}</h2>
         <h2>{formFields.expenditureSubType}</h2>
         {showOriginalDateAndVendor ? (
@@ -169,9 +173,9 @@ export const BasicsSection = ({
 
 export const PayeeInfoSection = ({ formFields }) => (
   <>
-    <div css={sectionStyles.main}>
+    <div>
       <h3 css={sectionStyles.title}>Payee Information</h3>
-      <div css={containers.sectionTwo}>
+      <div css={containers.halfWidth}>
         <h2>{formFields.payeeType}</h2>
         <h2>{formFields.payeeName}</h2>
       </div>
@@ -180,12 +184,10 @@ export const PayeeInfoSection = ({ formFields }) => (
       <div css={containers.cityStateZip}>
         <h2>{formFields.city}</h2>
         <h2>{formFields.state}</h2>
-      </div>
-      <div css={containers.sectionTwo}>
         <h2>{formFields.zipcode}</h2>
       </div>
     </div>
-    <div css={sectionStyles.main}>
+    <div>
       <h2 css={[containers.fullWidth, sectionStyles.notes]}>
         {formFields.notes}
       </h2>
