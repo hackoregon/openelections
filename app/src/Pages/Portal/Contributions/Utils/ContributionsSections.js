@@ -182,8 +182,12 @@ export const BasicsSection = ({
       <div css={containers.halfWidth}>
         <h2>{formFields.dateOfContribution}</h2>
         <h2>{formFields.typeOfContribution}</h2>
+      </div>
+      <div css={containers.halfWidth}>
         <h2>{formFields.subTypeOfContribution}</h2>
         <h2>{formFields.amountOfContribution}</h2>
+      </div>
+      <div css={containers.halfWidth}>
         <h2>{formFields.oaeType}</h2>
         {showInKindFields ? <h2>{formFields.inKindType}</h2> : null}
         {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
@@ -226,7 +230,7 @@ export const ContributorSection = ({
           <h2>{formFields.lastName}</h2>
         </div>
       ) : (
-        <h2>{formFields.entityName}</h2>
+        <h2 css={containers.fullWidth}>{formFields.entityName}</h2>
       )}
       <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
       <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
@@ -242,24 +246,21 @@ export const ContributorSection = ({
       </div>
       {isPerson ? (
         <div>
-          <div css={containers.halfWidth} style={{ marginTop: '25px' }}>
+          <div css={containers.halfWidth}>
             <h2>{formFields.occupation}</h2>
             {showOccupationLetter ? (
               <h2>{formFields.occupationLetterDate}</h2>
             ) : null}
           </div>
-          <div css={containers.cityStateZip}>
+          <div css={containers.fullWidth}>
             {showEmployerSection ? (
               <>
                 {emptyOccupationLetterDate ? (
-                  <>
-                    <h2 css={containers.fullWidth}>
-                      {formFields.employerName}
-                    </h2>
+                  <div css={containers.cityStateZip}>
+                    <h2>{formFields.employerName}</h2>
                     <h2>{formFields.employerCity}</h2>
                     <h2>{formFields.employerState}</h2>
-                    {/* <h2>{formFields.employerZipcode}</h2> */}
-                  </>
+                  </div>
                 ) : null}
               </>
             ) : null}
@@ -280,9 +281,9 @@ export const OtherDetailsSection = ({
   formValues,
   handleSubmit,
 }) => (
-  <div>
+  <div css={containers.fullWidth}>
     <h3 css={sectionStyles.title}>Other Details</h3>
-    <div css={containers.main}>
+    <div>
       <h2>{formFields.linkToDocumentation}</h2>
       <div css={containers.header}>
         <Button
