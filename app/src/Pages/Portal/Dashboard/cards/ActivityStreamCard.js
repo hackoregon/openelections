@@ -3,7 +3,6 @@ import * as React from 'react';
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import {
-  getActivities,
   getCampaignActivities,
   getGovernmentActivities,
 } from '../../../../state/ducks/activities';

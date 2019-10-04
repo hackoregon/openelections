@@ -9,11 +9,15 @@ import { postContributionComment } from '../../../state/ducks/contributions';
 import { messageBoxStyles } from '../../../assets/styles/forms.styles';
 
 const MessageBox = ({
-  id,
-  type,
+  contributionId,
+  expenditureId,
   postContributionComment,
   postExpenditureComment,
 }) => {
+  const id = contributionId || expenditureId;
+  const postComment = contributionId
+    ? postContributionComment
+    : postExpenditureComment;
   const [messageText, setText] = React.useState('');
   function handleTextChange(event) {
     setText(event.target.value);
@@ -21,17 +25,17 @@ const MessageBox = ({
   function clearOnSubmit() {
     setText('');
   }
-  function updateContributionOrExpenditure(messageText) {
-    switch (type) {
-      case 'contribution':
-        postContributionComment(id, messageText);
-        break;
-      case 'expenditure':
-        postExpenditureComment(id, messageText);
-        break;
-      default:
-    }
-  }
+  // function updateContributionOrExpenditure(messageText) {
+  //   switch (type) {
+  //     case 'contribution':
+  //       postContributionComment(id, messageText);
+  //       break;
+  //     case 'expenditure':
+  //       postExpenditureComment(id, messageText);
+  //       break;
+  //     default:
+  //   }
+  // }
   return (
     <>
       <div css={messageBoxStyles.timelineGroup}>
@@ -54,8 +58,8 @@ const MessageBox = ({
           to="#"
           css={messageBoxStyles.sendToCampaignButton}
           onClick={() => {
-            updateContributionOrExpenditure(messageText);
-            clearOnSubmit(messageText);
+            postComment(id, messageText);
+            clearOnSubmit();
           }}
         >
           Submit Message to Campaign

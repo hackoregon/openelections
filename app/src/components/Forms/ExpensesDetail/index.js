@@ -157,7 +157,7 @@ class ExpensesDetail extends React.Component {
                   formFields={formFields}
                 />
               </ReadOnly>
-              <ActivityStreamForm id={expenditureId} type="expenditure" />
+              <ActivityStreamForm expenditureId={expenditureId} />
             </>
           );
         }}

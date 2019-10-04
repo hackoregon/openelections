@@ -531,26 +531,26 @@ export function updatePassword(currentPassword, newPassword) {
 
 //   path: '/activities',
 //   method: 'post',
-export function getCampaignActivities(campaignId) {
-  return post(`${baseUrl()}/activities`, { campaignId }).then(response =>
+export function getCampaignActivities(activitiesAttrs) {
+  return post(`${baseUrl()}/activities`, activitiesAttrs).then(response =>
     response.json()
   );
 }
 
-export function getGovernmentActivities(governmentId) {
-  return post(`${baseUrl()}/activities`, { governmentId }).then(response =>
+export function getGovernmentActivities(activitiesAttrs) {
+  return post(`${baseUrl()}/activities`, activitiesAttrs).then(response =>
     response.json()
   );
 }
 
-export function getContributionActivities(contributionId) {
-  return post(`${baseUrl()}/activities`, { contributionId }).then(response =>
+export function getContributionActivities(activitiesAttrs) {
+  return post(`${baseUrl()}/activities`, activitiesAttrs).then(response =>
     response.json()
   );
 }
 
-export function getExpenditureActivities(expenditureId) {
-  return post(`${baseUrl()}/activities`, { expenditureId }).then(response =>
+export function getExpenditureActivities(activitiesAttrs) {
+  return post(`${baseUrl()}/activities`, activitiesAttrs).then(response =>
     response.json()
   );
 }

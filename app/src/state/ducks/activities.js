@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
+import { RESET_STATE, resetState } from './common';
 
 export const STATE_KEY = 'activities';
 export const ADD_ACTIVITY_ENTITIES = 'ADD_ACTIVITY_ENTITIES';
@@ -42,12 +43,16 @@ export const initialState = {
   error: null,
 };
 
+export const resetActvityState = resetState;
 // Reducer
 export default createReducer(initialState, {
+  [RESET_STATE]: () => {
+    return { ...initialState };
+  },
   [ADD_ACTIVITY_ENTITIES]: (state, action) => {
     return {
       ...state,
-      list: { ...action.payload.entities.activities },
+      list: { ...state.list, ...action.payload.entities.activities },
       listOrder: action.payload.result,
     };
   },
@@ -146,11 +151,11 @@ export function getGovernmentActivities(governmentId) {
   };
 }
 
-export function getContributionActivities(contributionId) {
+export function getContributionActivities(contributionAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributionActivities.request());
     try {
-      const response = await api.getContributionActivities(contributionId);
+      const response = await api.getContributionActivities(contributionAttrs);
       const data = normalize(response, [schema.activity]);
       dispatch(addActivityEntities(data));
       dispatch(actionCreators.getContributionActivities.success());
@@ -160,17 +165,38 @@ export function getContributionActivities(contributionId) {
   };
 }
 
-export function getExpenditureActivities(expenditureId) {
+export function getExpenditureActivities(activitiesAttrs) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getExpenditureActivities.request());
     try {
-      const response = await api.getExpenditureActivities(expenditureId);
+      const response = await api.getExpenditureActivities(activitiesAttrs);
       const data = normalize(response, [schema.activity]);
       dispatch(addActivityEntities(data));
       dispatch(actionCreators.getExpenditureActivities.success());
     } catch (error) {
       dispatch(actionCreators.getExpenditureActivities.failure(error));
     }
+  };
+}
+// {id, page, pageSize, clearFirst=true}
+export function getActivitiesByIdType(activitiesAttrs, clearFirst = true) {
+  const {
+    expenditureId,
+    contributionId,
+    governmentId,
+    campaignId,
+  } = activitiesAttrs;
+  return async (dispatch, getState, { api, schema }) => {
+    if (clearFirst) {
+      const data = normalize({ list: [], listOrder: [] }, [schema.activity]);
+      dispatch(addActivityEntities(data));
+    }
+    if (expenditureId) dispatch(getExpenditureActivities(activitiesAttrs));
+    if (contributionId) {
+      dispatch(getContributionActivities(activitiesAttrs));
+    }
+    if (governmentId) dispatch(getGovernmentActivities(activitiesAttrs));
+    if (campaignId) dispatch(getCampaignActivities(activitiesAttrs));
   };
 }
 

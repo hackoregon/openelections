@@ -15,7 +15,7 @@ import {
   resetState,
   RESET_STATE,
 } from './common';
-import { getContributionActivities } from './activities';
+import { getActivitiesByIdType } from './activities';
 import { downloadFile } from '../utils/helpers';
 import { isGovAdmin } from './auth';
 import { getMatchesByContributionId } from './matches';
@@ -344,7 +344,7 @@ export function getContributionById(id) {
             dispatch(getContributionsByMatchId(json.matchId));
           }
         }
-        dispatch(getContributionActivities(id));
+        // dispatch(getContributionActivities(id));
       } else {
         dispatch(actionCreators.getContributionById.failure());
       }
@@ -378,7 +378,7 @@ export function postContributionComment(id, comment) {
     try {
       const response = await api.postContributionComment(id, comment);
       if (response.status === 204) {
-        await dispatch(getContributionActivities(id));
+        dispatch(getActivitiesByIdType({ contributionId: id }, true));
         dispatch(actionCreators.postContributionComment.success());
       } else {
         dispatch(actionCreators.postContributionComment.failure());

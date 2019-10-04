@@ -16,7 +16,7 @@ import {
   RESET_STATE,
 } from './common';
 import { downloadFile } from '../utils/helpers';
-import { getExpenditureActivities } from './activities';
+import { getExpenditureActivities, getActivitiesByIdType } from './activities';
 
 export const STATE_KEY = 'expenditures';
 
@@ -304,7 +304,6 @@ export function getExpenditureById(id) {
         const data = normalize(await response.json(), schema.expenditure);
         dispatch(addExpenditureEntities(data));
         dispatch(actionCreators.getExpenditureById.success(id));
-        dispatch(getExpenditureActivities(id));
       } else {
         dispatch(actionCreators.getExpenditureById.failure());
       }
@@ -321,7 +320,7 @@ export function postExpenditureComment(id, comment) {
       const response = await api.postExpenditureComment(id, comment);
       if (response.status === 204) {
         dispatch(actionCreators.postExpenditureComment.success());
-        dispatch(getExpenditureActivities(id));
+        dispatch(getActivitiesByIdType({ expenditureId: id }, true));
       } else {
         dispatch(actionCreators.postExpenditureComment.failure());
       }
