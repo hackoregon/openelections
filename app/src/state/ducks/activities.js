@@ -178,7 +178,7 @@ export function getExpenditureActivities(activitiesAttrs) {
     }
   };
 }
-// {id, page, pageSize, clearFirst=true}
+
 export function getActivitiesByIdType(activitiesAttrs, clearFirst = true) {
   const {
     expenditureId,
@@ -187,14 +187,12 @@ export function getActivitiesByIdType(activitiesAttrs, clearFirst = true) {
     campaignId,
   } = activitiesAttrs;
   return async (dispatch, getState, { api, schema }) => {
-    if (clearFirst) {
-      const data = normalize({ list: [], listOrder: [] }, [schema.activity]);
-      dispatch(addActivityEntities(data));
-    }
+    // if (clearFirst) {
+    //   const data = normalize({ list: [], listOrder: [] }, [schema.activity]);
+    //   dispatch(addActivityEntities(data));
+    // }
     if (expenditureId) dispatch(getExpenditureActivities(activitiesAttrs));
-    if (contributionId) {
-      dispatch(getContributionActivities(activitiesAttrs));
-    }
+    if (contributionId) dispatch(getContributionActivities(activitiesAttrs));
     if (governmentId) dispatch(getGovernmentActivities(activitiesAttrs));
     if (campaignId) dispatch(getCampaignActivities(activitiesAttrs));
   };
@@ -205,4 +203,10 @@ export const getActivities = state => {
     return [];
   }
   return state.activities.listOrder.map(id => state.activities.list[id]);
+};
+
+export const getActivtiesCount = state => {
+  return isEmpty(state.activities.list)
+    ? 0
+    : Object.keys(state.activities.list).length;
 };

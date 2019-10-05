@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
-import { Link } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import { Button } from '@material-ui/core';
 import { postExpenditureComment } from '../../../state/ducks/expenditures';
 import { postContributionComment } from '../../../state/ducks/contributions';
 import { messageBoxStyles } from '../../../assets/styles/forms.styles';
@@ -20,22 +20,12 @@ const MessageBox = ({
     : postExpenditureComment;
   const [messageText, setText] = React.useState('');
   function handleTextChange(event) {
+    event.preventDefault();
     setText(event.target.value);
   }
   function clearOnSubmit() {
     setText('');
   }
-  // function updateContributionOrExpenditure(messageText) {
-  //   switch (type) {
-  //     case 'contribution':
-  //       postContributionComment(id, messageText);
-  //       break;
-  //     case 'expenditure':
-  //       postExpenditureComment(id, messageText);
-  //       break;
-  //     default:
-  //   }
-  // }
   return (
     <>
       <div css={messageBoxStyles.timelineGroup}>
@@ -54,16 +44,15 @@ const MessageBox = ({
         >
           {/* <span css={messageBoxStyles.message}>Message to Campaign</span> */}
         </TextareaAutosize>
-        <Link
-          to="#"
+        <Button
           css={messageBoxStyles.sendToCampaignButton}
           onClick={() => {
             postComment(id, messageText);
             clearOnSubmit();
           }}
         >
-          Submit Message to Campaign
-        </Link>
+          Submit
+        </Button>
       </div>
     </>
   );

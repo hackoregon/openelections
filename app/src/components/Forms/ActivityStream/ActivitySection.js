@@ -8,6 +8,7 @@ import { Button } from '@material-ui/core';
 import {
   getActivities,
   getActivitiesByIdType,
+  getActivtiesCount,
 } from '../../../state/ducks/activities';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
@@ -18,8 +19,10 @@ class showMore extends React.Component {
     const { expenditureId, contributionId, governmentId, campaignId } = props;
     const { initialPageSize = 5, perPage = 5 } = props;
     this.state = {
+      totalShowing: initialPageSize,
       perPage,
       page: 0,
+      moreActivities: !(props.total % perPage),
     };
     props.getActivitiesByIdType(
       {
@@ -34,27 +37,37 @@ class showMore extends React.Component {
     );
   }
 
+  componentDidUpdate() {
+    if (
+      !(this.props.total % this.state.perPage === 0) &&
+      this.state.moreActivities
+    ) {
+      this.state.moreActivities = false;
+    }
+  }
+
   showMore() {
     const {
       expenditureId,
       contributionId,
       governmentId,
       campaignId,
+      total,
     } = this.props;
-    this.state.perPage += this.state.perPage;
     this.props.getActivitiesByIdType({
       expenditureId,
       contributionId,
       governmentId,
       campaignId,
       page: this.state.page,
-      perPage: this.state.perPage,
+      perPage: this.state.totalShowing + total,
     });
   }
 
   render() {
     return (
       <Button
+        disabled={!this.state.moreActivities}
         onClick={() => {
           this.showMore();
         }}
@@ -68,13 +81,14 @@ class showMore extends React.Component {
 const ShowMore = connect(
   state => ({
     activities: getActivities(state),
+    total: getActivtiesCount(state),
   }),
   dispatch => ({
     getActivitiesByIdType: id => dispatch(getActivitiesByIdType(id)),
   })
 )(showMore);
 
-const AList = ({
+const activityList = ({
   activities,
   expenditureId,
   contributionId,
@@ -117,7 +131,7 @@ const AList = ({
 
 export const ActivityList = connect(state => ({
   activities: getActivities(state),
-}))(AList);
+}))(activityList);
 
 export const ActivitySection = props => {
   return (
