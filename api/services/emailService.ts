@@ -260,7 +260,7 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
 
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
     if (process.env.APP_ENV !== 'production') {
-        params.Message.Subject.Data = 'QA: ' + params.Message.Subject.Data
+        params.Message.Subject.Data = 'QA: ' + params.Message.Subject.Data;
     }
     if (process.env.NODE_ENV === 'test') {
     } else if (process.env.NODE_ENV === 'development') {
