@@ -259,6 +259,9 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
 }
 
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
+    if (process.env.APP_ENV !== 'production') {
+        params.Message.Subject.Data = 'QA: ' + params.Message.Subject.D
+    }
     if (process.env.NODE_ENV === 'test') {
     } else if (process.env.NODE_ENV === 'development') {
         console.log('In develop mode, this email is not sent ', JSON.stringify(params));
@@ -298,7 +301,7 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
       rel="stylesheet"
     />
   </head>
-  <body style="background-color: #313131; margin: 40px;">
+  <body style="background-color: #313131; padding: 40px;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td
@@ -431,7 +434,7 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
       rel="stylesheet"
     />
   </head>
-  <body style="background-color: #313131; margin: 40px;">
+  <body style="background-color: #313131; padding: 40px;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td
@@ -564,7 +567,7 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
       rel="stylesheet"
     />
   </head>
-  <body style="background-color: #313131; margin: 40px;">
+  <body style="background-color: #313131; padding: 40px;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td
@@ -698,7 +701,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
       rel="stylesheet"
     />
   </head>
-  <body style="background-color: #313131; margin: 40px;">
+  <body style="background-color: #313131; padding: 40px;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td
@@ -802,6 +805,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
 }
 
 export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, newContributionComments, newExpenditureComments) {
+    const host = process.env.HOST_URL || 'http://localhost:3000';
     return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
   <head>
@@ -814,7 +818,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
       rel="stylesheet"
     />
   </head>
-  <body style="background-color: #313131; margin: 40px;">
+  <body style="background-color: #313131; padding: 40px;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td
@@ -858,8 +862,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="color: #153643; font-family: Poppins, sans-serif; font-size: 20px;"
                     >
-                      This is a daily transaction summary for your campaign's
-                      Contributions and Expenditures.
+                      This is a daily transaction summary for your campaign's Contributions and Expenditures.
                     </td>
                   </tr>
                   <tr>
@@ -873,11 +876,10 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
                     >
-                      The following contributions have been created or updated
-                      in the last 24 hours
+                      The following contributions have been created or updated in the last 24 hours"
                     </td>
                   </tr>
-                  ${newContributionUpdates.map((item: string): string => {
+                  ${newContributionUpdates.filter(item => !!item).map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -891,10 +893,10 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="font-size: 20px; font-family: Poppins, sans-serif; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
                     >
-                      The following contributions have been commented on in the last 24 hours
+                      The following contributions have been commented on in the last 24 hours:
                     </td>
                   </tr>
-                  ${newContributionComments.map((item: string): string => {
+                  ${newContributionComments.filter(item => !!item).map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -911,7 +913,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       The following expenditures have been commented on in the last 24 hours
                     </td>
                   </tr>
-                  ${newExpenditureUpdates.map((item: string): string => {
+                  ${newExpenditureUpdates.filter(item => !!item).map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -925,11 +927,10 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
                     >
-                      The following expenditures have been commented on in the
-                      last 24 hours
+                      The following expenditures have been commented on in the last 24 hours:
                     </td>
                   </tr>
-                  ${newExpenditureComments.map((item: string): string => {
+                  ${newExpenditureComments.filter(item => !!item).map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -939,16 +940,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       padding-bottom: 20px;
                       line-height: 1.5;"
                     >
-                      In accordance with Portland City Code 2.16.170, if you
-                      believe a determination was made in error, you may file a
-                      Request for Reconsideration with the Director within seven
-                      days of this notification being sent. You may make this
-                      request by filling out a Request for Reconsideration form
-                      on the program website at
-                      <a href="https://www.portlandoregon.gov/OAE">
-                        https://www.portlandoregon.gov/OAE</a
-                      >
-                      and submitting it to OpenElections@portlandoregon.gov.
+                      In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at https://www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.
                     </td>
                   </tr>
                   <tr>
@@ -957,10 +949,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       padding-top: 0px;
                       padding-bottom: 20px; line-height: 1.5;"
                     >
-                      If you would like more information about the
-                      transaction(s), please go to your campaign portal at
-                      <a href="http://localhost:3000"> http://localhost:3000</a
-                      >.
+                      If you would like more information about the transaction(s), please go to your campaign portal <a href="${host}/dashboard">campaign portal</a>.
                     </td>
                   </tr>
                   <tr>
