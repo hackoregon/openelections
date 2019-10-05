@@ -260,7 +260,7 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
 
 export async function sendEmail(params: ISESEmailParams): Promise<ISESEmailParams> {
     if (process.env.APP_ENV !== 'production') {
-        params.Message.Subject.Data = 'QA: ' + params.Message.Subject.D
+        params.Message.Subject.Data = 'QA: ' + params.Message.Subject.Data
     }
     if (process.env.NODE_ENV === 'test') {
     } else if (process.env.NODE_ENV === 'development') {
@@ -876,10 +876,10 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
                     >
-                      The following contributions have been created or updated in the last 24 hours"
+                      The following contributions have been created or updated in the last 24 hours:
                     </td>
                   </tr>
-                  ${newContributionUpdates.filter(item => !!item).map((item: string): string => {
+                  ${newContributionUpdates.filter(item => !!item && item.trim() !== '').map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -896,7 +896,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       The following contributions have been commented on in the last 24 hours:
                     </td>
                   </tr>
-                  ${newContributionComments.filter(item => !!item).map((item: string): string => {
+                  ${newContributionComments.filter(item => !!item && item.trim() !== '').map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -913,7 +913,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       The following expenditures have been commented on in the last 24 hours
                     </td>
                   </tr>
-                  ${newExpenditureUpdates.filter(item => !!item).map((item: string): string => {
+                  ${newExpenditureUpdates.filter(item => !!item && item.trim() !== '').map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
@@ -930,7 +930,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       The following expenditures have been commented on in the last 24 hours:
                     </td>
                   </tr>
-                  ${newExpenditureComments.filter(item => !!item).map((item: string): string => {
+                  ${newExpenditureComments.filter(item => !!item && item.trim() !== '').map((item: string): string => {
         return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
     })}
                   <tr>
