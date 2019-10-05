@@ -110,7 +110,7 @@ class ContributionsTable extends React.Component {
     const isLoading = isListLoading && !Array.isArray(contributionList);
 
     const actions = [
-      actionInfo('View', 'primary', (event, rowData) => {
+      actionInfo('View', 'submit', (event, rowData) => {
         history.push(`/contributions/${rowData.id}`);
       }),
     ];
@@ -211,7 +211,7 @@ class ContributionsTable extends React.Component {
           toolbarAction={
             !isGovAdmin ? (
               <Button
-                buttonType="primary"
+                buttonType="green"
                 onClick={() => history.push({ pathname: '/contributions/add' })}
               >
                 Add New Contribution
