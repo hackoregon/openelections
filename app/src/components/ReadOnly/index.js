@@ -5,7 +5,7 @@ export default class ReadOnly extends React.Component {
   render() {
     const { ro = false, children } = this.props;
     return (
-      <div style={ro ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+      <div style={ro ? { pointerEvents: 'none', opacity: '0.9' } : null}>
         {children}
       </div>
     );
