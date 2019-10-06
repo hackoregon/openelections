@@ -323,8 +323,6 @@ describe('Side Effects', () => {
     const expectedActions = [
       { type: actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST },
       { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },
-      { type: activities.ADD_ACTIVITY_ENTITIES },
-      { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.SUCCESS },
       { type: actionTypes.POST_CONTRIBUTION_COMMENT.SUCCESS },
     ];
     const store = mockStore({});
@@ -356,13 +354,10 @@ describe('Side Effects', () => {
       .dispatch(contributions.postContributionComment(id, 'This is a comment'))
       .then(() => {
         const actions = store.getActions();
-        expect(actions.length).toEqual(5);
-
+        expect(actions.length).toEqual(3);
         expect(actions[0].type).toEqual(expectedActions[0].type);
         expect(actions[1].type).toEqual(expectedActions[1].type);
         expect(actions[2].type).toEqual(expectedActions[2].type);
-        expect(actions[3].type).toEqual(expectedActions[3].type);
-        expect(actions[4].type).toEqual(expectedActions[4].type);
       });
   });
 });

@@ -44,6 +44,9 @@ class showMore extends React.Component {
     ) {
       this.state.moreActivities = false;
     }
+    if (this.props.getActivtiesCount === 0) {
+      this.showMore();
+    }
   }
 
   showMore() {

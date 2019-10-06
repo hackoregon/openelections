@@ -136,7 +136,7 @@ describe('Side Effects', () => {
     process.env.TOKEN = campaignAdminToken;
 
     return store
-      .dispatch(activities.getCampaignActivities(campaignId))
+      .dispatch(activities.getCampaignActivities({ campaignId }))
       .then(() => {
         const actions = store.getActions();
         expect(actions[0].type).toEqual(expectedActions[0].type);
@@ -155,12 +155,14 @@ describe('Side Effects', () => {
 
     process.env.TOKEN = campaignAdminToken;
 
-    return store.dispatch(activities.getContributionActivities(1)).then(() => {
-      const actions = store.getActions();
-      expect(actions[0].type).toEqual(expectedActions[0].type);
-      expect(actions[1].type).toEqual(expectedActions[1].type);
-      expect(actions[2].type).toEqual(expectedActions[2].type);
-    });
+    return store
+      .dispatch(activities.getContributionActivities({ contributionId: 1 }))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
   });
 
   it('gets EXPENDITURE activities', async () => {
@@ -173,11 +175,13 @@ describe('Side Effects', () => {
 
     process.env.TOKEN = campaignAdminToken;
 
-    return store.dispatch(activities.getExpenditureActivities(1)).then(() => {
-      const actions = store.getActions();
-      expect(actions[0].type).toEqual(expectedActions[0].type);
-      expect(actions[1].type).toEqual(expectedActions[1].type);
-      expect(actions[2].type).toEqual(expectedActions[2].type);
-    });
+    return store
+      .dispatch(activities.getExpenditureActivities({ expenditureid: 1 }))
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+        expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
   });
 });

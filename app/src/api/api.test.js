@@ -206,13 +206,13 @@ describe('API', () => {
 
   it('getGovernmentActivities', async () => {
     process.env.TOKEN = govAdminToken;
-    const response = await api.getGovernmentActivities(governmentId);
+    const response = await api.getGovernmentActivities({ governmentId });
     expect(response.length > 1).toBeTruthy();
   });
 
   it('getCampaignActivities', async () => {
     process.env.TOKEN = campaignAdminToken;
-    const response = await api.getCampaignActivities(campaignId);
+    const response = await api.getCampaignActivities({ campaignId });
     expect(response.length > 1).toBeTruthy();
   });
 
@@ -263,7 +263,9 @@ describe('API', () => {
     });
     contribution = await contribution.json();
 
-    const response = await api.getContributionActivities(contribution.id);
+    const response = await api.getContributionActivities({
+      contributionId: contribution.id,
+    });
     expect(response.length >= 1).toBeTruthy();
   });
 
@@ -467,7 +469,9 @@ describe('API', () => {
     });
     const expenditure = await response.json();
 
-    response = await api.getExpenditureActivities(expenditure.id);
+    response = await api.getExpenditureActivities({
+      expenditureId: expenditure.id,
+    });
     expect(response.length >= 1).toBeTruthy();
   });
 

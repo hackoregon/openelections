@@ -378,7 +378,7 @@ export function postContributionComment(id, comment) {
     try {
       const response = await api.postContributionComment(id, comment);
       if (response.status === 204) {
-        dispatch(getActivitiesByIdType({ contributionId: id }, true));
+        dispatch(getActivitiesByIdType({ contributionId: id }));
         dispatch(actionCreators.postContributionComment.success());
       } else {
         dispatch(actionCreators.postContributionComment.failure());
