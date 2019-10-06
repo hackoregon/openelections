@@ -179,7 +179,7 @@ export function getExpenditureActivities(activitiesAttrs) {
   };
 }
 
-export function getActivitiesByIdType(activitiesAttrs, clearFirst = true) {
+export function getActivitiesByIdType(activitiesAttrs) {
   const {
     expenditureId,
     contributionId,
@@ -187,10 +187,6 @@ export function getActivitiesByIdType(activitiesAttrs, clearFirst = true) {
     campaignId,
   } = activitiesAttrs;
   return async (dispatch, getState, { api, schema }) => {
-    // if (clearFirst) {
-    //   const data = normalize({ list: [], listOrder: [] }, [schema.activity]);
-    //   dispatch(addActivityEntities(data));
-    // }
     if (expenditureId) dispatch(getExpenditureActivities(activitiesAttrs));
     if (contributionId) dispatch(getContributionActivities(activitiesAttrs));
     if (governmentId) dispatch(getGovernmentActivities(activitiesAttrs));

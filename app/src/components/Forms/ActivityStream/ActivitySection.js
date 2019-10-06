@@ -44,9 +44,6 @@ class showMore extends React.Component {
     ) {
       this.state.moreActivities = false;
     }
-    if (this.props.getActivtiesCount === 0) {
-      this.showMore();
-    }
   }
 
   showMore() {
@@ -85,6 +82,7 @@ const ShowMore = connect(
   state => ({
     activities: getActivities(state),
     total: getActivtiesCount(state),
+    activityList: state.activities.list,
   }),
   dispatch => ({
     getActivitiesByIdType: id => dispatch(getActivitiesByIdType(id)),

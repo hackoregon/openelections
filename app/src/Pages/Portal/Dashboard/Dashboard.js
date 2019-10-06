@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { css, jsx } from '@emotion/core';
+import { connect } from 'react-redux';
 import PageHoc from '../../../components/PageHoc/PageHoc';
 import SummaryCard from './cards/SummaryCard';
 import LinksCard from './cards/LinksCard';
@@ -106,11 +107,14 @@ const DashboardPage = props => {
         </div>
         <div className="cards-wrapper">
           <div className="card bottom">
-            <ActivityStreamCard />
+            {props.authLoading ? null : <ActivityStreamCard />}
           </div>
         </div>
       </div>
     </PageHoc>
   );
 };
-export default DashboardPage;
+
+export default connect(state => ({
+  authLoading: state.auth.isLoading,
+}))(DashboardPage);
