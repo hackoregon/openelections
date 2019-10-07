@@ -177,13 +177,17 @@ export const BasicsSection = ({
     {showMatchAmount ? (
       <p style={{ margin: '0px' }}>{`Match Amount: $${showMatchAmount}`}</p>
     ) : null}
-    <div css={sectionStyles.main}>
+    <div>
       <h3 css={sectionStyles.title}>Basics</h3>
-      <div css={containers.main}>
+      <div css={containers.halfWidth}>
         <h2>{formFields.dateOfContribution}</h2>
         <h2>{formFields.typeOfContribution}</h2>
+      </div>
+      <div css={containers.halfWidth}>
         <h2>{formFields.subTypeOfContribution}</h2>
         <h2>{formFields.amountOfContribution}</h2>
+      </div>
+      <div css={containers.halfWidth}>
         <h2>{formFields.oaeType}</h2>
         {showInKindFields ? <h2>{formFields.inKindType}</h2> : null}
         {showPaymentMethod ? <h2>{formFields.paymentMethod}</h2> : null}
@@ -207,7 +211,7 @@ export const ContributorSection = ({
   matchId,
 }) => (
   <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
-    <div css={sectionStyles.main}>
+    <div>
       {isPerson && isGovAdmin ? (
         <div style={{ pointerEvents: 'all', opacity: '1' }}>
           <MatchPickerHeader
@@ -219,17 +223,15 @@ export const ContributorSection = ({
       ) : (
         <h3 css={sectionStyles.title}>Contributor</h3>
       )}
-      <div css={containers.sectionTwo}>
-        <h2>{formFields.typeOfContributor}</h2>
-        {isPerson ? (
-          <>
-            <h2>{formFields.firstName}</h2>
-            <h2>{formFields.lastName}</h2>
-          </>
-        ) : (
-          <h2>{formFields.entityName}</h2>
-        )}
-      </div>
+      <h2 css={containers.fullWidth}>{formFields.typeOfContributor}</h2>
+      {isPerson ? (
+        <div css={containers.halfWidth}>
+          <h2>{formFields.firstName}</h2>
+          <h2>{formFields.lastName}</h2>
+        </div>
+      ) : (
+        <h2 css={containers.fullWidth}>{formFields.entityName}</h2>
+      )}
       <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
       <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
       <div css={containers.cityStateZip}>
@@ -237,36 +239,33 @@ export const ContributorSection = ({
         <h2>{formFields.state}</h2>
         <h2>{formFields.zipcode}</h2>
       </div>
-      <div css={containers.sectionTwo}>
-        <h2>{formFields.email}</h2>
+      <h2 css={containers.fullWidth}>{formFields.email}</h2>
+      <div css={containers.halfWidth}>
         <h2>{formFields.phone}</h2>
         <h2>{formFields.phoneType}</h2>
       </div>
       {isPerson ? (
         <div>
-          <div css={containers.sectionTwo} style={{ marginTop: '25px' }}>
+          <div css={containers.halfWidth}>
             <h2>{formFields.occupation}</h2>
             {showOccupationLetter ? (
               <h2>{formFields.occupationLetterDate}</h2>
             ) : null}
           </div>
-          <div css={containers.cityStateZip}>
+          <div css={containers.fullWidth}>
             {showEmployerSection ? (
               <>
                 {emptyOccupationLetterDate ? (
-                  <>
-                    <h2 css={containers.fullWidth}>
-                      {formFields.employerName}
-                    </h2>
+                  <div css={containers.cityStateZip}>
+                    <h2>{formFields.employerName}</h2>
                     <h2>{formFields.employerCity}</h2>
                     <h2>{formFields.employerState}</h2>
-                    {/* <h2>{formFields.employerZipcode}</h2> */}
-                  </>
+                  </div>
                 ) : null}
               </>
             ) : null}
           </div>
-          <div css={sectionStyles.main}>
+          <div>
             <h2 css={[containers.fullWidth, sectionStyles.notes]}>
               {formFields.notes}
             </h2>
@@ -282,9 +281,9 @@ export const OtherDetailsSection = ({
   formValues,
   handleSubmit,
 }) => (
-  <div css={sectionStyles.main}>
+  <div css={containers.fullWidth}>
     <h3 css={sectionStyles.title}>Other Details</h3>
-    <div css={containers.main}>
+    <div>
       <h2>{formFields.linkToDocumentation}</h2>
       <div css={containers.header}>
         <Button

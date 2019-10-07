@@ -8,37 +8,27 @@ export const containers = {
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
     margin-right: 38px;
     z-index: 1;
     position: relative;
   `,
-  main: css`
-    display: grid;
-    grid-template-rows: repeat(auto-fit(50px, 1fr));
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 20px;
-  `,
-  sectionTwo: css`
+  halfWidth: css`
     display: grid;
     width: 100%;
-    grid-template-rows: repeat(auto-fit(50px, 1fr));
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 20px;
+    grid-column-gap: 20px;
   `,
   fullWidth: css`
-      display: grid;
-      grid-template-rows: repeat(auto-fit(50px, 1fr));
-      grid-template-columns: 1fr;
-      grid-gap: 20px;
-  \  `,
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 20px;
+  `,
   cityStateZip: css`
     width: 100%;
     min-height: 25px;
     display: grid;
-    grid-template-rows: repeat(auto-fit, minmax(15px, 1fr));
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-gap: 20px;
+    grid-template-columns: 1.5fr 0.5fr 0.9fr;
+    grid-column-gap: 20px;
   `,
 };
 
@@ -149,11 +139,6 @@ export const headerStyles = {
 };
 
 export const sectionStyles = {
-  main: css`
-    margin-right: 34px;
-    margin-bottom: 34px;
-    margin-top: 34px;
-  `,
   dividerLine: css`
     margin-left: -20px;
   `,
@@ -169,6 +154,7 @@ export const sectionStyles = {
   `,
   notes: css`
     margin-top: 75px;
+    margin-bottom: 75px;
   `,
 };
 

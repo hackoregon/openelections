@@ -98,7 +98,7 @@ class ExpensesTable extends React.Component {
     const isLoading = isListLoading && !Array.isArray(expendituresList);
 
     const actions = [
-      actionInfo('View', 'primary', (event, rowData) => {
+      actionInfo('View', 'submit', (event, rowData) => {
         history.push(`/expenses/${rowData.id}`);
       }),
     ];
@@ -154,7 +154,12 @@ class ExpensesTable extends React.Component {
           }}
         />
 
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row-reverse',
+          }}
+        >
           <Button
             onClick={() => {
               fetchCSV();
@@ -200,7 +205,7 @@ class ExpensesTable extends React.Component {
           toolbarAction={
             !isGovAdmin ? (
               <Button
-                buttonType="primary"
+                buttonType="green"
                 onClick={() => history.push({ pathname: '/expenses/new' })}
               >
                 Add New Expense
