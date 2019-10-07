@@ -60,6 +60,11 @@ const columns = isGovAdmin => [
   {
     field: 'paymentMethod',
     title: 'Payment',
+    render: rowData => {
+      return rowData.paymentMethod
+        ? rowData.paymentMethod.replace(/_/g, ' ')
+        : '';
+    },
   },
   {
     field: 'status',
