@@ -194,5 +194,5 @@ function getISOFromDate(date) {
 }
 
 function formatISODate(ISODate) {
-  return format(new Date(ISODate), 'YYYY-MM-DD');
+  return format(new Date(ISODate), 'MM-DD-YYYY');
 }
