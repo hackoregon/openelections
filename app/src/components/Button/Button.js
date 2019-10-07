@@ -52,7 +52,7 @@ const remove = {
 };
 
 const greenStyle = {
-  backgroundColor: '#42B44A',
+  backgroundColor: '#008000',
   color: '#fff',
 };
 
