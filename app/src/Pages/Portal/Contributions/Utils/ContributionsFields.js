@@ -114,7 +114,7 @@ export const mapContributionDataToForm = contribution => {
     employerName: employerName || '',
     employerCity: employerCity || '',
     employerState: employerState || '',
-    employerCountry: employerCountry || 'USA',
+    employerCountry: employerCountry || '',
     inKindDescription: inKindDescription || '',
     paymentMethod: paymentMethod || '',
     occupationLetterDate: occupationLetterDate
