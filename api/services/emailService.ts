@@ -310,13 +310,7 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
           bgcolor="black"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="600"
-            style="border: 1px solid #cccccc; border-collapse: collapse;"
-          >
+          <table>
             <!-- HEADER -->
             <table>
               <tr>
@@ -443,13 +437,7 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
           bgcolor="black"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="600"
-            style="border: 1px solid #cccccc; border-collapse: collapse;"
-          >
+          <table>
             <!-- HEADER -->
             <table>
               <tr>
@@ -576,13 +564,7 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
           bgcolor="black"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="600"
-            style="border: 1px solid #cccccc; border-collapse: collapse;"
-          >
+          <table>
             <!-- HEADER -->
             <table>
               <tr>
@@ -710,13 +692,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
           bgcolor="black"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="600"
-            style="border: 1px solid #cccccc; border-collapse: collapse;"
-          >
+          <table>
             <!-- HEADER -->
             <table>
               <tr>
@@ -827,13 +803,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
           bgcolor="black"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="600"
-            style="border: 1px solid #cccccc; border-collapse: collapse;"
-          >
+          <table>
             <!-- HEADER -->
             <table>
               <tr>
