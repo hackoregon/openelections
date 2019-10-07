@@ -30,6 +30,13 @@ export const containers = {
     grid-template-columns: 1.5fr 0.5fr 0.9fr;
     grid-column-gap: 20px;
   `,
+  employerStateZip: css`
+    width: 100%;
+    min-height: 25px;
+    display: grid;
+    grid-template-columns: 1.5fr 0.9fr 0.5fr;
+    grid-column-gap: 20px;
+  `,
 };
 
 export const headerStyles = {

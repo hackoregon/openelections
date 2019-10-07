@@ -256,7 +256,7 @@ export const ContributorSection = ({
             {showEmployerSection ? (
               <>
                 {emptyOccupationLetterDate ? (
-                  <div css={containers.cityStateZip}>
+                  <div css={containers.employerStateZip}>
                     <h2>{formFields.employerName}</h2>
                     <h2>{formFields.employerCity}</h2>
                     <h2>{formFields.employerState}</h2>
