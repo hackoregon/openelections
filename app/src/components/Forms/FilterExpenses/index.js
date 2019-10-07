@@ -24,7 +24,13 @@ import {
 const FilterExpenses = props => {
   // const { location, history, onFilterUpdate } = props;
   const { updateFilter, onFilterUpdate, initialFilterOptions } = props;
-  const defaultValues = initialState.listFilterOptions;
+  const defaultValues = {
+    status: 'all',
+    range: {
+      from: '',
+      to: '',
+    },
+  };
   const initialValues = {
     status: initialFilterOptions.status || 'all',
     range: {

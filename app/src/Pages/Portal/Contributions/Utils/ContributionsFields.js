@@ -462,13 +462,13 @@ export const fields = {
     validation: Yup.string(),
   },
   employerCity: {
-    label: 'Employer City',
+    label: 'City',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
     validation: Yup.string(),
   },
   employerState: {
-    label: 'Employer State',
+    label: 'State',
     section: FormSectionEnum.CONTRIBUTOR,
     component: SelectField,
     validation: Yup.string(),
