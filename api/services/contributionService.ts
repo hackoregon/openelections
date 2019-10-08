@@ -57,6 +57,7 @@ export interface IAddContributionAttrs {
     employerName?: string;
     employerCity?: string;
     employerState?: string;
+    employerCountry?: string;
     phoneType?: PhoneType;
     checkNumber?: string;
     notes?: string;
@@ -112,6 +113,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             contribution.employerName = contributionAttrs.employerName;
             contribution.employerCity = contributionAttrs.employerCity;
             contribution.employerState = contributionAttrs.employerState;
+            contribution.employerCountry = contributionAttrs.employerCountry;
             contribution.phoneType = contributionAttrs.phoneType;
             contribution.checkNumber = contributionAttrs.checkNumber;
             contribution.status = ContributionStatus.DRAFT;
@@ -232,6 +234,11 @@ export interface IUpdateContributionAttrs {
     date?: number | Date;
     occupationLetterDate?: number | Date;
     notes?: string;
+    occupation?: string;
+    employerName?: string;
+    employerCity?: string;
+    employerState?: string;
+    employerCountry?: string;
 }
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {

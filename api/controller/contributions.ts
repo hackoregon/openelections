@@ -151,6 +151,10 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
 
     @IsString()
     @IsOptional()
+    employerCountry: string;
+
+    @IsString()
+    @IsOptional()
     phoneType: string;
 
     @IsString()
@@ -367,6 +371,10 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsString()
     @IsOptional()
     employerState: string;
+
+    @IsString()
+    @IsOptional()
+    employerCountry: string;
 
     @IsEnum(PhoneType)
     @IsOptional()
