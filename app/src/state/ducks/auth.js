@@ -11,6 +11,7 @@ import { resetContributionState } from './contributions';
 import { resetExpenditureState } from './expenditures';
 import { resetUserState } from './users';
 import { resetPermissionState } from './permissions';
+import { resetActvityState } from './activities';
 import {
   resetCampaignState,
   actionCreators as campaignsActionCreators,
@@ -139,6 +140,7 @@ export function logout() {
     dispatch(resetUserState());
     dispatch(resetCampaignState());
     dispatch(resetPermissionState());
+    dispatch(resetActvityState());
     if (!window.location.hostname.includes('localhost')) {
       document.cookie =
         'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';

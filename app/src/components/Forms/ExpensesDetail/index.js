@@ -6,7 +6,6 @@ import {
   updateExpenditure,
   getExpenditureById,
   getCurrentExpenditure,
-  getCurrentExpenditureId,
 } from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
@@ -28,6 +27,7 @@ import {
 } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 import { PageTransitionImage } from '../../PageTransistion';
 import ReadOnly from '../../ReadOnly';
+import ActivityStreamForm from '../ActivityStream/index';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -73,8 +73,8 @@ const onSubmit = (data, props) => {
 class ExpensesDetail extends React.Component {
   constructor(props) {
     super(props);
-    const { getExpenditureById, expenditureId } = props;
-    getExpenditureById(parseInt(expenditureId));
+    const { getExpenditureById, expenditureId } = this.props;
+    if (expenditureId) getExpenditureById(parseInt(expenditureId));
   }
 
   render() {
@@ -157,6 +157,7 @@ class ExpensesDetail extends React.Component {
                   formFields={formFields}
                 />
               </ReadOnly>
+              <ActivityStreamForm expenditureId={expenditureId} />
             </>
           );
         }}
@@ -167,7 +168,6 @@ class ExpensesDetail extends React.Component {
 
 export default connect(
   state => ({
-    currentExpenditureId: getCurrentExpenditureId(state),
     currentExpenditure: getCurrentExpenditure(state),
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
@@ -177,9 +177,9 @@ export default connect(
   }),
   dispatch => ({
     push: url => dispatch(push(url)),
-    getExpenditureById: id => dispatch(getExpenditureById(id)),
     flashMessage: (message, options) =>
       dispatch(flashMessage(message, options)),
     updateExpenditure: data => dispatch(updateExpenditure(data)),
+    getExpenditureById: id => dispatch(getExpenditureById(id)),
   })
 )(ExpensesDetail);
