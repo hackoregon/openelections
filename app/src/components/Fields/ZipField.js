@@ -18,10 +18,11 @@ function TextMaskCustom(props) {
   );
 }
 
-export default function ZipField({ id, label, formik }) {
+export default function ZipField({ id, label, formik, isRequired }) {
   return (
     <TextFieldMaterial
       id={id}
+      required={isRequired}
       name={id}
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
