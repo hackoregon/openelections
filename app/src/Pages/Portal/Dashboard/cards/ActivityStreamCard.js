@@ -10,8 +10,8 @@ class ActivityStreamCard extends React.Component {
     super(props);
     const { governmentId, campaignId, isGovAdmin, getActivities } = this.props;
     const id = isGovAdmin
-      ? { governmentId, page: 0, perPage: 5 }
-      : { campaignId, page: 0, perPage: 5 };
+      ? { governmentId, page: 0, perPage: 25 }
+      : { campaignId, page: 0, perPage: 25 };
     getActivities(id);
   }
 

@@ -17,9 +17,8 @@ class showMore extends React.Component {
   constructor(props) {
     super(props);
     const { expenditureId, contributionId, governmentId, campaignId } = props;
-    const { initialPageSize = 5, perPage = 5 } = props;
+    const { initialPageSize = 25, perPage = 25 } = props;
     this.state = {
-      totalShowing: initialPageSize,
       perPage,
       page: 0,
       moreActivities: !(props.total % perPage),
@@ -60,7 +59,7 @@ class showMore extends React.Component {
       governmentId,
       campaignId,
       page: this.state.page,
-      perPage: this.state.totalShowing + total,
+      perPage: this.props.perPage + total,
     });
   }
 
