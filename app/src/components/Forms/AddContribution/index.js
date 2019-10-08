@@ -9,7 +9,11 @@ import {
 } from '../../../state/ducks/auth';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 import AddContributionForm from './AddContributionForm';
-import { ContributionStatusEnum } from '../../../api/api';
+import {
+  ContributionStatusEnum,
+  ContributionTypeEnum,
+  ContributorTypeEnum,
+} from '../../../api/api';
 import {
   AddHeaderSection,
   BasicsSection,
@@ -31,7 +35,13 @@ const onSubmit = (data, props) => {
 };
 
 const AddContribution = ({ ...props }) => (
-  <AddContributionForm onSubmit={data => onSubmit(data, props)}>
+  <AddContributionForm
+    onSubmit={data => onSubmit(data, props)}
+    initialValues={{
+      typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
+      typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
+    }}
+  >
     {({ formFields, isValid, handleSubmit, visibleIf, isSubmited, values }) => {
       return (
         <>
