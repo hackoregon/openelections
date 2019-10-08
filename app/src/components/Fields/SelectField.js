@@ -70,6 +70,7 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
   }
   return (
     <TextField
+      required={isRequired}
       select
       SelectProps={{
         native: true,
