@@ -1,18 +1,11 @@
-import React from 'react';
-import PropTypes, { func } from 'prop-types';
-import {
-  makeStyles,
-  AppBar,
-  Tabs,
-  Tab,
-  Select,
-  MenuItem,
-} from '@material-ui/core';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Select, MenuItem } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { css, jsx } from '@emotion/core';
+import { format } from 'date-fns';
 import DateField from './DateField';
-import TimeField from './TimeField';
 
 /** @jsx jsx */
 import { accents } from '../../assets/styles/variables';
@@ -45,11 +38,8 @@ export default function DateRangeField(props) {
 
   function renderSelectValue(value) {
     if (value && (value.to || value.from)) {
-      return `${
-        value.from ? extractTimeAndDateForDisplay(value.from).date : 'All dates'
-      } to ${
-        value.to ? extractTimeAndDateForDisplay(value.to).date : 'All dates'
-      }`;
+      return `${value.from ? formatISODate(value.from) : 'All dates'} to 
+      ${value.to ? formatISODate(value.to) : 'All dates'}`;
     }
     return 'All dates';
   }
@@ -107,37 +97,25 @@ const popoverStyles = css`
   }
 `;
 
+DateRangeField.propTypes = {
+  isRequired: PropTypes.bool,
+  id: PropTypes.string,
+  label: PropTypes.string,
+  formik: PropTypes.shape({}),
+};
+
 function Popover(props) {
   const { formik, onDateRangeChange, rangeValues } = props;
-  const [tab, setTab] = React.useState(0);
 
   /* eslint no-use-before-define:0 */
-  const { dateFrom, timeFrom, dateTo, timeTo } = setupInitialState(rangeValues);
+  const [from, setFrom] = useState(setupInitialState(rangeValues).from);
+  const [to, setTo] = useState(setupInitialState(rangeValues).to);
 
   function setupInitialState(rangeValue) {
-    const result = {
-      dateFrom: '',
-      timeFrom: '',
-      dateTo: '',
-      timeTo: '',
+    return {
+      from: rangeValue.from ? formatISODate(rangeValue.from, 'YYYY-MM-DD') : '',
+      to: rangeValue.to ? formatISODate(rangeValue.to, 'YYYY-MM-DD') : '',
     };
-    if (rangeValue.from) {
-      const { date: dateFrom, time: timeFrom } = extractTimeAndDate(
-        rangeValue.from
-      );
-      result.dateFrom = dateFrom;
-      result.timeFrom = timeFrom;
-    }
-    if (rangeValue.to) {
-      const { date: dateTo, time: timeTo } = extractTimeAndDate(rangeValue.to);
-      result.dateTo = dateTo;
-      result.timeTo = timeTo;
-    }
-    return result;
-  }
-
-  function handleTabChange(event, newValue) {
-    setTab(newValue);
   }
 
   function formatFieldValue(range) {
@@ -146,144 +124,75 @@ function Popover(props) {
       to: '',
     };
 
-    if (range.from.date) {
-      const dateFrom = range.from.date;
-      const [hourFrom, minFrom] = range.from.time.split(':');
-      result.from = getISOFromDateAndTime(dateFrom, hourFrom, minFrom);
+    if (range.from) {
+      result.from = getISOFromDate(range.from);
     }
 
-    if (range.to.date) {
-      const dateTo = range.to.date;
-      const [hourTo, minTo] = range.to.time.split(':');
-      result.to = getISOFromDateAndTime(dateTo, hourTo, minTo);
+    if (range.to) {
+      result.to = getISOFromDate(range.to);
     }
 
     return result;
   }
 
-  function getISOFromDateAndTime(date, hours, minutes) {
-    const theDate = new Date(date);
-    const extraTime =
-      Number(hours) * 60 * 60 * 1000 + Number(minutes) * 60 * 1000;
-    theDate.setTime(
-      theDate.getTime() + theDate.getTimezoneOffset() * 60000 + extraTime
-    );
-    return theDate.toISOString();
-  }
   function handleDateTimeChange(event) {
     const elementId = event.target.id;
     const { value } = event.target;
 
     const range = {
-      from: {
-        date: dateFrom,
-        time: timeFrom || '00:00',
-      },
-      to: {
-        date: dateTo,
-        time: timeTo || '00:00',
-      },
+      from,
+      to,
     };
 
     switch (elementId) {
       case 'from-date':
-        range.from.date = value;
-        break;
-      case 'from-time':
-        range.from.time = value;
+        range.from = value;
+        setFrom(value);
         break;
       case 'to-date':
-        range.to.date = value;
-        break;
-      case 'to-time':
-        range.to.time = value;
+        range.to = value;
+        setTo(value);
         break;
     }
 
-    onDateRangeChange(formatFieldValue(range));
-  }
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
+    if (event.type === 'blur') {
+      onDateRangeChange(formatFieldValue(range));
+    }
   }
 
   return (
     <div css={popoverStyles}>
-      <Tabs
-        value={tab}
-        onChange={handleTabChange}
-        aria-label="simple tabs example"
-      >
-        <Tab label="From" {...a11yProps(0)} />
-        <Tab label="To" {...a11yProps(1)} />
-      </Tabs>
-      <div className="tab-content" hidden={tab !== 0}>
+      <div className="tab-content">
         <DateField
           picker="true"
-          label="Date"
+          label="From"
           id="from-date"
           formik={formik}
           onChange={handleDateTimeChange}
-          value={dateFrom}
+          onBlur={handleDateTimeChange}
+          value={from}
         />
         <div className="spacer" />
-        <TimeField
-          picker="true"
-          label="Time"
-          formik={formik}
-          id="from-time"
-          onChange={handleDateTimeChange}
-          value={timeFrom}
-        />
-      </div>
-      <div className="tab-content" hidden={tab !== 1}>
         <DateField
           picker="true"
-          label="Date"
+          label="To"
           formik={formik}
           id="to-date"
           onChange={handleDateTimeChange}
-          value={dateTo}
-        />
-        <div className="spacer" />
-        <TimeField
-          piker="true"
-          label="Time"
-          formik={formik}
-          id="to-time"
-          onChange={handleDateTimeChange}
-          value={timeTo}
+          onBlur={handleDateTimeChange}
+          value={to}
         />
       </div>
     </div>
   );
 }
 
-function extractTimeAndDate(ISODate) {
-  const dateObj = new Date(ISODate);
-
-  return {
-    date: `${dateObj.getFullYear()}-${addZero(
-      dateObj.getMonth() + 1
-    )}-${addZero(dateObj.getDate())}`,
-    time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
-  };
+function getISOFromDate(date) {
+  const theDate = new Date(date);
+  theDate.setTime(theDate.getTime() + theDate.getTimezoneOffset() * 60000);
+  return theDate.toISOString();
 }
 
-function extractTimeAndDateForDisplay(ISODate) {
-  const dateObj = new Date(ISODate);
-
-  return {
-    date: `${addZero(dateObj.getMonth() + 1)}-${addZero(
-      dateObj.getDate()
-    )}-${dateObj.getFullYear()}`,
-    time: `${addZero(dateObj.getHours())}:${addZero(dateObj.getMinutes())}`,
-  };
-}
-
-function addZero(number) {
-  return number.toString().padStart(2, '0');
+function formatISODate(ISODate, the_format) {
+  return format(new Date(ISODate), the_format || 'MM-DD-YYYY');
 }
