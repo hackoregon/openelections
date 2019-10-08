@@ -22,8 +22,8 @@ services:
     build:
       context: 'api'
       dockerfile: 'Dockerfile.development'
-#    volumes:
-#      - ./api:/app
+    volumes:
+      - ./api:/app
     command: ["./wait-for-it.sh", "testdb:5433", "--", "npm", "run", "seedandrun"]
     environment:
       - PORT=3000

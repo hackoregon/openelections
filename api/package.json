@@ -47,6 +47,7 @@
         "ioredis": "^4.9.0",
         "json2csv": "^4.5.3",
         "jsonwebtoken": "^8.5.1",
+        "libxmljs": "^0.19.7",
         "morgan": "~1.9.0",
         "node-fetch": "^2.6.0",
         "pg": "^7.9.0",
