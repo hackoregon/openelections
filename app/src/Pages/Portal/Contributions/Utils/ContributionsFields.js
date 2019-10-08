@@ -208,43 +208,6 @@ export const mapContributionFormToData = data => {
   return transformed;
 };
 
-export const contributionsEmptyState = {
-  // BASICS VALUES
-  id: '',
-  updatedAt: '',
-  dateOfContribution: '',
-  typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
-  subTypeOfContribution: '',
-  typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
-  amountOfContribution: '',
-  inKindType: '',
-  oaeType: '',
-  paymentMethod: '',
-  checkNumber: '',
-
-  // CONTRIBUTOR VALUES
-  firstName: '',
-  lastName: '',
-  entityName: '',
-  streetAddress: '',
-  addressLine2: '',
-  city: '',
-  state: 'OR',
-  zipcode: '',
-  email: '',
-  phone: '',
-  phoneType: '',
-  occupation: '',
-  employerName: '',
-  employerCity: '',
-  employerState: '',
-
-  // OTHER DETAILS VALUES
-  inKindDescription: '',
-  occupationLetterDate: '',
-  linkToDocumentation: '',
-  notes: '',
-};
 // Converts TypeFieldMap to options for a select
 // ie: DataToContributorTypeFieldMap
 // Just a patch DO NOT USE outside of this file

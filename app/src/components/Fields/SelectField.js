@@ -71,23 +71,33 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
   return (
     <TextField
       select
+      SelectProps={{
+        native: true,
+      }}
+      InputLabelProps={{ shrink: true }}
       id={id}
       label={label}
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
       value={formik.values[id] || ''}
-      onChange={formik.handleChange(id)}
-      onBlur={formik.handleBlur}
+      onChange={formik.handleChange}
+      onBlur={() => {
+        formik.touched[id] = true;
+        formik.handleBlur(id);
+      }}
       inputProps={{
         name: id,
         id,
       }}
       fullWidth
     >
+      <option value="" key="" disabled>
+        Select option
+      </option>
       {optionValues.map((option, key) => (
-        <MenuItem value={option.value} key={key} className={classes.root}>
+        <option value={option.value} key={key} className={classes.root}>
           {option.label}
-        </MenuItem>
+        </option>
       ))}
     </TextField>
   );
