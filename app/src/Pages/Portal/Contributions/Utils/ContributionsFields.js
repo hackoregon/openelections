@@ -188,7 +188,7 @@ export const mapContributionFormToData = data => {
     employerName,
     employerCity,
     employerState,
-    employerCountry,
+    employerCountry: employerCountry || 'United States',
     checkNumber,
     contributorType: typeOfContributor,
     subType: subTypeOfContribution,

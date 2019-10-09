@@ -40,6 +40,7 @@ const AddContribution = ({ ...props }) => (
     initialValues={{
       typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
       typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
+      employerCountry: 'United States',
     }}
   >
     {({ formFields, isValid, handleSubmit, visibleIf, isSubmited, values }) => {
