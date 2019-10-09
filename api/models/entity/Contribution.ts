@@ -22,6 +22,7 @@ import { removeUndefined } from './helpers';
 import { MatchAddressType } from '../../services/dataScienceService';
 import { Parser } from 'json2csv';
 import * as dateFormat from 'dateformat';
+import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -479,6 +480,11 @@ export class Contribution {
             id: this.campaign.id
         };
         return json as IContributionSummary;
+    }
+
+    toXML() {
+        const xml = new OrestarContributionConverter(this);
+        return xml.generate();
     }
 }
 

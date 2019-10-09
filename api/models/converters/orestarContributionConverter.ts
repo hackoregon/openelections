@@ -21,7 +21,11 @@ export default class OrestarContributionConverter {
   public address() {}
 
   public zip() {
-    return `<zip>97239</zip>`;
+    return '<zip>98901</zip>';
+  }
+
+  public state() {
+    return `<state>OR</state>`;
   }
 
 }

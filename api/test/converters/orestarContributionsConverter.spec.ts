@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {getConnection} from 'typeorm';
 import * as libxml from 'libxmljs';
-import { addressSchema, zipSchema } from '../schemas/schemas';
+import { addressSchema, zipSchema, stateSchema } from '../schemas/schemas';
 import {newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll} from '../factories';
 import {Government} from '../../models/entity/Government';
 import {Campaign} from '../../models/entity/Campaign';
@@ -43,14 +43,29 @@ describe('orestar contribution converter', () => {
 
   // });
 
+  // it('test', async () => {
+  //   const contribution = await newContributionAsync(campaign, government);
+
+  //   const xml = new OrestarContributionConverter(contribution);
+
+  //   const xsd = zipSchema;
+  //   const xml_valid = xml.zip();
+  //   console.log(xsd, xml_valid);
+  //   var xsdDoc = libxml.parseXml(xsd);
+  //   var xmlDocValid = libxml.parseXml(xml_valid);
+  //   xmlDocValid.validate(xsdDoc)
+  //   // console.log(xmlDocValid.validationErrors);
+  //   expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  // });
+
   it('test', async () => {
     const contribution = await newContributionAsync(campaign, government);
 
     const xml = new OrestarContributionConverter(contribution);
 
-    const xsd = zipSchema;
-    const xml_valid = xml.zip();
-
+    const xsd = stateSchema;
+    const xml_valid = xml.state();
+    console.log(xsd, xml_valid);
     var xsdDoc = libxml.parseXml(xsd);
     var xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc)

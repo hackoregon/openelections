@@ -81,4 +81,22 @@ city.</xs:documentation>
 </xs:complexType>
 </xs:element></xs:schema>`;
 
-export const zipSchema = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="zip" minOccurs="0"><xs:simpleType><xs:restriction base="xs:integer"><xs:totalDigits value="5"/><xs:pattern value="\d{5}"/></xs:restriction></xs:simpleType></xs:element></xs:schema>';
+
+//TODO: element zip should have attribute: minOccurs="0"
+export const zipSchema = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="zip">
+<xs:simpleType>
+<xs:restriction base="xs:integer">
+<xs:totalDigits value="5"/>
+<xs:pattern value="\d{5}"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element></xs:schema>`;
+
+//TODO: element state should have attribute: minOccurs="0"
+export const stateSchema = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="state">
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:length value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element></xs:schema>`;
