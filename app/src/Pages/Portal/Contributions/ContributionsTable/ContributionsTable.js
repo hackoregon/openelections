@@ -56,6 +56,17 @@ const columns = isGovAdmin => {
       },
     },
     {
+      field: 'oaeType',
+      title: 'OAE Type',
+      render: rowData => {
+        return rowData.oaeType
+          ? (
+              rowData.oaeType[0].toUpperCase() + rowData.oaeType.slice(1)
+            ).replace(/_/g, ' ')
+          : '';
+      },
+    },
+    {
       field: 'amount',
       title: 'Amount',
       sorting: false,
