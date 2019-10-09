@@ -75,6 +75,7 @@ export const DynamicOptionField = ({
  * Array of all string abbreviations of U.S. states.
  */
 export const stateList = [
+  'Foreign',
   'AK',
   'AL',
   'AR',

@@ -260,6 +260,7 @@ export const ContributorSection = ({
                     <h2>{formFields.employerName}</h2>
                     <h2>{formFields.employerCity}</h2>
                     <h2>{formFields.employerState}</h2>
+                    <h2>{formFields.employerCountry}</h2>
                   </div>
                 ) : null}
               </>

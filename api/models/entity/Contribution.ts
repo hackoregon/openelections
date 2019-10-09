@@ -246,6 +246,9 @@ export class Contribution {
     employerState?: string;
 
     @Column({ nullable: true })
+    employerCountry?: string;
+
+    @Column({ nullable: true })
     compliant?: boolean;
 
     @Column({ nullable: true })
@@ -505,6 +508,7 @@ export const contributionSummaryFields = <const>[
     'employerName',
     'employerCity',
     'employerState',
+    'employerCountry',
     'compliant',
     'matchAmount',
     'status',
@@ -548,6 +552,7 @@ export const contributionGovSummaryFields = <const>[
     'employerName',
     'employerCity',
     'employerState',
+    'employerCountry',
     'compliant',
     'status',
     'notes',
