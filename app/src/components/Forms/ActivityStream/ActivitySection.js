@@ -9,6 +9,7 @@ import {
   getActivities,
   getActivitiesByIdType,
   getActivtiesCount,
+  getTotalCount,
 } from '../../../state/ducks/activities';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
@@ -17,11 +18,11 @@ class showMore extends React.Component {
   constructor(props) {
     super(props);
     const { expenditureId, contributionId, governmentId, campaignId } = props;
-    const { initialPageSize = 25, perPage = 25 } = props;
+    const { initialPageSize = 5, perPage = 5 } = props;
     this.state = {
       perPage,
       page: 0,
-      moreActivities: !(props.total % perPage),
+      moreActivities: true,
     };
     props.getActivitiesByIdType(
       {
@@ -37,10 +38,9 @@ class showMore extends React.Component {
   }
 
   componentDidUpdate() {
-    if (
-      !(this.props.total % this.state.perPage === 0) &&
-      this.state.moreActivities
-    ) {
+    if (this.props.totalShowing < this.props.totalActivites) {
+      this.state.moreActivities = true;
+    } else {
       this.state.moreActivities = false;
     }
   }
@@ -51,7 +51,7 @@ class showMore extends React.Component {
       contributionId,
       governmentId,
       campaignId,
-      total,
+      totalShowing,
     } = this.props;
     this.props.getActivitiesByIdType({
       expenditureId,
@@ -59,7 +59,7 @@ class showMore extends React.Component {
       governmentId,
       campaignId,
       page: this.state.page,
-      perPage: this.props.perPage + total,
+      perPage: this.state.perPage + totalShowing,
     });
   }
 
@@ -80,8 +80,9 @@ class showMore extends React.Component {
 const ShowMore = connect(
   state => ({
     activities: getActivities(state),
-    total: getActivtiesCount(state),
+    totalShowing: getActivtiesCount(state),
     activityList: state.activities.list,
+    totalActivites: getTotalCount(state),
   }),
   dispatch => ({
     getActivitiesByIdType: id => dispatch(getActivitiesByIdType(id)),
