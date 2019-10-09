@@ -6,7 +6,7 @@ import {
     getActivityByContributionAsync,
     getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
-    IActivityResult, IShortActivityResult
+    IActivityResult, IActivityResults, IShortActivityResult
 } from '../models/entity/Activity';
 import { getConnection } from 'typeorm';
 import { Government } from '../models/entity/Government';
@@ -51,7 +51,7 @@ export interface IGetActivityRecords {
     page?: number;
 }
 
-export async function getAllActivityRecordsAsync(params: IGetActivityRecords): Promise<IActivityResult[]> {
+export async function getAllActivityRecordsAsync(params: IGetActivityRecords): Promise<IActivityResults> {
 
     const perPage = params.perPage || 100;
     const page = params.page || 0;
@@ -109,7 +109,12 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
         }
     }
 
-    return [];
+    return {
+        total: 0,
+        perPage,
+        page,
+        data: []
+    };
 }
 
 export interface IGetActivityRecordsForEmails {
