@@ -39,6 +39,11 @@ export const actionTypes = {
 export const initialState = {
   list: null,
   listOrder: [],
+  listOptions: {
+    page: 0,
+    perPage: 25,
+    total: 0,
+  },
   isLoading: false,
   error: null,
 };
@@ -52,8 +57,13 @@ export default createReducer(initialState, {
   [ADD_ACTIVITY_ENTITIES]: (state, action) => {
     return {
       ...state,
-      list: { ...state.list, ...action.payload.entities.activities },
+      list: { ...action.payload.entities.activities },
       listOrder: action.payload.result,
+      listOptions: {
+        page: action.payload.page || initialState.listOptions.page,
+        perPage: action.payload.perPage || initialState.listOptions.perPage,
+        total: action.payload.total,
+      },
     };
   },
   [actionTypes.GET_CAMPAIGN_ACTIVITIES.REQUEST]: state => {
@@ -128,8 +138,9 @@ export function getCampaignActivities(campaignId) {
     dispatch(actionCreators.getCampaignActivities.request());
     try {
       const response = await api.getCampaignActivities(campaignId);
-      const data = normalize(response, [schema.activity]);
-      dispatch(addActivityEntities(data));
+      const data = normalize(response.data, [schema.activity]);
+      const { page, perPage, total } = response;
+      dispatch(addActivityEntities({ ...data, page, perPage, total }));
       dispatch(actionCreators.getCampaignActivities.success());
     } catch (error) {
       dispatch(actionCreators.getCampaignActivities.failure(error));
@@ -142,8 +153,9 @@ export function getGovernmentActivities(governmentId) {
     dispatch(actionCreators.getGovernmentActivities.request());
     try {
       const response = await api.getGovernmentActivities(governmentId);
-      const data = normalize(response, [schema.activity]);
-      dispatch(addActivityEntities(data));
+      const data = normalize(response.data, [schema.activity]);
+      const { page, perPage, total } = response;
+      dispatch(addActivityEntities({ ...data, page, perPage, total }));
       dispatch(actionCreators.getGovernmentActivities.success());
     } catch (error) {
       dispatch(actionCreators.getGovernmentActivities.failure(error));
@@ -156,8 +168,9 @@ export function getContributionActivities(contributionAttrs) {
     dispatch(actionCreators.getContributionActivities.request());
     try {
       const response = await api.getContributionActivities(contributionAttrs);
-      const data = normalize(response, [schema.activity]);
-      dispatch(addActivityEntities(data));
+      const data = normalize(response.data, [schema.activity]);
+      const { page, perPage, total } = response;
+      dispatch(addActivityEntities({ ...data, page, perPage, total }));
       dispatch(actionCreators.getContributionActivities.success());
     } catch (error) {
       dispatch(actionCreators.getContributionActivities.failure(error));
@@ -170,8 +183,9 @@ export function getExpenditureActivities(activitiesAttrs) {
     dispatch(actionCreators.getExpenditureActivities.request());
     try {
       const response = await api.getExpenditureActivities(activitiesAttrs);
-      const data = normalize(response, [schema.activity]);
-      dispatch(addActivityEntities(data));
+      const data = normalize(response.data, [schema.activity]);
+      const { page, perPage, total } = response;
+      dispatch(addActivityEntities({ ...data, page, perPage, total }));
       dispatch(actionCreators.getExpenditureActivities.success());
     } catch (error) {
       dispatch(actionCreators.getExpenditureActivities.failure(error));
@@ -205,4 +219,10 @@ export const getActivtiesCount = state => {
   return isEmpty(state.activities.list)
     ? 0
     : Object.keys(state.activities.list).length;
+};
+
+export const getTotalCount = state => {
+  return isEmpty(state.activities.listOptions.total)
+    ? 0
+    : state.activities.listOptions.total;
 };

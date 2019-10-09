@@ -33,6 +33,11 @@ describe('Reducer', () => {
       listOrder: [],
       isLoading: false,
       error: null,
+      listOptions: {
+        page: 0,
+        perPage: 25,
+        total: 0,
+      },
     });
   });
 
@@ -41,6 +46,10 @@ describe('Reducer', () => {
       reducer(undefined, {
         type: activities.ADD_ACTIVITY_ENTITIES,
         payload: {
+          result: [],
+          page: 0,
+          perPage: 25,
+          total: 1,
           entities: {
             activities: {
               '1': {},
@@ -52,6 +61,12 @@ describe('Reducer', () => {
       list: {
         '1': {},
       },
+      listOptions: {
+        page: 0,
+        perPage: 25,
+        total: 1,
+      },
+      listOrder: [],
       isLoading: false,
       error: null,
     });
@@ -134,9 +149,10 @@ describe('Side Effects', () => {
     const store = mockStore({});
 
     process.env.TOKEN = campaignAdminToken;
-
     return store
-      .dispatch(activities.getCampaignActivities({ campaignId }))
+      .dispatch(
+        activities.getCampaignActivities({ campaignId, page: 0, perPage: 25 })
+      )
       .then(() => {
         const actions = store.getActions();
         expect(actions[0].type).toEqual(expectedActions[0].type);
