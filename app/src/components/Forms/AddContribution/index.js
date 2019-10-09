@@ -40,6 +40,8 @@ const AddContribution = ({ ...props }) => (
     initialValues={{
       typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
       typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
+      city: 'Portland',
+      state: 'OR',
       employerCountry: 'United States',
     }}
   >
