@@ -170,7 +170,7 @@ export const BasicsSection = ({
   showMatchAmount,
   showCompliant,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
     {showCompliant ? (
       <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
     ) : null}
@@ -210,7 +210,7 @@ export const ContributorSection = ({
   showOccupationLetter,
   matchId,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
     <div>
       {isPerson && isGovAdmin ? (
         <div style={{ pointerEvents: 'all', opacity: '1' }}>
