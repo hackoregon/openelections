@@ -107,6 +107,7 @@ describe('Activity', () => {
         expect(records2.data.length).to.equal(1);
         expect(records2.data[0].id).to.equal(activity2.id);
         expect(records3.data.length).to.equal(1);
+        expect(records3.total).to.equal(2);
         expect(records3.data[0].id).to.equal(activity1.id);
     });
 
@@ -150,6 +151,7 @@ describe('Activity', () => {
         expect(records2.data.length).to.equal(1);
         expect(records2.data[0].id).to.equal(activity2.id);
         expect(records3.data.length).to.equal(1);
+        expect(records3.total).to.equal(2);
         expect(records3.data[0].id).to.equal(activity1.id);
     });
 
@@ -170,6 +172,7 @@ describe('Activity', () => {
         });
         const activities = await getActivityByUserAsync(user.id, 100, 0);
         expect(activities.data.length).to.equal(1);
+        expect(activities.total).to.equal(1);
     });
 
     it('getActivityByContributionAsync', async () => {
@@ -197,6 +200,7 @@ describe('Activity', () => {
         });
         const activities = await getActivityByContributionAsync(contr.id, 100, 0);
         expect(activities.data.length).to.equal(2);
+        expect(activities.total).to.equal(2);
     });
 
     it('getActivityByExpenditureAsync', async () => {
@@ -223,6 +227,7 @@ describe('Activity', () => {
         });
         const activities = await getActivityByExpenditureAsync(exp.id, 100, 0);
         expect(activities.data.length).to.equal(2);
+        expect(activities.total).to.equal(2);
     });
 
     it('getActivityByCampaignByTimeAsync testme', async () => {
