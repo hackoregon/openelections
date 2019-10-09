@@ -102,12 +102,12 @@ describe('Activity', () => {
         const records1 = await getActivityByGovernmentAsync(government.id, 100, 0);
         const records2 = await getActivityByGovernmentAsync(government.id, 1, 0);
         const records3 = await getActivityByGovernmentAsync(government.id, 1, 1);
-        expect(noRecords.length).to.equal(0);
-        expect(records1.length).to.equal(2);
-        expect(records2.length).to.equal(1);
-        expect(records2[0].id).to.equal(activity2.id);
-        expect(records3.length).to.equal(1);
-        expect(records3[0].id).to.equal(activity1.id);
+        expect(noRecords.data.length).to.equal(0);
+        expect(records1.data.length).to.equal(2);
+        expect(records2.data.length).to.equal(1);
+        expect(records2.data[0].id).to.equal(activity2.id);
+        expect(records3.data.length).to.equal(1);
+        expect(records3.data[0].id).to.equal(activity1.id);
     });
 
     it('getActivityByCampaignAsync', async () => {
@@ -145,12 +145,12 @@ describe('Activity', () => {
         const records1 = await getActivityByCampaignAsync(campaign.id, 100, 0);
         const records2 = await getActivityByCampaignAsync(campaign.id, 1, 0);
         const records3 = await getActivityByCampaignAsync(campaign.id, 1, 1);
-        expect(noRecords.length).to.equal(0);
-        expect(records1.length).to.equal(2);
-        expect(records2.length).to.equal(1);
-        expect(records2[0].id).to.equal(activity2.id);
-        expect(records3.length).to.equal(1);
-        expect(records3[0].id).to.equal(activity1.id);
+        expect(noRecords.data.length).to.equal(0);
+        expect(records1.data.length).to.equal(2);
+        expect(records2.data.length).to.equal(1);
+        expect(records2.data[0].id).to.equal(activity2.id);
+        expect(records3.data.length).to.equal(1);
+        expect(records3.data[0].id).to.equal(activity1.id);
     });
 
     it('getActivityByUser', async () => {
@@ -169,7 +169,7 @@ describe('Activity', () => {
             activityId: permission.id
         });
         const activities = await getActivityByUserAsync(user.id, 100, 0);
-        expect(activities.length).to.equal(1);
+        expect(activities.data.length).to.equal(1);
     });
 
     it('getActivityByContributionAsync', async () => {
@@ -196,7 +196,7 @@ describe('Activity', () => {
             activityId: contr.id
         });
         const activities = await getActivityByContributionAsync(contr.id, 100, 0);
-        expect(activities.length).to.equal(2);
+        expect(activities.data.length).to.equal(2);
     });
 
     it('getActivityByExpenditureAsync', async () => {
@@ -222,7 +222,7 @@ describe('Activity', () => {
             activityId: exp.id
         });
         const activities = await getActivityByExpenditureAsync(exp.id, 100, 0);
-        expect(activities.length).to.equal(2);
+        expect(activities.data.length).to.equal(2);
     });
 
     it('getActivityByCampaignByTimeAsync testme', async () => {
@@ -252,7 +252,7 @@ describe('Activity', () => {
         activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
         activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
         const activities = await getActivityByContributionAsync(contr.id, 100, 0);
-        expect(activities.length).to.equal(2);
+        expect(activities.data.length).to.equal(2);
         let from = new Date(2018, 12, 31);
         let to = new Date(2019, 1, 31);
         let activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);

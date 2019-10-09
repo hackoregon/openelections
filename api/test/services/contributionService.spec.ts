@@ -139,8 +139,8 @@ describe('contributionService', () => {
         const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
 
         expect(await contributionRepository.count()).equal(1);
-        expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include(`added a contribution (${contribution.id}).`);
+        expect(activity.data).to.have.length(1);
+        expect(activity.data[0].notes).to.include(`added a contribution (${contribution.id}).`);
     });
 
     it('Does not add a contribution if the user does not belong to the campaign', async () => {
@@ -839,9 +839,9 @@ describe('contributionService', () => {
         const activity = await getActivityByContributionAsync(contribution.id, 10, 0);
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
-        expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include('amount changed');
-        expect(activity[0].notes).to.include('zip changed');
+        expect(activity.data).to.have.length(1);
+        expect(activity.data[0].notes).to.include('amount changed');
+        expect(activity.data[0].notes).to.include('zip changed');
     });
 
     it('updateContributionAsync campaignStaff different campaign fails', async () => {
@@ -948,8 +948,8 @@ describe('contributionService', () => {
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
 
         const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
-        expect(activity).to.have.length(1);
-        expect(activity[0].notes).to.include(`archived contribution ${contribution.id}.`);
+        expect(activity.data).to.have.length(1);
+        expect(activity.data[0].notes).to.include(`archived contribution ${contribution.id}.`);
     });
 
     it('archiveContributionAsync fails if processed', async () => {
@@ -985,7 +985,7 @@ describe('contributionService', () => {
     it('createContributionCommentAsync fails no user permission', async () => {
         const contribution = await newContributionAsync(campaign2, government);
         let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
@@ -997,12 +997,12 @@ describe('contributionService', () => {
             expect(e.message).to.equal('User does not have permissions');
         }
         activities = await getActivityByContributionAsync(contribution.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
     });
 
     it('createContributionCommentAsync fails cant find conrtibution', async () => {
         let activities = await getActivityByContributionAsync(1000, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
@@ -1014,21 +1014,21 @@ describe('contributionService', () => {
             expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 1000');
         }
         activities = await getActivityByContributionAsync(1000, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
     });
 
 
     it('getActivityByContributionAsync success', async () => {
         const contribution = await newContributionAsync(campaign1, government);
         let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         await createContributionCommentAsync({
             contributionId: contribution.id,
             currentUserId: campaignAdmin.id,
             comment: 'This is a comment'
         });
         activities = await getActivityByContributionAsync(contribution.id, 100, 0);
-        expect(activities.length).to.equal(1);
+        expect(activities.data.length).to.equal(1);
     });
 
     it('retrieveAndSaveMatchResultAsync exact', async () => {

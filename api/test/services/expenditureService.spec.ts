@@ -502,7 +502,7 @@ describe('expenditureService', () => {
     it('createExpenditureCommentAsync fails no user permission', async () => {
         const expenditure = await newExpenditureAsync(campaign2, government);
         let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
@@ -514,25 +514,25 @@ describe('expenditureService', () => {
             expect(e.message).to.equal('User does not have permissions');
         }
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
     });
 
     it('getActivityByExpenditureAsync success', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
         let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         await createExpenditureCommentAsync({
             expenditureId: expenditure.id,
             currentUserId: campaignAdmin.id,
             comment: 'This is a comment'
         });
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
-        expect(activities.length).to.equal(1);
+        expect(activities.data.length).to.equal(1);
     });
 
     it('getActivityByExpenditureAsync fails cant find expenditure', async () => {
         let activities = await getActivityByExpenditureAsync(1000, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
@@ -544,7 +544,7 @@ describe('expenditureService', () => {
             expect(e.message).to.equal('Could not find any entity of type "Expenditure" matching: 1000');
         }
         activities = await getActivityByExpenditureAsync(1000, 100, 0);
-        expect(activities.length).to.equal(0);
+        expect(activities.data.length).to.equal(0);
     });
 
     it('getExpenditureByIdAsync testme', async () => {

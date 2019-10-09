@@ -99,6 +99,13 @@ export class Activity {
     }
 }
 
+export interface IActivityResults {
+    data: IActivityResult[]
+    perPage: number;
+    page: number;
+    total: number;
+}
+
 export interface IActivityResult {
     id: number;
     userId: number;
@@ -108,9 +115,16 @@ export interface IActivityResult {
     campaignId?: number;
 }
 
-export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResult[]> {
+export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return (await activityRepository
+    const total = await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
+        )
+        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
+        .getCount();
+    const data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
@@ -119,12 +133,25 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany()) as IActivityResult[];
+        .getRawMany() as IActivityResult[]);
+    return {
+        data,
+        total,
+        perPage,
+        page
+    };
 }
 
-export async function getActivityByCampaignAsync(campaignId, perPage, page: number): Promise<IActivityResult[]> {
+export async function getActivityByCampaignAsync(campaignId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return (await activityRepository
+    const total = await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
+        )
+        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
+        .getCount();
+    const data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
@@ -134,6 +161,13 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
         .limit(perPage)
         .offset(perPage * page)
         .getRawMany()) as IActivityResult[];
+
+    return {
+        data,
+        total,
+        perPage,
+        page
+    };
 }
 
 
@@ -158,32 +192,53 @@ export async function getActivityByCampaignByTimeAsync(campaignId: number, from,
         })) as IShortActivityResult[];
 }
 
-export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResult[]> {
+export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return await activityRepository.createQueryBuilder('activity')
+    const total = await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .andWhere('"activity"."userId" = :userId', {userId})
+        .getCount();
+    const data = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."userId" = :userId', {userId})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
         .getRawMany() as IActivityResult[];
+    return {
+        data,
+        total,
+        perPage,
+        page
+    };
 }
 
-export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResult[]> {
+export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return await activityRepository.createQueryBuilder('activity')
+    const total = await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .andWhere('"activity"."activityId" = :contributionId', {contributionId})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
+        .getCount();
+    const data = (await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[];
+        .getRawMany()) as IActivityResult[];
+    return {
+        data,
+        total,
+        perPage,
+        page
+    };
 }
 
-export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResult[]> {
+export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
-    return await activityRepository.createQueryBuilder('activity')
+    const data = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
@@ -191,4 +246,15 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
         .limit(perPage)
         .offset(perPage * page)
         .getRawMany() as IActivityResult[];
+    const total = await activityRepository.createQueryBuilder('activity')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
+        .getCount();
+    return {
+        data,
+        total,
+        perPage,
+        page
+    };
 }
