@@ -96,8 +96,6 @@ const DashboardPage = props => {
               {/* Jaron links go here */}
               <LinksCard
                 links={[
-                  { path: '/contributions', label: 'Add Contribution' },
-                  { path: '/expenses', label: 'Add Expense' },
                   { path: '/manage-portal', label: 'Invite User' },
                   { path: '/reset-password', label: 'Reset Password' },
                 ]}
