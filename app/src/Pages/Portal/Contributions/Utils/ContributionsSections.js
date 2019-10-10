@@ -24,6 +24,7 @@ export const ViewHeaderSection = ({
   isCampAdmin,
   isCampStaff,
   campaignName,
+  history,
 }) => {
   let showMatchOption = null;
   const showMatchableSelector = () => {
@@ -140,6 +141,15 @@ export const ViewHeaderSection = ({
         </div>
       </div>
       <hr css={sectionStyles.dividerLine} />
+      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="green"
+          onClick={() => history.push({ pathname: '/contributions/add' })}
+        >
+          Add New Contribution
+        </Button>
+      </div>
     </>
   );
 };
