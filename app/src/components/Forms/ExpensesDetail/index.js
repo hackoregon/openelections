@@ -86,6 +86,7 @@ class ExpensesDetail extends React.Component {
       isCampStaff,
       isGovAdmin,
       campaignName,
+      history,
     } = this.props;
     let initialFormData = {};
     if (currentExpenditure) {
@@ -131,6 +132,7 @@ class ExpensesDetail extends React.Component {
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
                 isGovAdmin={isGovAdmin}
+                history={history}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 id={initialFormData.id}

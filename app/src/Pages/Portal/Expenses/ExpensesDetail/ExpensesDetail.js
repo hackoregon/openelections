@@ -5,13 +5,13 @@ import ExpensesDetailForm from '../../../../components/Forms/ExpensesDetail/inde
 
 class ExpensesDetail extends React.PureComponent {
   render() {
-    const { match } = this.props;
+    const { match, history } = this.props;
     let expenditureId = false;
     if (match.params && match.params.id) {
       expenditureId = match.params.id;
       return (
         <PageHoc>
-          <ExpensesDetailForm expenditureId={expenditureId} />
+          <ExpensesDetailForm history={history} expenditureId={expenditureId} />
         </PageHoc>
       );
     }

@@ -22,6 +22,7 @@ export const ViewHeaderSection = ({
   isCampAdmin,
   isCampStaff,
   campaignName,
+  history,
   statusText = status.replace(/_/g, ' '),
 }) => (
   <>
@@ -112,6 +113,15 @@ export const ViewHeaderSection = ({
       </div>
     </div>
     <hr css={sectionStyles.dividerLine} />
+    <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+      <Button
+        css={headerStyles.submitButton}
+        buttonType="green"
+        onClick={() => history.push({ pathname: '/expenses/new' })}
+      >
+        Add New Expense
+      </Button>
+    </div>
   </>
 );
 
