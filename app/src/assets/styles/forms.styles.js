@@ -362,14 +362,11 @@ export const messageBoxStyles = {
     justify-content: center;
     margin-right: 38px;
   `,
-  sendToCampaignButton: css`
-    padding: 30px 30px;
-    width: 100%;
-    height: 91px;
-    border: 1px solid blue;
+  buttonWrapper: css`
+    margin-top: 30px;
     display: flex;
-    justify-content: center;
-    margin-bottom: 38px;
+    justify-content: space-around;
+    margin-bottom: 40px;
   `,
   timelineGroup: css`
     display: flex;
