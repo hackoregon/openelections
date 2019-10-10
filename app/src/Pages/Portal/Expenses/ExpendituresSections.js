@@ -194,3 +194,22 @@ export const PayeeInfoSection = ({ formFields }) => (
     </div>
   </>
 );
+
+export const AddFooterSection = ({ isValid, handleSubmit }) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      marginBottom: '40px',
+    }}
+  >
+    <Button
+      css={headerStyles.submitButton}
+      buttonType="submit"
+      disabled={!isValid}
+      onClick={handleSubmit}
+    >
+      Save as Draft
+    </Button>
+  </div>
+);

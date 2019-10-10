@@ -143,10 +143,6 @@ class SummaryCard extends React.Component {
             ))}
           </p>
           <div className="panel">
-            <h4>Total Raised (Processed)</h4>
-            <p className="money small">{this.money(data.moneyRaised)}</p>
-          </div>
-          <div className="panel">
             <h4>Total Matched (Processed)</h4>
             <p className="money small">{this.money(data.moneyMatched)}</p>
           </div>
@@ -168,10 +164,6 @@ class SummaryCard extends React.Component {
               </Link>
             ))}
           </p>
-          <div className="panel">
-            <h4>Total Spent (Pending)</h4>
-            <p className="money small">{this.money(data.moneySpentPending)}</p>
-          </div>
           <div className="panel">
             <h4>Total Spent (In Compliance)</h4>
             <p className="money small">

@@ -18,6 +18,7 @@ import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
+  AddFooterSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import { mapContributionFormToData } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
@@ -66,6 +67,10 @@ const AddContribution = ({ ...props }) => (
             showOccupationLetter={visibleIf.showOccupationLetter}
             isGovAdmin={props.isGovAdmin}
             contributionId={values.id}
+          />
+          <AddFooterSection
+            isValid={!!(isValid && values.amountOfContribution)}
+            handleSubmit={handleSubmit}
           />
         </>
       );
