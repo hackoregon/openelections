@@ -4,7 +4,7 @@ import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import {
   getActivities,
   getActivitiesByIdType,
@@ -46,13 +46,14 @@ class showMore extends React.Component {
     }
   }
 
-  showMore() {
+  showMore(all = false) {
     const {
       expenditureId,
       contributionId,
       governmentId,
       campaignId,
       totalShowing,
+      totalActivites,
     } = this.props;
     this.props.getActivitiesByIdType({
       expenditureId,
@@ -60,20 +61,37 @@ class showMore extends React.Component {
       governmentId,
       campaignId,
       page: this.state.page,
-      perPage: this.state.perPage + totalShowing,
+      perPage: all ? totalActivites : this.state.perPage + totalShowing,
     });
   }
 
   render() {
+    const { totalShowing, totalActivites, isLoading } = this.props;
     return (
-      <Button
-        disabled={!this.state.moreActivities}
-        onClick={() => {
-          this.showMore();
-        }}
-      >
-        Load more activites
-      </Button>
+      <div>
+        <span css={activitySectionStyles.status}>
+          1 - {totalShowing} of {`${totalActivites}  `}
+        </span>
+        <Button
+          but
+          disabled={!!(!this.state.moreActivities || isLoading)}
+          onClick={() => {
+            this.showMore();
+          }}
+        >
+          Show More
+        </Button>
+        <Button
+          but
+          disabled={!!(!this.state.moreActivities || isLoading)}
+          onClick={() => {
+            this.showMore(true);
+          }}
+        >
+          Show All
+        </Button>
+        {isLoading ? <CircularProgress size={20} /> : null}
+      </div>
     );
   }
 }
@@ -84,6 +102,7 @@ const ShowMore = connect(
     totalShowing: getActivtiesCount(state),
     activityList: state.activities.list,
     totalActivites: getTotalCount(state),
+    isLoading: state.activities.isLoading,
   }),
   dispatch => ({
     getActivitiesByIdType: id => dispatch(getActivitiesByIdType(id)),
