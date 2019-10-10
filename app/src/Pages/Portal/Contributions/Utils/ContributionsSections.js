@@ -79,7 +79,7 @@ export const ViewHeaderSection = ({
                         handleSubmit();
                       }}
                     >
-                      Archive
+                      Move to trash
                     </Button>
                     <Button
                       css={headerStyles.submitButton}
@@ -90,7 +90,7 @@ export const ViewHeaderSection = ({
                         handleSubmit();
                       }}
                     >
-                      Save
+                      Save Draft
                     </Button>
                   </>
                 ) : null}
