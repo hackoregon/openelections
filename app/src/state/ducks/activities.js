@@ -222,7 +222,5 @@ export const getActivtiesCount = state => {
 };
 
 export const getTotalCount = state => {
-  return isEmpty(state.activities.listOptions.total)
-    ? 0
-    : state.activities.listOptions.total;
+  return state.activities.listOptions.total;
 };

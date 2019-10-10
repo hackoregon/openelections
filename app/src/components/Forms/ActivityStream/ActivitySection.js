@@ -38,6 +38,7 @@ class showMore extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log(this.props.totalShowing, '<', this.props.totalActivites);
     if (this.props.totalShowing < this.props.totalActivites) {
       this.state.moreActivities = true;
     } else {
