@@ -226,7 +226,7 @@ class contributorMatchPicker extends React.Component {
                 <Button
                   style={
                     selected && {
-                      opacity: '0.4',
+                      opacity: '0.9',
                     }
                   }
                   css={matchPickerModal.acceptButton}
