@@ -198,7 +198,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 governmentId: government.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('[] for campaignStaff trying to get governmentId', async () => {
@@ -206,7 +206,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 governmentId: government.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('6 records for governmentAdmin trying to get governmentId', async () => {
@@ -214,7 +214,7 @@ describe('Activity', () => {
                 currentUserId: govUser.id,
                 governmentId: government.id
             });
-            expect(records.length).to.equal(6);
+            expect(records.data.length).to.equal(6);
         });
 
         it('3 records for governmentAdmin with campaignId', async () => {
@@ -222,13 +222,13 @@ describe('Activity', () => {
                 currentUserId: govUser.id,
                 campaignId: campaign1.id
             });
-            expect(records.length).to.equal(3);
+            expect(records.data.length).to.equal(3);
 
             records = await getAllActivityRecordsAsync({
                 currentUserId: govUser.id,
                 campaignId: campaign2.id
             });
-            expect(records.length).to.equal(3);
+            expect(records.data.length).to.equal(3);
         });
 
         it('3 records for campaignAdmin with campaignId', async () => {
@@ -236,7 +236,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 campaignId: campaign1.id
             });
-            expect(records.length).to.equal(3);
+            expect(records.data.length).to.equal(3);
         });
 
 
@@ -245,7 +245,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 campaignId: campaign1.id
             });
-            expect(records.length).to.equal(3);
+            expect(records.data.length).to.equal(3);
         });
 
         it('[] records for campaignStaff with different campaignId', async () => {
@@ -253,7 +253,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 campaignId: campaign2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('[] records for campaignAdmin with different campaignId', async () => {
@@ -261,7 +261,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 campaignId: campaign2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('1 records for governmentAdmin with contributionId', async () => {
@@ -269,13 +269,13 @@ describe('Activity', () => {
                 currentUserId: govUser.id,
                 contributionId: contribution1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
 
             records = await getAllActivityRecordsAsync({
                 currentUserId: govUser.id,
                 contributionId: contribution2.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
         it('1 records for campaignAdmin with contributionId', async () => {
@@ -283,7 +283,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 contributionId: contribution1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
 
@@ -292,7 +292,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 contributionId: contribution1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
         it('[] records for campaignStaff with different contributionId', async () => {
@@ -300,7 +300,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 contributionId: contribution2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('[] records for campaignAdmin with different contributionId', async () => {
@@ -308,7 +308,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 contributionId: contribution2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('1 records for governmentAdmin with expenditureId', async () => {
@@ -316,13 +316,13 @@ describe('Activity', () => {
                 currentUserId: govUser.id,
                 expenditureId: expenditure1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
 
             records = await getAllActivityRecordsAsync({
                 currentUserId: govUser.id,
                 expenditureId: expenditure2.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
         it('1 records for campaignAdmin with expenditureId', async () => {
@@ -330,7 +330,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 expenditureId: expenditure1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
 
@@ -339,7 +339,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 expenditureId: expenditure1.id
             });
-            expect(records.length).to.equal(1);
+            expect(records.data.length).to.equal(1);
         });
 
         it('[] records for campaignStaff with different expenditureId', async () => {
@@ -347,7 +347,7 @@ describe('Activity', () => {
                 currentUserId: campaignStaff.id,
                 expenditureId: expenditure2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
 
         it('[] records for campaignAdmin with different expenditureId', async () => {
@@ -355,7 +355,7 @@ describe('Activity', () => {
                 currentUserId: campaignAdmin.id,
                 expenditureId: expenditure2.id
             });
-            expect(records.length).to.equal(0);
+            expect(records.data.length).to.equal(0);
         });
     });
 
