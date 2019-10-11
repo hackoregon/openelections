@@ -32,7 +32,7 @@ import { PageTransitionImage } from '../../PageTransistion';
 import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
 import ActivityStreamForm from '../ActivityStream/index';
 
-const onSubmit = (data, props) => {
+const onSubmit = (data, props, dirty) => {
   // Only PUT changed fields by comparing initialValues to submitted values
   const initialValues = props.currentContribution;
   const submittedValues = mapContributionFormToData(data);
@@ -69,7 +69,7 @@ const onSubmit = (data, props) => {
     default:
   }
 
-  if (Object.keys(alteredValues).length) {
+  if (Object.keys(alteredValues).length && dirty) {
     alteredValues.id = data.id;
     alteredValues.currentUserId = props.currentUserId;
     props.updateContribution(alteredValues);
@@ -115,7 +115,7 @@ class ContributionReadyForm extends React.Component {
     );
     return (
       <AddContributionForm
-        onSubmit={data => onSubmit(data, this.props)}
+        onSubmit={data => onSubmit(data, this.props, this.dirty)}
         initialValues={initialFormData}
       >
         {({
@@ -125,7 +125,9 @@ class ContributionReadyForm extends React.Component {
           visibleIf,
           formErrors,
           values,
+          isDirty,
         }) => {
+          this.dirty = isDirty;
           const isSubmited = !!(
             values.status === ContributionStatusEnum.SUBMITTED
           );
