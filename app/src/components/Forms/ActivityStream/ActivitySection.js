@@ -38,7 +38,6 @@ class showMore extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(this.props.totalShowing, '<', this.props.totalActivites);
     if (this.props.totalShowing < this.props.totalActivites) {
       this.state.moreActivities = true;
     } else {
@@ -73,7 +72,6 @@ class showMore extends React.Component {
           1 - {totalShowing} of {`${totalActivites}  `}
         </span>
         <Button
-          but
           disabled={!!(!this.state.moreActivities || isLoading)}
           onClick={() => {
             this.showMore();
@@ -82,7 +80,6 @@ class showMore extends React.Component {
           Show More
         </Button>
         <Button
-          but
           disabled={!!(!this.state.moreActivities || isLoading)}
           onClick={() => {
             this.showMore(true);
