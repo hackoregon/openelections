@@ -4,11 +4,12 @@ import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import {
   getActivities,
   getActivitiesByIdType,
   getActivtiesCount,
+  getTotalCount,
 } from '../../../state/ducks/activities';
 import MessageBox from './MessageBox';
 import { activitySectionStyles } from '../../../assets/styles/forms.styles';
@@ -17,11 +18,11 @@ class showMore extends React.Component {
   constructor(props) {
     super(props);
     const { expenditureId, contributionId, governmentId, campaignId } = props;
-    const { initialPageSize = 25, perPage = 25 } = props;
+    const { initialPageSize = 5, perPage = 5 } = props;
     this.state = {
       perPage,
       page: 0,
-      moreActivities: !(props.total % perPage),
+      moreActivities: true,
     };
     props.getActivitiesByIdType(
       {
@@ -37,21 +38,22 @@ class showMore extends React.Component {
   }
 
   componentDidUpdate() {
-    if (
-      !(this.props.total % this.state.perPage === 0) &&
-      this.state.moreActivities
-    ) {
+    console.log(this.props.totalShowing, '<', this.props.totalActivites);
+    if (this.props.totalShowing < this.props.totalActivites) {
+      this.state.moreActivities = true;
+    } else {
       this.state.moreActivities = false;
     }
   }
 
-  showMore() {
+  showMore(all = false) {
     const {
       expenditureId,
       contributionId,
       governmentId,
       campaignId,
-      total,
+      totalShowing,
+      totalActivites,
     } = this.props;
     this.props.getActivitiesByIdType({
       expenditureId,
@@ -59,20 +61,37 @@ class showMore extends React.Component {
       governmentId,
       campaignId,
       page: this.state.page,
-      perPage: this.props.perPage + total,
+      perPage: all ? totalActivites : this.state.perPage + totalShowing,
     });
   }
 
   render() {
+    const { totalShowing, totalActivites, isLoading } = this.props;
     return (
-      <Button
-        disabled={!this.state.moreActivities}
-        onClick={() => {
-          this.showMore();
-        }}
-      >
-        Load more activites
-      </Button>
+      <div>
+        <span css={activitySectionStyles.status}>
+          1 - {totalShowing} of {`${totalActivites}  `}
+        </span>
+        <Button
+          but
+          disabled={!!(!this.state.moreActivities || isLoading)}
+          onClick={() => {
+            this.showMore();
+          }}
+        >
+          Show More
+        </Button>
+        <Button
+          but
+          disabled={!!(!this.state.moreActivities || isLoading)}
+          onClick={() => {
+            this.showMore(true);
+          }}
+        >
+          Show All
+        </Button>
+        {isLoading ? <CircularProgress size={20} /> : null}
+      </div>
     );
   }
 }
@@ -80,8 +99,10 @@ class showMore extends React.Component {
 const ShowMore = connect(
   state => ({
     activities: getActivities(state),
-    total: getActivtiesCount(state),
+    totalShowing: getActivtiesCount(state),
     activityList: state.activities.list,
+    totalActivites: getTotalCount(state),
+    isLoading: state.activities.isLoading,
   }),
   dispatch => ({
     getActivitiesByIdType: id => dispatch(getActivitiesByIdType(id)),

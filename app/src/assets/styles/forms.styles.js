@@ -251,6 +251,12 @@ export const matchColors = {
 
 // Activity Stream Styles
 export const activitySectionStyles = {
+  status: css`
+    font-size: 13px;
+    line-height: 15px;
+    color: #979797;
+    margin-bottom: 4px;
+  `,
   main: css`
     margin-top: 65px;
     margin-right: 34px;
