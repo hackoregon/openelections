@@ -3,12 +3,10 @@ import { css, jsx } from '@emotion/core';
 
 export const containers = {
   header: css`
-    width: 96%;
     min-height: 100%;
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
-    margin-right: 38px;
     z-index: 1;
     position: relative;
   `,

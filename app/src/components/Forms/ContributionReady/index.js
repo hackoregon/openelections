@@ -150,6 +150,7 @@ class ContributionReadyForm extends React.Component {
                 updatedAt={initialFormData.updatedAt}
                 status={initialFormData.status}
                 formValues={values}
+                history={history}
               />
               <ReadOnly ro={isReadOnly}>
                 <BasicsSection
