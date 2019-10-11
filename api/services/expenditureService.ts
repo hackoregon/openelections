@@ -224,12 +224,13 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 activityType: ActivityTypeEnum.EXPENDITURE,
                 activityId: expenditure.id
             });
-            expenditure = await expenditureRepository.findOne(expenditure.id) as Expenditure;
+            expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
+                relations: ['campaign', 'government']
+            })) as Expenditure;
             return expenditure;
         } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
             throw new Error('User is not permitted to update expenditures for this campaign.');
         }
-        return expenditureRepository.save(expenditure);
     } catch (e) {
         throw new Error(e.message);
     }
