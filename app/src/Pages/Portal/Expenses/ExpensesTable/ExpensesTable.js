@@ -53,6 +53,30 @@ const columns = isGovAdmin => [
     title: 'Name',
   },
   {
+    field: 'type',
+    title: 'Expenditure Type',
+    render: rowData => {
+      return rowData.type
+        ? (rowData.type[0].toUpperCase() + rowData.type.slice(1)).replace(
+            /_/g,
+            ' '
+          )
+        : '';
+    },
+  },
+  {
+    field: 'subType',
+    title: 'Expenditure Subtype',
+    render: rowData => {
+      return rowData.subType
+        ? (rowData.subType[0].toUpperCase() + rowData.subType.slice(1)).replace(
+            /_/g,
+            ' '
+          )
+        : '';
+    },
+  },
+  {
     field: 'amount',
     title: 'Amount',
     type: 'currency',
