@@ -37,6 +37,8 @@ const styles = css`
       .left-cards:first-of-type {
         flex: 3;
         margin-right: 10px;
+        padding: 20px;
+        border: 2px solid ${accents.lightGrey};
       }
 
       .right-cards:nth-child(2) {
@@ -46,7 +48,6 @@ const styles = css`
         flex-direction: column;
         justify-content: space-between;
       }
-
       .card.small {
         height: 48%;
       }
@@ -84,9 +85,7 @@ const DashboardPage = props => {
         <h1>Dashboard</h1>
         <div className="cards-wrapper">
           <div className="left-cards">
-            <div className="card large">
-              <SummaryCard />
-            </div>
+            <SummaryCard />
           </div>
           <div className="right-cards">
             <div className="card small" style={{ position: 'relative' }}>
