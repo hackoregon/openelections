@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { Button } from '@material-ui/core';
+import Button from '../../Button/Button';
 import { postExpenditureComment } from '../../../state/ducks/expenditures';
 import { postContributionComment } from '../../../state/ducks/contributions';
 import { messageBoxStyles } from '../../../assets/styles/forms.styles';
@@ -35,24 +35,27 @@ const MessageBox = ({
       <div css={messageBoxStyles.boxAndButton} style={{ marginRight: '0px' }}>
         <TextareaAutosize
           css={messageBoxStyles.messageBox}
-          rows="20"
+          rows="3"
           id="message"
           name="messageBox"
           label="Message"
+          style={{ fontSize: '21px' }}
           value={messageText}
           onChange={handleTextChange}
         >
           {/* <span css={messageBoxStyles.message}>Message to Campaign</span> */}
         </TextareaAutosize>
-        <Button
-          css={messageBoxStyles.sendToCampaignButton}
-          onClick={() => {
-            postComment(id, messageText);
-            clearOnSubmit();
-          }}
-        >
-          Submit
-        </Button>
+        <div css={messageBoxStyles.buttonWrapper}>
+          <Button
+            buttonType="submit"
+            onClick={() => {
+              postComment(id, messageText);
+              clearOnSubmit();
+            }}
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </>
   );

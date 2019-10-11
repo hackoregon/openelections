@@ -6,6 +6,7 @@ import SummaryCard from './cards/SummaryCard';
 import LinksCard from './cards/LinksCard';
 import SearchCard from './cards/SearchCard';
 import ActivityStreamCard from './cards/ActivityStreamCard';
+import { isGovAdmin } from '../../../state/ducks/auth';
 
 /** @jsx jsx */
 import { mediaQueryRanges, accents } from '../../../assets/styles/variables';
@@ -95,12 +96,19 @@ const DashboardPage = props => {
             <div className="card small">
               {/* Jaron links go here */}
               <LinksCard
-                links={[
-                  { path: '/contributions', label: 'Add Contribution' },
-                  { path: '/expenses', label: 'Add Expense' },
-                  { path: '/manage-portal', label: 'Invite User' },
-                  { path: '/reset-password', label: 'Reset Password' },
-                ]}
+                links={
+                  props.isGovAdmin
+                    ? [
+                        { path: '/manage-portal', label: 'Invite User' },
+                        { path: '/reset-password', label: 'Reset Password' },
+                      ]
+                    : [
+                        { path: '/contributions', label: 'Add Contribution' },
+                        { path: '/expenses', label: 'Add Expense' },
+                        { path: '/manage-portal', label: 'Invite User' },
+                        { path: '/reset-password', label: 'Reset Password' },
+                      ]
+                }
               />
             </div>
           </div>
@@ -117,4 +125,5 @@ const DashboardPage = props => {
 
 export default connect(state => ({
   authLoading: state.auth.isLoading,
+  isGovAdmin: isGovAdmin(state),
 }))(DashboardPage);

@@ -14,6 +14,7 @@ import {
   AddHeaderSection,
   BasicsSection,
   PayeeInfoSection,
+  AddFooterSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import { mapExpenditureFormToData } from '../../../Pages/Portal/Expenses/ExpendituresFields';
 
@@ -52,6 +53,10 @@ const AddExpense = ({ ...props }) => (
             formFields={formFields}
             showEmployerSection={visibleIf.showEmployerSection}
             isPerson={visibleIf.isPerson}
+          />
+          <AddFooterSection
+            isValid={!!(isValid && values.amount)}
+            handleSubmit={handleSubmit}
           />
         </>
       );

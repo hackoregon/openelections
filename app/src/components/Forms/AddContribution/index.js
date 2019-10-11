@@ -18,6 +18,7 @@ import {
   AddHeaderSection,
   BasicsSection,
   ContributorSection,
+  AddFooterSection,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsSections';
 import { mapContributionFormToData } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 
@@ -40,6 +41,9 @@ const AddContribution = ({ ...props }) => (
     initialValues={{
       typeOfContribution: ContributionTypeEnum.CONTRIBUTION,
       typeOfContributor: ContributorTypeEnum.INDIVIDUAL,
+      city: 'Portland',
+      state: 'OR',
+      employerCountry: 'United States',
     }}
   >
     {({ formFields, isValid, handleSubmit, visibleIf, isSubmited, values }) => {
@@ -65,6 +69,10 @@ const AddContribution = ({ ...props }) => (
             showOccupationLetter={visibleIf.showOccupationLetter}
             isGovAdmin={props.isGovAdmin}
             contributionId={values.id}
+          />
+          <AddFooterSection
+            isValid={!!(isValid && values.amountOfContribution)}
+            handleSubmit={handleSubmit}
           />
         </>
       );

@@ -24,6 +24,7 @@ export const ViewHeaderSection = ({
   isCampAdmin,
   isCampStaff,
   campaignName,
+  history,
 }) => {
   let showMatchOption = null;
   const showMatchableSelector = () => {
@@ -79,7 +80,7 @@ export const ViewHeaderSection = ({
                         handleSubmit();
                       }}
                     >
-                      Archive
+                      Move to trash
                     </Button>
                     <Button
                       css={headerStyles.submitButton}
@@ -90,7 +91,7 @@ export const ViewHeaderSection = ({
                         handleSubmit();
                       }}
                     >
-                      Save
+                      Save Draft
                     </Button>
                   </>
                 ) : null}
@@ -140,6 +141,15 @@ export const ViewHeaderSection = ({
         </div>
       </div>
       <hr css={sectionStyles.dividerLine} />
+      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="green"
+          onClick={() => history.push({ pathname: '/contributions/add' })}
+        >
+          Add New Contribution
+        </Button>
+      </div>
     </>
   );
 };
@@ -170,7 +180,7 @@ export const BasicsSection = ({
   showMatchAmount,
   showCompliant,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
     {showCompliant ? (
       <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
     ) : null}
@@ -210,7 +220,7 @@ export const ContributorSection = ({
   showOccupationLetter,
   matchId,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.7' } : null}>
+  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
     <div>
       {isPerson && isGovAdmin ? (
         <div style={{ pointerEvents: 'all', opacity: '1' }}>
@@ -260,6 +270,7 @@ export const ContributorSection = ({
                     <h2>{formFields.employerName}</h2>
                     <h2>{formFields.employerCity}</h2>
                     <h2>{formFields.employerState}</h2>
+                    <h2>{formFields.employerCountry}</h2>
                   </div>
                 ) : null}
               </>
@@ -296,5 +307,24 @@ export const OtherDetailsSection = ({
         </Button>
       </div>
     </div>
+  </div>
+);
+
+export const AddFooterSection = ({ isValid, handleSubmit }) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'row-reverse',
+      marginBottom: '40px',
+    }}
+  >
+    <Button
+      css={headerStyles.submitButton}
+      buttonType="submit"
+      disabled={!isValid}
+      onClick={handleSubmit}
+    >
+      Save as Draft
+    </Button>
   </div>
 );

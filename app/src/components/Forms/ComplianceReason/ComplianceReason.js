@@ -53,8 +53,8 @@ const ComplianceReason = ({
 }) => {
   const classes = useStyles();
   const isRequired = true;
-  const [reasonPicked, setValue] = React.useState('overLimit');
-  const [reasonText, setText] = React.useState('');
+  const [reasonPicked, setValue] = React.useState('Over Limit');
+  const [reasonText, setText] = React.useState('Over Limit');
   function handleChange(event) {
     setValue(event.target.value);
   }
@@ -91,7 +91,9 @@ const ComplianceReason = ({
             name="Compliance"
             onChange={event => {
               handleChange(event);
-              setText(event.target.value);
+              event.target.value === 'Over Limit'
+                ? setText('Over Limit')
+                : setText('');
             }}
           >
             <FormControlLabel

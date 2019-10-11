@@ -3,12 +3,10 @@ import { css, jsx } from '@emotion/core';
 
 export const containers = {
   header: css`
-    width: 96%;
     min-height: 100%;
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
-    margin-right: 38px;
     z-index: 1;
     position: relative;
   `,
@@ -368,14 +366,11 @@ export const messageBoxStyles = {
     justify-content: center;
     margin-right: 38px;
   `,
-  sendToCampaignButton: css`
-    padding: 30px 30px;
-    width: 100%;
-    height: 91px;
-    border: 1px solid blue;
+  buttonWrapper: css`
+    margin-top: 30px;
     display: flex;
-    justify-content: center;
-    margin-bottom: 38px;
+    justify-content: space-around;
+    margin-bottom: 40px;
   `,
   timelineGroup: css`
     display: flex;

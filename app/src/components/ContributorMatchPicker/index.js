@@ -21,10 +21,13 @@ import {
   getCurrentContributionMatch,
 } from '../../state/ducks/matches';
 
-function getMatchIcon(matchStrength) {
+function getMatchIcon(matchStrength, inPortland = true) {
   let matchIcon = <NoMatchIcon css={matchColors.no} />;
+
   if (matchStrength !== 'none') {
-    matchIcon = <MatchIcon css={matchColors[matchStrength]} />;
+    const matchColor =
+      !inPortland && matchStrength === 'exact' ? 'no' : matchStrength;
+    matchIcon = <MatchIcon css={matchColors[matchColor]} />;
   }
   return matchIcon;
 }
@@ -40,11 +43,13 @@ const Header = props => {
   let matchStrength = 'none';
   let matchSelectedText = '';
   let hasMatches = false;
+  let inPortland = true;
 
   if (contributorMatches[contributionId]) {
     matchStrength = contributorMatches[contributionId].matchStrength;
     const x = contributorMatches[contributionId].results;
     hasMatches = !!(x && [...x.exact, ...x.strong, ...x.weak].length);
+    inPortland = contributorMatches[contributionId].inPortland;
   }
   if (hasMatches) {
     if (currentMatchId) {
@@ -62,7 +67,7 @@ const Header = props => {
         : `${matchStrength} Match (selected)`;
   }
   // Switch color and symbol based on matchStrength
-  const matchIcon = getMatchIcon(matchStrength);
+  const matchIcon = getMatchIcon(matchStrength, inPortland);
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <h3
@@ -156,7 +161,8 @@ class contributorMatchPicker extends React.Component {
       state,
       zip,
     } = page;
-    const matchIcon = getMatchIcon(matchStrength);
+    const specialExactCase = !!(matchStrength === 'exact' && !inPortland);
+    const matchIcon = getMatchIcon(matchStrength, inPortland);
     const noMatchText =
       matchStrength === 'none' && pages.length === 1
         ? 'Could not find any matches'
@@ -168,7 +174,10 @@ class contributorMatchPicker extends React.Component {
             <div style={{ paddingTop: '5px' }} css={matchPickerModal.matchText}>
               <div>
                 {matchIcon}{' '}
-                <span style={{ display: 'inline-block', verticalAlign: '5px' }}>
+                <span
+                  css={specialExactCase ? matchColors.no : null}
+                  style={{ display: 'inline-block', verticalAlign: '5px' }}
+                >
                   Match: {matchStrength}
                 </span>
               </div>
@@ -226,7 +235,7 @@ class contributorMatchPicker extends React.Component {
                 <Button
                   style={
                     selected && {
-                      opacity: '0.4',
+                      opacity: '0.9',
                     }
                   }
                   css={matchPickerModal.acceptButton}
