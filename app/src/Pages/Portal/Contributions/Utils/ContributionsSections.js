@@ -12,6 +12,7 @@ import {
 } from '../../../../assets/styles/forms.styles';
 import { MatchPickerHeader } from '../../../../components/ContributorMatchPicker';
 import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
+import { isGovAdmin } from '../../../../state/ducks/auth';
 
 export const ViewHeaderSection = ({
   isValid,
@@ -141,15 +142,17 @@ export const ViewHeaderSection = ({
         </div>
       </div>
       <hr css={sectionStyles.dividerLine} />
-      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        <Button
-          css={headerStyles.submitButton}
-          buttonType="green"
-          onClick={() => history.push({ pathname: '/contributions/add' })}
-        >
-          Add New Contribution
-        </Button>
-      </div>
+      {!isGovAdmin ? (
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="green"
+            onClick={() => history.push({ pathname: '/contributions/add' })}
+          >
+            Add New Contribution
+          </Button>
+        </div>
+      ) : null}
     </>
   );
 };
