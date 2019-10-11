@@ -241,12 +241,12 @@ export interface IUpdateContributionAttrs {
     employerCountry?: string;
 }
 
-export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<void> {
+export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<Contribution> {
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
         const userRepository = defaultConn.getRepository('User');
-        const contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
+        let contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
             relations: ['campaign', 'government']
         })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
@@ -315,6 +315,10 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
                 activityType: ActivityTypeEnum.CONTRIBUTION,
                 activityId: contribution.id
             });
+            contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
+                relations: ['campaign', 'government']
+            })) as Contribution;
+            return contribution;
         } else {
             throw new Error('User does not have permissions');
         }

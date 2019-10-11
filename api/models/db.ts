@@ -20,7 +20,7 @@ export default async (): Promise<Connection> => {
         database: process.env.DB_NAME,
         entities,
         synchronize: true,
-        logging: process.env.NODE_ENV === 'development'
+        logging: false
     });
 
     return connection;

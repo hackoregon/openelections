@@ -674,7 +674,7 @@ describe('contributionService', () => {
         });
         expect(
             data.csv.split(',').length
-        ).to.equal(151);
+        ).to.equal(154);
         expect(
             data.csv.includes('matchStrength')
         ).to.equal(true);
@@ -731,7 +731,7 @@ describe('contributionService', () => {
         });
         expect(
             data.csv.split(',').length
-        ).to.equal(118);
+        ).to.equal(121);
         expect(
             data.csv.includes('matchStrength')
         ).to.equal(false);
