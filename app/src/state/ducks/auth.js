@@ -35,6 +35,7 @@ export const actionTypes = {
 // Initial State
 export const initialState = {
   me: null,
+  assume: false,
   isLoading: false,
   error: null,
 };
@@ -95,6 +96,9 @@ export default createReducer(initialState, {
   [actionTypes.UPDATE_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
+  [actionTypes.SET_ASSUME]: (state, action) => {
+    return { ...state, assume: action.assume };
+  },
 });
 
 // Action Creators
@@ -130,6 +134,7 @@ export const actionCreators = {
     success: () => action(actionTypes.UPDATE_PASSWORD.SUCCESS),
     failure: error => action(actionTypes.UPDATE_PASSWORD.FAILURE, { error }),
   },
+  setAssume: assume => action(actionTypes.SET_ASSUME, { assume }),
 };
 
 export function logout() {
@@ -378,11 +383,23 @@ export const getMeRole = (state, role = 'campaign_admin') => {
   return false;
 };
 
+export function setAssume() {
+  return (dispatch, getState) => {
+    if (getMeRole(getState(), 'government_admin')) {
+      dispatch(actionCreators.setAssume(true));
+    }
+  };
+}
+export function unSetAssume() {
+  return dispatch => {
+    dispatch(actionCreators.setAssume(false));
+  };
+}
 export const isGovAdmin = state => {
-  return getMeRole(state, 'government_admin');
+  return state.auth.assume ? false : getMeRole(state, 'government_admin');
 };
 export const isCampAdmin = state => {
-  return getMeRole(state, 'campaign_admin');
+  return state.auth.assume ? true : getMeRole(state, 'campaign_admin');
 };
 export const isCampStaff = state => {
   return getMeRole(state, 'campaign_staff');
