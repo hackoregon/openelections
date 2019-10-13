@@ -48,6 +48,12 @@ export class Activity {
     @IsDefined()
     activityType: ActivityTypeEnum;
 
+    @Column({
+        nullable: true,
+        default: false
+    })
+    notify: boolean;
+
     @ManyToOne(type => Government, government => government.activities, { eager: true })
     government: Government;
 
@@ -184,7 +190,8 @@ export async function getActivityByCampaignByTimeAsync(campaignId: number, from,
             select: ['notes', 'activityId', 'activityType', 'createdAt'],
             where: {
                 campaignId,
-                createdAt: Between(from, to)
+                createdAt: Between(from, to),
+                notify: true,
             },
             order: {
                 createdAt: 'DESC'
