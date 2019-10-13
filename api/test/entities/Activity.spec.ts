@@ -230,19 +230,30 @@ describe('Activity', () => {
         expect(activities.total).to.equal(2);
     });
 
-    it('getActivityByCampaignByTimeAsync testme', async () => {
+    it('getActivityByCampaignByTimeAsync', async () => {
         const gov = await newGovernmentAsync();
         const campaign = await newCampaignAsync(gov);
         const contr = await newContributionAsync(campaign, gov);
         const user = await newActiveUserAsync();
         await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        const activity = await createActivityRecordAsync({
+            currentUser: user,
+            notes: `${user.name()} added a new contribution (${contr.id})`,
+            campaign,
+            government: gov,
+            activityType: ActivityTypeEnum.CONTRIBUTION,
+            activityId: contr.id,
+            notify: false
+        });
+
         const activity1 = await createActivityRecordAsync({
             currentUser: user,
             notes: `${user.name()} added a new contribution (${contr.id})`,
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.CONTRIBUTION,
-            activityId: contr.id
+            activityId: contr.id,
+            notify: true
         });
 
         const activity2 = await createActivityRecordAsync({
@@ -251,13 +262,15 @@ describe('Activity', () => {
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.COMMENT_CONTR,
-            activityId: contr.id
+            activityId: contr.id,
+            notify: true
         });
 
+        activityRepository.update(activity.id, {createdAt: new Date(2019, 1, 1)});
         activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
         activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
         const activities = await getActivityByContributionAsync(contr.id, 100, 0);
-        expect(activities.data.length).to.equal(2);
+        expect(activities.data.length).to.equal(3);
         let from = new Date(2018, 12, 31);
         let to = new Date(2019, 1, 31);
         let activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);

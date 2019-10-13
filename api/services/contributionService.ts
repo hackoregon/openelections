@@ -313,7 +313,8 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
-                activityId: contribution.id
+                activityId: contribution.id,
+                notify: isGovAdmin
             });
             contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
                 relations: ['campaign', 'government']
@@ -433,7 +434,8 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 government: contribution.government,
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
-                activityType: ActivityTypeEnum.COMMENT_CONTR
+                activityType: ActivityTypeEnum.COMMENT_CONTR,
+                notify: true
             });
         } else {
             throw new Error('User does not have permissions');

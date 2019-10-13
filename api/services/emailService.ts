@@ -224,7 +224,7 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
     const email: ISESEmailParams = {
         Destination: {
             ToAddresses: emails,
-            CcAddresses: ['susan.Mottet@portlandoregon.gov'],
+            CcAddresses: ['OpenElections@portlandoregon.gov'],
         },
         Message: {
             Body: {

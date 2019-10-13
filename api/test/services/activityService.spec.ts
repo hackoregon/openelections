@@ -26,6 +26,7 @@ let campaign1: Campaign;
 let campaign2: Campaign;
 let govUser: User;
 let campaignAdmin: User;
+let campaignAdmin1: User;
 let campaignAdmin2: User;
 let campaignStaff: User;
 let permission: Permission;
@@ -39,6 +40,7 @@ describe('Activity', () => {
     beforeEach(async () => {
         govUser = await newActiveUserAsync();
         campaignAdmin = await newActiveUserAsync();
+        campaignAdmin1 = await newActiveUserAsync();
         campaignStaff = await newActiveUserAsync();
         campaignAdmin2 = await newActiveUserAsync();
         government = await newGovernmentAsync();
@@ -60,9 +62,15 @@ describe('Activity', () => {
             role: UserRole.CAMPAIGN_ADMIN
         });
         await addPermissionAsync({
-            userId: campaignAdmin2.id,
+            userId: campaignAdmin1.id,
             governmentId: government.id,
             campaignId: campaign1.id,
+            role: UserRole.CAMPAIGN_ADMIN
+        });
+        await addPermissionAsync({
+            userId: campaignAdmin2.id,
+            governmentId: government.id,
+            campaignId: campaign2.id,
             role: UserRole.CAMPAIGN_ADMIN
         });
         await addPermissionAsync({
@@ -373,7 +381,7 @@ describe('Activity', () => {
         expect(params).to.be.undefined;
     });
 
-    it('sendActivityEmailToCampaignAdminsAsync', async () => {
+    it('sendActivityEmailToCampaignAdminsAsync testme', async () => {
         const connection = getConnection('default');
         await connection.query('TRUNCATE "activity" RESTART IDENTITY CASCADE');
         await createActivityRecordAsync({
@@ -381,7 +389,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: contribution1.id,
-            activityType: ActivityTypeEnum.CONTRIBUTION
+            activityType: ActivityTypeEnum.CONTRIBUTION,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -389,7 +398,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: contribution1.id,
-            activityType: ActivityTypeEnum.COMMENT_CONTR
+            activityType: ActivityTypeEnum.COMMENT_CONTR,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -397,7 +407,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: expenditure1.id,
-            activityType: ActivityTypeEnum.COMMENT_EXP
+            activityType: ActivityTypeEnum.COMMENT_EXP,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -405,7 +416,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: expenditure1.id,
-            activityType: ActivityTypeEnum.EXPENDITURE
+            activityType: ActivityTypeEnum.EXPENDITURE,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -413,7 +425,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: contribution1.id,
-            activityType: ActivityTypeEnum.CONTRIBUTION
+            activityType: ActivityTypeEnum.CONTRIBUTION,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -421,7 +434,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: contribution1.id,
-            activityType: ActivityTypeEnum.COMMENT_CONTR
+            activityType: ActivityTypeEnum.COMMENT_CONTR,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -429,7 +443,8 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: expenditure1.id,
-            activityType: ActivityTypeEnum.COMMENT_EXP
+            activityType: ActivityTypeEnum.COMMENT_EXP,
+            notify: true
         });
 
         await createActivityRecordAsync({
@@ -437,15 +452,16 @@ describe('Activity', () => {
             government: government,
             notes: 'this is a comment',
             activityId: expenditure1.id,
-            activityType: ActivityTypeEnum.EXPENDITURE
+            activityType: ActivityTypeEnum.EXPENDITURE,
+            notify: true
         });
 
         const params = await sendActivityEmailToCampaignAdminsAsync(campaign1.id);
         const to: Date = new Date();
         const from: Date = new Date(Date.now() - (24 * 60 * 60 * 1000));
         const activities = await getActivityByCampaignByTimeAsync(campaign1.id, from, to);
-        expect(activities.length).to.equal(8);
         expect(params.Destination.ToAddresses.length).to.equal(2);
+        expect(activities.length).to.equal(8);
         expect(JSON.stringify(params.Message.Body.Text)).to.equal('{"Charset":"UTF-8","Data":"This is a daily transaction summary for your campaign\'s Contributions and Expenditures.\\r\\nContributions:\\r\\n\\r\\nThe following contributions have been created or updated in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nContribution Comments:\\r\\n\\r\\nThe following contributions have been commented on in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nExpenditures:\\r\\n\\r\\nThe following expenditures have been created or updated in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\nExpenditures Comments:\\r\\n\\r\\nThe following expenditures have been commented on in the last 24 hours.\\r\\n\\r\\n- ID#1: this is a comment\\r\\n- ID#1: this is a comment\\r\\n\\r\\n\\r\\nIn accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.\\r\\nIf you would like more information about the transaction(s), please go to your campaign portal at http://localhost:3000.\\r\\nSincerely,\\r\\nSusan Mottet\\r\\nDirector, Open and Accountable Elections\\r\\nhttps://www.portlandoregon.gov/OAE"}');
     });
 });

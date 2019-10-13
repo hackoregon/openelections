@@ -222,7 +222,8 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 campaign: expenditure.campaign,
                 government: expenditure.government,
                 activityType: ActivityTypeEnum.EXPENDITURE,
-                activityId: expenditure.id
+                activityId: expenditure.id,
+                notify: govAdmin
             });
             expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
                 relations: ['campaign', 'government']
@@ -263,7 +264,8 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
                 government: expenditure.government,
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: expenditure.id,
-                activityType: ActivityTypeEnum.COMMENT_EXP
+                activityType: ActivityTypeEnum.COMMENT_EXP,
+                notify: true
             });
         } else {
             throw new Error('User does not have permissions');

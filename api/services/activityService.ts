@@ -23,6 +23,7 @@ export interface ICreateActivityServiceParams {
     activityId: number;
     activityType: ActivityTypeEnum;
     notes: string;
+    notify?: boolean;
 }
 
 export async function createActivityRecordAsync(params: ICreateActivityServiceParams): Promise<Activity> {
@@ -34,6 +35,7 @@ export async function createActivityRecordAsync(params: ICreateActivityServicePa
     activity.activityId = params.activityId;
     activity.activityType = params.activityType;
     activity.notes = params.notes;
+    activity.notify = !!params.notify;
     if (await activity.isValidAsync()) {
         activity = await repository.save(activity);
         return activity;
