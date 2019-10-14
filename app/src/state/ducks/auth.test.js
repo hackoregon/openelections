@@ -32,7 +32,7 @@ describe('Reducer', () => {
   const reducer = auth.default;
   it('initial state', () => {
     expect(reducer(undefined, {})).toEqual({
-      assume: undefined,
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
