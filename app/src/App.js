@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Global, css } from '@emotion/core';
 import { connect } from 'react-redux';
-import { ReactComponent as Logo } from '@hackoregon/component-library/assets/civic-logo-animated.svg';
+import logo from './assets/icons/oaeLogo.jpeg';
 import Routes from './Pages/routes';
 import FlashMessage from './components/FlashMessage/FlashMessage';
 import styles from './assets/styles/global.styles';
@@ -28,16 +28,17 @@ class App extends React.Component {
         <Global styles={styles} />
         <FlashMessage />
         {this.state.isLoading ? (
-          <Logo
-            width={150}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
+          <img src={logo} alt="Logo" />
         ) : (
+          // <Logo
+          //   width={150}
+          //   style={{
+          //     position: 'absolute',
+          //     top: '50%',
+          //     left: '50%',
+          //     transform: 'translate(-50%, -50%)',
+          //   }}
+          // />
           <Routes />
         )}
       </div>
