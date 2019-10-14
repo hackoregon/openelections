@@ -411,7 +411,10 @@ export const isGovAdmin = state => {
     : getMeRole(state, 'government_admin');
 };
 export const isCampAdmin = state => {
-  return state.auth.assume ? true : getMeRole(state, 'campaign_admin');
+  return state.auth.assume &&
+    state.router.location.pathname.includes('/contributions/')
+    ? true
+    : getMeRole(state, 'campaign_admin');
 };
 export const isCampStaff = state => {
   return getMeRole(state, 'campaign_staff');
