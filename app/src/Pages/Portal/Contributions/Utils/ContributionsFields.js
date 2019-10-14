@@ -432,7 +432,6 @@ export const fields = {
     options: { values: stateList },
   },
   employerCountry: {
-    defaultValue: 'United States',
     label: 'Employer Country',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
