@@ -11,7 +11,7 @@ import logo from '../../assets/icons/oaeLogo.jpeg';
 import Navigation from '../Navigation';
 
 const styles = css`
-  background-color: #201921;
+  background-color: #23552c;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -24,7 +24,7 @@ const styles = css`
   .header-icon {
     align-items: center;
     display: flex;
-    flex: 1;
+    flex: 4;
     flex-direction: row;
   }
   .header-icon img {
@@ -34,6 +34,8 @@ const styles = css`
     color: white;
     font-size: 28px;
     line-height: 28px;
+    text-transform: uppercase;
+    margin-left: 15px;
   }
 `;
 const TopNavigation = props => {
@@ -43,7 +45,7 @@ const TopNavigation = props => {
     <header css={styles}>
       <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
         <img src={logo} alt="Open and Accountable Elections logo" />
-        <p className="logo-text">Open Elections</p>
+        <p className="logo-text">Open & Accountable Elections Portland</p>
       </Link>
       <Navigation />
     </header>

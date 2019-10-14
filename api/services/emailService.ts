@@ -307,7 +307,7 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
         <td
           valign="top"
           align="left"
-          bgcolor="black"
+          bgcolor="#23552c"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
           <table>
@@ -317,16 +317,16 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
                 <td
                   align="left"
                   style="padding-left: 40px; padding-right: 10px;"
-                  bgcolor="black"
+                  bgcolor="#23552c"
                 >
-                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" style="display: block;" />
+                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>Open Elections</b>
+                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
                 </td>
               </tr>
             </table>
@@ -434,7 +434,7 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
         <td
           valign="top"
           align="left"
-          bgcolor="black"
+          bgcolor="#23552c"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
           <table>
@@ -444,16 +444,16 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
                 <td
                   align="left"
                   style="padding-left: 40px; padding-right: 10px;"
-                  bgcolor="black"
+                  bgcolor="#23552c"
                 >
-                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" style="display: block;" />
+                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>Open Elections</b>
+                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
                 </td>
               </tr>
             </table>
@@ -561,7 +561,7 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
         <td
           valign="top"
           align="left"
-          bgcolor="black"
+          bgcolor="#23552c"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
           <table>
@@ -571,16 +571,16 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
                 <td
                   align="left"
                   style="padding-left: 40px; padding-right: 10px;"
-                  bgcolor="black"
+                  bgcolor="#23552c"
                 >
-                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" style="display: block;" />
+                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>Open Elections</b>
+                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
                 </td>
               </tr>
             </table>
@@ -689,7 +689,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
         <td
           valign="top"
           align="left"
-          bgcolor="black"
+          bgcolor="#23552c"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
           <table>
@@ -699,16 +699,16 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
                 <td
                   align="left"
                   style="padding-left: 40px; padding-right: 10px;"
-                  bgcolor="black"
+                  bgcolor="#23552c"
                 >
-                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" style="display: block;" />
+                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>Open Elections</b>
+                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
                 </td>
               </tr>
             </table>
@@ -800,7 +800,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
         <td
           valign="top"
           align="left"
-          bgcolor="black"
+          bgcolor="#23552c"
           style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
         >
           <table>
@@ -810,16 +810,16 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                 <td
                   align="left"
                   style="padding-left: 40px; padding-right: 10px;"
-                  bgcolor="black"
+                  bgcolor="#23552c"
                 >
-                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" style="display: block;" />
+                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>Open Elections</b>
+                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
                 </td>
               </tr>
             </table>
