@@ -207,13 +207,13 @@ describe('API', () => {
   it('getGovernmentActivities', async () => {
     process.env.TOKEN = govAdminToken;
     const response = await api.getGovernmentActivities({ governmentId });
-    expect(response.length > 1).toBeTruthy();
+    expect(response.data.length > 1).toBeTruthy();
   });
 
   it('getCampaignActivities', async () => {
     process.env.TOKEN = campaignAdminToken;
     const response = await api.getCampaignActivities({ campaignId });
-    expect(response.length > 1).toBeTruthy();
+    expect(response.data.length > 1).toBeTruthy();
   });
 
   it('createContribution', async () => {
@@ -266,7 +266,7 @@ describe('API', () => {
     const response = await api.getContributionActivities({
       contributionId: contribution.id,
     });
-    expect(response.length >= 1).toBeTruthy();
+    expect(response.data.length >= 1).toBeTruthy();
   });
 
   it('updateContribution', async () => {
@@ -472,7 +472,7 @@ describe('API', () => {
     response = await api.getExpenditureActivities({
       expenditureId: expenditure.id,
     });
-    expect(response.length >= 1).toBeTruthy();
+    expect(response.data.length >= 1).toBeTruthy();
   });
 
   it('postExpenditureComment', async () => {
