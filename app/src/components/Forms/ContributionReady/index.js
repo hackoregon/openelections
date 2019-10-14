@@ -15,6 +15,7 @@ import {
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
+  isGovAdminAuthenticated,
 } from '../../../state/ducks/auth';
 import {
   ViewHeaderSection,
@@ -148,6 +149,7 @@ class ContributionReadyForm extends React.Component {
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
                 isGovAdmin={this.props.isGovAdmin}
+                isGovAdminAuthenticated={this.props.isGovAdminAuthenticated}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 id={initialFormData.id}
@@ -205,6 +207,7 @@ export default connect(
   state => ({
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
+    isGovAdminAuthenticated: isGovAdminAuthenticated(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),

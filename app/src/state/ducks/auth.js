@@ -3,7 +3,9 @@ import { createSelector } from 'reselect';
 import { push } from 'connected-react-router';
 import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
-import createActionTypes from '../utils/createActionTypes';
+import createActionTypes, {
+  createCustomActionTypes,
+} from '../utils/createActionTypes';
 import action from '../utils/action';
 import * as governments from './governments';
 import { getStatusSummaryAction } from './summary';
@@ -30,6 +32,7 @@ export const actionTypes = {
     'SEND_PASSWORD_RESET_EMAIL'
   ),
   UPDATE_PASSWORD: createActionTypes(STATE_KEY, 'UPDATE_PASSWORD'),
+  SET_ASSUME: createCustomActionTypes(STATE_KEY, 'SET_ASSUME', ['UPDATE']),
 };
 
 // Initial State
@@ -96,7 +99,7 @@ export default createReducer(initialState, {
   [actionTypes.UPDATE_PASSWORD.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  [actionTypes.SET_ASSUME]: (state, action) => {
+  [actionTypes.SET_ASSUME.UPDATE]: (state, action) => {
     return { ...state, assume: action.assume };
   },
 });
@@ -134,7 +137,7 @@ export const actionCreators = {
     success: () => action(actionTypes.UPDATE_PASSWORD.SUCCESS),
     failure: error => action(actionTypes.UPDATE_PASSWORD.FAILURE, { error }),
   },
-  setAssume: assume => action(actionTypes.SET_ASSUME, { assume }),
+  setAssume: assume => action(actionTypes.SET_ASSUME.UPDATE, { assume }),
 };
 
 export function logout() {
@@ -395,8 +398,17 @@ export function unSetAssume() {
     dispatch(actionCreators.setAssume(false));
   };
 }
+export const isGovAdminAuthenticated = state => {
+  return getMeRole(state, 'government_admin');
+};
+export const isAssumed = state => {
+  return !!state.auth.assume;
+};
 export const isGovAdmin = state => {
-  return state.auth.assume ? false : getMeRole(state, 'government_admin');
+  return state.auth.assume &&
+    state.router.location.pathname.includes('/contributions/')
+    ? false
+    : getMeRole(state, 'government_admin');
 };
 export const isCampAdmin = state => {
   return state.auth.assume ? true : getMeRole(state, 'campaign_admin');
