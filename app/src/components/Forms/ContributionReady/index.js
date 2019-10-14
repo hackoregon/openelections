@@ -26,7 +26,11 @@ import {
   mapContributionDataToForm,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
-import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
+import {
+  ContributionStatusEnum,
+  dateToMicroTime,
+  dateToPickerFormat,
+} from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
 import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
@@ -41,10 +45,10 @@ const onSubmit = (data, props) => {
   // All dates must be converted to microtime to compare
   if (initialValues.occupationLetterDate) {
     initialValues.occupationLetterDate = dateToMicroTime(
-      initialValues.occupationLetterDate
+      dateToPickerFormat(initialValues.occupationLetterDate)
     );
   }
-  initialValues.date = dateToMicroTime(initialValues.date);
+  initialValues.date = dateToMicroTime(dateToPickerFormat(initialValues.date));
   for (const [field, value] of Object.entries(submittedValues)) {
     if (value !== initialValues[field]) {
       if (!(!alteredValues[field] && !value)) alteredValues[field] = value;

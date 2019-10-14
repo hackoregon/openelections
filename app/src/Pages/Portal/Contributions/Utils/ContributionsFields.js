@@ -26,6 +26,8 @@ import {
   PaymentMethodEnum,
   DataToOaeTypeTypeFieldMap,
   InKindDescriptionTypeEnum,
+  dateToMicroTime,
+  dateToPickerFormat,
 } from '../../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -80,10 +82,7 @@ export const mapContributionDataToForm = contribution => {
     // BASICS VALUES
     id,
     buttonSubmitted: buttonSubmitted || '',
-    dateOfContribution: format(
-      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
-      'YYYY-MM-DD'
-    ),
+    dateOfContribution: dateToPickerFormat(date),
     updatedAt: format(
       new Date(
         parseFromTimeZone(updatedAt, { timeZone: 'America/Los_Angeles' })
@@ -114,19 +113,10 @@ export const mapContributionDataToForm = contribution => {
     employerName: employerName || '',
     employerCity: employerCity || '',
     employerState: employerState || '',
-    employerCountry: employerCountry || 'United States',
+    employerCountry: employerCountry || '',
     inKindDescription: inKindDescription || '',
     paymentMethod: paymentMethod || '',
-    occupationLetterDate: occupationLetterDate
-      ? format(
-          new Date(
-            parseFromTimeZone(occupationLetterDate, {
-              timeZone: 'America/Los_Angeles',
-            })
-          ),
-          'YYYY-MM-DD'
-        )
-      : '',
+    occupationLetterDate: dateToPickerFormat(occupationLetterDate),
     status,
     notes: notes || '',
     campaignName: campaign && campaign.name ? campaign.name : null,
@@ -178,17 +168,11 @@ export const mapContributionFormToData = data => {
     name: entityName || null,
     state,
     occupation,
-    occupationLetterDate: occupationLetterDate
-      ? new Date(
-          convertToTimeZone(occupationLetterDate, {
-            timeZone: 'America/Los_Angeles',
-          })
-        ).getTime()
-      : null,
+    occupationLetterDate: dateToMicroTime(occupationLetterDate),
     employerName,
     employerCity,
     employerState,
-    employerCountry: employerCountry || 'United States',
+    employerCountry: employerCountry || '',
     checkNumber,
     contributorType: typeOfContributor,
     subType: subTypeOfContribution,
@@ -201,9 +185,7 @@ export const mapContributionFormToData = data => {
     phone,
     phoneType: phoneType || null,
     amount: parseFloat(amountOfContribution),
-    date: new Date(
-      convertToTimeZone(dateOfContribution, { timeZone: 'America/Los_Angeles' })
-    ).getTime(),
+    date: dateToMicroTime(dateOfContribution),
     zip: zipcode,
     inKindDescription,
     paymentMethod: paymentMethod || null,
