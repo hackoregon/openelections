@@ -18,6 +18,7 @@ import {
   PurposeTypeEnum,
   PaymentMethodEnum,
   dateToMicroTime,
+  dateToPickerFormat,
 } from '../../../api/api';
 
 export const FormSectionEnum = Object.freeze({
@@ -56,10 +57,7 @@ export const mapExpenditureDataToForm = expenditure => {
     createdAt,
     buttonSubmitted: buttonSubmitted || '',
     amount: amount.toFixed(2) || '',
-    date: format(
-      new Date(parseFromTimeZone(date, { timeZone: 'America/Los_Angeles' })),
-      'YYYY-MM-DD'
-    ),
+    date: dateToPickerFormat(date),
     expenditureType: type,
     expenditureSubType: subType,
     paymentMethod,
@@ -76,15 +74,7 @@ export const mapExpenditureDataToForm = expenditure => {
     status,
     updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
-    dateOriginalTransaction:
-      dateOriginalTransaction === null
-        ? null
-        : format(
-            parseFromTimeZone(dateOriginalTransaction, {
-              timeZone: 'America/Los_Angeles',
-            }),
-            'YYYY-MM-DD'
-          ),
+    dateOriginalTransaction: dateToPickerFormat(dateOriginalTransaction),
     vendorForOriginalPurchase,
   };
 };

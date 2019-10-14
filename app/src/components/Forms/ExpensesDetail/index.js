@@ -20,7 +20,11 @@ import {
   ViewHeaderSection,
 } from '../../../Pages/Portal/Expenses/ExpendituresSections';
 import ExpensesDetailForm from './ExpensesDetailForm';
-import { ExpenditureStatusEnum, dateToMicroTime } from '../../../api/api';
+import {
+  ExpenditureStatusEnum,
+  dateToMicroTime,
+  dateToPickerFormat,
+} from '../../../api/api';
 import {
   mapExpenditureFormToData,
   mapExpenditureDataToForm,
@@ -36,9 +40,9 @@ const onSubmit = (data, props) => {
   const alteredValues = {};
 
   // All dates must be converted to microtime to compare
-  initialValues.date = dateToMicroTime(initialValues.date);
+  initialValues.date = dateToMicroTime(dateToPickerFormat(initialValues.date));
   initialValues.dateOriginalTransaction = dateToMicroTime(
-    initialValues.dateOriginalTransaction
+    dateToPickerFormat(initialValues.dateOriginalTransaction)
   );
   for (const [field, value] of Object.entries(submittedValues)) {
     if (value !== initialValues[field]) {

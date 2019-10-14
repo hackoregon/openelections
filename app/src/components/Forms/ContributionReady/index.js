@@ -26,13 +26,17 @@ import {
   mapContributionDataToForm,
 } from '../../../Pages/Portal/Contributions/Utils/ContributionsFields';
 import AddContributionForm from '../AddContribution/AddContributionForm';
-import { ContributionStatusEnum, dateToMicroTime } from '../../../api/api';
+import {
+  ContributionStatusEnum,
+  dateToMicroTime,
+  dateToPickerFormat,
+} from '../../../api/api';
 import ReadOnly from '../../ReadOnly';
 import { PageTransitionImage } from '../../PageTransistion';
 import PreviousDonationsTable from '../../PreviousDonations/PreviousDonationsTable';
 import ActivityStreamForm from '../ActivityStream/index';
 
-const onSubmit = (data, props, dirty) => {
+const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
   const initialValues = props.currentContribution;
   const submittedValues = mapContributionFormToData(data);
@@ -41,10 +45,10 @@ const onSubmit = (data, props, dirty) => {
   // All dates must be converted to microtime to compare
   if (initialValues.occupationLetterDate) {
     initialValues.occupationLetterDate = dateToMicroTime(
-      initialValues.occupationLetterDate
+      dateToPickerFormat(initialValues.occupationLetterDate)
     );
   }
-  initialValues.date = dateToMicroTime(initialValues.date);
+  initialValues.date = dateToMicroTime(dateToPickerFormat(initialValues.date));
   for (const [field, value] of Object.entries(submittedValues)) {
     if (value !== initialValues[field]) {
       if (!(!alteredValues[field] && !value)) alteredValues[field] = value;
@@ -69,7 +73,7 @@ const onSubmit = (data, props, dirty) => {
     default:
   }
 
-  if (Object.keys(alteredValues).length && dirty) {
+  if (Object.keys(alteredValues).length) {
     alteredValues.id = data.id;
     alteredValues.currentUserId = props.currentUserId;
     props.updateContribution(alteredValues);
@@ -115,7 +119,7 @@ class ContributionReadyForm extends React.Component {
     );
     return (
       <AddContributionForm
-        onSubmit={data => onSubmit(data, this.props, this.dirty)}
+        onSubmit={data => onSubmit(data, this.props)}
         initialValues={initialFormData}
       >
         {({
@@ -125,9 +129,7 @@ class ContributionReadyForm extends React.Component {
           visibleIf,
           formErrors,
           values,
-          isDirty,
         }) => {
-          this.dirty = isDirty;
           const isSubmited = !!(
             values.status === ContributionStatusEnum.SUBMITTED
           );
