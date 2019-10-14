@@ -4,9 +4,10 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Logo } from '@hackoregon/component-library';
-/** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import logo from '../../assets/icons/oaeLogo.jpeg';
+
+/** @jsx jsx */
 import Navigation from '../Navigation';
 
 const styles = css`
@@ -41,7 +42,7 @@ const TopNavigation = props => {
   return (
     <header css={styles}>
       <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
-        <Logo type="squareLogoInverted" />
+        <img src={logo} alt="Open and Accountable Elections logo" />
         <p className="logo-text">Open Elections</p>
       </Link>
       <Navigation />
