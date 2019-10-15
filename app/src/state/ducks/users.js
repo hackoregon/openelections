@@ -194,7 +194,7 @@ export function removeUser(userId, permissionId) {
         dispatch(
           flashMessage('User Removed', { props: { variant: 'success' } })
         );
-        dispatch(push('/manage-portal'));
+        dispatch(push('/settings'));
         dispatch(clearModal());
       } else {
         dispatch(actionCreators.removeUser.failure());

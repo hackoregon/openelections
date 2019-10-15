@@ -99,13 +99,13 @@ const DashboardPage = props => {
                 links={
                   props.isGovAdmin
                     ? [
-                        { path: '/manage-portal', label: 'Invite User' },
+                        { path: '/settings', label: 'Invite User' },
                         { path: '/reset-password', label: 'Reset Password' },
                       ]
                     : [
                         { path: '/contributions', label: 'Add Contribution' },
                         { path: '/expenses', label: 'Add Expense' },
-                        { path: '/manage-portal', label: 'Invite User' },
+                        { path: '/settings', label: 'Invite User' },
                         { path: '/reset-password', label: 'Reset Password' },
                       ]
                 }

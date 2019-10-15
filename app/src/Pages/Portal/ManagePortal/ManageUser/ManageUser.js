@@ -32,7 +32,7 @@ const ManageUserPage = props => {
       <h1>
         <IconButton
           aria-label="Back"
-          onClick={() => props.history.push('/manage-portal')}
+          onClick={() => props.history.push('/settings')}
         >
           <ArrowBack style={{ fontSize: '36px', color: 'black' }} />
         </IconButton>
