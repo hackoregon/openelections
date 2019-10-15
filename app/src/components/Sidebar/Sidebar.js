@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import { NavLink } from 'react-router-dom';
 import { ArrowDropDown } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -92,37 +92,36 @@ export default class Sidebar extends Component {
 
   // eslint-disable-next-line react/sort-comp
   setLinks() {
-    this.links = [
-      { url: '/dashboard', label: 'Dashboard' },
-      { url: '/contributions', label: 'Contributions' },
-      { url: '/expenses', label: 'Expenses' },
-      { url: '/visualize', label: 'Visualize' },
-      ...(this.props.isGovAdmin
-        ? [{ url: '/campaigns', label: 'Campaigns' }]
-        : []),
-      { url: '/settings', label: 'Settings' },
-    ];
+    const { isAssumed, isGovAdmin } = this.props;
+    this.links = [];
+    isAssumed || this.links.push({ url: '/dashboard', label: 'Dashboard' });
+    this.links.push({ url: '/contributions', label: 'Contributions' });
+    this.links.push({ url: '/expenses', label: 'Expenses' });
+    isAssumed || this.links.push({ url: '/visualize', label: 'Visualize' });
+    isGovAdmin &&
+      (isAssumed || this.links.push({ url: '/campaigns', label: 'Campaigns' }));
+    isAssumed || this.links.push({ url: '/settings', label: 'Settings' });
   }
 
   componentDidUpdate(prevProps) {
     const { campaignId, getCampaignUsers, isGovAdmin } = this.props;
-    if (prevProps.isGovAdmin !== isGovAdmin) {
-      this.setLinks();
-      this.setState({ is_gov_admin: isGovAdmin });
-    }
     if (!isGovAdmin && prevProps.campaignId !== campaignId) {
       getCampaignUsers(campaignId);
     }
   }
 
   toggleSidebar() {
-    this.setState({ isToggledOn: !this.state.isToggledOn });
+    this.setState(state => {
+      return { isToggledOn: !state.isToggledOn };
+    });
   }
 
   render() {
-    const { campaignName, isGovAdmin } = this.props;
+    const { campaignName, isGovAdmin, isAssumed } = this.props;
     const { isToggledOn } = this.state;
-
+    this.setLinks();
+    let displayName = isGovAdmin ? 'City Portal' : campaignName;
+    displayName = isAssumed ? 'Campaign Edit' : displayName;
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
@@ -132,9 +131,7 @@ export default class Sidebar extends Component {
       >
         <div className="sidebar-top">
           <ArrowDropDown className="arrow" />
-          <h2 className="campaign-name">
-            {isGovAdmin ? 'City Portal' : campaignName}
-          </h2>
+          <h2 className="campaign-name">{displayName}</h2>
         </div>
         <ul>
           {this.links.map(link => (
@@ -147,3 +144,11 @@ export default class Sidebar extends Component {
     );
   }
 }
+
+Sidebar.propTypes = {
+  isAssumed: PropTypes.bool,
+  campaignId: PropTypes.number,
+  getCampaignUsers: PropTypes.func,
+  isGovAdmin: PropTypes.bool,
+  campaignName: PropTypes.string,
+};

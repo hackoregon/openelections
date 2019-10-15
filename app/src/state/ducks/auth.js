@@ -1,5 +1,4 @@
-// auth.js
-import { createSelector } from 'reselect';
+/* eslint-disable no-unused-vars */
 import { push } from 'connected-react-router';
 import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';
@@ -18,6 +17,7 @@ import {
   resetCampaignState,
   actionCreators as campaignsActionCreators,
 } from './campaigns';
+
 // Export State Key
 export const STATE_KEY = 'auth';
 
@@ -140,115 +140,29 @@ export const actionCreators = {
   setAssume: assume => action(actionTypes.SET_ASSUME.UPDATE, { assume }),
 };
 
-export function logout() {
-  return dispatch => {
-    dispatch(actionCreators.me.success(null));
-    dispatch(resetContributionState());
-    dispatch(resetExpenditureState());
-    dispatch(resetUserState());
-    dispatch(resetCampaignState());
-    dispatch(resetPermissionState());
-    dispatch(resetActvityState());
-    if (!window.location.hostname.includes('localhost')) {
-      document.cookie =
-        'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    } else {
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    }
+export const getMeRole = (state, role = 'campaign_admin') => {
+  if (state.auth.me && state.auth.me.permissions) {
+    return !!state.auth.me.permissions.find(permission => {
+      return permission.role === role;
+    });
+  }
+  return false;
+};
 
-    dispatch(push('/sign-in'));
+export function setAssume() {
+  return (dispatch, getState) => {
+    if (getMeRole(getState(), 'government_admin')) {
+      dispatch(actionCreators.setAssume(true));
+    }
+  };
+}
+export function unSetAssume() {
+  return dispatch => {
+    dispatch(actionCreators.setAssume(false));
   };
 }
 
 // Side Effects, e.g. thunks
-export function me() {
-  return async (dispatch, getState, { api }) => {
-    if (
-      process.env.NODE_ENV !== 'development' &&
-      !document.cookie.includes('token') &&
-      !process.env.TOKEN
-    ) {
-      return;
-    }
-    dispatch(actionCreators.me.request());
-    try {
-      const me = await api.me();
-      if (me.message && me.message === 'Token expired or incorrect') {
-        dispatch(logout);
-      }
-      if (me && me.permissions) {
-        const campaignPermission = me.permissions.filter(permission => {
-          return (permission.type = 'campaign');
-        });
-        if (campaignPermission.length) {
-          dispatch(
-            campaignsActionCreators.setCampaign.success(
-              me.permissions[0].campaignId
-            )
-          );
-          if (me.permissions[0].campaignId) {
-            dispatch(
-              getStatusSummaryAction({
-                campaignId: me.permissions[0].campaignId,
-              })
-            );
-          }
-        }
-
-        const govPermission = me.permissions.filter(permission => {
-          return (permission.type = 'government');
-        });
-        if (govPermission.length) {
-          dispatch(
-            governments.actionCreators.setGovernment.success(
-              me.permissions[0].governmentId
-            )
-          );
-          if (me.permissions[0].governmentId) {
-            dispatch(
-              getStatusSummaryAction({
-                governmentId: me.permissions[0].governmentId,
-              })
-            );
-          }
-        }
-      }
-      dispatch(actionCreators.me.success(me));
-    } catch (error) {
-      dispatch(actionCreators.me.failure(error));
-    }
-  };
-}
-
-export function login(email, password) {
-  return async (dispatch, getState, { api }) => {
-    // dispatch(actionCreators.login.failure(true));
-    dispatch(actionCreators.login.request());
-    try {
-      await api.login(email, password).then(response => {
-        if (response.status === 204) {
-          dispatch(actionCreators.login.success());
-          dispatch(me());
-          dispatch(
-            flashMessage('Signin Success', { props: { variant: 'success' } })
-          );
-          dispatch(push('/dashboard'));
-        } else {
-          dispatch(actionCreators.login.failure(true));
-          dispatch(
-            flashMessage('Signin Error', { props: { variant: 'error' } })
-          );
-        }
-      });
-    } catch (error) {
-      dispatch(actionCreators.login.failure(error));
-      dispatch(
-        flashMessage(`Signin Error - ${error}`, { props: { variant: 'error' } })
-      );
-    }
-  };
-}
-
 export function redeemInvite(invitationCode, password, firstName, lastName) {
   return async (dispatch, getState, { api }) => {
     dispatch(actionCreators.redeemInvite.request());
@@ -310,6 +224,114 @@ export function sendPasswordResetEmail(email) {
     } catch (error) {
       dispatch(actionCreators.sendPasswordResetEmail.failure(error));
       return false;
+    }
+  };
+}
+
+export function logout() {
+  return dispatch => {
+    dispatch(actionCreators.me.success(null));
+    dispatch(unSetAssume());
+    dispatch(resetContributionState());
+    dispatch(resetExpenditureState());
+    dispatch(resetUserState());
+    dispatch(resetCampaignState());
+    dispatch(resetPermissionState());
+    dispatch(resetActvityState());
+    if (!window.location.hostname.includes('localhost')) {
+      document.cookie =
+        'token=; domain=.openelectionsportland.org; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    } else {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+
+    dispatch(push('/sign-in'));
+  };
+}
+
+export function me() {
+  return async (dispatch, getState, { api }) => {
+    if (
+      process.env.NODE_ENV !== 'development' &&
+      !document.cookie.includes('token') &&
+      !process.env.TOKEN
+    ) {
+      return;
+    }
+    dispatch(actionCreators.me.request());
+    try {
+      const me = await api.me();
+      if (me.message && me.message === 'Token expired or incorrect') {
+        dispatch(logout);
+      }
+      if (me && me.permissions) {
+        const campaignPermission = me.permissions.filter(permission => {
+          return (permission.type = 'campaign');
+        });
+        if (campaignPermission.length) {
+          dispatch(
+            campaignsActionCreators.setCampaign.success(
+              me.permissions[0].campaignId
+            )
+          );
+          if (me.permissions[0].campaignId) {
+            dispatch(
+              getStatusSummaryAction({
+                campaignId: me.permissions[0].campaignId,
+              })
+            );
+          }
+        }
+
+        const govPermission = me.permissions.filter(permission => {
+          return (permission.type = 'government');
+        });
+        if (govPermission.length) {
+          dispatch(
+            governments.actionCreators.setGovernment.success(
+              me.permissions[0].governmentId
+            )
+          );
+          if (me.permissions[0].governmentId) {
+            dispatch(
+              getStatusSummaryAction({
+                governmentId: me.permissions[0].governmentId,
+              })
+            );
+          }
+        }
+      }
+      dispatch(actionCreators.me.success(me));
+    } catch (error) {
+      dispatch(actionCreators.me.failure(error));
+    }
+  };
+}
+export function login(email, password) {
+  return async (dispatch, getState, { api }) => {
+    // dispatch(actionCreators.login.failure(true));
+    dispatch(actionCreators.login.request());
+    try {
+      await api.login(email, password).then(response => {
+        if (response.status === 204) {
+          dispatch(actionCreators.login.success());
+          dispatch(me());
+          dispatch(
+            flashMessage('Signin Success', { props: { variant: 'success' } })
+          );
+          dispatch(push('/dashboard'));
+        } else {
+          dispatch(actionCreators.login.failure(true));
+          dispatch(
+            flashMessage('Signin Error', { props: { variant: 'error' } })
+          );
+        }
+      });
+    } catch (error) {
+      dispatch(actionCreators.login.failure(error));
+      dispatch(
+        flashMessage(`Signin Error - ${error}`, { props: { variant: 'error' } })
+      );
     }
   };
 }
@@ -377,27 +399,6 @@ export const isAdmin = state => {
     : false;
 };
 
-export const getMeRole = (state, role = 'campaign_admin') => {
-  if (state.auth.me && state.auth.me.permissions) {
-    return !!state.auth.me.permissions.find(permission => {
-      return permission.role === role;
-    });
-  }
-  return false;
-};
-
-export function setAssume() {
-  return (dispatch, getState) => {
-    if (getMeRole(getState(), 'government_admin')) {
-      dispatch(actionCreators.setAssume(true));
-    }
-  };
-}
-export function unSetAssume() {
-  return dispatch => {
-    dispatch(actionCreators.setAssume(false));
-  };
-}
 export const isGovAdminAuthenticated = state => {
   return getMeRole(state, 'government_admin');
 };
@@ -406,13 +407,15 @@ export const isAssumed = state => {
 };
 export const isGovAdmin = state => {
   return state.auth.assume &&
-    state.router.location.pathname.includes('/contributions/')
+    (state.router.location.pathname.includes('/contributions/') ||
+      state.router.location.pathname.includes('/expenses/'))
     ? false
     : getMeRole(state, 'government_admin');
 };
 export const isCampAdmin = state => {
   return state.auth.assume &&
-    state.router.location.pathname.includes('/contributions/')
+    (state.router.location.pathname.includes('/contributions/') ||
+      state.router.location.pathname.includes('/expenses/'))
     ? true
     : getMeRole(state, 'campaign_admin');
 };
@@ -434,7 +437,7 @@ export const getCurrentUserId = state => {
   return null;
 };
 
-// TODO: Assumes only one campaign. Add setter and adjust default to [0] permission
+// Assumes only one campaign. Add setter and adjust default to [0] permission
 export const getCurrentCampaignId = state => {
   if (state.auth.me && state.auth.me.permissions) {
     if (state.auth.me.permissions[0] && state.auth.me.permissions[0].campaignId)

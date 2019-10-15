@@ -1,6 +1,7 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
+import PropTypes from 'prop-types';
 import { ExpenditureStatusEnum } from '../../../api/api';
 import Button from '../../../components/Button/Button';
 import {
@@ -12,7 +13,6 @@ import {
 import ComplianceSelectButton from '../../../components/Forms/ComplianceReason/ComplianceSelectButton';
 
 export const ViewHeaderSection = ({
-  isValid,
   handleSubmit,
   id,
   updatedAt,
@@ -23,7 +23,9 @@ export const ViewHeaderSection = ({
   isCampStaff,
   campaignName,
   history,
+  isGovAdminAuthenticated,
   statusText = status.replace(/_/g, ' '),
+  AssumeButton,
 }) => (
   <>
     <div css={containers.header}>
@@ -113,15 +115,18 @@ export const ViewHeaderSection = ({
       </div>
     </div>
     <hr css={sectionStyles.dividerLine} />
-    <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-      <Button
-        css={headerStyles.submitButton}
-        buttonType="green"
-        onClick={() => history.push({ pathname: '/expenses/new' })}
-      >
-        Add New Expense
-      </Button>
-    </div>
+    <AssumeButton />
+    {!isGovAdminAuthenticated ? (
+      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Button
+          css={headerStyles.submitButton}
+          buttonType="green"
+          onClick={() => history.push({ pathname: '/expenses/new' })}
+        >
+          Add New Expense
+        </Button>
+      </div>
+    ) : null}
   </>
 );
 
@@ -223,3 +228,42 @@ export const AddFooterSection = ({ isValid, handleSubmit }) => (
     </Button>
   </div>
 );
+
+ViewHeaderSection.propTypes = {
+  handleSubmit: PropTypes.func,
+  id: PropTypes.bool,
+  updatedAt: PropTypes.string,
+  status: PropTypes.string,
+  formValues: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  isGovAdmin: PropTypes.bool,
+  isCampAdmin: PropTypes.bool,
+  isCampStaff: PropTypes.bool,
+  campaignName: PropTypes.string,
+  history: PropTypes.oneOfType([PropTypes.object]),
+  isGovAdminAuthenticated: PropTypes.bool,
+  statusText: PropTypes.string,
+  AssumeButton: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+};
+
+AddHeaderSection.propTypes = {
+  handleSubmit: PropTypes.func,
+  isValid: PropTypes.bool,
+};
+
+BasicsSection.propTypes = {
+  formFields: PropTypes.oneOfType([PropTypes.object]),
+  checkSelected: PropTypes.bool,
+  showPaymentMethod: PropTypes.bool,
+  showOriginalDateAndVendor: PropTypes.bool,
+  showPurposeType: PropTypes.bool,
+  showCompliant: PropTypes.bool,
+};
+
+PayeeInfoSection.propTypes = {
+  formFields: PropTypes.oneOfType([PropTypes.object]),
+};
+
+AddFooterSection.propTypes = {
+  handleSubmit: PropTypes.func,
+  isValid: PropTypes.bool,
+};

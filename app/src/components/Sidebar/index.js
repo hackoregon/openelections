@@ -4,6 +4,7 @@ import {
   getCurrentCampaignName,
   isGovAdmin,
   getCurrentCampaignId,
+  isAssumed,
 } from '../../state/ducks/auth';
 import { getCampaignUsers } from '../../state/ducks/users';
 
@@ -12,6 +13,7 @@ export default connect(
     campaignName: getCurrentCampaignName(state),
     isGovAdmin: isGovAdmin(state),
     campaignId: getCurrentCampaignId(state),
+    isAssumed: isAssumed(state),
   }),
   dispatch => {
     return {
