@@ -39,8 +39,13 @@ export default function ZipField({ id, label, formik, isRequired }) {
   );
 }
 
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.shape({ current: PropTypes.elementType }),
+};
+
 ZipField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
 };

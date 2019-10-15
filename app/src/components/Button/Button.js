@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
-import React from 'react';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
+import React from 'react'; // eslint-disable-line no-unused-vars
 import PropTypes from 'prop-types';
 import MaterialButton from '@material-ui/core/Button';
 
@@ -125,7 +125,8 @@ Button.propTypes = {
   buttonType: PropTypes.string,
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
-  style: PropTypes.object,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
 };
 
 export default Button;

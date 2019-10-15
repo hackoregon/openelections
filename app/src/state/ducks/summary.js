@@ -1,4 +1,4 @@
-// activities.js
+/* eslint-disable no-unused-vars */
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';

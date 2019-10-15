@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { cloneDeep } from 'lodash';
 import { flashMessage } from 'redux-flash';
 import createReducer from '../utils/createReducer';

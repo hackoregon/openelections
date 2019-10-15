@@ -59,6 +59,8 @@ export default function CurrencyField({
 
 CurrencyField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
+  options: PropTypes.shape({}),
 };

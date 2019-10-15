@@ -22,6 +22,7 @@ const TextField = ({ id, label, formik, isRequired }) => {
 
 TextField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
 };

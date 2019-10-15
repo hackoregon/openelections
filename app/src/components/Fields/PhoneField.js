@@ -52,6 +52,10 @@ export default function PhoneField({ id, label, formik }) {
   );
 }
 
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.shape({ current: PropTypes.elementType }),
+};
+
 PhoneField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,

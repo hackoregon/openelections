@@ -1,4 +1,4 @@
-// users.js
+/* eslint-disable no-unused-vars */
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { get, startCase } from 'lodash';

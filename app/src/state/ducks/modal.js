@@ -1,4 +1,4 @@
-// modal.js
+/* eslint-disable no-unused-vars */
 import { createSelector } from 'reselect';
 import createReducer from '../utils/createReducer';
 import createAction from '../utils/createAction';

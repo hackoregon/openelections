@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { TextField, InputAdornment } from '@material-ui/core';
 import { Search as SearchIcon } from '@material-ui/icons';
 import loader from '../../assets/styles/elementes/loader';
-import Button from '../Button/Button';
 import Invitation from '../Invitation';
 
 class SearchBox extends Component {
@@ -99,6 +98,7 @@ class SearchBox extends Component {
   renderGuessesList(guesses) {
     if (guesses && guesses.length) {
       return guesses.map((item, i) => (
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <li
           key={i}
           data-index={i}

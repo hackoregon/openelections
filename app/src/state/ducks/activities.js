@@ -1,4 +1,4 @@
-// activities.js
+/* eslint-disable no-unused-vars */
 import { normalize } from 'normalizr';
 import { isEmpty } from 'lodash';
 import createReducer from '../utils/createReducer';

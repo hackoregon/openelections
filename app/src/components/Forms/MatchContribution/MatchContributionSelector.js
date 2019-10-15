@@ -11,6 +11,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import PropTypes from 'prop-types';
 import { ContributionStatusEnum } from '../../../api/api';
 import { updateContribution } from '../../../state/ducks/contributions';
 import { showModal, modalIsActive } from '../../../state/ducks/modal';
@@ -50,6 +51,7 @@ const SplitButton = ({
   }
 
   const anchorRef = React.useRef(null);
+  // eslint-disable-next-line no-unused-vars
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isSubmitting, setSubmitting] = React.useState(false);
 
@@ -107,7 +109,7 @@ const SplitButton = ({
     return value;
   }
 
-  function handleClick(event) {
+  function handleClick() {
     setOpen(true);
   }
   function handleMenuItemClick(event, index) {
@@ -220,3 +222,23 @@ export default connect(
     };
   }
 )(MatchContributionSelector);
+
+MatchContributionSelector.propTypes = {
+  id: PropTypes.string,
+  formik: PropTypes.shape({}),
+  options: PropTypes.shape({}),
+  updateContribution: PropTypes.func,
+  showModal: PropTypes.func,
+  modalIsActive: PropTypes.bool,
+  donationAmount: PropTypes.number,
+  showMatchOption: PropTypes.string,
+};
+
+SplitButton.propTypes = {
+  id: PropTypes.string,
+  updateContribution: PropTypes.func,
+  showModal: PropTypes.func,
+  modalIsActive: PropTypes.bool,
+  donationAmount: PropTypes.number,
+  showMatchOption: PropTypes.string,
+};

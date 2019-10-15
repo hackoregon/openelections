@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -104,7 +104,6 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
     </TextField>
   );
 };
-
 SelectField.propTypes = {
   id: PropTypes.string,
   isRequired: PropTypes.bool,

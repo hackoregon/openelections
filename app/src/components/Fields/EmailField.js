@@ -40,6 +40,10 @@ export default function EmailField({ id, label, formik }) {
   );
 }
 
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.shape({ current: PropTypes.elementType }),
+};
+
 EmailField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,

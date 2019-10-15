@@ -19,9 +19,11 @@ class ExpensesDetail extends React.PureComponent {
 }
 
 ExpensesDetail.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  history: PropTypes.object,
   match: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
     }),
   }),
 };

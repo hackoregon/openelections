@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // campaigns.js
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
@@ -16,7 +17,7 @@ import {
   RESET_STATE,
 } from './common';
 import { downloadFile } from '../utils/helpers';
-import { getExpenditureActivities, getActivitiesByIdType } from './activities';
+import { getActivitiesByIdType } from './activities';
 
 export const STATE_KEY = 'expenditures';
 

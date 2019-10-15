@@ -1,4 +1,4 @@
-// campaigns.js
+/* eslint-disable no-unused-vars */
 import { normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { isEmpty } from 'lodash';

@@ -23,6 +23,7 @@ const FieldValue = ({ id, label, formik, isRequired }) => (
 
 FieldValue.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
 };
