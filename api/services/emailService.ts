@@ -319,7 +319,7 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
                   style="padding-left: 40px; padding-right: 10px;"
                   bgcolor="#23552c"
                 >
-                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
+                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
@@ -446,7 +446,7 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
                   style="padding-left: 40px; padding-right: 10px;"
                   bgcolor="#23552c"
                 >
-                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
+                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
@@ -573,7 +573,7 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
                   style="padding-left: 40px; padding-right: 10px;"
                   bgcolor="#23552c"
                 >
-                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
+                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
@@ -701,7 +701,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
                   style="padding-left: 40px; padding-right: 10px;"
                   bgcolor="#23552c"
                 >
-                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
+                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
@@ -812,7 +812,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                   style="padding-left: 40px; padding-right: 10px;"
                   bgcolor="#23552c"
                 >
-                  <img src="../src/assets/icons/oaeLogo.jpeg" style="display: block;" />
+                  <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
                 </td>
                 <td
                   valign="top"
