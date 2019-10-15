@@ -32,7 +32,7 @@ const columns = isGovAdmin => {
   const cols = [
     {
       field: 'date',
-      title: 'Date',
+      title: 'Contribution Date',
       render: rowData =>
         format(
           new Date(
@@ -68,13 +68,17 @@ const columns = isGovAdmin => {
     },
     {
       field: 'amount',
-      title: 'Amount',
+      title: 'Contribution Amount',
       sorting: false,
       type: 'currency',
     },
     {
       field: 'status',
       title: 'Status',
+    },
+    {
+      field: 'matchAmount', // currentContribution.matchAmount
+      title: 'Match',
     },
   ];
 
