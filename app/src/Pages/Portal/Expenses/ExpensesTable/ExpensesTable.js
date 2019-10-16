@@ -25,7 +25,7 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 const columns = isGovAdmin => [
   {
     field: 'date',
-    title: 'Date',
+    title: 'Expenditure Date',
     render: rowData =>
       new Date(rowData.date)
         .toLocaleString('en-US', {
