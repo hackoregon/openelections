@@ -27,122 +27,97 @@ export const ViewHeaderSection = ({
   statusText = status.replace(/_/g, ' '),
   AssumeButton,
   isAssumed,
-}) => (
-  <>
-    <div css={containers.header}>
-      <div>
-        <p css={headerStyles.invoice}>
-          #{id}{' '}
-          <span style={{ textTransform: 'capitalize' }}>{statusText}</span>
-        </p>
-        <p css={headerStyles.subheadingWide}>
-          {`${campaignName} | Last Edited ${updatedAt}`}
-        </p>
-      </div>
-      <div css={buttonBar.wrapper}>
-        <div css={buttonBar.container}>
-          {isGovAdmin ? <ComplianceSelectButton id={id} /> : null}
-          {status === ExpenditureStatusEnum.DRAFT ? (
-            <>
-              {isCampStaff || isCampAdmin ? (
-                <>
-                  <Button
-                    css={headerStyles.submitButton}
-                    style={{ margin: 1 }}
-                    buttonType="submit"
-                    onClick={() => {
-                      formValues.buttonSubmitted = 'archive';
-                      handleSubmit();
-                    }}
-                  >
-                    Archive
-                  </Button>
-                  <Button
-                    css={headerStyles.submitButton}
-                    style={{ margin: 1 }}
-                    buttonType="submit"
-                    onClick={() => {
-                      formValues.buttonSubmitted = 'save';
-                      handleSubmit();
-                    }}
-                  >
-                    Save
-                  </Button>
-                </>
-              ) : null}
-              {isCampAdmin ? (
-                <Button
-                  css={headerStyles.submitButton}
-                  style={{ margin: 1 }}
-                  buttonType="submit"
-                  onClick={() => {
-                    formValues.buttonSubmitted = 'submit';
-                    handleSubmit();
-                  }}
-                >
-                  Submit
-                </Button>
-              ) : null}
-            </>
-          ) : null}
-          {status === ExpenditureStatusEnum.ARCHIVED &&
-          (isCampStaff || isCampAdmin) ? (
-            <Button
-              css={headerStyles.submitButton}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'move_to_draft';
-                handleSubmit();
-              }}
-            >
-              Move to Draft
-            </Button>
-          ) : null}
-          {status === ExpenditureStatusEnum.SUBMITTED &&
-          (isCampStaff || isCampAdmin) ? (
-            <Button
-              css={headerStyles.submitButton}
-              style={{ margin: 1 }}
-              buttonType="submit"
-              onClick={() => {
-                formValues.buttonSubmitted = 'archive';
-                handleSubmit();
-              }}
-            >
-              Archive
-            </Button>
-          ) : null}
-        </div>
-      </div>
-    </div>
-    <hr css={sectionStyles.dividerLine} />
-    <AssumeButton />
-    {isAssumed ? (
+}) => {
+  function SaveButton({
+    text = 'Save',
+    action = 'save',
+    styleType = 'submit',
+  }) {
+    return (
       <Button
         css={headerStyles.submitButton}
         style={{ margin: 1 }}
-        buttonType="red"
+        buttonType={styleType}
         onClick={() => {
-          formValues.buttonSubmitted = 'save';
+          formValues.buttonSubmitted = action;
           handleSubmit();
         }}
       >
-        Save
+        {text}
       </Button>
-    ) : null}
-    {!isGovAdminAuthenticated ? (
-      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-        <Button
-          css={headerStyles.submitButton}
-          buttonType="green"
-          onClick={() => history.push({ pathname: '/expenses/new' })}
-        >
-          Add New Expense
-        </Button>
+    );
+  }
+  SaveButton.propTypes = {
+    text: PropTypes.string,
+    action: PropTypes.string,
+    styleType: PropTypes.string,
+  };
+
+  return (
+    <>
+      <div css={containers.header}>
+        <div>
+          <p css={headerStyles.invoice}>
+            #{id}{' '}
+            <span style={{ textTransform: 'capitalize' }}>{statusText}</span>
+          </p>
+          <p css={headerStyles.subheadingWide}>
+            {`${campaignName} | Last Edited ${updatedAt}`}
+          </p>
+        </div>
+        <div css={buttonBar.wrapper}>
+          <div css={buttonBar.container}>
+            {isGovAdmin ? <ComplianceSelectButton id={id} /> : null}
+            {status === ExpenditureStatusEnum.DRAFT ? (
+              <>
+                {isCampStaff || isCampAdmin ? (
+                  <>
+                    <SaveButton text="Archive" action="archive" />
+                    <SaveButton />
+                  </>
+                ) : null}
+
+                {isCampAdmin ? (
+                  <SaveButton text="Submit" action="submit" />
+                ) : null}
+              </>
+            ) : null}
+            {status === ExpenditureStatusEnum.ARCHIVED &&
+            (isCampStaff || isCampAdmin) ? (
+              <SaveButton text="Move to Draft" action="move_to_draft" />
+            ) : null}
+            {status === ExpenditureStatusEnum.SUBMITTED &&
+            (isCampStaff || isCampAdmin) ? (
+              <SaveButton text="Archive" action="archive" />
+            ) : null}
+          </div>
+        </div>
       </div>
-    ) : null}
-  </>
-);
+      <hr css={sectionStyles.dividerLine} />
+      <div css={headerStyles.buttonDiv}>
+        <div />
+        <div>
+          {' '}
+          <AssumeButton />
+          {isAssumed ? (
+            <SaveButton text="Save" action="save" styleType="red" />
+          ) : null}
+        </div>
+      </div>
+      {!isGovAdminAuthenticated ? (
+        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+          <Button
+            css={headerStyles.submitButton}
+            buttonType="green"
+            onClick={() => history.push({ pathname: '/expenses/new' })}
+          >
+            Add New Expense
+          </Button>
+        </div>
+      ) : null}
+    </>
+  );
+};
 
 export const AddHeaderSection = ({ isValid, handleSubmit }) => (
   <>

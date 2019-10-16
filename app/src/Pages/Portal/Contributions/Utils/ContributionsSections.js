@@ -47,6 +47,31 @@ export const ViewHeaderSection = ({
     return showMatchOption;
   };
 
+  function SaveButton({
+    text = 'Save',
+    action = 'save',
+    styleType = 'submit',
+  }) {
+    return (
+      <Button
+        css={headerStyles.submitButton}
+        style={{ margin: 1 }}
+        buttonType={styleType}
+        onClick={() => {
+          formValues.buttonSubmitted = action;
+          handleSubmit();
+        }}
+      >
+        {text}
+      </Button>
+    );
+  }
+  SaveButton.propTypes = {
+    text: PropTypes.string,
+    action: PropTypes.string,
+    styleType: PropTypes.string,
+  };
+
   showMatchableSelector();
 
   return (
@@ -73,90 +98,37 @@ export const ViewHeaderSection = ({
               <>
                 {isCampStaff || isCampAdmin ? (
                   <>
-                    <Button
-                      css={headerStyles.submitButton}
-                      style={{ margin: 1 }}
-                      buttonType="submit"
-                      onClick={() => {
-                        formValues.buttonSubmitted = 'archive';
-                        handleSubmit();
-                      }}
-                    >
-                      Move to trash
-                    </Button>
-                    <Button
-                      css={headerStyles.submitButton}
-                      style={{ margin: 1 }}
-                      buttonType="submit"
-                      onClick={() => {
-                        formValues.buttonSubmitted = 'save';
-                        handleSubmit();
-                      }}
-                    >
-                      Save Draft
-                    </Button>
+                    <SaveButton text="Move to trash" action="archive" />
+                    <SaveButton text="Save Draft" action="save" />
                   </>
                 ) : null}
                 {isCampAdmin ? (
-                  <Button
-                    css={headerStyles.submitButton}
-                    style={{ margin: 1 }}
-                    buttonType="submit"
-                    onClick={() => {
-                      formValues.buttonSubmitted = 'submit';
-                      handleSubmit();
-                    }}
-                  >
-                    Submit
-                  </Button>
+                  <SaveButton text="Submit" action="submit" />
                 ) : null}
               </>
             ) : null}
             {status === ContributionStatusEnum.ARCHIVED &&
             (isCampStaff || isCampAdmin) ? (
-              <Button
-                css={headerStyles.submitButton}
-                buttonType="submit"
-                onClick={() => {
-                  formValues.buttonSubmitted = 'move_to_draft';
-                  handleSubmit();
-                }}
-              >
-                Move to Draft
-              </Button>
+              <SaveButton text="Move to Draft" action="move_to_draft" />
             ) : null}
             {status === ContributionStatusEnum.SUBMITTED &&
             (isCampStaff || isCampAdmin) ? (
-              <Button
-                css={headerStyles.submitButton}
-                style={{ margin: 1 }}
-                buttonType="submit"
-                onClick={() => {
-                  formValues.buttonSubmitted = 'archive';
-                  handleSubmit();
-                }}
-              >
-                Archive
-              </Button>
+              <SaveButton text="Archive" action="archive" />
             ) : null}
           </div>
         </div>
       </div>
       <hr css={sectionStyles.dividerLine} />
-      <AssumeButton />
-      {isAssumed ? (
-        <Button
-          css={headerStyles.submitButton}
-          style={{ margin: 1 }}
-          buttonType="red"
-          onClick={() => {
-            formValues.buttonSubmitted = 'save';
-            handleSubmit();
-          }}
-        >
-          Save
-        </Button>
-      ) : null}
+      <div css={headerStyles.buttonDiv}>
+        <div />
+        <div>
+          {' '}
+          <AssumeButton />
+          {isAssumed ? (
+            <SaveButton text="Save" action="save" styleType="red" />
+          ) : null}
+        </div>
+      </div>
       {!isGovAdminAuthenticated ? (
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button
