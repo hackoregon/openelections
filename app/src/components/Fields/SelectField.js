@@ -1,14 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
 import { isEmpty } from 'lodash';
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 
 /**
  *
@@ -43,7 +37,7 @@ import { jsx } from '@emotion/core';
  *
  */
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'block !important',
     padding: '5px !important',
@@ -67,6 +61,13 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
     optionValues = optionValues.filter(
       x => includeValues.indexOf(x.value) !== -1
     );
+    // Default to empty string if value is not in list
+    if (
+      !optionValues.some(e => e.value === formik.values[id]) &&
+      formik.values[id] !== ''
+    ) {
+      formik.values[id] = '';
+    }
   }
   return (
     <TextField
@@ -106,10 +107,11 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
 
 SelectField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   options: PropTypes.shape({
     limitByField: PropTypes.string,
-    limitByValues(props, propName, componentName) {
+    limitByValues(props, propName) {
       if (props.limitByField !== undefined && props[propName] === undefined) {
         return new Error(
           'limitByValues array is required when limitByField is set'
