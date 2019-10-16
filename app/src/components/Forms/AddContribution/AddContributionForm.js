@@ -22,6 +22,6 @@ export default AddContributionForm;
 
 AddContributionForm.propTypes = {
   initialValues: PropTypes.oneOfType([PropTypes.object]),
-  onSubmit: PropTypes.bool,
+  onSubmit: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.any]),
 };
