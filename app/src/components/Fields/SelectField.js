@@ -67,6 +67,13 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
     optionValues = optionValues.filter(
       x => includeValues.indexOf(x.value) !== -1
     );
+    // Default to empty string if value is not in list
+    if (
+      !optionValues.some(e => e.value === formik.values[id]) &&
+      formik.values[id] !== ''
+    ) {
+      formik.values[id] = '';
+    }
   }
   return (
     <TextField
