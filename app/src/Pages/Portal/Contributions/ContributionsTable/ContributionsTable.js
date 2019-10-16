@@ -79,6 +79,9 @@ const columns = isGovAdmin => {
     {
       field: 'matchAmount', // currentContribution.matchAmount
       title: 'Match',
+      render: rowData => {
+        return rowData.matchAmount ? `$${rowData.matchAmount}` : '';
+      },
     },
   ];
 
