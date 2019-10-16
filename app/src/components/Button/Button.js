@@ -56,6 +56,11 @@ const greenStyle = {
   color: '#fff',
 };
 
+const redStyle = {
+  backgroundColor: '#C21F39',
+  color: '#fff',
+};
+
 const tableButton = {
   width: '92px',
 };
@@ -91,6 +96,7 @@ const buttonTypes = {
     color: 'primary',
     style: tableButton,
   },
+  red: { type: 'button', variant: 'contained', style: redStyle },
   disabledModalButton: {
     type: 'submit',
     variant: 'contained',

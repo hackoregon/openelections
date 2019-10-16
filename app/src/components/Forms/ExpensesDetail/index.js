@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { flashMessage } from 'redux-flash';
+import PropTypes from 'prop-types';
 import {
   updateExpenditure,
   getExpenditureById,
@@ -13,6 +14,8 @@ import {
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
+  isGovAdminAuthenticated,
+  isAssumed,
 } from '../../../state/ducks/auth';
 import {
   BasicsSection,
@@ -32,6 +35,7 @@ import {
 import { PageTransitionImage } from '../../PageTransistion';
 import ReadOnly from '../../ReadOnly';
 import ActivityStreamForm from '../ActivityStream/index';
+import { AssumeButton } from '../../Assume';
 
 const onSubmit = (data, props) => {
   // Only PUT changed fields by comparing initialValues to submitted values
@@ -84,6 +88,7 @@ class ExpensesDetail extends React.Component {
   render() {
     const {
       expenditureId,
+      isGovAdminAuthenticated,
       currentExpenditure,
       flashMessage,
       isCampAdmin,
@@ -91,6 +96,7 @@ class ExpensesDetail extends React.Component {
       isGovAdmin,
       campaignName,
       history,
+      isAssumed,
     } = this.props;
     let initialFormData = {};
     if (currentExpenditure) {
@@ -114,25 +120,28 @@ class ExpensesDetail extends React.Component {
             values.status === ExpenditureStatusEnum.SUBMITTED
           );
           if (values.buttonSubmitted && !isValid) {
+            // eslint-disable-next-line no-unused-vars
             for (const [key, value] of Object.entries(formErrors)) {
               values.buttonSubmitted = '';
               flashMessage(value, { props: { variant: 'error' } });
             }
           }
           const isReadOnly = !!(
-            isGovAdmin ||
-            initialFormData.status === ExpenditureStatusEnum.SUBMITTED ||
-            initialFormData.status === ExpenditureStatusEnum.ARCHIVED ||
-            initialFormData.status ===
-              ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
-            initialFormData.status === ExpenditureStatusEnum.IN_COMPLIANCE
+            (isGovAdmin ||
+              initialFormData.status === ExpenditureStatusEnum.SUBMITTED ||
+              initialFormData.status === ExpenditureStatusEnum.ARCHIVED ||
+              initialFormData.status ===
+                ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
+              initialFormData.status === ExpenditureStatusEnum.IN_COMPLIANCE) &&
+            !isAssumed
           );
-
           return parseInt(values.id) !== parseInt(expenditureId) ? (
             <PageTransitionImage />
           ) : (
             <>
               <ViewHeaderSection
+                AssumeButton={AssumeButton}
+                isAssumed={isAssumed}
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
                 isGovAdmin={isGovAdmin}
@@ -143,6 +152,7 @@ class ExpensesDetail extends React.Component {
                 updatedAt={initialFormData.updatedAt}
                 status={initialFormData.status}
                 formValues={values}
+                isGovAdminAuthenticated={isGovAdminAuthenticated}
                 campaignName={values.campaignName || campaignName} // Remove ` || campaignName` when api returns campaignName on single row request.
               />
               <ReadOnly ro={isReadOnly}>
@@ -180,6 +190,8 @@ export default connect(
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
+    isGovAdminAuthenticated: isGovAdminAuthenticated(state),
+    isAssumed: isAssumed(state),
   }),
   dispatch => ({
     push: url => dispatch(push(url)),
@@ -189,3 +201,17 @@ export default connect(
     getExpenditureById: id => dispatch(getExpenditureById(id)),
   })
 )(ExpensesDetail);
+
+ExpensesDetail.propTypes = {
+  isAssumed: PropTypes.bool,
+  getExpenditureById: PropTypes.func,
+  expenditureId: PropTypes.number,
+  isGovAdminAuthenticated: PropTypes.bool,
+  currentExpenditure: PropTypes.number,
+  flashMessage: PropTypes.func,
+  isCampAdmin: PropTypes.bool,
+  isCampStaff: PropTypes.bool,
+  isGovAdmin: PropTypes.bool,
+  campaignName: PropTypes.string,
+  history: PropTypes.oneOfType([PropTypes.object]),
+};

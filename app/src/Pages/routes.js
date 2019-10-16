@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import TopNavigation from '../components/TopNavigation';
+import { AssumeBar } from '../components/Assume';
 import HomePage from './Home/Home';
 import AboutPage from './About/About';
 import SandboxPage from './Sandbox/Sandbox';
@@ -21,12 +22,13 @@ const shouldTransition = location => {
   return false;
 };
 
-const Routes = props => {
+const Routes = () => {
   return (
     <Route
       render={({ location }) => (
         <>
           <TopNavigation />
+          <AssumeBar />
           <TransitionGroup className="oe-page-container">
             <CSSTransition
               key={shouldTransition(location) ? location.pathname : 'nope'}

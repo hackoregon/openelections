@@ -15,6 +15,8 @@ import {
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
+  isGovAdminAuthenticated,
+  isAssumed,
 } from '../../../state/ducks/auth';
 import {
   ViewHeaderSection,
@@ -100,6 +102,7 @@ class ContributionReadyForm extends React.Component {
       campaignName,
       pastContributions,
       history,
+      isAssumed,
     } = this.props;
     let initialFormData = {};
     if (currentContribution) {
@@ -112,10 +115,11 @@ class ContributionReadyForm extends React.Component {
         : null;
     }
     const isReadOnly = !!(
-      isGovAdmin ||
-      initialFormData.status === ContributionStatusEnum.SUBMITTED ||
-      initialFormData.status === ContributionStatusEnum.ARCHIVED ||
-      initialFormData.status === ContributionStatusEnum.PROCESSED
+      (isGovAdmin ||
+        initialFormData.status === ContributionStatusEnum.SUBMITTED ||
+        initialFormData.status === ContributionStatusEnum.ARCHIVED ||
+        initialFormData.status === ContributionStatusEnum.PROCESSED) &&
+      !isAssumed
     );
     return (
       <AddContributionForm
@@ -134,6 +138,7 @@ class ContributionReadyForm extends React.Component {
             values.status === ContributionStatusEnum.SUBMITTED
           );
           if (values.buttonSubmitted && !isValid) {
+            // eslint-disable-next-line no-unused-vars
             for (const [key, value] of Object.entries(formErrors)) {
               values.buttonSubmitted = '';
               flashMessage(value, { props: { variant: 'error' } });
@@ -148,6 +153,7 @@ class ContributionReadyForm extends React.Component {
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
                 isGovAdmin={this.props.isGovAdmin}
+                isGovAdminAuthenticated={this.props.isGovAdminAuthenticated}
                 isValid={isValid}
                 handleSubmit={handleSubmit}
                 id={initialFormData.id}
@@ -155,6 +161,7 @@ class ContributionReadyForm extends React.Component {
                 status={initialFormData.status}
                 formValues={values}
                 history={history}
+                isAssumed={isAssumed}
               />
               <ReadOnly ro={isReadOnly}>
                 <BasicsSection
@@ -205,11 +212,13 @@ export default connect(
   state => ({
     currentUserId: getCurrentUserId(state),
     isGovAdmin: isGovAdmin(state),
+    isGovAdminAuthenticated: isGovAdminAuthenticated(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
     currentContribution: getCurrentContribution(state),
     pastContributions: state.pastContributions,
+    isAssumed: isAssumed(state),
   }),
   dispatch => ({
     push: url => dispatch(push(url)),

@@ -32,6 +32,7 @@ describe('Reducer', () => {
   const reducer = auth.default;
   it('initial state', () => {
     expect(reducer(undefined, {})).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
@@ -44,6 +45,7 @@ describe('Reducer', () => {
         type: actionTypes.LOGIN.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -55,6 +57,7 @@ describe('Reducer', () => {
         me: {},
       })
     ).toEqual({
+      assume: false,
       me: {},
       isLoading: false,
       error: null,
@@ -66,6 +69,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',
@@ -91,6 +95,7 @@ describe('Reducer', () => {
         type: actionTypes.ME.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -102,6 +107,7 @@ describe('Reducer', () => {
         me: {},
       })
     ).toEqual({
+      assume: false,
       me: {},
       isLoading: false,
       error: null,
@@ -113,6 +119,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',
@@ -125,6 +132,7 @@ describe('Reducer', () => {
         type: actionTypes.REDEEM_INVITE.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -135,6 +143,7 @@ describe('Reducer', () => {
         type: actionTypes.REDEEM_INVITE.SUCCESS,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
@@ -146,6 +155,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',
@@ -158,6 +168,7 @@ describe('Reducer', () => {
         type: actionTypes.RESET_PASSWORD.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -168,6 +179,7 @@ describe('Reducer', () => {
         type: actionTypes.RESET_PASSWORD.SUCCESS,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
@@ -179,6 +191,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',
@@ -191,6 +204,7 @@ describe('Reducer', () => {
         type: actionTypes.SEND_PASSWORD_RESET_EMAIL.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -201,6 +215,7 @@ describe('Reducer', () => {
         type: actionTypes.SEND_PASSWORD_RESET_EMAIL.SUCCESS,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
@@ -212,6 +227,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',
@@ -224,6 +240,7 @@ describe('Reducer', () => {
         type: actionTypes.UPDATE_PASSWORD.REQUEST,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: true,
       error: null,
@@ -234,6 +251,7 @@ describe('Reducer', () => {
         type: actionTypes.UPDATE_PASSWORD.SUCCESS,
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: null,
@@ -245,6 +263,7 @@ describe('Reducer', () => {
         error: '',
       })
     ).toEqual({
+      assume: false,
       me: null,
       isLoading: false,
       error: '',

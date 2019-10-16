@@ -1,19 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import {
-  OtherDetailsSection,
   ContributorSection,
   BasicsSection,
   AddHeaderSection,
 } from './ContributionsSections';
-
-describe('<OtherDetailsSection />', () => {
-  it('should be defined', () => {
-    const wrapper = shallow(<OtherDetailsSection formFields={{}} />);
-    expect(wrapper).toBeDefined();
-    expect(wrapper).toMatchSnapshot();
-  });
-});
 
 describe('<ContributorSection />', () => {
   it('should be defined', () => {
