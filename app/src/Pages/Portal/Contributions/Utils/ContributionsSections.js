@@ -303,7 +303,7 @@ ContributorSection.propTypes = {
 ViewHeaderSection.propTypes = {
   isAssumed: PropTypes.bool,
   handleSubmit: PropTypes.func,
-  id: PropTypes.bool,
+  id: PropTypes.number,
   updatedAt: PropTypes.string,
   status: PropTypes.string,
   formValues: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -322,7 +322,7 @@ AddHeaderSection.propTypes = {
 
 BasicsSection.propTypes = {
   showInKindFields: PropTypes.bool,
-  showMatchAmount: PropTypes.bool,
+  showMatchAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   formFields: PropTypes.oneOfType([PropTypes.object]),
   checkSelected: PropTypes.bool,
   showPaymentMethod: PropTypes.bool,
