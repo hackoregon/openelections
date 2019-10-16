@@ -26,6 +26,7 @@ export const ViewHeaderSection = ({
   isGovAdminAuthenticated,
   statusText = status.replace(/_/g, ' '),
   AssumeButton,
+  isAssumed,
 }) => (
   <>
     <div css={containers.header}>
@@ -116,6 +117,19 @@ export const ViewHeaderSection = ({
     </div>
     <hr css={sectionStyles.dividerLine} />
     <AssumeButton />
+    {isAssumed ? (
+      <Button
+        css={headerStyles.submitButton}
+        style={{ margin: 1 }}
+        buttonType="red"
+        onClick={() => {
+          formValues.buttonSubmitted = 'save';
+          handleSubmit();
+        }}
+      >
+        Save
+      </Button>
+    ) : null}
     {!isGovAdminAuthenticated ? (
       <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
         <Button
@@ -243,6 +257,7 @@ ViewHeaderSection.propTypes = {
   isGovAdminAuthenticated: PropTypes.bool,
   statusText: PropTypes.string,
   AssumeButton: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  isAssumed: PropTypes.bool,
 };
 
 AddHeaderSection.propTypes = {

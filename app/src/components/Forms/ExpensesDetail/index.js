@@ -15,6 +15,7 @@ import {
   isCampAdmin,
   isCampStaff,
   isGovAdminAuthenticated,
+  isAssumed,
 } from '../../../state/ducks/auth';
 import {
   BasicsSection,
@@ -95,6 +96,7 @@ class ExpensesDetail extends React.Component {
       isGovAdmin,
       campaignName,
       history,
+      isAssumed,
     } = this.props;
     let initialFormData = {};
     if (currentExpenditure) {
@@ -125,12 +127,13 @@ class ExpensesDetail extends React.Component {
             }
           }
           const isReadOnly = !!(
-            isGovAdmin ||
-            initialFormData.status === ExpenditureStatusEnum.SUBMITTED ||
-            initialFormData.status === ExpenditureStatusEnum.ARCHIVED ||
-            initialFormData.status ===
-              ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
-            initialFormData.status === ExpenditureStatusEnum.IN_COMPLIANCE
+            (isGovAdmin ||
+              initialFormData.status === ExpenditureStatusEnum.SUBMITTED ||
+              initialFormData.status === ExpenditureStatusEnum.ARCHIVED ||
+              initialFormData.status ===
+                ExpenditureStatusEnum.OUT_OF_COMPLIANCE ||
+              initialFormData.status === ExpenditureStatusEnum.IN_COMPLIANCE) &&
+            !isAssumed
           );
           return parseInt(values.id) !== parseInt(expenditureId) ? (
             <PageTransitionImage />
@@ -138,6 +141,7 @@ class ExpensesDetail extends React.Component {
             <>
               <ViewHeaderSection
                 AssumeButton={AssumeButton}
+                isAssumed={isAssumed}
                 isCampAdmin={isCampAdmin}
                 isCampStaff={isCampStaff}
                 isGovAdmin={isGovAdmin}
@@ -187,6 +191,7 @@ export default connect(
     isCampStaff: isCampStaff(state),
     campaignName: getCurrentCampaignName(state),
     isGovAdminAuthenticated: isGovAdminAuthenticated(state),
+    isAssumed: isAssumed(state),
   }),
   dispatch => ({
     push: url => dispatch(push(url)),
@@ -198,6 +203,7 @@ export default connect(
 )(ExpensesDetail);
 
 ExpensesDetail.propTypes = {
+  isAssumed: PropTypes.bool,
   getExpenditureById: PropTypes.func,
   expenditureId: PropTypes.number,
   isGovAdminAuthenticated: PropTypes.bool,

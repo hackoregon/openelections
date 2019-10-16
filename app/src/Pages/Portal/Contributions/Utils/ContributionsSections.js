@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
-import { format } from 'date-fns';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
+import PropTypes from 'prop-types';
 import { ContributionStatusEnum } from '../../../../api/api';
 import Button from '../../../../components/Button/Button';
 import {
@@ -13,10 +13,8 @@ import {
 import { MatchPickerHeader } from '../../../../components/ContributorMatchPicker';
 import MatchContributionSelector from '../../../../components/Forms/MatchContribution/MatchContributionSelector';
 import { AssumeButton } from '../../../../components/Assume';
-import { isGovAdminAuthenticated } from '../../../../state/ducks/auth';
 
 export const ViewHeaderSection = ({
-  isValid,
   handleSubmit,
   id,
   updatedAt,
@@ -28,6 +26,7 @@ export const ViewHeaderSection = ({
   isCampStaff,
   campaignName,
   history,
+  isAssumed,
 }) => {
   let showMatchOption = null;
   const showMatchableSelector = () => {
@@ -145,6 +144,19 @@ export const ViewHeaderSection = ({
       </div>
       <hr css={sectionStyles.dividerLine} />
       <AssumeButton />
+      {isAssumed ? (
+        <Button
+          css={headerStyles.submitButton}
+          style={{ margin: 1 }}
+          buttonType="red"
+          onClick={() => {
+            formValues.buttonSubmitted = 'save';
+            handleSubmit();
+          }}
+        >
+          Save
+        </Button>
+      ) : null}
       {!isGovAdminAuthenticated ? (
         <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
           <Button
@@ -181,12 +193,11 @@ export const BasicsSection = ({
   formFields,
   checkSelected,
   showInKindFields,
-  isSubmited,
   showPaymentMethod,
   showMatchAmount,
   showCompliant,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
+  <div>
     {showCompliant ? (
       <p style={{ margin: '0px', color: 'green' }}>Compliant</p>
     ) : null}
@@ -220,99 +231,71 @@ export const ContributorSection = ({
   showEmployerSection,
   isPerson,
   emptyOccupationLetterDate,
-  isSubmited,
   isGovAdmin,
   contributionId,
   showOccupationLetter,
   matchId,
 }) => (
-  <div style={isSubmited ? { pointerEvents: 'none', opacity: '0.9' } : null}>
-    <div>
-      {isPerson && isGovAdmin ? (
-        <div style={{ pointerEvents: 'all', opacity: '1' }}>
-          <MatchPickerHeader
-            form="MatchPickerForm"
-            contributionId={contributionId}
-            currentMatchId={matchId}
-          />
-        </div>
-      ) : (
-        <h3 css={sectionStyles.title}>Contributor</h3>
-      )}
-      <h2 css={containers.fullWidth}>{formFields.typeOfContributor}</h2>
-      {isPerson ? (
-        <div css={containers.halfWidth}>
-          <h2>{formFields.firstName}</h2>
-          <h2>{formFields.lastName}</h2>
-        </div>
-      ) : (
-        <h2 css={containers.fullWidth}>{formFields.entityName}</h2>
-      )}
-      <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
-      <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
-      <div css={containers.cityStateZip}>
-        <h2>{formFields.city}</h2>
-        <h2>{formFields.state}</h2>
-        <h2>{formFields.zipcode}</h2>
+  <div>
+    {isPerson && isGovAdmin ? (
+      <div>
+        <MatchPickerHeader
+          form="MatchPickerForm"
+          contributionId={contributionId}
+          currentMatchId={matchId}
+        />
       </div>
-      <h2 css={containers.fullWidth}>{formFields.email}</h2>
+    ) : (
+      <h3 css={sectionStyles.title}>Contributor</h3>
+    )}
+    <h2 css={containers.fullWidth}>{formFields.typeOfContributor}</h2>
+    {isPerson ? (
       <div css={containers.halfWidth}>
-        <h2>{formFields.phone}</h2>
-        <h2>{formFields.phoneType}</h2>
+        <h2>{formFields.firstName}</h2>
+        <h2>{formFields.lastName}</h2>
       </div>
-      {isPerson ? (
-        <div>
-          <div css={containers.halfWidth}>
-            <h2>{formFields.occupation}</h2>
-            {showOccupationLetter ? (
-              <h2>{formFields.occupationLetterDate}</h2>
-            ) : null}
-          </div>
-          <div css={containers.fullWidth}>
-            {showEmployerSection ? (
-              <>
-                {emptyOccupationLetterDate ? (
-                  <div css={containers.employerStateZip}>
-                    <h2>{formFields.employerName}</h2>
-                    <h2>{formFields.employerCity}</h2>
-                    <h2>{formFields.employerState}</h2>
-                    <h2>{formFields.employerCountry}</h2>
-                  </div>
-                ) : null}
-              </>
-            ) : null}
-          </div>
-          <div>
-            <h2 css={sectionStyles.notes}>{formFields.notes}</h2>
-          </div>{' '}
+    ) : (
+      <h2 css={containers.fullWidth}>{formFields.entityName}</h2>
+    )}
+    <h2 css={containers.fullWidth}>{formFields.streetAddress}</h2>
+    <h2 css={containers.fullWidth}>{formFields.addressLine2}</h2>
+    <div css={containers.cityStateZip}>
+      <h2>{formFields.city}</h2>
+      <h2>{formFields.state}</h2>
+      <h2>{formFields.zipcode}</h2>
+    </div>
+    <h2 css={containers.fullWidth}>{formFields.email}</h2>
+    <div css={containers.halfWidth}>
+      <h2>{formFields.phone}</h2>
+      <h2>{formFields.phoneType}</h2>
+    </div>
+    {isPerson ? (
+      <div>
+        <div css={containers.halfWidth}>
+          <h2>{formFields.occupation}</h2>
+          {showOccupationLetter ? (
+            <h2>{formFields.occupationLetterDate}</h2>
+          ) : null}
         </div>
-      ) : null}
-    </div>
-  </div>
-);
-
-export const OtherDetailsSection = ({
-  formFields,
-  formValues,
-  handleSubmit,
-}) => (
-  <div css={containers.fullWidth}>
-    <h3 css={sectionStyles.title}>Other Details</h3>
-    <div>
-      <h2>{formFields.linkToDocumentation}</h2>
-      <div css={containers.header}>
-        <Button
-          css={headerStyles.submitButton}
-          buttonType="submit"
-          onClick={() => {
-            formValues.buttonSubmitted = 'submit';
-            handleSubmit();
-          }}
-        >
-          Save other details
-        </Button>
+        <div css={containers.fullWidth}>
+          {showEmployerSection ? (
+            <>
+              {emptyOccupationLetterDate ? (
+                <div css={containers.employerStateZip}>
+                  <h2>{formFields.employerName}</h2>
+                  <h2>{formFields.employerCity}</h2>
+                  <h2>{formFields.employerState}</h2>
+                  <h2>{formFields.employerCountry}</h2>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+        <div>
+          <h2 css={sectionStyles.notes}>{formFields.notes}</h2>
+        </div>{' '}
       </div>
-    </div>
+    ) : null}
   </div>
 );
 
@@ -334,3 +317,47 @@ export const AddFooterSection = ({ isValid, handleSubmit }) => (
     </Button>
   </div>
 );
+
+ContributorSection.propTypes = {
+  formFields: PropTypes.oneOfType([PropTypes.object]),
+  showEmployerSection: PropTypes.bool,
+  isPerson: PropTypes.bool,
+  emptyOccupationLetterDate: PropTypes.bool,
+  isGovAdmin: PropTypes.bool,
+  contributionId: PropTypes.number,
+  showOccupationLetter: PropTypes.bool,
+  matchId: PropTypes.string,
+};
+ViewHeaderSection.propTypes = {
+  isAssumed: PropTypes.bool,
+  handleSubmit: PropTypes.func,
+  id: PropTypes.bool,
+  updatedAt: PropTypes.string,
+  status: PropTypes.string,
+  formValues: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  isGovAdmin: PropTypes.bool,
+  isCampAdmin: PropTypes.bool,
+  isCampStaff: PropTypes.bool,
+  campaignName: PropTypes.string,
+  history: PropTypes.oneOfType([PropTypes.object]),
+  isGovAdminAuthenticated: PropTypes.bool,
+};
+
+AddHeaderSection.propTypes = {
+  handleSubmit: PropTypes.func,
+  isValid: PropTypes.bool,
+};
+
+BasicsSection.propTypes = {
+  showInKindFields: PropTypes.bool,
+  showMatchAmount: PropTypes.bool,
+  formFields: PropTypes.oneOfType([PropTypes.object]),
+  checkSelected: PropTypes.bool,
+  showPaymentMethod: PropTypes.bool,
+  showCompliant: PropTypes.bool,
+};
+
+AddFooterSection.propTypes = {
+  handleSubmit: PropTypes.func,
+  isValid: PropTypes.bool,
+};

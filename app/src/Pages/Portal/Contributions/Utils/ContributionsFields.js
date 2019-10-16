@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
-import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
+import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import { stateList } from '../../../../components/Forms/Utils/FormsUtils';
 import DateField from '../../../../components/Fields/DateField';
 import SelectField from '../../../../components/Fields/SelectField';
@@ -21,7 +21,6 @@ import {
   DataToContributionSubTypeFieldMap,
   DataToContributorTypeFieldMap,
   ContributionSubTypeEnum,
-  ContributionTypeEnum,
   ContributorTypeEnum,
   PaymentMethodEnum,
   DataToOaeTypeTypeFieldMap,
@@ -33,7 +32,6 @@ import {
 export const FormSectionEnum = Object.freeze({
   BASIC: 'basicsSection',
   CONTRIBUTOR: 'contributorSection',
-  OTHER_DETAILS: 'otherDetailsSection',
 });
 
 export const inKindContributionValues = [
@@ -339,7 +337,7 @@ export const fields = {
     // eslint-disable-next-line react/display-name
     component: props => (
       <AddressLookupField
-        {...props.field}
+        {...props.field} // eslint-disable-line
         {...props}
         updateFields={{
           address: 'streetAddress',
@@ -441,14 +439,12 @@ export const fields = {
   // or In-Kind Forgiven Personal Expenditure was selection.
   inKindDescription: {
     label: 'Inkind Description',
-    section: FormSectionEnum.OTHER_DETAILS,
     component: TextField,
     validation: Yup.string(),
   },
   inKindType: {
     // TODO Check that is posts all the way to the DB
     label: 'Inkind Type',
-    section: FormSectionEnum.OTHER_DETAILS,
     component: SelectField,
     validation: Yup.string(),
     options: {
@@ -506,7 +502,6 @@ export const fields = {
   // Not required if occupation & employer name/address filled in
   occupationLetterDate: {
     label: 'Occupation Letter Date',
-    section: FormSectionEnum.OTHER_DETAILS,
     component: DateField,
     validation: Yup.date(),
   },
@@ -514,13 +509,11 @@ export const fields = {
   // or if there is a donor portal where donors can attest digitally, that may affect this
   linkToDocumentation: {
     label: 'Link to Documentation?',
-    section: FormSectionEnum.OTHER_DETAILS,
     component: TextField,
     validation: Yup.string(),
   },
   notes: {
     label: 'Notes?',
-    section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
     validation: Yup.string(),
   },
@@ -533,8 +526,6 @@ export const fields = {
 // TODO create interface
 export const validate = values => {
   const {
-    amountOfContribution,
-    typeOfContribution,
     paymentMethod,
     checkNumber,
     occupation,
@@ -542,7 +533,6 @@ export const validate = values => {
     employerName,
     employerCity,
     employerState,
-    employerCountry,
     subTypeOfContribution,
     inKindType,
     lastName,
