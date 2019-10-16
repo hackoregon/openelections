@@ -36,6 +36,17 @@ const columns = isGovAdmin => [
         .split(', ')[0],
   },
   {
+    title: 'Date Submitted',
+    render: rowData =>
+      new Date(rowData.createdAt)
+        .toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        })
+        .split(', ')[0],
+  },
+  {
     ...(isGovAdmin
       ? {
           field: 'campaign',
