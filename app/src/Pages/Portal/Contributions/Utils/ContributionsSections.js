@@ -326,7 +326,7 @@ BasicsSection.propTypes = {
   formFields: PropTypes.oneOfType([PropTypes.object]),
   checkSelected: PropTypes.bool,
   showPaymentMethod: PropTypes.bool,
-  showCompliant: PropTypes.bool,
+  showCompliant: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 AddFooterSection.propTypes = {

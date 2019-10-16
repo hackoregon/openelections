@@ -220,7 +220,7 @@ export const AddFooterSection = ({ isValid, handleSubmit }) => (
 
 ViewHeaderSection.propTypes = {
   handleSubmit: PropTypes.func,
-  id: PropTypes.bool,
+  id: PropTypes.number,
   updatedAt: PropTypes.string,
   status: PropTypes.string,
   formValues: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -246,7 +246,7 @@ BasicsSection.propTypes = {
   showPaymentMethod: PropTypes.bool,
   showOriginalDateAndVendor: PropTypes.bool,
   showPurposeType: PropTypes.bool,
-  showCompliant: PropTypes.bool,
+  showCompliant: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 PayeeInfoSection.propTypes = {
