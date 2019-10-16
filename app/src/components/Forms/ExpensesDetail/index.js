@@ -205,9 +205,9 @@ export default connect(
 ExpensesDetail.propTypes = {
   isAssumed: PropTypes.bool,
   getExpenditureById: PropTypes.func,
-  expenditureId: PropTypes.number,
+  expenditureId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isGovAdminAuthenticated: PropTypes.bool,
-  currentExpenditure: PropTypes.number,
+  currentExpenditure: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   flashMessage: PropTypes.func,
   isCampAdmin: PropTypes.bool,
   isCampStaff: PropTypes.bool,
