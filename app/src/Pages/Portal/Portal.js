@@ -68,12 +68,12 @@ const Portal = props => {
                     <Route exact path="/dashboard" component={DashboardPage} />
                     <Route
                       exact
-                      path="/manage-portal"
+                      path="/settings"
                       component={ManagePortalPage}
                     />
                     <Route
                       exact
-                      path="/manage-portal/manage-user"
+                      path="/settings/manage-user"
                       component={ManageUserPage}
                     />
                     <Route exact path="/dashboard" component={DashboardPage} />

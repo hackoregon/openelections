@@ -35,7 +35,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
   const isLoading = isUserListLoading && !Array.isArray(userList);
   return (
     <PageHoc>
-      <h1>Manage Campaign Portal</h1>
+      <h1>Settings</h1>
       <div className="manage-portal-container">
         <div className="manage-users-container">
           <div className="manage-users-table">
@@ -72,7 +72,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   buttonType: 'manage',
                   onClick: (event, rowData) => {
                     props.history.push({
-                      pathname: '/manage-portal/manage-user',
+                      pathname: '/settings/manage-user',
                       state: rowData,
                     });
                   },

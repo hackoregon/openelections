@@ -100,7 +100,7 @@ export default class Sidebar extends Component {
       ...(this.props.isGovAdmin
         ? [{ url: '/campaigns', label: 'Campaigns' }]
         : []),
-      { url: '/manage-portal', label: 'Manage Portal' },
+      { url: '/settings', label: 'Settings' },
     ];
   }
 

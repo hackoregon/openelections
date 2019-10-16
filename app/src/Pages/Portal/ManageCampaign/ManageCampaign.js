@@ -27,7 +27,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   const rowCount = Array.isArray(campaignList) ? campaignList.length : 0;
   return (
     <PageHoc>
-      <h1>Manage Campaign</h1>
+      <h1>Settings</h1>
       <div className="manage-portal-container">
         <div className="manage-users-container">
           <div className="manage-users-table">
@@ -63,7 +63,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
               //     buttonType: 'manage',
               //     onClick: (event, rowData) => {
               //       props.history.push({
-              //         pathname: '/manage-portal/manage-user',
+              //         pathname: '/settings/manage-user',
               //         state: rowData,
               //       });
               //     },
