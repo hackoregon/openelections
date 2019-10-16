@@ -25,9 +25,20 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 const columns = isGovAdmin => [
   {
     field: 'date',
-    title: 'Date',
+    title: 'Expenditure Date',
     render: rowData =>
       new Date(rowData.date)
+        .toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        })
+        .split(', ')[0],
+  },
+  {
+    title: 'Date Submitted',
+    render: rowData =>
+      new Date(rowData.createdAt)
         .toLocaleString('en-US', {
           year: 'numeric',
           month: '2-digit',
