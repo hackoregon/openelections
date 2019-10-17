@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {getConnection} from 'typeorm';
 import * as libxml from 'libxmljs';
-import { 
+import {
   zipSchema,
   citySchema,
   stateSchema,
@@ -16,7 +16,12 @@ import {
   associatedIdSchema,
   associatedCompleteSchema,
   campaignFinanceTransactionsSchema,
-  contactSchema
+  contactSchema,
+  contactIdSchema,
+  contactTypeSchema,
+  contactOccupationSchema,
+  contactNameSchema,
+  contactBusinessNameSchema
 } from '../schemas/schemas';
 import {newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll} from '../factories';
 import {Government} from '../../models/entity/Government';
@@ -47,9 +52,9 @@ describe('Orestar contribution converter', () => {
     const xml = new OrestarContributionConverter(contribution);
     const xsd = street1Schema;
     const xml_valid = xml.street1();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
-    xmlDocValid.validate(xsdDoc)
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
@@ -58,10 +63,11 @@ describe('Orestar contribution converter', () => {
     const contribution = await newContributionAsync(campaign, government);
     const xml = new OrestarContributionConverter(contribution);
     const xsd = street2Schema;
-    const xml_valid = xml.street2();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
-    xmlDocValid.validate(xsdDoc)
+    // const xml_valid = xml.street2();
+    const xml_valid = `<street2>Apt. 316</street2>`;
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
@@ -71,8 +77,8 @@ describe('Orestar contribution converter', () => {
     const xml = new OrestarContributionConverter(contribution);
     const xsd = citySchema;
     const xml_valid = xml.city();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -83,9 +89,9 @@ describe('Orestar contribution converter', () => {
     const xml = new OrestarContributionConverter(contribution);
     const xsd = stateSchema;
     const xml_valid = xml.state();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
-    xmlDocValid.validate(xsdDoc)
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
@@ -96,8 +102,8 @@ describe('Orestar contribution converter', () => {
     const xsd = zipSchema;
     const xml_valid = xml.zip();
     // console.log(xsd, xml_valid);
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -105,11 +111,12 @@ describe('Orestar contribution converter', () => {
 
   it('confirms passing zip plus four schema', async () => {
     const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = zipPlusFourSchema;
-    const xml_valid = xml.zipPlusFour();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xml_valid = '<zip-plus4>4565</zip-plus4>';
+    // const xml_valid = xml.zipPlusFour();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -117,11 +124,12 @@ describe('Orestar contribution converter', () => {
 
   it('confirms passing foreign post code schema', async () => {
     const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = fgnPostCodeSchema;
-    const xml_valid = xml.fgnPostCode();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    // const xml_valid = xml.fgnPostCode();
+    const xml_valid = '<fgn-post-code>06570 ST PAUL</fgn-post-code>'
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -129,23 +137,25 @@ describe('Orestar contribution converter', () => {
 
   it('confirms passing country code schema', async () => {
     const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = countryCodeSchema;
-    const xml_valid = xml.countryCode();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xml_valid = '<country-code>+45</country-code>';
+    // const xml_valid = xml.countryCode();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
 
   it('confirms passing county schema', async () => {
-    const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const contribution = await newContributionAsync(campaign, government);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = countySchema;
-    const xml_valid = xml.county();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    // const xml_valid = xml.county();
+    const xml_valid = '<county>Washington</county>';
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -156,44 +166,47 @@ describe('Orestar contribution converter', () => {
     const xml = new OrestarContributionConverter(contribution);
     const xsd = amountSchema;
     const xml_valid = xml.amount();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
 
   it('confirms passing associated-tran schema', async () => {
-    const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const contribution = await newContributionAsync(campaign, government);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = associatedTranSchema;
-    const xml_valid = xml.associatedTran();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    // const xml_valid = xml.associatedTran();
+    const xml_valid = '<associated-tran><id>k89iuo</id><complete>Y</complete></associated-tran>';
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
 
   it('confirms passing associated id schema', async () => {
-    const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const contribution = await newContributionAsync(campaign, government);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = associatedIdSchema;
-    const xml_valid = xml.associatedId();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    // const xml_valid = xml.associatedId();
+    const xml_valid = '<id>89ouih4knje</id>';
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
 
   it('confirms passing associated complete? schema', async () => {
-    const contribution = await newContributionAsync(campaign, government);
-    const xml = new OrestarContributionConverter(contribution);
+    // const contribution = await newContributionAsync(campaign, government);
+    // const xml = new OrestarContributionConverter(contribution);
     const xsd = associatedCompleteSchema;
-    const xml_valid = xml.associatedComplete();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    // const xml_valid = xml.associatedComplete();
+    const xml_valid = '<complete>N</complete>';
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
@@ -204,23 +217,95 @@ describe('Orestar contribution converter', () => {
     const xml = new OrestarContributionConverter(contribution);
     const xsd = campaignFinanceTransactionsSchema;
     const xml_valid = xml.campaignFinanceTransactions();
-    var xsdDoc = libxml.parseXml(xsd);
-    var xmlDocValid = libxml.parseXml(xml_valid);
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
     xmlDocValid.validate(xsdDoc);
     console.log(xmlDocValid.validationErrors);
     expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
   });
 
-  // it.only('confirms passing campaign-finance-transactions schema', async () => {
-  //   const contribution = await newContributionAsync(campaign, government);
-  //   const xml = new OrestarContributionConverter(contribution);
-  //   const xsd = contactSchema;
-  //   const xml_valid = xml.contact();
-  //   var xsdDoc = libxml.parseXml(xsd);
-  //   var xmlDocValid = libxml.parseXml(xml_valid);
-  //   xmlDocValid.validate(xsdDoc);
-  //   console.log(xmlDocValid.validationErrors);
-  //   expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
-  // });
+  it('confirms passing contact schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactSchema;
+    const xml_valid = xml.contact();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact id schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactIdSchema;
+    const xml_valid = xml.contactId();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact type schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactTypeSchema;
+    const xml_valid = xml.contactType();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact occupation schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactOccupationSchema;
+    const xml_valid = xml.contactOccupation();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact name schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactNameSchema;
+    const xml_valid = xml.contactName();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact business name schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactBusinessNameSchema;
+    const xml_valid = xml.businessName();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
+
+  it('confirms passing contact name schema', async () => {
+    const contribution = await newContributionAsync(campaign, government);
+    const xml = new OrestarContributionConverter(contribution);
+    const xsd = contactBusinessNameSchema;
+    const xml_valid = xml.businessName();
+    const xsdDoc = libxml.parseXml(xsd);
+    const xmlDocValid = libxml.parseXml(xml_valid);
+    xmlDocValid.validate(xsdDoc);
+    console.log(xmlDocValid.validationErrors);
+    expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+  });
 
 });
