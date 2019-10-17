@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import FormModal from '../FormModal/FormModal';
 import Button from '../Button/Button';
@@ -17,7 +18,7 @@ const center = css`
   position: absolute;
   max-width: 350px;
 `;
-const Invitation = ({ campaign, government, code /* email */ }) => (
+const Invitation = ({ campaign, government, code }) => (
   <FormModal>
     <div css={center}>
       <p>You've been invited to join:</p>
@@ -45,3 +46,9 @@ Invitation.defaultProps = {
 };
 
 export default Invitation;
+
+Invitation.propTypes = {
+  campaign: PropTypes.string,
+  government: PropTypes.string,
+  code: PropTypes.string,
+};

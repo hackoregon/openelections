@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 /** @jsx jsx */
@@ -31,7 +32,6 @@ const MatchContribution = ({
   id,
   clearModal,
   updateContribution,
-  postContributionComment,
   donationAmount,
 }) => {
   const isRequired = true;
@@ -115,3 +115,10 @@ export default connect(
     };
   }
 )(MatchContribution);
+
+MatchContribution.propTypes = {
+  id: PropTypes.number,
+  clearModal: PropTypes.func,
+  updateContribution: PropTypes.func,
+  donationAmount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};

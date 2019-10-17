@@ -1,6 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createContribution } from '../../../state/ducks/contributions';
 import {
@@ -90,3 +90,8 @@ export default connect(
     createContribution: data => dispatch(createContribution(data)),
   })
 )(AddContribution);
+
+AddContribution.propTypes = {
+  authLoading: PropTypes.bool,
+  isGovAdmin: PropTypes.bool,
+};

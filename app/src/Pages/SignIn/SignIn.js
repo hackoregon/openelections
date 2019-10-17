@@ -5,10 +5,6 @@ import SignInForm from '../../components/Forms/SignIn/index';
 import { login } from '../../state/ducks/auth';
 
 class SignIn extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <PageHoc>

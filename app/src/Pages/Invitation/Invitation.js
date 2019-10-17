@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import PageHoc from '../../components/PageHoc/PageHoc';
@@ -25,3 +26,7 @@ class InvitationPage extends Component {
 }
 
 export default connect()(InvitationPage);
+
+InvitationPage.propTypes = {
+  location: PropTypes.object, // eslint-disable-line
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { CircularProgress, Fade } from '@material-ui/core';
 
 function PageTransitionImage() {
@@ -29,3 +30,8 @@ class PageTransition extends React.Component {
 }
 
 export { PageTransition, PageTransitionImage };
+
+PageTransition.propTypes = {
+  show: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.any]),
+};

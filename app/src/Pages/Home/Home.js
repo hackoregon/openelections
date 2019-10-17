@@ -2,7 +2,7 @@ import * as React from 'react';
 import PageHoc from '../../components/PageHoc/PageHoc';
 // import { connect } from 'react-redux'
 
-const HomePage = props => {
+const HomePage = () => {
   return (
     <PageHoc>
       <h1>Home</h1>

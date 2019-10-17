@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { css, jsx } from '@emotion/core';
 import Form from '../../Form/Form';
@@ -67,3 +69,9 @@ const AddCampaignForm = ({ initialValues, onSubmit, children }) => (
 );
 
 export default AddCampaignForm;
+
+AddCampaignForm.propTypes = {
+  initialValues: PropTypes.oneOfType([PropTypes.object]),
+  onSubmit: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.any]),
+};

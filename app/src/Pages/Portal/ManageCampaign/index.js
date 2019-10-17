@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ManageCampaign from './ManageCampaign';
 import { showModal } from '../../../state/ducks/modal';
@@ -11,7 +12,8 @@ import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
 class ManageCampaignPage extends React.Component {
   componentDidMount() {
-    this.props.getCampaigns(this.props.governmentId);
+    const { getCampaigns, governmentId } = this.props;
+    getCampaigns(governmentId);
   }
 
   render() {
@@ -32,3 +34,8 @@ export default connect(
     };
   }
 )(ManageCampaignPage);
+
+ManageCampaignPage.propTypes = {
+  getCampaigns: PropTypes.func,
+  governmentId: PropTypes.number,
+};

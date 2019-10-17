@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PageHoc from '../../../components/PageHoc/PageHoc';
 import Button from '../../../components/Button/Button';
 import Table from '../../../components/Table';
@@ -21,8 +22,16 @@ const columnInfo = [
     field: 'email',
   },
 ];
+const Action = ({ action, data }) => (
+  <Button
+    onClick={event => action.onClick(event, data)}
+    buttonType={action.buttonType}
+  >
+    {action.name}
+  </Button>
+);
 
-const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
+const ManageCampaign = ({ isCampaignListLoading, campaignList, showModal }) => {
   const isLoading = isCampaignListLoading && !Array.isArray(campaignList);
   const rowCount = Array.isArray(campaignList) ? campaignList.length : 0;
   return (
@@ -51,7 +60,7 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
               toolbarAction={
                 <Button
                   buttonType="primary"
-                  onClick={() => props.showModal({ component: 'AddCampaign' })}
+                  onClick={() => showModal({ component: 'AddCampaign' })}
                 >
                   Add New Campaign
                 </Button>
@@ -70,14 +79,8 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
               //   },
               // ]}
               components={{
-                Action: props => (
-                  <Button
-                    onClick={event => props.action.onClick(event, props.data)}
-                    buttonType={props.action.buttonType}
-                  >
-                    {props.action.name}
-                  </Button>
-                ),
+                // eslint-disable-next-line react/display-name
+                Action,
               }}
             />
           </div>
@@ -88,3 +91,14 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, ...props }) => {
   );
 };
 export default ManageCampaign;
+
+ManageCampaign.propTypes = {
+  isCampaignListLoading: PropTypes.bool,
+  campaignList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  showModal: PropTypes.func,
+};
+
+Action.propTypes = {
+  data: PropTypes.oneOfType([PropTypes.array]),
+  action: PropTypes.oneOfType([PropTypes.object]),
+};

@@ -1,7 +1,7 @@
+// eslint-disable-next-line no-unused-vars
+// TODO Consolidate spinners, are there multiple spinnetr components?
 import React from 'react';
-
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import loader from '../styles/elementes/loader';
 
 const LoadingCircle = ({ radius, color, className }) => (
@@ -11,3 +11,9 @@ const LoadingCircle = ({ radius, color, className }) => (
 );
 
 export default LoadingCircle;
+
+LoadingCircle.propTypes = {
+  radius: PropTypes.number,
+  color: PropTypes.string,
+  className: PropTypes.string,
+};

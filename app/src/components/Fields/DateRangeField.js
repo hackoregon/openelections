@@ -144,6 +144,7 @@ function Popover(props) {
       to,
     };
 
+    // eslint-disable-next-line default-case
     switch (elementId) {
       case 'from-date':
         range.from = value;
@@ -187,12 +188,18 @@ function Popover(props) {
   );
 }
 
+Popover.propTypes = {
+  onDateRangeChange: PropTypes.func,
+  rangeValues: PropTypes.shape({}),
+  formik: PropTypes.shape({}),
+};
+
 function getISOFromDate(date) {
   const theDate = new Date(date);
   theDate.setTime(theDate.getTime() + theDate.getTimezoneOffset() * 60000);
   return theDate.toISOString();
 }
 
-function formatISODate(ISODate, the_format) {
-  return format(new Date(ISODate), the_format || 'MM-DD-YYYY');
+function formatISODate(ISODate, theFormat) {
+  return format(new Date(ISODate), theFormat || 'MM-DD-YYYY');
 }

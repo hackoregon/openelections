@@ -1,10 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import * as Yup from 'yup';
 import { isEmpty } from 'lodash';
 import { format } from 'date-fns';
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { parseFromTimeZone, convertToTimeZone } from 'date-fns-timezone';
 import { stateList } from '../../../components/Forms/Utils/FormsUtils';
 import CurrencyField from '../../../components/Fields/CurrencyField';
 import DateField from '../../../components/Fields/DateField';

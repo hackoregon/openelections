@@ -40,7 +40,7 @@ export default function ZipField({ id, label, formik, isRequired }) {
 }
 
 TextMaskCustom.propTypes = {
-  inputRef: PropTypes.shape({ current: PropTypes.elementType }),
+  inputRef: PropTypes.any, // eslint-disable-line react/forbid-prop-types
 };
 
 ZipField.propTypes = {

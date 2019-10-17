@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ManagePortal from './ManagePortal';
 import {
@@ -51,3 +52,12 @@ export default connect(
     };
   }
 )(ManagePortalPage);
+
+ManagePortalPage.propTypes = {
+  id: PropTypes.number,
+  governmentId: PropTypes.number,
+  campaignId: PropTypes.number,
+  isGovAdmin: PropTypes.bool,
+  getCampaignUsers: PropTypes.func,
+  getGovernmentUsers: PropTypes.func,
+};

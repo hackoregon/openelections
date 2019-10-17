@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 import FormModal from '../../FormModal/FormModal';
@@ -20,15 +21,6 @@ const buttonWrapper = css`
   width: 85%;
   justify-content: space-around;
 `;
-const leftAlign = css`
-  align-self: flex-start;
-`;
-
-const USER_ROLES = {
-  Admin: 'campaign_admin',
-  Staff: 'campaign_staff',
-};
-// Todo: get from API
 
 const AddCampaign = props => (
   <FormModal>
@@ -114,3 +106,9 @@ export default connect(
     };
   }
 )(AddCampaign);
+
+AddCampaign.propTypes = {
+  createCampaignForGovernment: PropTypes.func,
+  clearModal: PropTypes.func,
+  governmentId: PropTypes.number,
+};

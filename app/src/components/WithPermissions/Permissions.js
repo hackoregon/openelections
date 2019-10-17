@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 
 export class WithPermissions extends React.Component {
   componentDidMount() {
-    if (!this.props.isLoggedIn) {
-      this.props.redirectToLogin();
-    }
+    this.checkLogin();
   }
 
   componentDidUpdate() {
-    if (!this.props.isLoggedIn) {
-      this.props.redirectToLogin();
+    this.checkLogin();
+  }
+
+  checkLogin() {
+    const { isLoggedIn, redirectToLogin } = this.props;
+    if (!isLoggedIn) {
+      redirectToLogin();
     }
   }
 
@@ -23,4 +26,5 @@ export class WithPermissions extends React.Component {
 WithPermissions.propTypes = {
   redirectToLogin: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool,
+  children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
 };

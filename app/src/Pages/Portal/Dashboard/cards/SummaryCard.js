@@ -119,6 +119,7 @@ class SummaryCard extends React.Component {
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   money(number) {
     return `$${number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   }
@@ -183,7 +184,7 @@ class SummaryCard extends React.Component {
 
   render() {
     const { isLoading } = this.props;
-    const data = !isLoading ? this.getData() : {};
+    const data = !isLoading ? this.getData() : {}; // eslint-disable-line no-unused-vars
 
     return (
       <div css={styles}>

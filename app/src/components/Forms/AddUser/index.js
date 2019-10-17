@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 import FormModal from '../../FormModal/FormModal';
@@ -96,3 +97,9 @@ export default connect(
     };
   }
 )(AddUser);
+
+AddUser.propTypes = {
+  inviteUser: PropTypes.func,
+  clearModal: PropTypes.func,
+  orgId: PropTypes.number,
+};

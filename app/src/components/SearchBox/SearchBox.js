@@ -1,4 +1,10 @@
-import React, { Component } from 'react';
+/* eslint-disable no-script-url */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable class-methods-use-this */
+// TODO Refactor and remove above eslint-disable
+import React from 'react';
 /** @jsx jsx */
 import { jsx, css } from '@emotion/core';
 import PropTypes from 'prop-types';
@@ -7,7 +13,7 @@ import { Search as SearchIcon } from '@material-ui/icons';
 import loader from '../../assets/styles/elementes/loader';
 import Invitation from '../Invitation';
 
-class SearchBox extends Component {
+class SearchBox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,8 +28,8 @@ class SearchBox extends Component {
       showGuessesList: false,
     };
 
-    this.onSearchQueryChange = props.onSearchQueryChange || (value => {});
-    this.onSearchResultSelected = props.onSearchResultSelected || (value => {});
+    this.onSearchQueryChange = props.onSearchQueryChange || (() => {});
+    this.onSearchResultSelected = props.onSearchResultSelected || (() => {});
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onUpDownNavigation = this.onUpDownNavigation.bind(this);

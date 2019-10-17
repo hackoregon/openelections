@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import React from "react";
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Logo } from '@hackoregon/component-library';
 
@@ -48,3 +49,7 @@ const TopNavigation = props => {
 };
 
 export default TopNavigation;
+
+TopNavigation.propTypes = {
+  isLoggedIn: PropTypes.bool,
+};

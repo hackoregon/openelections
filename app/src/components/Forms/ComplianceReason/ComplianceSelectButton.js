@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -26,7 +27,7 @@ const options = [
 const SplitButton = ({ id, updateExpenditure, showModal, modalIsActive }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(0); // eslint-disable-line no-unused-vars
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   function updateStatus(index) {
@@ -58,7 +59,7 @@ const SplitButton = ({ id, updateExpenditure, showModal, modalIsActive }) => {
     return value;
   }
 
-  function handleClick(event) {
+  function handleClick() {
     setOpen(true);
   }
   function handleMenuItemClick(event, index) {
@@ -162,3 +163,16 @@ export default connect(
     };
   }
 )(ComplianceSelectButton);
+
+SplitButton.propTypes = {
+  id: PropTypes.number,
+  updateExpenditure: PropTypes.func,
+  showModal: PropTypes.func,
+  modalIsActive: PropTypes.bool,
+};
+ComplianceSelectButton.propTypes = {
+  id: PropTypes.number,
+  updateExpenditure: PropTypes.func,
+  showModal: PropTypes.func,
+  modalIsActive: PropTypes.bool,
+};

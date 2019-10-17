@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 import Button from '../../Button/Button';
@@ -20,30 +22,20 @@ const removeUserTitle = css`
   font-size: 36px;
 `;
 
-const RemoveUser = props => {
+const RemoveUser = ({ location, removeUser, clearModal }) => {
   return (
     <FormModal>
       <div css={removeUserStyle}>
         <h1 css={removeUserTitle}>Remove User </h1>
-        <p>
-          {props.location.state.email} will no longer have access to the portal.
-        </p>
+        <p>{location.state.email} will no longer have access to the portal.</p>
         <p>Are you sure you want to remove them?</p>
         <div css={buttonContainer}>
-          <Button
-            buttonType="formDefaultOutlined"
-            onClick={() => props.clearModal()}
-          >
+          <Button buttonType="formDefaultOutlined" onClick={() => clearModal()}>
             Cancel
           </Button>
           <Button
             buttonType="formDefault"
-            onClick={() =>
-              props.removeUser(
-                props.location.state.id,
-                props.location.state.roleId
-              )
-            }
+            onClick={() => removeUser(location.state.id, location.state.roleId)}
           >
             Submit
           </Button>
@@ -63,3 +55,9 @@ export default connect(
     };
   }
 )(RemoveUser);
+
+RemoveUser.propTypes = {
+  location: PropTypes.oneOfType([PropTypes.object]),
+  removeUser: PropTypes.func,
+  clearModal: PropTypes.func,
+};

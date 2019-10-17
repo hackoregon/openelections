@@ -18,7 +18,7 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const useStyles1 = makeStyles(theme => ({
+const useStyles1 = makeStyles(() => ({
   success: {
     backgroundColor: green[600],
   },

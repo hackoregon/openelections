@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import PageHoc from '../../components/PageHoc/PageHoc';
@@ -19,7 +20,7 @@ class SignUp extends React.Component {
 }
 
 export default connect(
-  state => ({}),
+  null,
   dispatch => {
     return {
       redeemInvite: (invitationCode, password) =>
@@ -27,3 +28,7 @@ export default connect(
     };
   }
 )(SignUp);
+
+SignUp.propTypes = {
+  location: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+};

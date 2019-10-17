@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
@@ -62,7 +63,7 @@ const MessageBox = ({
 };
 
 export default connect(
-  state => ({}),
+  null,
   dispatch => {
     return {
       postContributionComment: (id, message) =>
@@ -72,3 +73,10 @@ export default connect(
     };
   }
 )(MessageBox);
+
+MessageBox.propTypes = {
+  expenditureId: PropTypes.number,
+  contributionId: PropTypes.number,
+  postContributionComment: PropTypes.func,
+  postExpenditureComment: PropTypes.func,
+};

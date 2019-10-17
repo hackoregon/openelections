@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/display-name */
 // Documentaiton for this component can be found at: https://material-table.com
 // eslint-disable-next-line
 import React, { forwardRef } from "react";
@@ -155,6 +157,13 @@ Table.propTypes = {
   actions: PropTypes.array,
   components: PropTypes.object,
   localization: PropTypes.object,
+  isLoading: PropTypes.bool,
+  perPage: PropTypes.number,
+  pageNumber: PropTypes.number,
+  totalRows: PropTypes.number,
+  onChangePage: PropTypes.func,
+  onChangeRowsPerPage: PropTypes.func,
+  toolbarAction: PropTypes.any,
 };
 
 export default Table;

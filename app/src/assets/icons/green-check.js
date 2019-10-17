@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default props => (
+const GreenCheck = props => (
   <svg
     width="188"
     viewBox="0 0 188 188"
@@ -15,3 +15,5 @@ export default props => (
     <circle cx="94" cy="94" r="91" stroke="#42B44A" strokeWidth="6" />
   </svg>
 );
+
+export default GreenCheck;

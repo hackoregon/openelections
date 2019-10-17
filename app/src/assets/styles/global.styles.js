@@ -1,5 +1,5 @@
 import { css } from '@emotion/core';
-import { font_family } from './variables';
+import { OEFontFamily } from './variables';
 
 const styles = css`
   * {
@@ -8,7 +8,7 @@ const styles = css`
 
   body {
     margin: 0;
-    font-family: ${font_family};
+    font-family: ${OEFontFamily};
   }
 
   h1,

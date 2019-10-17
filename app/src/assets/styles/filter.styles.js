@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 
 const filterOuter = css`
   display: flex;
