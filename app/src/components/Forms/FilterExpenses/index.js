@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import Button from '../../Button/Button';
 import FilterExpensess from './FilterExpenses';
 import {
   getFilterOptions,
-  initialState,
   updateFilter,
 } from '../../../state/ducks/expenditures';
 import {
@@ -22,7 +22,6 @@ import {
 } from '../../../assets/styles/filter.styles';
 
 const FilterExpenses = props => {
-  // const { location, history, onFilterUpdate } = props;
   const { updateFilter, onFilterUpdate, initialFilterOptions } = props;
   const defaultValues = {
     status: 'all',
@@ -38,8 +37,6 @@ const FilterExpenses = props => {
       from: initialFilterOptions.from || '',
     },
   };
-  // eslint-disable-next-line no-use-before-define
-  // const urlQuery = getQueryParams(location);
 
   return (
     <>

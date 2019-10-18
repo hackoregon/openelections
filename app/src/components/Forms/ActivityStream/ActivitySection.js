@@ -167,8 +167,8 @@ export const ActivitySection = props => {
 
 activityList.propTypes = {
   activities: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-  expenditureId: PropTypes.number,
-  contributionId: PropTypes.number,
+  expenditureId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  contributionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   governmentId: PropTypes.number,
   campaignId: PropTypes.number,
 };

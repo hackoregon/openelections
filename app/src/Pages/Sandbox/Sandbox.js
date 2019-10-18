@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PageHoc from '../../components/PageHoc/PageHoc';
 
-const SandboxPage = props => {
+const SandboxPage = () => {
   return (
     <PageHoc>
       <h1>Sandbox</h1>

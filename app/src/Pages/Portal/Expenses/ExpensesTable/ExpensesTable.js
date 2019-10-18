@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import Table from '../../../../components/Table';
@@ -257,3 +258,17 @@ export default connect(
     };
   }
 )(ExpensesTable);
+
+ExpensesTable.propTypes = {
+  getExpenditures: PropTypes.func,
+  filterOptions: PropTypes.PropTypes.oneOfType([PropTypes.object]),
+  updateFilter: PropTypes.func,
+  isListLoading: PropTypes.bool,
+  expendituresList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  history: PropTypes.PropTypes.oneOfType([PropTypes.object]),
+  total: PropTypes.number,
+  govId: PropTypes.number,
+  userId: PropTypes.number,
+  campaignId: PropTypes.number,
+  isGovAdmin: PropTypes.bool,
+};

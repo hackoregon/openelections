@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { merge, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import Button from '../../Button/Button';
 import FilterContributions from './FilterContributions';
 import {
   getFilterOptions,
-  initialState,
   updateFilter,
 } from '../../../state/ducks/contributions';
 import {

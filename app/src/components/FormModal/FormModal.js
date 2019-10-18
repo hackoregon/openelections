@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import React from "react";
-import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
@@ -20,11 +20,11 @@ const formModalWrapper = css`
 // `;
 
 const FormModal = ({ children }) => (
-  <div css={[formModalWrapper]}>
-    {/* <Paper elevation={1} css={paper}> */}
-    {children}
-    {/* </Paper> */}
-  </div>
+  <div css={[formModalWrapper]}>{children}</div>
 );
 
 export default FormModal;
+
+FormModal.propTypes = {
+  children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+};

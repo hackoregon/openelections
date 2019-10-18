@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { css, jsx } from '@emotion/core';
 /** @jsx jsx */
@@ -156,3 +157,13 @@ export default connect(
     };
   }
 )(ComplianceReason);
+
+ComplianceReason.propTypes = {
+  id: PropTypes.number,
+  clearModal: PropTypes.func,
+  updateExpenditure: PropTypes.func,
+  postExpenditureComment: PropTypes.func,
+  updateContribution: PropTypes.func,
+  postContributionComment: PropTypes.func,
+  contribution: PropTypes.oneOfType([PropTypes.object]),
+};

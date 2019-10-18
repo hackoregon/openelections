@@ -1,9 +1,6 @@
 import * as React from 'react';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { NavLink } from 'react-router-dom';
-import Form from '../../../../components/Form/Form';
 import SearchBox from '../../../../components/SearchBox/SearchBox';
 
 const styles = css`
@@ -26,7 +23,7 @@ class SearchCard extends React.Component {
     };
   }
 
-  performSearch(query) {
+  performSearch() {
     if (!this.state.isLoading) {
       this.setState({ isLoading: true });
     }

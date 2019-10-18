@@ -99,6 +99,6 @@ ManageCampaign.propTypes = {
 };
 
 Action.propTypes = {
-  data: PropTypes.oneOfType([PropTypes.array]),
+  data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   action: PropTypes.oneOfType([PropTypes.object]),
 };

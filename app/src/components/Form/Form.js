@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import { PageTransitionImage, PageTransition } from '../PageTransistion';
+import { PageTransition } from '../PageTransistion';
 
 export const formFromFields = (fields, formikProps, dynamicRequire) =>
   Object.keys(fields).map(id =>
@@ -58,6 +58,7 @@ class Form extends React.Component {
                 throw error;
               }
             );
+          // eslint-disable-next-line react/destructuring-assignment
           return this.props.onSubmit(values, addHandlers);
         }}
         render={formikProps => {
@@ -143,6 +144,8 @@ Form.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   children: PropTypes.func.isRequired,
   validate: PropTypes.func,
+  handleReset: PropTypes.func,
+  sections: PropTypes.oneOfType([PropTypes.array]),
 };
 
 export default Form;

@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import AddContribution from './AddContribution/AddContribution';
 import ContributionReady from './ContributionReady/ContributionReady';
 import ContributionsTable from './ContributionsTable';
-// import ContributionNeedsReview from "../../../components/Forms/CityViews/ContributionNeedsReview";
 
 const Contributions = props => {
   const { match } = props;
@@ -36,3 +36,7 @@ const Contributions = props => {
   );
 };
 export default Contributions;
+
+Contributions.propTypes = {
+  match: PropTypes.oneOfType([PropTypes.object]),
+};

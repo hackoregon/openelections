@@ -1,9 +1,11 @@
+/* eslint-disable react/no-unused-state */
+// TODO Look at submitted state variable is it doing anything
 import React from 'react';
 import { connect } from 'react-redux';
 import { flashMessage } from 'redux-flash';
 import PageHoc from '../../components/PageHoc/PageHoc';
 import ResetPasswordForm from '../../components/Forms/ResetPassword/index';
-import { updatePassword, isLoggedIn } from '../../state/ducks/auth';
+import { updatePassword } from '../../state/ducks/auth';
 
 class ResetPassword extends React.Component {
   constructor(props) {
@@ -26,9 +28,7 @@ class ResetPassword extends React.Component {
 }
 
 export default connect(
-  state => {
-    return {};
-  },
+  null,
   dispatch => {
     return {
       updatePassword: (oldPassword, newPassword) =>

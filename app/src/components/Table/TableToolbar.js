@@ -1,12 +1,13 @@
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import PropTypes from 'prop-types';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import React from 'react';
 import { mediaQueryRanges } from '../../assets/styles/variables';
 import TablePagination from './TablePagination';
 
 export function TableToolbar(props) {
   const { paginationOptions, action, showTitle, title } = props;
-
   const wrapperStyles = css`
     display: flex;
     justify-content: space-between;
@@ -37,3 +38,10 @@ export function TableToolbar(props) {
     </div>
   );
 }
+
+TableToolbar.propTypes = {
+  paginationOptions: PropTypes.oneOfType([PropTypes.object]),
+  action: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+  showTitle: PropTypes.bool,
+  title: PropTypes.string,
+};

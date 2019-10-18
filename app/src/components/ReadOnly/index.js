@@ -13,5 +13,6 @@ export default class ReadOnly extends React.Component {
 }
 
 ReadOnly.propTypes = {
+  children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
   ro: PropTypes.bool,
 };

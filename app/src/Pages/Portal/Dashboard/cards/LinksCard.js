@@ -31,5 +31,5 @@ const LinksCard = ({ links }) => {
 export default LinksCard;
 
 LinksCard.propTypes = {
-  links: PropTypes.oneOfType([PropTypes.object]),
+  links: PropTypes.oneOfType([PropTypes.array]),
 };

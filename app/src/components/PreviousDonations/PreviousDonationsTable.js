@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PageHoc from '../PageHoc/PageHoc';
 import Table from '../Table';
 import Button from '../Button/Button';
@@ -93,3 +94,10 @@ class PreviousDonationsTable extends React.Component {
 }
 
 export default PreviousDonationsTable;
+
+PreviousDonationsTable.propTypes = {
+  history: PropTypes.oneOfType([PropTypes.object]),
+  pastContributions: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  matchId: PropTypes.number, // eslint-disable-line react/forbid-prop-types
+  currentId: PropTypes.number,
+};

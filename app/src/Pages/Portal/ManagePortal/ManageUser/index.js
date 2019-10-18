@@ -3,7 +3,7 @@ import ManageUser from './ManageUser';
 import { showModal } from '../../../../state/ducks/modal';
 
 export default connect(
-  state => ({}),
+  null,
   dispatch => {
     return {
       showModal: payload => {

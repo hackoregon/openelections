@@ -23,7 +23,7 @@ ExpensesDetail.propTypes = {
   history: PropTypes.object,
   match: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     }),
   }),
 };
