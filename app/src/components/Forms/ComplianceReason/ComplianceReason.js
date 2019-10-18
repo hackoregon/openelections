@@ -165,5 +165,5 @@ ComplianceReason.propTypes = {
   postExpenditureComment: PropTypes.func,
   updateContribution: PropTypes.func,
   postContributionComment: PropTypes.func,
-  contribution: PropTypes.oneOfType([PropTypes.object]),
+  contribution: PropTypes.string,
 };

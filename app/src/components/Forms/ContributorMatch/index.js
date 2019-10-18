@@ -33,7 +33,7 @@ export default connect(
 )(MatchPickerForm);
 
 MatchPickerForm.propTypes = {
-  currentMatchResults: PropTypes.oneOfType([PropTypes.object]),
+  currentMatchResults: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   currentMatchId: PropTypes.string,
   contributionId: PropTypes.number,
 };
