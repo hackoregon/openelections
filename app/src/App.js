@@ -1,3 +1,5 @@
+// TODO remove: import { ReactComponent as Logo } from '@hackoregon/component-library/assets/civic-logo-animated.svg';
+// To remove the error: pseudo class ":first-child" is potentially unsafe
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Global, css } from '@emotion/core'; // eslint-disable-line no-unused-vars
