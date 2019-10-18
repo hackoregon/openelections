@@ -1,17 +1,16 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import {
   TablePagination as MaterialTablePagination,
-  Tooltip,
   IconButton,
 } from '@material-ui/core';
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
-  ChevronRight as NextPageIcon,
-  ChevronLeft as PreviousPageIcon,
   KeyboardArrowRight,
   KeyboardArrowLeft,
 } from '@material-ui/icons';
@@ -115,3 +114,16 @@ const TablePagination = props => {
 };
 
 export default TablePagination;
+
+TablePagination.propTypes = {
+  pageNumber: PropTypes.number,
+  totalRows: PropTypes.number,
+  perPage: PropTypes.number,
+};
+
+TablePaginationActions.propTypes = {
+  count: PropTypes.number,
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.number,
+  onChangePage: PropTypes.func,
+};

@@ -1,4 +1,5 @@
-import * as React from 'react';
+import * as React from 'react'; // eslint-disable-line no-unused-vars
+import PropTypes from 'prop-types';
 import { css, jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import PageHoc from '../../../components/PageHoc/PageHoc';
@@ -78,7 +79,7 @@ const TemporaryOverlayStyles = css`
   }
 `;
 
-const DashboardPage = props => {
+const DashboardPage = ({ isGovAdmin, authLoading }) => {
   return (
     <PageHoc>
       <div css={styles}>
@@ -96,7 +97,7 @@ const DashboardPage = props => {
               {/* Jaron links go here */}
               <LinksCard
                 links={
-                  props.isGovAdmin
+                  isGovAdmin
                     ? [
                         { path: '/settings', label: 'Invite User' },
                         { path: '/reset-password', label: 'Reset Password' },
@@ -114,7 +115,7 @@ const DashboardPage = props => {
         </div>
         <div className="cards-wrapper">
           <div className="card bottom">
-            {props.authLoading ? null : <ActivityStreamCard />}
+            {authLoading ? null : <ActivityStreamCard />}
           </div>
         </div>
       </div>
@@ -126,3 +127,8 @@ export default connect(state => ({
   authLoading: state.auth.isLoading,
   isGovAdmin: isGovAdmin(state),
 }))(DashboardPage);
+
+DashboardPage.propTypes = {
+  authLoading: PropTypes.bool,
+  isGovAdmin: PropTypes.bool,
+};

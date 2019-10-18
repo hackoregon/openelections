@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import PropTypes, { object } from 'prop-types';
 import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
@@ -21,19 +22,23 @@ const divSpacer = css`
 `;
 
 const ManageUserPage = props => {
-  const { id, email, userStatus } = props.location.state;
+  const {
+    location,
+    resendUserInvite,
+    flashMessage,
+    history,
+    showModal,
+  } = props;
+  const { id, email, userStatus } = location.state;
 
   const handleReSendEmail = () => {
-    props.resendUserInvite(id);
-    props.flashMessage('Email Resent', { props: { variant: 'success' } });
+    resendUserInvite(id);
+    flashMessage('Email Resent', { props: { variant: 'success' } });
   };
   return (
     <PageHoc>
       <h1>
-        <IconButton
-          aria-label="Back"
-          onClick={() => props.history.push('/settings')}
-        >
+        <IconButton aria-label="Back" onClick={() => history.push('/settings')}>
           <ArrowBack style={{ fontSize: '36px', color: 'black' }} />
         </IconButton>
         Manage User
@@ -59,9 +64,7 @@ const ManageUserPage = props => {
         <div className="remove-user">
           <Button
             buttonType="remove"
-            onClick={() =>
-              props.dispatch(showModal({ component: 'RemoveUser', props }))
-            }
+            onClick={() => showModal({ component: 'RemoveUser', props })}
           >
             Remove User
           </Button>
@@ -72,7 +75,7 @@ const ManageUserPage = props => {
 };
 
 export default connect(
-  state => ({}),
+  null,
   dispatch => {
     return {
       resendUserInvite: id => dispatch(resendUserInvite(id)),
@@ -80,7 +83,15 @@ export default connect(
         dispatch(removeUser(userId, permissionId)),
       flashMessage: (message, options) =>
         dispatch(flashMessage(message, options)),
-      dispatch,
+      showModal: attr => dispatch(showModal(attr)),
     };
   }
 )(ManageUserPage);
+
+ManageUserPage.propTypes = {
+  location: PropTypes.oneOfType([object]),
+  resendUserInvite: PropTypes.func,
+  flashMessage: PropTypes.func,
+  history: PropTypes.oneOfType([object]),
+  showModal: PropTypes.func,
+};

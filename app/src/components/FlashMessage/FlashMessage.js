@@ -61,3 +61,7 @@ export default connect(state => {
     flash: getLatestMessage(state),
   };
 })(FlashMessage);
+
+FlashMessage.propTypes = {
+  flash: PropTypes.oneOfType([PropTypes.object]),
+};

@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import PropTypes from 'prop-types';
 import { css, jsx } from '@emotion/core';
 import { Link } from 'react-router-dom';
 import FormModal from '../../FormModal/FormModal';
@@ -40,7 +42,7 @@ const SignIn = props => (
           password: '',
         }}
       >
-        {({ formSections, isValid, handleCancel, handleSubmit }) => (
+        {({ formSections, handleCancel, handleSubmit }) => (
           <>
             <p css={formTitle}>Sign In</p>
             <p>Enter your credentials to sign into the portal.</p>
@@ -73,3 +75,7 @@ const SignIn = props => (
 );
 
 export default SignIn;
+
+SignIn.propTypes = {
+  login: PropTypes.func,
+};

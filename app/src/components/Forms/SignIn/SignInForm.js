@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 
 import Form from '../../Form/Form';
@@ -36,3 +37,9 @@ const SignInForm = ({ initialValues, onSubmit, children }) => (
 );
 
 export default SignInForm;
+
+SignInForm.propTypes = {
+  initialValues: PropTypes.oneOfType([PropTypes.object]),
+  onSubmit: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.any]),
+};

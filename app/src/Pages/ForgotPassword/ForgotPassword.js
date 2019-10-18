@@ -1,4 +1,8 @@
-import React, { Component } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/no-access-state-in-setstate */
+// TODO Refactor using Form.js. Remove eslint-disable above.
+import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Paper from '@material-ui/core/Paper';
@@ -37,7 +41,7 @@ const styles = css`
   }
 `;
 
-class ForgotPassword extends Component {
+class ForgotPassword extends React.Component {
   state = {
     formValues: {
       email: '',
@@ -58,8 +62,7 @@ class ForgotPassword extends Component {
     this.setState({ isSubmitted: bool });
   }
 
-  clearState(e) {
-    // e.preventDefault();
+  clearState() {
     this.setState({
       formValues: {
         email: '',

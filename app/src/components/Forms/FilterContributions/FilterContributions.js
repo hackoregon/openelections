@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-
 import Form from '../../Form/Form';
 import SelectField from '../../Fields/SelectField';
 import DateRangeField from '../../Fields/DateRangeField';
@@ -58,3 +58,9 @@ const FilterContributionForm = ({ initialValues, onSubmit, children }) => (
 );
 
 export default FilterContributionForm;
+
+FilterContributionForm.propTypes = {
+  initialValues: PropTypes.oneOfType([PropTypes.object]),
+  onSubmit: PropTypes.func,
+  children: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+};

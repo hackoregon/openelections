@@ -1,5 +1,8 @@
+// TODO remove: import { ReactComponent as Logo } from '@hackoregon/component-library/assets/civic-logo-animated.svg';
+// To remove the error: pseudo class ":first-child" is potentially unsafe
 import * as React from 'react';
-import { Global, css } from '@emotion/core';
+import PropTypes from 'prop-types';
+import { Global, css } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { ReactComponent as Logo } from '@hackoregon/component-library/assets/civic-logo-animated.svg';
 import Routes from './Pages/routes';
@@ -17,17 +20,19 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadAuth().then(() => {
+    const { loadAuth } = this.props;
+    loadAuth().then(() => {
       this.setState({ isLoading: false });
     });
   }
 
   render() {
+    const { isLoading } = this.state;
     return (
       <div>
         <Global styles={styles} />
         <FlashMessage />
-        {this.state.isLoading ? (
+        {isLoading ? (
           <Logo
             width={150}
             style={{
@@ -55,3 +60,7 @@ export default connect(
     };
   }
 )(App);
+
+App.propTypes = {
+  loadAuth: PropTypes.func,
+};

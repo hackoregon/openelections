@@ -1,4 +1,4 @@
-// matches.js
+/* eslint-disable no-unused-vars */
 import { cloneDeep } from 'lodash';
 import createReducer from '../utils/createReducer';
 import { RESET_STATE } from './common';

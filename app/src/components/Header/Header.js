@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ const styles = css`
     flex: 1;
   }
 `;
-const HeaderComponent = props => (
+const HeaderComponent = () => (
   <header css={styles}>
     <NavLink to="/" className="header-icon">
       <h1>Open Elections</h1>

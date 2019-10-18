@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
@@ -162,4 +163,12 @@ export const ActivitySection = props => {
       <MessageBox {...props} />
     </div>
   );
+};
+
+activityList.propTypes = {
+  activities: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+  expenditureId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  contributionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  governmentId: PropTypes.number,
+  campaignId: PropTypes.number,
 };

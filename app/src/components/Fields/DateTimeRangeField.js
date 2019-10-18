@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes, { func } from 'prop-types';
+import PropTypes from 'prop-types';
 import {
-  makeStyles,
-  AppBar,
+  // makeStyles,
+  // AppBar,
   Tabs,
   Tab,
   Select,
@@ -89,6 +89,13 @@ export default function DateTimeRangeField(props) {
     </FormControl>
   );
 }
+
+DateTimeRangeField.propTypes = {
+  id: PropTypes.string,
+  isRequired: PropTypes.bool,
+  label: PropTypes.string,
+  formik: PropTypes.shape({}),
+};
 
 const popoverStyles = css`
   padding: 0;
@@ -185,6 +192,7 @@ function Popover(props) {
       },
     };
 
+    // eslint-disable-next-line default-case
     switch (elementId) {
       case 'from-date':
         range.from.date = value;
@@ -261,6 +269,15 @@ function Popover(props) {
     </div>
   );
 }
+
+Popover.propTypes = {
+  id: PropTypes.string,
+  isRequired: PropTypes.bool,
+  label: PropTypes.string,
+  formik: PropTypes.shape({}),
+  onDateRangeChange: PropTypes.func,
+  rangeValues: PropTypes.shape({}),
+};
 
 function extractTimeAndDate(ISODate) {
   const dateObj = new Date(ISODate);

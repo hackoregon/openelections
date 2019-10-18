@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MatchPicker } from '../../ContributorMatchPicker';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
@@ -30,3 +31,9 @@ export default connect(
     };
   }
 )(MatchPickerForm);
+
+MatchPickerForm.propTypes = {
+  currentMatchResults: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  currentMatchId: PropTypes.string,
+  contributionId: PropTypes.number,
+};

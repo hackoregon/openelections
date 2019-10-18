@@ -127,9 +127,10 @@ class AddressLookupField extends React.Component {
 }
 
 AddressLookupField.propTypes = {
+  isRequired: PropTypes.bool,
   id: PropTypes.string,
   label: PropTypes.string,
-  formik: PropTypes.shape({}),
+  formik: PropTypes.oneOfType([PropTypes.object]),
   updateFields: PropTypes.shape({
     street: PropTypes.string,
     city: PropTypes.string,

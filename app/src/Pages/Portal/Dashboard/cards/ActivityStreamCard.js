@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ActivityList } from '../../../../components/Forms/ActivityStream/ActivitySection';
 import { getCurrentGovernmentId } from '../../../../state/ducks/governments';
@@ -37,3 +38,10 @@ export default connect(
     getActivities: id => dispatch(getActivitiesByIdType(id)),
   })
 )(ActivityStreamCard);
+
+ActivityStreamCard.propTypes = {
+  governmentId: PropTypes.number,
+  campaignId: PropTypes.number,
+  isGovAdmin: PropTypes.bool,
+  getActivities: PropTypes.func,
+};

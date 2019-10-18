@@ -1,4 +1,6 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 import PageHoc from '../../../components/PageHoc/PageHoc';
 import Button from '../../../components/Button/Button';
 import Table from '../../../components/Table';
@@ -31,7 +33,23 @@ const columnInfo = [
   },
 ];
 
-const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
+const Action = ({ action, data }) => (
+  <WithAdminPermissions>
+    <Button
+      onClick={event => action.onClick(event, data)}
+      buttonType={action.buttonType}
+    >
+      {action.name}
+    </Button>
+  </WithAdminPermissions>
+);
+
+const ManagePortalPage = ({
+  isUserListLoading,
+  userList,
+  showModal,
+  history,
+}) => {
   const isLoading = isUserListLoading && !Array.isArray(userList);
   return (
     <PageHoc>
@@ -60,7 +78,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
               toolbarAction={
                 <Button
                   buttonType="primary"
-                  onClick={() => props.showModal({ component: 'AddUser' })}
+                  onClick={() => showModal({ component: 'AddUser' })}
                 >
                   Add New User
                 </Button>
@@ -71,7 +89,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                   name: 'Manage',
                   buttonType: 'manage',
                   onClick: (event, rowData) => {
-                    props.history.push({
+                    history.push({
                       pathname: '/settings/manage-user',
                       state: rowData,
                     });
@@ -79,16 +97,7 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
                 },
               ]}
               components={{
-                Action: props => (
-                  <WithAdminPermissions>
-                    <Button
-                      onClick={event => props.action.onClick(event, props.data)}
-                      buttonType={props.action.buttonType}
-                    >
-                      {props.action.name}
-                    </Button>
-                  </WithAdminPermissions>
-                ),
+                Action,
               }}
             />
           </div>
@@ -99,3 +108,15 @@ const ManagePortalPage = ({ isUserListLoading, userList, ...props }) => {
   );
 };
 export default ManagePortalPage;
+
+ManagePortalPage.propTypes = {
+  isUserListLoading: PropTypes.bool,
+  userList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  history: PropTypes.oneOfType([PropTypes.object]),
+  showModal: PropTypes.func,
+};
+
+Action.propTypes = {
+  data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  action: PropTypes.oneOfType([PropTypes.object]),
+};

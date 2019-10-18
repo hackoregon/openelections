@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { css, jsx } from '@emotion/core';
-import { NavLink } from 'react-router-dom';
 import FormModal from '../../FormModal/FormModal';
 import Button from '../../Button/Button';
 import ResetPasswordForm from './ResetPasswordForm';
@@ -66,3 +66,8 @@ const ResetPassword = props => (
 );
 
 export default ResetPassword;
+
+ResetPassword.propTypes = {
+  updatePassword: PropTypes.func,
+  submitted: PropTypes.bool,
+};

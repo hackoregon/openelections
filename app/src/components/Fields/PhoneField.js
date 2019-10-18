@@ -52,6 +52,10 @@ export default function PhoneField({ id, label, formik }) {
   );
 }
 
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+};
+
 PhoneField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,

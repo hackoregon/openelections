@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import React from "react";
+import PropTypes from 'prop-types';
 import ModalMaterial from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
@@ -28,10 +29,11 @@ const errorStyle = css`
 `;
 
 const Modal = props => {
-  const handleClose = x => props.clearModal();
-  const currentModalOptions = ModalOptions[props.getModalState.currentModal];
+  const { getModalState } = props;
+  const handleClose = () => props.clearModal();
+  const currentModalOptions = ModalOptions[getModalState.currentModal];
   const ModalContent = () =>
-    React.createElement(currentModalOptions, props.getModalState._props);
+    React.createElement(currentModalOptions, getModalState._props);
   const ErrorMessage = () => (
     <div css={errorStyle}>
       <br />
@@ -43,8 +45,8 @@ const Modal = props => {
   return (
     <ModalMaterial
       style={{ overflowY: 'scroll' }}
-      aria-label={`${props.getModalState.currentModal} modal`}
-      open={props.getModalState.isActive}
+      aria-label={`${getModalState.currentModal} modal`}
+      open={getModalState.isActive}
       onClose={() => handleClose()}
     >
       <div>
@@ -65,3 +67,8 @@ const Modal = props => {
   );
 };
 export default Modal;
+
+Modal.propTypes = {
+  getModalState: PropTypes.oneOfType([PropTypes.object]),
+  clearModal: PropTypes.func,
+};

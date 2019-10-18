@@ -20,6 +20,7 @@ const PasswordField = ({ id, label, formik, isRequired }) => (
 
 PasswordField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
 };

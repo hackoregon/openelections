@@ -1,8 +1,8 @@
 import { css } from '@emotion/core';
 
 // Found at: https://jsfiddle.net/subodhghulaxe/t568u/
-function convertHex(hex, opacity) {
-  hex = hex.replace('#', '');
+function convertHex(hexParam, opacity) {
+  let hex = hexParam.replace('#', '');
   if (hex.length === 3) {
     hex = hex.split().reduce((a, b) => a + b + b, '');
   }
@@ -14,9 +14,9 @@ function convertHex(hex, opacity) {
   return `rgba(${r},${g},${b},${opacity / 100})`;
 }
 
-export default (radius, color) => {
-  radius = radius || 5;
-  color = color || '#ffffff';
+export default (radiusParam, colorParam) => {
+  const radius = radiusParam || 5;
+  const color = colorParam || '#ffffff';
 
   return css`
     &,

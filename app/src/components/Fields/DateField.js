@@ -26,6 +26,8 @@ const DateField = props => {
 };
 
 DateField.propTypes = {
+  isRequired: PropTypes.bool,
+  onChange: PropTypes.func,
   id: PropTypes.string,
   label: PropTypes.string,
   formik: PropTypes.shape({}),

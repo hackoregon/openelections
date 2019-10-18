@@ -1,4 +1,6 @@
-import * as React from 'react';
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import PropTypes from 'prop-types';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -12,12 +14,12 @@ const styles = css`
   }
 `;
 
-const LinksCard = props => {
+const LinksCard = ({ links }) => {
   return (
     <div css={styles}>
       <h3>Quick Links</h3>
       <ul>
-        {props.links.map((link, key) => (
+        {links.map((link, key) => (
           <li key={key}>
             <NavLink to={link.path}>{link.label}</NavLink>
           </li>
@@ -27,3 +29,7 @@ const LinksCard = props => {
   );
 };
 export default LinksCard;
+
+LinksCard.propTypes = {
+  links: PropTypes.oneOfType([PropTypes.array]),
+};

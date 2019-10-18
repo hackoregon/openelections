@@ -40,6 +40,10 @@ export default function EmailField({ id, label, formik }) {
   );
 }
 
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+};
+
 EmailField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string,

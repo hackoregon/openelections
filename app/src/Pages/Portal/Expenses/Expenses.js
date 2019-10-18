@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import AddExpense from './AddExpense/AddExpense';
 import ExpensesDetail from './ExpensesDetail/ExpensesDetail';
@@ -21,3 +22,7 @@ const Expenses = props => {
   );
 };
 export default Expenses;
+
+Expenses.propTypes = {
+  match: PropTypes.oneOfType([PropTypes.object]),
+};

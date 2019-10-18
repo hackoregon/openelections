@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
@@ -55,4 +56,14 @@ export const UpdateForgottenPasswordForm = props => {
       </div>
     </form>
   );
+};
+
+UpdateForgottenPasswordForm.propTypes = {
+  values: PropTypes.oneOfType([PropTypes.object]),
+  errors: PropTypes.oneOfType([PropTypes.object]),
+  touched: PropTypes.bool,
+  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func,
+  isValid: PropTypes.bool,
+  handleBlur: PropTypes.func,
 };

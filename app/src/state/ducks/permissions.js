@@ -1,4 +1,4 @@
-// permissions.js
+/* eslint-disable no-unused-vars */
 import createReducer from '../utils/createReducer';
 import { ADD_ENTITIES, resetState, RESET_STATE } from './common';
 import createActionTypes from '../utils/createActionTypes';
@@ -7,7 +7,6 @@ import action from '../utils/action';
 export const STATE_KEY = 'permissions';
 
 // Action Types
-
 export const actionTypes = {
   REMOVE_PERMISSION: createActionTypes(STATE_KEY, 'REMOVE_PERMISSION'),
 };

@@ -31,6 +31,7 @@ const TextField = ({
 
 TextField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,

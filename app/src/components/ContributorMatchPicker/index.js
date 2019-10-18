@@ -3,12 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { css, jsx } from '@emotion/core'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import NoMatchIcon from '@material-ui/icons/ErrorOutlineSharp';
 import MatchIcon from '@material-ui/icons/CheckCircleOutlineSharp';
 import { Link } from 'react-router-dom';
-import { isThisMinute } from 'date-fns';
 import Button from '../Button/Button';
 import {
   sectionStyles,
@@ -37,7 +36,6 @@ const Header = props => {
     contributorMatches,
     currentMatchId,
     showModal,
-    form,
     contributionId,
   } = props;
   let matchStrength = 'none';
@@ -135,7 +133,7 @@ class contributorMatchPicker extends React.Component {
     }));
   }
 
-  handleSubmit(e) {
+  handleSubmit() {
     this.props.updateMatchForContribution({
       contributionId: this.props.contributionId,
       matchId: this.state.pages[this.state.currentPage].id,
@@ -149,8 +147,6 @@ class contributorMatchPicker extends React.Component {
     const { totalPages, currentPage, pages } = this.state;
     const page = !isEmpty(pages) ? pages[currentPage] : [{}];
     const {
-      id,
-      bestMatch,
       matchStrength,
       selected,
       firstName,
@@ -288,6 +284,8 @@ export const MatchPicker = connect(
 )(contributorMatchPicker);
 
 Header.propTypes = {
+  currentMatchId: PropTypes.string,
+  contributorMatches: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   showModal: PropTypes.func,
   contributionId: PropTypes.number,
 };

@@ -27,8 +27,11 @@ const TimeField = props => {
 
 TimeField.propTypes = {
   id: PropTypes.string,
+  isRequired: PropTypes.bool,
   label: PropTypes.string,
   formik: PropTypes.shape({}),
+  onChange: PropTypes.func,
+  picker: PropTypes.bool,
 };
 
 export default TimeField;

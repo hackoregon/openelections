@@ -1,9 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
@@ -264,3 +263,17 @@ export default connect(
     };
   }
 )(ContributionsTable);
+
+ContributionsTable.propTypes = {
+  getContributions: PropTypes.func,
+  filterOptions: PropTypes.oneOfType([PropTypes.object]),
+  updateFilter: PropTypes.func,
+  isListLoading: PropTypes.bool,
+  contributionList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  history: PropTypes.oneOfType([PropTypes.object]),
+  total: PropTypes.number,
+  govId: PropTypes.number,
+  userId: PropTypes.number,
+  campaignId: PropTypes.number,
+  isGovAdmin: PropTypes.bool,
+};

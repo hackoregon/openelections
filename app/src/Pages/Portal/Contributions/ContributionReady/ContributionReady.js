@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
@@ -22,9 +23,10 @@ class ContributionReadyPage extends React.Component {
 }
 
 ContributionReadyPage.propTypes = {
+  history: PropTypes.object,
   match: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     }),
   }),
 };

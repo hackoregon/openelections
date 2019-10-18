@@ -1,6 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+/** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import Modal from '../../components/Modal/index';
 import DashboardPage from './Dashboard/Dashboard';
@@ -52,7 +53,7 @@ const styles = css`
   }
 `;
 
-const Portal = props => {
+const Portal = () => {
   return (
     <PageHoc>
       <div css={styles} className="portal-wrapper">

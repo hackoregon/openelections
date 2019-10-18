@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import React from "react";
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -23,10 +24,9 @@ const Navigation = ({ isLoggedIn, logOut }) => {
   };
   return (
     <nav css={styles}>
-      {/* <NavLink to="/sandbox">Sandbox</NavLink> */}
-      {/* <NavLink to="/portal">Portal</NavLink> */}
       {!isLoggedIn && <NavLink to="/sign-in">Sign in</NavLink>}
       {isLoggedIn && (
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a href="" onClick={logOutClick}>
           Log out
         </a>
@@ -36,3 +36,8 @@ const Navigation = ({ isLoggedIn, logOut }) => {
 };
 
 export default Navigation;
+
+Navigation.propTypes = {
+  isLoggedIn: PropTypes.bool,
+  logOut: PropTypes.func,
+};

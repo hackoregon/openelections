@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { css, jsx } from '@emotion/core';
 import FormModal from '../../FormModal/FormModal';
 import SignUpForm from './SignUpForm';
@@ -60,3 +61,8 @@ const SignUp = ({ code, redeemInvite }) => (
 );
 
 export default SignUp;
+
+SignUp.propTypes = {
+  code: PropTypes.string,
+  redeemInvite: PropTypes.func,
+};

@@ -1,4 +1,7 @@
+/* eslint-disable react/jsx-no-bind */
+// TODO Refactor bind. Remove above.
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
@@ -50,4 +53,15 @@ export const ForgotPasswordForm = props => {
       </div>
     </form>
   );
+};
+
+ForgotPasswordForm.propTypes = {
+  values: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf]),
+  handleStateChange: PropTypes.func,
+  errors: PropTypes.oneOfType([PropTypes.object]),
+  touched: PropTypes.bool,
+  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func,
+  isValid: PropTypes.bool,
+  handleBlur: PropTypes.func,
 };

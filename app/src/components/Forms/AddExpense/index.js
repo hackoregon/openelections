@@ -1,6 +1,5 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { connect } from 'react-redux';
 import { createExpenditure } from '../../../state/ducks/expenditures';
 import {

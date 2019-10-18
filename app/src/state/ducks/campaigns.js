@@ -1,4 +1,4 @@
-// campaigns.js
+/* eslint-disable no-unused-vars */
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { flashMessage } from 'redux-flash';

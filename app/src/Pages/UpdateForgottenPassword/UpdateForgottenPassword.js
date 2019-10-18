@@ -1,3 +1,10 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/no-access-state-in-setstate */
+// TODO Refactor using Form.js. Remove eslint-disable above.
 import React, { Component } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -95,8 +102,7 @@ class UpdateForgottenPassword extends Component {
     this.setState({ isSubmitted: bool });
   }
 
-  clearState(e) {
-    // e.preventDefault();
+  clearState() {
     this.setState({
       formValues: {
         newPassword: '',
