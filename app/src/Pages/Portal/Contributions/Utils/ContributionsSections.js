@@ -210,7 +210,7 @@ export const ContributorSection = ({
 }) => (
   <div>
     {isPerson && isGovAdmin ? (
-      <div>
+      <div style={{ pointerEvents: 'all', opacity: '1' }}>
         <MatchPickerHeader
           form="MatchPickerForm"
           contributionId={contributionId}
