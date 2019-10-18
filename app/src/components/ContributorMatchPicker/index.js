@@ -284,7 +284,7 @@ export const MatchPicker = connect(
 )(contributorMatchPicker);
 
 Header.propTypes = {
-  currentMatchId: PropTypes.number,
+  currentMatchId: PropTypes.string,
   contributorMatches: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   showModal: PropTypes.func,
   contributionId: PropTypes.number,

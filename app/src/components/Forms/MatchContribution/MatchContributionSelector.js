@@ -224,21 +224,25 @@ export default connect(
 )(MatchContributionSelector);
 
 MatchContributionSelector.propTypes = {
-  id: PropTypes.string,
+  // TODO lock to string or number
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   formik: PropTypes.shape({}),
   options: PropTypes.shape({}),
   updateContribution: PropTypes.func,
   showModal: PropTypes.func,
   modalIsActive: PropTypes.bool,
-  donationAmount: PropTypes.number,
+  // TODO lock to string or number
+  donationAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   showMatchOption: PropTypes.string,
 };
 
 SplitButton.propTypes = {
-  id: PropTypes.string,
+  // TODO lock to string or number
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   updateContribution: PropTypes.func,
   showModal: PropTypes.func,
   modalIsActive: PropTypes.bool,
-  donationAmount: PropTypes.number,
+  // TODO lock to string or number
+  donationAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   showMatchOption: PropTypes.string,
 };

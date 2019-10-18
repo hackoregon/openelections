@@ -98,6 +98,6 @@ export default PreviousDonationsTable;
 PreviousDonationsTable.propTypes = {
   history: PropTypes.oneOfType([PropTypes.object]),
   pastContributions: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  matchId: PropTypes.number, // eslint-disable-line react/forbid-prop-types
+  matchId: PropTypes.string,
   currentId: PropTypes.number,
 };
