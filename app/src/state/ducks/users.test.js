@@ -339,6 +339,7 @@ describe('Side Effects', () => {
       { type: actionTypes.INVITE_USER.REQUEST },
       { type: actionTypes.INVITE_USER.SUCCESS },
       { type: actionTypes.GET_GOVERNMENT_USERS.REQUEST },
+      // { type: '@@redux-flash/FLASH' },
     ];
     const store = mockStore({});
 
@@ -354,7 +355,10 @@ describe('Side Effects', () => {
         )
       )
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
+        expect(actions[2]).toEqual(expectedActions[2]);
       });
   });
 
@@ -402,7 +406,10 @@ describe('Side Effects', () => {
         )
       )
       .then(() => {
-        expect(store.getActions()).toEqual(expectedActions);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(expectedActions[0]);
+        expect(actions[1]).toEqual(expectedActions[1]);
+        expect(actions[2]).toEqual(expectedActions[2]);
       });
   });
 
