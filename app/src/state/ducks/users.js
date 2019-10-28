@@ -174,6 +174,9 @@ export function inviteUser(
         role
           ? dispatch(getCampaignUsers(campaignOrGovernmentId))
           : dispatch(getGovernmentUsers(campaignOrGovernmentId));
+        dispatch(
+          flashMessage('User Invited', { props: { variant: 'success' } })
+        );
       } else {
         dispatch(actionCreators.inviteUser.failure());
       }

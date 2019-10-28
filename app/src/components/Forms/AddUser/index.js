@@ -7,6 +7,8 @@ import Button from '../../Button/Button';
 import AddUserForm from './AddUserForm';
 import { clearModal } from '../../../state/ducks/modal';
 import { inviteUser } from '../../../state/ducks/users';
+import { isGovAdmin } from '../../../state/ducks/auth';
+import { UserRoleEnum } from '../../../api/api';
 /** @jsx jsx */
 
 const formTitle = css`
@@ -22,16 +24,14 @@ const leftAlign = css`
 `;
 
 const USER_ROLES = {
-  Admin: 'campaign_admin',
-  Staff: 'campaign_staff',
+  Admin: UserRoleEnum.CAMPAIGN_ADMIN,
+  Staff: UserRoleEnum.CAMPAIGN_STAFF,
 };
-// Todo: get from API
-
 const AddUser = props => (
   <FormModal>
     <AddUserForm
       onSubmit={({ email, firstName, lastName, userRole }) => {
-        const role = USER_ROLES[userRole];
+        const role = props.isGovAdmin ? false : USER_ROLES[userRole];
         props.inviteUser(email, firstName, lastName, props.orgId, role);
         props.clearModal();
       }}
@@ -50,7 +50,9 @@ const AddUser = props => (
       }) => (
         <React.Fragment>
           <p css={formTitle}>Add a New User</p>
-          <div css={leftAlign}>{formSections.addUserRole}</div>
+          <div css={leftAlign}>
+            {props.isGovAdmin || formSections.addUserRole}
+          </div>
           <p>
             Enter the user's information and we will send them an email with
             instructions to join your portal.
@@ -83,6 +85,7 @@ const AddUser = props => (
 // export default AddUser;
 export default connect(
   state => ({
+    isGovAdmin: isGovAdmin(state),
     orgId:
       state.campaigns.currentCampaignId ||
       state.governments.currentGovernmentId,
@@ -102,4 +105,5 @@ AddUser.propTypes = {
   inviteUser: PropTypes.func,
   clearModal: PropTypes.func,
   orgId: PropTypes.number,
+  isGovAdmin: PropTypes.bool,
 };
