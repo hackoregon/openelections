@@ -43,20 +43,20 @@ const MatchContribution = ({
     setMatchAmount(value);
     return value;
   }
-
-  // function submitOnEnter(e) {
-  //   if (e.code === 'Enter') {
-  //     clearModal();
-  //     updateContribution({
-  //       id,
-  //       status: ContributionStatusEnum.PROCESSED,
-  //       matchAmount: parseInt(matchAmount),
-  //       compliant: true,
-  //     });
-  //   }
-  // }
-
-  // document.addEventListener('keydown', submitOnEnter);
+  function handleSubmit() {
+    clearModal();
+    updateContribution({
+      id,
+      status: ContributionStatusEnum.PROCESSED,
+      matchAmount: parseFloat(matchAmount),
+      compliant: true,
+    });
+  }
+  function handleChangeAndEnter(event) {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  }
 
   return (
     <FormModal>
@@ -64,6 +64,9 @@ const MatchContribution = ({
         <h1 css={matchContributionTitle}>Match Contribution</h1>
         <p>Enter Amount of Match</p>
         <NumberFormat
+          autoFocus
+          onFocus={event => event.target.select()}
+          onKeyPress={handleChangeAndEnter}
           style={{ height: '50px', width: '100%', fontSize: '24px' }}
           required={isRequired}
           id="matchAmount"
@@ -84,15 +87,7 @@ const MatchContribution = ({
           </Button>
           <Button
             buttonType="disabledModalButton"
-            onClick={() => {
-              clearModal();
-              updateContribution({
-                id,
-                status: ContributionStatusEnum.PROCESSED,
-                matchAmount: parseInt(matchAmount),
-                compliant: true,
-              });
-            }}
+            onClick={() => handleSubmit()}
           >
             Submit
           </Button>
