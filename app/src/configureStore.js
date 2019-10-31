@@ -26,6 +26,9 @@ import matches, { STATE_KEY as MATCHES_STATE_KEY } from './state/ducks/matches';
 import pastContributions, {
   STATE_KEY as PAST_CONTRIBUTIONS_STATE_KEY,
 } from './state/ducks/pastContributions';
+import publicData, {
+  STATE_KEY as PUBLIC_DATA_STATE_KEY,
+} from './state/ducks/publicData';
 import summary, { STATE_KEY as SUMMARY_STATE_KEY } from './state/ducks/summary';
 import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
@@ -56,6 +59,7 @@ export default function configureStore(history) {
       [EXPENDITURES_STATE_KEY]: expenditures,
       [SUMMARY_STATE_KEY]: summary,
       [PAST_CONTRIBUTIONS_STATE_KEY]: pastContributions,
+      [PUBLIC_DATA_STATE_KEY]: publicData,
     }),
     composeEnhancers(
       applyMiddleware(
