@@ -5,8 +5,8 @@ import {
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType, convertToCsv, convertToGeoJson,
-    getContributionsByGovernmentIdAsync, IContributionGovSummary,
+    ContributorType, convertToCsv,
+    getContributionsByGovernmentIdAsync, getContributionsGeoJsonAsync, IContributionGovSummary, IContributionsGeoJson,
     IContributionSummary, IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
@@ -192,9 +192,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             perPage: options.perPage || 100
         });
 
-        if (contributionAttrs.format === 'geoJson') {
-            contributions.geoJson = convertToGeoJson(contributions);
-        } else if (contributionAttrs.format === 'csv') {
+        if (contributionAttrs.format === 'csv') {
             contributions.csv = convertToCsv(contributions);
         }
 
@@ -598,4 +596,13 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
         return true;
     }
     return false;
+}
+
+export interface IGetContributionGeoJsonOptions {
+    from?: string;
+    to?: string;
+}
+
+export async function getContributionsGeoAsync(attrs: IGetContributionGeoJsonOptions): Promise<IContributionsGeoJson> {
+    return getContributionsGeoJsonAsync(attrs);
 }

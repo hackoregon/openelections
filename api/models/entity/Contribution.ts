@@ -10,6 +10,7 @@ import {
     UpdateDateColumn,
     getConnection,
     Between,
+    In,
     LessThanOrEqual,
     MoreThanOrEqual
 } from 'typeorm';
@@ -17,7 +18,7 @@ import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
 import { Campaign } from './Campaign';
 import { Activity } from './Activity';
-import { IGetContributionOptions } from '../../services/contributionService';
+import { IGetContributionGeoJsonOptions, IGetContributionOptions } from '../../services/contributionService';
 import { removeUndefined } from './helpers';
 import { MatchAddressType } from '../../services/dataScienceService';
 import { Parser } from 'json2csv';
@@ -688,16 +689,49 @@ export async function getContributionsByGovernmentIdAsync(
             total
         };
     } catch (err) {
-        console.log(err)
+        console.log(err);
         throw new Error('Error executing get contributions query');
     }
 }
 
-export function convertToGeoJson(contributions: any): IContributionsGeoJson {
-    const data  = contributions.data.map((contribution: any): IContributionGeoJson => {
-            return {
+export async function getContributionsGeoJsonAsync(
+    options?: IGetContributionGeoJsonOptions
+): Promise<IContributionsGeoJson> {
+    try {
+        const contributionRepository = getConnection('default').getRepository('Contribution');
+        let from;
+        let to;
+        if (options) {
+            from = options.from;
+            to = options.to;
+        }
+
+        const where = {
+            status: In([ContributionStatus.PROCESSED, ContributionStatus.SUBMITTED]),
+            date:
+                from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
+        };
+        const query: any = {
+            select: ['date', 'type', 'matchAmount', 'oaeType', 'amount', 'city', 'state', 'zip', 'oaeType', 'name', 'firstName', 'lastName', 'addressPoint'],
+            relations: ['campaign', 'government'],
+            where,
+            order: {
+                date: 'DESC'
+            },
+            join: {
+                alias: 'contribution',
+                leftJoinAndSelect: {
+                    government: 'contribution.government',
+                    campaign: 'contribution.campaign'
+                }
+            }
+        };
+
+        const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((contribution: Contribution): any => {
+            const json = {
                 type: 'Feature',
-                properties: {
+                    properties: {
+                    type: contribution.type,
                     city: contribution.city,
                     state: contribution.state,
                     zip: contribution.zip,
@@ -706,21 +740,32 @@ export function convertToGeoJson(contributions: any): IContributionsGeoJson {
                     contributionType: contribution.type,
                     contributionSubType: contribution.subType,
                     date: contribution.date.toISOString(),
+                    matchAmount: contribution.matchAmount,
+                    oaeType: contribution.oaeType,
                     contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
-                    // @ts-ignore
-                    campaign: contribution.campaign,
+                    campaignId: contribution.campaign.id,
+                    campaignName: contribution.campaign.name,
+                    officeSought: contribution.campaign.officeSought,
                 },
                 geometry: {
                     type: 'Point',
-                    // @ts-ignore
-                    coordinates: contribution.coordinates
+                        // @ts-ignore
+                        coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined
                 }
             };
+
+            return json;
         });
-    return {
+
+        return {
             type: 'FeatureCollection',
-            features: data,
+            features: contributions,
         };
+
+    } catch (err) {
+        console.log(err);
+        throw new Error('Error executing get contributions geojson query');
+    }
 }
 
 export function convertToCsv(contributions: any): string {

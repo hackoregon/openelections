@@ -5,7 +5,7 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType,
+    ContributorType, getContributionsGeoJsonAsync,
     getContributionsSummaryByStatusAsync
 } from '../../models/entity/Contribution';
 import {newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll} from '../factories';
@@ -197,6 +197,25 @@ describe('Contribution', () => {
         expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0]);
         expect(summary.map(item => item.status)).to.deep.equal(['Submitted', 'Processed']);
         expect(summary.map(item => item.total)).to.deep.equal([1, 1]);
+    });
+
+    it('getContributionsGeoJsonAsync testme', async () => {
+        const [contr1, contr2, contr3, contr4] = await Promise.all([
+            newContributionAsync(campaign, government),
+            newContributionAsync(campaign, government),
+            newContributionAsync(campaign, government),
+            newContributionAsync(campaign, government),
+        ]);
+        await repository.update(contr2.id, {status: ContributionStatus.PROCESSED});
+        await repository.update(contr3.id, {status: ContributionStatus.SUBMITTED});
+        await repository.update(contr4.id, {status: ContributionStatus.ARCHIVED});
+        const contributions = await getContributionsGeoJsonAsync();
+        expect(contributions.type).to.equal('FeatureCollection');
+        expect(contributions.features.length).to.equal(2);
+        expect(contributions.features[0].type).to.equal('Feature');
+        expect(Object.keys(contributions.features[0].properties)).to.deep.equal([
+            'type', 'city', 'state', 'zip', 'amount', 'contributorType', 'contributionType', 'contributionSubType', 'date', 'matchAmount', 'oaeType', 'contributorName', 'campaignId', 'campaignName', 'officeSought'
+        ]);
     });
 });
 

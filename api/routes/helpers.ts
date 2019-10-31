@@ -5,6 +5,7 @@ import { FileArray } from 'express-fileupload';
 export interface IRequest extends Request {
     currentUser?: IToken;
     files?: FileArray;
+    query: any;
     params: {
         id?: string;
     };
