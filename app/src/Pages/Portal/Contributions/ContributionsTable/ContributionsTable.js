@@ -11,6 +11,7 @@ import {
   getContributions,
   getContributionsList,
   getFilterOptions,
+  updateContribution,
   updateFilter,
 } from '../../../../state/ducks/contributions';
 import {
@@ -114,6 +115,7 @@ class ContributionsTable extends React.Component {
       getContributions,
       filterOptions,
       updateFilter,
+      updateContribution,
       isListLoading,
       contributionList,
       history,
@@ -155,6 +157,7 @@ class ContributionsTable extends React.Component {
     }
 
     function fetchList() {
+      updateFilter({ perPage: 2000 });
       getContributions({
         governmentId: govId,
         currentUserId: userId,
@@ -171,6 +174,26 @@ class ContributionsTable extends React.Component {
       const perPage = Number(e.target.value);
       updateFilter({ perPage });
       fetchList();
+    }
+
+    const wait = ms =>
+      new Promise(resolve =>
+        setTimeout(() => {
+          resolve(true);
+        }, ms)
+      );
+
+    async function updateAll() {
+      const sorted = contributionList.sort((a, b) => a.id - b.id);
+      sorted.forEach(async c => {
+        console.log(`Updating contribution ${c.id}`);
+        updateContribution({
+          id: c.id,
+          status: 'Submitted',
+        });
+        // Throttle requests
+        await wait(400);
+      });
     }
 
     return (
@@ -193,13 +216,20 @@ class ContributionsTable extends React.Component {
           >
             Export
           </Button>
+          <Button
+            onClick={() => {
+              updateAll();
+            }}
+          >
+            Submit All
+          </Button>
         </div>
         <Table
           isLoading={isLoading}
           title={`${total} Contributions`}
           columns={columns(isGovAdmin)}
           options={{
-            pageSize: filterOptions.perPage || 50,
+            pageSize: filterOptions.perPage || 2000,
             showTitle: false,
           }}
           actions={actions}
@@ -260,6 +290,7 @@ export default connect(
     return {
       getContributions: data => dispatch(getContributions(data, true)),
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
+      updateContribution: data => dispatch(updateContribution(data)),
     };
   }
 )(ContributionsTable);
@@ -268,6 +299,7 @@ ContributionsTable.propTypes = {
   getContributions: PropTypes.func,
   filterOptions: PropTypes.oneOfType([PropTypes.object]),
   updateFilter: PropTypes.func,
+  updateContribution: PropTypes.func,
   isListLoading: PropTypes.bool,
   contributionList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   history: PropTypes.oneOfType([PropTypes.object]),
