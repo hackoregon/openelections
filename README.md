@@ -11,6 +11,10 @@ Check out our [wiki](https://github.com/hackoregon/openelections/wiki) for infor
 You'll need docker to get going. Setup docker by visiting: https://docs.docker.com/install/
 
 ### Commands
+If you're starting from scratch, you'll need to create a .env file
+```bash
+    touch .env
+```
 
 Pull all the docker images by running: 
 
