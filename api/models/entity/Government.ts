@@ -13,6 +13,7 @@ import { Activity } from './Activity';
 import { Contribution } from './Contribution';
 import { Expenditure } from './Expenditure';
 
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity()
 export class Government {
 

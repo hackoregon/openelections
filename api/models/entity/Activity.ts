@@ -28,6 +28,7 @@ export enum ActivityTypeEnum {
     COMMENT_EXP = 'commentexp',
 }
 
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity()
 export class Activity {
     @PrimaryGeneratedColumn()

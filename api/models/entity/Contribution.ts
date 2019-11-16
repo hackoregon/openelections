@@ -105,7 +105,7 @@ export enum PaymentMethod {
     CREDIT_CARD_PAPER = 'credit_card_paper',
     ETF = 'electronic_funds_transfer'
 }
-
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'contributions' })
 export class Contribution {
     @PrimaryGeneratedColumn()
@@ -251,7 +251,9 @@ export class Contribution {
     @Column({ nullable: true })
     compliant?: boolean;
 
-    @Column({ nullable: true })
+    @Column({
+        nullable: true
+    })
     matchAmount?: number;
 
     @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType })

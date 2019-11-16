@@ -7,6 +7,8 @@ import {
 @Entity({
     name: 'addresses'
 })
+
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 export class Address {
 
     @Column({

@@ -41,6 +41,7 @@ export enum UserStatus {
     INACTIVE = 'inactive',
 }
 
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({name: 'users'})
 export class User {
 

@@ -84,7 +84,7 @@ export enum PurposeType {
     UTILITIES = 'utilities'
 }
 
-
+// Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'expenditures' })
 export class Expenditure {
     @PrimaryGeneratedColumn()
