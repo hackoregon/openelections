@@ -919,7 +919,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                       padding-top: 0px;
                       padding-bottom: 20px; line-height: 1.5;"
                     >
-                      If you would like more information about the transaction(s), please go to your campaign portal <a href="${host}/dashboard">campaign portal</a>.
+                      If you would like more information about the transaction(s), please go to your <a href="${host}/dashboard">campaign portal</a>.
                     </td>
                   </tr>
                   <tr>
