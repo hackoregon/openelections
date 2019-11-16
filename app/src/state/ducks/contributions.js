@@ -422,6 +422,11 @@ export const getCurrentContribution = state => {
     : false;
 };
 
+export const getContributionCampaignName = state => {
+  const contribution = getCurrentContribution(state);
+  return contribution ? contribution.campaign.name : null;
+};
+
 export const getFilterOptions = state => {
   const filter = state.contributions.listFilterOptions;
   const sort = state.contributions.listFilterOptions.sort || {};

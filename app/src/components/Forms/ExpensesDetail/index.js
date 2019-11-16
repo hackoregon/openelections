@@ -7,10 +7,10 @@ import {
   updateExpenditure,
   getExpenditureById,
   getCurrentExpenditure,
+  getExpenditureCampaignName,
 } from '../../../state/ducks/expenditures';
 import {
   getCurrentUserId,
-  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
@@ -183,16 +183,18 @@ class ExpensesDetail extends React.Component {
 }
 
 export default connect(
-  state => ({
-    currentExpenditure: getCurrentExpenditure(state),
-    currentUserId: getCurrentUserId(state),
-    isGovAdmin: isGovAdmin(state),
-    isCampAdmin: isCampAdmin(state),
-    isCampStaff: isCampStaff(state),
-    campaignName: getCurrentCampaignName(state),
-    isGovAdminAuthenticated: isGovAdminAuthenticated(state),
-    isAssumed: isAssumed(state),
-  }),
+  state => {
+    return {
+      currentExpenditure: getCurrentExpenditure(state),
+      currentUserId: getCurrentUserId(state),
+      isGovAdmin: isGovAdmin(state),
+      isCampAdmin: isCampAdmin(state),
+      isCampStaff: isCampStaff(state),
+      campaignName: getExpenditureCampaignName(state),
+      isGovAdminAuthenticated: isGovAdminAuthenticated(state),
+      isAssumed: isAssumed(state),
+    };
+  },
   dispatch => ({
     push: url => dispatch(push(url)),
     flashMessage: (message, options) =>

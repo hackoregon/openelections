@@ -461,6 +461,10 @@ export class Contribution {
                     json[key] = this[key];
                 }
             );
+            json.campaign = {
+                name: this.campaign.name,
+                id: this.campaign.id
+            };
             return json as IContributionGovSummary;
         }
         contributionSummaryFields.forEach(

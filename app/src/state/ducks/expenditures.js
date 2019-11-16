@@ -368,6 +368,11 @@ export const getCurrentExpenditure = state => {
     : false;
 };
 
+export const getExpenditureCampaignName = state => {
+  const expenditure = getCurrentExpenditure(state);
+  return expenditure ? expenditure.campaign.name : null;
+};
+
 export const getFilterOptions = state => {
   const filter = state.expenditures.listFilterOptions;
   const sort = state.expenditures.listFilterOptions.sort || {};

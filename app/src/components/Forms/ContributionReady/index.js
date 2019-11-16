@@ -8,10 +8,10 @@ import {
   updateContribution,
   getContributionById,
   getCurrentContribution,
+  getContributionCampaignName,
 } from '../../../state/ducks/contributions';
 import {
   getCurrentUserId,
-  getCurrentCampaignName,
   isGovAdmin,
   isCampAdmin,
   isCampStaff,
@@ -215,7 +215,7 @@ export default connect(
     isGovAdminAuthenticated: isGovAdminAuthenticated(state),
     isCampAdmin: isCampAdmin(state),
     isCampStaff: isCampStaff(state),
-    campaignName: getCurrentCampaignName(state),
+    campaignName: getContributionCampaignName(state),
     currentContribution: getCurrentContribution(state),
     pastContributions: state.pastContributions,
     isAssumed: isAssumed(state),
