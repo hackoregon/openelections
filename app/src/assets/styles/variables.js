@@ -3,6 +3,7 @@ export const OEFontFamily = "'Poppins', sans-serif;";
 export const accents = {
   purple: '#9013FE',
   lightGrey: 'rgba(0,0,0,0.15)',
+  green: '#23552c',
 };
 
 export const mediaSizes = {

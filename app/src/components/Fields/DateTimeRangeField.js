@@ -102,7 +102,7 @@ const popoverStyles = css`
   margin-top: -8px;
 
   .MuiTabs-indicator {
-    background-color: ${accents.purple};
+    background-color: ${accents.green};
   }
 
   .tab-content {

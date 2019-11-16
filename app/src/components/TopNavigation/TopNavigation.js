@@ -34,7 +34,6 @@ const styles = css`
     color: white;
     font-size: 28px;
     line-height: 28px;
-    text-transform: uppercase;
     margin-left: 15px;
   }
 `;

@@ -326,7 +326,7 @@ export function newUserEmailHtml(params: ISendNewUserInvitationEmailAttrs) {
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
+                  <b>Open & Accountable Elections Portland</b>
                 </td>
               </tr>
             </table>
@@ -453,7 +453,7 @@ export function existingUserInviteEmailHtml(params: ISendInvitationEmailAttrs) {
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
+                  <b>Open & Accountable Elections Portland</b>
                 </td>
               </tr>
             </table>
@@ -580,7 +580,7 @@ export function resendInvitiationEmailHtml(params: IResendInvitationEmailAttrs) 
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
+                  <b>Open & Accountable Elections Portland</b>
                 </td>
               </tr>
             </table>
@@ -708,7 +708,7 @@ export function passwordResetEmailHtml(params: ISendPasswordResetEmailAttrs) {
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
+                  <b>Open & Accountable Elections Portland</b>
                 </td>
               </tr>
             </table>
@@ -819,7 +819,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                   align="right"
                   style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
                 >
-                  <b>OPEN & ACCOUNTABLE ELECTIONS PORTLAND</b>
+                  <b>Open & Accountable Elections Portland</b>
                 </td>
               </tr>
             </table>

@@ -37,7 +37,7 @@ const styles = css`
 
         &.active {
           background: rgba(0, 0, 0, 0.05);
-          border-left-color: ${accents.purple};
+          border-left-color: ${accents.green};
         }
 
         &:hover {
