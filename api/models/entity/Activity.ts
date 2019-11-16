@@ -9,12 +9,12 @@ import {
     getConnection,
     Between
 } from 'typeorm';
-import { Government } from './Government';
-import { Campaign } from './Campaign';
-import { User } from './User';
-import { IsDefined, validate, ValidationError } from 'class-validator';
-import { Contribution } from './Contribution';
-import { Expenditure } from './Expenditure';
+import {Government} from './Government';
+import {Campaign} from './Campaign';
+import {User} from './User';
+import {IsDefined, validate, ValidationError} from 'class-validator';
+import {Contribution} from './Contribution';
+import {Expenditure} from './Expenditure';
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -54,19 +54,19 @@ export class Activity {
     })
     notify: boolean;
 
-    @ManyToOne(type => Government, government => government.activities, { eager: true })
+    @ManyToOne(type => Government, government => government.activities, {eager: true})
     government: Government;
 
-    @ManyToOne(type => Campaign, campaign => campaign.activities, { eager: true })
+    @ManyToOne(type => Campaign, campaign => campaign.activities, {eager: true})
     campaign: Campaign;
 
-    @ManyToOne(type => User, user => user.activities, { eager: true })
+    @ManyToOne(type => User, user => user.activities, {eager: true})
     user: User;
 
-    @ManyToOne(type => Contribution, contribution => contribution.activities, { eager: true })
+    @ManyToOne(type => Contribution, contribution => contribution.activities, {eager: true})
     contribution: Contribution;
 
-    @ManyToOne(type => Expenditure, expenditure => expenditure.activities, { eager: true })
+    @ManyToOne(type => Expenditure, expenditure => expenditure.activities, {eager: true})
     expenditure: Expenditure;
 
     public errors: ValidationError[];
@@ -99,7 +99,7 @@ export class Activity {
         if (!u) {
             const error = new ValidationError();
             error.property = 'userId';
-            error.constraints = { isDefined: 'userId should not be null or undefined' };
+            error.constraints = {isDefined: 'userId should not be null or undefined'};
             this.errors.push(error);
         }
     }
@@ -128,14 +128,14 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
-        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
+        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
         .getCount();
     const data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
-        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
+        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
@@ -155,14 +155,14 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
-        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
+        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
         .getCount();
     const data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
-        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
+        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
@@ -189,7 +189,9 @@ export async function getActivityByCampaignByTimeAsync(campaignId: number, from,
         .find({
             select: ['notes', 'activityId', 'activityType', 'createdAt'],
             where: {
-                campaignId,
+                campaign: {
+                    id: campaignId
+                },
                 createdAt: Between(from, to),
                 notify: true,
             },
@@ -225,12 +227,18 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
     const total = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
-        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
+            activityType1: ActivityTypeEnum.CONTRIBUTION,
+            activityType2: ActivityTypeEnum.COMMENT_CONTR
+        })
         .getCount();
     const data = (await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
-        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.CONTRIBUTION, activityType2: ActivityTypeEnum.COMMENT_CONTR})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
+            activityType1: ActivityTypeEnum.CONTRIBUTION,
+            activityType2: ActivityTypeEnum.COMMENT_CONTR
+        })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
@@ -248,7 +256,10 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
     const data = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
-        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
+            activityType1: ActivityTypeEnum.EXPENDITURE,
+            activityType2: ActivityTypeEnum.COMMENT_EXP
+        })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
@@ -256,7 +267,10 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
     const total = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
-        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', { activityType1: ActivityTypeEnum.EXPENDITURE, activityType2: ActivityTypeEnum.COMMENT_EXP})
+        .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
+            activityType1: ActivityTypeEnum.EXPENDITURE,
+            activityType2: ActivityTypeEnum.COMMENT_EXP
+        })
         .getCount();
     return {
         data,
