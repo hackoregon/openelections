@@ -386,7 +386,7 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
             await contributionRepository.save(contribution);
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.email} archived contribution ${contribution.id}.`,
+                notes: `${user.name()} archived contribution ${contribution.id}.`,
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,

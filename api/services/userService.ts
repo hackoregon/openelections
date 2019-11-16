@@ -65,7 +65,7 @@ export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs):
     user = await repository.save(user);
     await createActivityRecordAsync({
         currentUser: user,
-        notes: `${user.name} redeemed their invitation`,
+        notes: `${user.name()} redeemed their invitation`,
         activityType: ActivityTypeEnum.USER,
         activityId: user.id
     });
@@ -80,7 +80,7 @@ export async function generatePasswordResetAsync(email: string): Promise<string>
     await sendPasswordResetEmail({to: user.email, invitationCode: user.invitationCode});
     await createActivityRecordAsync({
         currentUser: user,
-        notes: `${user.name} was sent an email to reset their password`,
+        notes: `${user.name()} was sent an email to reset their password`,
         activityType: ActivityTypeEnum.USER,
         activityId: user.id
     });
@@ -97,7 +97,7 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
     user = await repository.save(user);
     await createActivityRecordAsync({
         currentUser: user,
-        notes: `${user.name} updated their password`,
+        notes: `${user.name()} updated their password`,
         activityType: ActivityTypeEnum.USER,
         activityId: user.id
     });
@@ -136,7 +136,7 @@ export async function updateUserPasswordAsync(userId: number, currentPassword, n
         await repository.save(user);
         await createActivityRecordAsync({
             currentUser: user,
-            notes: `${user.name} updated their password`,
+            notes: `${user.name()} updated their password`,
             activityType: ActivityTypeEnum.USER,
             activityId: user.id
         });
@@ -153,7 +153,7 @@ export async function resendInvitationAsync(userId: number): Promise<boolean> {
         await resendInvitationEmail({to: user.email, invitationCode: user.invitationCode});
         await createActivityRecordAsync({
             currentUser: user,
-            notes: `${user.name} was re-sent an invitation email`,
+            notes: `${user.name()} was re-sent an invitation email`,
             activityType: ActivityTypeEnum.PERMISSION,
             activityId: user.id
         });

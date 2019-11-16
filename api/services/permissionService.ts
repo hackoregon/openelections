@@ -129,7 +129,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
             });
             await createActivityRecordAsync({
                 currentUser: user,
-                notes: `${user.name} was sent an invitation email to ${user.email}`,
+                notes: `${user.name()} was sent an invitation email to ${user.email}`,
                 government: await campaign.government,
                 campaign: campaign,
                 activityType: ActivityTypeEnum.INVITATION_EMAIL,
@@ -149,7 +149,7 @@ export async function addUserToCampaignAsync(attrs: IAddUserCampaignAttrs): Prom
         });
         await createActivityRecordAsync({
             currentUser: user,
-            notes: `${currentUser.name} added ${user.name()} to ${campaign.name} as a ${permission.role}`,
+            notes: `${currentUser.name()} added ${user.name()} to ${campaign.name} as a ${permission.role}`,
             government: await campaign.government,
             campaign: campaign,
             activityType: ActivityTypeEnum.PERMISSION,
