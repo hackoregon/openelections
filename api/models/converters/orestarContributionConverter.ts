@@ -45,20 +45,20 @@ export enum TransactionSubType {
 }
 
 export enum InKindTranPurposeType {
-  WAGES = 'W',
+  PREP_AD = 'A',
   BROADCAST = 'B',
+  PETITION = 'C',
   FUNDRAISING = 'F',
   GENERAL_OPERATING = 'G',
   PRIMTING = 'L', // Not P, "literature, Brochures, Printing"
   MANAGEMENT = 'M',
   NEWSPAPER = 'N',
   OTHER_AD = 'O',
-  PETITION = 'C',
   POSTAGE = 'P',
-  PREP_AD = 'A',
   POLLING = 'S',
   TRAVEL = 'T',
-  UTILITIES = 'U'
+  UTILITIES = 'U',
+  WAGES = 'W'
 }
 
 export enum PaymentMethodType {
@@ -73,13 +73,14 @@ export enum PaymentMethodType {
 export default class OrestarContributionConverter {
 
   private contribution: Contribution;
-  private orestarFilerId: string;
-  // TODO: orestarContactId may need to be more predictable
+  private orestarFilerId: number;
   private orestarContactId: string;
 
-  constructor(contribution: Contribution, orestarContactId?: string, orestarFilerId?: string) {
+  constructor(contribution: Contribution, orestarFilerId?: number, orestarContactId?: string) {
     console.log({contribution});
     this.contribution = contribution;
+    this.orestarFilerId = orestarFilerId || 1;
+    // TODO: orestarContactId may need to be more predictable
     this.orestarContactId = `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
@@ -146,7 +147,9 @@ export default class OrestarContributionConverter {
 
   public county() {
     if (this.contribution.county) {
-      return `<county>${this.contribution.county}</county`;
+      return `<county>${this.contribution.county}</county>`;
+    } else {
+      return '';
     }
   }
 
@@ -171,7 +174,7 @@ export default class OrestarContributionConverter {
 
   public campaignFinanceTransactions() {
 
-    return `<campaign-finance-transactions filer-id="17697">
+    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
     ${this.contact()}
     ${this.transaction()}
     </campaign-finance-transactions>`;
@@ -279,9 +282,6 @@ export default class OrestarContributionConverter {
     </transaction>`;
   }
 
-  /**
-   * transactionId
-   */
   private transactionId() {
     const initialTransactionName = `trans-`;
     const trimmedTransactionName = initialTransactionName.substring(0, 30);
@@ -295,13 +295,17 @@ export default class OrestarContributionConverter {
   }
 
   public transactionType() {
-    let type: TransactionType;
-    if (this.contribution.type === ContributionType.CONTRIBUTION) {
-      type = TransactionType.CONTRIBUTION;
-    } else if (this.contribution.type === ContributionType.OTHER) {
-      type = TransactionType.OTHER;
+    if (this.contribution.type) {
+      let type: TransactionType;
+      if (this.contribution.type === ContributionType.CONTRIBUTION) {
+        type = TransactionType.CONTRIBUTION;
+      } else if (this.contribution.type === ContributionType.OTHER) {
+        type = TransactionType.OTHER;
+      }
+      return `<type>${type}</type>`;
+    } else {
+      return '';
     }
-    return `<type>${type}</type>`;
   }
 
   public transactionSubType() {
