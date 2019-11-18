@@ -11,14 +11,14 @@ import { PurposeType } from '../entity/Expenditure';
 // import {ContributionSubType} from '../../models/entity/Contribution'
 
 export enum ContributorContactType {
-  INDIVIDUAL = 'I',
   BUSINESS = 'B',
-  FAMILY = 'F',
-  LABOR = 'L',
   POLITICAL_COMMITTEE = 'C',
+  FAMILY = 'F',
+  INDIVIDUAL = 'I',
+  LABOR = 'L',
+  OTHER = 'O',
   POLITICAL_PARTY = 'P',
   UNREGISTERED = 'U',
-  OTHER = 'O'
 }
 
 export enum TransactionType {
@@ -81,7 +81,7 @@ export default class OrestarContributionConverter {
     this.contribution = contribution;
     this.orestarFilerId = orestarFilerId || 1;
     // TODO: orestarContactId may need to be more predictable
-    this.orestarContactId = `oae-contact-${Math.floor(Math.random() * 20000)}`;
+    this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
   public generate() {
@@ -185,6 +185,8 @@ export default class OrestarContributionConverter {
     ${this.contactType()}
     ${this.contactName()}
     ${this.address()}
+    ${this.phone()}
+    ${this.contactEmail()}
     ${this.contactOccupation()}
     ${this.employment()}
     </contact>`;
@@ -195,34 +197,47 @@ export default class OrestarContributionConverter {
   }
 
   public contactType() {
-    let type: ContributorContactType;
-    if (this.contribution.contributorType === ContributorType.INDIVIDUAL) {
-      type = ContributorContactType.INDIVIDUAL;
-    } else if (this.contribution.contributorType === ContributorType.BUSINESS) {
-      type = ContributorContactType.BUSINESS;
-    } else if (this.contribution.contributorType === ContributorType.FAMILY) {
-      type = ContributorContactType.FAMILY;
-    } else if (this.contribution.contributorType === ContributorType.LABOR) {
-      type = ContributorContactType.LABOR;
-    } else if (this.contribution.contributorType === ContributorType.POLITICAL_COMMITTEE) {
-      type = ContributorContactType.POLITICAL_COMMITTEE;
-    } else if (this.contribution.contributorType === ContributorType.POLITICAL_PARTY) {
-      type = ContributorContactType.POLITICAL_PARTY;
-    } else if (this.contribution.contributorType === ContributorType.UNREGISTERED) {
-      type = ContributorContactType.UNREGISTERED;
-    } else if (this.contribution.contributorType === ContributorType.OTHER) {
-      type = ContributorContactType.OTHER;
+    if (this.contribution.contributorType) {
+      let type: ContributorContactType;
+      if (this.contribution.contributorType === ContributorType.INDIVIDUAL) {
+        type = ContributorContactType.INDIVIDUAL;
+      } else if (this.contribution.contributorType === ContributorType.BUSINESS) {
+        type = ContributorContactType.BUSINESS;
+      } else if (this.contribution.contributorType === ContributorType.FAMILY) {
+        type = ContributorContactType.FAMILY;
+      } else if (this.contribution.contributorType === ContributorType.LABOR) {
+        type = ContributorContactType.LABOR;
+      } else if (this.contribution.contributorType === ContributorType.POLITICAL_COMMITTEE) {
+        type = ContributorContactType.POLITICAL_COMMITTEE;
+      } else if (this.contribution.contributorType === ContributorType.POLITICAL_PARTY) {
+        type = ContributorContactType.POLITICAL_PARTY;
+      } else if (this.contribution.contributorType === ContributorType.UNREGISTERED) {
+        type = ContributorContactType.UNREGISTERED;
+      } else if (this.contribution.contributorType === ContributorType.OTHER) {
+        type = ContributorContactType.OTHER;
+      }
+      return `<type>${type}</type>`;
+    } else {
+      return '';
     }
-    return `<type>${type}</type>`;
+  }
+
+  public contactEmail () {
+    if (this.contribution.email) {
+      return `<email>${this.contribution.email}</email>`;
+    } else {
+      return '';
+    }
   }
 
   public contactOccupation() {
     return `<occupation>${this.contribution.occupation}</occupation>`;
   }
 
-  private employmentType(): EmploymentType {
-
-    if ((this.contribution.occupation || '').toLowerCase() === 'self employed') {
+  private employmentType(): EmploymentType | '' {
+    if (!this.contribution.occupation) {
+      return '';
+    } else if ((this.contribution.occupation || '').toLowerCase() === 'self employed') {
       return EmploymentType.SELF_EMPLOYED;
     } else if ((this.contribution.occupation || '').toLowerCase() === 'not employed') {
       return EmploymentType.NOT_EMPLOYED;
@@ -246,14 +261,57 @@ export default class OrestarContributionConverter {
         <state>${this.contribution.employerState || 'OR'}</state>
       </employment>`;
     } else {
-      return `<employment><${this.employmentType()}></${this.employmentType()}></employment>`;
+      if (this.employmentType() !== '') {
+        return `<employment><${this.employmentType()}></${this.employmentType()}></employment>`;
+      } else {
+        return '';
+      }
     }
   }
 
+  /**
+   * contactName
+   * This method should return one of the following:
+   * individual-name
+   * business-name
+   * committee with id or name included
+   */
   public contactName() {
-    return `<contact-name>
-      ${this.individualName()}
-    </contact-name>`;
+    if (this.contribution.contributorType) {
+      if (this.contribution.contributorType !== ContributorType.INDIVIDUAL && this.contribution.contributorType !== ContributorType.FAMILY) {
+        if (this.contribution.contributorType === ContributorType.POLITICAL_COMMITTEE ||
+          this.contribution.contributorType === ContributorType.POLITICAL_PARTY ||
+          this.contribution.contributorType === ContributorType.UNREGISTERED) {
+            // committee
+            return `<contact-name>${this.committee()}</contact-name>`;
+        } else {
+          //business-name + other
+          return `<contact-name>${this.businessName()}</contact-name>`;
+        }
+      } else {
+        return `<contact-name>
+          ${this.individualName()}
+        </contact-name>`;
+      }
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * Could return one of the following:
+   * <id>6545</id> OR
+   * <name>A Political committee</name>
+   * But our app only supports name at this time
+   */
+  public committee() {
+    if (this.contribution.name) {
+      return `<committee>
+      <name>${this.contribution.name}</name>
+      </committee>`;
+    } else {
+      return '';
+    }
   }
 
   public individualName() {
@@ -268,7 +326,11 @@ export default class OrestarContributionConverter {
   }
 
   public businessName() {
-    return `<business-name>Civic Software</business-name>`;
+    if (this.contribution.name) {
+      return `<business-name>${this.contribution.name}</business-name>`;
+    } else {
+      return '';
+    }
   }
 
   public transaction() {
@@ -351,19 +413,9 @@ export default class OrestarContributionConverter {
     return `<date>${newDate}</date>`;
   }
 
-  public committee() {
-    // can return name or id not both:
-    // <id>6545</id>
-    // <name>A Political committee</name>
-
-    return `<committee>
-    <name>A Political committee</name>
-    </committee>`;
-  }
-
   public cosigner() {
     return `<cosigner>
-    <contact-id>123545asdfas</contact-id>
+    <contact-id>${this.orestarContactId}</contact-id>
     ${this.amount()}
     </cosigner>`;
   }

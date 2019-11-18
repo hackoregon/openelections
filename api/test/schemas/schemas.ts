@@ -803,8 +803,8 @@ export const contactTypeXSD = `
 `;
 
 // TODO: element contact email should have attribute: minOccurs="0"
-export const contactEmailSchema = `
-<xs:element name="email" minOccurs="0">
+export const contactEmailXSD = `
+<xs:element name="email">
  <xs:annotation>
  <xs:documentation>This is the E-Mail address for the contact</xs:documentation>
  </xs:annotation>
@@ -1624,6 +1624,7 @@ export const contactSchema = xmlWrapper(
   addressXSD,
   employmentXSD
 );
+export const contactEmailSchema = xmlWrapper(contactEmailXSD);
 export const contactOccupationSchema = xmlWrapper(contactOccupationXSD);
 export const contactIdSchema = xmlWrapper(contactIdXSD);
 export const contactTypeSchema = xmlWrapper(contactTypeXSD);
