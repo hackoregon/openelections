@@ -1,8 +1,10 @@
 import { decipherJWTokenAsync, IToken } from '../services/permissionService';
 import { Request } from 'express';
+import { FileArray } from 'express-fileupload';
 
 export interface IRequest extends Request {
     currentUser?: IToken;
+    files?: FileArray;
     params: {
         id?: string;
     };

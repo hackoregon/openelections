@@ -294,7 +294,7 @@ components:
       content:
         application/json:
           schema:
-            type: onbject
+            type: object
             properties:
               comment: string
     PostMatchBody:

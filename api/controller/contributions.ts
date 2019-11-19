@@ -25,6 +25,7 @@ import {
     PhoneType
 } from '../models/entity/Contribution';
 import { bugsnagClient } from '../services/bugsnagService';
+import {UploadedFile} from "express-fileupload";
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -465,15 +466,28 @@ export class ContributionCommentDto {
 
     @IsString()
     comment: string;
+
+    @IsOptional()
+    file: UploadedFile;
+
 }
 
 export async function createContributionComment(request: IRequest, response: Response, next: Function) {
     try {
         checkCurrentUser(request);
+        let file;
+        if (!request.files || Object.keys(request.files).length !== 0) {
+            file = request.files[0];
+            if (file.truncated) {
+                throw new Error('File is over 10MB limit');
+            }
+        }
+
         const contributionCommentDto = Object.assign(new ContributionCommentDto(), {
             contributionId: parseInt(request.params.id),
             currentUserId: request.currentUser.id,
-            comment: request.body.comment
+            comment: request.body.comment,
+            attachmentPath: file
         });
         await checkDto(contributionCommentDto);
         const comment = await createContributionCommentAsync(contributionCommentDto);

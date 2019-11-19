@@ -24,6 +24,7 @@ import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
 import { addDataScienceJob } from '../jobs/helpers/addJobs';
+import {UploadedFile} from "express-fileupload";
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -410,6 +411,17 @@ export interface IContributionCommentAttrs {
     currentUserId: number;
     contributionId: number;
     comment: string;
+    attachmentPath?: string;
+}
+
+export async function saveFileAttachment(file: UploadedFile): Promise<string> {
+    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        return file.tempFilePath;
+    } else if (process.env.APP_ENV === 'staging') {
+        return file.tempFilePath;
+    } else {
+        return file.tempFilePath;
+    }
 }
 
 export async function createContributionCommentAsync(attrs: IContributionCommentAttrs): Promise<Activity> {
@@ -435,7 +447,8 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR,
-                notify: true
+                notify: true,
+                attachmentPath: attrs.attachmentPath
             });
         } else {
             throw new Error('User does not have permissions');

@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as cors from 'cors';
+import * as fileUpload from 'express-fileupload';
 import { setupRoutes } from './routes';
 import db from './models/db';
 import bugsnag from '@bugsnag/js';
@@ -30,6 +31,15 @@ const corsOptions = {
         app.use(middleware.errorHandler);
     }
     app.use(logger('dev'));
+    app.use(fileUpload({
+        createParentPath: true,
+        limits: {
+            fileSize: 10 * 1024 * 1024 * 1024 //10MB max file(s) size
+        },
+        useTempFiles : true,
+        tempFileDir : '/app/uploads',
+        debug: true
+    }));
     app.use(cors(corsOptions));
     app.options('*', cors(corsOptions));
 

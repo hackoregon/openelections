@@ -55,6 +55,11 @@ export class Activity {
     })
     notify: boolean;
 
+    @Column({
+        nullable: true,
+    })
+    attachmentPath: string;
+
     @ManyToOne(type => Government, government => government.activities, {eager: true})
     government: Government;
 
