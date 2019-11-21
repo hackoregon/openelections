@@ -1,5 +1,5 @@
-import {expect} from 'chai';
-import {getConnection} from 'typeorm';
+import { expect } from 'chai';
+import { getConnection } from 'typeorm';
 import * as libxml from 'libxmljs';
 import {
   zipSchema,
@@ -39,11 +39,12 @@ import {
   paymentScheduleSchema,
   occupationLetterDateSchema,
   transactionNotesSchema,
-  contactEmailSchema
+  contactEmailSchema,
+  addressSchema
 } from '../schemas/schemas';
-import {newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll} from '../factories';
-import {Government} from '../../models/entity/Government';
-import {Campaign} from '../../models/entity/Campaign';
+import { newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll } from '../factories';
+import { Government } from '../../models/entity/Government';
+import { Campaign } from '../../models/entity/Campaign';
 import OrestarContributionConverter, { EmploymentType } from '../../models/converters/orestarContributionConverter';
 import { ContributionSubType, InKindDescriptionType, PaymentMethod, ContributorType } from '../../models/entity/Contribution';
 
@@ -64,6 +65,38 @@ describe('Orestar contribution converter', () => {
 
   afterEach(async () => {
     await truncateAll();
+  });
+
+  describe('address schema', () => {
+
+    it('confirms passing address schema', async () => {
+      const contribution = await newContributionAsync(campaign, government);
+      const xml = new OrestarContributionConverter(contribution, 1);
+      const xsd = addressSchema;
+      const xml_valid = xml.address();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of address schema', async () => {
+      const contribution = await newContributionAsync(campaign, government);
+      delete contribution.address1;
+      delete contribution.city;
+      delete contribution.state;
+      delete contribution.zip;
+      const xml = new OrestarContributionConverter(contribution, 1);
+      const xsd = addressSchema;
+      const xml_valid = xml.address();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
   });
 
   describe('street1 schema', () => {

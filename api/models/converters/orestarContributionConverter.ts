@@ -420,19 +420,6 @@ export default class OrestarContributionConverter {
     </cosigner>`;
   }
 
-  public expendFor() {
-    // TODO: expend-ind can be I or K. What are the difference? no idea
-    // TODO: support-ind Y or N. not required. What is it?
-    return `<expend-for>
-      <committee-id>564654</committee-id>
-      <committee-name>Committee Name</committee-name>
-      <committee-type>C</committee-type>
-      ${this.amount()}
-      <expend-ind>I</expend-ind>
-      <support-ind>Y</support-ind>
-    </expend-for>`;
-  }
-
   public phone() {
     // we don't need to worry about work-extension. Not collecting that data
     if ((this.contribution.phoneType || '').toLowerCase() === PhoneType.HOME || (this.contribution.phoneType || '').toLowerCase() === PhoneType.MOBILE) {
