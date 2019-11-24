@@ -19,7 +19,7 @@ import { Government } from '../models/entity/Government';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { User } from '../models/entity/User';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
-import { createActivityRecordAsync } from './activityService';
+import { createActivityRecordAsync, saveFileAttachmentAsync } from './activityService';
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
@@ -411,24 +411,15 @@ export interface IContributionCommentAttrs {
     currentUserId: number;
     contributionId: number;
     comment: string;
-    attachmentPath?: string;
-}
-
-export async function saveFileAttachment(file: UploadedFile): Promise<string> {
-    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        return file.tempFilePath;
-    } else if (process.env.APP_ENV === 'staging') {
-        return file.tempFilePath;
-    } else {
-        return file.tempFilePath;
-    }
+    attachmentPath?: UploadedFile;
 }
 
 export async function createContributionCommentAsync(attrs: IContributionCommentAttrs): Promise<Activity> {
-    try {
+    // try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
         const userRepository = defaultConn.getRepository('User');
+        const activityRepository = defaultConn.getRepository('Activity');
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['campaign', 'government']
         })) as Contribution;
@@ -440,7 +431,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
             (await isCampaignStaffAsync(user.id, contribution.campaign.id)) ||
             (await isGovernmentAdminAsync(user.id, contribution.government.id));
         if (hasPermissions) {
-            return createActivityRecordAsync({
+            const activity = await createActivityRecordAsync({
                 currentUser: user,
                 campaign: contribution.campaign,
                 government: contribution.government,
@@ -448,14 +439,18 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR,
                 notify: true,
-                attachmentPath: attrs.attachmentPath
             });
+            if (attrs.attachmentPath) {
+                const attachmentPath = await saveFileAttachmentAsync(activity.id, attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                await activityRepository.update(activity.id, { attachmentPath });
+                return activity;
+            }
         } else {
             throw new Error('User does not have permissions');
         }
-    } catch (e) {
-        throw new Error(e.message);
-    }
+    // } catch (e) {
+    //     throw new Error(e.message);
+    // }
 }
 
 export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<void> {

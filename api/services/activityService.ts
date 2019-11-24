@@ -15,6 +15,7 @@ import { Campaign } from '../models/entity/Campaign';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { Contribution } from '../models/entity/Contribution';
 import { Expenditure } from '../models/entity/Expenditure';
+import {ISESEmailParams} from "./emailService";
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
@@ -129,4 +130,40 @@ export interface IGetActivityRecordsForEmails {
 
 export async function getActivityRecordsForEmailsAsync(params: IGetActivityRecordsForEmails): Promise<IShortActivityResult[]> {
     return await getActivityByCampaignByTimeAsync(params.campaignId, params.from, params.to);
+}
+
+export async function saveFileAttachmentAsync(id: number, fileName: string, filePath: string): Promise<string> {
+    // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    //     return Promise.resolve(filePath);
+    // }
+    console.log(id, fileName, filePath)
+
+    let folder = 'production-uploads';
+    if (process.env.APP_ENV === 'staging') {
+        folder = 'qa-uploads';
+    }
+    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
+        throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
+    }
+    const AWS = require('aws-sdk');
+    const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+    const uploadParams = {Bucket: 'open-elections', Key: '', Body: ''};
+
+    const fs = require('fs');
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.on('error', function(err) {
+        console.log('File Error', err);
+    });
+    uploadParams.Body = fileStream;
+    uploadParams.Key = `${folder}/${id}/${fileName}`;
+    console.log(uploadParams);
+    return new Promise((res, rej) => {
+        s3.upload (uploadParams, function (err, data) {
+            if (err) {
+                rej(err);
+            } if (data) {
+                res(data);
+            }
+        });
+    });
 }

@@ -101,6 +101,13 @@ export const AppRoutes = [
      * /permissions/{id}:
      *   delete:
      *     summary: Delete a user access to a campaign or government
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
      *       - Permissions
      *     security:
@@ -436,8 +443,15 @@ export const AppRoutes = [
      * /contributions/{id}:
      *   put:
      *     summary: Update a contribution
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -468,6 +482,13 @@ export const AppRoutes = [
      * /contributions/{id}:
      *   delete:
      *     summary: Archive a contribution
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
      *       - Contributions
      *     security:
@@ -497,7 +518,7 @@ export const AppRoutes = [
      *   post:
      *     summary: Add a contribution
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -523,33 +544,38 @@ export const AppRoutes = [
         action: contributions.addContribution
     },
 
-    /**
-     * @swagger
-     * /contributions/:id/comments:
-     *   post:
-     *     summary: Adds a new comment on a contribution
-     *     tags:
-     *       - Activity
-     *     security:
-     *       - cookieAuth: []
-     *     produces:
-     *       - application/json
-     *     requestBody:
-     *       $ref: '#/components/requestBodies/AddCommentBody'
-     *     responses:
-     *       204:
-     *         description: add response
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Activity'
-     *       422:
-     *         $ref: '#/components/responses/UnprocessableEntity'
-     *
-     */
     {
+        /**
+         * @swagger
+         * /contributions/{id}/comments:
+         *   post:
+         *     summary: Adds a new comment on a contribution
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         required: true
+         *         schema:
+         *          type: integer
+         *          minimum: 1
+         *     tags:
+         *       - Contributions
+         *     security:
+         *       - cookieAuth: []
+         *     produces:
+         *       - application/json
+         *     requestBody:
+         *       $ref: '#/components/requestBodies/AddCommentBody'
+         *     responses:
+         *       204:
+         *         description: add response
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/Activity'
+         *       422:
+         *         $ref: '#/components/responses/UnprocessableEntity'
+         *
+         */
         path: '/contributions/:id/comments',
         method: 'post',
         action: contributions.createContributionComment
@@ -557,11 +583,18 @@ export const AppRoutes = [
 
     /**
      * @swagger
-     * /expenditures/:id/comments:
+     * /expenditures/{id}/comments:
      *   post:
      *     summary: Adds a new comment on an expenditure
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Activity
+     *       - Expenditures
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -574,11 +607,10 @@ export const AppRoutes = [
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/Activity'
+     *               $ref: '#/components/schemas/Activity'
      *       422:
      *         $ref: '#/components/responses/UnprocessableEntity'
+     *
      *
      */
     {
@@ -593,7 +625,7 @@ export const AppRoutes = [
      *   post:
      *     summary: Get contributions
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -624,8 +656,15 @@ export const AppRoutes = [
      * /contributions/{id}:
      *   get:
      *     summary: Get a contribution
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -661,7 +700,7 @@ export const AppRoutes = [
      *   post:
      *     summary: Create an expenditure
      *     tags:
-     *       - Expenditure
+     *       - Expenditures
      *     security:
      *       - cookieAuth: []
      *     requestBody:
@@ -687,11 +726,11 @@ export const AppRoutes = [
 
     /**
      * @swagger
-     * /expenditures/new:
+     * /expenditures:
      *   post:
      *     summary: Gets expenditures
      *     tags:
-     *       - Expenditure
+     *       - Expenditures
      *     security:
      *       - cookieAuth: []
      *     requestBody:
@@ -720,8 +759,15 @@ export const AppRoutes = [
      * /expenditures/{id}:
      *   put:
      *     summary: Update an expenditure
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Expenditure
+     *       - Expenditures
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -751,8 +797,15 @@ export const AppRoutes = [
      * /expenditures/{id}:
      *   get:
      *     summary: Get an expenditure
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Contribution
+     *       - Expenditures
      *     security:
      *       - cookieAuth: []
      *     produces:
@@ -778,6 +831,8 @@ export const AppRoutes = [
      * /summary:
      *   post:
      *     summary: Get the summary of status for expenditures and contributions by campaingId or governmentId
+     *     tags:
+     *       - Summary
      *     requestBody:
      *       $ref: '#/components/requestBodies/GetStatusSummaryBody'
      *     responses:
@@ -810,8 +865,15 @@ export const AppRoutes = [
      * /matches/{id}:
      *   get:
      *     summary: Get matches by contribution id
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *       - Match
      *     security:
      *       - cookieAuth: []
@@ -839,7 +901,7 @@ export const AppRoutes = [
      *   post:
      *     summary: Updates a contribution with match information
      *     tags:
-     *       - Contribution
+     *       - Contributions
      *       - Match
      *     security:
      *       - cookieAuth: []

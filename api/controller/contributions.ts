@@ -8,7 +8,8 @@ import {
     getContributionByIdAsync,
     archiveContributionAsync,
     createContributionCommentAsync,
-    getMatchResultAsync, updateMatchResultAsync
+    getMatchResultAsync,
+    updateMatchResultAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -468,36 +469,37 @@ export class ContributionCommentDto {
     comment: string;
 
     @IsOptional()
-    file: UploadedFile;
+    attachmentPath: UploadedFile;
 
 }
 
 export async function createContributionComment(request: IRequest, response: Response, next: Function) {
-    try {
+    // try {
         checkCurrentUser(request);
+        const attrs: any = {
+            contributionId: parseInt(request.params.id),
+            currentUserId: request.currentUser.id,
+            comment: request.body.comment
+        };
         let file;
-        if (!request.files || Object.keys(request.files).length !== 0) {
-            file = request.files[0];
+        if (request.files && request.files.attachment) {
+            file = request.files.attachment;
             if (file.truncated) {
                 throw new Error('File is over 10MB limit');
             }
+            attrs.attachmentPath = file;
         }
 
-        const contributionCommentDto = Object.assign(new ContributionCommentDto(), {
-            contributionId: parseInt(request.params.id),
-            currentUserId: request.currentUser.id,
-            comment: request.body.comment,
-            attachmentPath: file
-        });
+        const contributionCommentDto = Object.assign(new ContributionCommentDto(), attrs);
         await checkDto(contributionCommentDto);
         const comment = await createContributionCommentAsync(contributionCommentDto);
         return response.status(204).json(comment);
-    } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
-            bugsnagClient.notify(err);
-        }
-        return response.status(422).json({ message: err.message });
-    }
+    // } catch (err) {
+    //     if (process.env.NODE_ENV === 'production') {
+    //         bugsnagClient.notify(err);
+    //     }
+    //     return response.status(422).json({ message: err.message });
+    // }
 }
 
 export class GetContributionMatchesDto {

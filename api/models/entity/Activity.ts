@@ -125,6 +125,7 @@ export interface IActivityResult {
     activityId: number;
     activityType: ActivityTypeEnum;
     campaignId?: number;
+    attachmentPath?: string;
 }
 
 export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResults> {
@@ -132,7 +133,7 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
     const total = await activityRepository
         .createQueryBuilder('activity')
         .select(
-            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
         .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
         .getCount();
@@ -159,14 +160,14 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
     const total = await activityRepository
         .createQueryBuilder('activity')
         .select(
-            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
         .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
         .getCount();
     const data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
-            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
         .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
         .orderBy('"activity"."createdAt"', 'DESC')
@@ -210,11 +211,11 @@ export async function getActivityByCampaignByTimeAsync(campaignId: number, from,
 export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."userId" = :userId', {userId})
         .getCount();
     const data = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."userId" = :userId', {userId})
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
@@ -231,7 +232,7 @@ export async function getActivityByUserAsync(userId, perPage, page: number): Pro
 export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.CONTRIBUTION,
@@ -239,7 +240,7 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
         })
         .getCount();
     const data = (await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."activityId" = :contributionId', {contributionId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.CONTRIBUTION,
@@ -260,7 +261,7 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
 export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const data = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.EXPENDITURE,
@@ -271,7 +272,7 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
         .offset(perPage * page)
         .getRawMany() as IActivityResult[];
     const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"')
+        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
         .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.EXPENDITURE,

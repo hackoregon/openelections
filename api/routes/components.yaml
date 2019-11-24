@@ -19,6 +19,8 @@ components:
           type: number
         campaignId:
           type: integer
+        attachmentPath:
+          type: integer
     Campaign:
       type: object
       properties:
@@ -236,9 +238,9 @@ components:
               campaignId:
                 type: integer
               contributionId:
-                type: interger
+                type: integer
               expenditureId:
-                type: interger
+                type: integer
               perPage:
                 type: integer
               page:
@@ -292,11 +294,16 @@ components:
     AddCommentBody:
       required: true
       content:
-        application/json:
+        multipart/form-data:
           schema:
             type: object
             properties:
-              comment: string
+              comment:
+                type: string
+              attachment:
+                type: string
+                format: binary
+
     PostMatchBody:
       required: true
       content:
