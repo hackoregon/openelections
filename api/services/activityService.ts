@@ -15,7 +15,9 @@ import { Campaign } from '../models/entity/Campaign';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { Contribution } from '../models/entity/Contribution';
 import { Expenditure } from '../models/entity/Expenditure';
-import {ISESEmailParams} from "./emailService";
+import { ISESEmailParams } from './emailService';
+import { S3 } from 'aws-sdk';
+import * as fs from 'fs';
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
@@ -132,11 +134,57 @@ export async function getActivityRecordsForEmailsAsync(params: IGetActivityRecor
     return await getActivityByCampaignByTimeAsync(params.campaignId, params.from, params.to);
 }
 
-export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
-    // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
-    //     return Promise.resolve(filePath);
-    // }
 
+export interface IGetActivityAttachment {
+    currentUserId: number;
+    activityId: number;
+}
+
+export async function getActivityAttachmentAsync(params: IGetActivityAttachment): Promise<Buffer> {
+    const activityRepository = getConnection('default').getRepository('Activity');
+
+    const activity = (await activityRepository.findOneOrFail(params.activityId, {
+        relations: ['campaign', 'government']
+    })) as Activity;
+
+    const isGovernmentAdmin = await isGovernmentAdminAsync(params.currentUserId, activity.government.id);
+    let isCampaignAdmin = false;
+    let isCampaignStaff = false;
+
+    if (activity.campaign && !isGovernmentAdmin) {
+        isCampaignAdmin = await isCampaignAdminAsync(params.currentUserId, activity.campaign.id);
+        isCampaignStaff = await isCampaignStaffAsync(params.currentUserId, activity.campaign.id);
+    }
+    if (!isCampaignAdmin && !isGovernmentAdmin && !isCampaignStaff) {
+        throw new Error('User does not have permissions');
+    }
+
+    if (activity.attachmentPath) {
+        return getFileAttachmentAsync(activity.attachmentPath);
+    }
+}
+
+export async function getFileAttachmentAsync(filePath: string): Promise<Buffer> {
+    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        return(fs.readFileSync(filePath));
+    }
+
+    const key = filePath.replace('https://open-elections.s3.amazonaws.com/', '');
+
+    const AWS = require('aws-sdk');
+    const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+    return new Promise((res, rej) => {
+        s3.getObject({Bucket: 'open-elections', Key: key}, (err, data) => {
+            if (err) rej(err);
+            res(data.Body);
+        });
+    });
+}
+
+export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
+    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        return Promise.resolve(filePath);
+    }
 
     let folder = 'production-uploads';
     if (process.env.APP_ENV === 'staging') {
@@ -152,17 +200,18 @@ export async function saveFileAttachmentAsync(id: number, type: 'expenditures' |
 
     const fs = require('fs');
     const fileStream = fs.createReadStream(filePath);
-    fileStream.on('error', function(err) {
+    fileStream.on('error', function (err) {
         console.log('File Error', err);
     });
     uploadParams.Body = fileStream;
     uploadParams.Key = `${folder}/${type}/${id}/${fileName}`;
 
     return new Promise((res, rej) => {
-        s3.upload (uploadParams, function (err, data) {
+        s3.upload(uploadParams, function (err, data) {
             if (err) {
                 rej(err);
-            } if (data) {
+            }
+            if (data) {
                 res(data.Location);
             }
         });

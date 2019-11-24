@@ -511,7 +511,41 @@ export const AppRoutes = [
         method: 'delete',
         action: contributions.archiveContribution
     },
-
+    /**
+     * @swagger
+     * /activities/{id}/attachment:
+     *   get:
+     *     summary: Download an attachment activity
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *          type: integer
+     *          minimum: 1
+     *     tags:
+     *       - Activities
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: get response
+     *         content:
+     *           application/octet:
+     *             schema:
+     *               type: string
+     *               format: binary
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/activities/:id/attachment',
+        method: 'get',
+        action: activities.getActivityAttachment
+    },
     /**
      * @swagger
      * /contributions/new:
