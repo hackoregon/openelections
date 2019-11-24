@@ -6,7 +6,8 @@ import {
     getActivityByContributionAsync,
     getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
-    IActivityResult, IActivityResults, IShortActivityResult
+    IActivityResults,
+    IShortActivityResult
 } from '../models/entity/Activity';
 import { getConnection } from 'typeorm';
 import { Government } from '../models/entity/Government';
@@ -15,8 +16,6 @@ import { Campaign } from '../models/entity/Campaign';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
 import { Contribution } from '../models/entity/Contribution';
 import { Expenditure } from '../models/entity/Expenditure';
-import { ISESEmailParams } from './emailService';
-import { S3 } from 'aws-sdk';
 import * as fs from 'fs';
 
 export interface ICreateActivityServiceParams {

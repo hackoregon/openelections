@@ -24,7 +24,7 @@ import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
 import { addDataScienceJob } from '../jobs/helpers/addJobs';
-import {UploadedFile} from "express-fileupload";
+import { UploadedFile } from 'express-fileupload';
 
 export interface IAddContributionAttrs {
     address1: string;

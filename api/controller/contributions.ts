@@ -26,7 +26,7 @@ import {
     PhoneType
 } from '../models/entity/Contribution';
 import { bugsnagClient } from '../services/bugsnagService';
-import {UploadedFile} from "express-fileupload";
+import { UploadedFile } from 'express-fileupload';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
