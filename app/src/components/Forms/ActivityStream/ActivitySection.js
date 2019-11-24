@@ -139,6 +139,17 @@ const activityList = ({
                 <div css={activitySectionStyles.timeline} />
               </div>
               <p css={activitySectionStyles.username}>{activity.notes}</p>
+              {activity.attachmentPath && (
+                <p>
+                  <a
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    href={activity.attachmentPath}
+                  >
+                    Attachment: {activity.attachmentPath}
+                  </a>
+                </p>
+              )}
             </li>
           );
         })}

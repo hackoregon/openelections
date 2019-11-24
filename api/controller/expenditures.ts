@@ -19,6 +19,7 @@ import {
 } from '../models/entity/Expenditure';
 import { PaymentMethod } from '../models/entity/Expenditure';
 import { bugsnagClient } from '../services/bugsnagService';
+import {UploadedFile} from "express-fileupload";
 
 export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsNumber()
@@ -289,16 +290,28 @@ export class ExpenditureCommentDto {
     @IsString()
     comment: string;
 
+    @IsOptional()
+    attachmentPath: UploadedFile;
+
 }
 
 export async function createExpenditureComment(request: IRequest, response: Response, next: Function) {
     try {
         checkCurrentUser(request);
-        const expenditureCommentDto = Object.assign(new ExpenditureCommentDto(), {
+        const attrs: any = {
             expenditureId: parseInt(request.params.id),
             currentUserId: request.currentUser.id,
             comment: request.body.comment
-        });
+        };
+        let file;
+        if (request.files && request.files.attachment) {
+            file = request.files.attachment;
+            if (file.truncated) {
+                throw new Error('File is over 10MB limit');
+            }
+            attrs.attachmentPath = file;
+        }
+        const expenditureCommentDto = Object.assign(new ExpenditureCommentDto(), attrs);
         await checkDto(expenditureCommentDto);
         const comment = await createExpenditureCommentAsync(expenditureCommentDto);
         return response.status(204).json(comment);

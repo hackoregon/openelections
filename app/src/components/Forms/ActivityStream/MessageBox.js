@@ -20,9 +20,14 @@ const MessageBox = ({
     ? postContributionComment
     : postExpenditureComment;
   const [messageText, setText] = React.useState('');
+  const [attachment, setAttachment] = React.useState('');
   function handleTextChange(event) {
     event.preventDefault();
     setText(event.target.value);
+  }
+  function handleAttachmentChange(event) {
+    event.preventDefault();
+    setAttachment(event.target.files[0]);
   }
   function clearOnSubmit() {
     setText('');
@@ -46,11 +51,16 @@ const MessageBox = ({
         >
           {/* <span css={messageBoxStyles.message}>Message to Campaign</span> */}
         </TextareaAutosize>
+        <input
+          type="file"
+          name="attachment"
+          onChange={handleAttachmentChange}
+        />
         <div css={messageBoxStyles.buttonWrapper}>
           <Button
             buttonType="submit"
             onClick={() => {
-              postComment(id, messageText);
+              postComment(id, messageText, attachment);
               clearOnSubmit();
             }}
           >
@@ -66,10 +76,10 @@ export default connect(
   null,
   dispatch => {
     return {
-      postContributionComment: (id, message) =>
-        dispatch(postContributionComment(id, message)),
-      postExpenditureComment: (id, message) =>
-        dispatch(postExpenditureComment(id, message)),
+      postContributionComment: (id, message, attachment) =>
+        dispatch(postContributionComment(id, message, attachment)),
+      postExpenditureComment: (id, message, attachment) =>
+        dispatch(postExpenditureComment(id, message, attachment)),
     };
   }
 )(MessageBox);

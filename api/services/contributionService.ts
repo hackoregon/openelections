@@ -415,7 +415,7 @@ export interface IContributionCommentAttrs {
 }
 
 export async function createContributionCommentAsync(attrs: IContributionCommentAttrs): Promise<Activity> {
-    // try {
+    try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
         const userRepository = defaultConn.getRepository('User');
@@ -441,16 +441,16 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 notify: true,
             });
             if (attrs.attachmentPath) {
-                const attachmentPath = await saveFileAttachmentAsync(activity.id, attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                const attachmentPath = await saveFileAttachmentAsync(activity.id, 'contributions', attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
                 await activityRepository.update(activity.id, { attachmentPath });
                 return activity;
             }
         } else {
             throw new Error('User does not have permissions');
         }
-    // } catch (e) {
-    //     throw new Error(e.message);
-    // }
+    } catch (e) {
+        throw new Error(e.message);
+    }
 }
 
 export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<void> {

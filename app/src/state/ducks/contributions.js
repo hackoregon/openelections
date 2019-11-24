@@ -372,11 +372,15 @@ export function archiveContribution(id) {
   };
 }
 
-export function postContributionComment(id, comment) {
+export function postContributionComment(id, comment, attachment) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.postContributionComment.request());
     try {
-      const response = await api.postContributionComment(id, comment);
+      const response = await api.postContributionComment(
+        id,
+        comment,
+        attachment
+      );
       if (response.status === 204) {
         dispatch(getActivitiesByIdType({ contributionId: id }));
         dispatch(actionCreators.postContributionComment.success());

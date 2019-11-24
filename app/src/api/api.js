@@ -604,9 +604,14 @@ export function getContributions(contributionSearchAttrs) {
 
 //   path: '/contributions/:id/comments',
 //   method: 'post',
-export function postContributionComment(contributionId, comment) {
-  return post(`${baseUrl()}/contributions/${contributionId}/comments`, {
-    comment,
+export function postContributionComment(contributionId, comment, attachment) {
+  const formData = new FormData();
+  formData.append('attachment', attachment);
+  formData.append('comment', comment);
+  return fetch(`${baseUrl()}/contributions/${contributionId}/comments`, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
   });
 }
 
@@ -630,9 +635,14 @@ export function createExpenditure(expenditureAttrs) {
 
 //   path: '/expenditures/:id/comments',
 //   method: 'post',
-export function postExpenditureComment(expenditureId, comment) {
-  return post(`${baseUrl()}/expenditures/${expenditureId}/comments`, {
-    comment,
+export function postExpenditureComment(expenditureId, comment, attachment) {
+  const formData = new FormData();
+  formData.append('attachment', attachment);
+  formData.append('comment', comment);
+  return fetch(`${baseUrl()}/expenditures/${expenditureId}/comments`, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
   });
 }
 

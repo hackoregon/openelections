@@ -16,8 +16,9 @@ import { getConnection } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
-import { createActivityRecordAsync } from './activityService';
+import {createActivityRecordAsync, saveFileAttachmentAsync} from './activityService';
 import { User } from '../models/entity/User';
+import {UploadedFile} from "express-fileupload";
 
 export interface IAddExpenditureAttrs {
     date: number;
@@ -241,6 +242,7 @@ export interface IExpenditureCommentAttrs {
     currentUserId: number;
     expenditureId: number;
     comment: string;
+    attachmentPath?: UploadedFile;
 }
 
 export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAttrs): Promise<Activity> {
@@ -248,6 +250,7 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
         const defaultConn = getConnection('default');
         const expenditureRepository = defaultConn.getRepository('Expenditure');
         const userRepository = defaultConn.getRepository('User');
+        const activityRepository = defaultConn.getRepository('Activity');
         const expenditure = (await expenditureRepository.findOneOrFail(attrs.expenditureId, {
             relations: ['campaign', 'government']
         })) as Expenditure;
@@ -258,7 +261,7 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
             (await isCampaignStaffAsync(user.id, expenditure.campaign.id)) ||
             (await isGovernmentAdminAsync(user.id, expenditure.government.id));
         if (hasPermissions) {
-            return createActivityRecordAsync({
+            const activity = await createActivityRecordAsync({
                 currentUser: user,
                 campaign: expenditure.campaign,
                 government: expenditure.government,
@@ -267,6 +270,12 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
                 activityType: ActivityTypeEnum.COMMENT_EXP,
                 notify: true
             });
+
+            if (attrs.attachmentPath) {
+                const attachmentPath = await saveFileAttachmentAsync(activity.id, 'expenditures', attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                await activityRepository.update(activity.id, { attachmentPath });
+                return activity;
+            }
         } else {
             throw new Error('User does not have permissions');
         }

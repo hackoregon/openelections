@@ -314,11 +314,15 @@ export function getExpenditureById(id) {
   };
 }
 
-export function postExpenditureComment(id, comment) {
+export function postExpenditureComment(id, comment, attachment) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.postExpenditureComment.request());
     try {
-      const response = await api.postExpenditureComment(id, comment);
+      const response = await api.postExpenditureComment(
+        id,
+        comment,
+        attachment
+      );
       if (response.status === 204) {
         dispatch(actionCreators.postExpenditureComment.success());
         dispatch(getActivitiesByIdType({ expenditureId: id }));

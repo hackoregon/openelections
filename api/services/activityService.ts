@@ -132,11 +132,11 @@ export async function getActivityRecordsForEmailsAsync(params: IGetActivityRecor
     return await getActivityByCampaignByTimeAsync(params.campaignId, params.from, params.to);
 }
 
-export async function saveFileAttachmentAsync(id: number, fileName: string, filePath: string): Promise<string> {
+export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
     // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
     //     return Promise.resolve(filePath);
     // }
-    console.log(id, fileName, filePath)
+
 
     let folder = 'production-uploads';
     if (process.env.APP_ENV === 'staging') {
@@ -145,6 +145,7 @@ export async function saveFileAttachmentAsync(id: number, fileName: string, file
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
         throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
     }
+
     const AWS = require('aws-sdk');
     const s3 = new AWS.S3({apiVersion: '2006-03-01'});
     const uploadParams = {Bucket: 'open-elections', Key: '', Body: ''};
@@ -155,14 +156,14 @@ export async function saveFileAttachmentAsync(id: number, fileName: string, file
         console.log('File Error', err);
     });
     uploadParams.Body = fileStream;
-    uploadParams.Key = `${folder}/${id}/${fileName}`;
-    console.log(uploadParams);
+    uploadParams.Key = `${folder}/${type}/${id}/${fileName}`;
+
     return new Promise((res, rej) => {
         s3.upload (uploadParams, function (err, data) {
             if (err) {
                 rej(err);
             } if (data) {
-                res(data);
+                res(data.Location);
             }
         });
     });

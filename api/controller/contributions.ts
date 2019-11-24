@@ -474,7 +474,7 @@ export class ContributionCommentDto {
 }
 
 export async function createContributionComment(request: IRequest, response: Response, next: Function) {
-    // try {
+    try {
         checkCurrentUser(request);
         const attrs: any = {
             contributionId: parseInt(request.params.id),
@@ -494,12 +494,12 @@ export async function createContributionComment(request: IRequest, response: Res
         await checkDto(contributionCommentDto);
         const comment = await createContributionCommentAsync(contributionCommentDto);
         return response.status(204).json(comment);
-    // } catch (err) {
-    //     if (process.env.NODE_ENV === 'production') {
-    //         bugsnagClient.notify(err);
-    //     }
-    //     return response.status(422).json({ message: err.message });
-    // }
+    } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
+        return response.status(422).json({ message: err.message });
+    }
 }
 
 export class GetContributionMatchesDto {
