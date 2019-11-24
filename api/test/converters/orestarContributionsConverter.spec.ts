@@ -40,7 +40,8 @@ import {
   occupationLetterDateSchema,
   transactionNotesSchema,
   contactEmailSchema,
-  addressSchema
+  addressSchema,
+  operationSchema
 } from '../schemas/schemas';
 import { newCampaignAsync, newContributionAsync, newGovernmentAsync, truncateAll } from '../factories';
 import { Government } from '../../models/entity/Government';
@@ -501,6 +502,51 @@ describe('Orestar contribution converter', () => {
       const xml_valid = xml.transaction();
       libxml.parseXml(xsd);
       expect(libxml.parseXml.bind(xml_valid)).to.throw();
+    });
+
+  });
+
+  describe('CHOICE: operation schema', () => {
+
+    it('confirms passing operation schema: add', async () => {
+      const contribution = await newContributionAsync(campaign, government);
+      const xml = new OrestarContributionConverter(contribution, 1);
+      const xsd = operationSchema;
+      const xml_valid = xml.operation();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing operation schema: amend', () => {
+      const xsd = operationSchema;
+      const xml_valid = '<operation><amend>true</amend></operation>';
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing operation schema: delete', () => {
+      const xsd = operationSchema;
+      const xml_valid = '<operation><delete>true</delete></operation>';
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of operation schema', () => {
+      const xsd = operationSchema;
+      const xml_valid = '<operation><nope>true</nope></operation>';
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
   });

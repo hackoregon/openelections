@@ -1,13 +1,73 @@
-import { Expenditure, PurposeType, PayeeType } from '../entity/Expenditure';
+import {
+  Expenditure,
+  PurposeType,
+  PayeeType,
+  ExpenditureType,
+  ExpenditureSubType
+} from '../entity/Expenditure';
 
+/**
+ * ExpenditureMainType Enum
+ * There are a total 6 options for this:
+ * C, E, OR, OD, OA, O
+ * Our system only supports 3.
+ */
+export enum ExpenditureMainType {
+  EXPENDITURE = 'E',
+  OTHER = 'O',
+  OTHER_DISBURSEMENT = 'OD'
+}
+/**
+ * ExpenditureMainSubType
+ * There is a total of 31, but we only track 7:
+ * CA, IK, IKP, IKA, NLR, PL, PI, PC, ELR, FM, IN, OM, RF, LC, OR, AE, PE, CE, AP, NLP, ELP, NP, RT, UIP, UCP, ULP, NLF, APR, OMD, CBA, PEA
+ */
+export enum ExpenditureMainSubType {
+  ACCOUNTS_PAYABLE = 'AP',
+  CASH_EXPENDITURE = 'CE',
+  PERSONAL_EXPENDITURE = 'PE',
+  ACCOUNTS_PAYABLE_RESCINDED = 'APR',
+  CASH_BALANCE_ADJUSTMENT = 'CBA',
+  MISCELLANEOUS_OTHER_DISBURSEMENT = 'OMD',
+  REFUND_OF_CONTRIBUTION = 'RF'
+}
+
+/**
+ * PurposeType
+ * These are all the tran-purpose types available:
+ * A, B, C, E, F, G, H, I, L, M, N, O, P, R, S, T, U, W, X, Y, Z
+ */
+export enum ExpenditurePurposeType {
+  WAGES = 'W',
+  CASH = 'C',
+  REIMBURSEMENT = 'R',
+  BROADCAST = 'B',
+  FUNDRAISING = 'F',
+  GENERAL_OPERATING = 'G',
+  PRIMTING = 'L',
+  MANAGEMENT = 'M',
+  NEWSPAPER =  'N',
+  OTHER_AD = 'O',
+  PETITION = 'petition_circulators',
+  POSTAGE = 'P',
+  PREP_AD = 'A',
+  POLLING = 'S',
+  TRAVEL = 'T',
+  UTILITIES = 'U',
+}
 
 export default class OrestarExpenditureConverter {
 
   private expenditure: Expenditure;
+  private orestarFilerId: number;
+  private orestarContactId: string;
 
-  constructor(expenditure: Expenditure) {
-    this.expenditure = expenditure;
+  constructor(expenditure: Expenditure, orestarFilerId?: number, orestarContactId?: string) {
     console.log(this.expenditure);
+    this.expenditure = expenditure;
+    this.orestarFilerId = orestarFilerId || 1;
+    // TODO: orestarContactId may need to be more predictable
+    this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
   public address() {
@@ -51,6 +111,146 @@ export default class OrestarExpenditureConverter {
     } else {
       return '';
     }
+  }
+
+  // public transaction() {
+  //   return `<transaction id="${this.transactionId()}">
+  //     ${this.operation()}
+  //     <contact-id>${this.orestarContactId}</contact-id>
+  //     ${this.transactionType()}
+  //     ${this.transactionSubType()}
+  //     ${this.amount()}
+  //     ${this.transactionDate()}
+  //   </transaction>`;
+  // }
+
+  private transactionId() {
+    const initialTransactionName = `trans-`;
+    const trimmedTransactionName = initialTransactionName.substring(0, 30);
+    return trimmedTransactionName;
+  }
+
+  public operation() {
+    return `<operation>
+    <add>true</add>
+    </operation>`;
+  }
+
+  public transactionType() {
+    if (this.expenditure.type) {
+      let type: ExpenditureMainType;
+      if (this.expenditure.type === ExpenditureType.EXPENDITURE) {
+        type = ExpenditureMainType.EXPENDITURE;
+      } else if (this.expenditure.type === ExpenditureType.OTHER) {
+        type = ExpenditureMainType.OTHER;
+      } else if (this.expenditure.type === ExpenditureType.OTHER_DISBURSEMENT) {
+        type = ExpenditureMainType.OTHER_DISBURSEMENT;
+      }
+      return `<type>${type}</type>`;
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * transactionSubType
+   */
+  public transactionSubType() {
+    if (this.expenditure.subType) {
+      let type;
+      if (this.expenditure.subType === ExpenditureSubType.ACCOUNTS_PAYABLE) {
+        type = ExpenditureMainSubType.ACCOUNTS_PAYABLE;
+      } else if (this.expenditure.subType === ExpenditureSubType.ACCOUNTS_PAYABLE_RESCINDED) {
+        type = ExpenditureMainSubType.ACCOUNTS_PAYABLE_RESCINDED;
+      } else if (this.expenditure.subType === ExpenditureSubType.CASH_BALANCE_ADJUSTMENT) {
+        type = ExpenditureMainSubType.CASH_BALANCE_ADJUSTMENT;
+      } else if (this.expenditure.subType === ExpenditureSubType.CASH_EXPENDITURE) {
+        type = ExpenditureMainSubType.CASH_EXPENDITURE;
+      } else if (this.expenditure.subType === ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT) {
+        type = ExpenditureMainSubType.MISCELLANEOUS_OTHER_DISBURSEMENT;
+      } else if (this.expenditure.subType === ExpenditureSubType.PERSONAL_EXPENDITURE) {
+        type = ExpenditureMainSubType.PERSONAL_EXPENDITURE;
+      } else if (this.expenditure.subType === ExpenditureSubType.REFUND_OF_CONTRIBUTION) {
+        type = ExpenditureMainSubType.REFUND_OF_CONTRIBUTION;
+      }
+      return `<sub-type>${type}</sub-type>`;
+    } else {
+      return '';
+    }
+  }
+
+  public tranPurposeType() {
+    let purpose: ExpenditurePurposeType;
+    if (this.expenditure.purpose) {
+      if (this.expenditure.purpose === PurposeType.BROADCAST) {
+        purpose = ExpenditurePurposeType.BROADCAST;
+      } else if (this.expenditure.purpose === PurposeType.CASH) {
+        purpose = ExpenditurePurposeType.CASH;
+      } else if (this.expenditure.purpose === PurposeType.FUNDRAISING) {
+        purpose = ExpenditurePurposeType.FUNDRAISING;
+      } else if (this.expenditure.purpose === PurposeType.GENERAL_OPERATING) {
+        purpose = ExpenditurePurposeType.GENERAL_OPERATING;
+      } else if (this.expenditure.purpose === PurposeType.MANAGEMENT) {
+        purpose = ExpenditurePurposeType.MANAGEMENT;
+      } else if (this.expenditure.purpose === PurposeType.NEWSPAPER) {
+        purpose = ExpenditurePurposeType.NEWSPAPER;
+      } else if (this.expenditure.purpose === PurposeType.OTHER_AD) {
+        purpose = ExpenditurePurposeType.OTHER_AD;
+      } else if (this.expenditure.purpose === PurposeType.PETITION) {
+        purpose = ExpenditurePurposeType.PETITION;
+      } else if (this.expenditure.purpose === PurposeType.POLLING) {
+        purpose = ExpenditurePurposeType.POLLING;
+      } else if (this.expenditure.purpose === PurposeType.POSTAGE) {
+        purpose = ExpenditurePurposeType.POSTAGE;
+      } else if (this.expenditure.purpose === PurposeType.PREP_AD) {
+        purpose = ExpenditurePurposeType.PREP_AD;
+      } else if (this.expenditure.purpose === PurposeType.PRIMTING) {
+        purpose = ExpenditurePurposeType.PRIMTING;
+      } else if (this.expenditure.purpose === PurposeType.REIMBURSEMENT) {
+        purpose = ExpenditurePurposeType.REIMBURSEMENT;
+      } else if (this.expenditure.purpose === PurposeType.TRAVEL) {
+        purpose = ExpenditurePurposeType.TRAVEL;
+      } else if (this.expenditure.purpose === PurposeType.UTILITIES) {
+        purpose = ExpenditurePurposeType.UTILITIES;
+      } else if (this.expenditure.purpose === PurposeType.WAGES) {
+        purpose = ExpenditurePurposeType.WAGES;
+      }
+      return `<tran-purpose>${purpose}</tran-purpose>`;
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * agentId
+   * NOT CURRENTLY COLLECTED IN OUR SYSTEM
+   */
+  public agentId() {
+    return '';
+  }
+
+  /**
+   * expendId
+   * NOT CURRENTLY COLLECTED IN OUR SYSTEM
+   */
+  public expendId() {
+    return '';
+  }
+
+  public transactionDescription() {
+    if (this.expenditure.notes) {
+      return `<description>${this.expenditure.notes}</description>`;
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * aggregateAmount
+   * NOT CURRENTLY COLLECTED IN OUR SYSTEM
+   */
+  public aggregateAmount() {
+    return '';
   }
 
   /**

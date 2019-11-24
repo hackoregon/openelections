@@ -1295,6 +1295,127 @@ transaction</xs:documentation>
  </xs:complexType>
 </xs:element>`;
 
+export const operationXSD = `
+<xs:element name="operation">
+ <xs:annotation>
+ <xs:documentation>The operation that the transaction is performing.</xs:documentation>
+ </xs:annotation>
+ <xs:complexType>
+ <xs:choice>
+ <xs:element name="add" type="xs:boolean">
+ <xs:annotation>
+ <xs:documentation>submit a transaction</xs:documentation>
+ </xs:annotation>
+ </xs:element>
+ <xs:element name="amend">
+ <xs:annotation>
+ <xs:documentation>amend a pre submitted transaction.</xs:documentation>
+ </xs:annotation>
+ <xs:complexType>
+ <xs:simpleContent>
+ <xs:extension base="xs:boolean"/>
+ </xs:simpleContent>
+ </xs:complexType>
+ </xs:element>
+ <xs:element name="delete">
+ <xs:annotation>
+ <xs:documentation>delete a pre submitted transaction</xs:documentation>
+ </xs:annotation>
+ <xs:complexType>
+ <xs:simpleContent>
+ <xs:extension base="xs:boolean"/>
+ </xs:simpleContent>
+ </xs:complexType>
+ </xs:element>
+ </xs:choice>
+ </xs:complexType>
+</xs:element>`;
+
+// removed minOccurs="0"
+export const agentIdXSD = `<xs:element name="agent-id">
+<xs:annotation>
+<xs:documentation>Agent Id from Address Book</xs:documentation>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:minLength value="1"/>
+<xs:maxLength value="30"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>`;
+
+// removed minOccurs="0"
+export const expendIdXSD = `<xs:element name="expend-id">
+<xs:annotation>
+<xs:documentation>Personal Expenditure Id from Address Book</xs:documentation>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:minLength value="1"/>
+<xs:maxLength value="30"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>`;
+
+export const transactionTypeXSD = `<xs:element name="type">
+<xs:annotation>
+<xs:documentation>The general category of the transaction.</xs:documentation>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:enumeration value="C"/>
+<xs:enumeration value="E"/>
+<xs:enumeration value="OR"/>
+<xs:enumeration value="OD"/>
+<xs:enumeration value="OA"/>
+<xs:enumeration value="O"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>`;
+
+export const transactionSubTypeXSD = `<xs:element name="sub-type">
+<xs:annotation>
+<xs:documentation>The specific category of the transaction; the subtype must be related to the
+type.
+</xs:documentation>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:enumeration value="CA"/>
+<xs:enumeration value="IK"/>
+<xs:enumeration value="IKP"/>
+<xs:enumeration value="IKA"/>
+<xs:enumeration value="NLR"/>
+<xs:enumeration value="PL"/>
+<xs:enumeration value="PI"/>
+<xs:enumeration value="PC"/>
+<xs:enumeration value="ELR"/>
+<xs:enumeration value="FM"/>
+<xs:enumeration value="IN"/>
+<xs:enumeration value="OM"/>
+<xs:enumeration value="RF"/>
+<xs:enumeration value="LC"/>
+<xs:enumeration value="OR"/>
+<xs:enumeration value="AE"/>
+<xs:enumeration value="PE"/>
+<xs:enumeration value="CE"/>
+<xs:enumeration value="AP"/>
+<xs:enumeration value="NLP"/>
+<xs:enumeration value="ELP"/>
+<xs:enumeration value="NP"/>
+<xs:enumeration value="RT"/>
+<xs:enumeration value="UIP"/>
+<xs:enumeration value="UCP"/>
+<xs:enumeration value="ULP"/>
+<xs:enumeration value="NLF"/>
+<xs:enumeration value="APR"/>
+<xs:enumeration value="OMD"/>
+<xs:enumeration value="CBA"/>
+<xs:enumeration value="PEA"/>
+ </xs:restriction>
+ </xs:simpleType>
+</xs:element>`;
+
 export const phoneXSD = `<xs:element name="phone">
 <xs:annotation>
 <xs:documentation>This is the phone number for the contact</xs:documentation>
@@ -1620,6 +1741,11 @@ export const campaignFinanceTransactionsSchema = xmlWrapper(
   expendForXSD,
   associatedTranXSD
   );
+export const operationSchema = xmlWrapper(operationXSD);
+export const agentIdSchema = xmlWrapper(agentIdXSD);
+export const expendIdSchema = xmlWrapper(expendIdXSD);
+export const transactionTypeSchema = xmlWrapper(transactionTypeXSD);
+export const transactionSubTypeSchema = xmlWrapper(transactionSubTypeXSD);
 export const contactSchema = xmlWrapper(
   contactXSD,
   contactNameXSD,

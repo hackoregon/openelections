@@ -437,8 +437,13 @@ export default class OrestarContributionConverter {
     }
   }
 
+  /**
+   * tranPurposeType
+   * A tran-purpose is only needed if an In-Kind Contribution subtype is defined
+   * Source: page 35 of  https://sos.oregon.gov/elections/Documents/orestarTransFiling.pdf
+   */
   public tranPurposeType() {
-    let purpose: string;
+    let purpose: InKindTranPurposeType;
     if (this.contribution.inKindType) {
       if (this.contribution.inKindType === InKindDescriptionType.BROADCAST) {
         purpose = InKindTranPurposeType.BROADCAST;
