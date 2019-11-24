@@ -165,9 +165,9 @@ export async function getActivityAttachmentAsync(params: IGetActivityAttachment)
 }
 
 export async function getFileAttachmentAsync(filePath: string): Promise<Buffer> {
-    // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
-    //     return(fs.readFileSync(filePath));
-    // }
+    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        return(fs.readFileSync(filePath));
+    }
 
     const key = filePath.replace('https://open-elections.s3.amazonaws.com/', '');
 
