@@ -16,9 +16,9 @@ import { getConnection } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
-import {createActivityRecordAsync, saveFileAttachmentAsync} from './activityService';
+import { createActivityRecordAsync, saveFileAttachmentAsync } from './activityService';
 import { User } from '../models/entity/User';
-import {UploadedFile} from "express-fileupload";
+import { UploadedFile } from 'express-fileupload';
 
 export interface IAddExpenditureAttrs {
     date: number;

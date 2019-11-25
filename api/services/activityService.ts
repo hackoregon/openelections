@@ -17,7 +17,6 @@ import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } fr
 import { Contribution } from '../models/entity/Contribution';
 import { Expenditure } from '../models/entity/Expenditure';
 import * as fs from 'fs';
-import {bugsnagClient} from "./bugsnagService";
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
@@ -175,10 +174,7 @@ export async function getFileAttachmentAsync(filePath: string): Promise<Buffer> 
     const s3 = new AWS.S3({apiVersion: '2006-03-01'});
     return new Promise((res, rej) => {
         s3.getObject({Bucket: 'open-elections', Key: key}, (err, data) => {
-            bugsnagClient.leaveBreadcrumb('s3 file', {
-                key,
-                filePath
-            });
+            console.log('accessing s3 object', filePath, key);
             if (err) rej(err);
             res(data.Body);
         });

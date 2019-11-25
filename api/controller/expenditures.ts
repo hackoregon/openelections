@@ -19,7 +19,7 @@ import {
 } from '../models/entity/Expenditure';
 import { PaymentMethod } from '../models/entity/Expenditure';
 import { bugsnagClient } from '../services/bugsnagService';
-import {UploadedFile} from "express-fileupload";
+import { UploadedFile } from 'express-fileupload';
 
 export class AddExpenditureDto implements IAddExpenditureAttrs {
     @IsNumber()
