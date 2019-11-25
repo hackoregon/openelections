@@ -10,8 +10,8 @@ import {
 import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
 import OrestarExpenditureConverter from '../../models/converters/orestarExpenditureConverter';
-import { expendForSchema, addressSchema, street1Schema, street2Schema, citySchema, stateSchema, zipSchema, zipPlusFourSchema, transactionSchema, operationSchema, transactionTypeSchema, transactionSubTypeSchema, tranPurposeSchema, agentIdSchema, expendIdSchema, transactionDescriptionSchema, aggregateAmountSchema } from '../schemas/schemas';
-import { ExpenditureType, ExpenditureSubType, PurposeType } from '../../models/entity/Expenditure';
+import { expendForSchema, addressSchema, street1Schema, street2Schema, citySchema, stateSchema, zipSchema, zipPlusFourSchema, transactionSchema, operationSchema, transactionTypeSchema, transactionSubTypeSchema, tranPurposeSchema, agentIdSchema, expendIdSchema, transactionDescriptionSchema, aggregateAmountSchema, paymentMethodSchema, dateSchema, checkNoSchema, amountSchema } from '../schemas/schemas';
+import { ExpenditureType, ExpenditureSubType, PurposeType, PaymentMethod } from '../../models/entity/Expenditure';
 
 let government: Government;
 let campaign: Campaign;
@@ -234,21 +234,35 @@ describe('Orestar expenditure converter', () => {
 
   });
 
-  // describe('transaction schema', () => {
+  describe.only('transaction schema', () => {
 
-    // it('confirms passing of transaction schema', async () => {
-    //   const expenditure = await newExpenditureAsync(campaign, government);
-    //   const xml = new OrestarExpenditureConverter(expenditure);
-    //   const xsd = transactionSchema;
-    //   const xml_valid = xml.transaction();
-    //   const xsdDoc = libxml.parseXml(xsd);
-    //   const xmlDocValid = libxml.parseXml(xml_valid);
-    //   xmlDocValid.validate(xsdDoc);
-    //   console.log(xmlDocValid.validationErrors);
-    //   expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
-    // });
+    it('confirms passing of all transaction schema', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      console.log('schema: ', xml_valid)
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
 
-  // });
+    it('confirms failure of all transaction schema: missing amount', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      delete expenditure.amount;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
 
   describe('CHOICE: operation schema', () => {
 
@@ -451,6 +465,35 @@ describe('Orestar expenditure converter', () => {
       const xml = new OrestarExpenditureConverter(expenditure);
       const xsd = transactionSubTypeSchema;
       const xml_valid = xml.transactionSubType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
+
+  describe('transaction amount', () => {
+
+    it('confirms passing of transaction amount', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = amountSchema;
+      const xml_valid = xml.amount();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of transaction amount', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      (expenditure as any).amount = 'nope';
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = amountSchema;
+      const xml_valid = xml.amount();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
@@ -773,6 +816,148 @@ describe('Orestar expenditure converter', () => {
     });
 
   });
+
+  describe('transaction payment-method', () => {
+
+    it('confirms passing of transaction payment-method: CASH', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.CASH;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of transaction payment-method: CHECK', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.CHECK;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of transaction payment-method: CREDIT_CARD_ONLINE', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.CREDIT_CARD_ONLINE;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of transaction payment-method: CREDIT_CARD_PAPER', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.CREDIT_CARD_PAPER;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of transaction payment-method: ETF', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.ETF;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of transaction payment-method: MONEY_ORDER', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.paymentMethod = PaymentMethod.MONEY_ORDER;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of transaction payment-method', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      (expenditure as any).paymentMethod = 'Nope';
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = paymentMethodSchema;
+      const xml_valid = xml.paymentMethod();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
+
+  describe('transaction date', () => {
+
+    it('confirms passing of transaction payment-method: CASH', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = dateSchema;
+      const xml_valid = xml.transactionDate();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+  });
+
+  describe('transaction check no', () => {
+
+    it('confirms passing of transaction check no', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.checkNumber = '12322';
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = checkNoSchema;
+      const xml_valid = xml.checkNo();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of transaction check no', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);      expenditure.checkNumber = 'NOPE';
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = checkNoSchema;
+      const xml_valid = xml.checkNo();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
+
+  describe('', () => {});
 
   describe('expend-for schema', () => {
 

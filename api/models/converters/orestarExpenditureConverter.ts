@@ -3,7 +3,8 @@ import {
   PurposeType,
   PayeeType,
   ExpenditureType,
-  ExpenditureSubType
+  ExpenditureSubType,
+  PaymentMethod
 } from '../entity/Expenditure';
 
 /**
@@ -56,6 +57,20 @@ export enum ExpenditurePurposeType {
   UTILITIES = 'U',
 }
 
+/**
+ * ExpenditurePaymentMethod
+ *  CHK, ACH, EFT, DC CC, CA
+ * source on page 33-34: https://sos.oregon.gov/elections/Documents/orestarTransFiling.pdf
+ */
+export enum ExpenditurePaymentMethod {
+  CASH = 'CA',
+  CHECK = 'CHK',
+  MONEY_ORDER = 'CHK',
+  CREDIT_CARD_ONLINE = 'CC',
+  CREDIT_CARD_PAPER = 'CC',
+  ETF = 'EFT'
+}
+
 export default class OrestarExpenditureConverter {
 
   private expenditure: Expenditure;
@@ -63,7 +78,6 @@ export default class OrestarExpenditureConverter {
   private orestarContactId: string;
 
   constructor(expenditure: Expenditure, orestarFilerId?: number, orestarContactId?: string) {
-    console.log(this.expenditure);
     this.expenditure = expenditure;
     this.orestarFilerId = orestarFilerId || 1;
     // TODO: orestarContactId may need to be more predictable
@@ -113,16 +127,18 @@ export default class OrestarExpenditureConverter {
     }
   }
 
-  // public transaction() {
-  //   return `<transaction id="${this.transactionId()}">
-  //     ${this.operation()}
-  //     <contact-id>${this.orestarContactId}</contact-id>
-  //     ${this.transactionType()}
-  //     ${this.transactionSubType()}
-  //     ${this.amount()}
-  //     ${this.transactionDate()}
-  //   </transaction>`;
-  // }
+  public transaction() {
+    return `<transaction id="${this.transactionId()}">
+      ${this.operation()}
+      <contact-id>${this.orestarContactId}</contact-id>
+      ${this.transactionType()}
+      ${this.transactionSubType()}
+      ${this.amount()}
+      ${this.transactionDate()}
+      ${this.transactionDescription()}
+      ${this.paymentMethod()}
+    </transaction>`;
+  }
 
   private transactionId() {
     const initialTransactionName = `trans-`;
@@ -152,9 +168,6 @@ export default class OrestarExpenditureConverter {
     }
   }
 
-  /**
-   * transactionSubType
-   */
   public transactionSubType() {
     if (this.expenditure.subType) {
       let type;
@@ -174,6 +187,14 @@ export default class OrestarExpenditureConverter {
         type = ExpenditureMainSubType.REFUND_OF_CONTRIBUTION;
       }
       return `<sub-type>${type}</sub-type>`;
+    } else {
+      return '';
+    }
+  }
+
+  public amount() {
+    if (this.expenditure.amount) {
+      return `<amount>${this.expenditure.amount}</amount>`;
     } else {
       return '';
     }
@@ -221,6 +242,76 @@ export default class OrestarExpenditureConverter {
     }
   }
 
+  public transactionDescription() {
+    if (this.expenditure.notes) {
+      return `<description>${this.expenditure.notes}</description>`;
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * paymentMethod
+   * Only required for cash expenditure, non-exempt loan payment, or other disbursement transactions.
+   */
+  public paymentMethod() {
+    if (this.expenditure.paymentMethod) {
+      if (this.expenditure.subType === ExpenditureSubType.CASH_EXPENDITURE || this.expenditure.subType === ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT) {
+        let method: ExpenditurePaymentMethod;
+        if (this.expenditure.paymentMethod === PaymentMethod.CASH) {
+          method = ExpenditurePaymentMethod.CASH;
+        } else if (this.expenditure.paymentMethod === PaymentMethod.CHECK) {
+          method = ExpenditurePaymentMethod.CHECK;
+        } else if (this.expenditure.paymentMethod === PaymentMethod.CREDIT_CARD_ONLINE) {
+          method = ExpenditurePaymentMethod.CREDIT_CARD_ONLINE;
+        } else if (this.expenditure.paymentMethod === PaymentMethod.CREDIT_CARD_PAPER) {
+          method = ExpenditurePaymentMethod.CREDIT_CARD_PAPER;
+        } else if (this.expenditure.paymentMethod === PaymentMethod.ETF) {
+          method = ExpenditurePaymentMethod.ETF;
+        } else if (this.expenditure.paymentMethod === PaymentMethod.MONEY_ORDER) {
+          method = ExpenditurePaymentMethod.MONEY_ORDER;
+        }
+        return `<payment-method>${method}</payment-method>`;
+      }
+      return '';
+    } else {
+      return '';
+    }
+  }
+
+  public transactionDate() {
+    const date = new Date(this.expenditure.date);
+    const year = date.getFullYear();
+    const mth = date.getMonth() + 1;
+    const dt = date.getDate();
+    let day: string;
+    let month: string;
+    if (dt < 10) {
+      day = '0' + dt;
+    }
+    if (mth < 10) {
+      month = '0' + mth;
+    }
+    const newDate = `${year}-${month || mth}-${day || dt}`;
+    return `<date>${newDate}</date>`;
+  }
+
+  public checkNo() {
+    if (this.expenditure.checkNumber) {
+      return `<check-no>${this.expenditure.checkNumber}</check-no>`;
+    } else {
+      return ``;
+    }
+  }
+
+  /**
+   * aggregateAmount
+   * NOT CURRENTLY COLLECTED IN OUR SYSTEM
+   */
+  public aggregateAmount() {
+    return '';
+  }
+
   /**
    * agentId
    * NOT CURRENTLY COLLECTED IN OUR SYSTEM
@@ -237,19 +328,11 @@ export default class OrestarExpenditureConverter {
     return '';
   }
 
-  public transactionDescription() {
-    if (this.expenditure.notes) {
-      return `<description>${this.expenditure.notes}</description>`;
-    } else {
-      return '';
-    }
-  }
-
   /**
-   * aggregateAmount
+   * interestRate
    * NOT CURRENTLY COLLECTED IN OUR SYSTEM
    */
-  public aggregateAmount() {
+  public interestRate() {
     return '';
   }
 
