@@ -267,16 +267,12 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contribution.campaign.id)) ||
             isGovAdmin;
 
-        if (contribution.status === ContributionStatus.SUBMITTED) {
-            if (!hasCampaignPermissions) {
+        if (contribution.status === ContributionStatus.PROCESSED) {
+            if (!isGovAdmin) {
                 throw new Error(
                     'User does not have permissions to change attributes on a contribution with submitted status'
                 );
             }
-        }
-
-        if (contribution.status === ContributionStatus.PROCESSED) {
-            throw new Error('Cannot change attributes on a processed contribution');
         }
 
         if (Object.keys(contributionAttrs).includes('compliant')) {
