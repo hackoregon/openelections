@@ -168,17 +168,12 @@ export async function getFileAttachmentAsync(filePath: string): Promise<Buffer> 
         return(fs.readFileSync(filePath));
     }
 
-    const key = filePath.replace('https://open-elections.s3.amazonaws.com/', '');
-
+    let key = new URL(filePath).pathname;
+    key = key.substr(1);
     const AWS = require('aws-sdk');
     const s3 = new AWS.S3({apiVersion: '2006-03-01'});
-    return new Promise((res, rej) => {
-        s3.getObject({Bucket: 'open-elections', Key: key}, (err, data) => {
-            console.log('accessing s3 object', filePath, key);
-            if (err) rej(err);
-            res(data.Body);
-        });
-    });
+    const data = await s3.getObject({Bucket: 'open-elections', Key: key}).promise();
+    return data.Body;
 }
 
 export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
