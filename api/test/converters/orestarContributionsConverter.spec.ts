@@ -78,7 +78,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -94,7 +94,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -110,7 +110,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -133,7 +133,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -156,7 +156,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -179,7 +179,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -202,7 +202,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -223,7 +223,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -236,7 +236,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -268,7 +268,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -291,7 +291,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -312,7 +312,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -325,7 +325,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -350,7 +350,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -376,7 +376,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -399,7 +399,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -422,7 +422,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -445,7 +445,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -490,7 +490,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -516,7 +516,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -526,7 +526,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -536,7 +536,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -562,7 +562,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -575,7 +575,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -588,7 +588,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -601,7 +601,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -614,7 +614,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -627,7 +627,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -640,7 +640,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -653,7 +653,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -666,7 +666,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -679,7 +679,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -692,7 +692,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -705,7 +705,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -718,7 +718,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -731,7 +731,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -756,7 +756,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -779,7 +779,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -803,7 +803,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -816,7 +816,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -829,7 +829,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -842,7 +842,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -855,7 +855,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -868,7 +868,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -894,7 +894,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -907,7 +907,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -924,7 +924,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -937,7 +937,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -953,7 +953,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -963,7 +963,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -979,7 +979,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -989,7 +989,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1005,7 +1005,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1015,7 +1015,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1032,7 +1032,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1045,7 +1045,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1061,7 +1061,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1074,7 +1074,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1090,7 +1090,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1102,7 +1102,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1119,7 +1119,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1132,7 +1132,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1145,7 +1145,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1158,7 +1158,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1171,7 +1171,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1184,7 +1184,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1197,7 +1197,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1210,7 +1210,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1237,7 +1237,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1250,7 +1250,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1265,7 +1265,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1278,7 +1278,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1298,7 +1298,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1314,7 +1314,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1328,7 +1328,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1342,7 +1342,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1356,7 +1356,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1370,7 +1370,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1384,7 +1384,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1398,7 +1398,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1410,7 +1410,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1427,7 +1427,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1454,7 +1454,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1479,7 +1479,7 @@ describe('Orestar contribution converter', () => {
       const xml_valid = xml.cosigner();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1491,7 +1491,7 @@ describe('Orestar contribution converter', () => {
       const xml_valid = xml.cosigner();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
     });
 
@@ -1508,7 +1508,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1521,7 +1521,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1534,7 +1534,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1565,7 +1565,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1582,7 +1582,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1600,7 +1600,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1618,7 +1618,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1634,7 +1634,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1653,7 +1653,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1669,7 +1669,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1683,7 +1683,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1698,7 +1698,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1714,7 +1714,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1728,7 +1728,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1743,7 +1743,7 @@ describe('Orestar contribution converter', () => {
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
-      console.log(xmlDocValid.validationErrors);
+      // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
@@ -1761,6 +1761,22 @@ describe('Orestar contribution converter', () => {
       xmlDocValid.validate(xsdDoc);
       // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
+
+  describe('generateCampaignFinanceTransaction', () => {
+
+    it('confirms passing of generateCampaignFinanceTransaction', async () => {
+      const expenditure = await newContributionAsync(campaign, government);
+      const xml = new OrestarContributionConverter(expenditure);
+      const xsd = campaignFinanceTransactionsSchema;
+      const xml_valid = xml.generateCampaignFinanceTransaction();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
   });

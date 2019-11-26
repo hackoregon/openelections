@@ -10,8 +10,8 @@ import {
 import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
 import OrestarExpenditureConverter from '../../models/converters/orestarExpenditureConverter';
-import { expendForSchema, addressSchema, street1Schema, street2Schema, citySchema, stateSchema, zipSchema, zipPlusFourSchema, transactionSchema, operationSchema, transactionTypeSchema, transactionSubTypeSchema, tranPurposeSchema, agentIdSchema, expendIdSchema, transactionDescriptionSchema, aggregateAmountSchema, paymentMethodSchema, dateSchema, checkNoSchema, amountSchema } from '../schemas/schemas';
-import { ExpenditureType, ExpenditureSubType, PurposeType, PaymentMethod } from '../../models/entity/Expenditure';
+import { expendForSchema, addressSchema, street1Schema, street2Schema, citySchema, stateSchema, zipSchema, zipPlusFourSchema, transactionSchema, operationSchema, transactionTypeSchema, transactionSubTypeSchema, tranPurposeSchema, agentIdSchema, expendIdSchema, transactionDescriptionSchema, aggregateAmountSchema, paymentMethodSchema, dateSchema, checkNoSchema, amountSchema, contactSchema, contactTypeSchema, campaignFinanceTransactionsSchema } from '../schemas/schemas';
+import { ExpenditureType, ExpenditureSubType, PurposeType, PaymentMethod, PayeeType } from '../../models/entity/Expenditure';
 
 let government: Government;
 let campaign: Campaign;
@@ -234,14 +234,14 @@ describe('Orestar expenditure converter', () => {
 
   });
 
-  describe.only('transaction schema', () => {
+  describe('ENUM: contact type schema', () => {
 
-    it('confirms passing of all transaction schema', async () => {
+    it('confirms passing of contact type schema: BUSINESS', async () => {
       const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.BUSINESS;
       const xml = new OrestarExpenditureConverter(expenditure);
-      const xsd = transactionSchema;
-      const xml_valid = xml.transaction();
-      console.log('schema: ', xml_valid)
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
@@ -249,9 +249,146 @@ describe('Orestar expenditure converter', () => {
       expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
-    it('confirms failure of all transaction schema: missing amount', async () => {
+    it('confirms passing of contact type schema: FAMILY', async () => {
       const expenditure = await newExpenditureAsync(campaign, government);
-      delete expenditure.amount;
+      expenditure.payeeType = PayeeType.FAMILY;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: INDIVIDUAL', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.INDIVIDUAL;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: LABOR', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.LABOR;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: OTHER', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.OTHER;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: POLITICAL_COMMITTEE', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.POLITICAL_COMMITTEE;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: POLITICAL_PARTY', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.POLITICAL_PARTY;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact type schema: UNREGISTERED', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.payeeType = PayeeType.UNREGISTERED;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms failure of contact type schema', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      (expenditure as any).payeeType = 'NOPE';
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactTypeSchema;
+      const xml_valid = xml.contactType();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+    });
+
+  });
+
+  describe('contact schema', () => {
+
+    it('confirms passing of contact schema', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactSchema;
+      const xml_valid = xml.contact();
+      console.log(xml_valid);
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of contact schema', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = contactSchema;
+      const xml_valid = xml.contact();
+      console.log(xml_valid);
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+  });
+
+  describe('transaction schema', () => {
+
+    it('confirms passing of all transaction schema: random', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
       const xml = new OrestarExpenditureConverter(expenditure);
       const xsd = transactionSchema;
       const xml_valid = xml.transaction();
@@ -259,7 +396,82 @@ describe('Orestar expenditure converter', () => {
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
       console.log(xmlDocValid.validationErrors);
-      expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of all transaction schema: expenditure, cash, check, broadcast', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.type = ExpenditureType.EXPENDITURE;
+      expenditure.subType = ExpenditureSubType.CASH_EXPENDITURE;
+      expenditure.amount = 16;
+      expenditure.paymentMethod = PaymentMethod.CHECK;
+      expenditure.checkNumber = '3456';
+      expenditure.notes = 'buy stuff';
+      expenditure.purpose = PurposeType.BROADCAST;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      // console.log('schema: ', xml_valid);
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of all transaction schema: expenditure, A/P, cash, fundraising', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.type = ExpenditureType.EXPENDITURE;
+      expenditure.subType = ExpenditureSubType.ACCOUNTS_PAYABLE;
+      expenditure.amount = 16;
+      expenditure.paymentMethod = PaymentMethod.CASH;
+      expenditure.notes = 'buy stuff';
+      expenditure.purpose = PurposeType.FUNDRAISING;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of all transaction schema: other, A/P/R, CC online, fundraising', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.type = ExpenditureType.OTHER;
+      expenditure.subType = ExpenditureSubType.ACCOUNTS_PAYABLE_RESCINDED;
+      expenditure.amount = 16;
+      expenditure.paymentMethod = PaymentMethod.CREDIT_CARD_ONLINE;
+      expenditure.notes = 'buy stuff';
+      expenditure.purpose = PurposeType.GENERAL_OPERATING;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+    it('confirms passing of all transaction schema: other disbursement, misc other disbursements, CC paper, newspaper', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      expenditure.type = ExpenditureType.OTHER_DISBURSEMENT;
+      expenditure.subType = ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT;
+      expenditure.amount = 16;
+      expenditure.paymentMethod = PaymentMethod.CREDIT_CARD_PAPER;
+      expenditure.notes = 'buy stuff';
+      expenditure.purpose = PurposeType.NEWSPAPER;
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = transactionSchema;
+      const xml_valid = xml.transaction();
+      console.log('schema: ', xml_valid);
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
   });
@@ -957,7 +1169,21 @@ describe('Orestar expenditure converter', () => {
 
   });
 
-  describe('', () => {});
+  describe('generateCampaignFinanceTransaction', () => {
+
+    it('confirms passing of generateCampaignFinanceTransaction', async () => {
+      const expenditure = await newExpenditureAsync(campaign, government);
+      const xml = new OrestarExpenditureConverter(expenditure);
+      const xsd = campaignFinanceTransactionsSchema;
+      const xml_valid = xml.generateCampaignFinanceTransaction();
+      const xsdDoc = libxml.parseXml(xsd);
+      const xmlDocValid = libxml.parseXml(xml_valid);
+      xmlDocValid.validate(xsdDoc);
+      console.log(xmlDocValid.validationErrors);
+      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
+    });
+
+  });
 
   describe('expend-for schema', () => {
 

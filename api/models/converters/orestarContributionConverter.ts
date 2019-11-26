@@ -77,7 +77,6 @@ export default class OrestarContributionConverter {
   private orestarContactId: string;
 
   constructor(contribution: Contribution, orestarFilerId?: number, orestarContactId?: string) {
-    console.log({contribution});
     this.contribution = contribution;
     this.orestarFilerId = orestarFilerId || 1;
     // TODO: orestarContactId may need to be more predictable
@@ -85,13 +84,14 @@ export default class OrestarContributionConverter {
   }
 
   public generate() {
-    return `<?xml version="1.0"?><address>
-    <street1>5903 SW Corbett Ave Apt 5</street1>
-    <street2/>
-    <city>Portland</city>
-    <state>OR</state>
-    <zip>97239</zip>
-    </address>`;
+    return `${this.contact()}${this.transaction()}`;
+  }
+
+  public generateCampaignFinanceTransaction() {
+    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
+    ${this.contact()}
+    ${this.transaction()}
+    </campaign-finance-transactions>`;
   }
 
   public address() {
@@ -371,28 +371,31 @@ export default class OrestarContributionConverter {
   }
 
   public transactionSubType() {
-    let subType: TransactionSubType;
-    if (this.contribution.subType === ContributionSubType.CASH) {
-      subType = TransactionSubType.CASH;
-    } else if (this.contribution.subType === ContributionSubType.INKIND_CONTRIBUTION) {
-      subType = TransactionSubType.INKIND_CONTRIBUTION;
-    } else if (this.contribution.subType === ContributionSubType.INKIND_FORGIVEN_ACCOUNT) {
-      subType = TransactionSubType.INKIND_FORGIVEN_ACCOUNT;
-    } else if (this.contribution.subType === ContributionSubType.INKIND_FORGIVEN_PERSONAL) {
-      subType = TransactionSubType.INKIND_FORGIVEN_PERSONAL;
-    } else if (this.contribution.subType === ContributionSubType.ITEM_MISC) {
-      subType = TransactionSubType.ITEM_MISC;
-    } else if (this.contribution.subType === ContributionSubType.ITEM_REFUND) {
-      subType = TransactionSubType.ITEM_REFUND;
-    } else if (this.contribution.subType === ContributionSubType.ITEM_RETURNED_CHECK) {
-      subType = TransactionSubType.ITEM_RETURNED_CHECK;
-    } else if (this.contribution.subType === ContributionSubType.INKIND_PAID_SUPERVISION) {
-      // There does not appear to be documentation on what Orestar expects this to be.
-      // setting to: inkind contribution
-      subType = TransactionSubType.INKIND_CONTRIBUTION;
+    if (this.contribution.subType) {
+      let subType: TransactionSubType;
+      if (this.contribution.subType === ContributionSubType.CASH) {
+        subType = TransactionSubType.CASH;
+      } else if (this.contribution.subType === ContributionSubType.INKIND_CONTRIBUTION) {
+        subType = TransactionSubType.INKIND_CONTRIBUTION;
+      } else if (this.contribution.subType === ContributionSubType.INKIND_FORGIVEN_ACCOUNT) {
+        subType = TransactionSubType.INKIND_FORGIVEN_ACCOUNT;
+      } else if (this.contribution.subType === ContributionSubType.INKIND_FORGIVEN_PERSONAL) {
+        subType = TransactionSubType.INKIND_FORGIVEN_PERSONAL;
+      } else if (this.contribution.subType === ContributionSubType.ITEM_MISC) {
+        subType = TransactionSubType.ITEM_MISC;
+      } else if (this.contribution.subType === ContributionSubType.ITEM_REFUND) {
+        subType = TransactionSubType.ITEM_REFUND;
+      } else if (this.contribution.subType === ContributionSubType.ITEM_RETURNED_CHECK) {
+        subType = TransactionSubType.ITEM_RETURNED_CHECK;
+      } else if (this.contribution.subType === ContributionSubType.INKIND_PAID_SUPERVISION) {
+        // There does not appear to be documentation on what Orestar expects this to be.
+        // setting to: inkind contribution
+        subType = TransactionSubType.INKIND_CONTRIBUTION;
+      }
+      return `<sub-type>${subType}</sub-type>`;
+    } else {
+      return '';
     }
-    console.log('sub types is:', subType);
-    return `<sub-type>${subType}</sub-type>`;
   }
 
   public transactionDate() {
@@ -409,7 +412,6 @@ export default class OrestarContributionConverter {
       month = '0' + mth;
     }
     const newDate = `${year}-${month || mth}-${day || dt}`;
-    console.log(this.contribution.date, newDate);
     return `<date>${newDate}</date>`;
   }
 

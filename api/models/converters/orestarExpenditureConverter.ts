@@ -8,6 +8,21 @@ import {
 } from '../entity/Expenditure';
 
 /**
+ * ExpenditurePayeeType
+ * Orestar expects one of the following:
+ * B, C, F, I, L, O, P, U
+ */
+export enum ExpenditurePayeeType {
+  INDIVIDUAL = 'I',
+  BUSINESS = 'B',
+  FAMILY = 'F',
+  LABOR = 'L',
+  POLITICAL_COMMITTEE = 'C',
+  POLITICAL_PARTY = 'P',
+  UNREGISTERED = 'U',
+  OTHER = 'O'
+}
+/**
  * ExpenditureMainType Enum
  * There are a total 6 options for this:
  * C, E, OR, OD, OA, O
@@ -84,6 +99,136 @@ export default class OrestarExpenditureConverter {
     this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
+  public generate() {
+    return `${this.contact()}${this.transaction()}`;
+  }
+
+  public generateCampaignFinanceTransaction() {
+    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
+    ${this.contact()}
+    ${this.transaction()}
+    </campaign-finance-transactions>`;
+  }
+
+  public contact() {
+    return `<contact id="${this.orestarContactId}">
+    ${this.contactType()}
+    ${this.contactName()}
+    ${this.address()}
+    </contact>`;
+  }
+
+  public contactType() {
+    if (this.expenditure.payeeType) {
+      let type: ExpenditurePayeeType;
+      if (this.expenditure.payeeType === PayeeType.BUSINESS) {
+        type = ExpenditurePayeeType.BUSINESS;
+      } else if (this.expenditure.payeeType === PayeeType.FAMILY) {
+        type = ExpenditurePayeeType.FAMILY;
+      } else if (this.expenditure.payeeType === PayeeType.INDIVIDUAL) {
+        type = ExpenditurePayeeType.INDIVIDUAL;
+      } else if (this.expenditure.payeeType === PayeeType.LABOR) {
+        type = ExpenditurePayeeType.LABOR;
+      } else if (this.expenditure.payeeType === PayeeType.OTHER) {
+        type = ExpenditurePayeeType.OTHER;
+      } else if (this.expenditure.payeeType === PayeeType.POLITICAL_COMMITTEE) {
+        type = ExpenditurePayeeType.POLITICAL_COMMITTEE;
+      } else if (this.expenditure.payeeType === PayeeType.POLITICAL_PARTY) {
+        type = ExpenditurePayeeType.POLITICAL_PARTY;
+      } else if (this.expenditure.payeeType === PayeeType.UNREGISTERED) {
+        type = ExpenditurePayeeType.UNREGISTERED;
+      }
+      return `<type>${type}</type>`;
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * contactName
+   * This method should return one of the following:
+   * individual-name
+   * business-name
+   * committee with id or name included
+   */
+  public contactName() {
+    if (this.expenditure.payeeType) {
+      if (this.expenditure.payeeType !== PayeeType.INDIVIDUAL && this.expenditure.payeeType !== PayeeType.FAMILY) {
+        if (this.expenditure.payeeType === PayeeType.POLITICAL_COMMITTEE ||
+          this.expenditure.payeeType === PayeeType.POLITICAL_PARTY ||
+          this.expenditure.payeeType === PayeeType.UNREGISTERED) {
+            // committee
+            return `<contact-name>${this.committee()}</contact-name>`;
+        } else {
+          //business-name + other
+          return `<contact-name>${this.businessName()}</contact-name>`;
+        }
+      } else {
+        return `<contact-name>
+          ${this.individualName()}
+        </contact-name>`;
+      }
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * Could return one of the following:
+   * <id>6545</id> OR
+   * <name>A Political committee</name>
+   * But our app only supports name at this time
+   */
+  public committee() {
+    if (this.expenditure.name) {
+      return `<committee>
+      <name>${this.expenditure.name}</name>
+      </committee>`;
+    } else {
+      return '';
+    }
+  }
+
+  public individualName() {
+    const name = this.expenditure.name.split(' ');
+    if (name.length === 2) {
+      const fname = name[0];
+      const lname = name[1];
+      return `<individual-name>
+      <first>${fname}</first>
+      <last>${lname}</last>
+      </individual-name>`;
+    } else if (name.length === 1) {
+      return `<individual-name><first>${this.expenditure.name}</first></individual-name>`;
+    } else if (name.length === 3) {
+      const fname = `${name[0]} ${name[1]}`;
+      const lname = name[2];
+      return `<individual-name>
+      <first>${fname}</first>
+      <last>${lname}</last>
+      </individual-name>`;
+    } else if (name.length === 4) {
+      const fname = `${name[0]} ${name[1]}`;
+      const middle = name[2];
+      const lname =  name[3];
+      return `<individual-name>
+      <first>${fname}</first>
+      <middle>${middle}</middle>
+      <last>${lname}</last>
+      </individual-name>`;
+    } else {
+      return '';
+    }
+  }
+
+  public businessName() {
+    if (this.expenditure.name) {
+      return `<business-name>${this.expenditure.name}</business-name>`;
+    } else {
+      return '';
+    }
+  }
+
   public address() {
     return `<address>
     ${this.street1()}
@@ -133,10 +278,12 @@ export default class OrestarExpenditureConverter {
       <contact-id>${this.orestarContactId}</contact-id>
       ${this.transactionType()}
       ${this.transactionSubType()}
-      ${this.amount()}
-      ${this.transactionDate()}
+      ${this.tranPurposeType()}
       ${this.transactionDescription()}
+      ${this.amount()}
       ${this.paymentMethod()}
+      ${this.transactionDate()}
+      ${this.checkNo()}
     </transaction>`;
   }
 
