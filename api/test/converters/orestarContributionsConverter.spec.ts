@@ -218,8 +218,11 @@ describe('Orestar contribution converter', () => {
   describe('zip plus schema', () => {
 
     it('confirms passing zip plus four schema', async () => {
+      const contribution = await newContributionAsync(campaign, government);
+      contribution.zip = '34554-5555';
+      const xml = new OrestarContributionConverter(contribution, 1);
       const xsd = zipPlusFourSchema;
-      const xml_valid = '<zip-plus4>4565</zip-plus4>';
+      const xml_valid = xml.zipPlusFour();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
@@ -307,8 +310,11 @@ describe('Orestar contribution converter', () => {
   describe('county schema', () => {
 
     it('confirms passing county schema', async () => {
+      const contribution = await newContributionAsync(campaign, government);
+      contribution.county = 'Washington';
+      const xml = new OrestarContributionConverter(contribution, 1);
       const xsd = countySchema;
-      const xml_valid = '<county>Washington</county>';
+      const xml_valid = xml.county();
       const xsdDoc = libxml.parseXml(xsd);
       const xmlDocValid = libxml.parseXml(xml_valid);
       xmlDocValid.validate(xsdDoc);
