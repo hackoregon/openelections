@@ -614,6 +614,7 @@ export type IContributionSummaryResults = {
     data: IContributionSummary[] | IContributionGovSummary[];
     geoJson?: IContributionsGeoJson;
     csv?: string;
+    xml?: string;
     perPage: number;
     page: number;
     total: number;

@@ -161,7 +161,7 @@ export interface IGetContributionOptions {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
-    format?: 'json' | 'csv' | 'geoJson';
+    format?: 'json' | 'csv' | 'geoJson' | 'xml';
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
@@ -197,6 +197,44 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             contributions.geoJson = convertToGeoJson(contributions);
         } else if (contributionAttrs.format === 'csv') {
             contributions.csv = convertToCsv(contributions);
+        } else if (contributionAttrs.format === 'xml') {
+            // TODO: This should call xmlConverter
+            console.log('XMLLLLLL')
+            contributions.xml = `<campaign-finance-transactions xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject" filer-id="17697">
+            <contact id="contact-AB84260797">
+            <type>I</type>
+            <contact-name>
+            <individual-name>
+            <first>Mira</first>
+            <last>Glasser</last>
+            </individual-name>
+            </contact-name>
+            <address>
+            <street1>5903 SW Corbett Ave Apt 5</street1>
+            <street2/>
+            <city>Portland</city>
+            <state>OR</state>
+            <zip>97239</zip>
+            </address>
+            <occupation>Bookseller</occupation>
+            <employment>
+            <employer-name>Daedalus Books</employer-name>
+            <city>Portland</city>
+            <state>OR</state>
+            </employment>
+            </contact>
+            <transaction id="trans-AB84260797-170935140">
+            <operation>
+            <add>true</add>
+            </operation>
+            <contact-id>contact-AB84260797</contact-id>
+            <type>C</type>
+            <sub-type>CA</sub-type>
+            <amount>5.00</amount>
+            <date>2019-08-09</date>
+            </transaction>
+            </campaign-finance-transactions>`;
+            // contributions.xml = convertToCsv(contributions);
         }
 
         return contributions;

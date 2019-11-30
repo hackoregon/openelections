@@ -154,6 +154,16 @@ class ContributionsTable extends React.Component {
       getContributions(data);
     }
 
+    function fetchXML() {
+      const data = {
+        governmentId: govId,
+        currentUserId: userId,
+        campaignId,
+        format: 'xml',
+      };
+      getContributions(data);
+    }
+
     function fetchList() {
       getContributions({
         governmentId: govId,
@@ -192,6 +202,13 @@ class ContributionsTable extends React.Component {
             }}
           >
             Export
+          </Button>
+          <Button
+            onClick={() => {
+              fetchXML();
+            }}
+          >
+            Export XML
           </Button>
         </div>
         <Table
