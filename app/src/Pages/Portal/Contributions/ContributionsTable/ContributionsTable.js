@@ -18,6 +18,7 @@ import {
   isGovAdmin,
   getCurrentUserId,
 } from '../../../../state/ducks/auth';
+import { showModal } from '../../../../state/ducks/modal';
 
 // Need History push to URL?
 // Need Create sort for updatedOn date field?
@@ -112,6 +113,7 @@ class ContributionsTable extends React.Component {
   render() {
     const {
       getContributions,
+      getAllContributions,
       filterOptions,
       updateFilter,
       isListLoading,
@@ -154,14 +156,19 @@ class ContributionsTable extends React.Component {
       getContributions(data);
     }
 
-    function fetchXML() {
+    function fetchXML(isAll, filerId) {
       const data = {
         governmentId: govId,
         currentUserId: userId,
         campaignId,
         format: 'xml',
+        filerId,
       };
-      getContributions(data);
+      if (isAll) {
+        getAllContributions(data);
+      } else {
+        getContributions(data);
+      }
     }
 
     function fetchList() {
@@ -205,7 +212,13 @@ class ContributionsTable extends React.Component {
           </Button>
           <Button
             onClick={() => {
-              fetchXML();
+              // fetchXML();
+              this.props.showModal({
+                component: 'ExportXML',
+                props: {
+                  fetch: (isAll, filerId) => fetchXML(isAll, filerId),
+                },
+              });
             }}
           >
             Export XML
@@ -276,7 +289,11 @@ export default connect(
   dispatch => {
     return {
       getContributions: data => dispatch(getContributions(data, true)),
+      getAllContributions: data => dispatch(getContributions(data, false)),
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
+      showModal: payload => {
+        dispatch(showModal(payload));
+      },
     };
   }
 )(ContributionsTable);

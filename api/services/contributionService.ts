@@ -14,6 +14,7 @@ import {
     PaymentMethod,
     PhoneType
 } from '../models/entity/Contribution';
+import { convertContributionsToXML } from '../models/converters/index';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
@@ -166,6 +167,7 @@ export interface IGetContributionOptions {
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
+    filerId?: string | number;
 }
 
 
@@ -198,43 +200,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         } else if (contributionAttrs.format === 'csv') {
             contributions.csv = convertToCsv(contributions);
         } else if (contributionAttrs.format === 'xml') {
-            // TODO: This should call xmlConverter
-            console.log('XMLLLLLL')
-            contributions.xml = `<campaign-finance-transactions xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject" filer-id="17697">
-            <contact id="contact-AB84260797">
-            <type>I</type>
-            <contact-name>
-            <individual-name>
-            <first>Mira</first>
-            <last>Glasser</last>
-            </individual-name>
-            </contact-name>
-            <address>
-            <street1>5903 SW Corbett Ave Apt 5</street1>
-            <street2/>
-            <city>Portland</city>
-            <state>OR</state>
-            <zip>97239</zip>
-            </address>
-            <occupation>Bookseller</occupation>
-            <employment>
-            <employer-name>Daedalus Books</employer-name>
-            <city>Portland</city>
-            <state>OR</state>
-            </employment>
-            </contact>
-            <transaction id="trans-AB84260797-170935140">
-            <operation>
-            <add>true</add>
-            </operation>
-            <contact-id>contact-AB84260797</contact-id>
-            <type>C</type>
-            <sub-type>CA</sub-type>
-            <amount>5.00</amount>
-            <date>2019-08-09</date>
-            </transaction>
-            </campaign-finance-transactions>`;
-            // contributions.xml = convertToCsv(contributions);
+            contributions.xml = convertContributionsToXML(contributions, contributionAttrs.filerId);
         }
 
         return contributions;

@@ -87,6 +87,10 @@ export default class OrestarContributionConverter {
     return `${this.contact()}${this.transaction()}`;
   }
 
+  public convert() {
+    return `${this.contact()}${this.transaction()}`;
+  }
+
   public generateCampaignFinanceTransaction() {
     return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
     ${this.contact()}

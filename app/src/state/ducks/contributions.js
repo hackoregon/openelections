@@ -318,8 +318,13 @@ export function getContributions(contributionSearchAttrs, applyFilter = false) {
         contributionSearchAttrs.format === 'xml' &&
         response.status === 200
       ) {
-        const contributions = await response.text();
-        downloadFile(contributions, `contributions-download-${Date.now()}.xml`);
+        const contributions = await response.json();
+        contributions.map((contribution, index) => {
+          return downloadFile(
+            contribution,
+            `contributions-download-${index + 1}-${Date.now()}.xml`
+          );
+        });
       } else if (response.status === 200) {
         const contributions = await response.json();
         const data = normalize(contributions.data, [schema.contribution]);
