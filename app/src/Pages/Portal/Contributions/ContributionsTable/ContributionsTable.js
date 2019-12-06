@@ -178,10 +178,8 @@ class ContributionsTable extends React.Component {
         filerId,
       };
       if (isAll) {
-        console.log('getting all');
         getAllContributions(data);
       } else {
-        console.log('getting some');
         getContributions(data);
       }
     }

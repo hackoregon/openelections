@@ -42,7 +42,6 @@ const ExportXML = props => {
       <FormModal>
         <ExportXMLForm
           onSubmit={values => {
-            console.log(isAll, values.filerId);
             props.fetch(isAll, values.filerId);
           }}
           initialValues={{

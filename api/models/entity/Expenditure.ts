@@ -20,6 +20,7 @@ import { Activity } from './Activity';
 import { IGetExpenditureAttrs } from '../../services/expenditureService';
 import { Parser } from 'json2csv';
 import * as dateFormat from 'dateformat';
+import { convertExpendituresToXML } from '../converters';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',
@@ -348,6 +349,7 @@ export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFie
 export type IExpenditureSummaryResults = {
     data: IExpenditureSummary[];
     csv?: string;
+    xml?: string;
     perPage: number;
     page: number;
     total: number;
@@ -434,6 +436,10 @@ export function convertToCsv(expenditures: IExpenditureSummaryResults): string {
         return item;
     });
     return json2csvParser.parse(expenditures.data);
+}
+
+export function convertToXml(expenditures: IExpenditureSummaryResults, filerId: string | number): string {
+    return convertExpendituresToXML(expenditures, filerId);
 }
 
 const removeUndefined = obj => {

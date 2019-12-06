@@ -99,6 +99,10 @@ export default class OrestarExpenditureConverter {
     this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
+  public convert() {
+    return `${this.contact()}${this.transaction()}`;
+  }
+
   public generate() {
     return `${this.contact()}${this.transaction()}`;
   }

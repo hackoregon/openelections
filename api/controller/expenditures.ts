@@ -155,7 +155,7 @@ export class GetExpendituresDto implements IGetExpenditureAttrs {
 
     @IsOptional()
     @IsString()
-    format?: 'csv' | 'json';
+    format?: 'csv' | 'json' | 'xml';
 }
 
 export async function getExpenditures(request: IRequest, response: Response, next: Function) {
@@ -166,11 +166,15 @@ export async function getExpenditures(request: IRequest, response: Response, nex
             currentUserId: request.currentUser.id
         });
         await checkDto(getExpendituresDto);
+
         const expenditures = await getExpendituresAsync(getExpendituresDto);
         if (expenditures.csv) {
             response.type('text/csv');
             response.attachment('download-expenditures-' + Date.now() + '.csv');
             return response.status(200).send(Buffer.from(expenditures.csv));
+        } else if (expenditures.xml) {
+            response.type('application/json');
+            return response.status(200).send(Buffer.from(expenditures.xml));
         }
         return response.status(200).send(expenditures);
     } catch (err) {
