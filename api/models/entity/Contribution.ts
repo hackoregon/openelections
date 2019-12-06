@@ -23,6 +23,7 @@ import { MatchAddressType } from '../../services/dataScienceService';
 import { Parser } from 'json2csv';
 import * as dateFormat from 'dateformat';
 import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
+import { convertContributionsToXML } from '../converters';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -687,6 +688,7 @@ export async function getContributionsByGovernmentIdAsync(
         });
 
         const total = await contributionRepository.count(removeUndefined({ where }));
+        console.log({ options });
         return {
             data: contributions,
             perPage,
@@ -739,6 +741,10 @@ export function convertToCsv(contributions: any): string {
         return item;
     });
     return json2csvParser.parse(contributions.data);
+}
+
+export function convertToXml(contributions: any, filerId: number | string): string {
+    return convertContributionsToXML(contributions, filerId);
 }
 
 export interface SummaryAttrs {

@@ -6,20 +6,17 @@ import OrestarContributionConverter from "./orestarContributionConverter";
 export function convertContributionsToXML(contributions: any, filerId: number | string): string {
 
   const contributionsArray = [];
-  const totalLoops = Math.ceil(contributions.data.length / 2000);
-
+  const baseNum = 500;
+  const totalLoops = Math.ceil(contributions.data.length / baseNum);
+  console.log(contributions.data.length)
   for (let i = 0; i < totalLoops; i++) {
-    console.log('working on set: ', i)
-    const currentSet = contributions.data.slice(i === 0 ? i : (i * 2000) + 1, (i + 1) * 2000);
+    const currentSet = contributions.data.slice(i === 0 ? i : (i * baseNum), (i + 1) * baseNum);
     const convertedContributions = currentSet.map( (contribution: any, index: number ): any => {
       const converter = new OrestarContributionConverter(contribution);
-      console.log('processing ', index);
       return converter.convert();
     });
-
     contributionsArray.push(`<campaign-finance-transactions xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject" filer-id="${filerId}">${convertedContributions.join()}</campaign-finance-transactions>`);
   }
-  console.log(contributionsArray.length);
   return JSON.stringify(contributionsArray);
 }
 

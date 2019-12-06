@@ -243,9 +243,7 @@ export async function getContributions(request: IRequest, response: Response, ne
             response.attachment('download-contributions-' + Date.now() + '.csv');
             return response.status(200).send(Buffer.from(contributions.csv));
         } else if (contributions.xml) {
-            console.log('perfect');
             response.type('application/json');
-            // response.attachment('download-contributions-' + Date.now() + '.xml');
             return response.status(200).send(Buffer.from(contributions.xml));
         }
         return response.status(200).send(JSON.stringify(contributions));

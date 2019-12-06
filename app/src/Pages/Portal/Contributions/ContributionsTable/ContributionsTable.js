@@ -23,6 +23,19 @@ import { showModal } from '../../../../state/ducks/modal';
 // Need History push to URL?
 // Need Create sort for updatedOn date field?
 
+const buttonStyles = css`
+  margin: 0 5px !important;
+`;
+
+const buttonWrapper = css`
+  display: flex;
+  flex-direction: row-reverse;
+  @media screen and (max-width: 900px) {
+    margin-top: 10px;
+    justify-content: center;
+  }
+`;
+
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
@@ -165,8 +178,10 @@ class ContributionsTable extends React.Component {
         filerId,
       };
       if (isAll) {
+        console.log('getting all');
         getAllContributions(data);
       } else {
+        console.log('getting some');
         getContributions(data);
       }
     }
@@ -202,27 +217,34 @@ class ContributionsTable extends React.Component {
             fetchList();
           }}
         />
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button
-            onClick={() => {
-              fetchCSV();
-            }}
-          >
-            Export
-          </Button>
-          <Button
-            onClick={() => {
-              // fetchXML();
-              this.props.showModal({
-                component: 'ExportXML',
-                props: {
-                  fetch: (isAll, filerId) => fetchXML(isAll, filerId),
-                },
-              });
-            }}
-          >
-            Export XML
-          </Button>
+        <div css={buttonWrapper}>
+          <div css={buttonStyles}>
+            <Button
+              onClick={() => {
+                fetchCSV();
+              }}
+            >
+              Export CSV
+            </Button>
+          </div>
+          <div css={buttonStyles}>
+            <Button
+              css={buttonStyles}
+              onClick={() => {
+                // fetchXML();
+                this.props.showModal({
+                  component: 'ExportXML',
+                  props: {
+                    fetch: (isAll, filerId) => fetchXML(isAll, filerId),
+                    totalFiltered: filterOptions.perPage || 50,
+                    total,
+                  },
+                });
+              }}
+            >
+              Export XML
+            </Button>
+          </div>
         </div>
         <Table
           isLoading={isLoading}

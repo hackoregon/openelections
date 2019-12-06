@@ -21,6 +21,12 @@ const exportOptionText = css`
   text-align: center;
 `;
 
+const totalTest = css`
+  text-align: center;
+  font-size: 0.8em;
+  margin: 5px 0 0 0;
+`;
+
 const modalStyle = css`
   // position: absolute;
   // width: 350px;
@@ -36,6 +42,7 @@ const ExportXML = props => {
       <FormModal>
         <ExportXMLForm
           onSubmit={values => {
+            console.log(isAll, values.filerId);
             props.fetch(isAll, values.filerId);
           }}
           initialValues={{
@@ -50,30 +57,38 @@ const ExportXML = props => {
                 provide your filer id.
               </p>
               {formSections.export}
-              <p css={exportOptionText}>What do you want to export?</p>
+              <p css={exportOptionText}>
+                What records to do you want to export?
+              </p>
               <div css={buttonWrapper}>
-                <Button
-                  buttonType="submit"
-                  disabled={!isValid}
-                  onClick={() => {
-                    setIsAll(false);
-                    handleSubmit();
-                  }}
-                  style={{ margin: '1px' }}
-                >
-                  Filtered XML
-                </Button>
-                <Button
-                  buttonType="submit"
-                  disabled={!isValid}
-                  onClick={() => {
-                    setIsAll(true);
-                    handleSubmit();
-                  }}
-                  style={{ margin: '1px' }}
-                >
-                  All XML
-                </Button>
+                <div>
+                  <Button
+                    buttonType="submit"
+                    disabled={!isValid}
+                    onClick={() => {
+                      setIsAll(false);
+                      handleSubmit();
+                    }}
+                    style={{ margin: '1px' }}
+                  >
+                    Export Filtered
+                  </Button>
+                  <p css={totalTest}>{props.totalFiltered} total</p>
+                </div>
+                <div>
+                  <Button
+                    buttonType="submit"
+                    disabled={!isValid}
+                    onClick={() => {
+                      setIsAll(true);
+                      handleSubmit();
+                    }}
+                    style={{ margin: '1px' }}
+                  >
+                    Export All
+                  </Button>
+                  <p css={totalTest}>{props.total} total</p>
+                </div>
               </div>
             </>
           )}
