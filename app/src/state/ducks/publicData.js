@@ -197,3 +197,68 @@ export const filteredPublicData = createSelector(
 );
 
 // Aggregated data per chart
+
+// Done: map takes Geojson of the filtered donations
+export const mapData = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: summary data includes aggregations and averages
+// - number of donors
+// - number of donations
+// - median contribution size (exclude OAE type public match)
+// - total amount contributed (by campaign?)
+// - total amount matched (requires explanatory text since it won't be exactly 6x)
+export const summaryData = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: aggregate donation amounts by binned donations ranges
+// - micro ($0-25)
+// - small ($25-100)
+// - medium ($100-250)
+// - large ($250-1000)
+// - mega ($1000+)
+// For each bucket include three properties ({ name: 'micro', count: number of donations, total: sum of donations})
+export const donationSizeByDonationRange = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: count of and sum of donations for each contributor type
+// (individual, business, family, labor, political_committee, political_party, unregistered, other)
+// For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
+// Note: pad out the rest of the map with zeroes for each type that isn't represented in the data
+export const aggregatedContributorTypes = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: count of and sum of donations for each contribution type
+// (cash, inkind, other)
+// Same as above data shape
+export const aggregatedContributionTypes = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: count and sum of donations for each region
+// (portland, oregon, outside)
+// Note: filter out OAE subtype public_matching
+// Note: do not include portland in oregon
+export const aggregatedContributionsByRegion = createSelector(
+  filteredPublicData,
+  data => data
+);
+
+// TODO: create a table that matches this format
+// | Campaign Name | Total Amount | Total Donations | Total Match Amount | Micro | Small | Medium | Large | Mega |
+// | ------------- | ------------ | --------------- | ------------------ | ----- | ----- | ------ | ----- | ---- |
+// | One           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
+// | Two           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
+export const campaignsTable = createSelector(
+  filteredPublicData,
+  data => data
+);
