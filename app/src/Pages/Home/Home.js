@@ -7,6 +7,7 @@ import {
   publicDataRequest,
   allOffices,
   allCampaigns,
+  filteredPublicData,
 } from '../../state/ducks/publicData';
 
 class HomePage extends React.Component {
@@ -16,9 +17,10 @@ class HomePage extends React.Component {
   }
 
   render() {
-    const { request, allOffices, allCampaigns } = this.props;
+    const { request, allOffices, allCampaigns, filteredData } = this.props;
     const { isLoading, error, data } = request;
     console.log('GOT IT: ', isLoading, error, data);
+    console.log('Filtered Data:', filteredData);
     return (
       <PageHoc>
         <h1>Home</h1>
@@ -65,6 +67,7 @@ export default connect(
     request: publicDataRequest(state),
     allOffices: allOffices(state),
     allCampaigns: allCampaigns(state),
+    filteredData: filteredPublicData(state),
   }),
   dispatch => {
     return {

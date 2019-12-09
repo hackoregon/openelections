@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createSelector } from 'reselect';
+import { isAfter, isBefore } from 'date-fns';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
@@ -14,10 +15,15 @@ export const actionTypes = {
 
 // Initial State
 export const initialState = {
-  data: {},
+  data: {
+    type: 'FeatureCollection',
+    features: [],
+  },
   filters: {
     campaigns: [],
     offices: [],
+    startDate: null,
+    endDate: null,
   },
   isLoading: false,
   error: null,
@@ -83,7 +89,17 @@ export const publicDataFilters = createSelector(
 
 export const publicDataGeojson = createSelector(
   publicDataRequest,
-  req => req.data
+  req => {
+    const data = req.data;
+    if (!data.features) return data;
+
+    // Convert date strings to Date objects
+    data.features.forEach(f => {
+      f.properties.date = new Date(f.properties.date);
+    });
+
+    return data;
+  }
 );
 
 // Filter Options (based off of the complete public dataset)
@@ -130,20 +146,34 @@ export const selectedCampaigns = createSelector(
   filters => (filters.campaigns || []).map(c => c.id)
 );
 
+export const selectedStartDate = createSelector(
+  publicDataFilters,
+  filters => filters.startDate
+);
+
+export const selectedEndDate = createSelector(
+  publicDataFilters,
+  filters => filters.endDate
+);
+
 // Filtered public dataset (based on above filters)
 
 export const filteredPublicData = createSelector(
   publicDataGeojson,
   selectedOffices,
   selectedCampaigns,
-  (data, offices, campaigns) => {
+  selectedStartDate,
+  selectedEndDate,
+  (data, offices, campaigns, start, end) => {
     // Create a shallow copy of the underlying Geojson
-    const dataCopy = Object.extend({}, data);
+    const dataCopy = { ...data };
+    dataCopy.features = dataCopy.features.slice();
 
-    // If selected filter arrays are empty, do not filter
-    if (!offices.length && !campaigns.length) {
-      dataCopy.features = dataCopy.features.slice();
-      return dataCopy;
+    // Filter data starting with the fastest, broadest filters first
+    if (campaigns.length) {
+      dataCopy.features = dataCopy.features.filter(f =>
+        campaigns.includes(f.properties.campaignId)
+      );
     }
 
     if (offices.length) {
@@ -152,10 +182,14 @@ export const filteredPublicData = createSelector(
       );
     }
 
-    if (campaigns.length) {
-      dataCopy.features = dataCopy.features.filter(f =>
-        campaigns.includes(f.properties.campaignId)
+    if (start && end) {
+      dataCopy.features = dataCopy.features.filter(
+        f => isAfter(f.date, start) && isBefore(f.date, end)
       );
+    } else if (start) {
+      dataCopy.features = dataCopy.features.filter(f => isAfter(f.date, start));
+    } else if (end) {
+      dataCopy.features = dataCopy.features.filter(f => isBefore(f.date, end));
     }
 
     return dataCopy;
