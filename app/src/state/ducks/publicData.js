@@ -1,12 +1,34 @@
 /* eslint-disable no-unused-vars */
 import { createSelector } from 'reselect';
-import { isAfter, isBefore } from 'date-fns';
+import { isAfter, isBefore, isEqual } from 'date-fns';
 import createReducer from '../utils/createReducer';
 import createActionTypes from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
 
 export const STATE_KEY = 'publicData';
+
+const isInclusiveAfter = (date, compare) =>
+  isEqual(date, compare) || isAfter(date, compare);
+
+const isInclusiveBefore = (date, compare) =>
+  isEqual(date, compare) || isBefore(date, compare);
+
+const numericSort = (a, b) => a - b;
+
+const median = arr => {
+  if (!arr || !arr.length) return null;
+
+  arr.sort(numericSort);
+
+  if (arr.length % 2 === 0) {
+    const a = arr[arr.length / 2 - 1];
+    const b = arr[arr.length / 2];
+    return (a + b) / 2;
+  }
+
+  return arr[Math.floor(arr.length / 2)];
+};
 
 // Action Types
 export const actionTypes = {
@@ -69,13 +91,13 @@ export function getPublicData() {
 }
 
 export const rootState = state => state || {};
-export const publicData = createSelector(
+export const allPublicData = createSelector(
   rootState,
   state => state[STATE_KEY] || {}
 );
 
 export const publicDataRequest = createSelector(
-  publicData,
+  allPublicData,
   state => {
     const { data, isLoading, error } = state;
     return { data, isLoading, error };
@@ -83,7 +105,7 @@ export const publicDataRequest = createSelector(
 );
 
 export const publicDataFilters = createSelector(
-  publicData,
+  allPublicData,
   state => state.filters
 );
 
@@ -95,7 +117,9 @@ export const publicDataGeojson = createSelector(
 
     // Convert date strings to Date objects
     data.features.forEach(f => {
-      f.properties.date = new Date(f.properties.date);
+      if (f.properties.date) {
+        f.properties.date = new Date(f.properties.date);
+      }
     });
 
     return data;
@@ -184,12 +208,18 @@ export const filteredPublicData = createSelector(
 
     if (start && end) {
       dataCopy.features = dataCopy.features.filter(
-        f => isAfter(f.date, start) && isBefore(f.date, end)
+        f =>
+          isInclusiveAfter(f.properties.date, start) &&
+          isInclusiveBefore(f.properties.date, end)
       );
     } else if (start) {
-      dataCopy.features = dataCopy.features.filter(f => isAfter(f.date, start));
+      dataCopy.features = dataCopy.features.filter(f =>
+        isInclusiveAfter(f.properties.date, start)
+      );
     } else if (end) {
-      dataCopy.features = dataCopy.features.filter(f => isBefore(f.date, end));
+      dataCopy.features = dataCopy.features.filter(f =>
+        isInclusiveBefore(f.properties.date, end)
+      );
     }
 
     return dataCopy;
@@ -212,7 +242,45 @@ export const mapData = createSelector(
 // - total amount matched (requires explanatory text since it won't be exactly 6x)
 export const summaryData = createSelector(
   filteredPublicData,
-  data => data
+  ({ features }) => {
+    const donationsCount = features.length;
+
+    const nonOAEContributions = [];
+    const markedDonors = {};
+    let donorsCount = 0;
+    let totalAmountContributed = 0;
+    let totalAmountMatched = 0;
+
+    // Only iterate over the array once for better performance
+    features.forEach(({ properties: props }) => {
+      // NOTE: contributor name is not a strong idenfitier, could result in miscounting
+      if (!markedDonors[props.contributorName]) {
+        donorsCount += 1;
+        markedDonors[props.contributorName] = true;
+      }
+
+      // Guard against bad data
+      if (+props.amount === props.amount && props.amount >= 0) {
+        totalAmountContributed += props.amount;
+        if (props.oaeType !== 'public_matching_contribution') {
+          nonOAEContributions.push(props.amount);
+        }
+      }
+
+      if (+props.matchAmount === props.matchAmount && props.matchAmount >= 0) {
+        totalAmountMatched += props.matchAmount;
+      }
+    });
+
+    console.log(nonOAEContributions);
+    return {
+      donationsCount,
+      donorsCount,
+      totalAmountContributed,
+      totalAmountMatched,
+      medianContributionSize: median(nonOAEContributions),
+    };
+  }
 );
 
 // TODO: aggregate donation amounts by binned donations ranges
