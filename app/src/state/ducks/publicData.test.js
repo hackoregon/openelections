@@ -1,5 +1,7 @@
 import * as publicData from './publicData';
 
+const { actionTypes } = publicData;
+
 const makeData = (features = [], overrides = {}) => {
   const state = {
     [publicData.STATE_KEY]: {
@@ -24,7 +26,129 @@ const point = (properties = {}, geometry = {}) => ({
   },
 });
 
-describe.only('Selectors', () => {
+describe('Reducer', () => {
+  const reducer = publicData.default;
+
+  describe('set campaigns', () => {
+    it('sets the campaigns filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.CAMPAIGNS,
+          campaigns: ['1', '2', '3'],
+        }).filters
+      ).toEqual({
+        campaigns: ['1', '2', '3'],
+        offices: [],
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('is liberal with what it accepts', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.CAMPAIGNS,
+          campaigns: null,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: null,
+      });
+
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.CAMPAIGNS,
+          campaigns: 'just-the-one',
+        }).filters
+      ).toEqual({
+        campaigns: ['just-the-one'],
+        offices: [],
+        startDate: null,
+        endDate: null,
+      });
+    });
+  });
+
+  describe('set offices', () => {
+    it('sets the offices filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.OFFICES,
+          offices: ['1', '2', '3'],
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: ['1', '2', '3'],
+        startDate: null,
+        endDate: null,
+      });
+    });
+
+    it('is liberal with what it accepts', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.OFFICES,
+          offices: null,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: null,
+      });
+
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.OFFICES,
+          offices: 'just-the-one',
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: ['just-the-one'],
+        startDate: null,
+        endDate: null,
+      });
+    });
+  });
+
+  describe('set start date', () => {
+    it('sets the start date filter', () => {
+      const date = new Date();
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.START_DATE,
+          startDate: date,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: [],
+        startDate: date,
+        endDate: null,
+      });
+    });
+  });
+
+  describe('set end date', () => {
+    it('sets the end date filter', () => {
+      const date = new Date();
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.END_DATE,
+          endDate: date,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: date,
+      });
+    });
+  });
+});
+
+describe('Selectors', () => {
   describe('allPublicData', () => {
     const [state, data] = makeData();
 

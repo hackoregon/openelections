@@ -2,7 +2,9 @@
 import { createSelector } from 'reselect';
 import { isAfter, isBefore, isEqual } from 'date-fns';
 import createReducer from '../utils/createReducer';
-import createActionTypes from '../utils/createActionTypes';
+import createActionTypes, {
+  createCustomActionTypes,
+} from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
 
@@ -46,9 +48,21 @@ const groupBy = (field, list) => {
   return groups;
 };
 
+const makeArray = input => {
+  if (input instanceof Array) return input;
+  if (input == null) return [];
+  return [input];
+};
+
 // Action Types
 export const actionTypes = {
   GET_PUBLIC_DATA: createActionTypes(STATE_KEY, 'GET_PUBLIC_DATA'),
+  SET_FILTER: createCustomActionTypes(STATE_KEY, 'SET_FILTER', [
+    'OFFICES',
+    'CAMPAIGNS',
+    'START_DATE',
+    'END_DATE',
+  ]),
 };
 
 // Initial State
@@ -81,6 +95,27 @@ export default createReducer(initialState, {
   [actionTypes.GET_PUBLIC_DATA.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
+  [actionTypes.SET_FILTER.OFFICES]: (state, action) => {
+    return {
+      ...state,
+      filters: { ...state.filters, offices: makeArray(action.offices) },
+    };
+  },
+  [actionTypes.SET_FILTER.CAMPAIGNS]: (state, action) => {
+    return {
+      ...state,
+      filters: { ...state.filters, campaigns: makeArray(action.campaigns) },
+    };
+  },
+  [actionTypes.SET_FILTER.START_DATE]: (state, action) => {
+    return {
+      ...state,
+      filters: { ...state.filters, startDate: action.startDate },
+    };
+  },
+  [actionTypes.SET_FILTER.END_DATE]: (state, action) => {
+    return { ...state, filters: { ...state.filters, endDate: action.endDate } };
+  },
 });
 
 // Action Creators
@@ -91,7 +126,21 @@ export const actionCreators = {
       action(actionTypes.GET_PUBLIC_DATA.SUCCESS, { payload }),
     failure: error => action(actionTypes.GET_PUBLIC_DATA.FAILURE, { error }),
   },
+  setFilter: {
+    offices: selectedOffices =>
+      action(actionTypes.SET_FILTER.OFFICES, { selectedOffices }),
+    campaigns: selectedCampaigns =>
+      action(actionTypes.SET_FILTER.CAMPAIGNS, { selectedCampaigns }),
+    startDate: startDate =>
+      action(actionTypes.SET_FILTER.START_DATE, { startDate }),
+    endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
+  },
 };
+
+export const setSelectedOffices = actionCreators.setFilter.offices;
+export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
+export const setSelectedStartDate = actionCreators.setFilter.startDate;
+export const setSelectedEndDate = actionCreators.setFilter.endDate;
 
 // Side Effects, e.g. thunks
 export function getPublicData() {
