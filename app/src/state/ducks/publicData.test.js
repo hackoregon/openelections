@@ -466,4 +466,313 @@ describe.only('Selectors', () => {
       expect(publicData.summaryData(state).medianContributionSize).toEqual(15);
     });
   });
+
+  describe('donationSizeByDonationRange', () => {
+    it('buckets and summates donations appropriately', () => {
+      const points = [
+        point({ amount: 0 }),
+        point({ amount: 5 }),
+        point({ amount: 10 }),
+        point({ amount: 20 }),
+        point({ amount: 30 }),
+        point({ amount: 50 }),
+        point({ amount: 100 }),
+        point({ amount: 150 }),
+        point({ amount: 200 }),
+        point({ amount: 500 }),
+        point({ amount: 750 }),
+        point({ amount: 1000 }),
+        point({ amount: 2500 }),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.donationSizeByDonationRange(state)).toEqual({
+        micro: {
+          total: 0 + 5 + 10 + 20,
+          contributions: [0, 5, 10, 20],
+        },
+        small: {
+          total: 30 + 50,
+          contributions: [30, 50],
+        },
+        medium: {
+          total: 100 + 150 + 200,
+          contributions: [100, 150, 200],
+        },
+        large: {
+          total: 500 + 750,
+          contributions: [500, 750],
+        },
+        mega: {
+          total: 1000 + 2500,
+          contributions: [1000, 2500],
+        },
+      });
+    });
+
+    it('reports 0 for any empty buckets', () => {
+      const points = [
+        point({ amount: 30 }),
+        point({ amount: 50 }),
+        point({ amount: 1000 }),
+        point({ amount: 2500 }),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.donationSizeByDonationRange(state)).toEqual({
+        micro: {
+          total: 0,
+          contributions: [],
+        },
+        small: {
+          total: 30 + 50,
+          contributions: [30, 50],
+        },
+        medium: {
+          total: 0,
+          contributions: [],
+        },
+        large: {
+          total: 0,
+          contributions: [],
+        },
+        mega: {
+          total: 1000 + 2500,
+          contributions: [1000, 2500],
+        },
+      });
+    });
+  });
+
+  describe('aggregatedContributorTypes', () => {
+    const summaryPoint = (contributorType, amount) =>
+      point({ contributorType, amount });
+
+    it('buckets and summates donations appropriately', () => {
+      const points = [
+        summaryPoint('individual', 10),
+        summaryPoint('individual', 15),
+        summaryPoint('business', 100),
+        summaryPoint('business', 1450),
+        summaryPoint('business', 890),
+        summaryPoint('family', 50),
+        summaryPoint('labor', 500),
+        summaryPoint('political_committee', 30),
+        summaryPoint('political_party', 100),
+        summaryPoint('unregistered', 150),
+        summaryPoint('other', 10),
+        summaryPoint(null, 9),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributorTypes(state)).toEqual({
+        individual: {
+          total: 10 + 15,
+          contributions: [10, 15],
+        },
+        business: {
+          total: 100 + 1450 + 890,
+          contributions: [100, 890, 1450],
+        },
+        family: {
+          total: 50,
+          contributions: [50],
+        },
+        labor: {
+          total: 500,
+          contributions: [500],
+        },
+        political_committee: {
+          total: 30,
+          contributions: [30],
+        },
+        political_party: {
+          total: 100,
+          contributions: [100],
+        },
+        unregistered: {
+          total: 150,
+          contributions: [150],
+        },
+        other: {
+          total: 9 + 10,
+          contributions: [9, 10],
+        },
+      });
+    });
+
+    it('reports 0 for any empty buckets', () => {
+      const points = [
+        summaryPoint('individual', 10),
+        summaryPoint('individual', 15),
+        summaryPoint('business', 100),
+        summaryPoint('business', 1450),
+        summaryPoint('business', 890),
+        summaryPoint('unregistered', 150),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributorTypes(state)).toEqual({
+        individual: {
+          total: 10 + 15,
+          contributions: [10, 15],
+        },
+        business: {
+          total: 100 + 1450 + 890,
+          contributions: [100, 890, 1450],
+        },
+        family: {
+          total: 0,
+          contributions: [],
+        },
+        labor: {
+          total: 0,
+          contributions: [],
+        },
+        political_committee: {
+          total: 0,
+          contributions: [],
+        },
+        political_party: {
+          total: 0,
+          contributions: [],
+        },
+        unregistered: {
+          total: 150,
+          contributions: [150],
+        },
+        other: {
+          total: 0,
+          contributions: [],
+        },
+      });
+    });
+  });
+
+  describe('aggregatedContributionTypes', () => {
+    const summaryPoint = (contributionSubType, amount) =>
+      point({ contributionSubType, amount });
+
+    it('buckets and summates donations appropriately', () => {
+      const points = [
+        summaryPoint('cash', 10),
+        summaryPoint('cash', 14),
+        summaryPoint('inkind_onefish', 40),
+        summaryPoint('inkind_2_fish', 95),
+        summaryPoint('inkind_redfish', 100),
+        summaryPoint('inkind_bluefish', 139),
+        summaryPoint('other', 10),
+        summaryPoint('nothing', 25),
+        summaryPoint(null, 5),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributionTypes(state)).toEqual({
+        cash: {
+          total: 10 + 14,
+          contributions: [10, 14],
+        },
+        inkind: {
+          total: 40 + 95 + 100 + 139,
+          contributions: [40, 95, 100, 139],
+        },
+        other: {
+          total: 10 + 25 + 5,
+          contributions: [5, 10, 25],
+        },
+      });
+    });
+
+    it('reports 0 for any empty buckets', () => {
+      const points = [
+        summaryPoint('inkind_onefish', 40),
+        summaryPoint('inkind_2_fish', 95),
+        summaryPoint('inkind_redfish', 100),
+        summaryPoint('inkind_bluefish', 139),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributionTypes(state)).toEqual({
+        cash: {
+          total: 0,
+          contributions: [],
+        },
+        inkind: {
+          total: 40 + 95 + 100 + 139,
+          contributions: [40, 95, 100, 139],
+        },
+        other: {
+          total: 0,
+          contributions: [],
+        },
+      });
+    });
+  });
+
+  describe('aggregatedContributionsByRegion', () => {
+    const summaryPoint = (city, state, amount) =>
+      point({ city, state, amount });
+
+    it('buckets and summates donations appropriately', () => {
+      const points = [
+        summaryPoint('portland', 'or', 10),
+        summaryPoint('portland', 'or', 25),
+        summaryPoint('portland', 'me', 200),
+        summaryPoint('eugene', 'or', 100),
+        summaryPoint('gresham', 'or', 25),
+        summaryPoint('wamic', 'or', 100),
+        summaryPoint('culver', 'or', 50),
+        summaryPoint('new york city', 'ny', 1000),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributionsByRegion(state)).toEqual({
+        portland: {
+          total: 10 + 25,
+          contributions: [10, 25],
+        },
+        oregon: {
+          total: 100 + 25 + 100 + 50,
+          contributions: [25, 50, 100, 100],
+        },
+        outside: {
+          total: 200 + 1000,
+          contributions: [200, 1000],
+        },
+      });
+    });
+
+    it('reports 0 for any empty buckets', () => {
+      const points = [
+        summaryPoint('eugene', 'or', 100),
+        summaryPoint('gresham', 'or', 25),
+        summaryPoint('wamic', 'or', 100),
+        summaryPoint('culver', 'or', 50),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.aggregatedContributionsByRegion(state)).toEqual({
+        portland: {
+          total: 0,
+          contributions: [],
+        },
+        oregon: {
+          total: 100 + 25 + 100 + 50,
+          contributions: [25, 50, 100, 100],
+        },
+        outside: {
+          total: 0,
+          contributions: [],
+        },
+      });
+    });
+  });
 });

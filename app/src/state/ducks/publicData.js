@@ -234,7 +234,7 @@ export const mapData = createSelector(
   data => data
 );
 
-// TODO: summary data includes aggregations and averages
+// Done: summary data includes aggregations and averages
 // - number of donors
 // - number of donations
 // - median contribution size (exclude OAE type public match)
@@ -272,7 +272,6 @@ export const summaryData = createSelector(
       }
     });
 
-    console.log(nonOAEContributions);
     return {
       donationsCount,
       donorsCount,
@@ -283,7 +282,16 @@ export const summaryData = createSelector(
   }
 );
 
-// TODO: aggregate donation amounts by binned donations ranges
+const sortedDonations = createSelector(
+  filteredPublicData,
+  data => {
+    const donations = data.features.map(f => f.properties);
+    donations.sort((a, b) => a.amount - b.amount);
+    return donations;
+  }
+);
+
+// Done: aggregate donation amounts by binned donations ranges
 // - micro ($0-25)
 // - small ($25-100)
 // - medium ($100-250)
@@ -291,8 +299,60 @@ export const summaryData = createSelector(
 // - mega ($1000+)
 // For each bucket include three properties ({ name: 'micro', count: number of donations, total: sum of donations})
 export const donationSizeByDonationRange = createSelector(
-  filteredPublicData,
-  data => data
+  sortedDonations,
+  donations => {
+    const aggregates = {
+      micro: {
+        total: 0,
+        contributions: [],
+      },
+      small: {
+        total: 0,
+        contributions: [],
+      },
+      medium: {
+        total: 0,
+        contributions: [],
+      },
+      large: {
+        total: 0,
+        contributions: [],
+      },
+      mega: {
+        total: 0,
+        contributions: [],
+      },
+    };
+
+    const markers = ['micro', 'small', 'medium', 'large', 'mega'];
+    const breakpoints = [25, 100, 250, 1000];
+
+    let index = 0;
+    let marker = markers[index];
+    let breakpoint = breakpoints[index];
+
+    donations.forEach(d => {
+      // Skip non-numeric values
+      if (+d.amount !== d.amount) return;
+
+      if (d.amount >= breakpoint) {
+        while (d.amount >= breakpoint) {
+          index += 1;
+          marker = markers[index];
+          if (index >= breakpoints.length) {
+            breakpoint = Number.MAX_VALUE;
+            break;
+          }
+          breakpoint = breakpoints[index];
+        }
+      }
+
+      aggregates[marker].total += d.amount;
+      aggregates[marker].contributions.push(d.amount);
+    });
+
+    return aggregates;
+  }
 );
 
 // TODO: count of and sum of donations for each contributor type
@@ -300,16 +360,61 @@ export const donationSizeByDonationRange = createSelector(
 // For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
 // Note: pad out the rest of the map with zeroes for each type that isn't represented in the data
 export const aggregatedContributorTypes = createSelector(
-  filteredPublicData,
-  data => data
+  sortedDonations,
+  donations => {
+    const aggregates = [
+      'individual',
+      'business',
+      'family',
+      'labor',
+      'political_committee',
+      'political_party',
+      'unregistered',
+      'other',
+    ].reduce((agg, type) => {
+      agg[type] = {
+        total: 0,
+        contributions: [],
+      };
+      return agg;
+    }, {});
+
+    donations.forEach(d => {
+      const bucket = aggregates[d.contributorType || 'other'];
+      bucket.total += d.amount;
+      bucket.contributions.push(d.amount);
+    });
+
+    return aggregates;
+  }
 );
 
 // TODO: count of and sum of donations for each contribution type
 // (cash, inkind, other)
 // Same as above data shape
 export const aggregatedContributionTypes = createSelector(
-  filteredPublicData,
-  data => data
+  sortedDonations,
+  donations => {
+    const aggregates = ['cash', 'inkind', 'other'].reduce((agg, type) => {
+      agg[type] = {
+        total: 0,
+        contributions: [],
+      };
+      return agg;
+    }, {});
+
+    donations.forEach(d => {
+      let type = 'other';
+      if (d.contributionSubType === 'cash') type = 'cash';
+      if ((d.contributionSubType || '').startsWith('inkind_')) type = 'inkind';
+
+      const bucket = aggregates[type];
+      bucket.total += d.amount;
+      bucket.contributions.push(d.amount);
+    });
+
+    return aggregates;
+  }
 );
 
 // TODO: count and sum of donations for each region
@@ -317,8 +422,32 @@ export const aggregatedContributionTypes = createSelector(
 // Note: filter out OAE subtype public_matching
 // Note: do not include portland in oregon
 export const aggregatedContributionsByRegion = createSelector(
-  filteredPublicData,
-  data => data
+  sortedDonations,
+  donations => {
+    const aggregates = ['portland', 'oregon', 'outside'].reduce((agg, type) => {
+      agg[type] = {
+        total: 0,
+        contributions: [],
+      };
+      return agg;
+    }, {});
+
+    donations.forEach(d => {
+      let type = 'outside';
+      if ((d.state || '').toUpperCase() === 'OR') {
+        type = 'oregon';
+        // NOTE: this is a strict address match. If we want to include the entire metro area,
+        // it would probably be better to check against a set of zipcodes or something.
+        if ((d.city || '').toUpperCase() === 'PORTLAND') type = 'portland';
+      }
+
+      const bucket = aggregates[type];
+      bucket.total += d.amount;
+      bucket.contributions.push(d.amount);
+    });
+
+    return aggregates;
+  }
 );
 
 // TODO: create a table that matches this format
