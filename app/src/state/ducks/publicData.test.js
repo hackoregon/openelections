@@ -428,7 +428,7 @@ describe.only('Selectors', () => {
       summaryPoint('Abc', 20, 120, 'matchable'),
       summaryPoint('Def', 30, 150, 'matchable'),
       summaryPoint('Ghi', 100, null, 'public_matching_contribution'),
-      summaryPoint('Jkl', 5.23, 30, 'matchable'),
+      summaryPoint('Jkl', 5, 30, 'matchable'),
     ];
 
     const [state] = makeData(points);
@@ -444,7 +444,7 @@ describe.only('Selectors', () => {
     });
 
     it('returns the total amount contributed and the total amount matched', () => {
-      const total = 10 + 20 + 30 + 100 + 5.23;
+      const total = 10 + 20 + 30 + 100 + 5;
       const matchTotal = 120 + 150 + 30;
       expect(publicData.summaryData(state).totalAmountContributed).toEqual(
         total
@@ -774,5 +774,187 @@ describe.only('Selectors', () => {
         },
       });
     });
+  });
+
+  describe('campaignsTable', () => {
+    const summaryPoint = (
+      campaignId,
+      campaignName,
+      contributorName,
+      amount,
+      matchAmount,
+      oaeType
+    ) =>
+      point({
+        campaignId,
+        campaignName,
+        contributorName,
+        amount,
+        matchAmount,
+        oaeType,
+        officeSought: 'Mayor',
+      });
+
+    // public_matching_contribution
+
+    const points = [
+      summaryPoint('1', 'One', 'Abc', 5, 30, 'matchable'),
+      summaryPoint('1', 'One', 'Def', 20, 120, 'matchable'),
+      summaryPoint('1', 'One', 'Def', 100, 0, 'allowable'),
+      summaryPoint('1', 'One', 'Ghi', 1000, null, 'allowable'),
+
+      summaryPoint('2', 'Two', 'Def', 5, 30, 'matchable'),
+      summaryPoint('2', 'Two', 'Ghi', 5, 30, 'matchable'),
+      summaryPoint('2', 'Two', 'Ghi', 20, 120, 'matchable'),
+      summaryPoint('2', 'Two', 'Jkl', 25, 150, 'matchable'),
+      summaryPoint('2', 'Two', 'Jkl', 35, 210, 'matchable'),
+      summaryPoint('2', 'Two', 'Mno', 100, 0, 'allowable'),
+      summaryPoint(
+        '2',
+        'Two',
+        'Mno',
+        500,
+        null,
+        'public_matching_contribution'
+      ),
+
+      summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
+      summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
+      summaryPoint('3', 'Three', 'Abc', 78, 0, 'allowable'),
+      summaryPoint('3', 'Three', 'Abc', 500, 30, 'allowable'),
+
+      summaryPoint('4', 'Four', 'Def', 5, 30, 'matchable'),
+      summaryPoint('4', 'Four', 'Ghi', 6, 36, 'matchable'),
+      summaryPoint('4', 'Four', 'Jkl', 7, 42, 'matchable'),
+    ];
+
+    const [state] = makeData(points);
+
+    expect(publicData.campaignsTable(state)).toEqual([
+      {
+        campaignId: '1',
+        campaignName: 'One',
+        officeSought: 'Mayor',
+        donationsCount: 4,
+        donorsCount: 3,
+        totalAmountContributed: 5 + 20 + 100 + 1000,
+        totalAmountMatched: 30 + 120,
+        medianContributionSize: 60,
+        micro: {
+          total: 5 + 20,
+          contributions: [5, 20],
+        },
+        small: {
+          total: 0,
+          contributions: [],
+        },
+        medium: {
+          total: 100,
+          contributions: [100],
+        },
+        large: {
+          total: 0,
+          contributions: [],
+        },
+        mega: {
+          total: 1000,
+          contributions: [1000],
+        },
+        contributions: points.slice(0, 4).map(p => p.properties),
+      },
+      {
+        campaignId: '2',
+        campaignName: 'Two',
+        officeSought: 'Mayor',
+        donationsCount: 7,
+        donorsCount: 4,
+        totalAmountContributed: 5 + 5 + 20 + 25 + 35 + 100 + 500,
+        totalAmountMatched: 30 + 30 + 120 + 150 + 210,
+        medianContributionSize: 22.5,
+        micro: {
+          total: 5 + 5 + 20,
+          contributions: [5, 5, 20],
+        },
+        small: {
+          total: 25 + 35,
+          contributions: [25, 35],
+        },
+        medium: {
+          total: 100,
+          contributions: [100],
+        },
+        large: {
+          total: 500,
+          contributions: [500],
+        },
+        mega: {
+          total: 0,
+          contributions: [],
+        },
+        contributions: points.slice(4, 11).map(p => p.properties),
+      },
+      {
+        campaignId: '3',
+        campaignName: 'Three',
+        officeSought: 'Mayor',
+        donationsCount: 4,
+        donorsCount: 1,
+        totalAmountContributed: 50 + 50 + 78 + 500,
+        totalAmountMatched: 300 + 300 + 30,
+        medianContributionSize: 64,
+        micro: {
+          total: 0,
+          contributions: [],
+        },
+        small: {
+          total: 50 + 50 + 78,
+          contributions: [50, 50, 78],
+        },
+        medium: {
+          total: 0,
+          contributions: [],
+        },
+        large: {
+          total: 500,
+          contributions: [500],
+        },
+        mega: {
+          total: 0,
+          contributions: [],
+        },
+        contributions: points.slice(11, 15).map(p => p.properties),
+      },
+      {
+        campaignId: '4',
+        campaignName: 'Four',
+        officeSought: 'Mayor',
+        donationsCount: 3,
+        donorsCount: 3,
+        totalAmountContributed: 5 + 6 + 7,
+        totalAmountMatched: 30 + 36 + 42,
+        medianContributionSize: 6,
+        micro: {
+          total: 5 + 6 + 7,
+          contributions: [5, 6, 7],
+        },
+        small: {
+          total: 0,
+          contributions: [],
+        },
+        medium: {
+          total: 0,
+          contributions: [],
+        },
+        large: {
+          total: 0,
+          contributions: [],
+        },
+        mega: {
+          total: 0,
+          contributions: [],
+        },
+        contributions: points.slice(15).map(p => p.properties),
+      },
+    ]);
   });
 });

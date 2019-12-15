@@ -30,6 +30,22 @@ const median = arr => {
   return arr[Math.floor(arr.length / 2)];
 };
 
+const groupBy = (field, list) => {
+  const groups = {};
+  list.forEach(d => {
+    // Skip datapoints that do not have the field in question
+    if (!d[field]) return;
+
+    if (!groups[d[field]]) {
+      groups[d[field]] = [d];
+    } else {
+      groups[d[field]].push(d);
+    }
+  });
+
+  return groups;
+};
+
 // Action Types
 export const actionTypes = {
   GET_PUBLIC_DATA: createActionTypes(STATE_KEY, 'GET_PUBLIC_DATA'),
@@ -234,54 +250,6 @@ export const mapData = createSelector(
   data => data
 );
 
-// Done: summary data includes aggregations and averages
-// - number of donors
-// - number of donations
-// - median contribution size (exclude OAE type public match)
-// - total amount contributed (by campaign?)
-// - total amount matched (requires explanatory text since it won't be exactly 6x)
-export const summaryData = createSelector(
-  filteredPublicData,
-  ({ features }) => {
-    const donationsCount = features.length;
-
-    const nonOAEContributions = [];
-    const markedDonors = {};
-    let donorsCount = 0;
-    let totalAmountContributed = 0;
-    let totalAmountMatched = 0;
-
-    // Only iterate over the array once for better performance
-    features.forEach(({ properties: props }) => {
-      // NOTE: contributor name is not a strong idenfitier, could result in miscounting
-      if (!markedDonors[props.contributorName]) {
-        donorsCount += 1;
-        markedDonors[props.contributorName] = true;
-      }
-
-      // Guard against bad data
-      if (+props.amount === props.amount && props.amount >= 0) {
-        totalAmountContributed += props.amount;
-        if (props.oaeType !== 'public_matching_contribution') {
-          nonOAEContributions.push(props.amount);
-        }
-      }
-
-      if (+props.matchAmount === props.matchAmount && props.matchAmount >= 0) {
-        totalAmountMatched += props.matchAmount;
-      }
-    });
-
-    return {
-      donationsCount,
-      donorsCount,
-      totalAmountContributed,
-      totalAmountMatched,
-      medianContributionSize: median(nonOAEContributions),
-    };
-  }
-);
-
 const sortedDonations = createSelector(
   filteredPublicData,
   data => {
@@ -290,6 +258,110 @@ const sortedDonations = createSelector(
     return donations;
   }
 );
+
+const summarize = donations => {
+  const donationsCount = donations.length;
+
+  const nonOAEContributions = [];
+  const markedDonors = {};
+  let donorsCount = 0;
+  let totalAmountContributed = 0;
+  let totalAmountMatched = 0;
+
+  // Only iterate over the array once for better performance
+  donations.forEach(d => {
+    // NOTE: contributor name is not a strong idenfitier, could result in miscounting
+    if (!markedDonors[d.contributorName]) {
+      donorsCount += 1;
+      markedDonors[d.contributorName] = true;
+    }
+
+    // Guard against bad data
+    if (+d.amount === d.amount && d.amount >= 0) {
+      totalAmountContributed += d.amount;
+      if (d.oaeType !== 'public_matching_contribution') {
+        nonOAEContributions.push(d.amount);
+      }
+    }
+
+    if (+d.matchAmount === d.matchAmount && d.matchAmount >= 0) {
+      totalAmountMatched += d.matchAmount;
+    }
+  });
+
+  return {
+    donationsCount,
+    donorsCount,
+    totalAmountContributed,
+    totalAmountMatched,
+    medianContributionSize: median(nonOAEContributions),
+  };
+};
+
+// Done: summary data includes aggregations and averages
+// - number of donors
+// - number of donations
+// - median contribution size (exclude OAE type public match)
+// - total amount contributed (by campaign?)
+// - total amount matched (requires explanatory text since it won't be exactly 6x)
+export const summaryData = createSelector(
+  sortedDonations,
+  donations => summarize(donations)
+);
+
+const bracketize = donations => {
+  const aggregates = {
+    micro: {
+      total: 0,
+      contributions: [],
+    },
+    small: {
+      total: 0,
+      contributions: [],
+    },
+    medium: {
+      total: 0,
+      contributions: [],
+    },
+    large: {
+      total: 0,
+      contributions: [],
+    },
+    mega: {
+      total: 0,
+      contributions: [],
+    },
+  };
+
+  const markers = ['micro', 'small', 'medium', 'large', 'mega'];
+  const breakpoints = [25, 100, 250, 1000];
+
+  let index = 0;
+  let marker = markers[index];
+  let breakpoint = breakpoints[index];
+
+  donations.forEach(d => {
+    // Skip non-numeric values
+    if (+d.amount !== d.amount) return;
+
+    if (d.amount >= breakpoint) {
+      while (d.amount >= breakpoint) {
+        index += 1;
+        marker = markers[index];
+        if (index >= breakpoints.length) {
+          breakpoint = Number.MAX_VALUE;
+          break;
+        }
+        breakpoint = breakpoints[index];
+      }
+    }
+
+    aggregates[marker].total += d.amount;
+    aggregates[marker].contributions.push(d.amount);
+  });
+
+  return aggregates;
+};
 
 // Done: aggregate donation amounts by binned donations ranges
 // - micro ($0-25)
@@ -300,62 +372,10 @@ const sortedDonations = createSelector(
 // For each bucket include three properties ({ name: 'micro', count: number of donations, total: sum of donations})
 export const donationSizeByDonationRange = createSelector(
   sortedDonations,
-  donations => {
-    const aggregates = {
-      micro: {
-        total: 0,
-        contributions: [],
-      },
-      small: {
-        total: 0,
-        contributions: [],
-      },
-      medium: {
-        total: 0,
-        contributions: [],
-      },
-      large: {
-        total: 0,
-        contributions: [],
-      },
-      mega: {
-        total: 0,
-        contributions: [],
-      },
-    };
-
-    const markers = ['micro', 'small', 'medium', 'large', 'mega'];
-    const breakpoints = [25, 100, 250, 1000];
-
-    let index = 0;
-    let marker = markers[index];
-    let breakpoint = breakpoints[index];
-
-    donations.forEach(d => {
-      // Skip non-numeric values
-      if (+d.amount !== d.amount) return;
-
-      if (d.amount >= breakpoint) {
-        while (d.amount >= breakpoint) {
-          index += 1;
-          marker = markers[index];
-          if (index >= breakpoints.length) {
-            breakpoint = Number.MAX_VALUE;
-            break;
-          }
-          breakpoint = breakpoints[index];
-        }
-      }
-
-      aggregates[marker].total += d.amount;
-      aggregates[marker].contributions.push(d.amount);
-    });
-
-    return aggregates;
-  }
+  donations => bracketize(donations)
 );
 
-// TODO: count of and sum of donations for each contributor type
+// Done: count of and sum of donations for each contributor type
 // (individual, business, family, labor, political_committee, political_party, unregistered, other)
 // For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
 // Note: pad out the rest of the map with zeroes for each type that isn't represented in the data
@@ -389,7 +409,7 @@ export const aggregatedContributorTypes = createSelector(
   }
 );
 
-// TODO: count of and sum of donations for each contribution type
+// Done: count of and sum of donations for each contribution type
 // (cash, inkind, other)
 // Same as above data shape
 export const aggregatedContributionTypes = createSelector(
@@ -417,7 +437,7 @@ export const aggregatedContributionTypes = createSelector(
   }
 );
 
-// TODO: count and sum of donations for each region
+// Done: count and sum of donations for each region
 // (portland, oregon, outside)
 // Note: filter out OAE subtype public_matching
 // Note: do not include portland in oregon
@@ -450,12 +470,34 @@ export const aggregatedContributionsByRegion = createSelector(
   }
 );
 
-// TODO: create a table that matches this format
+// Done: create a table that matches this format
 // | Campaign Name | Total Amount | Total Donations | Total Match Amount | Micro | Small | Medium | Large | Mega |
 // | ------------- | ------------ | --------------- | ------------------ | ----- | ----- | ------ | ----- | ---- |
 // | One           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
 // | Two           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
 export const campaignsTable = createSelector(
-  filteredPublicData,
-  data => data
+  sortedDonations,
+  donations => {
+    const donationsByCampaign = groupBy('campaignId', donations);
+    const campaigns = Object.keys(donationsByCampaign).map(k => ({
+      campaignId: k,
+      contributions: donationsByCampaign[k],
+    }));
+
+    campaigns.forEach(campaign => {
+      Object.assign(
+        campaign,
+        summarize(campaign.contributions),
+        bracketize(campaign.contributions)
+      );
+
+      // Pull common properties of a contribution up
+      // to the campaign for convenience
+      const contribution = campaign.contributions[0];
+      campaign.campaignName = contribution.campaignName;
+      campaign.officeSought = contribution.officeSought;
+    });
+
+    return campaigns;
+  }
 );
