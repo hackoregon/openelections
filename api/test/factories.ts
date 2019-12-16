@@ -8,7 +8,9 @@ import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
-    ContributorType
+    ContributorType,
+    IContributionSummary,
+    IContributionSummaryResults
 } from '../models/entity/Contribution';
 import {
     Expenditure,
@@ -17,7 +19,9 @@ import {
     ExpenditureType,
     PayeeType,
     PaymentMethod,
-    PurposeType
+    PurposeType,
+    IExpenditureSummaryResults,
+    IExpenditureSummary
 } from '../models/entity/Expenditure';
 
 export async function newActiveUserAsync(): Promise<User> {
@@ -92,6 +96,16 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
     return contribution;
 }
 
+export async function newBulkContributionAsync(campaign: Campaign, government: Government): Promise<IContributionSummaryResults> {
+    const bulkContributionsArray: IContributionSummary[] = [];
+    for (let i = 0; i < 5; i++) {
+        bulkContributionsArray.push(await newContributionAsync(campaign, government));
+    }
+    return ({
+        data: bulkContributionsArray,
+    } as any);
+}
+
 export async function newExpenditureAsync(campaign: Campaign, government: Government): Promise<Expenditure> {
     let expenditure = new Expenditure();
     expenditure.address1 = faker.address.streetAddress();
@@ -115,6 +129,16 @@ export async function newExpenditureAsync(campaign: Campaign, government: Govern
         console.log('saving expenditure', expenditure.id);
     }
     return expenditure;
+}
+
+export async function newBulkExpenditureAsync(campaign: Campaign, government: Government): Promise<IExpenditureSummaryResults> {
+    const bulkExpendituresArray: IExpenditureSummary[] = [];
+    for (let i = 0; i < 5; i++) {
+        bulkExpendituresArray.push(await newExpenditureAsync(campaign, government));
+    }
+    return ({
+        data: bulkExpendituresArray,
+    } as any);
 }
 
 

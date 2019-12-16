@@ -47,7 +47,7 @@ export enum TransactionSubType {
 export enum InKindTranPurposeType {
   PREP_AD = 'A',
   BROADCAST = 'B',
-  PETITION = 'C',
+  PETITION = 'Y',
   FUNDRAISING = 'F',
   GENERAL_OPERATING = 'G',
   PRIMTING = 'L', // Not P, "literature, Brochures, Printing"
@@ -70,6 +70,11 @@ export enum PaymentMethodType {
   ETF = 'EFT'
 }
 
+export type ContributionConvertType = {
+  contact: string;
+  transaction: string;
+};
+
 export default class OrestarContributionConverter {
 
   private contribution: Contribution;
@@ -87,25 +92,19 @@ export default class OrestarContributionConverter {
     return `${this.contact()}${this.transaction()}`;
   }
 
-  public convert() {
-    return `${this.contact()}${this.transaction()}`;
+  public convert(): ContributionConvertType {
+    return {
+      contact: `${this.contact()}`,
+      transaction: `${this.transaction()}`
+    };
   }
 
   public generateCampaignFinanceTransaction() {
-    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
-    ${this.contact()}
-    ${this.transaction()}
-    </campaign-finance-transactions>`;
+    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">${this.contact()}${this.transaction()}</campaign-finance-transactions>`;
   }
 
   public address() {
-    return `<address>
-    ${this.street1()}
-    ${this.street2()}
-    ${this.city()}
-    ${this.state()}
-    ${this.zip()}
-    </address>`;
+    return `<address>${this.street1()}${this.street2()}${this.city()}${this.state()}${this.zip()}</address>`;
   }
 
   public street1() {
@@ -162,10 +161,7 @@ export default class OrestarContributionConverter {
   }
 
   public associatedTran() {
-    return `<associated-tran>
-      <id>k89iuo</id>
-      <complete>Y</complete>
-    </associated-tran>`;
+    return `<associated-tran><id>k89iuo</id><complete>Y</complete></associated-tran>`;
   }
 
   public associatedId() {
@@ -185,15 +181,7 @@ export default class OrestarContributionConverter {
   }
 
   public contact() {
-    return `<contact id="${this.orestarContactId}">
-    ${this.contactType()}
-    ${this.contactName()}
-    ${this.address()}
-    ${this.phone()}
-    ${this.contactEmail()}
-    ${this.contactOccupation()}
-    ${this.employment()}
-    </contact>`;
+    return `<contact id="${this.orestarContactId}">${this.contactType()}${this.contactName()}${this.address()}${this.phone()}${this.contactEmail()}${this.contactOccupation()}${this.employment()}</contact>`;
   }
 
   public contactId() {
@@ -259,11 +247,7 @@ export default class OrestarContributionConverter {
    */
   public employment() {
     if (this.employmentType() === EmploymentType.EMPLOYER_NAME) {
-      return `<employment>
-        <employer-name>${this.contribution.employerName}</employer-name>
-        <city>${this.contribution.employerCity}</city>
-        <state>${this.contribution.employerState || 'OR'}</state>
-      </employment>`;
+      return `<employment><employer-name>${this.contribution.employerName}</employer-name><city>${this.contribution.employerCity}</city><state>${this.contribution.employerState || 'OR'}</state></employment>`;
     } else {
       if (this.employmentType() !== '') {
         return `<employment><${this.employmentType()}></${this.employmentType()}></employment>`;
@@ -293,9 +277,7 @@ export default class OrestarContributionConverter {
           return `<contact-name>${this.businessName()}</contact-name>`;
         }
       } else {
-        return `<contact-name>
-          ${this.individualName()}
-        </contact-name>`;
+        return `<contact-name>${this.individualName()}</contact-name>`;
       }
     } else {
       return '';
@@ -310,9 +292,7 @@ export default class OrestarContributionConverter {
    */
   public committee() {
     if (this.contribution.name) {
-      return `<committee>
-      <name>${this.contribution.name}</name>
-      </committee>`;
+      return `<committee><name>${this.contribution.name}</name></committee>`;
     } else {
       return '';
     }
@@ -322,11 +302,7 @@ export default class OrestarContributionConverter {
     const middleName = this.contribution.middleInitial
       ? `<middle>${this.contribution.middleInitial}</middle>`
       : '';
-    return `<individual-name>
-    <first>${this.contribution.firstName}</first>
-    ${middleName}
-    <last>${this.contribution.lastName}</last>
-    </individual-name>`;
+    return `<individual-name><first>${this.contribution.firstName}</first>${middleName}<last>${this.contribution.lastName}</last></individual-name>`;
   }
 
   public businessName() {
@@ -338,26 +314,17 @@ export default class OrestarContributionConverter {
   }
 
   public transaction() {
-    return `<transaction id="${this.transactionId()}">
-      ${this.operation()}
-      <contact-id>${this.orestarContactId}</contact-id>
-      ${this.transactionType()}
-      ${this.transactionSubType()}
-      ${this.amount()}
-      ${this.transactionDate()}
-    </transaction>`;
+    return `<transaction id="${this.transactionId()}">${this.operation()}<contact-id>${this.orestarContactId}</contact-id>${this.transactionType()}${this.transactionSubType()}${this.amount()}${this.transactionDate()}</transaction>`;
   }
 
   private transactionId() {
-    const initialTransactionName = `trans-`;
+    const initialTransactionName = `trans-${Date.now()}`;
     const trimmedTransactionName = initialTransactionName.substring(0, 30);
     return trimmedTransactionName;
   }
 
   public operation() {
-    return `<operation>
-    <add>true</add>
-    </operation>`;
+    return `<operation><add>true</add></operation>`;
   }
 
   public transactionType() {
@@ -420,26 +387,17 @@ export default class OrestarContributionConverter {
   }
 
   public cosigner() {
-    return `<cosigner>
-    <contact-id>${this.orestarContactId}</contact-id>
-    ${this.amount()}
-    </cosigner>`;
+    return `<cosigner><contact-id>${this.orestarContactId}</contact-id>${this.amount()}</cosigner>`;
   }
 
   public phone() {
     // we don't need to worry about work-extension. Not collecting that data
     if ((this.contribution.phoneType || '').toLowerCase() === PhoneType.HOME || (this.contribution.phoneType || '').toLowerCase() === PhoneType.MOBILE) {
-      return `<phone>
-        <home>${this.contribution.phone}</home>
-      </phone>`;
+      return `<phone><home>${this.contribution.phone}</home></phone>`;
     } else if ((this.contribution.phoneType || '').toLowerCase() === PhoneType.WORK) {
-      return `<phone>
-      <work>${this.contribution.phone}</work>
-      </phone>`;
+      return `<phone><work>${this.contribution.phone}</work></phone>`;
     } else {
-      return `<phone>
-      <home>555-55555-5555</home>
-      </phone>`;
+      return `<phone><home>555-55555-5555</home></phone>`;
     }
   }
 

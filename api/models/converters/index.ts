@@ -1,5 +1,5 @@
-import OrestarContributionConverter from "./orestarContributionConverter";
-import OrestarExpenditureConverter from "./orestarExpenditureConverter";
+import OrestarContributionConverter, { ContributionConvertType } from './orestarContributionConverter';
+import OrestarExpenditureConverter, { ExpenditureConvertType } from './orestarExpenditureConverter';
 
 // import { Expenditure } from '../entity/Expenditure';
 // import { Contribution } from '../entity/Contribution';
@@ -7,16 +7,20 @@ import OrestarExpenditureConverter from "./orestarExpenditureConverter";
 export function convertContributionsToXML(contributions: any, filerId: number | string): string {
 
   const contributionsArray = [];
-  const baseNum = 500;
+  const baseNum = 2000;
   const totalLoops = Math.ceil(contributions.data.length / baseNum);
-  console.log(contributions.data.length)
   for (let i = 0; i < totalLoops; i++) {
+    const contacts: string[] = [];
+    const transactions: string[] = [];
     const currentSet = contributions.data.slice(i === 0 ? i : (i * baseNum), (i + 1) * baseNum);
-    const convertedContributions = currentSet.map( (contribution: any, index: number ): any => {
+    currentSet.map( (contribution: any, index: number ): void => {
       const converter = new OrestarContributionConverter(contribution);
-      return converter.convert();
+      const { contact, transaction }: ContributionConvertType = converter.convert();
+      contacts.push(contact);
+      transactions.push(transaction);
     });
-    contributionsArray.push(`<campaign-finance-transactions xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject" filer-id="${filerId}">${convertedContributions.join()}</campaign-finance-transactions>`);
+    // removed from campaign-finance-transaction: xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"
+    contributionsArray.push(`<campaign-finance-transactions filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
   }
   return JSON.stringify(contributionsArray);
 }
@@ -24,16 +28,21 @@ export function convertContributionsToXML(contributions: any, filerId: number | 
 export function convertExpendituresToXML(expenditures: any, filerId: number | string): string {
 
   const expendituresArray = [];
-  const baseNum = 500;
+  const baseNum = 2000;
   const totalLoops = Math.ceil(expenditures.data.length / baseNum);
-  console.log(expenditures.data.length);
+
   for (let i = 0; i < totalLoops; i++) {
+    const contacts: string[] = [];
+    const transactions: string[] = [];
     const currentSet = expenditures.data.slice(i === 0 ? i : (i * baseNum), (i + 1) * baseNum);
-    const convertedExpenditures = currentSet.map( (expenditure: any, index: number ): any => {
+    const convertedExpenditures = currentSet.map( (expenditure: any, index: number ): void => {
       const converter = new OrestarExpenditureConverter(expenditure);
-      return converter.convert();
+      const { contact, transaction }: ExpenditureConvertType = converter.convert();
+      contacts.push(contact);
+      transactions.push(transaction);
     });
-    expendituresArray.push(`<campaign-finance-transactions xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject" filer-id="${filerId}">${convertedExpenditures.join()}</campaign-finance-transactions>`);
+    // removed from campaign-finance-transaction: xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"
+    expendituresArray.push(`<campaign-finance-transactions filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
   }
   return JSON.stringify(expendituresArray);
 }

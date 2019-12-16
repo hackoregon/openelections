@@ -64,7 +64,7 @@ export enum ExpenditurePurposeType {
   MANAGEMENT = 'M',
   NEWSPAPER =  'N',
   OTHER_AD = 'O',
-  PETITION = 'petition_circulators',
+  PETITION = 'Y',
   POSTAGE = 'P',
   PREP_AD = 'A',
   POLLING = 'S',
@@ -86,6 +86,11 @@ export enum ExpenditurePaymentMethod {
   ETF = 'EFT'
 }
 
+export type ExpenditureConvertType = {
+  contact: string;
+  transaction: string;
+};
+
 export default class OrestarExpenditureConverter {
 
   private expenditure: Expenditure;
@@ -99,8 +104,11 @@ export default class OrestarExpenditureConverter {
     this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
   }
 
-  public convert() {
-    return `${this.contact()}${this.transaction()}`;
+  public convert(): ExpenditureConvertType {
+    return {
+      contact: `${this.contact()}`,
+      transaction: `${this.transaction()}`
+    };
   }
 
   public generate() {
@@ -108,18 +116,11 @@ export default class OrestarExpenditureConverter {
   }
 
   public generateCampaignFinanceTransaction() {
-    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
-    ${this.contact()}
-    ${this.transaction()}
-    </campaign-finance-transactions>`;
+    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">${this.contact()}${this.transaction()}</campaign-finance-transactions>`;
   }
 
   public contact() {
-    return `<contact id="${this.orestarContactId}">
-    ${this.contactType()}
-    ${this.contactName()}
-    ${this.address()}
-    </contact>`;
+    return `<contact id="${this.orestarContactId}">${this.contactType()}${this.contactName()}${this.address()}</contact>`;
   }
 
   public contactType() {
@@ -168,9 +169,7 @@ export default class OrestarExpenditureConverter {
           return `<contact-name>${this.businessName()}</contact-name>`;
         }
       } else {
-        return `<contact-name>
-          ${this.individualName()}
-        </contact-name>`;
+        return `<contact-name>${this.individualName()}</contact-name>`;
       }
     } else {
       return '';
@@ -185,9 +184,7 @@ export default class OrestarExpenditureConverter {
    */
   public committee() {
     if (this.expenditure.name) {
-      return `<committee>
-      <name>${this.expenditure.name}</name>
-      </committee>`;
+      return `<committee><name>${this.expenditure.name}</name></committee>`;
     } else {
       return '';
     }
@@ -198,28 +195,18 @@ export default class OrestarExpenditureConverter {
     if (name.length === 2) {
       const fname = name[0];
       const lname = name[1];
-      return `<individual-name>
-      <first>${fname}</first>
-      <last>${lname}</last>
-      </individual-name>`;
+      return `<individual-name><first>${fname}</first><last>${lname}</last></individual-name>`;
     } else if (name.length === 1) {
       return `<individual-name><first>${this.expenditure.name}</first></individual-name>`;
     } else if (name.length === 3) {
       const fname = `${name[0]} ${name[1]}`;
       const lname = name[2];
-      return `<individual-name>
-      <first>${fname}</first>
-      <last>${lname}</last>
-      </individual-name>`;
+      return `<individual-name><first>${fname}</first><last>${lname}</last></individual-name>`;
     } else if (name.length === 4) {
       const fname = `${name[0]} ${name[1]}`;
       const middle = name[2];
       const lname =  name[3];
-      return `<individual-name>
-      <first>${fname}</first>
-      <middle>${middle}</middle>
-      <last>${lname}</last>
-      </individual-name>`;
+      return `<individual-name><first>${fname}</first><middle>${middle}</middle><last>${lname}</last></individual-name>`;
     } else {
       return '';
     }
@@ -234,13 +221,7 @@ export default class OrestarExpenditureConverter {
   }
 
   public address() {
-    return `<address>
-    ${this.street1()}
-    ${this.street2()}
-    ${this.city()}
-    ${this.state()}
-    ${this.zip()}
-    </address>`;
+    return `<address>${this.street1()}${this.street2()}${this.city()}${this.state()}${this.zip()}</address>`;
   }
 
   public street1() {
@@ -277,30 +258,17 @@ export default class OrestarExpenditureConverter {
   }
 
   public transaction() {
-    return `<transaction id="${this.transactionId()}">
-      ${this.operation()}
-      <contact-id>${this.orestarContactId}</contact-id>
-      ${this.transactionType()}
-      ${this.transactionSubType()}
-      ${this.tranPurposeType()}
-      ${this.transactionDescription()}
-      ${this.amount()}
-      ${this.paymentMethod()}
-      ${this.transactionDate()}
-      ${this.checkNo()}
-    </transaction>`;
+    return `<transaction id="${this.transactionId()}">${this.operation()}<contact-id>${this.orestarContactId}</contact-id>${this.transactionType()}${this.transactionSubType()}${this.tranPurposeType()}${this.transactionDescription()}${this.amount()}${this.paymentMethod()}${this.transactionDate()}${this.checkNo()}</transaction>`;
   }
 
   private transactionId() {
-    const initialTransactionName = `trans-`;
+    const initialTransactionName = `trans-${Date.now()}`;
     const trimmedTransactionName = initialTransactionName.substring(0, 30);
     return trimmedTransactionName;
   }
 
   public operation() {
-    return `<operation>
-    <add>true</add>
-    </operation>`;
+    return `<operation><add>true</add></operation>`;
   }
 
   public transactionType() {
