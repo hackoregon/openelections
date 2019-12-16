@@ -224,78 +224,46 @@ export default async (onlyData?: boolean) => {
         governmentId: government.id
     });
 
-    await addPermissionAsync({
-        userId: campaignAdmin.id,
-        role: UserRole.CAMPAIGN_ADMIN,
-        campaignId: campaign.id
-    });
+    async function addPermissionsForCampaign(campaign: Campaign) {
+        await addPermissionAsync({
+            userId: campaignAdmin.id,
+            role: UserRole.CAMPAIGN_ADMIN,
+            campaignId: campaign.id
+        });
 
-    await addPermissionAsync({
-        userId: campaignAdmin.id,
-        role: UserRole.CAMPAIGN_ADMIN,
-        campaignId: campaignb.id
-    });
+        await addPermissionAsync({
+            userId: campaignStaff.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
 
-    await addPermissionAsync({
-        userId: campaignStaff.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
-    });
+        await addPermissionAsync({
+            userId: campaignStaffInvited.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
 
-    await addPermissionAsync({
-        userId: campaignStaff.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
+        await addPermissionAsync({
+            userId: campaignStaffReset.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
 
-    await addPermissionAsync({
-        userId: campaignStaffInvited.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
-    });
+        await addPermissionAsync({
+            userId: campaignStaffRemoved.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
 
-    await addPermissionAsync({
-        userId: campaignStaffInvited.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
+        await addPermissionAsync({
+            userId: campaignStaffRemoved2.id,
+            role: UserRole.CAMPAIGN_STAFF,
+            campaignId: campaign.id
+        });
+    }
 
-    await addPermissionAsync({
-        userId: campaignStaffReset.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffReset.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffRemoved.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffRemoved.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffRemoved2.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffRemoved2.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
-
+    await addPermissionsForCampaign(campaign);
+    await addPermissionsForCampaign(campaignb);
     await seedAddresses();
 
     const promises = [];
