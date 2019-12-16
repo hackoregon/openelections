@@ -83,7 +83,8 @@ export enum ExpenditurePaymentMethod {
   MONEY_ORDER = 'CHK',
   CREDIT_CARD_ONLINE = 'CC',
   CREDIT_CARD_PAPER = 'CC',
-  ETF = 'EFT'
+  ETF = 'EFT',
+  DEBIT = 'DC'
 }
 
 export type ExpenditureConvertType = {
@@ -94,14 +95,14 @@ export type ExpenditureConvertType = {
 export default class OrestarExpenditureConverter {
 
   private expenditure: Expenditure;
-  private orestarFilerId: number;
   private orestarContactId: string;
 
-  constructor(expenditure: Expenditure, orestarFilerId?: number, orestarContactId?: string) {
+  constructor(expenditure: Expenditure) {
     this.expenditure = expenditure;
-    this.orestarFilerId = orestarFilerId || 1;
-    // TODO: orestarContactId may need to be more predictable
-    this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
+
+    const initialContactId = `oae-${this.expenditure.zip || ''}-${this.expenditure.name || Date.now()}`.replace(/\s+/g, '-').toLowerCase();
+    const oaeContactId = initialContactId.substring(0, 30);
+    this.orestarContactId = oaeContactId;
   }
 
   public convert(): ExpenditureConvertType {
@@ -113,10 +114,6 @@ export default class OrestarExpenditureConverter {
 
   public generate() {
     return `${this.contact()}${this.transaction()}`;
-  }
-
-  public generateCampaignFinanceTransaction() {
-    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">${this.contact()}${this.transaction()}</campaign-finance-transactions>`;
   }
 
   public contact() {
@@ -262,7 +259,7 @@ export default class OrestarExpenditureConverter {
   }
 
   private transactionId() {
-    const initialTransactionName = `trans-${Date.now()}`;
+    const initialTransactionName = `trans-${Date.now() * Math.random()}`;
     const trimmedTransactionName = initialTransactionName.substring(0, 30);
     return trimmedTransactionName;
   }
@@ -364,6 +361,8 @@ export default class OrestarExpenditureConverter {
   public transactionDescription() {
     if (this.expenditure.notes) {
       return `<description>${this.expenditure.notes}</description>`;
+    } else if (process.env.NODE_ENV !== 'production') {
+      return `<description>Test notes and descriptions</description>`;
     } else {
       return '';
     }
@@ -377,8 +376,8 @@ export default class OrestarExpenditureConverter {
     if (this.expenditure.paymentMethod) {
       if (this.expenditure.subType === ExpenditureSubType.CASH_EXPENDITURE || this.expenditure.subType === ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT) {
         let method: ExpenditurePaymentMethod;
-        if (this.expenditure.paymentMethod === PaymentMethod.CASH) {
-          method = ExpenditurePaymentMethod.CASH;
+        if (this.expenditure.paymentMethod === PaymentMethod.DEBIT || this.expenditure.paymentMethod === PaymentMethod.CASH) {
+          method = ExpenditurePaymentMethod.DEBIT;
         } else if (this.expenditure.paymentMethod === PaymentMethod.CHECK) {
           method = ExpenditurePaymentMethod.CHECK;
         } else if (this.expenditure.paymentMethod === PaymentMethod.CREDIT_CARD_ONLINE) {

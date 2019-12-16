@@ -20,7 +20,7 @@ export function convertContributionsToXML(contributions: any, filerId: number | 
       transactions.push(transaction);
     });
     // removed from campaign-finance-transaction: xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"
-    contributionsArray.push(`<campaign-finance-transactions filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
+    contributionsArray.push(`<campaign-finance-transactions ${process.env.NODE_ENV === 'production' ? 'xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"' : ''} filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
   }
   return JSON.stringify(contributionsArray);
 }
@@ -42,7 +42,7 @@ export function convertExpendituresToXML(expenditures: any, filerId: number | st
       transactions.push(transaction);
     });
     // removed from campaign-finance-transaction: xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"
-    expendituresArray.push(`<campaign-finance-transactions filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
+    expendituresArray.push(`<campaign-finance-transactions ${process.env.NODE_ENV === 'production' ? 'xmlns="http://www.state.or.us/sos/ebs2/ce/dataobject"' : ''} filer-id="${filerId}">${contacts.join('')}${transactions.join('')}</campaign-finance-transactions>`);
   }
   return JSON.stringify(expendituresArray);
 }

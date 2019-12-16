@@ -85,7 +85,7 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         contribution.state = 'OR';
         contribution.status = ContributionStatus.DRAFT;
         contribution.zip = '97214';
-        contribution.paymentMethod = PaymentMethod.CASH;
+        contribution.paymentMethod = PaymentMethod.CHECK;
         contribution.contributorType = ContributorType.INDIVIDUAL;
         contribution.date = faker.date.past(1);
     const contributionRepository = getConnection('default').getRepository('Contribution');

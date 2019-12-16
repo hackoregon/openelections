@@ -105,7 +105,8 @@ export enum PaymentMethod {
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
     CREDIT_CARD_PAPER = 'credit_card_paper',
-    ETF = 'electronic_funds_transfer'
+    ETF = 'electronic_funds_transfer',
+    DEBIT = 'debit'
 }
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'contributions' })
@@ -481,11 +482,6 @@ export class Contribution {
             id: this.campaign.id
         };
         return json as IContributionSummary;
-    }
-
-    toXML() {
-        const xml = new OrestarContributionConverter(this);
-        return xml.generate();
     }
 }
 

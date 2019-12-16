@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import * as libxml from 'libxmljs';
 import {
   newCampaignAsync,
-  newContributionAsync,
   newGovernmentAsync,
   truncateAll,
   newExpenditureAsync
@@ -10,8 +9,38 @@ import {
 import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
 import OrestarExpenditureConverter from '../../models/converters/orestarExpenditureConverter';
-import { expendForSchema, addressSchema, street1Schema, street2Schema, citySchema, stateSchema, zipSchema, zipPlusFourSchema, transactionSchema, operationSchema, transactionTypeSchema, transactionSubTypeSchema, tranPurposeSchema, agentIdSchema, expendIdSchema, transactionDescriptionSchema, aggregateAmountSchema, paymentMethodSchema, dateSchema, checkNoSchema, amountSchema, contactSchema, contactTypeSchema, campaignFinanceTransactionsSchema } from '../schemas/schemas';
-import { ExpenditureType, ExpenditureSubType, PurposeType, PaymentMethod, PayeeType } from '../../models/entity/Expenditure';
+import {
+  expendForSchema,
+  addressSchema,
+  street1Schema,
+  street2Schema,
+  citySchema,
+  stateSchema,
+  zipSchema,
+  zipPlusFourSchema,
+  transactionSchema,
+  operationSchema,
+  transactionTypeSchema,
+  transactionSubTypeSchema,
+  tranPurposeSchema,
+  agentIdSchema,
+  expendIdSchema,
+  transactionDescriptionSchema,
+  aggregateAmountSchema,
+  paymentMethodSchema,
+  dateSchema,
+  checkNoSchema,
+  amountSchema,
+  contactSchema,
+  contactTypeSchema
+} from '../schemas/schemas';
+import {
+  ExpenditureType,
+  ExpenditureSubType,
+  PurposeType,
+  PaymentMethod,
+  PayeeType
+} from '../../models/entity/Expenditure';
 
 let government: Government;
 let campaign: Campaign;
@@ -1165,22 +1194,6 @@ describe('Orestar expenditure converter', () => {
       xmlDocValid.validate(xsdDoc);
       // console.log(xmlDocValid.validationErrors);
       expect(xmlDocValid.validate(xsdDoc)).to.equal(false);
-    });
-
-  });
-
-  describe('generateCampaignFinanceTransaction', () => {
-
-    it('confirms passing of generateCampaignFinanceTransaction', async () => {
-      const expenditure = await newExpenditureAsync(campaign, government);
-      const xml = new OrestarExpenditureConverter(expenditure);
-      const xsd = campaignFinanceTransactionsSchema;
-      const xml_valid = xml.generateCampaignFinanceTransaction();
-      const xsdDoc = libxml.parseXml(xsd);
-      const xmlDocValid = libxml.parseXml(xml_valid);
-      xmlDocValid.validate(xsdDoc);
-      // console.log(xmlDocValid.validationErrors);
-      expect(xmlDocValid.validate(xsdDoc)).to.equal(true);
     });
 
   });

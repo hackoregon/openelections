@@ -287,9 +287,7 @@ export function getExpenditures(expenditureSearchAttrs, applyFilter = false) {
         response.status === 200
       ) {
         const expenditures = await response.json();
-        console.log('doing it', expenditures);
         expenditures.map((expenditure, index) => {
-          console.log(index);
           return downloadFile(
             expenditure,
             `expenditures-download-${index + 1}-${Date.now()}.xml`

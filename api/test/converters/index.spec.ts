@@ -5,7 +5,7 @@ import { Government } from '../../models/entity/Government';
 import { Campaign } from '../../models/entity/Campaign';
 import { IContributionSummaryResults } from '../../models/entity/Contribution';
 import { convertContributionsToXML, convertExpendituresToXML } from '../../models/converters';
-import { campaignFinanceTransactionsSchema, campaignFinanceTranSchema } from '../schemas/schemas';
+import { campaignFinanceTransactionsSchema } from '../schemas/schemas';
 import { IExpenditureSummaryResults } from '../../models/entity/Expenditure';
 
 let government: Government;

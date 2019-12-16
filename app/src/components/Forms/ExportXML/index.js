@@ -27,18 +27,16 @@ const totalTest = css`
   margin: 5px 0 0 0;
 `;
 
-const modalStyle = css`
-  // position: absolute;
-  // width: 350px;
-  // background: white;
-  // top: 8vh;
-  // left: calc(50vw - 175px);
+const oaeWarning = css`
+  font-size: 12px;
+  color: red;
+  text-align: center;
 `;
 
 const ExportXML = props => {
   const [isAll, setIsAll] = React.useState(false);
   return (
-    <div css={modalStyle}>
+    <div>
       <FormModal>
         <ExportXMLForm
           onSubmit={values => {
@@ -56,6 +54,10 @@ const ExportXML = props => {
                 provide your filer id.
               </p>
               {formSections.export}
+              <p css={oaeWarning}>
+                Please only upload once to ORESTAR. Uploading multiple files
+                will cause inconvenience.
+              </p>
               <p css={exportOptionText}>
                 What records to do you want to export?
               </p>

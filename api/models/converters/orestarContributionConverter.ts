@@ -78,18 +78,14 @@ export type ContributionConvertType = {
 export default class OrestarContributionConverter {
 
   private contribution: Contribution;
-  private orestarFilerId: number;
   private orestarContactId: string;
 
-  constructor(contribution: Contribution, orestarFilerId?: number, orestarContactId?: string) {
+  constructor(contribution: Contribution) {
     this.contribution = contribution;
-    this.orestarFilerId = orestarFilerId || 1;
-    // TODO: orestarContactId may need to be more predictable
-    this.orestarContactId = orestarContactId || `oae-contact-${Math.floor(Math.random() * 20000)}`;
-  }
 
-  public generate() {
-    return `${this.contact()}${this.transaction()}`;
+    const initialContactId = `oae-${this.contribution.zip || ''}-${this.contribution.lastName || ''}-${this.contribution.firstName || ''}-${this.contribution.name || Date.now()}`.replace(/\s+/g, '-').toLowerCase();
+    const oaeContactId = initialContactId.substring(0, 30);
+    this.orestarContactId = oaeContactId;
   }
 
   public convert(): ContributionConvertType {
@@ -97,10 +93,6 @@ export default class OrestarContributionConverter {
       contact: `${this.contact()}`,
       transaction: `${this.transaction()}`
     };
-  }
-
-  public generateCampaignFinanceTransaction() {
-    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">${this.contact()}${this.transaction()}</campaign-finance-transactions>`;
   }
 
   public address() {
@@ -170,14 +162,6 @@ export default class OrestarContributionConverter {
 
   public associatedComplete() {
     return `<complete>N</complete>`;
-  }
-
-  public campaignFinanceTransactions() {
-
-    return `<campaign-finance-transactions filer-id="${this.orestarFilerId}">
-    ${this.contact()}
-    ${this.transaction()}
-    </campaign-finance-transactions>`;
   }
 
   public contact() {

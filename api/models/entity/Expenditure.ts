@@ -55,7 +55,8 @@ export enum PaymentMethod {
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
     CREDIT_CARD_PAPER = 'credit_card_paper',
-    ETF = 'electronic_funds_transfer'
+    ETF = 'electronic_funds_transfer',
+    DEBIT = 'debit'
 }
 
 export enum ExpenditureStatus {
