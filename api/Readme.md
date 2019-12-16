@@ -72,8 +72,6 @@ If you need to add a new library via npm, you do so normally:
 
 ```bash
     npm install something --save-dev
-    OR
-    yarn add something
 ```
 
 Then, you will need to stop, rebuild and start the app.
