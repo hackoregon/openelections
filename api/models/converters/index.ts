@@ -35,7 +35,7 @@ export function convertExpendituresToXML(expenditures: any, filerId: number | st
     const contacts: string[] = [];
     const transactions: string[] = [];
     const currentSet = expenditures.data.slice(i === 0 ? i : (i * baseNum), (i + 1) * baseNum);
-    const convertedExpenditures = currentSet.map( (expenditure: any, index: number ): void => {
+    currentSet.map( (expenditure: any, index: number ): void => {
       const converter = new OrestarExpenditureConverter(expenditure);
       const { contact, transaction }: ExpenditureConvertType = converter.convert();
       contacts.push(contact);

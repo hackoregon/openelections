@@ -100,7 +100,7 @@ export default class OrestarExpenditureConverter {
   constructor(expenditure: Expenditure) {
     this.expenditure = expenditure;
 
-    const initialContactId = `oae-${this.expenditure.zip || ''}-${this.expenditure.name || Date.now()}`.replace(/\s+/g, '-').toLowerCase();
+    const initialContactId = `oae-${this.expenditure.zip || ''}-${this.expenditure.name || ''}-${this.expenditure.id}`.replace(/\s+/g, '-').toLowerCase();
     const oaeContactId = initialContactId.substring(0, 30);
     this.orestarContactId = oaeContactId;
   }

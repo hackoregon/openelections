@@ -83,7 +83,7 @@ export default class OrestarContributionConverter {
   constructor(contribution: Contribution) {
     this.contribution = contribution;
 
-    const initialContactId = `oae-${this.contribution.zip || ''}-${this.contribution.lastName || ''}-${this.contribution.firstName || ''}-${this.contribution.name || Date.now()}`.replace(/\s+/g, '-').toLowerCase();
+    const initialContactId = `oae-${this.contribution.zip || ''}-${this.contribution.lastName || this.contribution.name || ''}-${this.contribution.firstName || ''}-${this.contribution.id}`.replace(/\s+/g, '-').toLowerCase();
     const oaeContactId = initialContactId.substring(0, 30);
     this.orestarContactId = oaeContactId;
   }

@@ -30,7 +30,6 @@ const totalTest = css`
 const oaeWarning = css`
   font-size: 12px;
   color: red;
-  text-align: center;
 `;
 
 const ExportXML = props => {
@@ -54,10 +53,16 @@ const ExportXML = props => {
                 provide your filer id.
               </p>
               {formSections.export}
-              <p css={oaeWarning}>
-                Please only upload once to ORESTAR. Uploading multiple files
-                will cause inconvenience.
-              </p>
+              <div css={oaeWarning}>
+                <ul>
+                  <li>
+                    This export should not be used to modify existing records in
+                    ORESTAR.
+                  </li>
+                  <li>Only use this export to add new records to ORESTAR.</li>
+                  <li>Do not upload the same file multiple times.</li>
+                </ul>
+              </div>
               <p css={exportOptionText}>
                 What records to do you want to export?
               </p>
