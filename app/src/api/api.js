@@ -267,6 +267,7 @@ export const PaymentMethodEnum = Object.freeze({
   CREDIT_CARD_ONLINE: 'credit_card_online',
   CREDIT_CARD_PAPER: 'credit_card_paper',
   ETF: 'electronic_funds_transfer',
+  DEBIT: 'debit',
 });
 
 export const DataToPhoneTypeFieldMap = new Map([

@@ -428,13 +428,19 @@ export default class OrestarContributionConverter {
     }
   }
 
+  /**
+   * transactionDescription
+   * Not currently needed
+   */
   public transactionDescription () {
-    // TODO: is this needed?
     return `<description>words here</description>`;
   }
 
+  /**
+   * aggregateAmount
+   * Not currently needed
+   */
   public aggregateAmount () {
-    // TODO: is this needed?
     return `<aggregate-amount>8.5</aggregate-amount>`;
   }
 
@@ -465,18 +471,27 @@ export default class OrestarContributionConverter {
     }
   }
 
+  /**
+   * interestRate
+   * Not currently needed
+   */
   public interestRate () {
-    // TODO: is this needed?
     return '<interest-rate>15%</interest-rate>';
   }
 
+  /**
+   * paymentSchedule
+   * Not currently needed
+   */
   public paymentSchedule () {
-    // TODO: is this needed?
     return `<payment-schedule>payment yay!</payment-schedule>`;
   }
 
+  /**
+   * occupationLetterDate
+   * Not currently needed
+   */
   public occupationLetterDate () {
-    // TODO: is this needed?
     return `<occupation-letter-date>2019-01-01</occupation-letter-date>`;
   }
 
