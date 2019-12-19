@@ -1,14 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import PageHoc from '../../components/PageHoc/PageHoc';
+import Table from '../../components/Table';
 import {
   getPublicData,
   publicDataRequest,
   allOffices,
   allCampaigns,
   filteredPublicData,
+  campaignsTable,
 } from '../../state/ducks/publicData';
+
+const { dollars } = civicFormat;
 
 class HomePage extends React.Component {
   componentDidMount() {
@@ -17,18 +22,70 @@ class HomePage extends React.Component {
   }
 
   render() {
-    const { request, allOffices, allCampaigns, filteredData } = this.props;
+    const { request, allOffices, allCampaigns, campaignsTable } = this.props;
     const { isLoading, error, data } = request;
-    console.log('GOT IT: ', isLoading, error, data);
-    console.log('Filtered Data:', filteredData);
+
+    const bracketField = field => row =>
+      `${dollars(row[field].total)} (${row[field].contributions.length})`;
+
+    const columns = [
+      {
+        field: 'campaignName',
+        title: 'Campaign',
+        sorting: false,
+      },
+      {
+        field: 'officeSought',
+        title: 'Office',
+        sorting: false,
+      },
+      {
+        field: 'donationsCount',
+        title: 'Total Contributions',
+        sorting: false,
+      },
+      {
+        field: 'totalAmountContributed',
+        title: 'Total Amount',
+        sorting: false,
+        type: 'currency',
+      },
+      {
+        field: 'totalAmountMatched',
+        title: 'Total Matched',
+        sorting: false,
+        type: 'currency',
+      },
+      {
+        title: 'Micro',
+        sorting: false,
+        render: bracketField('micro'),
+      },
+      {
+        title: 'Small',
+        sorting: false,
+        render: bracketField('small'),
+      },
+      {
+        title: 'Medium',
+        sorting: false,
+        render: bracketField('medium'),
+      },
+      {
+        title: 'Large',
+        sorting: false,
+        render: bracketField('large'),
+      },
+      {
+        title: 'Mega',
+        sorting: false,
+        render: bracketField('mega'),
+      },
+    ];
+
     return (
       <PageHoc>
-        <h1>Home</h1>
-        {isLoading && <em>Loading...</em>}
         {error && <strong>Oh no! {error}</strong>}
-        {data && data.features && (
-          <p>Data Loaded! {data.features.length} records.</p>
-        )}
         <h2>Offices</h2>
         <ol>
           {allOffices.map(office => (
@@ -36,11 +93,19 @@ class HomePage extends React.Component {
           ))}
         </ol>
         <h2>Campaigns</h2>
-        <ol>
-          {allCampaigns.map(campaign => (
-            <li key={campaign.id}>{campaign.name}</li>
-          ))}
-        </ol>
+        <Table
+          isLoading={isLoading}
+          title="Campaigns"
+          columns={columns}
+          options={{
+            pageSize: 50,
+            showTitle: false,
+          }}
+          data={campaignsTable}
+          perPage={50}
+          pageNumber={0}
+          totalRows={campaignsTable.length}
+        />
       </PageHoc>
     );
   }
@@ -68,6 +133,7 @@ export default connect(
     allOffices: allOffices(state),
     allCampaigns: allCampaigns(state),
     filteredData: filteredPublicData(state),
+    campaignsTable: campaignsTable(state),
   }),
   dispatch => {
     return {
