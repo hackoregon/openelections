@@ -9,11 +9,22 @@ const { dollars, titleCase } = civicFormat;
 function ContributionTypePie({ data }) {
   return (
     <div className="card">
-      <h3>Who is Contributing?</h3>
-      <h4>By Contribution Total</h4>
-      <PieChart data={data} dataKey="type" dataValue="total" dataLabel="type" />
-      <h4>By Number of Contributors</h4>
-      <PieChart data={data} dataKey="type" dataValue="count" dataLabel="type" />
+      <PieChart
+        data={data}
+        dataLabel="formattedType"
+        dataValue="total"
+        useLegend
+        title="Total Contributions"
+        subtitle="Total contribution amount by ORESTAR type"
+      />
+      {/* <PieChart
+        data={data}
+        dataLabel="formattedType"
+        dataValue="count"
+        useLegend
+        title="Number of Contributions"
+        subtitle="Number of contributions by ORESTAR category"
+      /> */}
     </div>
   );
 }

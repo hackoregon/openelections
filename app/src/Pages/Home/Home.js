@@ -7,6 +7,8 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
@@ -34,6 +36,8 @@ import {
   setSelectedCampaigns,
   summaryData,
 } from '../../state/ducks/publicData';
+import ContributionTypeBar from '../../components/Visualizations/ContributorTypeBar';
+import { mediaQueryRanges } from '../../assets/styles/variables';
 
 const { dollars, numeric } = civicFormat;
 
@@ -172,62 +176,46 @@ class HomePage extends React.Component {
     return (
       <PageHoc>
         {error && <strong>Oh no! {error}</strong>}
-        <FormControl css={fieldStyle}>
-          <InputLabel id="filter-offices">Offices</InputLabel>
-          <Select
-            multiple
-            labelid="filter-offices"
-            value={selectedOffices}
-            onChange={event => setSelectedOffices(event.target.value)}
-            input={<Input />}
-          >
-            {allOffices.map(name => (
-              <MenuItem key={name} value={name}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl css={fieldStyle}>
-          <InputLabel id="filter-campaigns">Campaigns</InputLabel>
-          <Select
-            multiple
-            labelid="filter-campaigns"
-            value={selectedCampaigns}
-            onChange={event => setSelectedCampaigns(event.target.value)}
-            input={<Input />}
-          >
-            {allCampaigns.map(campaign => (
-              <MenuItem key={campaign.id} value={campaign}>
-                {campaign.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {console.log(summaryData)}
+        <FormGroup
+          row
+          css={css`
+            justify-content: center;
+          `}
+        >
+          <FormControl css={fieldStyle}>
+            <InputLabel id="filter-offices">Offices</InputLabel>
+            <Select
+              multiple
+              labelid="filter-offices"
+              value={selectedOffices}
+              onChange={event => setSelectedOffices(event.target.value)}
+              input={<Input />}
+            >
+              {allOffices.map(name => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl css={fieldStyle}>
+            <InputLabel id="filter-campaigns">Campaigns</InputLabel>
+            <Select
+              multiple
+              labelid="filter-campaigns"
+              value={selectedCampaigns}
+              onChange={event => setSelectedCampaigns(event.target.value)}
+              input={<Input />}
+            >
+              {allCampaigns.map(campaign => (
+                <MenuItem key={campaign.id} value={campaign}>
+                  {campaign.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </FormGroup>
         {!!summaryData && (
-          // <table css={tableStyle}>
-          //   <tr>
-          //     <td>Number of donors</td>
-          //     <td>{numeric(summaryData.donorsCount)}</td>
-          //   </tr>
-          //   <tr>
-          //     <td>Number of donations</td>
-          //     <td>{numeric(summaryData.donationsCount)}</td>
-          //   </tr>
-          //   <tr>
-          //     <td>Median contribution size</td>
-          //     <td>{dollars(summaryData.medianContributionSize)}</td>
-          //   </tr>
-          //   <tr>
-          //     <td>Total amount contributed</td>
-          //     <td>{dollars(summaryData.totalAmountContributed)}</td>
-          //   </tr>
-          //   <tr>
-          //     <td>Total amount matched</td>
-          //     <td>{dollars(summaryData.totalAmountMatched)}</td>
-          //   </tr>
-          // </table>
           <Table
             isLoading={isLoading}
             title="Campaigns"
@@ -244,29 +232,64 @@ class HomePage extends React.Component {
             components={{ Toolbar: () => <div /> }}
           />
         )}
-        {!!mapData.features.length && (
-          <BaseMap updateViewport={false} initialZoom={11}>
-            <ScatterPlotMap
-              data={sanitize(mapData.features)}
-              getPosition={getPosition}
-              opacity={0.1}
-              getFillColor={getFillColor}
-              radiusScale={5}
-              getRadius={d => Math.sqrt(d.properties.amount)}
-              autoHighlight
-            >
-              <MapTooltip
-                primaryName="Campaign"
-                primaryField="campaignName"
-                secondaryName="Contribution"
-                secondaryField="amount"
-              />
-            </ScatterPlotMap>
-          </BaseMap>
-        )}
+        <div
+          css={css`
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            @media ${mediaQueryRanges.mediumAndUp} {
+              flex-direction: row;
+              height: 650px;
+            }
+          `}
+        >
+          {!!mapData.features.length && (
+            <>
+              <BaseMap
+                updateViewport={false}
+                initialZoom={11}
+                useContainerHeight
+              >
+                <ScatterPlotMap
+                  data={sanitize(mapData.features)}
+                  getPosition={getPosition}
+                  opacity={0.1}
+                  getFillColor={getFillColor}
+                  radiusScale={5}
+                  getRadius={d => Math.sqrt(d.properties.amount)}
+                  autoHighlight
+                >
+                  <MapTooltip
+                    primaryName="Campaign"
+                    primaryField="campaignName"
+                    secondaryName="Contribution"
+                    secondaryField="amount"
+                  />
+                </ScatterPlotMap>
+              </BaseMap>
+              <div
+                css={css`
+                  height: 650px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-around;
+                `}
+              >
+                <ContributionTypeBar data={aggregatedContributorTypes} />
+                <ContributionTypePie data={aggregatedContributionTypes} />
+              </div>
+            </>
+          )}
+        </div>
         {!!campaignsTable.length && (
           <>
-            <h2>Campaigns</h2>
+            <h2
+              css={css`
+                margin-left: 16px;
+              `}
+            >
+              Campaigns
+            </h2>
             <Table
               isLoading={isLoading}
               title="Campaigns"
@@ -282,8 +305,6 @@ class HomePage extends React.Component {
               totalRows={campaignsTable.length}
               components={{ Toolbar: () => <div /> }}
             />
-            <ContributionTypePie data={aggregatedContributorTypes} />
-            <ContributionTypePie data={aggregatedContributionTypes} />
           </>
         )}
       </PageHoc>
