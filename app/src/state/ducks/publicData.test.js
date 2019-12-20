@@ -847,21 +847,21 @@ describe('Selectors', () => {
       expect(publicData.aggregatedContributionTypes(state)).toEqual([
         {
           type: 'cash',
-          label: 'Cash',
+          formattedType: 'Cash',
           total: 10 + 14,
           contributions: [10, 14],
           count: 2,
         },
         {
           type: 'inkind',
-          label: 'Inkind',
+          formattedType: 'Inkind',
           total: 40 + 95 + 100 + 139,
           contributions: [40, 95, 100, 139],
           count: 4,
         },
         {
           type: 'other',
-          label: 'Other',
+          formattedType: 'Other',
           total: 10 + 25 + 5,
           contributions: [5, 10, 25],
           count: 3,
@@ -882,21 +882,21 @@ describe('Selectors', () => {
       expect(publicData.aggregatedContributionTypes(state)).toEqual([
         {
           type: 'cash',
-          label: 'Cash',
+          formattedType: 'Cash',
           total: 0,
           contributions: [],
           count: 0,
         },
         {
           type: 'inkind',
-          label: 'Inkind',
+          formattedType: 'Inkind',
           total: 40 + 95 + 100 + 139,
           contributions: [40, 95, 100, 139],
           count: 4,
         },
         {
           type: 'other',
-          label: 'Other',
+          formattedType: 'Other',
           total: 0,
           contributions: [],
           count: 0,

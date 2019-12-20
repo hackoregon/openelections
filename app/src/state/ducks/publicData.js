@@ -499,7 +499,7 @@ export const aggregatedContributionTypes = createSelector(
     const summarizedAggregates = categories.map(category => {
       return {
         type: category,
-        label: titleCase(category),
+        formattedType: titleCase(category),
         total: aggregates[category].total,
         contributions: aggregates[category].contributions,
         count: aggregates[category].contributions.length,
