@@ -10,6 +10,7 @@ import {
 } from '@hackoregon/component-library';
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Table from '../../components/Table';
+import ContributionTypePie from '../../components/Visualizations/ContributionTypePie';
 import {
   getPublicData,
   publicDataRequest,
@@ -18,6 +19,9 @@ import {
   filteredPublicData,
   campaignsTable,
   mapData,
+  aggregatedContributorTypes,
+  aggregatedContributionTypes,
+  donationSizeByDonationRange,
 } from '../../state/ducks/publicData';
 
 const { dollars } = civicFormat;
@@ -33,6 +37,10 @@ class HomePage extends React.Component {
       request,
       allOffices,
       allCampaigns,
+      filteredData,
+      contributorTypeData,
+      contributionTypeData,
+      contributionSizeData,
       campaignsTable,
       mapData,
     } = this.props;
@@ -144,6 +152,8 @@ class HomePage extends React.Component {
           pageNumber={0}
           totalRows={campaignsTable.length}
         />
+        <ContributionTypePie data={contributorTypeData} />
+        <ContributionTypePie data={contributionTypeData} />
       </PageHoc>
     );
   }
@@ -173,6 +183,9 @@ export default connect(
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
+    contributorTypeData: aggregatedContributorTypes(state),
+    contributionTypeData: aggregatedContributionTypes(state),
+    contributionSizeData: donationSizeByDonationRange(state),
   }),
   dispatch => {
     return {

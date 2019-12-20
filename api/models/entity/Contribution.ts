@@ -712,7 +712,7 @@ export async function getContributionsGeoJsonAsync(
                 from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
         };
         const query: any = {
-            select: ['date', 'type', 'matchAmount', 'oaeType', 'amount', 'city', 'state', 'zip', 'oaeType', 'name', 'firstName', 'lastName', 'addressPoint'],
+            select: ['date', 'type', 'matchAmount', 'oaeType', 'amount', 'city', 'state', 'zip', 'oaeType', 'name', 'firstName', 'lastName', 'addressPoint', 'contributorType', 'subType'],
             relations: ['campaign', 'government'],
             where,
             order: {
