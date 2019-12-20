@@ -9,8 +9,11 @@ const { dollars, titleCase } = civicFormat;
 function ContributionTypePie({ data }) {
   return (
     <div className="card">
-      <h3>Who is Donating?</h3>
+      <h3>Who is Contributing?</h3>
+      <h4>By Contribution Total</h4>
       <PieChart data={data} dataKey="type" dataValue="total" dataLabel="type" />
+      <h4>By Number of Contributors</h4>
+      <PieChart data={data} dataKey="type" dataValue="count" dataLabel="type" />
     </div>
   );
 }

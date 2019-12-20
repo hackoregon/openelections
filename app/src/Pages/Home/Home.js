@@ -32,15 +32,22 @@ import {
   donationSizeByDonationRange,
   setSelectedOffices,
   setSelectedCampaigns,
+  summaryData,
 } from '../../state/ducks/publicData';
 
-const { dollars } = civicFormat;
+const { dollars, numeric } = civicFormat;
 
 const fieldStyle = {
   margin: 10,
   minWidth: 150,
   maxWidth: 300,
 };
+
+const tableStyle = css`
+  td: last-of-type {
+    text-align: right;
+  }
+`;
 
 class HomePage extends React.Component {
   componentDidMount() {
@@ -54,15 +61,16 @@ class HomePage extends React.Component {
       allOffices,
       allCampaigns,
       filteredData,
-      contributorTypeData,
-      contributionTypeData,
-      contributionSizeData,
+      aggregatedContributorTypes,
+      aggregatedContributionTypes,
+      donationSizeByDonationRange,
       selectedOffices,
       setSelectedOffices,
       selectedCampaigns,
       setSelectedCampaigns,
       campaignsTable,
       mapData,
+      summaryData,
     } = this.props;
 
     const { isLoading, error } = request;
@@ -125,6 +133,37 @@ class HomePage extends React.Component {
       },
     ];
 
+    const summaryColumns = [
+      {
+        field: 'donationsCount',
+        title: 'Contributions',
+        sorting: false,
+      },
+      {
+        field: 'donorsCount',
+        title: 'Donors',
+        sorting: false,
+      },
+      {
+        field: 'medianContributionSize',
+        title: 'Median Contribution',
+        sorting: false,
+        type: 'currency',
+      },
+      {
+        field: 'totalAmountContributed',
+        title: 'Total Contributions',
+        sorting: false,
+        type: 'currency',
+      },
+      {
+        field: 'totalAmountMatched',
+        title: 'Total Matched',
+        sorting: false,
+        type: 'currency',
+      },
+    ];
+
     const sanitize = features => features.filter(f => f.geometry.coordinates);
 
     const getPosition = f => f.geometry.coordinates;
@@ -165,6 +204,46 @@ class HomePage extends React.Component {
             ))}
           </Select>
         </FormControl>
+        {console.log(summaryData)}
+        {!!summaryData && (
+          // <table css={tableStyle}>
+          //   <tr>
+          //     <td>Number of donors</td>
+          //     <td>{numeric(summaryData.donorsCount)}</td>
+          //   </tr>
+          //   <tr>
+          //     <td>Number of donations</td>
+          //     <td>{numeric(summaryData.donationsCount)}</td>
+          //   </tr>
+          //   <tr>
+          //     <td>Median contribution size</td>
+          //     <td>{dollars(summaryData.medianContributionSize)}</td>
+          //   </tr>
+          //   <tr>
+          //     <td>Total amount contributed</td>
+          //     <td>{dollars(summaryData.totalAmountContributed)}</td>
+          //   </tr>
+          //   <tr>
+          //     <td>Total amount matched</td>
+          //     <td>{dollars(summaryData.totalAmountMatched)}</td>
+          //   </tr>
+          // </table>
+          <Table
+            isLoading={isLoading}
+            title="Campaigns"
+            columns={summaryColumns}
+            options={{
+              pageSize: 1,
+              showTitle: false,
+              paging: false,
+            }}
+            data={[summaryData]}
+            perPage={1}
+            pageNumber={0}
+            totalRows={1}
+            components={{ Toolbar: () => <div /> }}
+          />
+        )}
         {!!mapData.features.length && (
           <BaseMap updateViewport={false} initialZoom={11}>
             <ScatterPlotMap
@@ -195,14 +274,16 @@ class HomePage extends React.Component {
               options={{
                 pageSize: Math.min(campaignsTable.length, 25),
                 showTitle: false,
+                paging: false,
               }}
               data={campaignsTable}
               perPage={Math.min(campaignsTable.length, 25)}
               pageNumber={0}
               totalRows={campaignsTable.length}
+              components={{ Toolbar: () => <div /> }}
             />
-            <ContributionTypePie data={contributorTypeData} />
-            <ContributionTypePie data={contributionTypeData} />
+            <ContributionTypePie data={aggregatedContributorTypes} />
+            <ContributionTypePie data={aggregatedContributionTypes} />
           </>
         )}
       </PageHoc>
@@ -236,9 +317,10 @@ export default connect(
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
-    contributorTypeData: aggregatedContributorTypes(state),
-    contributionTypeData: aggregatedContributionTypes(state),
-    contributionSizeData: donationSizeByDonationRange(state),
+    aggregatedContributorTypes: aggregatedContributorTypes(state),
+    aggregatedContributionTypes: aggregatedContributionTypes(state),
+    donationSizeByDonationRange: donationSizeByDonationRange(state),
+    summaryData: summaryData(state),
   }),
   dispatch => {
     return {
