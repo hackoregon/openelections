@@ -13,7 +13,7 @@ psql -U postgres
 # command. You will be prompted for the password. 
 # You can verify the host, port, username in the docker-compose file
 # psql -h HOST -p PORT -U USERNAME  DATABASENAME
-psql -h localhost -p 5432 -U postgres postgres
+psql -h localhost -p 5432 -U postgres open_elections_dev
 
 # want to import an .sql file into a new database?
 # make sure to use the path to the .sql file
@@ -54,7 +54,7 @@ services:
     environment: # 👇👇👇👇
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      POSTGRES_DB: testdb
+      POSTGRES_DB: open_elections_dev
       # the following are not in use in the project yet 3/16/2019
       POSTGRES_INITDB_ARGS: "--data-checksums"
       POSTGRES_INITDB_WALDIR: 
@@ -69,7 +69,7 @@ services:
 docker-compose run db bash
 
 # Once into the [ db ] container you can 
-psql -h db -U postgres postgres
+psql -h db -U postgres open_elections_dev
 #pw: password
 
 # Now you can query the db inside the postgres db
