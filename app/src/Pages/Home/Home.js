@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -7,7 +9,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
-import '@hackoregon/component-library/assets/global.styles.css';
 import {
   ScatterPlotMap,
   BaseMap,
@@ -35,6 +36,12 @@ import {
 
 const { dollars } = civicFormat;
 
+const fieldStyle = {
+  margin: 10,
+  minWidth: 150,
+  maxWidth: 300,
+};
+
 class HomePage extends React.Component {
   componentDidMount() {
     const { fetchPublicData } = this.props;
@@ -57,6 +64,7 @@ class HomePage extends React.Component {
       campaignsTable,
       mapData,
     } = this.props;
+
     const { isLoading, error } = request;
 
     const bracketField = field => row =>
@@ -125,7 +133,7 @@ class HomePage extends React.Component {
     return (
       <PageHoc>
         {error && <strong>Oh no! {error}</strong>}
-        <FormControl>
+        <FormControl css={fieldStyle}>
           <InputLabel id="filter-offices">Offices</InputLabel>
           <Select
             multiple
@@ -141,7 +149,7 @@ class HomePage extends React.Component {
             ))}
           </Select>
         </FormControl>
-        <FormControl>
+        <FormControl css={fieldStyle}>
           <InputLabel id="filter-campaigns">Campaigns</InputLabel>
           <Select
             multiple
@@ -157,7 +165,7 @@ class HomePage extends React.Component {
             ))}
           </Select>
         </FormControl>
-        {mapData.features.length && (
+        {!!mapData.features.length && (
           <BaseMap updateViewport={false} initialZoom={11}>
             <ScatterPlotMap
               data={sanitize(mapData.features)}
@@ -177,22 +185,26 @@ class HomePage extends React.Component {
             </ScatterPlotMap>
           </BaseMap>
         )}
-        <h2>Campaigns</h2>
-        <Table
-          isLoading={isLoading}
-          title="Campaigns"
-          columns={columns}
-          options={{
-            pageSize: 50,
-            showTitle: false,
-          }}
-          data={campaignsTable}
-          perPage={50}
-          pageNumber={0}
-          totalRows={campaignsTable.length}
-        />
-        <ContributionTypePie data={contributorTypeData} />
-        <ContributionTypePie data={contributionTypeData} />
+        {!!campaignsTable.length && (
+          <>
+            <h2>Campaigns</h2>
+            <Table
+              isLoading={isLoading}
+              title="Campaigns"
+              columns={columns}
+              options={{
+                pageSize: 50,
+                showTitle: false,
+              }}
+              data={campaignsTable}
+              perPage={50}
+              pageNumber={0}
+              totalRows={campaignsTable.length}
+            />
+            <ContributionTypePie data={contributorTypeData} />
+            <ContributionTypePie data={contributionTypeData} />
+          </>
+        )}
       </PageHoc>
     );
   }
