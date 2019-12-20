@@ -15,6 +15,7 @@ import {
   ScatterPlotMap,
   BaseMap,
   MapTooltip,
+  RadioButtonGroup,
 } from '@hackoregon/component-library';
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Table from '../../components/Table';
@@ -54,6 +55,11 @@ const tableStyle = css`
 `;
 
 class HomePage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: false };
+  }
+
   componentDidMount() {
     const { fetchPublicData } = this.props;
     fetchPublicData();
@@ -275,8 +281,29 @@ class HomePage extends React.Component {
                   justify-content: space-around;
                 `}
               >
-                <ContributionTypeBar data={aggregatedContributorTypes} />
-                <ContributionTypePie data={aggregatedContributionTypes} />
+                <div
+                  css={css`
+                    margin: 0 auto;
+                  `}
+                >
+                  <RadioButtonGroup
+                    labels={['Amount', 'Count']}
+                    value={this.state.count ? 'Count' : 'Amount'}
+                    onChange={event =>
+                      this.setState({ count: event.target.value === 'Count' })
+                    }
+                    row
+                    grpLabel="Show by"
+                  />
+                </div>
+                <ContributionTypeBar
+                  data={aggregatedContributorTypes}
+                  count={this.state.count}
+                />
+                <ContributionTypePie
+                  data={aggregatedContributionTypes}
+                  count={this.state.count}
+                />
               </div>
             </>
           )}
