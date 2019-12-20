@@ -193,11 +193,11 @@ class HomePage extends React.Component {
               title="Campaigns"
               columns={columns}
               options={{
-                pageSize: 50,
+                pageSize: Math.min(campaignsTable.length, 25),
                 showTitle: false,
               }}
               data={campaignsTable}
-              perPage={50}
+              perPage={Math.min(campaignsTable.length, 25)}
               pageNumber={0}
               totalRows={campaignsTable.length}
             />
