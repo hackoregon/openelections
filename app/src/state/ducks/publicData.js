@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createSelector } from 'reselect';
 import { isAfter, isBefore, isEqual } from 'date-fns';
+import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import createReducer from '../utils/createReducer';
 import createActionTypes, {
   createCustomActionTypes,
@@ -8,6 +9,7 @@ import createActionTypes, {
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
 
+const { titleCase } = civicFormat;
 export const STATE_KEY = 'publicData';
 
 const isInclusiveAfter = (date, compare) =>
@@ -431,7 +433,7 @@ export const donationSizeByDonationRange = createSelector(
 export const aggregatedContributorTypes = createSelector(
   sortedDonations,
   donations => {
-    const aggregates = [
+    const categories = [
       'individual',
       'business',
       'family',
@@ -440,7 +442,8 @@ export const aggregatedContributorTypes = createSelector(
       'political_party',
       'unregistered',
       'other',
-    ].reduce((agg, type) => {
+    ];
+    const aggregates = categories.reduce((agg, type) => {
       agg[type] = {
         total: 0,
         contributions: [],
@@ -454,7 +457,17 @@ export const aggregatedContributorTypes = createSelector(
       bucket.contributions.push(d.amount);
     });
 
-    return aggregates;
+    const summarizedAggregates = categories.map(category => {
+      return {
+        type: category,
+        label: titleCase(category),
+        total: aggregates[category].total,
+        contributions: aggregates[category].contributions,
+        count: aggregates[category].contributions.length,
+      };
+    });
+
+    return summarizedAggregates;
   }
 );
 
@@ -464,7 +477,8 @@ export const aggregatedContributorTypes = createSelector(
 export const aggregatedContributionTypes = createSelector(
   sortedDonations,
   donations => {
-    const aggregates = ['cash', 'inkind', 'other'].reduce((agg, type) => {
+    const categories = ['cash', 'inkind', 'other'];
+    const aggregates = categories.reduce((agg, type) => {
       agg[type] = {
         total: 0,
         contributions: [],
@@ -482,7 +496,17 @@ export const aggregatedContributionTypes = createSelector(
       bucket.contributions.push(d.amount);
     });
 
-    return aggregates;
+    const summarizedAggregates = categories.map(category => {
+      return {
+        type: category,
+        label: titleCase(category),
+        total: aggregates[category].total,
+        contributions: aggregates[category].contributions,
+        count: aggregates[category].contributions.length,
+      };
+    });
+
+    return summarizedAggregates;
   }
 );
 

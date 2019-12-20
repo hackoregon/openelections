@@ -692,40 +692,64 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributorTypes(state)).toEqual({
-        individual: {
+      expect(publicData.aggregatedContributorTypes(state)).toEqual([
+        {
+          type: 'individual',
+          label: 'Individual',
           total: 10 + 15,
           contributions: [10, 15],
+          count: 2,
         },
-        business: {
+        {
+          type: 'business',
+          label: 'Business',
           total: 100 + 1450 + 890,
           contributions: [100, 890, 1450],
+          count: 3,
         },
-        family: {
+        {
+          type: 'family',
+          label: 'Family',
           total: 50,
           contributions: [50],
+          count: 1,
         },
-        labor: {
+        {
+          type: 'labor',
+          label: 'Labor',
           total: 500,
           contributions: [500],
+          count: 1,
         },
-        political_committee: {
+        {
+          type: 'political_committee',
+          label: 'Political Committee',
           total: 30,
           contributions: [30],
+          count: 1,
         },
-        political_party: {
+        {
+          type: 'political_party',
+          label: 'Political Party',
           total: 100,
           contributions: [100],
+          count: 1,
         },
-        unregistered: {
+        {
+          type: 'unregistered',
+          label: 'Unregistered',
           total: 150,
           contributions: [150],
+          count: 1,
         },
-        other: {
+        {
+          type: 'other',
+          label: 'Other',
           total: 9 + 10,
           contributions: [9, 10],
+          count: 2,
         },
-      });
+      ]);
     });
 
     it('reports 0 for any empty buckets', () => {
@@ -740,40 +764,64 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributorTypes(state)).toEqual({
-        individual: {
+      expect(publicData.aggregatedContributorTypes(state)).toEqual([
+        {
+          type: 'individual',
+          label: 'Individual',
           total: 10 + 15,
           contributions: [10, 15],
+          count: 2,
         },
-        business: {
+        {
+          type: 'business',
+          label: 'Business',
           total: 100 + 1450 + 890,
           contributions: [100, 890, 1450],
+          count: 3,
         },
-        family: {
+        {
+          type: 'family',
+          label: 'Family',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        labor: {
+        {
+          type: 'labor',
+          label: 'Labor',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        political_committee: {
+        {
+          type: 'political_committee',
+          label: 'Political Committee',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        political_party: {
+        {
+          type: 'political_party',
+          label: 'Political Party',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        unregistered: {
+        {
+          type: 'unregistered',
+          label: 'Unregistered',
           total: 150,
           contributions: [150],
+          count: 1,
         },
-        other: {
+        {
+          type: 'other',
+          label: 'Other',
           total: 0,
           contributions: [],
+          count: 0,
         },
-      });
+      ]);
     });
   });
 
@@ -796,20 +844,29 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributionTypes(state)).toEqual({
-        cash: {
+      expect(publicData.aggregatedContributionTypes(state)).toEqual([
+        {
+          type: 'cash',
+          label: 'Cash',
           total: 10 + 14,
           contributions: [10, 14],
+          count: 2,
         },
-        inkind: {
+        {
+          type: 'inkind',
+          label: 'Inkind',
           total: 40 + 95 + 100 + 139,
           contributions: [40, 95, 100, 139],
+          count: 4,
         },
-        other: {
+        {
+          type: 'other',
+          label: 'Other',
           total: 10 + 25 + 5,
           contributions: [5, 10, 25],
+          count: 3,
         },
-      });
+      ]);
     });
 
     it('reports 0 for any empty buckets', () => {
@@ -822,20 +879,29 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributionTypes(state)).toEqual({
-        cash: {
+      expect(publicData.aggregatedContributionTypes(state)).toEqual([
+        {
+          type: 'cash',
+          label: 'Cash',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        inkind: {
+        {
+          type: 'inkind',
+          label: 'Inkind',
           total: 40 + 95 + 100 + 139,
           contributions: [40, 95, 100, 139],
+          count: 4,
         },
-        other: {
+        {
+          type: 'other',
+          label: 'Other',
           total: 0,
           contributions: [],
+          count: 0,
         },
-      });
+      ]);
     });
   });
 
