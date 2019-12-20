@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import '@hackoregon/component-library/assets/global.styles.css';
 import {
@@ -16,12 +21,16 @@ import {
   publicDataRequest,
   allOffices,
   allCampaigns,
+  selectedOffices,
+  selectedCampaigns,
   filteredPublicData,
   campaignsTable,
   mapData,
   aggregatedContributorTypes,
   aggregatedContributionTypes,
   donationSizeByDonationRange,
+  setSelectedOffices,
+  setSelectedCampaigns,
 } from '../../state/ducks/publicData';
 
 const { dollars } = civicFormat;
@@ -41,6 +50,10 @@ class HomePage extends React.Component {
       contributorTypeData,
       contributionTypeData,
       contributionSizeData,
+      selectedOffices,
+      setSelectedOffices,
+      selectedCampaigns,
+      setSelectedCampaigns,
       campaignsTable,
       mapData,
     } = this.props;
@@ -112,12 +125,38 @@ class HomePage extends React.Component {
     return (
       <PageHoc>
         {error && <strong>Oh no! {error}</strong>}
-        <h2>Offices</h2>
-        <ol>
-          {allOffices.map(office => (
-            <li key={office}>{office}</li>
-          ))}
-        </ol>
+        <FormControl>
+          <InputLabel id="filter-offices">Offices</InputLabel>
+          <Select
+            multiple
+            labelid="filter-offices"
+            value={selectedOffices}
+            onChange={event => setSelectedOffices(event.target.value)}
+            input={<Input />}
+          >
+            {allOffices.map(name => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl>
+          <InputLabel id="filter-campaigns">Campaigns</InputLabel>
+          <Select
+            multiple
+            labelid="filter-campaigns"
+            value={selectedCampaigns}
+            onChange={event => setSelectedCampaigns(event.target.value)}
+            input={<Input />}
+          >
+            {allCampaigns.map(campaign => (
+              <MenuItem key={campaign.id} value={campaign}>
+                {campaign.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {mapData.features.length && (
           <BaseMap updateViewport={false} initialZoom={11}>
             <ScatterPlotMap
@@ -180,6 +219,8 @@ export default connect(
     request: publicDataRequest(state),
     allOffices: allOffices(state),
     allCampaigns: allCampaigns(state),
+    selectedOffices: selectedOffices(state),
+    selectedCampaigns: selectedCampaigns(state),
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
@@ -190,6 +231,9 @@ export default connect(
   dispatch => {
     return {
       fetchPublicData: () => dispatch(getPublicData()),
+      setSelectedOffices: offices => dispatch(setSelectedOffices(offices)),
+      setSelectedCampaigns: campaigns =>
+        dispatch(setSelectedCampaigns(campaigns)),
     };
   }
 )(HomePage);

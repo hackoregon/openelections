@@ -127,10 +127,9 @@ export const actionCreators = {
     failure: error => action(actionTypes.GET_PUBLIC_DATA.FAILURE, { error }),
   },
   setFilter: {
-    offices: selectedOffices =>
-      action(actionTypes.SET_FILTER.OFFICES, { selectedOffices }),
-    campaigns: selectedCampaigns =>
-      action(actionTypes.SET_FILTER.CAMPAIGNS, { selectedCampaigns }),
+    offices: offices => action(actionTypes.SET_FILTER.OFFICES, { offices }),
+    campaigns: campaigns =>
+      action(actionTypes.SET_FILTER.CAMPAIGNS, { campaigns }),
     startDate: startDate =>
       action(actionTypes.SET_FILTER.START_DATE, { startDate }),
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
@@ -232,7 +231,7 @@ export const selectedOffices = createSelector(
 
 export const selectedCampaigns = createSelector(
   publicDataFilters,
-  filters => (filters.campaigns || []).map(c => c.id)
+  filters => filters.campaigns || []
 );
 
 export const selectedStartDate = createSelector(
@@ -254,6 +253,7 @@ export const filteredPublicData = createSelector(
   selectedStartDate,
   selectedEndDate,
   (data, offices, campaigns, start, end) => {
+    const campaignIds = campaigns.map(c => +c.id);
     // Create a shallow copy of the underlying Geojson
     const dataCopy = { ...data };
     dataCopy.features = dataCopy.features.slice();
@@ -261,7 +261,7 @@ export const filteredPublicData = createSelector(
     // Filter data starting with the fastest, broadest filters first
     if (campaigns.length) {
       dataCopy.features = dataCopy.features.filter(f =>
-        campaigns.includes(f.properties.campaignId)
+        campaignIds.includes(f.properties.campaignId)
       );
     }
 
