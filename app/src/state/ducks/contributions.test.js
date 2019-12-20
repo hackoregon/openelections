@@ -319,7 +319,7 @@ describe('Side Effects', () => {
     });
   });
 
-  it('post comments', async () => {
+  xit('post comments', async () => {
     const expectedActions = [
       { type: actionTypes.POST_CONTRIBUTION_COMMENT.REQUEST },
       { type: activities.actionTypes.GET_CONTRIBUTION_ACTIVITIES.REQUEST },

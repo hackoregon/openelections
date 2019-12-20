@@ -475,7 +475,7 @@ describe('API', () => {
     expect(response.data.length >= 1).toBeTruthy();
   });
 
-  it('postExpenditureComment', async () => {
+  xit('postExpenditureComment', async () => {
     process.env.TOKEN = campaignStaffToken;
 
     let response = await api.createExpenditure({
@@ -530,7 +530,7 @@ describe('API', () => {
     expect(response.status).toEqual(200);
   });
 
-  it('postContributionComment', async () => {
+  xit('postContributionComment', async () => {
     process.env.TOKEN = campaignStaffToken;
     let contribution = await api.createContribution({
       address1: '123 ABC ST',
