@@ -282,6 +282,17 @@ export function getExpenditures(expenditureSearchAttrs, applyFilter = false) {
       if (expenditureSearchAttrs.format === 'csv' && response.status === 200) {
         const expenditures = await response.text();
         downloadFile(expenditures, `expenditures-download-${Date.now()}.csv`);
+      } else if (
+        expenditureSearchAttrs.format === 'xml' &&
+        response.status === 200
+      ) {
+        const expenditures = await response.json();
+        expenditures.map((expenditure, index) => {
+          return downloadFile(
+            expenditure,
+            `expenditures-download-${index + 1}-${Date.now()}.xml`
+          );
+        });
       } else if (response.status === 200) {
         const expenses = await response.json();
         const data = normalize(expenses.data, [schema.expenditure]);

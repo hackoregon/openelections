@@ -1,13 +1,19 @@
 import { getConnection } from 'typeorm';
 import {
-    Contribution, contributionGovSummaryFields,
+    Contribution,
+    contributionGovSummaryFields,
     ContributionStatus,
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType, convertToCsv, convertToGeoJson,
-    getContributionsByGovernmentIdAsync, IContributionGovSummary,
-    IContributionSummary, IContributionSummaryResults,
+    ContributorType,
+    convertToCsv,
+    convertToGeoJson,
+    convertToXml,
+    getContributionsByGovernmentIdAsync,
+    IContributionGovSummary,
+    IContributionSummary,
+    IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
     OaeType,
@@ -161,11 +167,12 @@ export interface IGetContributionOptions {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
-    format?: 'json' | 'csv' | 'geoJson';
+    format?: 'json' | 'csv' | 'geoJson' | 'xml';
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
+    filerId?: string | number;
 }
 
 
@@ -186,7 +193,17 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
-        const contributions = await getContributionsByGovernmentIdAsync(governmentId, {
+        let contributions: IContributionSummaryResults;
+        if (contributionAttrs.format === 'xml') {
+            // This exists here to override the default perPage of 100
+            contributions = await getContributionsByGovernmentIdAsync(governmentId, {
+                ...options,
+                page: options.page || 0
+            });
+            contributions.xml = convertToXml(contributions, contributionAttrs.filerId);
+            return contributions;
+        }
+        contributions = await getContributionsByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100

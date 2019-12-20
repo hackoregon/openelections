@@ -1,5 +1,6 @@
 import {
     convertToCsv,
+    convertToXml,
     Expenditure,
     ExpenditureStatus,
     ExpenditureSubType,
@@ -123,7 +124,8 @@ export interface IGetExpenditureAttrs {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
-    format?: 'json' | 'csv';
+    format?: 'json' | 'csv' | 'xml';
+    filerId?: string | number;
 }
 
 export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs): Promise<IExpenditureSummaryResults> {
@@ -140,7 +142,17 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
         } else if (!(await isGovernmentAdminAsync(options.currentUserId, governmentId))) {
             throw new Error('Must be a government admin to see all expenditures');
         }
-        const expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
+
+        let expenditures: IExpenditureSummaryResults;
+        if (expendituresAttrs.format === 'xml') {
+            expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
+                ...options,
+                page: options.page || 0
+            });
+            expenditures.xml = convertToXml(expenditures, expendituresAttrs.filerId);
+            return expenditures;
+        }
+        expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100
