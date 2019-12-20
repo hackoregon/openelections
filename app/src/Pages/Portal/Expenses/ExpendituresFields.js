@@ -228,7 +228,7 @@ export const fields = {
     component: SelectField,
     options: {
       values: [
-        // { value: PaymentMethodEnum.CASH, label: 'Cash' },
+        // { value: PaymentMethodEnum.CASH, label: 'Cash' }, Cash is not allowed as a payment method for expenses in Orestar
         { value: PaymentMethodEnum.DEBIT, label: 'Debit' },
         { value: PaymentMethodEnum.CHECK, label: 'Check' },
         { value: PaymentMethodEnum.MONEY_ORDER, label: 'Money Order' },

@@ -684,7 +684,7 @@ export async function getContributionsByGovernmentIdAsync(
         });
 
         const total = await contributionRepository.count(removeUndefined({ where }));
-        console.log({ options });
+
         return {
             data: contributions,
             perPage,
