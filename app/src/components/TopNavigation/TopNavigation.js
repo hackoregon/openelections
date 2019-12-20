@@ -5,7 +5,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { css, jsx } from '@emotion/core';
-import logo from '../../assets/icons/oaeLogo.jpeg';
+import logo from '../../assets/icons/oae-logo-custom.svg';
 
 /** @jsx jsx */
 import Navigation from '../Navigation';
@@ -34,7 +34,11 @@ const styles = css`
     color: white;
     font-size: 28px;
     line-height: 28px;
-    margin-left: 15px;
+    margin-left: 10px;
+  }
+  .logo-img {
+    display: block;
+    height: 60px;
   }
 `;
 const TopNavigation = props => {
@@ -43,7 +47,11 @@ const TopNavigation = props => {
   return (
     <header css={styles}>
       <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
-        <img src={logo} alt="Open and Accountable Elections logo" />
+        <img
+          className="logo-img"
+          src={logo}
+          alt="Open and Accountable Elections logo"
+        />
         <p className="logo-text">Open & Accountable Elections Portland</p>
       </Link>
       <Navigation />
