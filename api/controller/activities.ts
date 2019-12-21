@@ -41,7 +41,12 @@ export async function getActivityAttachment(request: IRequest, response: Respons
         });
         await checkDto(getActivityFileDto);
         const data = await getActivityAttachmentAsync(getActivityFileDto);
-        return response.status(200).send(data);
+        response.set('Content-Type', data.contentType);
+        if (data.fileName) {
+            response.setHeader('Content-Disposition', 'attachment; filename=' + data.fileName);
+        }
+        response.setHeader('Content-Transfer-Encoding', 'binary');
+        return response.status(200).send(data.buffer);
     } catch (err) {
         return response.status(422).json({message: err.message});
     }
