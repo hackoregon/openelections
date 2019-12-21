@@ -36,9 +36,10 @@ This will build your storybook app.
 
 ## Running the Front-End and Back-End together with seeded data
 
-Run the following command: `docker-compose up api` (`-d` for daemon)
+Run the following command from project root: `docker-compose up api` (`-d` for daemon)
 
 - You will need to use `sudo` with this command as well, if you are developing with Linux
+- If you encounter errors, run `docker-compose build api`
 
 Make sure node_modules are installed locally for the project to properly build.
 
