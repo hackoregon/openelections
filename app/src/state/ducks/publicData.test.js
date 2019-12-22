@@ -923,20 +923,29 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributionsByRegion(state)).toEqual({
-        portland: {
+      expect(publicData.aggregatedContributionsByRegion(state)).toEqual([
+        {
+          type: "portland",
+          label: "Portland",
           total: 10 + 25,
           contributions: [10, 25],
+          count: 2,
         },
-        oregon: {
+        {
+          type: "oregon",
+          label: "Oregon",
           total: 100 + 25 + 100 + 50,
           contributions: [25, 50, 100, 100],
+          count: 4,
         },
-        outside: {
+        {
+          type: "out_of_state",
+          label: "Out Of State",
           total: 200 + 1000,
           contributions: [200, 1000],
+          count: 2,
         },
-      });
+      ]);
     });
 
     it('reports 0 for any empty buckets', () => {
@@ -949,20 +958,29 @@ describe('Selectors', () => {
 
       const [state] = makeData(points);
 
-      expect(publicData.aggregatedContributionsByRegion(state)).toEqual({
-        portland: {
+      expect(publicData.aggregatedContributionsByRegion(state)).toEqual([
+        {
+          type: 'portland',
+          label: 'Portland',
           total: 0,
           contributions: [],
+          count: 0,
         },
-        oregon: {
+        {
+          type: 'oregon',
+          label: 'Oregon',
           total: 100 + 25 + 100 + 50,
           contributions: [25, 50, 100, 100],
+          count: 4,
         },
-        outside: {
+        {
+          type: 'out_of_state',
+          label: 'Out Of State',
           total: 0,
           contributions: [],
+          count: 0,
         },
-      });
+      ]);
     });
   });
 
