@@ -44,16 +44,37 @@ import ContributorLocationBar from '../../components/Visualizations/ContributorL
 
 const { dollars, numeric } = civicFormat;
 
-const fieldStyle = {
-  margin: 10,
-  minWidth: 150,
-  maxWidth: 300,
-};
+const formStyles = css`
+  justify-content: flex-start;
+  margin-left: 16px;
 
-const tableStyle = css`
-  td: last-of-type {
-    text-align: right;
+  h1 {
+    font-size: 1.5em;
   }
+
+  .form-control {
+    margin: 10px;
+    min-width: 150px;
+    max-width: 300px;
+    vertical-align: baseline;
+  }
+
+  .MuiInputBase-root,
+  .MuiFormLabel-root {
+    font-size: 1.2rem;
+  }
+`;
+
+// The !importants are to override the Mui-* styles
+// that are coming from the wrapping FormGroup.
+// Ideally we wouldn't need them, but since the MenuItems
+// are being teleported to a different place in the DOM,
+// we can't beat the Mui-* styles with clever selector
+// specificity.
+const formOption = css`
+  display: flex !important;
+  justify-content: flex-start !important;
+  padding: 10px !important;
 `;
 
 class HomePage extends React.Component {
@@ -185,44 +206,48 @@ class HomePage extends React.Component {
     return (
       <PageHoc>
         {error && <strong>Oh no! {error}</strong>}
-        <FormGroup
-          row
-          css={css`
-            justify-content: center;
-          `}
-        >
-          <FormControl css={fieldStyle}>
-            <InputLabel id="filter-offices">Offices</InputLabel>
-            <Select
-              multiple
-              labelid="filter-offices"
-              value={selectedOffices}
-              onChange={event => setSelectedOffices(event.target.value)}
-              input={<Input />}
-            >
-              {allOffices.map(name => (
-                <MenuItem key={name} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl css={fieldStyle}>
-            <InputLabel id="filter-campaigns">Campaigns</InputLabel>
-            <Select
-              multiple
-              labelid="filter-campaigns"
-              value={selectedCampaigns}
-              onChange={event => setSelectedCampaigns(event.target.value)}
-              input={<Input />}
-            >
-              {allCampaigns.map(campaign => (
-                <MenuItem key={campaign.id} value={campaign}>
-                  {campaign.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <FormGroup row css={formStyles}>
+          <h1>
+            Contributions for
+            <FormControl className="form-control">
+              <InputLabel id="filter-offices">
+                {`${selectedOffices.length ? '' : 'All '}`}Offices
+              </InputLabel>
+              <Select
+                multiple
+                labelid="filter-offices"
+                value={selectedOffices}
+                onChange={event => setSelectedOffices(event.target.value)}
+                input={<Input />}
+              >
+                {allOffices.map(name => (
+                  <MenuItem key={name} value={name} css={formOption}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            ,
+            <FormControl className="form-control">
+              <InputLabel id="filter-campaigns">
+                {`${selectedCampaigns.length ? '' : 'All '}`}Campaigns
+              </InputLabel>
+              <Select
+                multiple
+                labelid="filter-campaigns"
+                value={selectedCampaigns}
+                onChange={event => setSelectedCampaigns(event.target.value)}
+                input={<Input />}
+              >
+                {allCampaigns.map(campaign => (
+                  <MenuItem key={campaign.id} value={campaign} css={formOption}>
+                    {campaign.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            between July 1st 2019 and Today
+          </h1>
         </FormGroup>
         {!!summaryData && (
           <Table
