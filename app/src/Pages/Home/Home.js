@@ -32,6 +32,7 @@ import {
   mapData,
   aggregatedContributorTypes,
   aggregatedContributionTypes,
+  aggregatedContributionsByRegion,
   donationSizeByDonationRange,
   setSelectedOffices,
   setSelectedCampaigns,
@@ -39,6 +40,7 @@ import {
 } from '../../state/ducks/publicData';
 import ContributionTypeBar from '../../components/Visualizations/ContributorTypeBar';
 import { mediaQueryRanges } from '../../assets/styles/variables';
+import ContributorLocationBar from '../../components/Visualizations/ContributorLocationBar';
 
 const { dollars, numeric } = civicFormat;
 
@@ -73,6 +75,7 @@ class HomePage extends React.Component {
       filteredData,
       aggregatedContributorTypes,
       aggregatedContributionTypes,
+      aggregatedContributionsByRegion,
       donationSizeByDonationRange,
       selectedOffices,
       setSelectedOffices,
@@ -245,7 +248,7 @@ class HomePage extends React.Component {
             flex-direction: column;
             @media ${mediaQueryRanges.mediumAndUp} {
               flex-direction: row;
-              height: 650px;
+              height: 700px;
             }
           `}
         >
@@ -275,13 +278,14 @@ class HomePage extends React.Component {
               </BaseMap>
               <div
                 css={css`
-                  height: 650px;
+                  height: 700px;
                   display: flex;
                   flex-direction: column;
                   justify-content: space-around;
                 `}
               >
-                <div
+                {/* TODO: Move this to the sentence based selector */}
+                {/* <div
                   css={css`
                     margin: 0 auto;
                   `}
@@ -295,13 +299,17 @@ class HomePage extends React.Component {
                     row
                     grpLabel="Show by"
                   />
-                </div>
+                </div> */}
                 <ContributionTypeBar
                   data={aggregatedContributorTypes}
                   count={this.state.count}
                 />
                 <ContributionTypePie
                   data={aggregatedContributionTypes}
+                  count={this.state.count}
+                />
+                <ContributorLocationBar
+                  data={aggregatedContributionsByRegion}
                   count={this.state.count}
                 />
               </div>
@@ -367,6 +375,7 @@ export default connect(
     mapData: mapData(state),
     aggregatedContributorTypes: aggregatedContributorTypes(state),
     aggregatedContributionTypes: aggregatedContributionTypes(state),
+    aggregatedContributionsByRegion: aggregatedContributionsByRegion(state),
     donationSizeByDonationRange: donationSizeByDonationRange(state),
     summaryData: summaryData(state),
   }),

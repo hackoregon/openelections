@@ -517,7 +517,8 @@ export const aggregatedContributionTypes = createSelector(
 export const aggregatedContributionsByRegion = createSelector(
   sortedDonations,
   donations => {
-    const aggregates = ['portland', 'oregon', 'outside'].reduce((agg, type) => {
+    const categories = ['portland', 'oregon', 'out_of_state'];
+    const aggregates = categories.reduce((agg, type) => {
       agg[type] = {
         total: 0,
         contributions: [],
@@ -526,7 +527,7 @@ export const aggregatedContributionsByRegion = createSelector(
     }, {});
 
     donations.forEach(d => {
-      let type = 'outside';
+      let type = 'out_of_state';
       if ((d.state || '').toUpperCase() === 'OR') {
         type = 'oregon';
         // NOTE: this is a strict address match. If we want to include the entire metro area,
@@ -539,7 +540,17 @@ export const aggregatedContributionsByRegion = createSelector(
       bucket.contributions.push(d.amount);
     });
 
-    return aggregates;
+    const summarizedAggregates = categories.map(category => {
+      return {
+        type: category,
+        label: titleCase(category),
+        total: aggregates[category].total,
+        contributions: aggregates[category].contributions,
+        count: aggregates[category].contributions.length,
+      };
+    });
+
+    return summarizedAggregates;
   }
 );
 

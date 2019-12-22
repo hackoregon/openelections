@@ -15,7 +15,6 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="total"
           useLegend
-          title="Total Contributions"
           subtitle="Total contribution amount by ORESTAR type"
         />
       )}
@@ -25,7 +24,6 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="count"
           useLegend
-          title="Number of Contributions"
           subtitle="Number of contributions by ORESTAR category"
         />
       )}

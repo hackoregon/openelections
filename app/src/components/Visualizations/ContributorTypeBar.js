@@ -19,7 +19,6 @@ function ContributionTypeBar({ data, count }) {
           yLabel="Category"
           xNumberFormat={dollars}
           dataValueFormatter={x => dollars(x)}
-          title="Total Contributions"
           subtitle="Total contribution amount by ORESTAR category"
         />
       )}
@@ -32,7 +31,6 @@ function ContributionTypeBar({ data, count }) {
           xLabel="Contributions"
           yLabel="Category"
           dataValueFormatter={x => numeric(x)}
-          title="Number of Contributions"
           subtitle="Number of contributions by ORESTAR category"
         />
       )}
