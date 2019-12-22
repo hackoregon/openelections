@@ -27,6 +27,8 @@ import {
   allCampaigns,
   selectedOffices,
   selectedCampaigns,
+  selectedStartDate,
+  selectedEndDate,
   filteredPublicData,
   campaignsTable,
   mapData,
@@ -36,11 +38,14 @@ import {
   donationSizeByDonationRange,
   setSelectedOffices,
   setSelectedCampaigns,
+  setSelectedStartDate,
+  setSelectedEndDate,
   summaryData,
 } from '../../state/ducks/publicData';
 import ContributionTypeBar from '../../components/Visualizations/ContributorTypeBar';
 import { mediaQueryRanges } from '../../assets/styles/variables';
 import ContributorLocationBar from '../../components/Visualizations/ContributorLocationBar';
+import PublicDateRangeField from '../../components/Fields/PublicDateRangeField';
 
 const { dollars, numeric } = civicFormat;
 
@@ -55,7 +60,6 @@ const formStyles = css`
   .form-control {
     margin: 10px;
     min-width: 150px;
-    max-width: 300px;
     vertical-align: baseline;
   }
 
@@ -99,9 +103,12 @@ class HomePage extends React.Component {
       aggregatedContributionsByRegion,
       donationSizeByDonationRange,
       selectedOffices,
+      selectedStartDate,
+      selectedEndDate,
       setSelectedOffices,
       selectedCampaigns,
       setSelectedCampaigns,
+      setDateRange,
       campaignsTable,
       mapData,
       summaryData,
@@ -246,7 +253,14 @@ class HomePage extends React.Component {
                 ))}
               </Select>
             </FormControl>
-            between July 1st 2019 and Today
+            <FormControl className="form-control">
+              <PublicDateRangeField
+                id="filter-date"
+                from={selectedStartDate}
+                to={selectedEndDate}
+                onChange={setDateRange}
+              />
+            </FormControl>
           </h1>
         </FormGroup>
         {!!summaryData && (
@@ -395,6 +409,8 @@ export default connect(
     allCampaigns: allCampaigns(state),
     selectedOffices: selectedOffices(state),
     selectedCampaigns: selectedCampaigns(state),
+    selectedStartDate: selectedStartDate(state),
+    selectedEndDate: selectedEndDate(state),
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
@@ -410,6 +426,10 @@ export default connect(
       setSelectedOffices: offices => dispatch(setSelectedOffices(offices)),
       setSelectedCampaigns: campaigns =>
         dispatch(setSelectedCampaigns(campaigns)),
+      setDateRange: (from, to) => {
+        dispatch(setSelectedStartDate(from));
+        dispatch(setSelectedEndDate(to));
+      },
     };
   }
 )(HomePage);
