@@ -66,6 +66,7 @@ const formStyles = css`
   .MuiInputBase-root,
   .MuiFormLabel-root {
     font-size: 1.2rem;
+    color: #000;
   }
 `;
 
@@ -218,7 +219,7 @@ class HomePage extends React.Component {
             Contributions for
             <FormControl className="form-control">
               <InputLabel id="filter-offices">
-                {`${selectedOffices.length ? '' : 'All '}`}Offices
+                {`${selectedOffices.length ? '' : 'all '}`}offices
               </InputLabel>
               <Select
                 multiple
@@ -237,7 +238,7 @@ class HomePage extends React.Component {
             ,
             <FormControl className="form-control">
               <InputLabel id="filter-campaigns">
-                {`${selectedCampaigns.length ? '' : 'All '}`}Campaigns
+                {`${selectedCampaigns.length ? '' : 'all '}`}campaigns
               </InputLabel>
               <Select
                 multiple
@@ -260,6 +261,22 @@ class HomePage extends React.Component {
                 to={selectedEndDate}
                 onChange={setDateRange}
               />
+            </FormControl>
+            by
+            <FormControl className="form-control">
+              <Select
+                value={this.state.count ? 'Count' : 'Amount'}
+                onChange={event =>
+                  this.setState({ count: event.target.value === 'Count' })
+                }
+              >
+                <MenuItem value="Amount" css={formOption}>
+                  amount
+                </MenuItem>
+                <MenuItem value="Count" css={formOption}>
+                  count
+                </MenuItem>
+              </Select>
             </FormControl>
           </h1>
         </FormGroup>
@@ -323,22 +340,6 @@ class HomePage extends React.Component {
                   justify-content: space-around;
                 `}
               >
-                {/* TODO: Move this to the sentence based selector */}
-                {/* <div
-                  css={css`
-                    margin: 0 auto;
-                  `}
-                >
-                  <RadioButtonGroup
-                    labels={['Amount', 'Count']}
-                    value={this.state.count ? 'Count' : 'Amount'}
-                    onChange={event =>
-                      this.setState({ count: event.target.value === 'Count' })
-                    }
-                    row
-                    grpLabel="Show by"
-                  />
-                </div> */}
                 <ContributionTypeBar
                   data={aggregatedContributorTypes}
                   count={this.state.count}
