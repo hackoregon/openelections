@@ -105,9 +105,10 @@ const Table = ({
           options={{
             ...tableOptions,
             ...options,
-            paging: Object.prototype.hasOwnProperty.call(options, 'paging')
-              ? options.paging
-              : !enableCustomPagination,
+            paging:
+              options && Object.prototype.hasOwnProperty.call(options, 'paging')
+                ? options.paging
+                : !enableCustomPagination,
           }}
           actions={actions}
           components={{
