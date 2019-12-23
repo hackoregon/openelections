@@ -2,7 +2,7 @@
 // eslint-disable-next-line
 import React, { Component } from "react";
 import { NavLink } from 'react-router-dom';
-import { ArrowDropDown } from '@material-ui/icons';
+import { ArrowDropDown, ExitToApp } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 
 /** @jsx jsx */
@@ -43,6 +43,16 @@ const styles = css`
         &:hover {
           background: rgba(0, 0, 0, 0.05);
         }
+      }
+    }
+  }
+
+  .never-active {
+    a {
+      background: rgba(0, 0, 0, 0) !important;
+      border-left-color: rgba(0, 0, 0, 0) !important;
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
       }
     }
   }
@@ -97,7 +107,6 @@ export default class Sidebar extends Component {
     isAssumed || this.links.push({ url: '/dashboard', label: 'Dashboard' });
     this.links.push({ url: '/contributions', label: 'Contributions' });
     this.links.push({ url: '/expenses', label: 'Expenses' });
-    isAssumed || this.links.push({ url: '/visualize', label: 'Visualize' });
     isGovAdmin &&
       (isAssumed || this.links.push({ url: '/campaigns', label: 'Campaigns' }));
     isAssumed || this.links.push({ url: '/settings', label: 'Settings' });
@@ -139,6 +148,12 @@ export default class Sidebar extends Component {
               <NavLink to={link.url}>{link.label}</NavLink>
             </li>
           ))}
+          <li className="never-active">
+            <NavLink to="/">
+              <ExitToApp />
+              {' Public View'}
+            </NavLink>
+          </li>
         </ul>
       </div>
     );
