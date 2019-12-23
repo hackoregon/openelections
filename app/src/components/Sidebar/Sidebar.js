@@ -52,7 +52,7 @@ const styles = css`
       background: rgba(0, 0, 0, 0) !important;
       border-left-color: rgba(0, 0, 0, 0) !important;
       &:hover {
-        background: rgba(0, 0, 0, 0.05);
+        background: rgba(0, 0, 0, 0.05) !important;
       }
     }
   }
@@ -62,6 +62,10 @@ const styles = css`
     float: right;
     transform: translateX(-10px);
     transition: transform 0.2s;
+  }
+
+  .exit {
+    vertical-align: sub;
   }
 
   @media ${mediaQueryRanges.mediumAndDown} {
@@ -150,7 +154,7 @@ export default class Sidebar extends Component {
           ))}
           <li className="never-active">
             <NavLink to="/">
-              <ExitToApp />
+              <ExitToApp className="exit" />
               {' Public View'}
             </NavLink>
           </li>
