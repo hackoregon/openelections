@@ -263,7 +263,7 @@ export const filteredPublicData = createSelector(
     // Filter data starting with the fastest, broadest filters first
     if (campaigns.length) {
       dataCopy.features = dataCopy.features.filter(f =>
-        campaignIds.includes(f.properties.campaignId)
+        campaignIds.includes(+f.properties.campaignId)
       );
     }
 

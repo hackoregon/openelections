@@ -334,7 +334,11 @@ describe('Selectors', () => {
     });
 
     it('returns a list of campaign IDs for selectedCampaigns', () => {
-      expect(publicData.selectedCampaigns(state)).toEqual(['1', '2', '3']);
+      expect(publicData.selectedCampaigns(state)).toEqual([
+        { id: '1', name: 'One' },
+        { id: '2', name: 'Four' },
+        { id: '3', name: 'Three' },
+      ]);
     });
 
     it('defaults to an empty array for selectedCampaigns', () => {
@@ -925,22 +929,22 @@ describe('Selectors', () => {
 
       expect(publicData.aggregatedContributionsByRegion(state)).toEqual([
         {
-          type: "portland",
-          label: "Portland",
+          type: 'portland',
+          label: 'Portland',
           total: 10 + 25,
           contributions: [10, 25],
           count: 2,
         },
         {
-          type: "oregon",
-          label: "Oregon",
+          type: 'oregon',
+          label: 'Oregon',
           total: 100 + 25 + 100 + 50,
           contributions: [25, 50, 100, 100],
           count: 4,
         },
         {
-          type: "out_of_state",
-          label: "Out Of State",
+          type: 'out_of_state',
+          label: 'Out Of State',
           total: 200 + 1000,
           contributions: [200, 1000],
           count: 2,
