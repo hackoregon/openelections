@@ -213,13 +213,15 @@ export const allCampaigns = createSelector(
     if (!json || !json.features) return [];
 
     const campaignHash = json.features.reduce((campaigns, f) => {
-      campaigns[f.properties.campaignId] = f.properties.campaignName;
+      const { campaignName, officeSought } = f.properties;
+      campaigns[f.properties.campaignId] = { campaignName, officeSought };
       return campaigns;
     }, {});
 
     return Object.keys(campaignHash).map(id => ({
       id,
-      name: campaignHash[id],
+      name: campaignHash[id].campaignName,
+      officeSought: campaignHash[id].officeSought,
     }));
   }
 );
@@ -244,6 +246,20 @@ export const selectedStartDate = createSelector(
 export const selectedEndDate = createSelector(
   publicDataFilters,
   filters => filters.endDate
+);
+
+// Filtered filter options
+
+export const availableCampaigns = createSelector(
+  allCampaigns,
+  selectedOffices,
+  (campaigns, offices) => {
+    if (!offices || !offices.length) return campaigns;
+
+    return campaigns.filter(campaign =>
+      offices.includes(campaign.officeSought)
+    );
+  }
 );
 
 // Filtered public dataset (based on above filters)
