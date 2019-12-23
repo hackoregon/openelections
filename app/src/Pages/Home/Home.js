@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   ScatterPlotMap,
+  ScreenGridMap,
   BaseMap,
   MapTooltip,
 } from '@hackoregon/component-library';
@@ -320,22 +321,58 @@ class HomePage extends React.Component {
                 initialZoom={11}
                 useContainerHeight
               >
-                <ScatterPlotMap
-                  data={sanitize(mapData.features)}
-                  getPosition={getPosition}
-                  opacity={0.1}
-                  getFillColor={getFillColor}
-                  radiusScale={5}
-                  getRadius={d => Math.sqrt(d.properties.amount)}
-                  autoHighlight
-                >
-                  <MapTooltip
-                    primaryName="Campaign"
-                    primaryField="campaignName"
-                    secondaryName="Contribution"
-                    secondaryField="amount"
-                  />
-                </ScatterPlotMap>
+                {!this.state.count ? (
+                  <ScatterPlotMap
+                    data={sanitize(mapData.features)}
+                    getPosition={getPosition}
+                    opacity={0.1}
+                    getFillColor={getFillColor}
+                    radiusScale={5}
+                    getRadius={d => Math.sqrt(d.properties.amount)}
+                    autoHighlight
+                  >
+                    <MapTooltip
+                      primaryName="Campaign"
+                      primaryField="campaignName"
+                      secondaryName="Contribution"
+                      secondaryField="amount"
+                    />
+                  </ScatterPlotMap>
+                ) : (
+                  <div />
+                )}
+                {this.state.count ? (
+                  <ScreenGridMap
+                    data={sanitize(mapData.features)}
+                    getPosition={getPosition}
+                    opacity={1}
+                    colorRange={[
+                      [237, 248, 177],
+                      [199, 233, 180],
+                      [127, 205, 187],
+                      [65, 182, 196],
+                      [29, 145, 192],
+                      [34, 94, 168],
+                      [37, 52, 148],
+                      [8, 29, 88],
+                    ]}
+                    cellSizePixels={15}
+                  >
+                    <MapTooltip
+                      tooltipDataArray={[
+                        {
+                          name: `Number of contributions`,
+                          field: 'cellCount',
+                          formatField: civicFormat.numeric,
+                        },
+                      ]}
+                      isScreenGrid
+                      wide
+                    />
+                  </ScreenGridMap>
+                ) : (
+                  <div />
+                )}
               </BaseMap>
               <div
                 css={css`
