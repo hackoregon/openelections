@@ -267,6 +267,7 @@ export const PaymentMethodEnum = Object.freeze({
   CREDIT_CARD_ONLINE: 'credit_card_online',
   CREDIT_CARD_PAPER: 'credit_card_paper',
   ETF: 'electronic_funds_transfer',
+  DEBIT: 'debit',
 });
 
 export const DataToPhoneTypeFieldMap = new Map([
@@ -606,7 +607,9 @@ export function getContributions(contributionSearchAttrs) {
 //   method: 'post',
 export function postContributionComment(contributionId, comment, attachment) {
   const formData = new FormData();
-  formData.append('attachment', attachment);
+  if (attachment) {
+    formData.append('attachment', attachment);
+  }
   formData.append('comment', comment);
   return fetch(`${baseUrl()}/contributions/${contributionId}/comments`, {
     method: 'POST',
@@ -637,7 +640,9 @@ export function createExpenditure(expenditureAttrs) {
 //   method: 'post',
 export function postExpenditureComment(expenditureId, comment, attachment) {
   const formData = new FormData();
-  formData.append('attachment', attachment);
+  if (attachment) {
+    formData.append('attachment', attachment);
+  }
   formData.append('comment', comment);
   return fetch(`${baseUrl()}/expenditures/${expenditureId}/comments`, {
     method: 'POST',

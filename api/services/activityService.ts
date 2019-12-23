@@ -139,7 +139,7 @@ export interface IGetActivityAttachment {
     activityId: number;
 }
 
-export async function getActivityAttachmentAsync(params: IGetActivityAttachment): Promise<Buffer> {
+export async function getActivityAttachmentAsync(params: IGetActivityAttachment): Promise<{contentType: string, buffer: Buffer, fileName?: string}> {
     const activityRepository = getConnection('default').getRepository('Activity');
 
     const activity = (await activityRepository.findOneOrFail(params.activityId, {
@@ -163,28 +163,36 @@ export async function getActivityAttachmentAsync(params: IGetActivityAttachment)
     }
 }
 
-export async function getFileAttachmentAsync(filePath: string): Promise<Buffer> {
-    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        return(fs.readFileSync(filePath));
-    }
+export async function getFileAttachmentAsync(filePath: string): Promise<{contentType: string, buffer: Buffer, fileName?: string}> {
+    // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    //     return(
+    //         Promise.resolve({
+    //             contentType: 'application/txt',
+    //             buffer: fs.readFileSync(filePath)
+    //         })
+    //     );
+    // }
 
     let key = new URL(filePath).pathname;
     key = key.substr(1);
     const AWS = require('aws-sdk');
     const s3 = new AWS.S3({apiVersion: '2006-03-01'});
     const data = await s3.getObject({Bucket: 'open-elections', Key: key}).promise();
-    return data.Body;
+    const fileNameArray = key.split('/');
+    const fileName = fileNameArray[fileNameArray.length - 1];
+
+    return {contentType: data.ContentType, buffer: data.Body, fileName};
 }
 
 export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
-    if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        return Promise.resolve(filePath);
-    }
+    // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    //     return Promise.resolve(filePath);
+    // }
 
     let folder = 'production-uploads';
-    if (process.env.APP_ENV === 'staging') {
+    // if (process.env.APP_ENV === 'staging') {
         folder = 'qa-uploads';
-    }
+    // }
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
         throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
     }

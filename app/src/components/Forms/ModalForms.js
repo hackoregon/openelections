@@ -11,3 +11,4 @@ export {
 export {
   default as MatchContribution,
 } from './MatchContribution/MatchContribution';
+export { default as ExportXML } from './ExportXML';

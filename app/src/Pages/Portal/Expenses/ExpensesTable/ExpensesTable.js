@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
@@ -17,6 +19,20 @@ import {
   isLoggedIn,
 } from '../../../../state/ducks/auth';
 import FilterExpenses from '../../../../components/Forms/FilterExpenses';
+import { showModal } from '../../../../state/ducks/modal';
+
+const buttonStyles = css`
+  margin: 0 5px !important;
+`;
+
+const buttonWrapper = css`
+  display: flex;
+  flex-direction: row-reverse;
+  @media screen and (max-width: 900px) {
+    margin-top: 10px;
+    justify-content: center;
+  }
+`;
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -100,6 +116,7 @@ class ExpensesTable extends React.Component {
   render() {
     const {
       getExpenditures,
+      getAllExpenditures,
       filterOptions,
       updateFilter,
       isListLoading,
@@ -140,6 +157,22 @@ class ExpensesTable extends React.Component {
       };
       getExpenditures(data);
     }
+
+    function fetchXML(isAll, filerId) {
+      const data = {
+        governmentId: govId,
+        currentUserId: userId,
+        campaignId,
+        format: 'xml',
+        filerId,
+      };
+      if (isAll) {
+        getAllExpenditures(data);
+      } else {
+        getExpenditures(data);
+      }
+    }
+
     function fetchList() {
       getExpenditures({
         governmentId: govId,
@@ -170,20 +203,33 @@ class ExpensesTable extends React.Component {
             fetchList();
           }}
         />
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row-reverse',
-          }}
-        >
-          <Button
-            onClick={() => {
-              fetchCSV();
-            }}
-          >
-            Export
-          </Button>
+        <div css={buttonWrapper}>
+          <div css={buttonStyles}>
+            <Button
+              onClick={() => {
+                fetchCSV();
+              }}
+            >
+              Export CSV
+            </Button>
+          </div>
+          <div css={buttonStyles}>
+            <Button
+              css={buttonStyles}
+              onClick={() => {
+                this.props.showModal({
+                  component: 'ExportXML',
+                  props: {
+                    fetch: (isAll, filerId) => fetchXML(isAll, filerId),
+                    totalFiltered: filterOptions.perPage || 50,
+                    total,
+                  },
+                });
+              }}
+            >
+              Export XML
+            </Button>
+          </div>
         </div>
         <Table
           isLoading={isLoading}
@@ -255,6 +301,10 @@ export default connect(
       getFilterOptions,
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
       getExpenditures: data => dispatch(getExpenditures(data, true)),
+      getAllExpenditures: data => dispatch(getExpenditures(data, false)),
+      showModal: payload => {
+        dispatch(showModal(payload));
+      },
     };
   }
 )(ExpensesTable);

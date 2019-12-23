@@ -23,6 +23,8 @@ import { removeUndefined } from './helpers';
 import { MatchAddressType } from '../../services/dataScienceService';
 import { Parser } from 'json2csv';
 import * as dateFormat from 'dateformat';
+import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
+import { convertContributionsToXML } from '../converters';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -104,7 +106,8 @@ export enum PaymentMethod {
     MONEY_ORDER = 'money_order',
     CREDIT_CARD_ONLINE = 'credit_card_online',
     CREDIT_CARD_PAPER = 'credit_card_paper',
-    ETF = 'electronic_funds_transfer'
+    ETF = 'electronic_funds_transfer',
+    DEBIT = 'debit'
 }
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'contributions' })
@@ -610,6 +613,7 @@ export type IContributionSummaryResults = {
     data: IContributionSummary[] | IContributionGovSummary[];
     geoJson?: IContributionsGeoJson;
     csv?: string;
+    xml?: string;
     perPage: number;
     page: number;
     total: number;
@@ -682,6 +686,7 @@ export async function getContributionsByGovernmentIdAsync(
         });
 
         const total = await contributionRepository.count(removeUndefined({ where }));
+
         return {
             data: contributions,
             perPage,
@@ -779,6 +784,10 @@ export function convertToCsv(contributions: any): string {
         return item;
     });
     return json2csvParser.parse(contributions.data);
+}
+
+export function convertToXml(contributions: any, filerId: number | string): string {
+    return convertContributionsToXML(contributions, filerId);
 }
 
 export interface SummaryAttrs {

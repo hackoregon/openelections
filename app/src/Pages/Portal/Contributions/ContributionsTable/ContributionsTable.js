@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { format } from 'date-fns';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 import PageHoc from '../../../../components/PageHoc/PageHoc';
 import FilterContribution from '../../../../components/Forms/FilterContributions/index';
 import Table from '../../../../components/Table';
@@ -18,9 +20,23 @@ import {
   isGovAdmin,
   getCurrentUserId,
 } from '../../../../state/ducks/auth';
+import { showModal } from '../../../../state/ducks/modal';
 
 // Need History push to URL?
 // Need Create sort for updatedOn date field?
+
+const buttonStyles = css`
+  margin: 0 5px !important;
+`;
+
+const buttonWrapper = css`
+  display: flex;
+  flex-direction: row-reverse;
+  @media screen and (max-width: 900px) {
+    margin-top: 10px;
+    justify-content: center;
+  }
+`;
 
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
@@ -112,6 +128,7 @@ class ContributionsTable extends React.Component {
   render() {
     const {
       getContributions,
+      getAllContributions,
       filterOptions,
       updateFilter,
       isListLoading,
@@ -154,6 +171,21 @@ class ContributionsTable extends React.Component {
       getContributions(data);
     }
 
+    function fetchXML(isAll, filerId) {
+      const data = {
+        governmentId: govId,
+        currentUserId: userId,
+        campaignId,
+        format: 'xml',
+        filerId,
+      };
+      if (isAll) {
+        getAllContributions(data);
+      } else {
+        getContributions(data);
+      }
+    }
+
     function fetchList() {
       getContributions({
         governmentId: govId,
@@ -185,14 +217,34 @@ class ContributionsTable extends React.Component {
             fetchList();
           }}
         />
-        <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
-          <Button
-            onClick={() => {
-              fetchCSV();
-            }}
-          >
-            Export
-          </Button>
+        <div css={buttonWrapper}>
+          <div css={buttonStyles}>
+            <Button
+              onClick={() => {
+                fetchCSV();
+              }}
+            >
+              Export CSV
+            </Button>
+          </div>
+          <div css={buttonStyles}>
+            <Button
+              css={buttonStyles}
+              onClick={() => {
+                // fetchXML();
+                this.props.showModal({
+                  component: 'ExportXML',
+                  props: {
+                    fetch: (isAll, filerId) => fetchXML(isAll, filerId),
+                    totalFiltered: filterOptions.perPage || 50,
+                    total,
+                  },
+                });
+              }}
+            >
+              Export XML
+            </Button>
+          </div>
         </div>
         <Table
           isLoading={isLoading}
@@ -259,7 +311,11 @@ export default connect(
   dispatch => {
     return {
       getContributions: data => dispatch(getContributions(data, true)),
+      getAllContributions: data => dispatch(getContributions(data, false)),
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
+      showModal: payload => {
+        dispatch(showModal(payload));
+      },
     };
   }
 )(ContributionsTable);

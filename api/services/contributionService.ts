@@ -1,13 +1,20 @@
 import { getConnection } from 'typeorm';
 import {
-    Contribution, contributionGovSummaryFields,
+    Contribution,
+    contributionGovSummaryFields,
     ContributionStatus,
     ContributionSubType,
     contributionSummaryFields,
     ContributionType,
-    ContributorType, convertToCsv,
-    getContributionsByGovernmentIdAsync, getContributionsGeoJsonAsync, IContributionGovSummary, IContributionsGeoJson,
-    IContributionSummary, IContributionSummaryResults,
+    ContributorType,
+    convertToCsv,
+    getContributionsGeoJsonAsync,
+    IContributionsGeoJson,
+    convertToXml,
+    getContributionsByGovernmentIdAsync,
+    IContributionGovSummary,
+    IContributionSummary,
+    IContributionSummaryResults,
     InKindDescriptionType,
     MatchStrength,
     OaeType,
@@ -132,7 +139,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityId: saved.id
                 });
                 if (process.env.NODE_ENV !== 'test') {
-                    await addDataScienceJob({id: saved.id });
+                    await addDataScienceJob({ id: saved.id });
                 } else {
                     await getGISCoordinates(saved.id);
                     await retrieveAndSaveMatchResultAsync(saved.id);
@@ -161,15 +168,17 @@ export interface IGetContributionOptions {
         field: 'campaignId' | 'status' | 'date';
         direction: 'ASC' | 'DESC';
     };
-    format?: 'json' | 'csv' | 'geoJson';
+    format?: 'json' | 'csv' | 'geoJson' | 'xml';
 }
 
 export interface IGetContributionAttrs extends IGetContributionOptions {
     governmentId: number;
+    filerId?: string | number;
 }
 
-
-export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
+export async function getContributionsAsync(
+    contributionAttrs: IGetContributionAttrs
+): Promise<IContributionSummaryResults> {
     try {
         const { governmentId, ...options } = contributionAttrs;
         const govAdmin = await isGovernmentAdminAsync(options.currentUserId, governmentId);
@@ -186,7 +195,17 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
         } else if (!govAdmin) {
             throw new Error('Must be a government admin to see all contributions');
         }
-        const contributions = await getContributionsByGovernmentIdAsync(governmentId, {
+        let contributions: IContributionSummaryResults;
+        if (contributionAttrs.format === 'xml') {
+            // This exists here to override the default perPage of 100
+            contributions = await getContributionsByGovernmentIdAsync(governmentId, {
+                ...options,
+                page: options.page || 0
+            });
+            contributions.xml = convertToXml(contributions, contributionAttrs.filerId);
+            return contributions;
+        }
+        contributions = await getContributionsByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
             perPage: options.perPage || 100
@@ -431,10 +450,15 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR,
-                notify: true,
+                notify: true
             });
             if (attrs.attachmentPath) {
-                const attachmentPath = await saveFileAttachmentAsync(activity.id, 'contributions', attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                const attachmentPath = await saveFileAttachmentAsync(
+                    activity.id,
+                    'contributions',
+                    attrs.attachmentPath.name,
+                    attrs.attachmentPath.tempFilePath
+                );
                 await activityRepository.update(activity.id, { attachmentPath });
                 return activity;
             }

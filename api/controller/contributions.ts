@@ -227,7 +227,7 @@ export class GetContributionsDto implements IGetContributionAttrs {
 
     @IsOptional()
     @IsString()
-    format?: 'csv' | 'json' | 'geoJson';
+    format?: 'csv' | 'json' | 'geoJson' | 'xml';
 }
 
 export async function getContributions(request: IRequest, response: Response, next: Function) {
@@ -243,6 +243,9 @@ export async function getContributions(request: IRequest, response: Response, ne
             response.type('text/csv');
             response.attachment('download-contributions-' + Date.now() + '.csv');
             return response.status(200).send(Buffer.from(contributions.csv));
+        } else if (contributions.xml) {
+            response.type('application/json');
+            return response.status(200).send(Buffer.from(contributions.xml));
         }
         return response.status(200).send(JSON.stringify(contributions));
     } catch (err) {
