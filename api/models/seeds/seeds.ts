@@ -8,7 +8,7 @@ import { Address } from '../../models/entity/Address';
 import * as fs from 'fs';
 import * as parse from 'csv-parse/lib/sync';
 import { addContributionAsync } from '../../services/contributionService';
-import { ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType, InKindDescriptionType } from '../entity/Contribution';
+import { ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType } from '../entity/Contribution';
 import * as faker from 'faker';
 import { Government } from '../entity/Government';
 import { Campaign } from '../entity/Campaign';
@@ -24,27 +24,6 @@ function chunk(array, size) {
         }
     }
     return chunked_arr;
-}
-
-const ALLOWABLE_CONTRIBUTION_SUBTYPES = [
-    'CASH', 'INKIND_CONTRIBUTION', 'INKIND_PAID_SUPERVISION', 'INKIND_FORGIVEN_ACCOUNT', 'INKIND_FORGIVEN_PERSONAL'
-];
-
-function randomFrom(array) {
-    return array.length && array[Math.floor(Math.random()*array.length)];
-}
-
-function randomEnum<T>(anEnum: T, filterArray?: Array<String>): T[keyof T] {
-    const arrayForSelection = filterArray || Object.keys(anEnum);
-    return anEnum[randomFrom(arrayForSelection)];
-}
-
-function randomInKindType(contributionSubType: ContributionSubType) {
-    return (contributionSubType === 'cash') ? undefined : randomEnum(InKindDescriptionType);
-}
-
-function randomName(contributorType: ContributorType) {
-    return (contributorType === 'individual' || contributorType === 'family') ? undefined : faker.company.companyName();
 }
 
 export async function seedAddresses() {
@@ -95,7 +74,7 @@ export interface Address {
     zipPlusFour;
 }
 
-export async function addContributions(user: User, government: Government, campaign: Campaign, campaigns: Array<Campaign>) {
+export async function addContributions(user: User, government: Government, campaign: Campaign) {
     let data: any;
     if (process.env.NODE_ENV === 'test') {
         data = fs.readFileSync('/app/models/seeds/addressesTest.csv', 'utf8');
@@ -112,25 +91,21 @@ export async function addContributions(user: User, government: Government, campa
     });
 
     parsed.forEach((address: Address) => {
-        const randomSubType = randomEnum(ContributionSubType, ALLOWABLE_CONTRIBUTION_SUBTYPES);
-        const randomContributorType = randomEnum(ContributorType);
         promises.push(addContributionAsync({
             firstName: address.firstName,
             lastName: address.lastName,
-            name: randomName(randomContributorType),
             address1: address.address1,
             address2: address.address2,
             city: address.city,
             state: address.state,
             zip: address.zip,
-            contributorType: randomContributorType,
+            contributorType: ContributorType.INDIVIDUAL,
             type: ContributionType.CONTRIBUTION,
-            subType: randomSubType,
-            inKindType: randomInKindType(randomSubType),
+            subType: ContributionSubType.CASH,
             amount: faker.finance.amount(1, 500, 2),
             date: faker.date.past(1),
             governmentId: government.id,
-            campaignId: randomFrom(campaigns).id,
+            campaignId: campaign.id,
             currentUserId: user.id,
             paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
             oaeType: OaeType.ALLOWABLE,
@@ -213,10 +188,11 @@ export default async (onlyData?: boolean) => {
     console.log('Adding a government');
     const government = await newGovernmentAsync('City of Portland');
 
-    console.log('Adding campaigns');
+    console.log('Adding a campaign');
     const campaign = await newCampaignAsync(government);
-    const campaignb = await newCampaignAsync(government);
-    const campaigns = await Promise.all([ campaign, campaignb ]);
+    await newCampaignAsync(government);
+    await newCampaignAsync(government);
+    await newCampaignAsync(government);
 
     await addPermissionAsync({
         userId: govAdmin.id,
@@ -231,21 +207,9 @@ export default async (onlyData?: boolean) => {
     });
 
     await addPermissionAsync({
-        userId: campaignAdmin.id,
-        role: UserRole.CAMPAIGN_ADMIN,
-        campaignId: campaignb.id
-    });
-
-    await addPermissionAsync({
         userId: campaignStaff.id,
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaff.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
     });
 
     await addPermissionAsync({
@@ -255,21 +219,9 @@ export default async (onlyData?: boolean) => {
     });
 
     await addPermissionAsync({
-        userId: campaignStaffInvited.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
-
-    await addPermissionAsync({
         userId: campaignStaffReset.id,
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffReset.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
     });
 
     await addPermissionAsync({
@@ -279,27 +231,15 @@ export default async (onlyData?: boolean) => {
     });
 
     await addPermissionAsync({
-        userId: campaignStaffRemoved.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
-    });
-
-    await addPermissionAsync({
         userId: campaignStaffRemoved2.id,
         role: UserRole.CAMPAIGN_STAFF,
         campaignId: campaign.id
-    });
-
-    await addPermissionAsync({
-        userId: campaignStaffRemoved2.id,
-        role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaignb.id
     });
 
     await seedAddresses();
 
     const promises = [];
-    await addContributions(campaignAdmin, government, campaign, campaigns);
+    await addContributions(campaignAdmin, government, campaign);
     for (let i = 0; i < 101; i++) {
         promises.push(newExpenditureAsync(campaign, government));
     }
