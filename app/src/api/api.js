@@ -697,3 +697,7 @@ matchStrength: enum[exact, strong, weak, none]
 export function updateMatchForContribution(attrs) {
   return post(`${baseUrl()}/matches`, attrs);
 }
+
+export function getContributionGeoData() {
+  return get(`${baseUrl()}/contributionsgeo`).then(response => response.json());
+}

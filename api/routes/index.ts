@@ -953,6 +953,38 @@ export const AppRoutes = [
         path: '/matches',
         method: 'post',
         action: contributions.postMatchResult
+    },
+    /**
+     * @swagger
+     *
+     * /contributionsgeo:
+     *   get:
+     *     summary: Get a public feed contributions in geojson format
+     *     tags:
+     *       - Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *      - in: query
+     *        name: to
+     *        schema:
+     *          type: string
+     *      - in: query
+     *        name: from
+     *        schema:
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: query
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     */
+    {
+        path: '/contributionsgeo',
+        method: 'get',
+        action: contributions.getContributionsGeo
     }
 ];
 

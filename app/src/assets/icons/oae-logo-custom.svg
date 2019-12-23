@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 379 342" width="67" height="60">
+  <title>Solid-DarkBG-LowContrast</title>
+  <g id="Layer_3" data-name="Layer 3">
+    <g>
+      <path d="M97,225,11,241s76,133,137,51" fill="none" stroke="#009c4a" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+      <line x1="100" y1="271" x2="15.5" y2="247.5" fill="none" stroke="#009c4a" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+    </g>
+  </g>
+  <g id="Layer_2" data-name="Layer 2">
+    <path d="M365.5,175.5a111.32,111.32,0,0,0-9-44.12h0c-1.28-45-34.58-82.15-80-90.89l.39.44A104.8,104.8,0,0,0,217,22.5c-32.46,0-61.3,14.3-79.46,36.42h0C100.77,76.79,75.5,113.77,75.5,156.5A106.51,106.51,0,0,0,95,217.91h0c9.73,45.26,47.42,80.29,94.34,86.58h0a107.57,107.57,0,0,0,53.45,14c50.11,0,92.35-32.45,101.75-77l-.92.37A110.52,110.52,0,0,0,365.5,175.5Z" fill="#fbe8b5"/>
+    <g>
+      <circle cx="239" cy="178" r="36" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <ellipse cx="226" cy="163.25" rx="55" ry="56.75" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M270.5,196.5c-6,11-17.5,27.5-50.5,27-43.9-.67-79.5-37.83-79.5-84.5S176.09,54.5,220,54.5c27.44,0,51.64,14.78,65.92,37.26" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M276.82,110a89.77,89.77,0,0,1,33.68,70c0,50-41.19,90.5-92,90.5s-92-40.52-92-90.5a89,89,0,0,1,14-48" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M275.74,109.29a110,110,0,0,1,40.76,85.46c0,61.17-50.14,110.75-112,110.75s-112-49.58-112-110.75a109.37,109.37,0,0,1,9.43-44.55" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M95,217.91A106.51,106.51,0,0,1,75.5,156.5c0-60.2,50.14-109,112-109A114.57,114.57,0,0,1,228.31,55" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M262.09,66.53C319.43,68,365.5,116.19,365.5,175.5c0,56.2-41.36,102.46-94.49,108.36" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M137.54,58.92C155.7,36.8,184.54,22.5,217,22.5c41.21,0,76.58,23,91.68,55.88" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M276.5,40.5c45.38,8.74,78.68,45.9,80,90.89" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+      <path d="M344.5,241.5c-9.4,44.55-51.64,77-101.75,77a107.57,107.57,0,0,1-53.45-14" fill="none" stroke="#fbb90d" stroke-linecap="round" stroke-miterlimit="10" stroke-width="11"/>
+    </g>
+  </g>
+</svg>

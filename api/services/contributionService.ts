@@ -8,7 +8,8 @@ import {
     ContributionType,
     ContributorType,
     convertToCsv,
-    convertToGeoJson,
+    getContributionsGeoJsonAsync,
+    IContributionsGeoJson,
     convertToXml,
     getContributionsByGovernmentIdAsync,
     IContributionGovSummary,
@@ -138,7 +139,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityId: saved.id
                 });
                 if (process.env.NODE_ENV !== 'test') {
-                    await addDataScienceJob({id: saved.id });
+                    await addDataScienceJob({ id: saved.id });
                 } else {
                     await getGISCoordinates(saved.id);
                     await retrieveAndSaveMatchResultAsync(saved.id);
@@ -175,8 +176,9 @@ export interface IGetContributionAttrs extends IGetContributionOptions {
     filerId?: string | number;
 }
 
-
-export async function getContributionsAsync(contributionAttrs: IGetContributionAttrs): Promise<IContributionSummaryResults> {
+export async function getContributionsAsync(
+    contributionAttrs: IGetContributionAttrs
+): Promise<IContributionSummaryResults> {
     try {
         const { governmentId, ...options } = contributionAttrs;
         const govAdmin = await isGovernmentAdminAsync(options.currentUserId, governmentId);
@@ -209,10 +211,7 @@ export async function getContributionsAsync(contributionAttrs: IGetContributionA
             perPage: options.perPage || 100
         });
 
-
-        if (contributionAttrs.format === 'geoJson') {
-            contributions.geoJson = convertToGeoJson(contributions);
-        } else if (contributionAttrs.format === 'csv') {
+        if (contributionAttrs.format === 'csv') {
             contributions.csv = convertToCsv(contributions);
         }
 
@@ -451,10 +450,15 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR,
-                notify: true,
+                notify: true
             });
             if (attrs.attachmentPath) {
-                const attachmentPath = await saveFileAttachmentAsync(activity.id, 'contributions', attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                const attachmentPath = await saveFileAttachmentAsync(
+                    activity.id,
+                    'contributions',
+                    attrs.attachmentPath.name,
+                    attrs.attachmentPath.tempFilePath
+                );
                 await activityRepository.update(activity.id, { attachmentPath });
                 return activity;
             }
@@ -616,4 +620,13 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
         return true;
     }
     return false;
+}
+
+export interface IGetContributionGeoJsonOptions {
+    from?: string;
+    to?: string;
+}
+
+export async function getContributionsGeoAsync(attrs: IGetContributionGeoJsonOptions): Promise<IContributionsGeoJson> {
+    return getContributionsGeoJsonAsync(attrs);
 }

@@ -9,7 +9,8 @@ import {
     archiveContributionAsync,
     createContributionCommentAsync,
     getMatchResultAsync,
-    updateMatchResultAsync
+    updateMatchResultAsync,
+    getContributionsGeoAsync
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -554,6 +555,15 @@ export async function postMatchResult(request: IRequest, response: Response, nex
         await checkDto(PostMatchResult);
         const matches = await updateMatchResultAsync(PostMatchResult);
         return response.status(200).send(matches);
+    } catch (err) {
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export async function getContributionsGeo(request: IRequest, response: Response, next: Function) {
+    try {
+        const contributions = await getContributionsGeoAsync({ from: request.query.from, to: request.query.to});
+        return response.status(200).send(contributions);
     } catch (err) {
         return response.status(422).json({ message: err.message });
     }

@@ -4,11 +4,18 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Global, css } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import logo from './assets/icons/oaeLogo.jpeg';
+import logo from './assets/icons/oae-logo-custom.svg';
 import Routes from './Pages/routes';
 import FlashMessage from './components/FlashMessage/FlashMessage';
 import styles from './assets/styles/global.styles';
 import { isLoggedIn, me } from './state/ducks/auth';
+
+const style = css`
+  .logo-img {
+    display: block;
+    height: 60px;
+  }
+`;
 
 class App extends React.Component {
   constructor(props) {
@@ -29,7 +36,7 @@ class App extends React.Component {
   render() {
     const { isLoading } = this.state;
     return (
-      <div>
+      <div css={style}>
         <Global styles={styles} />
         <FlashMessage />
         {isLoading ? <img src={logo} alt="Logo" /> : <Routes />}
