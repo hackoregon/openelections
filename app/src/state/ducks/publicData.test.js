@@ -261,9 +261,9 @@ describe('Selectors', () => {
   describe('allCampaigns', () => {
     it('returns an array of campaign objects, including ID and Name', () => {
       const campaigns = [
-        { campaignId: '1', campaignName: 'Foo' },
-        { campaignId: '2', campaignName: 'Bar' },
-        { campaignId: '3', campaignName: 'Baz' },
+        { campaignId: '1', campaignName: 'Foo', officeSought: 'Mayor' },
+        { campaignId: '2', campaignName: 'Bar', officeSought: 'Mayor' },
+        { campaignId: '3', campaignName: 'Baz', officeSought: 'Commissioner' },
       ];
       const [state] = makeData(campaigns.map(point));
 
@@ -271,25 +271,26 @@ describe('Selectors', () => {
         campaigns.map(c => ({
           id: c.campaignId,
           name: c.campaignName,
+          officeSought: c.officeSought,
         }))
       );
     });
 
     it('does not return duplicate values (based on ID, last name wins)', () => {
       const campaigns = [
-        { campaignId: '1', campaignName: 'Foo 1' },
-        { campaignId: '1', campaignName: 'Foo 2' },
-        { campaignId: '2', campaignName: 'Bar 1' },
-        { campaignId: '2', campaignName: 'Bar 2' },
-        { campaignId: '3', campaignName: 'Foo 1' },
-        { campaignId: '3', campaignName: 'Foo 2' },
+        { campaignId: '1', campaignName: 'Foo 1', officeSought: 'Mayor' },
+        { campaignId: '1', campaignName: 'Foo 2', officeSought: 'Mayor' },
+        { campaignId: '2', campaignName: 'Bar 1', officeSought: 'Mayor' },
+        { campaignId: '2', campaignName: 'Bar 2', officeSought: 'Mayor' },
+        { campaignId: '3', campaignName: 'Foo 1', officeSought: 'Mayor' },
+        { campaignId: '3', campaignName: 'Foo 2', officeSought: 'Mayor' },
       ];
       const [state] = makeData(campaigns.map(point));
 
       expect(publicData.allCampaigns(state)).toEqual([
-        { id: '1', name: 'Foo 2' },
-        { id: '2', name: 'Bar 2' },
-        { id: '3', name: 'Foo 2' },
+        { id: '1', name: 'Foo 2', officeSought: 'Mayor' },
+        { id: '2', name: 'Bar 2', officeSought: 'Mayor' },
+        { id: '3', name: 'Foo 2', officeSought: 'Mayor' },
       ]);
     });
 
@@ -297,6 +298,35 @@ describe('Selectors', () => {
       const [state] = makeData();
 
       expect(publicData.allCampaigns(state)).toEqual([]);
+    });
+  });
+
+  describe('availableCampaigns', () => {
+    const campaigns = [
+      { campaignId: '1', campaignName: 'Foo', officeSought: 'First' },
+      { campaignId: '2', campaignName: 'Bar', officeSought: 'Second' },
+      { campaignId: '3', campaignName: 'Baz', officeSought: 'Third' },
+    ];
+
+    it('returns an array of all campaigns when there is no office filter selection', () => {
+      const [state] = makeData(campaigns.map(point));
+      expect(publicData.availableCampaigns(state)).toEqual([
+        { id: '1', name: 'Foo', officeSought: 'First' },
+        { id: '2', name: 'Bar', officeSought: 'Second' },
+        { id: '3', name: 'Baz', officeSought: 'Third' },
+      ]);
+    });
+
+    it('returns an array of only matching campaigns when there is an office filter selection', () => {
+      const [state] = makeData(campaigns.map(point), {
+        filters: {
+          offices: ['First', 'Third'],
+        },
+      });
+      expect(publicData.availableCampaigns(state)).toEqual([
+        { id: '1', name: 'Foo', officeSought: 'First' },
+        { id: '3', name: 'Baz', officeSought: 'Third' },
+      ]);
     });
   });
 

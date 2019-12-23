@@ -8,14 +8,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
-import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   ScatterPlotMap,
   BaseMap,
   MapTooltip,
-  RadioButtonGroup,
 } from '@hackoregon/component-library';
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Table from '../../components/Table';
@@ -24,7 +22,7 @@ import {
   getPublicData,
   publicDataRequest,
   allOffices,
-  allCampaigns,
+  availableCampaigns,
   selectedOffices,
   selectedCampaigns,
   selectedStartDate,
@@ -47,7 +45,7 @@ import { mediaQueryRanges } from '../../assets/styles/variables';
 import ContributorLocationBar from '../../components/Visualizations/ContributorLocationBar';
 import PublicDateRangeField from '../../components/Fields/PublicDateRangeField';
 
-const { dollars, numeric } = civicFormat;
+const { dollars } = civicFormat;
 
 const formStyles = css`
   justify-content: flex-start;
@@ -97,12 +95,10 @@ class HomePage extends React.Component {
     const {
       request,
       allOffices,
-      allCampaigns,
-      filteredData,
+      availableCampaigns,
       aggregatedContributorTypes,
       aggregatedContributionTypes,
       aggregatedContributionsByRegion,
-      donationSizeByDonationRange,
       selectedOffices,
       selectedStartDate,
       selectedEndDate,
@@ -247,7 +243,7 @@ class HomePage extends React.Component {
                 onChange={event => setSelectedCampaigns(event.target.value)}
                 input={<Input />}
               >
-                {allCampaigns.map(campaign => (
+                {availableCampaigns.map(campaign => (
                   <MenuItem key={campaign.id} value={campaign} css={formOption}>
                     {campaign.name}
                   </MenuItem>
@@ -407,7 +403,7 @@ export default connect(
   state => ({
     request: publicDataRequest(state),
     allOffices: allOffices(state),
-    allCampaigns: allCampaigns(state),
+    availableCampaigns: availableCampaigns(state),
     selectedOffices: selectedOffices(state),
     selectedCampaigns: selectedCampaigns(state),
     selectedStartDate: selectedStartDate(state),
