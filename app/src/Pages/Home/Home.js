@@ -3,6 +3,7 @@ import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -68,6 +69,14 @@ const formStyles = css`
   }
 `;
 
+const footerStyle = css`
+  text-align: center;
+  font-style: italic;
+  padding: 15px;
+  font-size: 0.8em;
+  color: #999;
+`;
+
 // The !importants are to override the Mui-* styles
 // that are coming from the wrapping FormGroup.
 // Ideally we wouldn't need them, but since the MenuItems
@@ -111,7 +120,7 @@ class HomePage extends React.Component {
       summaryData,
     } = this.props;
 
-    const { isLoading, error } = request;
+    const { isLoading, error, timeLoaded } = request;
 
     const bracketField = field => row =>
       `${dollars(row[field].total)} (${row[field].contributions.length})`;
@@ -377,6 +386,12 @@ class HomePage extends React.Component {
               components={{ Toolbar: () => <div /> }}
             />
           </>
+        )}
+        {!!timeLoaded && (
+          <footer css={footerStyle}>
+            Data from Open and Accountable Elections retrieved on{' '}
+            {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}
+          </footer>
         )}
       </PageHoc>
     );

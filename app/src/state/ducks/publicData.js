@@ -92,7 +92,12 @@ export default createReducer(initialState, {
     return { ...state, isLoading: true };
   },
   [actionTypes.GET_PUBLIC_DATA.SUCCESS]: (state, action) => {
-    return { ...state, isLoading: false, data: action.payload };
+    return {
+      ...state,
+      isLoading: false,
+      data: action.payload,
+      timeLoaded: new Date(),
+    };
   },
   [actionTypes.GET_PUBLIC_DATA.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
@@ -165,8 +170,8 @@ export const allPublicData = createSelector(
 export const publicDataRequest = createSelector(
   allPublicData,
   state => {
-    const { data, isLoading, error } = state;
-    return { data, isLoading, error };
+    const { data, isLoading, error, timeLoaded } = state;
+    return { data, isLoading, error, timeLoaded };
   }
 );
 
