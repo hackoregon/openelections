@@ -15,7 +15,7 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="total"
           useLegend
-          subtitle="Total contribution amount by ORESTAR type"
+          subtitle="Total contribution amount by size"
         />
       )}
       {count && (
@@ -24,7 +24,7 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="count"
           useLegend
-          subtitle="Number of contributions by ORESTAR category"
+          subtitle="Number of contributions by size"
         />
       )}
     </div>

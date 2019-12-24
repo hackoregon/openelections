@@ -447,6 +447,24 @@ export const donationSizeByDonationRange = createSelector(
   donations => bracketize(donations)
 );
 
+export const aggregatedDonationSize = createSelector(
+  donationSizeByDonationRange,
+  aggregates => {
+    const markers = ['micro', 'small', 'medium', 'large', 'mega'];
+    const labels = ['<$25', '$25-$250', '$250-$500', '$500-$1000', '>$1000'];
+    const summarizedAggregates = markers.map((category, index) => {
+      return {
+        type: category,
+        formattedType: labels[index],
+        total: aggregates[category].total,
+        contributions: aggregates[category].contributions,
+        count: aggregates[category].contributions.length,
+      };
+    });
+    return summarizedAggregates;
+  }
+);
+
 // Done: count of and sum of donations for each contributor type
 // (individual, business, family, labor, political_committee, political_party, unregistered, other)
 // For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
