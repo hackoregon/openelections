@@ -33,7 +33,7 @@ import {
   campaignsTable,
   mapData,
   aggregatedContributorTypes,
-  aggregatedContributionTypes,
+  aggregatedDonationSize,
   aggregatedContributionsByRegion,
   donationSizeByDonationRange,
   setSelectedOffices,
@@ -107,7 +107,7 @@ class HomePage extends React.Component {
       allOffices,
       availableCampaigns,
       aggregatedContributorTypes,
-      aggregatedContributionTypes,
+      aggregatedDonationSize,
       aggregatedContributionsByRegion,
       selectedOffices,
       selectedStartDate,
@@ -387,7 +387,7 @@ class HomePage extends React.Component {
                   count={this.state.count}
                 />
                 <ContributionTypePie
-                  data={aggregatedContributionTypes}
+                  data={aggregatedDonationSize}
                   count={this.state.count}
                 />
                 <ContributorLocationBar
@@ -464,7 +464,7 @@ export default connect(
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
     aggregatedContributorTypes: aggregatedContributorTypes(state),
-    aggregatedContributionTypes: aggregatedContributionTypes(state),
+    aggregatedDonationSize: aggregatedDonationSize(state),
     aggregatedContributionsByRegion: aggregatedContributionsByRegion(state),
     donationSizeByDonationRange: donationSizeByDonationRange(state),
     summaryData: summaryData(state),
