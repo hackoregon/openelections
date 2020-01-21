@@ -3,6 +3,7 @@ import * as React from 'react';
 import { css, jsx } from '@emotion/core';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import { PieChart } from '@hackoregon/component-library';
+import OpenElectionsVictoryTheme from './OpenElectionsVictoryTheme';
 
 const { dollars, titleCase } = civicFormat;
 
@@ -16,6 +17,7 @@ function ContributionTypePie({ data, count }) {
           dataValue="total"
           useLegend
           subtitle="Total contribution amount by size"
+          theme={OpenElectionsVictoryTheme}
         />
       )}
       {count && (
@@ -25,6 +27,7 @@ function ContributionTypePie({ data, count }) {
           dataValue="count"
           useLegend
           subtitle="Number of contributions by size"
+          theme={OpenElectionsVictoryTheme}
         />
       )}
     </div>
