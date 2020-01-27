@@ -416,8 +416,8 @@ const bracketize = donations => {
     // Skip non-numeric values
     if (+d.amount !== d.amount) return;
 
-    if (d.amount >= breakpoint) {
-      while (d.amount >= breakpoint) {
+    if (d.amount > breakpoint) {
+      while (d.amount > breakpoint) {
         index += 1;
         marker = markers[index];
         if (index >= breakpoints.length) {

@@ -651,20 +651,20 @@ describe('Selectors', () => {
           contributions: [0, 5, 10, 20],
         },
         small: {
-          total: 30 + 50,
-          contributions: [30, 50],
+          total: 30 + 50 + 100,
+          contributions: [30, 50, 100],
         },
         medium: {
-          total: 100 + 150 + 200,
-          contributions: [100, 150, 200],
+          total: 150 + 200,
+          contributions: [150, 200],
         },
         large: {
-          total: 500 + 750,
-          contributions: [500, 750],
+          total: 500 + 750 + 1000,
+          contributions: [500, 750, 1000],
         },
         mega: {
-          total: 1000 + 2500,
-          contributions: [1000, 2500],
+          total: 2500,
+          contributions: [2500],
         },
       });
     });
@@ -693,12 +693,12 @@ describe('Selectors', () => {
           contributions: [],
         },
         large: {
-          total: 0,
-          contributions: [],
+          total: 1000,
+          contributions: [1000],
         },
         mega: {
-          total: 1000 + 2500,
-          contributions: [1000, 2500],
+          total: 2500,
+          contributions: [2500],
         },
       });
     });
@@ -1087,20 +1087,20 @@ describe('Selectors', () => {
           contributions: [5, 20],
         },
         small: {
-          total: 0,
-          contributions: [],
-        },
-        medium: {
           total: 100,
           contributions: [100],
         },
-        large: {
+        medium: {
           total: 0,
           contributions: [],
         },
-        mega: {
+        large: {
           total: 1000,
           contributions: [1000],
+        },
+        mega: {
+          total: 0,
+          contributions: [],
         },
         contributions: points.slice(0, 4).map(p => p.properties),
       },
@@ -1114,16 +1114,16 @@ describe('Selectors', () => {
         totalAmountMatched: 30 + 30 + 120 + 150 + 210,
         medianContributionSize: 22.5,
         micro: {
-          total: 5 + 5 + 20,
-          contributions: [5, 5, 20],
+          total: 5 + 5 + 20 + 25,
+          contributions: [5, 5, 20, 25],
         },
         small: {
-          total: 25 + 35,
-          contributions: [25, 35],
+          total: 35 + 100,
+          contributions: [35, 100],
         },
         medium: {
-          total: 100,
-          contributions: [100],
+          total: 0,
+          contributions: [],
         },
         large: {
           total: 500,
