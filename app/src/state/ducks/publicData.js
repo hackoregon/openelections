@@ -451,7 +451,7 @@ export const aggregatedDonationSize = createSelector(
   donationSizeByDonationRange,
   aggregates => {
     const markers = ['micro', 'small', 'medium', 'large', 'mega'];
-    const labels = ['<$25', '$25-$250', '$250-$500', '$500-$1000', '>$1000'];
+    const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
     const summarizedAggregates = markers.map((category, index) => {
       return {
         type: category,
