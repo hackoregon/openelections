@@ -416,8 +416,8 @@ const bracketize = donations => {
     // Skip non-numeric values
     if (+d.amount !== d.amount) return;
 
-    if (d.amount >= breakpoint) {
-      while (d.amount >= breakpoint) {
+    if (d.amount > breakpoint) {
+      while (d.amount > breakpoint) {
         index += 1;
         marker = markers[index];
         if (index >= breakpoints.length) {
@@ -451,7 +451,7 @@ export const aggregatedDonationSize = createSelector(
   donationSizeByDonationRange,
   aggregates => {
     const markers = ['micro', 'small', 'medium', 'large', 'mega'];
-    const labels = ['<$25', '$25-$250', '$250-$500', '$500-$1000', '>$1000'];
+    const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
     const summarizedAggregates = markers.map((category, index) => {
       return {
         type: category,
