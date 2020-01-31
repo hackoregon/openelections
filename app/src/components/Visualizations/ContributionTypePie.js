@@ -16,6 +16,7 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="total"
           useLegend
+          title="By Contribution Size"
           subtitle="Total contribution amount by size"
           theme={OpenElectionsVictoryTheme}
         />
@@ -26,6 +27,7 @@ function ContributionTypePie({ data, count }) {
           dataLabel="formattedType"
           dataValue="count"
           useLegend
+          title="By Contribution Size"
           subtitle="Number of contributions by size"
           theme={OpenElectionsVictoryTheme}
         />
