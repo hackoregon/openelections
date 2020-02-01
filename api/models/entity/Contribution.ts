@@ -64,7 +64,8 @@ export enum ContributionStatus {
     ARCHIVED = 'Archived',
     DRAFT = 'Draft',
     SUBMITTED = 'Submitted',
-    PROCESSED = 'Processed'
+    PROCESSED = 'Processed',
+    AWAITING = 'Awaiting',
 }
 
 export enum MatchStrength {

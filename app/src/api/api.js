@@ -287,6 +287,7 @@ export const ContributionStatusEnum = Object.freeze({
   DRAFT: 'Draft',
   SUBMITTED: 'Submitted',
   PROCESSED: 'Processed',
+  AWAITING: 'Awaiting',
 });
 
 export const ExpenditureTypeEnum = Object.freeze({

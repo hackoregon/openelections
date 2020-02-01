@@ -18,7 +18,8 @@
         "jobs": "ts-node jobs/index.ts",
         "buildprocessors": "node_modules/.bin/tsc jobs/processors/*.ts --outDir jobs/processors/build/",
         "buildprocessorsandrunjobs": "npm run buildprocessors && npm run jobs",
-        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs"
+        "dev-jobs": "nodemon --watch ./ -e ts --exec npm run buildprocessorsandrunjobs",
+        "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -f ./models/ormconfig.ts"
     },
     "dependencies": {
         "@bugsnag/js": "^6.4.0",
