@@ -170,8 +170,8 @@ describe('Contribution', () => {
         await repository.update(contr4.id, {amount: 1});
         await repository.update(contr5.id, {status: ContributionStatus.AWAITING, amount: 1});
         const summary = await getContributionsSummaryByStatusAsync({governmentId: government.id});
-        expect(summary.map(item => item.amount)).to.deep.equal([1, 1, 1]);
-        expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0, 0]);
+        expect(summary.map(item => item.amount)).to.deep.equal([1, 1, 1, 1]);
+        expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0, 0, 0]);
         expect(summary.map(item => item.status)).to.deep.equal(['Draft', 'Submitted', 'Processed', 'Awaiting']);
         expect(summary.map(item => item.total)).to.deep.equal([1, 1, 1, 1]);
     });
