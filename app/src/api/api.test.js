@@ -385,6 +385,36 @@ describe('API', () => {
     expect(contribution.status).toEqual(api.ContributionStatusEnum.ARCHIVED);
   });
 
+  it('awaiting enum contribution', async () => {
+    process.env.TOKEN = campaignStaffToken;
+    let contribution = await api.createContribution({
+      address1: '123 ABC ST',
+      amount: 250,
+      campaignId,
+      city: 'Portland',
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      firstName: 'John',
+      middleInitial: '',
+      lastName: 'Doe',
+      governmentId,
+      type: api.ContributionTypeEnum.CONTRIBUTION,
+      subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
+      state: 'OR',
+      status: api.ContributionStatusEnum.AWAITING,
+      zip: '97214',
+      contributorType: api.ContributorTypeEnum.INDIVIDUAL,
+    });
+    contribution = await contribution.json();
+
+    let response = await api.archiveContribution(contribution.id);
+    expect(response.status).toEqual(200);
+    response = await api.getContributionById(contribution.id);
+    contribution = await response.json();
+    expect(contribution.status).toEqual(api.ContributionStatusEnum.AWAITING);
+  });
+
   it('createExpenditure', async () => {
     process.env.TOKEN = campaignStaffToken;
     const response = await api.createExpenditure({

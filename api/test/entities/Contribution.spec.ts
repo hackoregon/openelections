@@ -173,7 +173,7 @@ describe('Contribution', () => {
         expect(summary.map(item => item.amount)).to.deep.equal([1, 1, 1]);
         expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0, 0]);
         expect(summary.map(item => item.status)).to.deep.equal(['Draft', 'Submitted', 'Processed', 'Awaiting']);
-        expect(summary.map(item => item.total)).to.deep.equal([1, 1, 1]);
+        expect(summary.map(item => item.total)).to.deep.equal([1, 1, 1, 1]);
     });
 
     it('getContributionsSummaryByStatusAsync campaign', async () => {
