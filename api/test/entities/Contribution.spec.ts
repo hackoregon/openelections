@@ -157,20 +157,22 @@ describe('Contribution', () => {
 
     it('getContributionsSummaryByStatusAsync governmentId', async () => {
         const campaign2 = await newCampaignAsync(government);
-        const [contr1, contr2, contr3, contr4] = await Promise.all([
+        const [contr1, contr2, contr3, contr4, contr5] = await Promise.all([
             newContributionAsync(campaign, government),
             newContributionAsync(campaign, government),
             newContributionAsync(campaign, government),
+            newContributionAsync(campaign2, government),
             newContributionAsync(campaign2, government),
         ]);
         await repository.update(contr1.id, {status: ContributionStatus.SUBMITTED, amount: 1});
         await repository.update(contr2.id, {status: ContributionStatus.PROCESSED, amount: 1});
         await repository.update(contr3.id, {status: ContributionStatus.ARCHIVED, amount: 1});
         await repository.update(contr4.id, {amount: 1});
+        await repository.update(contr5.id, {status: ContributionStatus.AWAITING, amount: 1});
         const summary = await getContributionsSummaryByStatusAsync({governmentId: government.id});
         expect(summary.map(item => item.amount)).to.deep.equal([1, 1, 1]);
         expect(summary.map(item => item.matchAmount)).to.deep.equal([0, 0, 0]);
-        expect(summary.map(item => item.status)).to.deep.equal(['Draft', 'Submitted', 'Processed']);
+        expect(summary.map(item => item.status)).to.deep.equal(['Draft', 'Submitted', 'Processed', 'Awaiting']);
         expect(summary.map(item => item.total)).to.deep.equal([1, 1, 1]);
     });
 
