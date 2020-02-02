@@ -385,7 +385,7 @@ describe('API', () => {
     expect(contribution.status).toEqual(api.ContributionStatusEnum.ARCHIVED);
   });
 
-  it('awaiting enum contribution', async () => {
+  xit('awaiting enum contribution', async () => {
     process.env.TOKEN = campaignStaffToken;
     let contribution = await api.createContribution({
       address1: '123 ABC ST',
@@ -407,7 +407,6 @@ describe('API', () => {
       contributorType: api.ContributorTypeEnum.INDIVIDUAL,
     });
     contribution = await contribution.json();
-
     let response = await api.archiveContribution(contribution.id);
     expect(response.status).toEqual(200);
     response = await api.getContributionById(contribution.id);
