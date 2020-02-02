@@ -408,6 +408,47 @@ export const AppRoutes = [
 
     /**
      * @swagger
+     * /campaigns/update:
+     *   post:
+     *     summary: Update campaign name for a government
+     *     tags:
+     *       - Campaigns
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               governmentId:
+     *                 type: integer
+     *               campaignId:
+     *                 type: integer
+     *               newName:
+     *                 type: string
+     *     responses:
+     *       201:
+     *         description: updated campaign name
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Campaign'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/campaigns/update',
+        method: 'post',
+        action: campaigns.updateCampaignName
+    },
+
+    /**
+     * @swagger
      * /activities:
      *   post:
      *     summary: Get a list of activities for a campaign or government

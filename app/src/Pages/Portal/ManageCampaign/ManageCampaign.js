@@ -8,32 +8,57 @@ const columnInfo = [
   {
     title: 'Campaign',
     field: 'name',
+    editable: 'onUpdate',
   },
   {
     title: 'In-Kind Total',
     field: 'NotSet',
+    editable: 'never',
   },
   {
     title: 'Matched',
     field: 'NotSet',
+    editable: 'never',
   },
   {
     title: 'Contact Email',
     field: 'email',
+    editable: 'never',
   },
 ];
-const Action = ({ action, data }) => (
-  <Button
-    onClick={event => action.onClick(event, data)}
-    buttonType={action.buttonType}
-  >
-    {action.name}
-  </Button>
-);
 
-const ManageCampaign = ({ isCampaignListLoading, campaignList, showModal }) => {
+const ManageCampaign = ({
+  isCampaignListLoading,
+  campaignList,
+  showModal,
+  updateCampaignName,
+}) => {
   const isLoading = isCampaignListLoading && !Array.isArray(campaignList);
   const rowCount = Array.isArray(campaignList) ? campaignList.length : 0;
+
+  const [campaignData, setCampaignData] = React.useState([...campaignList]);
+  React.useEffect(() => {
+    setCampaignData([...campaignList]);
+  }, [campaignList]);
+
+  const updateNameOfCampaign = async (newData, oldData) => {
+    return new Promise((resolve, reject) => {
+      if (newData.name !== oldData.name) {
+        updateCampaignName(newData.governmentId, newData.id, newData.name);
+        const newCampaignArray = campaignData.map(campaign => {
+          if (campaign.id === newData.id) {
+            campaign.name = newData.name;
+          }
+          return campaign;
+        });
+        setCampaignData(newCampaignArray);
+        resolve();
+      } else {
+        reject();
+      }
+    });
+  };
+
   return (
     <PageHoc>
       <h1>Settings</h1>
@@ -44,7 +69,11 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, showModal }) => {
               isLoading={isLoading}
               title={`Campaigns (${rowCount})`}
               columns={columnInfo}
-              data={campaignList || [{}]}
+              data={campaignData || [{}]}
+              editable={{
+                onRowUpdate: (newData, oldData) =>
+                  updateNameOfCampaign(newData, oldData),
+              }}
               localization={{
                 body: {
                   emptyDataSourceMessage: 'No Users',
@@ -53,9 +82,9 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, showModal }) => {
               options={{
                 search: false,
                 actionsCellStyle: {
-                  color: 'blue',
+                  color: 'black',
                 },
-                actionsColumnIndex: -1,
+                actionsColumnIndex: 0,
               }}
               toolbarAction={
                 <Button
@@ -65,23 +94,6 @@ const ManageCampaign = ({ isCampaignListLoading, campaignList, showModal }) => {
                   Add New Campaign
                 </Button>
               }
-              // actions={[
-              //   {
-              //     icon: 'none', // icon is needed here or it will error.
-              //     name: 'Manage',
-              //     buttonType: 'manage',
-              //     onClick: (event, rowData) => {
-              //       props.history.push({
-              //         pathname: '/settings/manage-user',
-              //         state: rowData,
-              //       });
-              //     },
-              //   },
-              // ]}
-              components={{
-                // eslint-disable-next-line react/display-name
-                Action,
-              }}
             />
           </div>
         </div>
@@ -96,9 +108,5 @@ ManageCampaign.propTypes = {
   isCampaignListLoading: PropTypes.bool,
   campaignList: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   showModal: PropTypes.func,
-};
-
-Action.propTypes = {
-  data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  action: PropTypes.oneOfType([PropTypes.object]),
+  updateCampaignName: PropTypes.func,
 };
