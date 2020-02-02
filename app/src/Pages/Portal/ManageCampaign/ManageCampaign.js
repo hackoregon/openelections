@@ -36,9 +36,9 @@ const ManageCampaign = ({
   const isLoading = isCampaignListLoading && !Array.isArray(campaignList);
   const rowCount = Array.isArray(campaignList) ? campaignList.length : 0;
 
-  const [campaignData, setCampaignData] = React.useState([...campaignList]);
+  const [campaignData, setCampaignData] = React.useState(campaignList);
   React.useEffect(() => {
-    setCampaignData([...campaignList]);
+    setCampaignData(campaignList);
   }, [campaignList]);
 
   const updateNameOfCampaign = async (newData, oldData) => {
