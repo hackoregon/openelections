@@ -124,10 +124,13 @@ const legendMargin = css`
 `;
 
 const chartContainer = css`
-  height: 700px;
+  @media ${mediaQueryRanges.mediumAndUp} {
+    height: 700px;
+  }
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  margin: 2.5em 0.5em 0em 0.5em;
 `;
 
 const scatterplotFill = css`
