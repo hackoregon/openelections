@@ -320,6 +320,7 @@ class HomePage extends React.Component {
                 updateViewport={false}
                 initialZoom={11}
                 useContainerHeight
+                maxZoom={13}
               >
                 {!this.state.count ? (
                   <ScatterPlotMap
