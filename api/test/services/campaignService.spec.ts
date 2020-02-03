@@ -3,7 +3,11 @@ import * as faker from 'faker';
 import { getConnection } from 'typeorm';
 import { createGovernmentAsync } from '../../services/governmentService';
 import { Government } from '../../models/entity/Government';
-import { createCampaignAsync, getCampaignsAsync } from '../../services/campaignService';
+import {
+    createCampaignAsync,
+    getCampaignsAsync,
+    updateCampaignNameAsync,
+} from '../../services/campaignService';
 import { truncateAll } from '../factories';
 import { createUserAsync } from '../../services/userService';
 import { User } from '../../models/entity/User';
@@ -215,4 +219,49 @@ describe('campaignServices', () => {
         }
         expect(campaigns).to.be.an('undefined');
     });
+
+    it('Updates campaign name', async () => {
+        expect(await campaignRepository.count()).equal(0);
+        const tempCampaign = await createCampaignAsync({
+            name: 'Melton for Mayor',
+            governmentId: government.id,
+            currentUserId: govUser.id,
+            officeSought: 'Mayor'
+        });
+        const newName = 'Melton 4eva';
+        const updatedName = await updateCampaignNameAsync({
+            newName,
+            governmentId: government.id,
+            campaignId: tempCampaign.id,
+            currentUserId: govUser.id
+        });
+        expect(await campaignRepository.count()).equal(1);
+        expect(updatedName.name).equal(newName);
+    });
+
+    it('Updates correct campaign name', async () => {
+        expect(await campaignRepository.count()).equal(0);
+        const tempCampaign1 = await createCampaignAsync({
+            name: 'Melton for Mayor',
+            governmentId: government.id,
+            currentUserId: govUser.id,
+            officeSought: 'Mayor'
+        });
+        await createCampaignAsync({
+            name: 'Melton for Mayor',
+            governmentId: government.id,
+            currentUserId: govUser.id,
+            officeSought: 'Mayor'
+        });
+        const newName = 'Melton 4eva';
+        const updatedName = await updateCampaignNameAsync({
+            newName,
+            governmentId: government.id,
+            campaignId: tempCampaign1.id,
+            currentUserId: govUser.id
+        });
+        expect(await campaignRepository.count()).equal(2);
+        expect(updatedName.name).equal(newName);
+    });
+
 });

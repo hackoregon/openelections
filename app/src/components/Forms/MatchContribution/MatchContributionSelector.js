@@ -32,6 +32,7 @@ const SplitButton = ({
       'Archived',
       'Draft',
       'Processed',
+      'Awaiting',
       'Submitted',
       'Out of Compliance',
       'In Compliance',
@@ -43,6 +44,7 @@ const SplitButton = ({
       'Archived',
       'Draft',
       'Processed',
+      'Awaiting',
       'Submitted',
       'Out of Compliance',
       'In Compliance',
@@ -76,6 +78,10 @@ const SplitButton = ({
         break;
       case 'Processed':
         value = ContributionStatusEnum.PROCESSED;
+        updateContribution({ id, status: value });
+        break;
+      case 'Awaiting':
+        value = ContributionStatusEnum.AWAITING;
         updateContribution({ id, status: value });
         break;
       case 'Submitted':

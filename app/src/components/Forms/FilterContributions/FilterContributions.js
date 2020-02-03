@@ -11,6 +11,7 @@ export const STATUS_OPTIONS = {
   Draft: 'Draft',
   Submitted: 'Submitted',
   Processed: 'Processed',
+  Awaiting: 'Awaiting',
 };
 
 const fields = {

@@ -1,27 +1,11 @@
 import 'reflect-metadata';
 import { createConnection, Connection } from 'typeorm';
-
+import * as ORMConfig from './ormconfig';
 export default async (): Promise<Connection> => {
-    let connection: Connection;
-    let entities = [
-        __dirname + '/entity/*.ts'
-    ];
+    const connection: Connection = await createConnection(ORMConfig);
+    // This is safe to do in prod and dev because it tracks what migrations have ran already in the db.
     if (process.env.NODE_ENV === 'production') {
-        entities = [
-            __dirname + '/entity/*.js'
-        ];
+        await connection.runMigrations();
     }
-    connection = await createConnection({
-        type: 'postgres',
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT),
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        entities,
-        synchronize: true,
-        logging: false
-    });
-
     return connection;
 };

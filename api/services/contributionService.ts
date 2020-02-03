@@ -131,8 +131,8 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             if (await contribution.isValidAsync()) {
                 const saved = await contributionRepository.save(contribution);
                 await createActivityRecordAsync({
-                    currentUser: user,
-                    notes: `${user.name()} added a contribution (${saved.id}).`,
+                    currentUser: (user as User),
+                    notes: `${(user as User).name()} added a contribution (${saved.id}).`,
                     campaign: contribution.campaign,
                     government: contribution.government,
                     activityType: ActivityTypeEnum.CONTRIBUTION,
@@ -575,7 +575,6 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         })) as Contribution;
 
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
-
         if (hasPermissions) {
             const matchResults: MatchResults = {
                 matchId: contribution.matchId,

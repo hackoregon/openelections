@@ -287,6 +287,7 @@ export const ContributionStatusEnum = Object.freeze({
   DRAFT: 'Draft',
   SUBMITTED: 'Submitted',
   PROCESSED: 'Processed',
+  AWAITING: 'Awaiting',
 });
 
 export const ExpenditureTypeEnum = Object.freeze({
@@ -580,6 +581,14 @@ export function getCampaignsForGovernment(governmentId) {
 //   method: 'post',
 export function createCampaignForGovernment(campaignAttrs) {
   return post(`${baseUrl()}/campaigns/new`, campaignAttrs);
+}
+
+//   path: '/campaigns/update',
+//   method: 'post',
+export function updateCampaignNameForGovernment(campaignAttrs) {
+  return post(`${baseUrl()}/campaigns/update`, campaignAttrs).then(response =>
+    response.json()
+  );
 }
 
 // path: '/contributions/:id'

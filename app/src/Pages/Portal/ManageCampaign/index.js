@@ -7,6 +7,7 @@ import {
   isCampaignsLoading,
   getCampaigns,
   getCampaignList,
+  updateCampaignName,
 } from '../../../state/ducks/campaigns';
 import { getCurrentGovernmentId } from '../../../state/ducks/governments';
 
@@ -31,6 +32,8 @@ export default connect(
     return {
       getCampaigns: governmentId => dispatch(getCampaigns(governmentId)),
       showModal: payload => dispatch(showModal(payload)),
+      updateCampaignName: (governmentId, campaignId, campaignName) =>
+        dispatch(updateCampaignName(governmentId, campaignId, campaignName)),
     };
   }
 )(ManageCampaignPage);
