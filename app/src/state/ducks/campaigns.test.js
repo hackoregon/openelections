@@ -105,6 +105,24 @@ describe('Action Creators', () => {
     };
     expect(actionCreators.setCampaign.success(1)).toEqual(expectedAction);
   });
+  it('update campaign name request', () => {
+    const expectedAction = {
+      type: actionTypes.UPDATE_CAMPAIGN_NAME.REQUEST,
+    };
+    expect(actionCreators.updateCampaignName.request()).toEqual(expectedAction);
+  });
+  it('update campaign name success', () => {
+    const expectedAction = {
+      type: actionTypes.UPDATE_CAMPAIGN_NAME.SUCCESS,
+    };
+    expect(actionCreators.updateCampaignName.success()).toEqual(expectedAction);
+  });
+  it('update campaign name failure', () => {
+    const expectedAction = {
+      type: actionTypes.UPDATE_CAMPAIGN_NAME.FAILURE,
+    };
+    expect(actionCreators.updateCampaignName.failure()).toEqual(expectedAction);
+  });
 });
 
 let govAdminToken;
@@ -112,7 +130,7 @@ let campaignAdminToken;
 let campaignStaffToken;
 let governmentId;
 let campaignId;
-describe('Side Effects', () => {
+describe.only('Side Effects', () => {
   beforeAll(async () => {
     let tokenResponse = await api.login(
       'govadmin@openelectionsportland.org',
@@ -173,6 +191,25 @@ describe('Side Effects', () => {
         expect(actions[0].type).toEqual(expectedActions[0].type);
         expect(actions[1].type).toEqual(expectedActions[1].type);
         expect(actions[2].type).toEqual(expectedActions[2].type);
+      });
+  });
+
+  it('updates campaign name', async () => {
+    const expectedActions = [
+      { type: actionTypes.UPDATE_CAMPAIGN_NAME.REQUEST },
+      { type: actionTypes.UPDATE_CAMPAIGN_NAME.SUCCESS },
+    ];
+    const store = mockStore({});
+
+    process.env.TOKEN = govAdminToken;
+
+    return store
+      .dispatch(
+        campaigns.updateCampaignName(governmentId, campaignId, 'campaignName')
+      )
+      .then(() => {
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual(expectedActions[0].type);
       });
   });
 

@@ -14,6 +14,9 @@ import {
     ContributionSummaryByStatus,
     getContributionsSummaryByStatusAsync
 } from '../models/entity/Contribution';
+import { User } from '../models/entity/User';
+import { ActivityTypeEnum } from '../models/entity/Activity';
+import { createActivityRecordAsync } from './activityService';
 
 export interface ICreateCampaign {
     name: string;
@@ -23,6 +26,13 @@ export interface ICreateCampaign {
     lastName?: string;
     email?: string;
     officeSought: string;
+}
+
+export interface IUpdateCampaignName {
+    governmentId: number;
+    campaignId: number;
+    newName: string;
+    currentUserId: number;
 }
 
 export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promise<Campaign> {
@@ -48,6 +58,40 @@ export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promi
                         currentUserId: campaignAttrs.currentUserId
                     });
                 }
+            } else {
+                throw new Error('Campaign is not valid');
+            }
+            return campaign;
+        } else {
+            throw new Error('User is not an admin for the provided government');
+        }
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export async function updateCampaignNameAsync(campaignAttrs: IUpdateCampaignName): Promise<Campaign> {
+    try {
+        if (await isGovernmentAdminAsync(campaignAttrs.currentUserId, campaignAttrs.governmentId)) {
+            const campaignRepository = getConnection('default').getRepository('Campaign');
+            const governmentRepository = getConnection('default').getRepository('Government');
+            const campaign = (await campaignRepository.findOne(campaignAttrs.campaignId) as Campaign);
+            const oldName = campaign.name;
+            campaign.name = campaignAttrs.newName;
+            const government = (await governmentRepository.findOne(campaignAttrs.governmentId)) as Government;
+            campaign.government = government;
+            if (await campaign.isValidAsync()) {
+                await campaignRepository.save(campaign) as Campaign;
+                const repository = getConnection('default').getRepository('User');
+                const user = await repository.findOneOrFail(campaignAttrs.currentUserId) as User;
+                await createActivityRecordAsync({
+                    currentUser: user,
+                    notes: `${user.name()} changed Campaign name from "${oldName}" to "${campaignAttrs.newName}"`,
+                    government: await campaign.government,
+                    campaign: campaign,
+                    activityType: ActivityTypeEnum.CAMPAIGN,
+                    activityId: user.id
+                });
             } else {
                 throw new Error('Campaign is not valid');
             }

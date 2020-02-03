@@ -583,6 +583,14 @@ export function createCampaignForGovernment(campaignAttrs) {
   return post(`${baseUrl()}/campaigns/new`, campaignAttrs);
 }
 
+//   path: '/campaigns/update',
+//   method: 'post',
+export function updateCampaignNameForGovernment(campaignAttrs) {
+  return post(`${baseUrl()}/campaigns/update`, campaignAttrs).then(response =>
+    response.json()
+  );
+}
+
 // path: '/contributions/:id'
 //   method: 'put',
 export function updateContribution(contributionAttrs) {

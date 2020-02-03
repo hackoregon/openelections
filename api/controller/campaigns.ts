@@ -2,7 +2,14 @@ import { Response } from 'express';
 import { IsString, IsNumber } from 'class-validator';
 import { checkDto } from './helpers';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
-import { ICreateCampaign, IGetCampaigns, createCampaignAsync, getCampaignsAsync } from '../services/campaignService';
+import {
+    ICreateCampaign,
+    IUpdateCampaignName,
+    IGetCampaigns,
+    createCampaignAsync,
+    getCampaignsAsync,
+    updateCampaignNameAsync,
+} from '../services/campaignService';
 import { bugsnagClient } from '../services/bugsnagService';
 
 class CreateCampaignDto implements ICreateCampaign {
@@ -19,6 +26,17 @@ class CreateCampaignDto implements ICreateCampaign {
     officeSought: string;
 }
 
+class CreateUpdateCampaignNameDto implements IUpdateCampaignName {
+    @IsString()
+    newName: string;
+    @IsNumber()
+    governmentId: number;
+    @IsNumber()
+    campaignId: number;
+    @IsNumber()
+    currentUserId: number;
+}
+
 export async function addCampaign(request: IRequest, response: Response, next: Function) {
     try {
         checkCurrentUser(request);
@@ -28,6 +46,24 @@ export async function addCampaign(request: IRequest, response: Response, next: F
         });
         await checkDto(createCampaignDto);
         const campaign = await createCampaignAsync(createCampaignDto);
+        return response.status(201).send(campaign);
+    } catch (err) {
+        if (process.env.NODE_ENV === 'production') {
+            bugsnagClient.notify(err);
+        }
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export async function updateCampaignName(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        const updateCampaignNameDto = Object.assign(new CreateUpdateCampaignNameDto(), {
+            ...request.body,
+            currentUserId: request.currentUser.id
+        });
+        await checkDto(updateCampaignNameDto);
+        const campaign = await updateCampaignNameAsync(updateCampaignNameDto);
         return response.status(201).send(campaign);
     } catch (err) {
         if (process.env.NODE_ENV === 'production') {
