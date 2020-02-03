@@ -57,15 +57,6 @@ export default createReducer(initialState, {
   [actionTypes.GET_CAMPAIGNS.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
-  // [actionTypes.UPDATE_CAMPAIGN_NAME.REQUEST]: (state, action) => {
-  //   return { ...state, isLoading: true };
-  // },
-  // [actionTypes.UPDATE_CAMPAIGN_NAME.SUCCESS]: (state, action) => {
-  //   return { ...state, isLoading: false };
-  // },
-  // [actionTypes.UPDATE_CAMPAIGN_NAME.FAILURE]: (state, action) => {
-  //   return { ...state, isLoading: false, error: action.error };
-  // },
 });
 
 // Action Creators
@@ -127,6 +118,7 @@ export function createCampaignForGovernment(
           flashMessage('Campaign created', { props: { variant: 'success' } })
         );
       } else {
+        console.log({ response })
         dispatch(actionCreators.createCampaign.failure());
         dispatch(
           flashMessage('Unable to create Campaign', {
@@ -135,6 +127,7 @@ export function createCampaignForGovernment(
         );
       }
     } catch (error) {
+      console.log('Getting here maybe', { error })
       dispatch(actionCreators.createCampaign.failure(error));
       dispatch(
         flashMessage(`Unable to create Campaign - ${error}`, {
