@@ -12,7 +12,7 @@ const ORMConfig: ConnectionOptions = {
   migrations: [
     __dirname + '/migrations/*{.ts,.js}',
   ],
-  synchronize: false,
+  synchronize: process.env.NODE_ENV === 'production' ? false : true,
   logging: false,
   cli: {
     entitiesDir: 'models/entity',
