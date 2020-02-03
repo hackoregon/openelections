@@ -118,7 +118,6 @@ export function createCampaignForGovernment(
           flashMessage('Campaign created', { props: { variant: 'success' } })
         );
       } else {
-        console.log({ response })
         dispatch(actionCreators.createCampaign.failure());
         dispatch(
           flashMessage('Unable to create Campaign', {
@@ -127,7 +126,6 @@ export function createCampaignForGovernment(
         );
       }
     } catch (error) {
-      console.log('Getting here maybe', { error })
       dispatch(actionCreators.createCampaign.failure(error));
       dispatch(
         flashMessage(`Unable to create Campaign - ${error}`, {

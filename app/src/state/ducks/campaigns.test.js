@@ -205,11 +205,7 @@ describe.only('Side Effects', () => {
 
     return store
       .dispatch(
-        campaigns.updateCampaignName(
-          governmentId,
-          campaignId,
-          'campaignName'
-        )
+        campaigns.updateCampaignName( governmentId, campaignId, 'campaignName')
       )
       .then(() => {
         const actions = store.getActions();
