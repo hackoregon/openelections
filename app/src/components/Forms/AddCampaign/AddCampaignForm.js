@@ -27,7 +27,7 @@ const fields = {
         'Commissioner 1',
         'Commissioner 2',
         'Commissioner 3',
-        'Commissioner 4'
+        'Commissioner 4',
       ],
       style: css`
         display: flex !important;
