@@ -56,7 +56,7 @@ const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const formStyles = css`
   justify-content: flex-start;
-  margin-left: 16px;
+  margin-left: 1rem;
 
   h1 {
     font-size: 1.5em;
@@ -108,7 +108,8 @@ const visualizationContainer = css`
 const legendContainer = css`
   width: 100%;
   display: flex;
-  justifycontent: center;
+  justify-content: space-around;
+  margin-bottom: 0.5rem;
 `;
 
 const legendStyle = css`
@@ -474,7 +475,9 @@ class HomePage extends React.Component {
           <>
             <h2
               css={css`
-                margin-left: 16px;
+                margin-left: 1rem;
+                padding-top: 2rem;
+                font-size: 1.5rem;
               `}
             >
               Campaigns
