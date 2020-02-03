@@ -7,31 +7,35 @@ import { HorizontalBarChart } from '@hackoregon/component-library';
 const { numeric, dollars } = civicFormat;
 
 function ContributionTypeBar({ data, count }) {
+  const filteredData = data.filter(el => el.count > 0 && el.total > 0);
+
   return (
     <div className="card">
       {!count && (
         <HorizontalBarChart
-          data={data}
+          data={filteredData}
           dataKey="type"
           dataValue="total"
           dataLabel="label"
           xLabel="Amount"
-          yLabel="Category"
+          yLabel="Type"
           xNumberFormat={dollars}
           dataValueFormatter={x => dollars(x)}
-          subtitle="Total contribution amount by ORESTAR category"
+          title="By Contributor Type"
+          subtitle="Total contribution amount by ORESTAR contributor type"
         />
       )}
       {count && (
         <HorizontalBarChart
-          data={data}
+          data={filteredData}
           dataKey="type"
           dataValue="count"
           dataLabel="label"
           xLabel="Contributions"
-          yLabel="Category"
+          yLabel="Type"
           dataValueFormatter={x => numeric(x)}
-          subtitle="Number of contributions by ORESTAR category"
+          title="By Contributor Type"
+          subtitle="Number of contributions by ORESTAR contributor type"
         />
       )}
     </div>

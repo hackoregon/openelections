@@ -19,6 +19,7 @@ function ContributorLocationBar({ data, count }) {
           yLabel="Location"
           xNumberFormat={dollars}
           dataValueFormatter={x => dollars(x)}
+          title="By Contributor Location"
           subtitle="Total contribution amount by location"
         />
       )}
@@ -31,7 +32,8 @@ function ContributorLocationBar({ data, count }) {
           xLabel="Contributions"
           yLabel="Location"
           dataValueFormatter={x => numeric(x)}
-          subtitle="Number of contributions by location"
+          title="By Contributor Location"
+          subtitle="Number of contributions by contributor location"
         />
       )}
     </div>
