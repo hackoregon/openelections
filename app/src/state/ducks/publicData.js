@@ -310,6 +310,11 @@ export const filteredPublicData = createSelector(
       );
     }
 
+    // filter out public_matching_contributions
+    dataCopy.features = dataCopy.features.filter(
+      f => f.properties.oaeType !== 'public_matching_contribution'
+    );
+
     return dataCopy;
   }
 );
