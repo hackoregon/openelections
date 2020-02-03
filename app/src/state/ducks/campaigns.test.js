@@ -205,13 +205,12 @@ describe.only('Side Effects', () => {
 
     return store
       .dispatch(
-        campaigns.updateCampaignName( governmentId, campaignId, 'campaignName')
+        campaigns.updateCampaignName(governmentId, campaignId, 'campaignName')
       )
       .then(() => {
         const actions = store.getActions();
         expect(actions[0].type).toEqual(expectedActions[0].type);
       });
-      
   });
 
   it('gets campaigns', async () => {
