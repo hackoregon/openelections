@@ -4,8 +4,6 @@ import * as ORMConfig from './ormconfig';
 export default async (): Promise<Connection> => {
     const connection: Connection = await createConnection(ORMConfig);
     // This is safe to do in prod and dev because it tracks what migrations have ran already in the db.
-    if (process.env.NODE_ENV === 'production') {
-        await connection.runMigrations();
-    }
+    await connection.runMigrations();
     return connection;
 };
