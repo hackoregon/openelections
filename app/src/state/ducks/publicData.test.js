@@ -591,18 +591,18 @@ describe('Selectors', () => {
 
     const [state] = makeData(points);
 
-    it('returns the total number of donations', () => {
+    it('returns the total number of donations (excluding public_matching_contribution', () => {
       expect(publicData.summaryData(state).donationsCount).toEqual(
-        points.length
+        points.length - 1
       );
     });
 
-    it('returns the total number of donors (uniqued by contributor name)', () => {
-      expect(publicData.summaryData(state).donorsCount).toEqual(4);
+    it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution)', () => {
+      expect(publicData.summaryData(state).donorsCount).toEqual(3);
     });
 
-    it('returns the total amount contributed and the total amount matched', () => {
-      const total = 10 + 20 + 30 + 100 + 5;
+    it('returns the total amount contributed (excluding public matching contributions) and the total amount matched', () => {
+      const total = 10 + 20 + 30 + 5;
       const matchTotal = 120 + 150 + 30;
       expect(publicData.summaryData(state).totalAmountContributed).toEqual(
         total
@@ -1063,7 +1063,7 @@ describe('Selectors', () => {
       summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
       summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
       summaryPoint('3', 'Three', 'Abc', 78, 0, 'allowable'),
-      summaryPoint('3', 'Three', 'Abc', 500, 30, 'allowable'),
+      summaryPoint('3', 'Three', 'Abc', 501, 30, 'allowable'),
 
       summaryPoint('4', 'Four', 'Def', 5, 30, 'matchable'),
       summaryPoint('4', 'Four', 'Ghi', 6, 36, 'matchable'),
@@ -1108,9 +1108,9 @@ describe('Selectors', () => {
         campaignId: '2',
         campaignName: 'Two',
         officeSought: 'Mayor',
-        donationsCount: 7,
+        donationsCount: 6,
         donorsCount: 4,
-        totalAmountContributed: 5 + 5 + 20 + 25 + 35 + 100 + 500,
+        totalAmountContributed: 5 + 5 + 20 + 25 + 35 + 100,
         totalAmountMatched: 30 + 30 + 120 + 150 + 210,
         medianContributionSize: 22.5,
         micro: {
@@ -1126,14 +1126,14 @@ describe('Selectors', () => {
           contributions: [],
         },
         large: {
-          total: 500,
-          contributions: [500],
+          total: 0,
+          contributions: [],
         },
         mega: {
           total: 0,
           contributions: [],
         },
-        contributions: points.slice(4, 11).map(p => p.properties),
+        contributions: points.slice(4, 10).map(p => p.properties),
       },
       {
         campaignId: '3',
@@ -1141,7 +1141,7 @@ describe('Selectors', () => {
         officeSought: 'Mayor',
         donationsCount: 4,
         donorsCount: 1,
-        totalAmountContributed: 50 + 50 + 78 + 500,
+        totalAmountContributed: 50 + 50 + 78 + 501,
         totalAmountMatched: 300 + 300 + 30,
         medianContributionSize: 64,
         micro: {
@@ -1157,8 +1157,8 @@ describe('Selectors', () => {
           contributions: [],
         },
         large: {
-          total: 500,
-          contributions: [500],
+          total: 501,
+          contributions: [501],
         },
         mega: {
           total: 0,
