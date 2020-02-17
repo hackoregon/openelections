@@ -222,27 +222,27 @@ class HomePage extends React.Component {
         type: 'currency',
       },
       {
-        title: 'Micro',
+        title: 'Micro - $0-$25',
         render: bracketField('micro'),
         sorting: false,
       },
       {
-        title: 'Small',
+        title: 'Small - $25-$100',
         render: bracketField('small'),
         sorting: false,
       },
       {
-        title: 'Medium',
+        title: 'Medium - $100-250',
         render: bracketField('medium'),
         sorting: false,
       },
       {
-        title: 'Large',
+        title: 'Large - $250-$1,000',
         render: bracketField('large'),
         sorting: false,
       },
       {
-        title: 'Mega',
+        title: 'Mega - $1,000+',
         render: bracketField('mega'),
         sorting: false,
       },
@@ -691,14 +691,13 @@ class HomePage extends React.Component {
             immediately display in the dashboard.
           </p>
           <p>
-            The information above includes both monetary and non-monetary
-            (in-kind) contributions. In-kind contributions are limited to
-            $20,000 by program rules.
-          </p>
-          <p>
             The match information is based on what has been approved for
             matching, not what has actually been paid. Matching contributions
             from the Open & Accountable Elections Fund are not shown on the map.
+          </p>
+          <p>
+            The information above includes both monetary and non-monetary
+            (in-kind) contributions.
           </p>
         </section>
         <footer
