@@ -93,6 +93,15 @@ const dataLoadedStyle = css`
   text-align: center;
 `;
 
+const contentStyle = css`
+  padding: 12px;
+  max-width: 700px;
+  margin: 12px auto;
+  button {
+    color: #5e63f6;
+  }
+`;
+
 // The !importants are to override the Mui-* styles
 // that are coming from the wrapping FormGroup.
 // Ideally we wouldn't need them, but since the MenuItems
@@ -199,17 +208,17 @@ class HomePage extends React.Component {
       },
       {
         field: 'donationsCount',
-        title: 'Total Contributions',
+        title: 'Contributions',
         defaultSort: 'desc',
       },
       {
         field: 'totalAmountContributed',
-        title: 'Total Amount',
+        title: 'Total Contributions',
         type: 'currency',
       },
       {
         field: 'totalAmountMatched',
-        title: 'Total Matched',
+        title: 'Total Match Approved',
         type: 'currency',
       },
       {
@@ -264,7 +273,7 @@ class HomePage extends React.Component {
       },
       {
         field: 'totalAmountMatched',
-        title: 'Total Matched',
+        title: 'Total Match Approved',
         sorting: false,
         type: 'currency',
       },
@@ -281,16 +290,7 @@ class HomePage extends React.Component {
     return (
       <PageHoc>
         {error && <strong>Oh no! {error}</strong>}
-        <section
-          css={css`
-            padding: 12px;
-            max-width: 700px;
-            margin: 12px auto;
-            button {
-              color: #5e63f6;
-            }
-          `}
-        >
+        <section css={contentStyle}>
           <p>
             <a href="https://portlandoregon.gov/oae">
               Open and Accountable Elections
@@ -682,6 +682,25 @@ class HomePage extends React.Component {
             />
           </>
         )}
+        <section css={contentStyle}>
+          <h2>About this data</h2>
+          <p>
+            This data is pulled live from the Open and Accountable Elections
+            database. Campaigns submit their contributions through the Open and
+            Accountable Elections application, and submitted contributions will
+            immediately display in the dashboard.
+          </p>
+          <p>
+            The information above includes both monetary and non-monetary
+            (in-kind) contributions. In-kind contributions are limited to
+            $20,000 by program rules.
+          </p>
+          <p>
+            The match information is based on what has been approved for
+            matching, not what has actually been paid. Matching contributions
+            from the Open & Accountable Elections Fund are not shown on the map.
+          </p>
+        </section>
         <footer
           css={css`
             text-align: center;
