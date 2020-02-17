@@ -222,27 +222,27 @@ class HomePage extends React.Component {
         type: 'currency',
       },
       {
-        title: 'Micro - $0-$25',
+        title: 'Micro: <$25',
         render: bracketField('micro'),
         sorting: false,
       },
       {
-        title: 'Small - $25-$100',
+        title: 'Small: $25-$100',
         render: bracketField('small'),
         sorting: false,
       },
       {
-        title: 'Medium - $100-250',
+        title: 'Medium: $100-250',
         render: bracketField('medium'),
         sorting: false,
       },
       {
-        title: 'Large - $250-$1,000',
+        title: 'Large: $250-$1,000',
         render: bracketField('large'),
         sorting: false,
       },
       {
-        title: 'Mega - $1,000+',
+        title: 'Mega: >$1,000',
         render: bracketField('mega'),
         sorting: false,
       },
@@ -686,19 +686,59 @@ class HomePage extends React.Component {
           <h2>About this data</h2>
           <p>
             This data is pulled live from the Open and Accountable Elections
-            database. Campaigns submit their contributions through the Open and
-            Accountable Elections application, and submitted contributions will
-            immediately display in the dashboard.
+            application. The dashboard shows all contribution information that
+            has been submitted by campaigns, including contributions that are
+            awaiting City review.
           </p>
-          <p>
-            The match information is based on what has been approved for
-            matching, not what has actually been paid. Matching contributions
-            from the Open & Accountable Elections Fund are not shown on the map.
-          </p>
-          <p>
-            The information above includes both monetary and non-monetary
-            (in-kind) contributions.
-          </p>
+          <Collapsable description="About this data">
+            <Collapsable.Section hidden>
+              <h3>Contribution process</h3>
+              <p>
+                A campaign submits contribution information through the Open and
+                Accountable Elections application. City staff then review the
+                contribution for matching eligibility and proper documentation,
+                and may request clarification or changes from the campaign. Once
+                any issues have been resolved, an eligible contribution can be
+                approved for matching by City staff. An additional layer of
+                review happens prior to payment from the Open & Accountable
+                Elections Fund.
+              </p>
+              <p>
+                Contributions are shown on the dashboard as soon as they are
+                submitted by a campaign. Contribution information may be revised
+                during the review process. The match information is shown is
+                what has been approved for matching by City staff, not what has
+                actually been paid.
+              </p>
+              <h3>Public information and privacy</h3>
+              <p>
+                Although names and addresses of individual contributors is
+                public information, the purpose of this dashboard is to show
+                aggregate information. The map limits your ability to zoom in on
+                precise locations and does not display contributor names.
+              </p>
+              <h3>Additional notes</h3>
+              <p>
+                The information above includes both monetary and non-monetary
+                (in-kind) contributions. Program rules limit in-kind
+                contributions to $20,000 per campaign.
+              </p>
+              <p>
+                When a contribution is on the border of a size category, it is
+                grouped into the smaller category. So a $100 contribution would
+                be included in the $25-$100 category, not the $100-$250
+                category.
+              </p>
+              <p>
+                The contribution locations shown on the map is based on address
+                geolocation from the Google Maps Geocoding API.
+              </p>
+              <p>
+                Public matching contributions from the Open & Accountable
+                Elections Fund are not shown on the map.
+              </p>
+            </Collapsable.Section>
+          </Collapsable>
         </section>
         <footer
           css={css`
