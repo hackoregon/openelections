@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import TopNavigation from '../components/TopNavigation';
 import { AssumeBar } from '../components/Assume';
-import HomePage from './Home/Home';
+import HomePage from './Home';
 import AboutPage from './About/About';
 import SandboxPage from './Sandbox/Sandbox';
 import InvitationPage from './Invitation/Invitation';

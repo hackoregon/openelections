@@ -74,6 +74,7 @@
     "query-string": "^6.8.2",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
+    "react-cookie": "^4.0.3",
     "react-dev-utils": "^9.0.1",
     "react-dom": "^16.8.6",
     "react-number-format": "^4.2.0",
