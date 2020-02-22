@@ -395,7 +395,8 @@ const Home = ({
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
               {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}.
-              Non-participating candidates not shown.
+              Non-participating candidates not shown. Contributions over $250
+              are either seed or in-kind contributions.
             </div>
           )}
         </FormGroup>
