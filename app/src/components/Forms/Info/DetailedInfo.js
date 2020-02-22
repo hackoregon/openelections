@@ -17,7 +17,11 @@ const DetailedInfo = () => (
     <section css={contentStyle}>
       <h2>About Open and Accountable Elections</h2>
       <p>
-        <a href="https://portlandoregon.gov/oae">
+        <a
+          href="https://portlandoregon.gov/oae"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Open and Accountable Elections
         </a>{' '}
         is the City of Portland's small donor matching program. It is designed
@@ -41,7 +45,13 @@ const DetailedInfo = () => (
           <p>
             <i>
               This is a summary. See the{' '}
-              <a href="https://www.portlandoregon.gov/oae/">program website</a>{' '}
+              <a
+                href="https://www.portlandoregon.gov/oae/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                program website
+              </a>{' '}
               for full details.
             </i>
           </p>
@@ -113,10 +123,14 @@ const DetailedInfo = () => (
 
           <h3>About the software</h3>
           <p>
-            This dashboard and the software the powers it was built in
+            This dashboard and the software that powers it was built in
             partnership between the City’s Open and Accountable Elections
             program and the{' '}
-            <a href="https://civicsoftwarefoundation.org">
+            <a
+              href="https://civicsoftwarefoundation.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Civic Software Foundation
             </a>
             .
@@ -124,7 +138,11 @@ const DetailedInfo = () => (
 
           <p>
             The software is{' '}
-            <a href="https://github.com/hackoregon/openelections/">
+            <a
+              href="https://github.com/hackoregon/openelections/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               open-source
             </a>{' '}
             which means that anyone can scrutinize the code — which is essential
@@ -136,7 +154,14 @@ const DetailedInfo = () => (
           <p>
             The software was built by an interdisciplinary team of volunteers
             and contractors working together through{' '}
-            <a href="https://hackoregon.org">Hack Oregon</a>.
+            <a
+              href="https://hackoregon.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Hack Oregon
+            </a>
+            .
           </p>
 
           <h3>Coming soon</h3>
@@ -144,8 +169,14 @@ const DetailedInfo = () => (
             <li>Information on non-participating candidates</li>
             <li>
               Further integration with the{' '}
-              <a href="civicplatform.org">CIVIC Platform</a> to facilitate
-              public use and sharing of data visualizations
+              <a
+                href="civicplatform.org"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                CIVIC Platform
+              </a>{' '}
+              to facilitate public use and sharing of data visualizations
             </li>
             <li>
               Documentation of the collaborative software development process
@@ -177,9 +208,9 @@ const DetailedInfo = () => (
           <p>
             Contributions are shown on the dashboard as soon as they are
             submitted by a campaign. Contribution information may be revised
-            during the review process. The match information is shown is what
-            has been approved for matching by City staff, not what has actually
-            been paid.
+            during the review process. The match information shown is what has
+            been approved for matching by City staff, not what has actually been
+            paid.
           </p>
           <h3>Public information and privacy</h3>
           <p>

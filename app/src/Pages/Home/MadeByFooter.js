@@ -17,6 +17,8 @@ const MadeByFooter = () => (
     >
       <a
         href="https://www.civicsoftwarefoundation.org"
+        target="_blank"
+        rel="noopener noreferrer"
         css={css`
           margin: 1em;
         `}
@@ -25,6 +27,8 @@ const MadeByFooter = () => (
       </a>
       <a
         href="https://www.hackoregon.org"
+        target="_blank"
+        rel="noopener noreferrer"
         css={css`
           margin: 1em;
         `}
