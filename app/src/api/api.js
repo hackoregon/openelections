@@ -416,17 +416,17 @@ export function decodeToken(token) {
 }
 
 export function baseUrl() {
-  // if (process.env.NODE_ENV === 'test') {
-  //   return 'http://localhost:3000';
-  // }
+  if (process.env.NODE_ENV === 'test') {
+    return 'http://localhost:3000';
+  }
 
-  // if (window && window.location.hostname.includes('qa')) {
-  //   return 'https://api-qa.openelectionsportland.org';
-  // }
+  if (window && window.location.hostname.includes('qa')) {
+    return 'https://api-qa.openelectionsportland.org';
+  }
 
-  // if (process.env.NODE_ENV === 'development') {
-  //   return 'http://localhost:3000';
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000';
+  }
 
   return 'https://api.openelectionsportland.org';
 }
