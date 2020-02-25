@@ -321,7 +321,7 @@ const Home = ({
             Contributions for
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
-                {`${selectedOffices.length ? '' : 'all '}`}
+                {`${selectedOffices && selectedOffices.length ? '' : 'all '}`}
               </InputLabel>
               <Select
                 multiple
@@ -333,7 +333,11 @@ const Home = ({
               >
                 {allOffices.map(name => (
                   <MenuItem key={name} value={name} css={formOption}>
-                    <Checkbox checked={selectedOffices.indexOf(name) > -1} />
+                    <Checkbox
+                      checked={
+                        selectedOffices && selectedOffices.indexOf(name) > -1
+                      }
+                    />
                     <ListItemText primary={name} />
                   </MenuItem>
                 ))}
@@ -343,7 +347,10 @@ const Home = ({
             ,
             <FormControl className="form-control">
               <InputLabel id="filter-campaigns">
-                {`${selectedCampaigns.length ? '' : 'all '}`}campaigns
+                {`${
+                  selectedCampaigns && selectedCampaigns.length ? '' : 'all '
+                }`}
+                campaigns
               </InputLabel>
               <Select
                 multiple
@@ -358,7 +365,10 @@ const Home = ({
                 {availableCampaigns.map(campaign => (
                   <MenuItem key={campaign.id} value={campaign} css={formOption}>
                     <Checkbox
-                      checked={selectedCampaigns.indexOf(campaign) > -1}
+                      checked={
+                        selectedCampaigns &&
+                        selectedCampaigns.indexOf(campaign) > -1
+                      }
                     />
                     <ListItemText primary={campaign.name} />
                   </MenuItem>
