@@ -36,8 +36,8 @@ const DetailedInfo = () => (
         donor.
       </p>
       <p>
-        This real-time dashboard below shows contribution sources for
-        participating candidates.
+        This real-time dashboard shows contribution sources for participating
+        candidates.
       </p>
       <Collapsable description="Open and Accountable Elections">
         <Collapsable.Section hidden>
@@ -59,17 +59,17 @@ const DetailedInfo = () => (
             <li>Candidates may opt into the program.</li>
             <li>
               To qualify, they must show that they have{' '}
-              <u>broad community support</u> by collecting 250 small
+              <strong>broad community support</strong> by collecting 250 small
               contributions from Portlanders if running for Council or Auditor
               or 500 small contributions if running for Mayor.
             </li>
             <li>
               Participating candidates must agree to contribution limits. They
               must{' '}
-              <u>
+              <strong>
                 agree to collect no more than $250 per donor and only from
                 humans, not businesses or political committees
-              </u>
+              </strong>
               , with two exceptions:
               <ul>
                 <li>
