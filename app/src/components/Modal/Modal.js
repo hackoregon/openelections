@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
 import ModalMaterial from '@material-ui/core/Modal';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,9 +19,10 @@ const modalStyle = css`
 `;
 
 const closeModal = css`
-  position: absolute;
+  position: sticky;
+  display: flex;
+  justify-content: flex-end;
   top: 0;
-  right: 0;
 `;
 
 const errorStyle = css`
@@ -29,8 +30,11 @@ const errorStyle = css`
 `;
 
 const Modal = props => {
-  const { getModalState } = props;
-  const handleClose = () => props.clearModal();
+  const { getModalState, customModalStyle, onClose } = props;
+  const handleClose = () => {
+    props.clearModal();
+    onClose();
+  };
   const currentModalOptions = ModalOptions[getModalState.currentModal];
   const ModalContent = () =>
     React.createElement(currentModalOptions, getModalState._props);
@@ -50,7 +54,7 @@ const Modal = props => {
       onClose={() => handleClose()}
     >
       <div>
-        <div css={modalStyle}>
+        <div css={customModalStyle || modalStyle}>
           <div css={closeModal}>
             <IconButton aria-label="Back" onClick={() => handleClose()}>
               <Close style={{ fontSize: '26px', color: 'black' }} />
@@ -71,4 +75,6 @@ export default Modal;
 Modal.propTypes = {
   getModalState: PropTypes.oneOfType([PropTypes.object]),
   clearModal: PropTypes.func,
+  onClose: PropTypes.func,
+  customModalStyle: PropTypes.oneOfType([PropTypes.object]),
 };
