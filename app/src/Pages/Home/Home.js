@@ -213,7 +213,7 @@ const Home = ({
         component: 'Info',
         props: {},
       });
-  });
+  }, [showModal, cookies.visited]);
 
   const isLoading = request ? request.isLoading : true;
   const error = request && request.error;

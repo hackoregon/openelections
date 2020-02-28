@@ -223,7 +223,7 @@ const DetailedInfo = () => (
           <p>
             The information above includes both monetary and non-monetary
             (in-kind) contributions. Program rules limit in-kind contributions
-            to $20,000 per campaign.
+            to $20,000 per campaign per election.
           </p>
           <p>
             When a contribution is on the border of a size category, it is
