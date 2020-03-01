@@ -40,7 +40,6 @@ const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#23552c' };
 const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const filterWrapper = css`
-  position: sticky;
   top: 0;
   z-index: 9999;
   display: grid;
@@ -52,6 +51,7 @@ const filterWrapper = css`
   border: 1px solid rgb(224, 224, 224);
   background-color: #f9f9f9;
   @media ${mediaQueryRanges.mediumAndUp} {
+    position: sticky;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto;
     align-items: center;
