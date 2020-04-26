@@ -4,11 +4,34 @@ This is the master repo for the Open Elections project.
 
 Check out our [wiki](https://github.com/hackoregon/openelections/wiki) for information.
 
-### Installation
+## Getting Started
+To get this repo running locally you need to have a few dependencies installed.
+- Node.js: make sure you have node installed on your machine. You can install it here: https://nodejs.org/en/download/
+- NVM: use the node version manager to make sure we're all using the same node version. Download it here: https://github.com/nvm-sh/nvm
+- Docker: You'll need docker to run the frontend, backend, database. etc. Setup docker by visiting: https://docs.docker.com/install/
 
-#### Docker 
 
-You'll need docker to get going. Setup docker by visiting: https://docs.docker.com/install/
+## Local Development
+
+The frontend depends on the backend & database to be up and running in order to be worked on locally. If you want to have hot module reloading, during development you could use docker with volumes, but starting the docker services you need and running the node server separately, is likely simpler. Also checkout the [app](/api/Readme.md) and [api](/api/README.md) Readmes for more info. In general the following command will get all dependencies running with volumes:
+
+```bash
+    docker-compose up
+```
+
+
+You can use the following commands to get up and running for frontend development locally:
+
+```bash
+    # start the api and db
+    docker-compose -f docker-compose-test.yml up api
+    # then start the frontend serve
+    cd app
+    yarn start
+```
+
+
+
 
 ### Commands
 If you're starting from scratch, you'll need to create a .env file
@@ -81,8 +104,19 @@ Run the datascience api test suite:
     docker-compose -f docker-compose-test.yml run --rm data make test
 ```
 
+### Debugging
+If you encounter a particularly common or interesting issue, when trying to get the local environment working, feel free to add the problem / solution here.
+##### Debugging docker
+If you're not sure how to solve a docker issue, removing all created docker containers usually is a good place to start:
 
-### Deployment
+```bash
+    #The following command will return a list of container ids
+    docker ps -a # yes docker, not docker-compose
+    #Use each container id in the following command
+    docker rm <container-id> -f # remove the container id
+```
+
+## Deployment
 
 This project uses Travis to Continuously deploy to qa.openelectionsportland.org on commits to develop. 
 When you open a PR, Travis will run our test suite, and mark it as passing or failing on the PR at Github.

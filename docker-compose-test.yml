@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     tty: true
-    container_name: apitest
+    container_name: apptest
     build:
       context: 'app'
       dockerfile: 'Dockerfile'
