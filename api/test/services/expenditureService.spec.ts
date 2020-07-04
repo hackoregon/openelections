@@ -96,8 +96,9 @@ describe('expenditureService', () => {
             currentUserId: campaignStaff.id,
             governmentId: government.id
         };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+        await getExpendituresAsync(getExpendituresAttrs).then(expenditures => {
+            expect(expenditures.data.length).equal(2);
+        });
     });
 
     it('Gets expenditures for a campaign as admin', async () => {
@@ -126,8 +127,9 @@ describe('expenditureService', () => {
             currentUserId: campaignAdmin.id,
             governmentId: government.id
         };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+        await getExpendituresAsync(getExpendituresAttrs).then(expenditures => {
+            expect(expenditures.data.length).equal(2);
+        });
     });
 
     it('Gets all expenditures as gov admin', async () => {
@@ -177,8 +179,9 @@ describe('expenditureService', () => {
             currentUserId: govAdmin.id,
             governmentId: government.id
         };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(3);
+        await getExpendituresAsync(getExpendituresAttrs).then(expenditures => {s
+            expect(expenditures.data.length).equal(3);
+        });
     });
 
     it('Throws an error requesting expenditures as campaign admin or staff', async () => {
