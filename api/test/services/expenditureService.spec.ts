@@ -179,7 +179,7 @@ describe('expenditureService', () => {
             currentUserId: govAdmin.id,
             governmentId: government.id
         };
-        await getExpendituresAsync(getExpendituresAttrs).then(expenditures => {s
+        await getExpendituresAsync(getExpendituresAttrs).then(expenditures => {
             expect(expenditures.data.length).equal(3);
         });
     });
