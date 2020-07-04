@@ -116,10 +116,15 @@ To test one method or file, you can use testone:
 ```bash
    cd openelections
    docker-compose -f docker-compose-test.yml run api bash
-   > npm testone tests/file/to/test.spec.ts
+   > npm run testone test/file/to/test.spec.ts
    # add testme to descriptor of test
-   > npm testone tests/file/to/test.spec.ts -- -g testme #will the files' test for testme, and just test that one
+   > npm run testone test/file/to/test.spec.ts -- -g testme #will the files' test for testme, and just test that one
 ```
 
 If you need to see DB queries, update the models/db.ts file, setting the logging to true.
 
+If you are seeing an error like, `ERROR: for testdb  Cannot start service testdb: network xxxx not found`, try running the following command and trying again:
+
+```bash
+   docker-compose -f docker-compose-test.yml down
+```

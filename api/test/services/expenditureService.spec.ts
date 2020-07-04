@@ -89,15 +89,20 @@ describe('expenditureService', () => {
             date: Date.now()
         };
 
-        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
+        try {
+            await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
 
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            campaignId: campaign2.id,
-            currentUserId: campaignStaff.id,
-            governmentId: government.id
-        };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+            const getExpendituresAttrs: IGetExpenditureAttrs = {
+                campaignId: campaign2.id,
+                currentUserId: campaignStaff.id,
+                governmentId: government.id
+            };
+            const expenditures = await getExpendituresAsync(getExpendituresAttrs);
+            expect(expenditures.data.length).equal(2);
+        } catch (error) {
+            console.log(error);
+        }
+
     });
 
     it('Gets expenditures for a campaign as admin', async () => {
@@ -118,16 +123,19 @@ describe('expenditureService', () => {
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
+        try {
+            await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
 
-        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
-
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            campaignId: campaign1.id,
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id
-        };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+            const getExpendituresAttrs: IGetExpenditureAttrs = {
+                campaignId: campaign1.id,
+                currentUserId: campaignAdmin.id,
+                governmentId: government.id
+            };
+            const expenditures = await getExpendituresAsync(getExpendituresAttrs);
+            expect(expenditures.data.length).equal(2);
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     it('Gets all expenditures as gov admin', async () => {
@@ -166,19 +174,22 @@ describe('expenditureService', () => {
             payeeType: PayeeType.INDIVIDUAL,
             date: Date.now()
         };
+        try {
+            await Promise.all([
+                addExpenditureAsync(addExpenditureAttrs1),
+                addExpenditureAsync(addExpenditureAttrs1),
+                addExpenditureAsync(addExpenditureAttrs2)
+            ]);
 
-        await Promise.all([
-            addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs2)
-        ]);
-
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            currentUserId: govAdmin.id,
-            governmentId: government.id
-        };
-        const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(3);
+            const getExpendituresAttrs: IGetExpenditureAttrs = {
+                currentUserId: govAdmin.id,
+                governmentId: government.id
+            };
+            const expenditures = await getExpendituresAsync(getExpendituresAttrs);
+            expect(expenditures.data.length).equal(3);
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     it('Throws an error requesting expenditures as campaign admin or staff', async () => {
