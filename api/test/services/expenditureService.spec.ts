@@ -481,6 +481,14 @@ describe('expenditureService2', () => {
     });
 
     afterEach(async () => {
+        campaignAdmin = undefined;
+        campaignStaff = undefined;
+        govAdmin = undefined;
+        campaign1 = undefined;
+        campaign2 = undefined;
+        government = undefined;
+
+        expenditureRepository = undefined;
         await truncateAll();
     });
     it('Gets expenditures for a campaign as staff', async () => {
