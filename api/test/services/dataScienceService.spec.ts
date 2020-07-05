@@ -4,12 +4,12 @@ import { addGISBoundaries, seedAddresses } from '../../models/seeds/seeds';
 import { truncateAll } from '../factories';
 
 describe('dataScienceService', () => {
-    before(async () => {
+    beforeEach(async () => {
         addGISBoundaries();
         await seedAddresses();
     });
 
-    after(async () => {
+    afterEach(async () => {
         await truncateAll();
     });
 
