@@ -107,7 +107,6 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
         }
         throw new Error('User is not permitted to add expenditures for this campaign.');
     } catch (e) {
-        console.log(e);
         throw new Error(e.message);
     }
 }
