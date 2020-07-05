@@ -442,6 +442,47 @@ describe('expenditureService', () => {
 
         expect(summary.id).to.equal(expenditure.id);
     });
+});
+
+describe('expenditureService2', () => {
+    before(() => {
+        expenditureRepository = getConnection('default').getRepository('Expenditure');
+    });
+
+    beforeEach(async () => {
+        [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
+            newActiveUserAsync(),
+            newActiveUserAsync(),
+            newActiveUserAsync(),
+            newGovernmentAsync(),
+            newCampaignAsync(),
+            newCampaignAsync()
+        ]);
+
+        await Promise.all([
+            addPermissionAsync({
+                userId: campaignAdmin.id,
+                governmentId: government.id,
+                campaignId: campaign1.id,
+                role: UserRole.CAMPAIGN_ADMIN
+            }),
+            addPermissionAsync({
+                userId: campaignStaff.id,
+                governmentId: government.id,
+                campaignId: campaign2.id,
+                role: UserRole.CAMPAIGN_STAFF
+            }),
+            addPermissionAsync({
+                userId: govAdmin.id,
+                governmentId: government.id,
+                role: UserRole.GOVERNMENT_ADMIN
+            })
+        ]);
+    });
+
+    afterEach(async () => {
+        await truncateAll();
+    });
     it('Gets expenditures for a campaign as staff', async () => {
         const addExpenditureAttrs: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
