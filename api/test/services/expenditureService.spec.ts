@@ -70,132 +70,6 @@ describe('expenditureService', () => {
         await truncateAll();
     });
 
-    it('Gets expenditures for a campaign as staff', async () => {
-        const addExpenditureAttrs: IAddExpenditureAttrs = {
-            address1: '123 ABC ST',
-            amount: 250,
-            campaignId: campaign2.id,
-            city: 'Portland',
-            currentUserId: campaignStaff.id,
-            governmentId: government.id,
-            state: 'OR',
-            zip: '97214',
-            type: ExpenditureType.EXPENDITURE,
-            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
-            name: 'Test expense',
-            paymentMethod: PaymentMethod.CASH,
-            purpose: PurposeType.CASH,
-            payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
-        };
-
-        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
-
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            campaignId: campaign2.id,
-            currentUserId: campaignStaff.id,
-            governmentId: government.id
-        };
-        let expenditures;
-        try {
-            expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        } catch (error) {
-            console.log(error);
-        }
-        expect(expenditures.data.length).equal(2);
-    });
-
-    it('Gets expenditures for a campaign as admin', async () => {
-        const addExpenditureAttrs: IAddExpenditureAttrs = {
-            address1: '123 ABC ST',
-            amount: 250,
-            campaignId: campaign1.id,
-            city: 'Portland',
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id,
-            state: 'OR',
-            zip: '97214',
-            type: ExpenditureType.EXPENDITURE,
-            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
-            name: 'Test expense',
-            paymentMethod: PaymentMethod.CASH,
-            purpose: PurposeType.CASH,
-            payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
-        };
-
-        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
-
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            campaignId: campaign1.id,
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id
-        };
-        let expenditures;
-        try {
-            expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        } catch (error) {
-            console.log(error);
-        }
-        expect(expenditures.data.length).equal(2);
-    });
-
-    it('Gets all expenditures as gov admin', async () => {
-        const addExpenditureAttrs1: IAddExpenditureAttrs = {
-            address1: '123 ABC ST',
-            amount: 250,
-            campaignId: campaign1.id,
-            city: 'Portland',
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id,
-            state: 'OR',
-            zip: '97214',
-            type: ExpenditureType.EXPENDITURE,
-            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
-            name: 'Test expense',
-            paymentMethod: PaymentMethod.CASH,
-            purpose: PurposeType.CASH,
-            payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
-        };
-
-        const addExpenditureAttrs2: IAddExpenditureAttrs = {
-            address1: '123 ABC ST',
-            amount: 250,
-            campaignId: campaign1.id,
-            city: 'Portland',
-            currentUserId: campaignAdmin.id,
-            governmentId: government.id,
-            state: 'OR',
-            zip: '97214',
-            type: ExpenditureType.EXPENDITURE,
-            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
-            name: 'Test expense',
-            paymentMethod: PaymentMethod.CASH,
-            purpose: PurposeType.CASH,
-            payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
-        };
-
-        await Promise.all([
-            addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs2)
-        ]);
-
-        const getExpendituresAttrs: IGetExpenditureAttrs = {
-            currentUserId: govAdmin.id,
-            governmentId: government.id
-        };
-        let expenditures;
-        try {
-            expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        } catch (error) {
-            console.log(error);
-        }
-        expect(expenditures.data.length).equal(3);
-    });
-
     it('Throws an error requesting expenditures as campaign admin or staff', async () => {
         try {
             const getExpendituresAttrs: IGetExpenditureAttrs = {
@@ -567,5 +441,130 @@ describe('expenditureService', () => {
         const summary = await getExpenditureByIdAsync({ currentUserId: campaignAdmin.id, expenditureId: expenditure.id });
 
         expect(summary.id).to.equal(expenditure.id);
+    });
+    it('Gets expenditures for a campaign as staff', async () => {
+        const addExpenditureAttrs: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
+            payeeType: PayeeType.INDIVIDUAL,
+            date: Date.now()
+        };
+
+        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
+
+        const getExpendituresAttrs: IGetExpenditureAttrs = {
+            campaignId: campaign2.id,
+            currentUserId: campaignStaff.id,
+            governmentId: government.id
+        };
+        let expenditures;
+        try {
+            expenditures = await getExpendituresAsync(getExpendituresAttrs);
+        } catch (error) {
+            console.log(error);
+        }
+        expect(expenditures.data.length).equal(2);
+    });
+
+    it('Gets expenditures for a campaign as admin', async () => {
+        const addExpenditureAttrs: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign1.id,
+            city: 'Portland',
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
+            payeeType: PayeeType.INDIVIDUAL,
+            date: Date.now()
+        };
+
+        await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
+
+        const getExpendituresAttrs: IGetExpenditureAttrs = {
+            campaignId: campaign1.id,
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id
+        };
+        let expenditures;
+        try {
+            expenditures = await getExpendituresAsync(getExpendituresAttrs);
+        } catch (error) {
+            console.log(error);
+        }
+        expect(expenditures.data.length).equal(2);
+    });
+
+    it('Gets all expenditures as gov admin', async () => {
+        const addExpenditureAttrs1: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign1.id,
+            city: 'Portland',
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
+            payeeType: PayeeType.INDIVIDUAL,
+            date: Date.now()
+        };
+
+        const addExpenditureAttrs2: IAddExpenditureAttrs = {
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign1.id,
+            city: 'Portland',
+            currentUserId: campaignAdmin.id,
+            governmentId: government.id,
+            state: 'OR',
+            zip: '97214',
+            type: ExpenditureType.EXPENDITURE,
+            subType: ExpenditureSubType.ACCOUNTS_PAYABLE,
+            name: 'Test expense',
+            paymentMethod: PaymentMethod.CASH,
+            purpose: PurposeType.CASH,
+            payeeType: PayeeType.INDIVIDUAL,
+            date: Date.now()
+        };
+
+        await Promise.all([
+            addExpenditureAsync(addExpenditureAttrs1),
+            addExpenditureAsync(addExpenditureAttrs1),
+            addExpenditureAsync(addExpenditureAttrs2)
+        ]);
+
+        const getExpendituresAttrs: IGetExpenditureAttrs = {
+            currentUserId: govAdmin.id,
+            governmentId: government.id
+        };
+        let expenditures;
+        try {
+            expenditures = await getExpendituresAsync(getExpendituresAttrs);
+        } catch (error) {
+            console.log(error);
+        }
+        expect(expenditures.data.length).equal(3);
     });
 });
