@@ -123,3 +123,8 @@ To test one method or file, you can use testone:
 
 If you need to see DB queries, update the models/db.ts file, setting the logging to true.
 
+If you are seeing an error like, `ERROR: for testdb  Cannot start service testdb: network xxxx not found`, try running the following command and trying again:
+
+```bash
+   docker-compose -f docker-compose-test.yml down
+```
