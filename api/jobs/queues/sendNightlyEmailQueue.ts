@@ -10,6 +10,7 @@ const queue = (() => {
 })();
 
 if (queue) {
+    // TODO: fix error here
     queue
         .on('waiting', (jobId) => console.debug(`waiting id=${jobId}`))
         .on('active', (job) => console.debug(`active id=${job.id}`))
