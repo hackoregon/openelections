@@ -71,7 +71,7 @@
         "libxmljs": "^0.19.7",
         "mocha": "^6.2.3",
         "nodemon": "^1.18.10",
-        "sinon": "^7.3.2",
+        "sinon": "^7.5.0",
         "supertest": "^4.0.2",
         "tslint": "^5.14.0",
         "typeorm-fixtures": "^0.8.5"
