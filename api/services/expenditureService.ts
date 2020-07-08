@@ -163,7 +163,6 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
         }
         return expenditures;
     } catch (e) {
-        console.log('getExpendituresAsync', e);
         throw new Error(e.message);
     }
 }
