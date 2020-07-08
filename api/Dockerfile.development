@@ -5,6 +5,7 @@ RUN apt-get update -y && apt-get install -y gdal-bin
 
 WORKDIR /app
 COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
 COPY . /app
