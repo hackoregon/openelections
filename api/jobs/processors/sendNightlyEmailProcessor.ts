@@ -4,7 +4,7 @@ import { renderError } from '../helpers/addJobs';
 
 export default (job: { data: any }, done: any): Promise<any> => {
     return db().then(async () => {
-        await sendActivityEmailToCampaignAdminsAsync(job?.data?.id);
+        await sendActivityEmailToCampaignAdminsAsync(job.data.id);
     })
     .then(() => done())
     .catch(error => {

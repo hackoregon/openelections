@@ -4,8 +4,8 @@ import { renderError } from '../helpers/addJobs';
 
 export default (job: {data: any}, done: any): Promise<any> => {
     return db().then(async () => {
-        await getGISCoordinates(job?.data?.id);
-        await retrieveAndSaveMatchResultAsync(job?.data?.id);
+        await getGISCoordinates(job.data.id);
+        await retrieveAndSaveMatchResultAsync(job.data.id);
     })
     .then(() => done())
     .catch(error => {
