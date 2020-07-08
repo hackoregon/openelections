@@ -373,13 +373,6 @@ export async function getExpendituresByGovernmentIdAsync(
                     }
                     : undefined,
                 status,
-                join: {
-                    alias: 'contribution',
-                    leftJoinAndSelect: {
-                        government: 'contribution.government',
-                        campaign: 'contribution.campaign'
-                    }
-                },
                 date:
                     from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
             };
@@ -387,6 +380,13 @@ export async function getExpendituresByGovernmentIdAsync(
             select: expenditureSummaryFields,
             relations: ['campaign', 'government'],
             where,
+            join: {
+                alias: 'contribution',
+                leftJoinAndSelect: {
+                    government: 'contribution.government',
+                    campaign: 'contribution.campaign'
+                }
+            },
             skip: format === 'csv' ? undefined : page,
             take:  format === 'csv' ? undefined : perPage,
             order: { 'updatedAt': 'DESC'}
@@ -422,6 +422,7 @@ export async function getExpendituresByGovernmentIdAsync(
             page
         };
     } catch (err) {
+        console.log(err);
         throw new Error('Error executing get expenditures query');
     }
 }
