@@ -70,7 +70,7 @@ describe('expenditureService', () => {
         await truncateAll();
     });
 
-    xit('Gets expenditures for a campaign as staff', async () => {
+    it('Gets expenditures for a campaign as staff', async () => {
         const addExpenditureAttrs: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
             amount: 250,
@@ -100,7 +100,7 @@ describe('expenditureService', () => {
         expect(expenditures.data.length).equal(2);
     });
 
-    xit('Gets expenditures for a campaign as admin', async () => {
+    it('Gets expenditures for a campaign as admin', async () => {
         const addExpenditureAttrs: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
             amount: 250,
@@ -130,7 +130,7 @@ describe('expenditureService', () => {
         expect(expenditures.data.length).equal(2);
     });
 
-    xit('Gets all expenditures as gov admin', async () => {
+    it('Gets all expenditures as gov admin', async () => {
         const addExpenditureAttrs1: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
             amount: 250,
