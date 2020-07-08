@@ -2,6 +2,7 @@ FROM node:11.4.0 as build-stage
 
 WORKDIR /app
 COPY package.json .
+COPY package-lock.json .
 RUN npm install
 COPY . /app
 RUN /app/node_modules/.bin/tsc --build /app/tsconfig.json

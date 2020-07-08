@@ -3,6 +3,5 @@ node_modules/
 node_modules
 .gitignore
 docker-compose.yml
-package-lock.json
 ts-node*
 build
