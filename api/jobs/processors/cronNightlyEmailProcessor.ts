@@ -2,6 +2,7 @@ import db from '../helpers/db';
 import { getConnection } from 'typeorm';
 import { Campaign } from '../../models/entity/Campaign';
 import { sendNightlyEmailQueue } from '../queues';
+import { renderError } from '../helpers/addJobs';
 
 export default (job: { data: any }, done: any): Promise<any> => {
     return db().then(async () => {
@@ -12,5 +13,11 @@ export default (job: { data: any }, done: any): Promise<any> => {
             promises.push(sendNightlyEmailQueue.add({id: campaign.id}, {attempts: 1}));
         });
         return Promise.all(promises);
-    }).then(() => done());
+    })
+    .then(() => done())
+    .catch(error => {
+        console.error(error);
+        renderError(error);
+        done();
+    });
 };
