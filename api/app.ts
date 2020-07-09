@@ -38,7 +38,7 @@ const corsOptions = {
         },
         useTempFiles : true,
         tempFileDir : '/app/uploads',
-        debug: true
+        debug: false // flip to true for local testing
     }));
     app.use(cors(corsOptions));
     app.options('*', cors(corsOptions));
