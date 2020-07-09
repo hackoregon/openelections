@@ -1,4 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
+
 const ORMConfig: ConnectionOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -19,4 +20,4 @@ const ORMConfig: ConnectionOptions = {
     migrationsDir: 'models/migrations',
   },
 };
-export = ORMConfig;
+export default ORMConfig;
