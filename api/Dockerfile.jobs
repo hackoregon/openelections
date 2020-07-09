@@ -7,7 +7,7 @@ RUN npm install
 COPY . /app
 RUN /app/node_modules/.bin/tsc --build /app/tsconfig.json
 
-FROM keymetrics/pm2:latest-alpine
+FROM keymetrics/pm2:12-alpine
 LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
 
 WORKDIR /app

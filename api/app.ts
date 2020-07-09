@@ -34,7 +34,7 @@ const corsOptions = {
     app.use(fileUpload({
         createParentPath: true,
         limits: {
-            fileSize: 10 * 1024 * 1024 * 1024 //10MB max file(s) size
+            fileSize: 10 * 1024 * 1024 * 1024 // 10MB max file(s) size
         },
         useTempFiles : true,
         tempFileDir : '/app/uploads',
