@@ -394,16 +394,21 @@ export async function getExpendituresByGovernmentIdAsync(
 
         if (sort) {
             if (!['date', 'status', 'campaignId'].includes(sort.field)) {
-                throw new Error('Sort.field must be one of date, status or campaignid');
+                throw new Error('Sort.field must be one of date, status or campaignId');
             }
 
             if (!['ASC', 'DESC'].includes(sort.direction)) {
                 throw new Error('Sort.direction must be one of ASC or DESC');
             }
+            let sortField: 'campaignId' | 'status' | 'date' | 'id' = sort.field;
+            if (sortField === 'campaignId') {
+                sortField = 'id';
+            }
 
-            query.order = { [sort.field]: sort.direction };
+            query.order = { [sortField]: sort.direction };
 
         }
+        console.log('This far?');
         const expenditures = (await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[]).map((item: any): any => {
             const json = item.toJSON();
             json.campaign = {

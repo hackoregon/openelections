@@ -24,7 +24,7 @@ const columns = [
     },
   },
   {
-    field: 'campaign',
+    field: 'campaignId',
     render: rowData => {
       return rowData && rowData.campaign ? rowData.campaign.name : 'Loading...';
     },
@@ -32,6 +32,7 @@ const columns = [
   {
     field: 'amount',
     type: 'currency',
+    sorting: false,
   },
   {
     field: 'date',

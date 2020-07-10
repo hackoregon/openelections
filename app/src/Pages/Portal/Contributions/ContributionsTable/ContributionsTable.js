@@ -102,7 +102,7 @@ const columns = isGovAdmin => {
 
   if (isGovAdmin)
     cols.splice(1, 0, {
-      field: 'campaign',
+      field: 'campaignId',
       title: 'Campaign',
       sorting: false,
       render: rowData => {
