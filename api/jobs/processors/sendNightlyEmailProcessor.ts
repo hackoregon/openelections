@@ -1,4 +1,4 @@
-import db from '../helpers/db';
+import db from '../../models/db';
 import { sendActivityEmailToCampaignAdminsAsync } from '../../services/emailService';
 import { renderError } from '../helpers/addJobs';
 

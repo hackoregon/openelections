@@ -1,5 +1,5 @@
 import { getGISCoordinates, retrieveAndSaveMatchResultAsync } from '../../services/contributionService';
-import db from '../helpers/db';
+import db from '../../models/db';
 import { renderError } from '../helpers/addJobs';
 
 export default (job: {data: any}, done: any): Promise<any> => {

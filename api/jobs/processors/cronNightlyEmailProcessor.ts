@@ -1,4 +1,4 @@
-import db from '../helpers/db';
+import db from '../../models/db';
 import { getConnection } from 'typeorm';
 import { Campaign } from '../../models/entity/Campaign';
 import { sendNightlyEmailQueue } from '../queues';

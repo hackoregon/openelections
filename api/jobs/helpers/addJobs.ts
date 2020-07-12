@@ -15,6 +15,8 @@ export function renderError(e: Error): any {
     }
     if (process.env.NODE_ENV === 'production') {
         bugsnagClient.notify(e);
+    } else {
+        console.log(e);
     }
     return {
         stack: e.stack,
