@@ -408,7 +408,7 @@ export async function getExpendituresByGovernmentIdAsync(
             query.order = { [sortField]: sort.direction };
 
         }
-        console.log('This far?');
+
         const expenditures = (await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[]).map((item: any): any => {
             const json = item.toJSON();
             json.campaign = {
