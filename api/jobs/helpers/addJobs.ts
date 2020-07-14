@@ -5,8 +5,14 @@ export async function addDataScienceJob(jobData: {id: number}) {
     if (process.env.NODE_ENV === 'test') {
         return;
     }
-    await dataScienceResultQueue.add(jobData);
-    return;
+    try {
+        await dataScienceResultQueue.add(jobData);
+        return;
+    } catch (error) {
+        console.log(error);
+        renderError(error);
+        return;
+    }
 }
 
 export function renderError(e: Error): any {

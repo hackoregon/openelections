@@ -30,7 +30,7 @@ import { createActivityRecordAsync, saveFileAttachmentAsync } from './activitySe
 import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
-import { addDataScienceJob } from '../jobs/helpers/addJobs';
+import { addDataScienceJob, renderError } from '../jobs/helpers/addJobs';
 import { UploadedFile } from 'express-fileupload';
 
 export interface IAddContributionAttrs {
@@ -139,7 +139,11 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                     activityId: saved.id
                 });
                 if (process.env.NODE_ENV !== 'test') {
-                    await addDataScienceJob({ id: saved.id });
+                    try {
+                        await addDataScienceJob({ id: saved.id });
+                    } catch (error) {
+                        console.log('Error performing addDataScienceJob', renderError(error));
+                    }
                 } else {
                     await getGISCoordinates(saved.id);
                     await retrieveAndSaveMatchResultAsync(saved.id);
