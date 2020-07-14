@@ -4,7 +4,7 @@
 
 This project uses docker for testing and bootstrapping locally. 
 
-First, download docker at http://docker.com and set itup
+First, download docker at http://docker.com and set it up.
 
 Then, cd into the main open elections repo:
 
