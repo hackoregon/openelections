@@ -1,16 +1,13 @@
 import { getGISCoordinates, retrieveAndSaveMatchResultAsync } from '../../services/contributionService';
 import db from '../../models/db';
-import { renderError } from '../helpers/addJobs';
 
-export default (job: {data: any}, done: any): Promise<any> => {
-    return db().then(async () => {
+export default async (job: {data: any}): Promise<any> => {
+    if (process.env.APP_ENV === 'production') {
+        await db();
         await getGISCoordinates(job.data.id);
-        await retrieveAndSaveMatchResultAsync(job.data.id);
-    })
-    .then(() => done())
-    .catch(error => {
-        console.error(error);
-        renderError(error);
-        done();
-    });
+        return await retrieveAndSaveMatchResultAsync(job.data.id);
+    } else {
+        console.log('Not sending job in staging.');
+        return;
+    }
 };
