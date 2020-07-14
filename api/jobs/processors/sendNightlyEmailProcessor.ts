@@ -1,4 +1,3 @@
-
 import db from '../../models/db';
 import { sendActivityEmailToCampaignAdminsAsync } from '../../services/emailService';
 
