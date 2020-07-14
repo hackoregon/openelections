@@ -15,5 +15,3 @@ export async function requeueDataScienceJobs() {
     await Promise.all(promises);
     return;
 }
-
-// requeueDataScienceJobs();

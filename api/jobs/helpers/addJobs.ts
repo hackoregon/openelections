@@ -10,7 +10,7 @@ export async function addDataScienceJob(jobData: {id: number}) {
         return;
     } catch (error) {
         console.log(error);
-        renderError(error);
+        console.log(`${renderError(error)}`);
         return;
     }
 }
