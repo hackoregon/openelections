@@ -10,6 +10,7 @@ import {
   selectedCampaigns,
   selectedStartDate,
   selectedEndDate,
+  selectedCount,
   filteredPublicData,
   campaignsTable,
   mapData,
@@ -21,6 +22,7 @@ import {
   setSelectedCampaigns,
   setSelectedStartDate,
   setSelectedEndDate,
+  setSelectedCount,
   summaryData,
 } from '../../state/ducks/publicData';
 import { showModal } from '../../state/ducks/modal';
@@ -55,6 +57,7 @@ export default connect(
     selectedCampaigns: selectedCampaigns(state),
     selectedStartDate: selectedStartDate(state),
     selectedEndDate: selectedEndDate(state),
+    selectedCount: selectedCount(state),
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
@@ -74,6 +77,7 @@ export default connect(
         dispatch(setSelectedStartDate(from));
         dispatch(setSelectedEndDate(to));
       },
+      setSelectedCount: count => dispatch(setSelectedCount(count)),
       showModal: payload => {
         dispatch(showModal(payload));
       },

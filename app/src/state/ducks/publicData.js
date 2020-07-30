@@ -64,6 +64,7 @@ export const actionTypes = {
     'CAMPAIGNS',
     'START_DATE',
     'END_DATE',
+    'COUNT',
   ]),
 };
 
@@ -81,6 +82,7 @@ export const initialState = {
   },
   isLoading: false,
   error: null,
+  count: false,
 };
 
 // Reducer
@@ -123,6 +125,9 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.END_DATE]: (state, action) => {
     return { ...state, filters: { ...state.filters, endDate: action.endDate } };
   },
+  [actionTypes.SET_FILTER.COUNT]: (state, action) => {
+    return { ...state, filters: { ...state.filters, count: action.count } };
+  },
 });
 
 // Action Creators
@@ -140,6 +145,7 @@ export const actionCreators = {
     startDate: startDate =>
       action(actionTypes.SET_FILTER.START_DATE, { startDate }),
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
+    count: count => action(actionTypes.SET_FILTER.COUNT, { count }),
   },
 };
 
@@ -147,6 +153,7 @@ export const setSelectedOffices = actionCreators.setFilter.offices;
 export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
 export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
+export const setSelectedCount = actionCreators.setFilter.count;
 
 // Side Effects, e.g. thunks
 export function getPublicData() {
@@ -251,6 +258,11 @@ export const selectedStartDate = createSelector(
 export const selectedEndDate = createSelector(
   publicDataFilters,
   filters => filters.endDate
+);
+
+export const selectedCount = createSelector(
+  publicDataFilters,
+  filters => filters.count
 );
 
 // Filtered filter options

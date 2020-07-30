@@ -199,12 +199,13 @@ const Home = ({
   selectedCampaigns,
   setSelectedCampaigns,
   setDateRange,
+  selectedCount,
+  setSelectedCount,
   campaignsTable,
   mapData,
   summaryData,
   showModal,
 }) => {
-  const [count, setCount] = useState(false);
   const [cookies, setCookie] = useCookies('visited');
 
   useEffect(() => {
@@ -388,8 +389,10 @@ const Home = ({
             by
             <FormControl className="form-control">
               <Select
-                value={count ? 'Count' : 'Amount'}
-                onChange={event => setCount(event.target.value === 'Count')}
+                value={selectedCount ? 'Count' : 'Amount'}
+                onChange={event =>
+                  setSelectedCount(event.target.value === 'Count')
+                }
               >
                 <MenuItem value="Amount" css={formOption}>
                   amount
@@ -448,7 +451,7 @@ const Home = ({
           <>
             <div css={mapHeight}>
               <div css={legendContainer}>
-                {count && (
+                {selectedCount && (
                   <legend css={legendStyle}>
                     <MapLegend
                       colorScale={colorScale}
@@ -460,7 +463,7 @@ const Home = ({
                     />
                   </legend>
                 )}
-                {!count && (
+                {!selectedCount && (
                   <legend css={[legendStyle, legendMargin]}>
                     <span
                       css={css`
@@ -497,7 +500,7 @@ const Home = ({
                 initialZoom={11}
                 useContainerHeight
               >
-                {!count ? (
+                {!selectedCount ? (
                   <ScatterPlotMap
                     data={sanitize(mapData.features)}
                     getPosition={getPosition}
@@ -517,7 +520,7 @@ const Home = ({
                 ) : (
                   <div />
                 )}
-                {count ? (
+                {selectedCount ? (
                   <ScreenGridMap
                     data={sanitize(mapData.features)}
                     getPosition={getPosition}
@@ -545,15 +548,15 @@ const Home = ({
             <div css={chartContainer}>
               <ContributionTypeBar
                 data={aggregatedContributorTypes}
-                count={count}
+                count={selectedCount}
               />
               <ContributionTypePie
                 data={aggregatedDonationSize}
-                count={count}
+                count={selectedCount}
               />
               <ContributorLocationBar
                 data={aggregatedContributionsByRegion}
-                count={count}
+                count={selectedCount}
               />
             </div>
           </>
