@@ -66,7 +66,15 @@ const params = {
     defaultValue: [],
     multiple: true,
     valueToString: value => JSON.stringify(value),
-    stringToValue: string => JSON.parse(string),
+    stringToValue: string => {
+      try {
+        const arr = JSON.parse(string);
+        return arr;
+      } catch {
+        const arr = [];
+        return arr;
+      }
+    },
     defer: publicDataRequestIsLoading,
   },
   startDate: {
