@@ -41,7 +41,7 @@
         "dateformat": "^3.0.3",
         "debug": "~2.6.9",
         "express": "~4.16.0",
-        "express-fileupload": "1.1.6",
+        "express-fileupload": "1.1.9",
         "express-session": "^1.15.6",
         "flash": "^1.1.0",
         "http-errors": "~1.6.2",
