@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import Input from '@material-ui/core/Input';
@@ -23,7 +23,6 @@ import {
 } from '@hackoregon/component-library';
 import { scaleQuantize } from 'd3-scale';
 import { useCookies } from 'react-cookie';
-import { uniqBy } from 'lodash';
 
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Table from '../../components/Table';
@@ -331,7 +330,17 @@ const Home = ({
                 multiple
                 labelid="filter-offices"
                 value={selectedOffices}
-                onChange={event => setSelectedOffices(event.target.value)}
+                onChange={event => {
+                  const selected = event.target.value;
+                  const selectedCampaignsMatchingOffices =
+                    selected.length === 0
+                      ? selectedCampaigns
+                      : selectedCampaigns.filter(campaign =>
+                          selected.includes(campaign.officeSought)
+                        );
+                  setSelectedOffices(selected);
+                  setSelectedCampaigns(selectedCampaignsMatchingOffices);
+                }}
                 input={<Input />}
                 renderValue={selected => selected.join(', ')}
               >
@@ -456,6 +465,7 @@ const Home = ({
           perPage={1}
           pageNumber={0}
           totalRows={1}
+          // eslint-disable-next-line react/display-name
           components={{ Toolbar: () => <div /> }}
         />
       )}
@@ -600,6 +610,7 @@ const Home = ({
             perPage={Math.min(campaignsTable.length, 25)}
             pageNumber={0}
             totalRows={campaignsTable.length}
+            // eslint-disable-next-line react/display-name
             components={{ Toolbar: () => <div /> }}
           />
         </>
@@ -616,18 +627,43 @@ const Home = ({
 };
 
 Home.propTypes = {
+  aggregatedContributionsByRegion: PropTypes.shape({}),
+  aggregatedContributorTypes: PropTypes.shape({}),
+  aggregatedDonationSize: PropTypes.shape({}),
+  allOffices: PropTypes.arrayOf(PropTypes.string),
+  availableCampaignNames: PropTypes.arrayOf(PropTypes.string),
+  availableCampaigns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      officeSought: PropTypes.string,
+    })
+  ),
+  campaignsTable: PropTypes.shape({}),
+  mapData: PropTypes.func,
   request: PropTypes.shape({
     isLoading: PropTypes.bool,
     error: PropTypes.string,
     data: PropTypes.object,
   }),
-  allOffices: PropTypes.arrayOf(PropTypes.string),
-  availableCampaigns: PropTypes.arrayOf(
+  selectedCampaignNames: PropTypes.arrayOf(PropTypes.string),
+  selectedCampaigns: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
+      officeSought: PropTypes.string,
     })
   ),
+  selectedCount: PropTypes.bool,
+  selectedEndDate: PropTypes.shape({}),
+  selectedOffices: PropTypes.arrayOf(PropTypes.string),
+  selectedStartDate: PropTypes.shape({}),
+  setDateRange: PropTypes.func,
+  setSelectedCampaigns: PropTypes.func,
+  setSelectedCount: PropTypes.func,
+  setSelectedOffices: PropTypes.func,
+  showModal: PropTypes.func,
+  summaryData: PropTypes.shape({}),
 };
 
 export default Home;

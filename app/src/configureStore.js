@@ -39,7 +39,6 @@ import publicData, {
   setSelectedEndDate,
   selectedCount,
   setSelectedCount,
-  publicDataRequest,
   publicDataRequestIsLoading,
 } from './state/ducks/publicData';
 import summary, { STATE_KEY as SUMMARY_STATE_KEY } from './state/ducks/summary';
@@ -47,8 +46,6 @@ import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
 import * as api from './api';
 import * as schema from './api/schema';
-
-const isLoading = request => request.isLoading;
 
 const params = {
   count: {
