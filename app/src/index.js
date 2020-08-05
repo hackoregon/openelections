@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createBrowserHistory } from 'history';
-import { ConnectedRouter, Route } from 'connected-react-router';
+import { ConnectedRouter } from 'connected-react-router';
 import {
   QueryParamProvider,
   transformSearchStringJsonSafe,

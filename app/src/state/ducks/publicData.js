@@ -8,6 +8,7 @@ import createActionTypes, {
 } from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
+import { campaign } from '../../api/schema';
 
 const { titleCase } = civicFormat;
 export const STATE_KEY = 'publicData';
@@ -182,6 +183,14 @@ export const publicDataRequest = createSelector(
   }
 );
 
+export const publicDataRequestIsLoading = createSelector(
+  allPublicData,
+  state => {
+    const { isLoading } = state;
+    return isLoading;
+  }
+);
+
 export const publicDataFilters = createSelector(
   allPublicData,
   state => state.filters
@@ -250,6 +259,11 @@ export const selectedCampaigns = createSelector(
   filters => filters.campaigns || []
 );
 
+export const selectedCampaignNames = createSelector(
+  selectedCampaigns,
+  campaigns => campaigns.map(campaign => campaign.name)
+);
+
 export const selectedStartDate = createSelector(
   publicDataFilters,
   filters => filters.startDate
@@ -277,6 +291,11 @@ export const availableCampaigns = createSelector(
       offices.includes(campaign.officeSought)
     );
   }
+);
+
+export const availableCampaignNames = createSelector(
+  availableCampaigns,
+  campaigns => campaigns.map(campaign => campaign.name)
 );
 
 // Filtered public dataset (based on above filters)

@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import { middleware as flashMiddleware } from 'redux-flash';
+import ReduxQuerySync from 'redux-query-sync';
 import { createReducer } from './state';
 import contributions, {
   STATE_KEY as CONTRIBUTIONS_STATE_KEY,
@@ -28,12 +29,68 @@ import pastContributions, {
 } from './state/ducks/pastContributions';
 import publicData, {
   STATE_KEY as PUBLIC_DATA_STATE_KEY,
+  selectedOffices,
+  setSelectedOffices,
+  selectedCampaigns,
+  setSelectedCampaigns,
+  selectedStartDate,
+  setSelectedStartDate,
+  selectedEndDate,
+  setSelectedEndDate,
+  selectedCount,
+  setSelectedCount,
+  publicDataRequest,
+  publicDataRequestIsLoading,
 } from './state/ducks/publicData';
 import summary, { STATE_KEY as SUMMARY_STATE_KEY } from './state/ducks/summary';
 import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
 import * as api from './api';
 import * as schema from './api/schema';
+
+const isLoading = request => request.isLoading;
+
+const params = {
+  count: {
+    selector: selectedCount,
+    action: setSelectedCount,
+    defaultValue: false,
+  },
+  offices: {
+    selector: selectedOffices,
+    action: setSelectedOffices,
+    defaultValue: [],
+    multiple: true,
+    defer: publicDataRequestIsLoading,
+  },
+  campaigns: {
+    selector: selectedCampaigns,
+    action: setSelectedCampaigns,
+    defaultValue: [],
+    multiple: true,
+    valueToString: value => JSON.stringify(value),
+    stringToValue: string => JSON.parse(string),
+    defer: publicDataRequestIsLoading,
+  },
+  startDate: {
+    selector: selectedStartDate,
+    action: setSelectedStartDate,
+    defaultValue: null,
+  },
+  endDate: {
+    selector: selectedEndDate,
+    action: setSelectedEndDate,
+    defaultValue: null,
+  },
+};
+const initialTruth = 'location';
+const replaceState = true;
+
+const storeEnhancer = ReduxQuerySync.enhancer({
+  params,
+  initialTruth,
+  replaceState,
+});
 
 export default function configureStore(history) {
   const composeEnhancers =
@@ -66,7 +123,8 @@ export default function configureStore(history) {
         routerMiddleware(history),
         thunk.withExtraArgument({ api, schema }),
         flashMiddleware()
-      )
+      ),
+      storeEnhancer
     )
   );
 }

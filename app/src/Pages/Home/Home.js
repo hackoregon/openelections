@@ -23,6 +23,7 @@ import {
 } from '@hackoregon/component-library';
 import { scaleQuantize } from 'd3-scale';
 import { useCookies } from 'react-cookie';
+import { uniqBy } from 'lodash';
 
 import PageHoc from '../../components/PageHoc/PageHoc';
 import Table from '../../components/Table';
@@ -189,6 +190,7 @@ const Home = ({
   request,
   allOffices,
   availableCampaigns,
+  availableCampaignNames,
   aggregatedContributorTypes,
   aggregatedDonationSize,
   aggregatedContributionsByRegion,
@@ -197,6 +199,7 @@ const Home = ({
   selectedEndDate,
   setSelectedOffices,
   selectedCampaigns,
+  selectedCampaignNames,
   setSelectedCampaigns,
   setDateRange,
   selectedCount,
@@ -349,29 +352,39 @@ const Home = ({
             <FormControl className="form-control">
               <InputLabel id="filter-campaigns">
                 {`${
-                  selectedCampaigns && selectedCampaigns.length ? '' : 'all '
+                  selectedCampaignNames && selectedCampaignNames.length
+                    ? ''
+                    : 'all '
                 }`}
                 campaigns
               </InputLabel>
               <Select
                 multiple
                 labelid="filter-campaigns"
-                value={selectedCampaigns}
-                onChange={event => setSelectedCampaigns(event.target.value)}
+                value={selectedCampaignNames}
+                onChange={event =>
+                  setSelectedCampaigns(
+                    event.target.value.map(name =>
+                      availableCampaigns.find(
+                        campaign => campaign.name === name
+                      )
+                    )
+                  )
+                }
                 input={<Input />}
                 renderValue={selected =>
-                  selected.map(campaign => campaign.name).join(', ')
+                  selected.map(campaign => campaign).join(', ')
                 }
               >
-                {availableCampaigns.map(campaign => (
-                  <MenuItem key={campaign.id} value={campaign} css={formOption}>
+                {availableCampaignNames.map(campaign => (
+                  <MenuItem key={campaign} value={campaign} css={formOption}>
                     <Checkbox
                       checked={
-                        selectedCampaigns &&
-                        selectedCampaigns.indexOf(campaign) > -1
+                        selectedCampaignNames &&
+                        selectedCampaignNames.indexOf(campaign) > -1
                       }
                     />
-                    <ListItemText primary={campaign.name} />
+                    <ListItemText primary={campaign} />
                   </MenuItem>
                 ))}
               </Select>
