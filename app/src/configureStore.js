@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import { middleware as flashMiddleware } from 'redux-flash';
-import ReduxQuerySync from 'redux-query-sync';
+import ReduxQuerySync from './utils/redux-query-sync';
 import { createReducer } from './state';
 import contributions, {
   STATE_KEY as CONTRIBUTIONS_STATE_KEY,
