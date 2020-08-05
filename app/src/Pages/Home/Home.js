@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Clear } from '@material-ui/icons';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   ScatterPlotMap,
@@ -207,6 +208,7 @@ const Home = ({
   mapData,
   summaryData,
   showModal,
+  resetAll,
 }) => {
   const [cookies, setCookie] = useCookies('visited');
 
@@ -424,6 +426,14 @@ const Home = ({
                 </MenuItem>
               </Select>
               <FormHelperText>View by amount or count</FormHelperText>
+            </FormControl>
+            <FormControl className="form-control">
+              <div css={buttonStyles}>
+                <Button css={buttonStyles} onClick={() => resetAll()}>
+                  <Clear />
+                </Button>
+              </div>
+              <FormHelperText>Clear all</FormHelperText>
             </FormControl>
           </h1>
           {!isLoading && (
@@ -646,6 +656,7 @@ Home.propTypes = {
     error: PropTypes.string,
     data: PropTypes.object,
   }),
+  resetAll: PropTypes.func,
   selectedCampaignNames: PropTypes.arrayOf(PropTypes.string),
   selectedCampaigns: PropTypes.arrayOf(
     PropTypes.shape({

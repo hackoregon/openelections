@@ -26,6 +26,7 @@ import {
   setSelectedEndDate,
   setSelectedCount,
   summaryData,
+  resetAll,
 } from '../../state/ducks/publicData';
 import { showModal } from '../../state/ducks/modal';
 import Home from './Home';
@@ -82,6 +83,7 @@ export default connect(
         dispatch(setSelectedEndDate(to));
       },
       setSelectedCount: count => dispatch(setSelectedCount(count)),
+      resetAll: () => dispatch(resetAll()),
       showModal: payload => {
         dispatch(showModal(payload));
       },
