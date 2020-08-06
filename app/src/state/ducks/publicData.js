@@ -8,7 +8,6 @@ import createActionTypes, {
 } from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
-import { campaign } from '../../api/schema';
 
 const { titleCase } = civicFormat;
 export const STATE_KEY = 'publicData';
