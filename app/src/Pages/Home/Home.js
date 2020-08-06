@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import Input from '@material-ui/core/Input';
@@ -12,6 +12,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Clear } from '@material-ui/icons';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   ScatterPlotMap,
@@ -189,6 +190,7 @@ const Home = ({
   request,
   allOffices,
   availableCampaigns,
+  availableCampaignNames,
   aggregatedContributorTypes,
   aggregatedDonationSize,
   aggregatedContributionsByRegion,
@@ -197,14 +199,17 @@ const Home = ({
   selectedEndDate,
   setSelectedOffices,
   selectedCampaigns,
+  selectedCampaignNames,
   setSelectedCampaigns,
   setDateRange,
+  selectedCount,
+  setSelectedCount,
   campaignsTable,
   mapData,
   summaryData,
   showModal,
+  resetAll,
 }) => {
-  const [count, setCount] = useState(false);
   const [cookies, setCookie] = useCookies('visited');
 
   useEffect(() => {
@@ -327,7 +332,17 @@ const Home = ({
                 multiple
                 labelid="filter-offices"
                 value={selectedOffices}
-                onChange={event => setSelectedOffices(event.target.value)}
+                onChange={event => {
+                  const selected = event.target.value;
+                  const selectedCampaignsMatchingOffices =
+                    selected.length === 0
+                      ? selectedCampaigns
+                      : selectedCampaigns.filter(campaign =>
+                          selected.includes(campaign.officeSought)
+                        );
+                  setSelectedOffices(selected);
+                  setSelectedCampaigns(selectedCampaignsMatchingOffices);
+                }}
                 input={<Input />}
                 renderValue={selected => selected.join(', ')}
               >
@@ -348,29 +363,39 @@ const Home = ({
             <FormControl className="form-control">
               <InputLabel id="filter-campaigns">
                 {`${
-                  selectedCampaigns && selectedCampaigns.length ? '' : 'all '
+                  selectedCampaignNames && selectedCampaignNames.length
+                    ? ''
+                    : 'all '
                 }`}
                 campaigns
               </InputLabel>
               <Select
                 multiple
                 labelid="filter-campaigns"
-                value={selectedCampaigns}
-                onChange={event => setSelectedCampaigns(event.target.value)}
+                value={selectedCampaignNames}
+                onChange={event =>
+                  setSelectedCampaigns(
+                    event.target.value.map(name =>
+                      availableCampaigns.find(
+                        campaign => campaign.name === name
+                      )
+                    )
+                  )
+                }
                 input={<Input />}
                 renderValue={selected =>
-                  selected.map(campaign => campaign.name).join(', ')
+                  selected.map(campaign => campaign).join(', ')
                 }
               >
-                {availableCampaigns.map(campaign => (
-                  <MenuItem key={campaign.id} value={campaign} css={formOption}>
+                {availableCampaignNames.map(campaign => (
+                  <MenuItem key={campaign} value={campaign} css={formOption}>
                     <Checkbox
                       checked={
-                        selectedCampaigns &&
-                        selectedCampaigns.indexOf(campaign) > -1
+                        selectedCampaignNames &&
+                        selectedCampaignNames.indexOf(campaign) > -1
                       }
                     />
-                    <ListItemText primary={campaign.name} />
+                    <ListItemText primary={campaign} />
                   </MenuItem>
                 ))}
               </Select>
@@ -388,8 +413,10 @@ const Home = ({
             by
             <FormControl className="form-control">
               <Select
-                value={count ? 'Count' : 'Amount'}
-                onChange={event => setCount(event.target.value === 'Count')}
+                value={selectedCount ? 'Count' : 'Amount'}
+                onChange={event =>
+                  setSelectedCount(event.target.value === 'Count')
+                }
               >
                 <MenuItem value="Amount" css={formOption}>
                   amount
@@ -399,6 +426,14 @@ const Home = ({
                 </MenuItem>
               </Select>
               <FormHelperText>View by amount or count</FormHelperText>
+            </FormControl>
+            <FormControl className="form-control">
+              <div css={buttonStyles}>
+                <Button css={buttonStyles} onClick={() => resetAll()}>
+                  <Clear />
+                </Button>
+              </div>
+              <FormHelperText>Clear all</FormHelperText>
             </FormControl>
           </h1>
           {!isLoading && (
@@ -440,6 +475,7 @@ const Home = ({
           perPage={1}
           pageNumber={0}
           totalRows={1}
+          // eslint-disable-next-line react/display-name
           components={{ Toolbar: () => <div /> }}
         />
       )}
@@ -448,7 +484,7 @@ const Home = ({
           <>
             <div css={mapHeight}>
               <div css={legendContainer}>
-                {count && (
+                {selectedCount && (
                   <legend css={legendStyle}>
                     <MapLegend
                       colorScale={colorScale}
@@ -460,7 +496,7 @@ const Home = ({
                     />
                   </legend>
                 )}
-                {!count && (
+                {!selectedCount && (
                   <legend css={[legendStyle, legendMargin]}>
                     <span
                       css={css`
@@ -497,7 +533,7 @@ const Home = ({
                 initialZoom={11}
                 useContainerHeight
               >
-                {!count ? (
+                {!selectedCount ? (
                   <ScatterPlotMap
                     data={sanitize(mapData.features)}
                     getPosition={getPosition}
@@ -517,7 +553,7 @@ const Home = ({
                 ) : (
                   <div />
                 )}
-                {count ? (
+                {selectedCount ? (
                   <ScreenGridMap
                     data={sanitize(mapData.features)}
                     getPosition={getPosition}
@@ -545,15 +581,15 @@ const Home = ({
             <div css={chartContainer}>
               <ContributionTypeBar
                 data={aggregatedContributorTypes}
-                count={count}
+                count={selectedCount}
               />
               <ContributionTypePie
                 data={aggregatedDonationSize}
-                count={count}
+                count={selectedCount}
               />
               <ContributorLocationBar
                 data={aggregatedContributionsByRegion}
-                count={count}
+                count={selectedCount}
               />
             </div>
           </>
@@ -584,6 +620,7 @@ const Home = ({
             perPage={Math.min(campaignsTable.length, 25)}
             pageNumber={0}
             totalRows={campaignsTable.length}
+            // eslint-disable-next-line react/display-name
             components={{ Toolbar: () => <div /> }}
           />
         </>
@@ -600,18 +637,44 @@ const Home = ({
 };
 
 Home.propTypes = {
+  aggregatedContributionsByRegion: PropTypes.shape({}),
+  aggregatedContributorTypes: PropTypes.shape({}),
+  aggregatedDonationSize: PropTypes.shape({}),
+  allOffices: PropTypes.arrayOf(PropTypes.string),
+  availableCampaignNames: PropTypes.arrayOf(PropTypes.string),
+  availableCampaigns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      officeSought: PropTypes.string,
+    })
+  ),
+  campaignsTable: PropTypes.shape({}),
+  mapData: PropTypes.func,
   request: PropTypes.shape({
     isLoading: PropTypes.bool,
     error: PropTypes.string,
     data: PropTypes.object,
   }),
-  allOffices: PropTypes.arrayOf(PropTypes.string),
-  availableCampaigns: PropTypes.arrayOf(
+  resetAll: PropTypes.func,
+  selectedCampaignNames: PropTypes.arrayOf(PropTypes.string),
+  selectedCampaigns: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
+      officeSought: PropTypes.string,
     })
   ),
+  selectedCount: PropTypes.bool,
+  selectedEndDate: PropTypes.shape({}),
+  selectedOffices: PropTypes.arrayOf(PropTypes.string),
+  selectedStartDate: PropTypes.shape({}),
+  setDateRange: PropTypes.func,
+  setSelectedCampaigns: PropTypes.func,
+  setSelectedCount: PropTypes.func,
+  setSelectedOffices: PropTypes.func,
+  showModal: PropTypes.func,
+  summaryData: PropTypes.shape({}),
 };
 
 export default Home;

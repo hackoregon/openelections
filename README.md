@@ -44,6 +44,12 @@ Pull all the Docker images by running:
 ```bash
     docker-compose pull
 ```
+
+Build the Docker images by running:
+
+```bash
+    docker-compose build
+```
     
 Start application by running:
 

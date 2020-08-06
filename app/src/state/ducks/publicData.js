@@ -64,6 +64,8 @@ export const actionTypes = {
     'CAMPAIGNS',
     'START_DATE',
     'END_DATE',
+    'COUNT',
+    'RESET_ALL',
   ]),
 };
 
@@ -78,6 +80,7 @@ export const initialState = {
     offices: [],
     startDate: null,
     endDate: null,
+    count: false,
   },
   isLoading: false,
   error: null,
@@ -123,6 +126,21 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.END_DATE]: (state, action) => {
     return { ...state, filters: { ...state.filters, endDate: action.endDate } };
   },
+  [actionTypes.SET_FILTER.COUNT]: (state, action) => {
+    return { ...state, filters: { ...state.filters, count: action.count } };
+  },
+  [actionTypes.SET_FILTER.RESET_ALL]: state => {
+    return {
+      ...state,
+      filters: {
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+      },
+    };
+  },
 });
 
 // Action Creators
@@ -140,6 +158,8 @@ export const actionCreators = {
     startDate: startDate =>
       action(actionTypes.SET_FILTER.START_DATE, { startDate }),
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
+    count: count => action(actionTypes.SET_FILTER.COUNT, { count }),
+    resetAll: () => action(actionTypes.SET_FILTER.RESET_ALL),
   },
 };
 
@@ -147,6 +167,8 @@ export const setSelectedOffices = actionCreators.setFilter.offices;
 export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
 export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
+export const setSelectedCount = actionCreators.setFilter.count;
+export const resetAll = actionCreators.setFilter.resetAll;
 
 // Side Effects, e.g. thunks
 export function getPublicData() {
@@ -172,6 +194,14 @@ export const publicDataRequest = createSelector(
   state => {
     const { data, isLoading, error, timeLoaded } = state;
     return { data, isLoading, error, timeLoaded };
+  }
+);
+
+export const publicDataRequestIsLoading = createSelector(
+  allPublicData,
+  state => {
+    const { isLoading } = state;
+    return isLoading;
   }
 );
 
@@ -243,6 +273,11 @@ export const selectedCampaigns = createSelector(
   filters => filters.campaigns || []
 );
 
+export const selectedCampaignNames = createSelector(
+  selectedCampaigns,
+  campaigns => campaigns.map(campaign => campaign.name)
+);
+
 export const selectedStartDate = createSelector(
   publicDataFilters,
   filters => filters.startDate
@@ -251,6 +286,11 @@ export const selectedStartDate = createSelector(
 export const selectedEndDate = createSelector(
   publicDataFilters,
   filters => filters.endDate
+);
+
+export const selectedCount = createSelector(
+  publicDataFilters,
+  filters => filters.count
 );
 
 // Filtered filter options
@@ -265,6 +305,11 @@ export const availableCampaigns = createSelector(
       offices.includes(campaign.officeSought)
     );
   }
+);
+
+export const availableCampaignNames = createSelector(
+  availableCampaigns,
+  campaigns => campaigns.map(campaign => campaign.name)
 );
 
 // Filtered public dataset (based on above filters)
