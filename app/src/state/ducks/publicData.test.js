@@ -41,6 +41,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: null,
         endDate: null,
+        count: false,
       });
     });
 
@@ -55,6 +56,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: null,
         endDate: null,
+        count: false,
       });
 
       expect(
@@ -67,6 +69,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: null,
         endDate: null,
+        count: false,
       });
     });
   });
@@ -83,6 +86,7 @@ describe('Reducer', () => {
         offices: ['1', '2', '3'],
         startDate: null,
         endDate: null,
+        count: false,
       });
     });
 
@@ -97,6 +101,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: null,
         endDate: null,
+        count: false,
       });
 
       expect(
@@ -109,6 +114,7 @@ describe('Reducer', () => {
         offices: ['just-the-one'],
         startDate: null,
         endDate: null,
+        count: false,
       });
     });
   });
@@ -126,6 +132,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: date,
         endDate: null,
+        count: false,
       });
     });
   });
@@ -143,6 +150,7 @@ describe('Reducer', () => {
         offices: [],
         startDate: null,
         endDate: date,
+        count: false,
       });
     });
   });
@@ -165,6 +173,7 @@ describe('Selectors', () => {
       offices: ['Mayor'],
       startDate: new Date().toISOString(),
       endDate: null,
+      count: false,
     };
     const [stateWithSelections] = makeData([], { filters });
 
