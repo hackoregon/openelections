@@ -55,6 +55,7 @@ const params = {
     selector: selectedCount,
     action: setSelectedCount,
     defaultValue: false,
+    stringToValue: value => value === 'true',
   },
   offices: {
     selector: selectedOffices,
