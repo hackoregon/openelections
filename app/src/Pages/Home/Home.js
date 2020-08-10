@@ -569,9 +569,6 @@ const Home = ({
                     />
                   </ScatterPlotMap>
                 ) : (
-                  <div />
-                )}
-                {selectedCount ? (
                   <ScreenGridMap
                     data={sanitize(mapData.features)}
                     getPosition={getPosition}
@@ -591,8 +588,6 @@ const Home = ({
                       wide
                     />
                   </ScreenGridMap>
-                ) : (
-                  <div />
                 )}
               </BaseMap>
             </div>
@@ -655,9 +650,9 @@ const Home = ({
 };
 
 Home.propTypes = {
-  aggregatedContributionsByRegion: PropTypes.shape({}),
-  aggregatedContributorTypes: PropTypes.shape({}),
-  aggregatedDonationSize: PropTypes.shape({}),
+  aggregatedContributionsByRegion: PropTypes.arrayOf(PropTypes.shape({})),
+  aggregatedContributorTypes: PropTypes.arrayOf(PropTypes.shape({})),
+  aggregatedDonationSize: PropTypes.arrayOf(PropTypes.shape({})),
   allOffices: PropTypes.arrayOf(PropTypes.string),
   availableCampaignNames: PropTypes.arrayOf(PropTypes.string),
   availableCampaigns: PropTypes.arrayOf(
@@ -667,8 +662,8 @@ Home.propTypes = {
       officeSought: PropTypes.string,
     })
   ),
-  campaignsTable: PropTypes.shape({}),
-  mapData: PropTypes.func,
+  campaignsTable: PropTypes.arrayOf(PropTypes.shape({})),
+  mapData: PropTypes.shape({}),
   request: PropTypes.shape({
     isLoading: PropTypes.bool,
     error: PropTypes.string,
