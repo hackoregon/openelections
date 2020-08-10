@@ -8,6 +8,7 @@ import createActionTypes, {
 } from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
+import campaigns from './campaigns';
 
 const { titleCase } = civicFormat;
 export const STATE_KEY = 'publicData';
@@ -372,8 +373,62 @@ export const mapData = createSelector(
   data => data
 );
 
+// TODO: Wheeler
+const participatingCandidate = f =>
+  f.properties.campaignName !== 'Sarah Iannarone';
+
+// TODO: Wheeler
+const nonParticipatingCandidate = f =>
+  f.properties.campaignName === 'Sarah Iannarone';
+
+const addParticipatingStatus = (data, status) => {
+  return { ...data, participatingStatus: status };
+};
+
+export const filteredPublicDataParticipatingOnly = createSelector(
+  filteredPublicData,
+  data => {
+    // Create a shallow copy of the underlying Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = dataCopy.features.slice();
+    // Filter out non-participating candidates
+    dataCopy.features = dataCopy.features.filter(participatingCandidate);
+    return dataCopy;
+  }
+);
+
+export const filteredPublicDataNonParticipatingOnly = createSelector(
+  filteredPublicData,
+  data => {
+    // Create a shallow copy of the underlying Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = dataCopy.features.slice();
+    // Filter for non-participating candidates
+    dataCopy.features = dataCopy.features.filter(nonParticipatingCandidate);
+    return dataCopy;
+  }
+);
+
 const sortedDonations = createSelector(
   filteredPublicData,
+  data => {
+    const donations = data.features.map(f => f.properties);
+    donations.sort((a, b) => a.amount - b.amount);
+    return donations;
+  }
+);
+
+const sortedDonationsNonParticipatingOnly = createSelector(
+  filteredPublicDataNonParticipatingOnly,
+  data => {
+    const donations = data.features.map(f => f.properties);
+    donations.sort((a, b) => a.amount - b.amount);
+    return donations;
+  }
+);
+
+const sortedDonationsParticipatingOnly = createSelector(
+  filteredPublicDataParticipatingOnly,
   data => {
     const donations = data.features.map(f => f.properties);
     donations.sort((a, b) => a.amount - b.amount);
@@ -426,9 +481,27 @@ const summarize = donations => {
 // - median contribution size (exclude OAE type public match)
 // - total amount contributed (by campaign?)
 // - total amount matched (requires explanatory text since it won't be exactly 6x)
+
 export const summaryData = createSelector(
   sortedDonations,
   donations => summarize(donations)
+);
+
+export const summaryDataByParticipation = createSelector(
+  sortedDonationsParticipatingOnly,
+  sortedDonationsNonParticipatingOnly,
+  (participatingDonations, nonParticipatingDonations) => {
+    const summaryData = [];
+    participatingDonations.length > 0 &&
+      summaryData.push(
+        addParticipatingStatus(summarize(participatingDonations), '🌹')
+      );
+    nonParticipatingDonations.length > 0 &&
+      summaryData.push(
+        addParticipatingStatus(summarize(nonParticipatingDonations), '🥀')
+      );
+    return summaryData;
+  }
 );
 
 const bracketize = donations => {
@@ -669,6 +742,9 @@ export const campaignsTable = createSelector(
       const contribution = campaign.contributions[0];
       campaign.campaignName = contribution.campaignName;
       campaign.officeSought = contribution.officeSought;
+      // TODO: Wheeler
+      campaign.participatingStatus =
+        contribution.campaignName === 'Sarah Iannarone' ? '🥀' : '🌹';
     });
 
     return campaigns;

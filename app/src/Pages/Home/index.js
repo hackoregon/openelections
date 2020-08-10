@@ -26,6 +26,7 @@ import {
   setSelectedEndDate,
   setSelectedCount,
   summaryData,
+  summaryDataByParticipation,
   resetAll,
 } from '../../state/ducks/publicData';
 import { showModal } from '../../state/ducks/modal';
@@ -71,6 +72,7 @@ export default connect(
     aggregatedContributionsByRegion: aggregatedContributionsByRegion(state),
     donationSizeByDonationRange: donationSizeByDonationRange(state),
     summaryData: summaryData(state),
+    summaryDataByParticipation: summaryDataByParticipation(state),
   }),
   dispatch => {
     return {

@@ -29,8 +29,8 @@ const IntroInfo = () => {
           not just big campaign donors.
         </p>
         <p>
-          This real-time dashboard shows contribution sources for participating
-          candidates.
+          This real-time dashboard shows contribution sources for both
+          participating and non-participating candidates.
         </p>
       </section>
     </>

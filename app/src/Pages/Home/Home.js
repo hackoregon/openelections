@@ -207,6 +207,7 @@ const Home = ({
   campaignsTable,
   mapData,
   summaryData,
+  summaryDataByParticipation,
   showModal,
   resetAll,
 }) => {
@@ -228,6 +229,10 @@ const Home = ({
     `${dollars(row[field].total)} (${row[field].contributions.length})`;
 
   const columns = [
+    {
+      field: 'participatingStatus',
+      title: 'Status',
+    },
     {
       field: 'campaignName',
       title: 'Campaign',
@@ -280,6 +285,11 @@ const Home = ({
 
   const summaryColumns = [
     {
+      field: 'participatingStatus',
+      title: 'Status',
+      sorting: false,
+    },
+    {
       field: 'donationsCount',
       title: 'Contributions',
       sorting: false,
@@ -323,10 +333,12 @@ const Home = ({
       <div css={filterWrapper}>
         <FormGroup row css={formStyles}>
           <h1>
-            Contributions for
+            Campaign contributions for
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
-                {`${selectedOffices && selectedOffices.length ? '' : 'all '}`}
+                {`${
+                  selectedOffices && selectedOffices.length ? '' : 'all offices'
+                }`}
               </InputLabel>
               <Select
                 multiple
@@ -439,9 +451,9 @@ const Home = ({
           {!isLoading && (
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
-              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}.
-              Non-participating candidates not shown. Contributions over $250
-              are either seed or in-kind contributions.
+              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}. Data loaded
+              from ORESTAR for non-participating candidates on MMM DD, YYYY at
+              h:mm:ssa
             </div>
           )}
         </FormGroup>
@@ -461,20 +473,20 @@ const Home = ({
           </div>
         </div>
       </div>
-      {!!summaryData && (
+      {!!summaryDataByParticipation && (
         <Table
           isLoading={isLoading}
           title="Campaigns"
           columns={summaryColumns}
           options={{
-            pageSize: 1,
+            pageSize: 2,
             showTitle: false,
             paging: false,
           }}
-          data={[summaryData]}
-          perPage={1}
+          data={summaryDataByParticipation}
+          perPage={2}
           pageNumber={0}
-          totalRows={1}
+          totalRows={2}
           // eslint-disable-next-line react/display-name
           components={{ Toolbar: () => <div /> }}
         />
@@ -688,6 +700,7 @@ Home.propTypes = {
   setSelectedOffices: PropTypes.func,
   showModal: PropTypes.func,
   summaryData: PropTypes.shape({}),
+  summaryDataByParticipation: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 export default Home;
