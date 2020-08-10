@@ -544,10 +544,28 @@ const Home = ({
                     autoHighlight
                   >
                     <MapTooltip
-                      primaryName="Campaign"
-                      primaryField="campaignName"
-                      secondaryName="Contribution"
-                      secondaryField="amount"
+                      tooltipDataArray={[
+                        {
+                          name: `Campaign`,
+                          field: 'campaignName',
+                          formatField: civicFormat.titleCase,
+                        },
+                        {
+                          name: `Contribution`,
+                          field: 'amount',
+                          formatField: civicFormat.dollars,
+                        },
+                        {
+                          name: `Match`,
+                          field: 'matchAmount',
+                          formatField: civicFormat.dollars,
+                        },
+                        {
+                          name: `Type`,
+                          field: 'contributionSubType',
+                          formatField: civicFormat.titleCase,
+                        },
+                      ]}
                     />
                   </ScatterPlotMap>
                 ) : (
