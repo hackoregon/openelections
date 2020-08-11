@@ -38,6 +38,7 @@ If you're starting from scratch, you'll need to create a .env file
 ```bash
     touch .env
 ```
+You'll need a `GOOGLE_GIS_KEY` in order for addresses to be properly geocoded for the public data visualizations.
 
 Pull all the Docker images by running: 
 
