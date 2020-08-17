@@ -1,7 +1,10 @@
 import { expect } from 'chai';
 import { getConnection } from 'typeorm';
-import { truncateAll } from '../factories';
-import { ExternalContribution, ExternalContributionSubType } from '../../models/entity/ExternalContribution';
+import { truncateAll, newExternalContributionAsync } from '../factories';
+import {
+  ExternalContribution,
+  ExternalContributionSubType, getExternalContributionsGeoJsonAsync
+} from '../../models/entity/ExternalContribution';
 import { ContributionType, ContributorType } from '../../models/entity/Contribution';
 
 let repository: any;
@@ -95,6 +98,23 @@ describe('External Contribution', () => {
         expect(newRecord.errors.length).to.equal(1);
         expect(newRecord.errors[0].property).to.equal('name');
     });
-
+  });
+  describe('Test DB interactions', () => {
+    it('getExternalContributionsGeoJsonAsync', async () => {
+      const [contr1, contr2] = await Promise.all([
+          newExternalContributionAsync(),
+          newExternalContributionAsync(),
+      ]);
+      await repository.update(contr2.orestarOriginalId, {
+        orestarTransactionId: '500'
+      });
+      const contributions = await getExternalContributionsGeoJsonAsync();
+      expect(contributions.type).to.equal('FeatureCollection');
+      expect(contributions.features.length).to.equal(2);
+      expect(contributions.features[0].type).to.equal('Feature');
+      expect(Object.keys(contributions.features[0].properties)).to.deep.equal([
+          'type', 'city', 'state', 'zip', 'amount', 'contributorType', 'contributionType', 'contributionSubType', 'date', 'contributorName', 'campaignId', 'campaignName', 'officeSought'
+      ]);
+    });
   });
 });

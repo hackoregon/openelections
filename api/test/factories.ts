@@ -100,6 +100,9 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
 
 export async function newExternalContributionAsync(): Promise<ExternalContribution> {
     let externalContribution = new ExternalContribution();
+        externalContribution.orestarOriginalId = ((global as any).externalContributionCounter + 1).toString();
+        externalContribution.orestarTransactionId = ((global as any).externalContributionCounter + 1).toString();
+        (global as any).externalContributionCounter += 1;
         externalContribution.address1 = faker.address.streetAddress();
         externalContribution.amount = faker.finance.amount(1, 500, 2);
         externalContribution.city = 'Portland';

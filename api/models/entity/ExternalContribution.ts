@@ -225,7 +225,7 @@ export const contributionSummaryFields = <const>[
 ];
 export type IContributionSummary = Pick<ExternalContribution, typeof contributionSummaryFields[number]>;
 
-export async function geExternalContributionsGeoJsonAsync(
+export async function getExternalContributionsGeoJsonAsync(
   options?: IGetContributionGeoJsonOptions
 ): Promise<IContributionsGeoJson> {
   try {
