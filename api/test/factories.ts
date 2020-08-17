@@ -23,6 +23,7 @@ import {
     IExpenditureSummaryResults,
     IExpenditureSummary
 } from '../models/entity/Expenditure';
+import { ExternalContribution, ExternalContributionSubType } from '../models/entity/ExternalContribution';
 
 export async function newActiveUserAsync(): Promise<User> {
     const userRepository = getConnection('default').getRepository('User');
@@ -95,6 +96,29 @@ export async function newContributionAsync(campaign: Campaign, government: Gover
         console.log('saving contribution', contribution.id);
     }
     return contribution;
+}
+
+export async function newExternalContributionAsync(): Promise<ExternalContribution> {
+    let externalContribution = new ExternalContribution();
+        externalContribution.address1 = faker.address.streetAddress();
+        externalContribution.amount = faker.finance.amount(1, 500, 2);
+        externalContribution.city = 'Portland';
+        externalContribution.type = ContributionType.CONTRIBUTION;
+        externalContribution.subType = ExternalContributionSubType.CASH;
+        externalContribution.state = 'OR';
+        externalContribution.zip = '97214';
+        externalContribution.contributorType = ContributorType.INDIVIDUAL;
+        externalContribution.employerName = 'Random Employer';
+        externalContribution.employerCity = 'Portland';
+        externalContribution.employerState = 'OR';
+        externalContribution.country = 'United States';
+        externalContribution.date = faker.date.past(1);
+    const externalContributionRepository = getConnection('default').getRepository('external_contributions');
+    externalContribution = await externalContributionRepository.save(externalContribution);
+    if (process.env.NODE_ENV != 'test') {
+        console.log('saving contribution', externalContribution.orestarOriginalId);
+    }
+    return externalContribution;
 }
 
 export async function newBulkContributionAsync(campaign: Campaign, government: Government): Promise<IContributionSummaryResults> {
