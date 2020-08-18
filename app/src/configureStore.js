@@ -41,6 +41,9 @@ import publicData, {
   setSelectedCount,
   publicDataRequestIsLoading,
 } from './state/ducks/publicData';
+import externalData, {
+  STATE_KEY as EXTERNAL_DATA_STATE_KEY,
+} from './state/ducks/externalData';
 import summary, { STATE_KEY as SUMMARY_STATE_KEY } from './state/ducks/summary';
 import users, { STATE_KEY as USERS_STATE_KEY } from './state/ducks/users';
 import modal, { STATE_KEY as MODAL_STATE_KEY } from './state/ducks/modal';
@@ -122,6 +125,7 @@ export default function configureStore(history) {
       [SUMMARY_STATE_KEY]: summary,
       [PAST_CONTRIBUTIONS_STATE_KEY]: pastContributions,
       [PUBLIC_DATA_STATE_KEY]: publicData,
+      [EXTERNAL_DATA_STATE_KEY]: externalData,
     }),
     composeEnhancers(
       applyMiddleware(
