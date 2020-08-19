@@ -712,5 +712,7 @@ export function getContributionGeoData() {
 }
 
 export function getExternalContributionGeoData() {
-  return get(`${baseUrl()}/external-contributionsgeo`).then(response => response.json());
+  return get(`${baseUrl()}/external-contributionsgeo`).then(response =>
+    response.json()
+  );
 }
