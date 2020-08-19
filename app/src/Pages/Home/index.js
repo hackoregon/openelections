@@ -28,14 +28,17 @@ import {
   summaryData,
   summaryDataByParticipation,
   resetAll,
+  externalPublicDataRequest,
+  getExternalPublicData,
 } from '../../state/ducks/publicData';
 import { showModal } from '../../state/ducks/modal';
 import Home from './Home';
 
 class HomePage extends React.Component {
   componentDidMount() {
-    const { fetchPublicData } = this.props;
+    const { fetchPublicData, fetchExternalPublicData } = this.props;
     fetchPublicData();
+    fetchExternalPublicData();
   }
 
   render() {
@@ -45,16 +48,13 @@ class HomePage extends React.Component {
 
 HomePage.propTypes = {
   fetchPublicData: PropTypes.func,
-  request: PropTypes.shape({
-    isLoading: PropTypes.bool,
-    error: PropTypes.string,
-    data: PropTypes.object,
-  }),
+  fetchExternalPublicData: PropTypes.func,
 };
 
 export default connect(
   state => ({
     request: publicDataRequest(state),
+    externalRequest: externalPublicDataRequest(state),
     allOffices: allOffices(state),
     availableCampaigns: availableCampaigns(state),
     availableCampaignNames: availableCampaignNames(state),
@@ -77,6 +77,7 @@ export default connect(
   dispatch => {
     return {
       fetchPublicData: () => dispatch(getPublicData()),
+      fetchExternalPublicData: () => dispatch(getExternalPublicData()),
       setSelectedOffices: offices => dispatch(setSelectedOffices(offices)),
       setSelectedCampaigns: campaigns =>
         dispatch(setSelectedCampaigns(campaigns)),

@@ -60,6 +60,10 @@ const makeArray = input => {
 // Action Types
 export const actionTypes = {
   GET_PUBLIC_DATA: createActionTypes(STATE_KEY, 'GET_PUBLIC_DATA'),
+  GET_EXTERNAL_PUBLIC_DATA: createActionTypes(
+    STATE_KEY,
+    'GET_EXTERNAL_PUBLIC_DATA'
+  ),
   SET_FILTER: createCustomActionTypes(STATE_KEY, 'SET_FILTER', [
     'OFFICES',
     'CAMPAIGNS',
@@ -76,6 +80,10 @@ export const initialState = {
     type: 'FeatureCollection',
     features: [],
   },
+  externalData: {
+    type: 'FeatureCollection',
+    features: [],
+  },
   filters: {
     campaigns: [],
     offices: [],
@@ -84,7 +92,9 @@ export const initialState = {
     count: false,
   },
   isLoading: false,
+  isExternalLoading: false,
   error: null,
+  externalError: null,
 };
 
 // Reducer
@@ -105,6 +115,19 @@ export default createReducer(initialState, {
   },
   [actionTypes.GET_PUBLIC_DATA.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
+  },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.REQUEST]: state => {
+    return { ...state, isExternalLoading: true };
+  },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.SUCCESS]: (state, action) => {
+    return {
+      ...state,
+      isExternalLoading: false,
+      externalData: action.payload,
+    };
+  },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.FAILURE]: (state, action) => {
+    return { ...state, isExternalLoading: false, externalError: action.error };
   },
   [actionTypes.SET_FILTER.OFFICES]: (state, action) => {
     return {
@@ -152,6 +175,13 @@ export const actionCreators = {
       action(actionTypes.GET_PUBLIC_DATA.SUCCESS, { payload }),
     failure: error => action(actionTypes.GET_PUBLIC_DATA.FAILURE, { error }),
   },
+  getExternalPublicData: {
+    request: () => action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.REQUEST),
+    success: payload =>
+      action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.SUCCESS, { payload }),
+    failure: error =>
+      action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.FAILURE, { error }),
+  },
   setFilter: {
     offices: offices => action(actionTypes.SET_FILTER.OFFICES, { offices }),
     campaigns: campaigns =>
@@ -184,6 +214,18 @@ export function getPublicData() {
   };
 }
 
+export function getExternalPublicData() {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.getExternalPublicData.request());
+    try {
+      const response = await api.getExternalContributionGeoData();
+      dispatch(actionCreators.getExternalPublicData.success(response));
+    } catch (error) {
+      dispatch(actionCreators.getExternalPublicData.failure(error));
+    }
+  };
+}
+
 export const rootState = state => state || {};
 export const allPublicData = createSelector(
   rootState,
@@ -198,11 +240,19 @@ export const publicDataRequest = createSelector(
   }
 );
 
+export const externalPublicDataRequest = createSelector(
+  allPublicData,
+  state => {
+    const { externalData, isExternalLoading, externalError } = state;
+    return { externalData, isExternalLoading, externalError };
+  }
+);
+
 export const publicDataRequestIsLoading = createSelector(
   allPublicData,
   state => {
-    const { isLoading } = state;
-    return isLoading;
+    const { isLoading, isExternalLoading } = state;
+    return !(!isLoading && !isExternalLoading);
   }
 );
 
@@ -213,9 +263,12 @@ export const publicDataFilters = createSelector(
 
 export const publicDataGeojson = createSelector(
   publicDataRequest,
-  req => {
+  externalPublicDataRequest,
+  (req, extReq) => {
     const data = req.data;
     if (!data.features) return data;
+    const externalData = extReq.externalData;
+    if (!externalData.features) return externalData;
 
     // Convert date strings to Date objects
     data.features.forEach(f => {
@@ -224,7 +277,22 @@ export const publicDataGeojson = createSelector(
       }
     });
 
-    return data;
+    // Convert date strings to Date objects and set match to 0
+    externalData.features.forEach(f => {
+      if (f.properties.date) {
+        f.properties.date = new Date(f.properties.date);
+      }
+      f.properties.oaeType = 'not participating';
+      f.properties.matchAmount = null;
+    });
+
+    // Create a shallow copy of the combined Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = data.features
+      .slice()
+      .concat(externalData.features.slice());
+
+    return dataCopy;
   }
 );
 
@@ -373,13 +441,10 @@ export const mapData = createSelector(
   data => data
 );
 
-// TODO: Wheeler
-const participatingCandidate = f =>
-  f.properties.campaignName !== 'Sarah Iannarone';
+const participatingCandidate = f => f.properties.campaignName !== 'Ted Wheeler';
 
-// TODO: Wheeler
 const nonParticipatingCandidate = f =>
-  f.properties.campaignName === 'Sarah Iannarone';
+  f.properties.campaignName === 'Ted Wheeler';
 
 const addParticipatingStatus = (data, status) => {
   return { ...data, participatingStatus: status };
@@ -494,11 +559,11 @@ export const summaryDataByParticipation = createSelector(
     const summaryData = [];
     participatingDonations.length > 0 &&
       summaryData.push(
-        addParticipatingStatus(summarize(participatingDonations), '🌹')
+        addParticipatingStatus(summarize(participatingDonations), '✅')
       );
     nonParticipatingDonations.length > 0 &&
       summaryData.push(
-        addParticipatingStatus(summarize(nonParticipatingDonations), '🥀')
+        addParticipatingStatus(summarize(nonParticipatingDonations), '❌')
       );
     return summaryData;
   }
@@ -742,9 +807,8 @@ export const campaignsTable = createSelector(
       const contribution = campaign.contributions[0];
       campaign.campaignName = contribution.campaignName;
       campaign.officeSought = contribution.officeSought;
-      // TODO: Wheeler
       campaign.participatingStatus =
-        contribution.campaignName === 'Sarah Iannarone' ? '🥀' : '🌹';
+        contribution.campaignName === 'Ted Wheeler' ? '❌' : '✅';
     });
 
     return campaigns;

@@ -188,6 +188,7 @@ const introModalStyle = css`
 
 const Home = ({
   request,
+  externalRequest,
   allOffices,
   availableCampaigns,
   availableCampaignNames,
@@ -221,9 +222,14 @@ const Home = ({
       });
   }, [showModal, cookies.visited]);
 
-  const isLoading = request ? request.isLoading : true;
+  const isPublicLoading = request ? request.isLoading : true;
+  const isExternalLoading = externalRequest
+    ? externalRequest.isExternalLoading
+    : true;
+  const isLoading = !(!isPublicLoading && !isExternalLoading);
   const error = request && request.error;
   const timeLoaded = request && request.timeLoaded;
+  const externalError = externalRequest && externalRequest.externalError;
 
   const bracketField = field => row =>
     `${dollars(row[field].total)} (${row[field].contributions.length})`;
@@ -231,7 +237,7 @@ const Home = ({
   const columns = [
     {
       field: 'participatingStatus',
-      title: 'Status',
+      title: 'Public Financing',
     },
     {
       field: 'campaignName',
@@ -286,7 +292,7 @@ const Home = ({
   const summaryColumns = [
     {
       field: 'participatingStatus',
-      title: 'Status',
+      title: 'Public Financing',
       sorting: false,
     },
     {
@@ -330,6 +336,7 @@ const Home = ({
   return (
     <PageHoc>
       {error && <strong>Oh no! {error}</strong>}
+      {externalError && <strong>Oh no! {externalError}</strong>}
       <div css={filterWrapper}>
         <FormGroup row css={formStyles}>
           <h1>
@@ -570,7 +577,8 @@ const Home = ({
                         {
                           name: `Match`,
                           field: 'matchAmount',
-                          formatField: civicFormat.dollars,
+                          formatField: d =>
+                            d === 'N/A' ? 'N/A' : civicFormat.dollars(d),
                         },
                         {
                           name: `Type`,
@@ -677,6 +685,11 @@ Home.propTypes = {
   campaignsTable: PropTypes.arrayOf(PropTypes.shape({})),
   mapData: PropTypes.shape({}),
   request: PropTypes.shape({
+    isLoading: PropTypes.bool,
+    error: PropTypes.string,
+    data: PropTypes.object,
+  }),
+  externalRequest: PropTypes.shape({
     isLoading: PropTypes.bool,
     error: PropTypes.string,
     data: PropTypes.object,
