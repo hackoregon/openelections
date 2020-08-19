@@ -710,3 +710,9 @@ export function updateMatchForContribution(attrs) {
 export function getContributionGeoData() {
   return get(`${baseUrl()}/contributionsgeo`).then(response => response.json());
 }
+
+export function getExternalContributionGeoData() {
+  return get(`${baseUrl()}/external-contributionsgeo`).then(response =>
+    response.json()
+  );
+}

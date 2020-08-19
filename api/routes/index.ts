@@ -7,6 +7,7 @@ import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as users from '../controller/users';
 import * as campaigns from '../controller/campaigns';
 import * as contributions from '../controller/contributions';
+import * as externalContributions from '../controller/externalContributions';
 import * as activities from '../controller/activities';
 import * as permissions from '../controller/permissions';
 import * as expenditures from '../controller/expenditures';
@@ -1026,6 +1027,39 @@ export const AppRoutes = [
         path: '/contributionsgeo',
         method: 'get',
         action: contributions.getContributionsGeo
+    },
+    /**
+     * @swagger
+     *
+     * /external-contributionsgeo:
+     *   get:
+     *     summary: Get a public feed of external contributions in geojson format
+     *     tags:
+     *       - Contribution
+     *       - External Contribution
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *      - in: query
+     *        name: to
+     *        schema:
+     *          type: string
+     *      - in: query
+     *        name: from
+     *        schema:
+     *          type: string
+     *     responses:
+     *       200:
+     *         description: query
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     */
+    {
+        path: '/external-contributionsgeo',
+        method: 'get',
+        action: externalContributions.getExternalContributionsGeo
     }
 ];
 
