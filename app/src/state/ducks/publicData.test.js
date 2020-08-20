@@ -38,6 +38,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: ['1', '2', '3'],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
@@ -53,6 +54,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
@@ -66,6 +68,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: ['just-the-one'],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
@@ -83,6 +86,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: ['1', '2', '3'],
         startDate: null,
         endDate: null,
@@ -98,6 +102,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
@@ -111,7 +116,26 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: ['just-the-one'],
+        startDate: null,
+        endDate: null,
+        count: false,
+      });
+    });
+  });
+
+  describe('set financing', () => {
+    it('sets the financing filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.FINANCING,
+          financing: 'all',
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        financing: 'all',
+        offices: [],
         startDate: null,
         endDate: null,
         count: false,
@@ -129,6 +153,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: date,
         endDate: null,
@@ -147,6 +172,7 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: date,

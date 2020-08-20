@@ -8,6 +8,7 @@ import {
   availableCampaigns,
   availableCampaignNames,
   selectedOffices,
+  selectedFinancing,
   selectedCampaigns,
   selectedCampaignNames,
   selectedStartDate,
@@ -21,6 +22,7 @@ import {
   aggregatedContributionsByRegion,
   donationSizeByDonationRange,
   setSelectedOffices,
+  setSelectedFinancing,
   setSelectedCampaigns,
   setSelectedStartDate,
   setSelectedEndDate,
@@ -59,6 +61,7 @@ export default connect(
     availableCampaigns: availableCampaigns(state),
     availableCampaignNames: availableCampaignNames(state),
     selectedOffices: selectedOffices(state),
+    selectedFinancing: selectedFinancing(state),
     selectedCampaigns: selectedCampaigns(state),
     selectedCampaignNames: selectedCampaignNames(state),
     selectedStartDate: selectedStartDate(state),
@@ -79,6 +82,8 @@ export default connect(
       fetchPublicData: () => dispatch(getPublicData()),
       fetchExternalPublicData: () => dispatch(getExternalPublicData()),
       setSelectedOffices: offices => dispatch(setSelectedOffices(offices)),
+      setSelectedFinancing: financing =>
+        dispatch(setSelectedFinancing(financing)),
       setSelectedCampaigns: campaigns =>
         dispatch(setSelectedCampaigns(campaigns)),
       setDateRange: (from, to) => {

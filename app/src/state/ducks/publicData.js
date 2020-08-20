@@ -66,6 +66,7 @@ export const actionTypes = {
   ),
   SET_FILTER: createCustomActionTypes(STATE_KEY, 'SET_FILTER', [
     'OFFICES',
+    'FINANCING',
     'CAMPAIGNS',
     'START_DATE',
     'END_DATE',
@@ -85,6 +86,7 @@ export const initialState = {
     features: [],
   },
   filters: {
+    financing: 'public',
     campaigns: [],
     offices: [],
     startDate: null,
@@ -135,6 +137,12 @@ export default createReducer(initialState, {
       filters: { ...state.filters, offices: makeArray(action.offices) },
     };
   },
+  [actionTypes.SET_FILTER.FINANCING]: (state, action) => {
+    return {
+      ...state,
+      filters: { ...state.filters, financing: action.financing },
+    };
+  },
   [actionTypes.SET_FILTER.CAMPAIGNS]: (state, action) => {
     return {
       ...state,
@@ -157,6 +165,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       filters: {
+        financing: 'public',
         campaigns: [],
         offices: [],
         startDate: null,
@@ -184,6 +193,8 @@ export const actionCreators = {
   },
   setFilter: {
     offices: offices => action(actionTypes.SET_FILTER.OFFICES, { offices }),
+    financing: financing =>
+      action(actionTypes.SET_FILTER.FINANCING, { financing }),
     campaigns: campaigns =>
       action(actionTypes.SET_FILTER.CAMPAIGNS, { campaigns }),
     startDate: startDate =>
@@ -195,6 +206,7 @@ export const actionCreators = {
 };
 
 export const setSelectedOffices = actionCreators.setFilter.offices;
+export const setSelectedFinancing = actionCreators.setFilter.financing;
 export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
 export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
@@ -337,6 +349,11 @@ export const selectedOffices = createSelector(
   filters => filters.offices || []
 );
 
+export const selectedFinancing = createSelector(
+  publicDataFilters,
+  filters => filters.financing
+);
+
 export const selectedCampaigns = createSelector(
   publicDataFilters,
   filters => filters.campaigns || []
@@ -381,15 +398,20 @@ export const availableCampaignNames = createSelector(
   campaigns => campaigns.map(campaign => campaign.name)
 );
 
+const participatingCandidate = f => f.properties.campaignName !== 'Ted Wheeler';
+
+const nonParticipatingCandidate = f =>
+  f.properties.campaignName === 'Ted Wheeler';
 // Filtered public dataset (based on above filters)
 
 export const filteredPublicData = createSelector(
   publicDataGeojson,
   selectedOffices,
+  selectedFinancing,
   selectedCampaigns,
   selectedStartDate,
   selectedEndDate,
-  (data, offices, campaigns, start, end) => {
+  (data, offices, financing, campaigns, start, end) => {
     const campaignIds = campaigns.map(c => +c.id);
     // Create a shallow copy of the underlying Geojson
     const dataCopy = { ...data };
@@ -406,6 +428,15 @@ export const filteredPublicData = createSelector(
       dataCopy.features = dataCopy.features.filter(f =>
         offices.includes(f.properties.officeSought)
       );
+    }
+
+    if (financing !== 'all') {
+      if (financing === 'public') {
+        dataCopy.features = dataCopy.features.filter(participatingCandidate);
+      }
+      if (financing === 'not public') {
+        dataCopy.features = dataCopy.features.filter(nonParticipatingCandidate);
+      }
     }
 
     if (start && end) {
@@ -440,11 +471,6 @@ export const mapData = createSelector(
   filteredPublicData,
   data => data
 );
-
-const participatingCandidate = f => f.properties.campaignName !== 'Ted Wheeler';
-
-const nonParticipatingCandidate = f =>
-  f.properties.campaignName === 'Ted Wheeler';
 
 const addParticipatingStatus = (data, status) => {
   return { ...data, participatingStatus: status };

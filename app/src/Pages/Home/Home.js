@@ -195,10 +195,12 @@ const Home = ({
   aggregatedContributorTypes,
   aggregatedDonationSize,
   aggregatedContributionsByRegion,
+  selectedFinancing,
   selectedOffices,
   selectedStartDate,
   selectedEndDate,
   setSelectedOffices,
+  setSelectedFinancing,
   selectedCampaigns,
   selectedCampaignNames,
   setSelectedCampaigns,
@@ -345,7 +347,24 @@ const Home = ({
       <div css={filterWrapper}>
         <FormGroup row css={formStyles}>
           <h1>
-            Campaign contributions for
+            <FormControl className="form-control">
+              <Select
+                value={selectedFinancing}
+                onChange={event => setSelectedFinancing(event.target.value)}
+              >
+                <MenuItem value="public" css={formOption}>
+                  Publicly financed
+                </MenuItem>
+                <MenuItem value="not public" css={formOption}>
+                  Not publicly financed
+                </MenuItem>
+                <MenuItem value="all" css={formOption}>
+                  All
+                </MenuItem>
+              </Select>
+              <FormHelperText>View by amount or count</FormHelperText>
+            </FormControl>
+            campaign contributions for
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
                 {`${
@@ -711,11 +730,13 @@ Home.propTypes = {
   selectedCount: PropTypes.bool,
   selectedEndDate: PropTypes.shape({}),
   selectedOffices: PropTypes.arrayOf(PropTypes.string),
+  selectedFinancing: PropTypes.string,
   selectedStartDate: PropTypes.shape({}),
   setDateRange: PropTypes.func,
   setSelectedCampaigns: PropTypes.func,
   setSelectedCount: PropTypes.func,
   setSelectedOffices: PropTypes.func,
+  setSelectedFinancing: PropTypes.func,
   showModal: PropTypes.func,
   summaryData: PropTypes.shape({}),
   summaryDataByParticipation: PropTypes.arrayOf(PropTypes.shape({})),
