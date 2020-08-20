@@ -40,6 +40,8 @@ import publicData, {
   selectedCount,
   setSelectedCount,
   publicDataRequestIsLoading,
+  setSelectedFinancing,
+  selectedFinancing,
 } from './state/ducks/publicData';
 import externalData, {
   STATE_KEY as EXTERNAL_DATA_STATE_KEY,
@@ -51,6 +53,11 @@ import * as api from './api';
 import * as schema from './api/schema';
 
 const params = {
+  financing: {
+    selector: selectedFinancing,
+    action: setSelectedFinancing,
+    defaultValue: 'public',
+  },
   count: {
     selector: selectedCount,
     action: setSelectedCount,
