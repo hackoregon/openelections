@@ -506,9 +506,11 @@ const summarize = donations => {
 
   const nonOAEContributions = [];
   const markedDonors = {};
+  const markedCampaigns = {};
   let donorsCount = 0;
   let totalAmountContributed = 0;
   let totalAmountMatched = 0;
+  let campaignsCount = 0;
 
   // Only iterate over the array once for better performance
   donations.forEach(d => {
@@ -516,6 +518,11 @@ const summarize = donations => {
     if (!markedDonors[d.contributorName]) {
       donorsCount += 1;
       markedDonors[d.contributorName] = true;
+    }
+
+    if (!markedCampaigns[d.campaignName]) {
+      campaignsCount += 1;
+      markedCampaigns[d.campaignName] = true;
     }
 
     // Guard against bad data
@@ -532,6 +539,7 @@ const summarize = donations => {
   });
 
   return {
+    campaignsCount,
     donationsCount,
     donorsCount,
     totalAmountContributed,
@@ -541,6 +549,7 @@ const summarize = donations => {
 };
 
 // Done: summary data includes aggregations and averages
+// - number of campaigns
 // - number of donors
 // - number of donations
 // - median contribution size (exclude OAE type public match)

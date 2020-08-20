@@ -587,15 +587,20 @@ describe('Selectors', () => {
   });
 
   describe('summaryData', () => {
-    const summaryPoint = (contributorName, amount, matchAmount, oaeType) =>
-      point({ contributorName, amount, matchAmount, oaeType });
+    const summaryPoint = (
+      campaignName,
+      contributorName,
+      amount,
+      matchAmount,
+      oaeType
+    ) => point({ campaignName, contributorName, amount, matchAmount, oaeType });
 
     const points = [
-      summaryPoint('Abc', 10, null, 'allowable'),
-      summaryPoint('Abc', 20, 120, 'matchable'),
-      summaryPoint('Def', 30, 150, 'matchable'),
-      summaryPoint('Ghi', 100, null, 'public_matching_contribution'),
-      summaryPoint('Jkl', 5, 30, 'matchable'),
+      summaryPoint('Zyx', 'Abc', 10, null, 'allowable'),
+      summaryPoint('Zyx', 'Abc', 20, 120, 'matchable'),
+      summaryPoint('Yxw', 'Def', 30, 150, 'matchable'),
+      summaryPoint('Xwv', 'Ghi', 100, null, 'public_matching_contribution'),
+      summaryPoint('Wvu', 'Jkl', 5, 30, 'matchable'),
     ];
 
     const [state] = makeData(points);
@@ -604,6 +609,10 @@ describe('Selectors', () => {
       expect(publicData.summaryData(state).donationsCount).toEqual(
         points.length - 1
       );
+    });
+
+    it('returns the total number of campaigns (uniqued by campaign name, excluding public matching contribution)', () => {
+      expect(publicData.summaryData(state).campaignsCount).toEqual(3);
     });
 
     it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution)', () => {
@@ -1085,6 +1094,7 @@ describe('Selectors', () => {
       {
         campaignId: '1',
         campaignName: 'One',
+        campaignsCount: 1,
         officeSought: 'Mayor',
         participatingStatus: '✅',
         donationsCount: 4,
@@ -1117,6 +1127,7 @@ describe('Selectors', () => {
       {
         campaignId: '2',
         campaignName: 'Two',
+        campaignsCount: 1,
         officeSought: 'Mayor',
         participatingStatus: '✅',
         donationsCount: 6,
@@ -1149,6 +1160,7 @@ describe('Selectors', () => {
       {
         campaignId: '3',
         campaignName: 'Three',
+        campaignsCount: 1,
         officeSought: 'Mayor',
         participatingStatus: '✅',
         donationsCount: 4,
@@ -1181,6 +1193,7 @@ describe('Selectors', () => {
       {
         campaignId: '4',
         campaignName: 'Four',
+        campaignsCount: 1,
         officeSought: 'Mayor',
         participatingStatus: '✅',
         donationsCount: 3,

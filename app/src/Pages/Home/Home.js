@@ -296,6 +296,11 @@ const Home = ({
       sorting: false,
     },
     {
+      field: 'campaignsCount',
+      title: 'Campaigns',
+      sorting: false,
+    },
+    {
       field: 'donationsCount',
       title: 'Contributions',
       sorting: false,
