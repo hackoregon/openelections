@@ -38,6 +38,7 @@ import MadeByFooter from './MadeByFooter';
 
 const { dollars } = civicFormat;
 const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#23552c' };
+const alternateScatterplotColor = { rgba: [85, 38, 35, 255], hex: '#552623' };
 const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const filterWrapper = css`
@@ -142,6 +143,10 @@ const chartContainer = css`
 
 const scatterplotFill = css`
   fill: ${scatterplotColor.hex};
+`;
+
+const alternateScatterplotFill = css`
+  fill: ${alternateScatterplotColor.hex};
 `;
 
 const mapHeight = css`
@@ -335,7 +340,10 @@ const Home = ({
   const sanitize = features => features.filter(f => f.geometry.coordinates);
 
   const getPosition = f => f.geometry.coordinates;
-  const getFillColor = () => scatterplotColor.rgba;
+  const getFillColor = f =>
+    f.properties.campaignName === 'Ted Wheeler'
+      ? alternateScatterplotColor.rgba
+      : scatterplotColor.rgba;
   const colorScale = scaleQuantize()
     .domain([0, 1])
     .range(screenGridColorRange);
@@ -554,11 +562,56 @@ const Home = ({
                       `}
                     >
                       <svg viewBox="0 0 50 10" width="50px">
-                        <circle cx="5" cy="5" r="1" css={scatterplotFill} />
-                        <circle cx="15" cy="5" r="2" css={scatterplotFill} />
-                        <circle cx="25" cy="5" r="3" css={scatterplotFill} />
-                        <circle cx="35" cy="5" r="4" css={scatterplotFill} />
-                        <circle cx="45" cy="5" r="5" css={scatterplotFill} />
+                        <circle
+                          cx="5"
+                          cy="5"
+                          r="1"
+                          css={
+                            selectedFinancing !== 'not public'
+                              ? scatterplotFill
+                              : alternateScatterplotFill
+                          }
+                        />
+                        <circle
+                          cx="15"
+                          cy="5"
+                          r="2"
+                          css={
+                            selectedFinancing !== 'not public'
+                              ? scatterplotFill
+                              : alternateScatterplotFill
+                          }
+                        />
+                        <circle
+                          cx="25"
+                          cy="5"
+                          r="3"
+                          css={
+                            selectedFinancing !== 'not public'
+                              ? scatterplotFill
+                              : alternateScatterplotFill
+                          }
+                        />
+                        <circle
+                          cx="35"
+                          cy="5"
+                          r="4"
+                          css={
+                            selectedFinancing !== 'not public'
+                              ? scatterplotFill
+                              : alternateScatterplotFill
+                          }
+                        />
+                        <circle
+                          cx="45"
+                          cy="5"
+                          r="5"
+                          css={
+                            selectedFinancing !== 'not public'
+                              ? scatterplotFill
+                              : alternateScatterplotFill
+                          }
+                        />
                       </svg>
                       <span
                         css={css`

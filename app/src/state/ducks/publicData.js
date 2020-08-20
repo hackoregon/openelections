@@ -398,6 +398,7 @@ export const availableCampaignNames = createSelector(
   campaigns => campaigns.map(campaign => campaign.name)
 );
 
+// The only non-participating candidate this election cycle is Ted Wheeler
 const participatingCandidate = f => f.properties.campaignName !== 'Ted Wheeler';
 
 const nonParticipatingCandidate = f =>
