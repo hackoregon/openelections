@@ -48,7 +48,7 @@ export async function addCampaign(request: IRequest, response: Response, next: F
         const campaign = await createCampaignAsync(createCampaignDto);
         return response.status(201).send(campaign);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({ message: err.message });
@@ -66,7 +66,7 @@ export async function updateCampaignName(request: IRequest, response: Response, 
         const campaign = await updateCampaignNameAsync(updateCampaignNameDto);
         return response.status(201).send(campaign);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({ message: err.message });
@@ -91,7 +91,7 @@ export async function getCampaigns(request: IRequest, response: Response, next: 
         const campaigns = await getCampaignsAsync(getCampaignsDto);
         return response.status(200).json(campaigns);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({ message: err.message });

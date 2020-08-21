@@ -53,7 +53,7 @@ export async function invite(request: IRequest, response: Response, next: Functi
             throw new Error('No government or campaign id present');
         }
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -99,7 +99,7 @@ export async function getUsers(request: IRequest, response: Response, next: Func
         const users = await retrieveUserPermissionsAsync(body);
         return response.status(200).json(users);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -137,7 +137,7 @@ export async function updatePassword(request: IRequest, response: Response, next
         await updateUserPasswordAsync(currentUserId, request.body.currentPassword, request.body.newPassword);
         return response.status(204).send({});
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
