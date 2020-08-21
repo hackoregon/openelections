@@ -6,6 +6,7 @@ import { setupRoutes } from './routes';
 import db from './models/db';
 import bugsnag from '@bugsnag/js';
 import bugsnagExpress from '@bugsnag/plugin-express';
+const pack = require('./package.json');
 /***
     corsOptions set to return all Access-Control-Allow-Origin headers with requesting domain
     Solves for credentialed cross domain request that will not accept * wildcard
@@ -24,7 +25,11 @@ const corsOptions = {
     const app: express.Express = express();
 
     if (process.env.NODE_ENV === 'production') {
-        const bugsnagClient = bugsnag(process.env.BUG_SNAG_API_KEY);
+        const bugsnagClient = bugsnag({
+            apiKey: process.env.BUG_SNAG_API_KEY,
+            releaseStage: process.env.APP_ENV,
+            appVersion: pack.version
+        });
         bugsnagClient.use(bugsnagExpress);
         const middleware = bugsnagClient.getPlugin('express');
         app.use(middleware.requestHandler);
