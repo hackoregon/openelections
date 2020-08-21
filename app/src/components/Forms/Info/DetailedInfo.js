@@ -37,7 +37,7 @@ const DetailedInfo = () => (
       </p>
       <p>
         This real-time dashboard shows contribution sources for participating
-        candidates.
+        and non-participating candidates.
       </p>
       <Collapsable description="Open and Accountable Elections">
         <Collapsable.Section hidden>

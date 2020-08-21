@@ -180,6 +180,29 @@ describe('Reducer', () => {
       });
     });
   });
+
+  describe('set custom', () => {
+    it('sets a custom filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.CUSTOM,
+          filters: {
+            financing: 'all',
+            count: true,
+            offices: ['1', '2', '3'],
+            campaigns: ['hazel'],
+          },
+        }).filters
+      ).toEqual({
+        campaigns: ['hazel'],
+        financing: 'all',
+        offices: ['1', '2', '3'],
+        startDate: null,
+        endDate: null,
+        count: true,
+      });
+    });
+  });
 });
 
 describe('Selectors', () => {

@@ -30,6 +30,7 @@ import {
   summaryData,
   summaryDataByParticipation,
   resetAll,
+  setCustomFilters,
   externalPublicDataRequest,
   getExternalPublicData,
 } from '../../state/ducks/publicData';
@@ -92,6 +93,7 @@ export default connect(
       },
       setSelectedCount: count => dispatch(setSelectedCount(count)),
       resetAll: () => dispatch(resetAll()),
+      setCustomFilters: filters => dispatch(setCustomFilters(filters)),
       showModal: payload => {
         dispatch(showModal(payload));
       },

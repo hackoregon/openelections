@@ -49,10 +49,11 @@ const filterWrapper = css`
   grid-template-rows: auto 1fr;
   justify-items: start;
   margin: 0 auto;
-  padding: 0 1em;
+  padding: 1em 1em;
   border: 1px solid rgb(224, 224, 224);
   background-color: #f9f9f9;
   @media ${mediaQueryRanges.mediumAndUp} {
+    padding: 0 1em;
     position: sticky;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto;
@@ -77,11 +78,25 @@ const formStyles = css`
     vertical-align: baseline;
   }
 
+  .MuiInputBase-input {
+    padding-left: 6px;
+  }
+
+  .MuiInputBase-root {
+    background: #d3d3d3;
+  }
+
   .MuiInputBase-root,
   .MuiFormLabel-root {
     font-size: 1.2rem;
     color: #000;
   }
+`;
+
+const formText = css`
+  font-size: 0.9em;
+  vertical-align: baseline;
+  line-height: 1;
 `;
 
 const dataLoadedStyle = css`
@@ -160,11 +175,11 @@ const buttonStyles = css`
 
 const buttonWrapper = css`
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 1em;
   @media screen and (max-width: 600px) {
-    margin-top: 1em;
-    margin-bottom: 1em;
     align-content: center;
   }
 `;
@@ -218,6 +233,7 @@ const Home = ({
   summaryDataByParticipation,
   showModal,
   resetAll,
+  setCustomFilters,
 }) => {
   const [cookies, setCookie] = useCookies('visited');
 
@@ -355,24 +371,7 @@ const Home = ({
       <div css={filterWrapper}>
         <FormGroup row css={formStyles}>
           <h1>
-            <FormControl className="form-control">
-              <Select
-                value={selectedFinancing}
-                onChange={event => setSelectedFinancing(event.target.value)}
-              >
-                <MenuItem value="public" css={formOption}>
-                  Publicly financed
-                </MenuItem>
-                <MenuItem value="not public" css={formOption}>
-                  Not publicly financed
-                </MenuItem>
-                <MenuItem value="all" css={formOption}>
-                  All
-                </MenuItem>
-              </Select>
-              <FormHelperText>View by amount or count</FormHelperText>
-            </FormControl>
-            campaign contributions for
+            <span css={formText}>Campaign contributions for </span>
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
                 {`${
@@ -381,6 +380,7 @@ const Home = ({
               </InputLabel>
               <Select
                 multiple
+                displayEmpty
                 labelid="filter-offices"
                 value={selectedOffices}
                 onChange={event => {
@@ -395,11 +395,16 @@ const Home = ({
                   setSelectedCampaigns(selectedCampaignsMatchingOffices);
                 }}
                 input={<Input />}
-                renderValue={selected => selected.join(', ')}
+                renderValue={selected =>
+                  selected && selected.length > 0
+                    ? selected.map(office => office).join(', ')
+                    : 'all offices'
+                }
               >
                 {allOffices.map(name => (
                   <MenuItem key={name} value={name} css={formOption}>
                     <Checkbox
+                      color="primary"
                       checked={
                         selectedOffices && selectedOffices.indexOf(name) > -1
                       }
@@ -408,9 +413,9 @@ const Home = ({
                   </MenuItem>
                 ))}
               </Select>
-              <FormHelperText>Limit by position</FormHelperText>
+              <FormHelperText>Limit by office</FormHelperText>
             </FormControl>
-            ,
+            <span css={formText}>,</span>
             <FormControl className="form-control">
               <InputLabel id="filter-campaigns">
                 {`${
@@ -418,10 +423,11 @@ const Home = ({
                     ? ''
                     : 'all '
                 }`}
-                campaigns
+                candidates
               </InputLabel>
               <Select
                 multiple
+                displayEmpty
                 labelid="filter-campaigns"
                 value={selectedCampaignNames}
                 onChange={event =>
@@ -435,12 +441,15 @@ const Home = ({
                 }
                 input={<Input />}
                 renderValue={selected =>
-                  selected.map(campaign => campaign).join(', ')
+                  selected && selected.length > 0
+                    ? selected.map(campaign => campaign).join(', ')
+                    : 'all candidates'
                 }
               >
                 {availableCampaignNames.map(campaign => (
                   <MenuItem key={campaign} value={campaign} css={formOption}>
                     <Checkbox
+                      color="primary"
                       checked={
                         selectedCampaignNames &&
                         selectedCampaignNames.indexOf(campaign) > -1
@@ -452,6 +461,24 @@ const Home = ({
               </Select>
               <FormHelperText>Limit by candidate</FormHelperText>
             </FormControl>
+            <span css={formText}>using</span>
+            <FormControl className="form-control">
+              <Select
+                value={selectedFinancing}
+                onChange={event => setSelectedFinancing(event.target.value)}
+              >
+                <MenuItem value="public" css={formOption}>
+                  public financing
+                </MenuItem>
+                <MenuItem value="not public" css={formOption}>
+                  private financing
+                </MenuItem>
+                <MenuItem value="all" css={formOption}>
+                  any financing
+                </MenuItem>
+              </Select>
+              <FormHelperText>Open and Accountable Elections</FormHelperText>
+            </FormControl>
             <FormControl className="form-control">
               <PublicDateRangeField
                 id="filter-date"
@@ -461,7 +488,7 @@ const Home = ({
               />
               <FormHelperText>Limit by date range</FormHelperText>
             </FormControl>
-            by
+            <span css={formText}>by</span>
             <FormControl className="form-control">
               <Select
                 value={selectedCount ? 'Count' : 'Amount'}
@@ -478,15 +505,116 @@ const Home = ({
               </Select>
               <FormHelperText>View by amount or count</FormHelperText>
             </FormControl>
-            <FormControl className="form-control">
+            {/* <FormControl className="form-control">
               <div css={buttonStyles}>
                 <Button css={buttonStyles} onClick={() => resetAll()}>
                   <Clear />
                 </Button>
               </div>
               <FormHelperText>Clear all</FormHelperText>
-            </FormControl>
+            </FormControl> */}
           </h1>
+          <div css={buttonWrapper}>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    financing: 'all',
+                  })
+                }
+              >
+                All
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() => {
+                  const monthAgo = new Date(timeLoaded);
+                  monthAgo.setMonth(timeLoaded.getMonth() - 1);
+                  setCustomFilters({
+                    financing: 'all',
+                    startDate: monthAgo,
+                    endDate: timeLoaded,
+                  });
+                }}
+              >
+                Last Month
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    campaigns: [
+                      availableCampaigns.find(
+                        campaign => campaign.name === 'Sarah Iannarone'
+                      ),
+                    ],
+                  })
+                }
+              >
+                Sarah Iannarone
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    campaigns: [
+                      availableCampaigns.find(
+                        campaign => campaign.name === 'Ted Wheeler'
+                      ),
+                    ],
+                    financing: 'all',
+                  })
+                }
+              >
+                Ted Wheeler
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    campaigns: [
+                      availableCampaigns.find(
+                        campaign => campaign.name === 'Chloe Eudaly'
+                      ),
+                    ],
+                  })
+                }
+              >
+                Chloe Eudaly
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    campaigns: [
+                      availableCampaigns.find(
+                        campaign => campaign.name === 'Mingus Mapps'
+                      ),
+                    ],
+                  })
+                }
+              >
+                Mingus Mapps
+              </Button>
+            </div>
+          </div>
           {!isLoading && (
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
@@ -496,21 +624,6 @@ const Home = ({
             </div>
           )}
         </FormGroup>
-        <div css={buttonWrapper}>
-          <div css={buttonStyles}>
-            <Button
-              css={buttonStyles}
-              onClick={() => {
-                showModal({
-                  component: 'Info',
-                  props: {},
-                });
-              }}
-            >
-              Info
-            </Button>
-          </div>
-        </div>
       </div>
       {!!summaryDataByParticipation && (
         <Table
@@ -772,6 +885,7 @@ Home.propTypes = {
     data: PropTypes.object,
   }),
   resetAll: PropTypes.func,
+  setCustomFilters: PropTypes.func,
   selectedCampaignNames: PropTypes.arrayOf(PropTypes.string),
   selectedCampaigns: PropTypes.arrayOf(
     PropTypes.shape({

@@ -72,6 +72,7 @@ export const actionTypes = {
     'END_DATE',
     'COUNT',
     'RESET_ALL',
+    'CUSTOM',
   ]),
 };
 
@@ -174,6 +175,20 @@ export default createReducer(initialState, {
       },
     };
   },
+  [actionTypes.SET_FILTER.CUSTOM]: (state, action) => {
+    return {
+      ...state,
+      filters: {
+        financing: 'public',
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+        ...action.filters,
+      },
+    };
+  },
 });
 
 // Action Creators
@@ -202,6 +217,7 @@ export const actionCreators = {
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
     count: count => action(actionTypes.SET_FILTER.COUNT, { count }),
     resetAll: () => action(actionTypes.SET_FILTER.RESET_ALL),
+    custom: filters => action(actionTypes.SET_FILTER.CUSTOM, { filters }),
   },
 };
 
@@ -212,6 +228,7 @@ export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
 export const setSelectedCount = actionCreators.setFilter.count;
 export const resetAll = actionCreators.setFilter.resetAll;
+export const setCustomFilters = actionCreators.setFilter.custom;
 
 // Side Effects, e.g. thunks
 export function getPublicData() {
