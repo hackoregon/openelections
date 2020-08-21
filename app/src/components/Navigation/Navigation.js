@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 /** @jsx jsx */
@@ -17,13 +17,25 @@ const styles = css`
   }
 `;
 
-const Navigation = ({ isLoggedIn, logOut }) => {
+const Navigation = ({ isLoggedIn, logOut, showModal }) => {
   const logOutClick = event => {
     event.preventDefault();
     logOut();
   };
   return (
     <nav css={styles}>
+      {!isLoggedIn && (
+        <NavLink
+          onClick={() => {
+            showModal({
+              component: 'Info',
+              props: {},
+            });
+          }}
+        >
+          Info
+        </NavLink>
+      )}
       {!isLoggedIn && <NavLink to="/sign-in">Sign in</NavLink>}
       {isLoggedIn && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -38,6 +50,7 @@ const Navigation = ({ isLoggedIn, logOut }) => {
 export default Navigation;
 
 Navigation.propTypes = {
+  showModal: PropTypes.func,
   isLoggedIn: PropTypes.bool,
   logOut: PropTypes.func,
 };
