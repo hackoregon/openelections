@@ -14,6 +14,7 @@ import {
   selectedStartDate,
   selectedEndDate,
   selectedCount,
+  selectedCompare,
   filteredPublicData,
   campaignsTable,
   mapData,
@@ -27,6 +28,7 @@ import {
   setSelectedStartDate,
   setSelectedEndDate,
   setSelectedCount,
+  setSelectedCompare,
   summaryData,
   summaryDataByParticipation,
   resetAll,
@@ -68,6 +70,7 @@ export default connect(
     selectedStartDate: selectedStartDate(state),
     selectedEndDate: selectedEndDate(state),
     selectedCount: selectedCount(state),
+    selectedCompare: selectedCompare(state),
     filteredData: filteredPublicData(state),
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
@@ -92,6 +95,7 @@ export default connect(
         dispatch(setSelectedEndDate(to));
       },
       setSelectedCount: count => dispatch(setSelectedCount(count)),
+      setSelectedCompare: compare => dispatch(setSelectedCompare(compare)),
       resetAll: () => dispatch(resetAll()),
       setCustomFilters: filters => dispatch(setCustomFilters(filters)),
       showModal: payload => {

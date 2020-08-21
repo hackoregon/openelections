@@ -42,6 +42,8 @@ import publicData, {
   publicDataRequestIsLoading,
   setSelectedFinancing,
   selectedFinancing,
+  selectedCompare,
+  setSelectedCompare,
 } from './state/ducks/publicData';
 import externalData, {
   STATE_KEY as EXTERNAL_DATA_STATE_KEY,
@@ -61,6 +63,12 @@ const params = {
   count: {
     selector: selectedCount,
     action: setSelectedCount,
+    defaultValue: false,
+    stringToValue: value => value === 'true',
+  },
+  compare: {
+    selector: selectedCompare,
+    action: setSelectedCompare,
     defaultValue: false,
     stringToValue: value => value === 'true',
   },

@@ -43,6 +43,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
 
@@ -59,6 +60,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
 
       expect(
@@ -73,6 +75,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -91,6 +94,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
 
@@ -107,6 +111,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
 
       expect(
@@ -121,6 +126,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -139,6 +145,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -158,6 +165,7 @@ describe('Reducer', () => {
         startDate: date,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -177,6 +185,26 @@ describe('Reducer', () => {
         startDate: null,
         endDate: date,
         count: false,
+        compare: false,
+      });
+    });
+  });
+
+  describe('set compare', () => {
+    it('sets the compare filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.COMPARE,
+          compare: true,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        financing: 'public',
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+        compare: true,
       });
     });
   });
@@ -191,6 +219,7 @@ describe('Reducer', () => {
             count: true,
             offices: ['1', '2', '3'],
             campaigns: ['hazel'],
+            compare: true,
           },
         }).filters
       ).toEqual({
@@ -200,6 +229,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: true,
+        compare: true,
       });
     });
   });

@@ -128,6 +128,15 @@ const visualizationContainer = css`
   }
 `;
 
+const compareVisualizationContainer = css`
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  @media ${mediaQueryRanges.mediumAndUp} {
+    flex-direction: row;
+  }
+`;
+
 const legendContainer = css`
   width: 100%;
   display: flex;
@@ -154,6 +163,17 @@ const chartContainer = css`
   flex-direction: column;
   justify-content: space-around;
   margin: 2.5em 0.5em 0em 0.5em;
+`;
+
+const compareChartContainer = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 2.5em 0.5em 0em 0.5em;
+`;
+
+const center = css`
+  margin: 0 auto;
 `;
 
 const scatterplotFill = css`
@@ -227,6 +247,8 @@ const Home = ({
   setDateRange,
   selectedCount,
   setSelectedCount,
+  selectedCompare,
+  setSelectedCompare,
   campaignsTable,
   mapData,
   summaryData,
@@ -551,6 +573,44 @@ const Home = ({
                 css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign =>
+                        campaign.name === 'Sarah Iannarone' ||
+                        campaign.name === 'Ted Wheeler'
+                    ),
+                    compare: true,
+                  })
+                }
+              >
+                Runoff: Mayor
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign =>
+                        campaign.name === 'Chloe Eudaly' ||
+                        campaign.name === 'Mingus Mapps'
+                    ),
+                    compare: true,
+                  })
+                }
+              >
+                Runoff: Commissioner 4
+              </Button>
+            </div>
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                css={buttonStyles}
+                onClick={() =>
+                  setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
                         campaign => campaign.name === 'Sarah Iannarone'
@@ -625,7 +685,7 @@ const Home = ({
           )}
         </FormGroup>
       </div>
-      {!!summaryDataByParticipation && (
+      {!!summaryDataByParticipation && !selectedCompare && (
         <Table
           isLoading={isLoading}
           title="Campaigns"
@@ -643,181 +703,210 @@ const Home = ({
           components={{ Toolbar: () => <div /> }}
         />
       )}
-      <div css={visualizationContainer}>
-        {!!mapData.features.length && (
-          <>
-            <div css={mapHeight}>
-              <div css={legendContainer}>
-                {selectedCount && (
-                  <legend css={legendStyle}>
-                    <MapLegend
-                      colorScale={colorScale}
-                      formatValues={f =>
-                        f === 0 ? `Fewer Contributions` : `More Contributions`
-                      }
-                      label=""
-                      vertical={false}
-                    />
-                  </legend>
-                )}
-                {!selectedCount && (
-                  <legend css={[legendStyle, legendMargin]}>
-                    <span
-                      css={css`
-                        margin-left: 5px;
-                      `}
-                    >
-                      Smaller Contributions
-                    </span>
-                    <span
-                      css={css`
-                        margin-left: 5px;
-                      `}
-                    >
-                      <svg viewBox="0 0 50 10" width="50px">
-                        <circle
-                          cx="5"
-                          cy="5"
-                          r="1"
-                          css={
-                            selectedFinancing !== 'not public'
-                              ? scatterplotFill
-                              : alternateScatterplotFill
-                          }
-                        />
-                        <circle
-                          cx="15"
-                          cy="5"
-                          r="2"
-                          css={
-                            selectedFinancing !== 'not public'
-                              ? scatterplotFill
-                              : alternateScatterplotFill
-                          }
-                        />
-                        <circle
-                          cx="25"
-                          cy="5"
-                          r="3"
-                          css={
-                            selectedFinancing !== 'not public'
-                              ? scatterplotFill
-                              : alternateScatterplotFill
-                          }
-                        />
-                        <circle
-                          cx="35"
-                          cy="5"
-                          r="4"
-                          css={
-                            selectedFinancing !== 'not public'
-                              ? scatterplotFill
-                              : alternateScatterplotFill
-                          }
-                        />
-                        <circle
-                          cx="45"
-                          cy="5"
-                          r="5"
-                          css={
-                            selectedFinancing !== 'not public'
-                              ? scatterplotFill
-                              : alternateScatterplotFill
-                          }
-                        />
-                      </svg>
+      {!selectedCompare && (
+        <div css={visualizationContainer}>
+          {!!mapData.features.length && (
+            <>
+              <div css={mapHeight}>
+                <div css={legendContainer}>
+                  {selectedCount && (
+                    <legend css={legendStyle}>
+                      <MapLegend
+                        colorScale={colorScale}
+                        formatValues={f =>
+                          f === 0 ? `Fewer Contributions` : `More Contributions`
+                        }
+                        label=""
+                        vertical={false}
+                      />
+                    </legend>
+                  )}
+                  {!selectedCount && (
+                    <legend css={[legendStyle, legendMargin]}>
                       <span
                         css={css`
                           margin-left: 5px;
                         `}
                       >
-                        Larger Contributions
+                        Smaller Contributions
                       </span>
-                    </span>
-                  </legend>
-                )}
+                      <span
+                        css={css`
+                          margin-left: 5px;
+                        `}
+                      >
+                        <svg viewBox="0 0 50 10" width="50px">
+                          <circle
+                            cx="5"
+                            cy="5"
+                            r="1"
+                            css={
+                              selectedFinancing !== 'not public'
+                                ? scatterplotFill
+                                : alternateScatterplotFill
+                            }
+                          />
+                          <circle
+                            cx="15"
+                            cy="5"
+                            r="2"
+                            css={
+                              selectedFinancing !== 'not public'
+                                ? scatterplotFill
+                                : alternateScatterplotFill
+                            }
+                          />
+                          <circle
+                            cx="25"
+                            cy="5"
+                            r="3"
+                            css={
+                              selectedFinancing !== 'not public'
+                                ? scatterplotFill
+                                : alternateScatterplotFill
+                            }
+                          />
+                          <circle
+                            cx="35"
+                            cy="5"
+                            r="4"
+                            css={
+                              selectedFinancing !== 'not public'
+                                ? scatterplotFill
+                                : alternateScatterplotFill
+                            }
+                          />
+                          <circle
+                            cx="45"
+                            cy="5"
+                            r="5"
+                            css={
+                              selectedFinancing !== 'not public'
+                                ? scatterplotFill
+                                : alternateScatterplotFill
+                            }
+                          />
+                        </svg>
+                        <span
+                          css={css`
+                            margin-left: 5px;
+                          `}
+                        >
+                          Larger Contributions
+                        </span>
+                      </span>
+                    </legend>
+                  )}
+                </div>
+                <BaseMap
+                  updateViewport={false}
+                  initialZoom={11}
+                  useContainerHeight
+                >
+                  {!selectedCount ? (
+                    <ScatterPlotMap
+                      data={sanitize(mapData.features)}
+                      getPosition={getPosition}
+                      opacity={0.1}
+                      getFillColor={getFillColor}
+                      radiusScale={5}
+                      getRadius={d => Math.sqrt(d.properties.amount)}
+                      autoHighlight
+                    >
+                      <MapTooltip
+                        tooltipDataArray={[
+                          {
+                            name: `Campaign`,
+                            field: 'campaignName',
+                            formatField: civicFormat.titleCase,
+                          },
+                          {
+                            name: `Contribution`,
+                            field: 'amount',
+                            formatField: civicFormat.dollars,
+                          },
+                          {
+                            name: `Match`,
+                            field: 'matchAmount',
+                            formatField: d =>
+                              d === 'N/A' ? 'N/A' : civicFormat.dollars(d),
+                          },
+                          {
+                            name: `Type`,
+                            field: 'contributionSubType',
+                            formatField: civicFormat.titleCase,
+                          },
+                        ]}
+                      />
+                    </ScatterPlotMap>
+                  ) : (
+                    <ScreenGridMap
+                      data={sanitize(mapData.features)}
+                      getPosition={getPosition}
+                      opacity={1}
+                      colorRange={screenGridColorRange}
+                      cellSizePixels={15}
+                    >
+                      <MapTooltip
+                        tooltipDataArray={[
+                          {
+                            name: `Number of contributions`,
+                            field: 'cellCount',
+                            formatField: civicFormat.numeric,
+                          },
+                        ]}
+                        isScreenGrid
+                        wide
+                      />
+                    </ScreenGridMap>
+                  )}
+                </BaseMap>
               </div>
-              <BaseMap
-                updateViewport={false}
-                initialZoom={11}
-                useContainerHeight
-              >
-                {!selectedCount ? (
-                  <ScatterPlotMap
-                    data={sanitize(mapData.features)}
-                    getPosition={getPosition}
-                    opacity={0.1}
-                    getFillColor={getFillColor}
-                    radiusScale={5}
-                    getRadius={d => Math.sqrt(d.properties.amount)}
-                    autoHighlight
-                  >
-                    <MapTooltip
-                      tooltipDataArray={[
-                        {
-                          name: `Campaign`,
-                          field: 'campaignName',
-                          formatField: civicFormat.titleCase,
-                        },
-                        {
-                          name: `Contribution`,
-                          field: 'amount',
-                          formatField: civicFormat.dollars,
-                        },
-                        {
-                          name: `Match`,
-                          field: 'matchAmount',
-                          formatField: d =>
-                            d === 'N/A' ? 'N/A' : civicFormat.dollars(d),
-                        },
-                        {
-                          name: `Type`,
-                          field: 'contributionSubType',
-                          formatField: civicFormat.titleCase,
-                        },
-                      ]}
-                    />
-                  </ScatterPlotMap>
-                ) : (
-                  <ScreenGridMap
-                    data={sanitize(mapData.features)}
-                    getPosition={getPosition}
-                    opacity={1}
-                    colorRange={screenGridColorRange}
-                    cellSizePixels={15}
-                  >
-                    <MapTooltip
-                      tooltipDataArray={[
-                        {
-                          name: `Number of contributions`,
-                          field: 'cellCount',
-                          formatField: civicFormat.numeric,
-                        },
-                      ]}
-                      isScreenGrid
-                      wide
-                    />
-                  </ScreenGridMap>
-                )}
-              </BaseMap>
-            </div>
-            <div css={chartContainer}>
-              <ContributionTypeBar
-                data={aggregatedContributorTypes}
-                count={selectedCount}
-              />
-              <ContributionTypePie
-                data={aggregatedDonationSize}
-                count={selectedCount}
-              />
-              <ContributorLocationBar
-                data={aggregatedContributionsByRegion}
-                count={selectedCount}
-              />
-            </div>
-          </>
-        )}
-      </div>
+              <div css={chartContainer}>
+                <ContributionTypeBar
+                  data={aggregatedContributorTypes}
+                  count={selectedCount}
+                />
+                <ContributionTypePie
+                  data={aggregatedDonationSize}
+                  count={selectedCount}
+                />
+                <ContributorLocationBar
+                  data={aggregatedContributionsByRegion}
+                  count={selectedCount}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      {selectedCompare && (
+        <div css={compareVisualizationContainer}>
+          {!!mapData.features.length &&
+            selectedCampaignNames.map(name => (
+              <div css={compareChartContainer}>
+                <h2 css={center}>{name}</h2>
+                <p>Public Financing</p>
+                <p>Donors</p>
+                <p>Median Contribution</p>
+                <p>Total Contributions</p>
+                <p>Total Match Approved</p>
+                <ContributionTypeBar
+                  data={aggregatedContributorTypes}
+                  count={selectedCount}
+                />
+                <ContributionTypePie
+                  data={aggregatedDonationSize}
+                  count={selectedCount}
+                />
+                <ContributorLocationBar
+                  data={aggregatedContributionsByRegion}
+                  count={selectedCount}
+                />
+              </div>
+            ))}
+        </div>
+      )}
       {!!campaignsTable.length && (
         <>
           <h2

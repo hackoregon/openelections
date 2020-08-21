@@ -71,6 +71,7 @@ export const actionTypes = {
     'START_DATE',
     'END_DATE',
     'COUNT',
+    'COMPARE',
     'RESET_ALL',
     'CUSTOM',
   ]),
@@ -93,6 +94,7 @@ export const initialState = {
     startDate: null,
     endDate: null,
     count: false,
+    compare: false,
   },
   isLoading: false,
   isExternalLoading: false,
@@ -162,6 +164,9 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.COUNT]: (state, action) => {
     return { ...state, filters: { ...state.filters, count: action.count } };
   },
+  [actionTypes.SET_FILTER.COMPARE]: (state, action) => {
+    return { ...state, filters: { ...state.filters, compare: action.compare } };
+  },
   [actionTypes.SET_FILTER.RESET_ALL]: state => {
     return {
       ...state,
@@ -172,6 +177,7 @@ export default createReducer(initialState, {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       },
     };
   },
@@ -185,6 +191,7 @@ export default createReducer(initialState, {
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
         ...action.filters,
       },
     };
@@ -216,6 +223,7 @@ export const actionCreators = {
       action(actionTypes.SET_FILTER.START_DATE, { startDate }),
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
     count: count => action(actionTypes.SET_FILTER.COUNT, { count }),
+    compare: compare => action(actionTypes.SET_FILTER.COMPARE, { compare }),
     resetAll: () => action(actionTypes.SET_FILTER.RESET_ALL),
     custom: filters => action(actionTypes.SET_FILTER.CUSTOM, { filters }),
   },
@@ -227,6 +235,7 @@ export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
 export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
 export const setSelectedCount = actionCreators.setFilter.count;
+export const setSelectedCompare = actionCreators.setFilter.compare;
 export const resetAll = actionCreators.setFilter.resetAll;
 export const setCustomFilters = actionCreators.setFilter.custom;
 
@@ -394,6 +403,11 @@ export const selectedEndDate = createSelector(
 export const selectedCount = createSelector(
   publicDataFilters,
   filters => filters.count
+);
+
+export const selectedCompare = createSelector(
+  publicDataFilters,
+  filters => filters.compare
 );
 
 // Filtered filter options
