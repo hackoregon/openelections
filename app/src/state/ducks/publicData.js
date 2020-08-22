@@ -559,6 +559,19 @@ const sortedDonationsParticipatingOnly = createSelector(
   }
 );
 
+export const sortedDonationsByCandidate = createSelector(
+  filteredPublicData,
+  selectedCampaignNames,
+  (data, campaigns) =>
+    campaigns.map(campaign => {
+      const donations = data.features
+        .filter(f => f.properties.campaignName === campaign)
+        .map(f => f.properties);
+      donations.sort((a, b) => a.amount - b.amount);
+      return donations;
+    })
+);
+
 const summarize = donations => {
   const donationsCount = donations.length;
 
@@ -702,150 +715,185 @@ export const donationSizeByDonationRange = createSelector(
   donations => bracketize(donations)
 );
 
+export const donationSizeByDonationRangeByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidates => candidates.map(donations => bracketize(donations))
+);
+
+const aggregateDonationsBySize = aggregates => {
+  const markers = ['micro', 'small', 'medium', 'large', 'mega'];
+  const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
+  const summarizedAggregates = markers.map((category, index) => {
+    return {
+      type: category,
+      formattedType: labels[index],
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+  return summarizedAggregates;
+};
+
 export const aggregatedDonationSize = createSelector(
   donationSizeByDonationRange,
-  aggregates => {
-    const markers = ['micro', 'small', 'medium', 'large', 'mega'];
-    const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
-    const summarizedAggregates = markers.map((category, index) => {
-      return {
-        type: category,
-        formattedType: labels[index],
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-    return summarizedAggregates;
-  }
+  aggregateDonationsBySize
+);
+
+export const aggregatedDonationSizeByCandidate = createSelector(
+  donationSizeByDonationRangeByCandidate,
+  candidateDonations => candidateDonations.map(aggregateDonationsBySize)
 );
 
 // Done: count of and sum of donations for each contributor type
 // (individual, business, family, labor, political_committee, political_party, unregistered, other)
 // For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
 // Note: pad out the rest of the map with zeroes for each type that isn't represented in the data
+const aggregateDonationsByContributorType = donations => {
+  const categories = [
+    'individual',
+    'business',
+    'family',
+    'labor',
+    'political_committee',
+    'political_party',
+    'unregistered',
+    'other',
+  ];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    const bucket = aggregates[d.contributorType || 'other'];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      label: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributorTypes = createSelector(
   sortedDonations,
-  donations => {
-    const categories = [
-      'individual',
-      'business',
-      'family',
-      'labor',
-      'political_committee',
-      'political_party',
-      'unregistered',
-      'other',
-    ];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByContributorType
+);
 
-    donations.forEach(d => {
-      const bucket = aggregates[d.contributorType || 'other'];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        label: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributorTypesByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations =>
+    candidateDonations.map(aggregateDonationsByContributorType)
 );
 
 // Done: count of and sum of donations for each contribution type
 // (cash, inkind, other)
 // Same as above data shape
+const aggregateDonationsByContributionType = donations => {
+  const categories = ['cash', 'inkind', 'other'];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    let type = 'other';
+    if (d.contributionSubType === 'cash') type = 'cash';
+    if ((d.contributionSubType || '').startsWith('inkind_')) type = 'inkind';
+
+    const bucket = aggregates[type];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      formattedType: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributionTypes = createSelector(
   sortedDonations,
-  donations => {
-    const categories = ['cash', 'inkind', 'other'];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByContributionType
+);
 
-    donations.forEach(d => {
-      let type = 'other';
-      if (d.contributionSubType === 'cash') type = 'cash';
-      if ((d.contributionSubType || '').startsWith('inkind_')) type = 'inkind';
-
-      const bucket = aggregates[type];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        formattedType: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributionTypesByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations =>
+    candidateDonations.map(aggregateDonationsByContributionType)
 );
 
 // Done: count and sum of donations for each region
 // (portland, oregon, outside)
 // Note: filter out OAE subtype public_matching
 // Note: do not include portland in oregon
+const aggregateDonationsByRegion = donations => {
+  const categories = ['portland', 'oregon', 'out_of_state'];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    let type = 'out_of_state';
+    if ((d.state || '').toUpperCase() === 'OR') {
+      type = 'oregon';
+      // NOTE: this is a strict address match. If we want to include the entire metro area,
+      // it would probably be better to check against a set of zipcodes or something.
+      if ((d.city || '').toUpperCase() === 'PORTLAND') type = 'portland';
+    }
+
+    const bucket = aggregates[type];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      label: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributionsByRegion = createSelector(
   sortedDonations,
-  donations => {
-    const categories = ['portland', 'oregon', 'out_of_state'];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByRegion
+);
 
-    donations.forEach(d => {
-      let type = 'out_of_state';
-      if ((d.state || '').toUpperCase() === 'OR') {
-        type = 'oregon';
-        // NOTE: this is a strict address match. If we want to include the entire metro area,
-        // it would probably be better to check against a set of zipcodes or something.
-        if ((d.city || '').toUpperCase() === 'PORTLAND') type = 'portland';
-      }
-
-      const bucket = aggregates[type];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        label: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributionsByRegionByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations => candidateDonations.map(aggregateDonationsByRegion)
 );
 
 // Done: create a table that matches this format
