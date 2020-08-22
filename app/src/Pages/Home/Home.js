@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
+import { css, jsx, cx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -37,8 +37,8 @@ import Modal from '../../components/Modal/index';
 import MadeByFooter from './MadeByFooter';
 
 const { dollars } = civicFormat;
-const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#23552c' };
-const alternateScatterplotColor = { rgba: [85, 38, 35, 255], hex: '#552623' };
+const scatterplotColor = { rgba: [36, 184, 26, 255], hex: '#24b81a' };
+const alternateScatterplotColor = { rgba: [230, 0, 26, 255], hex: '#e6001a' };
 const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const filterWrapper = css`
@@ -128,12 +128,12 @@ const visualizationContainer = css`
   }
 `;
 
-const compareVisualizationContainer = css`
+const compareVisualizationContainer = rows => css`
   margin: 2rem 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: repeat(4, auto);
+  grid-template-columns: repeat(${rows}, auto);
   @media ${mediaQueryRanges.mediumAndUp} {
-    flex-direction: row;
   }
 `;
 
@@ -165,15 +165,16 @@ const chartContainer = css`
   margin: 2.5em 0.5em 0em 0.5em;
 `;
 
-const compareChartContainer = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin: 2.5em 0.5em 0em 0.5em;
-`;
-
 const center = css`
   margin: 0 auto;
+`;
+
+const table = css`
+  margin: 1em auto 2em auto;
+  border-spacing: 1em 0.25em;
+  th {
+    text-align: left;
+  }
 `;
 
 const scatterplotFill = css`
@@ -235,6 +236,9 @@ const Home = ({
   aggregatedContributorTypes,
   aggregatedDonationSize,
   aggregatedContributionsByRegion,
+  aggregatedContributorTypesByCandidate,
+  aggregatedDonationSizeByCandidate,
+  aggregatedContributionsByRegionByCandidate,
   selectedFinancing,
   selectedOffices,
   selectedStartDate,
@@ -880,33 +884,99 @@ const Home = ({
           )}
         </div>
       )}
-      {selectedCompare && (
-        <div css={compareVisualizationContainer}>
-          {!!mapData.features.length &&
-            selectedCampaignNames.map(name => (
-              <div css={compareChartContainer}>
-                <h2 css={center}>{name}</h2>
-                <p>Public Financing</p>
-                <p>Donors</p>
-                <p>Median Contribution</p>
-                <p>Total Contributions</p>
-                <p>Total Match Approved</p>
-                <ContributionTypeBar
-                  data={aggregatedContributorTypes}
-                  count={selectedCount}
-                />
-                <ContributionTypePie
-                  data={aggregatedDonationSize}
-                  count={selectedCount}
-                />
-                <ContributorLocationBar
-                  data={aggregatedContributionsByRegion}
-                  count={selectedCount}
-                />
-              </div>
+      {selectedCompare &&
+        selectedCampaignNames.length === campaignsTable.length && (
+          <div css={compareVisualizationContainer(selectedCampaigns.length)}>
+            {selectedCampaignNames.map((name, index) => (
+              <>
+                <div
+                  css={css`
+                    grid-column-start: ${index + 1};
+                    grid-row-start: 1;
+                  `}
+                >
+                  <h2
+                    css={css`
+                      display: flex;
+                      justify-content: center;
+                    `}
+                  >
+                    {campaignsTable[index].campaignName}
+                  </h2>
+                  <table css={table}>
+                    <tr>
+                      <th>Public Financing</th>
+                      <td>{campaignsTable[index].participatingStatus}</td>
+                    </tr>
+                    <tr>
+                      <th>Donors</th>
+                      <td>{campaignsTable[index].donorsCount}</td>
+                    </tr>
+                    <tr>
+                      <th>Median Contribution</th>
+                      <td>
+                        {civicFormat.dollars(
+                          campaignsTable[index].medianContributionSize
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Total Contributions</th>
+                      <td>
+                        {civicFormat.dollars(
+                          campaignsTable[index].totalAmountContributed
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Total Match Approved</th>
+                      <td>
+                        {campaignsTable[index].participatingStatus === '❌'
+                          ? 'N/A'
+                          : civicFormat.dollars(
+                              campaignsTable[index].totalAmountMatched
+                            )}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: ${index + 1};
+                    grid-row-start: 2;
+                  `}
+                >
+                  <ContributionTypeBar
+                    data={aggregatedContributorTypesByCandidate[index]}
+                    count={selectedCount}
+                  />
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: ${index + 1};
+                    grid-row-start: 3;
+                  `}
+                >
+                  <ContributionTypePie
+                    data={aggregatedDonationSizeByCandidate[index]}
+                    count={selectedCount}
+                  />
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: ${index + 1};
+                    grid-row-start: 4;
+                  `}
+                >
+                  <ContributorLocationBar
+                    data={aggregatedContributionsByRegionByCandidate[index]}
+                    count={selectedCount}
+                  />
+                </div>
+              </>
             ))}
-        </div>
-      )}
+          </div>
+        )}
       {!!campaignsTable.length && (
         <>
           <h2
@@ -952,6 +1022,15 @@ Home.propTypes = {
   aggregatedContributionsByRegion: PropTypes.arrayOf(PropTypes.shape({})),
   aggregatedContributorTypes: PropTypes.arrayOf(PropTypes.shape({})),
   aggregatedDonationSize: PropTypes.arrayOf(PropTypes.shape({})),
+  aggregatedContributionsByRegionByCandidate: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.shape({}))
+  ),
+  aggregatedContributorTypesByCandidate: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.shape({}))
+  ),
+  aggregatedDonationSizeByCandidate: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.shape({}))
+  ),
   allOffices: PropTypes.arrayOf(PropTypes.string),
   availableCampaignNames: PropTypes.arrayOf(PropTypes.string),
   availableCampaigns: PropTypes.arrayOf(

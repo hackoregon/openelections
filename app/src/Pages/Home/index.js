@@ -19,9 +19,13 @@ import {
   campaignsTable,
   mapData,
   aggregatedContributorTypes,
+  aggregatedContributorTypesByCandidate,
   aggregatedDonationSize,
+  aggregatedDonationSizeByCandidate,
   aggregatedContributionsByRegion,
+  aggregatedContributionsByRegionByCandidate,
   donationSizeByDonationRange,
+  donationSizeByDonationRangeByCandidate,
   setSelectedOffices,
   setSelectedFinancing,
   setSelectedCampaigns,
@@ -75,9 +79,19 @@ export default connect(
     campaignsTable: campaignsTable(state),
     mapData: mapData(state),
     aggregatedContributorTypes: aggregatedContributorTypes(state),
+    aggregatedContributorTypesByCandidate: aggregatedContributorTypesByCandidate(
+      state
+    ),
     aggregatedDonationSize: aggregatedDonationSize(state),
+    aggregatedDonationSizeByCandidate: aggregatedDonationSizeByCandidate(state),
     aggregatedContributionsByRegion: aggregatedContributionsByRegion(state),
+    aggregatedContributionsByRegionByCandidate: aggregatedContributionsByRegionByCandidate(
+      state
+    ),
     donationSizeByDonationRange: donationSizeByDonationRange(state),
+    donationSizeByDonationRangeByCandidate: donationSizeByDonationRangeByCandidate(
+      state
+    ),
     summaryData: summaryData(state),
     summaryDataByParticipation: summaryDataByParticipation(state),
   }),
