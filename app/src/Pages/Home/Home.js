@@ -12,7 +12,9 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Clear } from '@material-ui/icons';
+import { Clear, Filter1, Filter2, Filter3, Filter4 } from '@material-ui/icons';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import {
   ScatterPlotMap,
@@ -128,12 +130,32 @@ const visualizationContainer = css`
   }
 `;
 
-const compareVisualizationContainer = rows => css`
+const largeCompareVisualizationContainer = rows => css`
   margin: 2rem 0;
   display: grid;
   grid-template-rows: repeat(4, auto);
   grid-template-columns: repeat(${rows}, auto);
+  @media ${mediaQueryRanges.mediumAndDown} {
+    display: none;
+  }
+`;
+
+const mobileCompareVisualizationContainer = css`
+  display: none;
+  @media ${mediaQueryRanges.mediumAndDown} {
+    display: grid;
+    margin: 2rem 0;
+    display: grid;
+    grid-template-rows: repeat(4, auto);
+    grid-template-columns: repeat(1, auto);
+  }
+`;
+
+const mobileOnlyToggle = css`
+  margin: 2rem 0;
+  text-align: center;
   @media ${mediaQueryRanges.mediumAndUp} {
+    display: none;
   }
 `;
 
@@ -262,6 +284,7 @@ const Home = ({
   setCustomFilters,
 }) => {
   const [cookies, setCookie] = useCookies('visited');
+  const [compare, setCompare] = React.useState(1);
 
   useEffect(() => {
     cookies.visited ||
@@ -270,6 +293,10 @@ const Home = ({
         props: {},
       });
   }, [showModal, cookies.visited]);
+
+  const handleCompare = (event, newCompare) => {
+    setCompare(newCompare);
+  };
 
   const isPublicLoading = request ? request.isLoading : true;
   const isExternalLoading = externalRequest
@@ -886,96 +913,222 @@ const Home = ({
       )}
       {selectedCompare &&
         selectedCampaignNames.length === campaignsTable.length && (
-          <div css={compareVisualizationContainer(selectedCampaigns.length)}>
-            {selectedCampaignNames.map((name, index) => (
-              <>
-                <div
-                  css={css`
-                    grid-column-start: ${index + 1};
-                    grid-row-start: 1;
-                  `}
+          <>
+            {selectedCampaignNames.length > 1 && (
+              <div css={mobileOnlyToggle}>
+                <ToggleButtonGroup
+                  value={compare}
+                  exclusive
+                  onChange={handleCompare}
+                  aria-label="campaign to compare"
                 >
-                  <h2
+                  <ToggleButton value={1} aria-label="campaign 1">
+                    <Filter1 />
+                  </ToggleButton>
+                  <ToggleButton value={2} aria-label="campaign 2">
+                    <Filter2 />
+                  </ToggleButton>
+                  {selectedCampaignNames.length > 2 && (
+                    <ToggleButton value={3} aria-label="campaign 3">
+                      <Filter3 />
+                    </ToggleButton>
+                  )}
+                  {selectedCampaignNames.length > 3 && (
+                    <ToggleButton value={4} aria-label="campaign 4">
+                      <Filter4 />
+                    </ToggleButton>
+                  )}
+                </ToggleButtonGroup>
+              </div>
+            )}
+            <div
+              css={largeCompareVisualizationContainer(selectedCampaigns.length)}
+            >
+              {selectedCampaignNames.map((name, index) => (
+                <>
+                  <div
                     css={css`
-                      display: flex;
-                      justify-content: center;
+                      grid-column-start: ${index + 1};
+                      grid-row-start: 1;
                     `}
                   >
-                    {campaignsTable[index].campaignName}
-                  </h2>
-                  <table css={table}>
-                    <tr>
-                      <th>Public Financing</th>
-                      <td>{campaignsTable[index].participatingStatus}</td>
-                    </tr>
-                    <tr>
-                      <th>Donors</th>
-                      <td>{campaignsTable[index].donorsCount}</td>
-                    </tr>
-                    <tr>
-                      <th>Median Contribution</th>
-                      <td>
-                        {civicFormat.dollars(
-                          campaignsTable[index].medianContributionSize
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Total Contributions</th>
-                      <td>
-                        {civicFormat.dollars(
-                          campaignsTable[index].totalAmountContributed
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Total Match Approved</th>
-                      <td>
-                        {campaignsTable[index].participatingStatus === '❌'
-                          ? 'N/A'
-                          : civicFormat.dollars(
-                              campaignsTable[index].totalAmountMatched
-                            )}
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <div
-                  css={css`
-                    grid-column-start: ${index + 1};
-                    grid-row-start: 2;
-                  `}
-                >
-                  <ContributionTypeBar
-                    data={aggregatedContributorTypesByCandidate[index]}
-                    count={selectedCount}
-                  />
-                </div>
-                <div
-                  css={css`
-                    grid-column-start: ${index + 1};
-                    grid-row-start: 3;
-                  `}
-                >
-                  <ContributionTypePie
-                    data={aggregatedDonationSizeByCandidate[index]}
-                    count={selectedCount}
-                  />
-                </div>
-                <div
-                  css={css`
-                    grid-column-start: ${index + 1};
-                    grid-row-start: 4;
-                  `}
-                >
-                  <ContributorLocationBar
-                    data={aggregatedContributionsByRegionByCandidate[index]}
-                    count={selectedCount}
-                  />
-                </div>
-              </>
-            ))}
-          </div>
+                    <h2
+                      css={css`
+                        display: flex;
+                        justify-content: center;
+                      `}
+                    >
+                      {campaignsTable[index].campaignName}
+                    </h2>
+                    <table css={table}>
+                      <tr>
+                        <th>Public Financing</th>
+                        <td>{campaignsTable[index].participatingStatus}</td>
+                      </tr>
+                      <tr>
+                        <th>Donors</th>
+                        <td>{campaignsTable[index].donorsCount}</td>
+                      </tr>
+                      <tr>
+                        <th>Median Contribution</th>
+                        <td>
+                          {civicFormat.dollars(
+                            campaignsTable[index].medianContributionSize
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Total Contributions</th>
+                        <td>
+                          {civicFormat.dollars(
+                            campaignsTable[index].totalAmountContributed
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Total Match Approved</th>
+                        <td>
+                          {campaignsTable[index].participatingStatus === '❌'
+                            ? 'N/A'
+                            : civicFormat.dollars(
+                                campaignsTable[index].totalAmountMatched
+                              )}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: ${index + 1};
+                      grid-row-start: 2;
+                    `}
+                  >
+                    <ContributionTypeBar
+                      data={aggregatedContributorTypesByCandidate[index]}
+                      count={selectedCount}
+                    />
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: ${index + 1};
+                      grid-row-start: 3;
+                    `}
+                  >
+                    <ContributionTypePie
+                      data={aggregatedDonationSizeByCandidate[index]}
+                      count={selectedCount}
+                    />
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: ${index + 1};
+                      grid-row-start: 4;
+                    `}
+                  >
+                    <ContributorLocationBar
+                      data={aggregatedContributionsByRegionByCandidate[index]}
+                      count={selectedCount}
+                    />
+                  </div>
+                </>
+              ))}
+            </div>
+            <div css={mobileCompareVisualizationContainer}>
+              {selectedCampaignNames.slice(compare - 1, compare).map(name => (
+                <>
+                  <div
+                    css={css`
+                      grid-column-start: 1;
+                      grid-row-start: 1;
+                    `}
+                  >
+                    <h2
+                      css={css`
+                        display: flex;
+                        justify-content: center;
+                      `}
+                    >
+                      {campaignsTable[compare - 1].campaignName}
+                    </h2>
+                    <table css={table}>
+                      <tr>
+                        <th>Public Financing</th>
+                        <td>
+                          {campaignsTable[compare - 1].participatingStatus}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Donors</th>
+                        <td>{campaignsTable[compare - 1].donorsCount}</td>
+                      </tr>
+                      <tr>
+                        <th>Median Contribution</th>
+                        <td>
+                          {civicFormat.dollars(
+                            campaignsTable[compare - 1].medianContributionSize
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Total Contributions</th>
+                        <td>
+                          {civicFormat.dollars(
+                            campaignsTable[compare - 1].totalAmountContributed
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Total Match Approved</th>
+                        <td>
+                          {campaignsTable[compare - 1].participatingStatus ===
+                          '❌'
+                            ? 'N/A'
+                            : civicFormat.dollars(
+                                campaignsTable[compare - 1].totalAmountMatched
+                              )}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: 1;
+                      grid-row-start: 2;
+                    `}
+                  >
+                    <ContributionTypeBar
+                      data={aggregatedContributorTypesByCandidate[compare - 1]}
+                      count={selectedCount}
+                    />
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: 1;
+                      grid-row-start: 3;
+                    `}
+                  >
+                    <ContributionTypePie
+                      data={aggregatedDonationSizeByCandidate[compare - 1]}
+                      count={selectedCount}
+                    />
+                  </div>
+                  <div
+                    css={css`
+                      grid-column-start: 1;
+                      grid-row-start: 4;
+                    `}
+                  >
+                    <ContributorLocationBar
+                      data={
+                        aggregatedContributionsByRegionByCandidate[compare - 1]
+                      }
+                      count={selectedCount}
+                    />
+                  </div>
+                </>
+              ))}
+            </div>
+          </>
         )}
       {!!campaignsTable.length && (
         <>

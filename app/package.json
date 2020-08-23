@@ -13,6 +13,7 @@
     "@hackoregon/component-library": "4.0.1-ci.3544",
     "@material-ui/core": "^4.3.2",
     "@material-ui/icons": "^4.2.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.3.0",
     "@svgr/webpack": "4.1.0",
     "@typescript-eslint/eslint-plugin": "1.6.0",
