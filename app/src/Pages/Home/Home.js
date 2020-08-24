@@ -148,7 +148,7 @@ const mobileCompareVisualizationContainer = css`
   display: none;
   @media ${mediaQueryRanges.mediumAndDown} {
     display: grid;
-    margin: 2rem 0;
+    margin: 2rem 0.5em;
     display: grid;
     grid-template-rows: repeat(4, auto);
     grid-template-columns: repeat(1, auto);
@@ -295,6 +295,7 @@ const Home = ({
   }, [showModal, cookies.visited]);
 
   const handleCompare = (event, newCompare) => {
+    debugger;
     setCompare(newCompare);
   };
 
@@ -958,6 +959,7 @@ const Home = ({
                       css={css`
                         display: flex;
                         justify-content: center;
+                        text-align: center;
                       `}
                     >
                       {campaignsTable[index].campaignName}
@@ -1046,6 +1048,7 @@ const Home = ({
                   css={css`
                     display: flex;
                     justify-content: center;
+                    text-align: center;
                   `}
                 >
                   {campaignsTable[compare - 1].campaignName}

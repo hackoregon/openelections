@@ -18,6 +18,7 @@ const styles = css`
   align-items: center;
   margin: 0;
   padding: 0 10px;
+  overflow-x: auto;
   .nav-wrapper {
     flex: 2;
   }
