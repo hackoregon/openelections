@@ -1,9 +1,10 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
+/** @jsx jsx */
+import { useState } from 'react';
 import { css, jsx } from '@emotion/core';
 import FormModal from '../../FormModal/FormModal';
 import Button from '../../Button/Button';
 import ExportXMLForm from './ExportXML';
-/** @jsx jsx */
 
 const formTitle = css`
   font-size: 35px;
@@ -33,7 +34,7 @@ const oaeWarning = css`
 `;
 
 const ExportXML = props => {
-  const [isAll, setIsAll] = React.useState(false);
+  const [isAll, setIsAll] = useState(false);
   return (
     <div>
       <FormModal>
@@ -45,7 +46,7 @@ const ExportXML = props => {
             filerId: '',
           }}
         >
-          {({ formSections, isValid, handleCancel, handleSubmit }) => (
+          {({ formSections, isValid, handleSubmit }) => (
             <>
               <p css={formTitle}>Export XML</p>
               <p>

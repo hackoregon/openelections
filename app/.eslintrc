@@ -1,16 +1,23 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier", "prettier-react", "plugin:prettier/recommended"],
+  "extends": ["airbnb", "prettier", "prettier-react", "plugin:prettier/recommended", "plugin:react/recommended"],
   "env": {
     "mocha": true
   },
   "plugins": ["react", "prettier"],
+  "settings": {
+    "react": {
+      "version": "16.8.6"
+    }
+  },
   "rules": {
     "jsx-a11y/img-has-alt": 0,
     "prefer-arrow-callback": 0,
     "no-underscore-dangle": 0,
     "prefer-destructuring": 0,
     "func-names": 2,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
     "react/jsx-filename-extension": 0,
     "react/require-default-props": 0,
     "react/forbid-prop-types": 1,

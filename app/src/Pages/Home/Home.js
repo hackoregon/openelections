@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { css, jsx, cx } from '@emotion/core'; // eslint-disable-line no-unused-vars
+import { css, jsx } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
@@ -274,10 +274,8 @@ const Home = ({
   selectedCount,
   setSelectedCount,
   selectedCompare,
-  setSelectedCompare,
   campaignsTable,
   mapData,
-  summaryData,
   summaryDataByParticipation,
   showModal,
   resetAll,
@@ -434,7 +432,6 @@ const Home = ({
               </InputLabel>
               <Select
                 multiple
-                textOverflow="ellipsis"
                 displayEmpty
                 labelid="filter-offices"
                 value={selectedOffices}
@@ -482,7 +479,6 @@ const Home = ({
               </InputLabel>
               <Select
                 multiple
-                textOverflow="ellipsis"
                 displayEmpty
                 labelid="filter-campaigns"
                 value={selectedCampaignNames}
@@ -1212,6 +1208,7 @@ Home.propTypes = {
     })
   ),
   selectedCount: PropTypes.bool,
+  selectedCompare: PropTypes.bool,
   selectedEndDate: PropTypes.shape({}),
   selectedOffices: PropTypes.arrayOf(PropTypes.string),
   selectedFinancing: PropTypes.string,

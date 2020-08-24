@@ -1,7 +1,5 @@
-// eslint-disable-next-line no-unused-vars
-import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
 /** @jsx jsx */
+import { Route, Switch } from 'react-router-dom';
 import { css, jsx } from '@emotion/core';
 import Modal from '../../components/Modal/index';
 import DashboardPage from './Dashboard/Dashboard';
@@ -53,53 +51,44 @@ const styles = css`
   }
 `;
 
-const Portal = () => {
-  return (
-    <PageHoc>
-      <div css={styles} className="portal-wrapper">
-        <aside className="sidebar-wrapper">
-          <Sidebar />
-        </aside>
-        <main className="content-wrapper">
-          <WithPermissions>
-            <Route
-              render={({ location }) => (
-                <div key={location.pathname}>
-                  <Switch location={location}>
-                    <Route exact path="/dashboard" component={DashboardPage} />
-                    <Route
-                      exact
-                      path="/settings"
-                      component={ManagePortalPage}
-                    />
-                    <Route
-                      exact
-                      path="/settings/manage-user"
-                      component={ManageUserPage}
-                    />
-                    <Route exact path="/dashboard" component={DashboardPage} />
-                    <Route
-                      path="/contributions"
-                      component={ContributionsPage}
-                    />
-                    <Route path="/expenses" component={ExpensesPage} />
-                    <Route
-                      exact
-                      path="/campaigns"
-                      component={ManageCampaignPage}
-                    />
-                  </Switch>
-                </div>
-              )}
-            />
-          </WithPermissions>
-        </main>
-      </div>
-      {/* add modal here
+const Portal = () => (
+  <PageHoc>
+    <div css={styles} className="portal-wrapper">
+      <aside className="sidebar-wrapper">
+        <Sidebar />
+      </aside>
+      <main className="content-wrapper">
+        <WithPermissions>
+          <Route
+            render={({ location }) => (
+              <div key={location.pathname}>
+                <Switch location={location}>
+                  <Route exact path="/dashboard" component={DashboardPage} />
+                  <Route exact path="/settings" component={ManagePortalPage} />
+                  <Route
+                    exact
+                    path="/settings/manage-user"
+                    component={ManageUserPage}
+                  />
+                  <Route exact path="/dashboard" component={DashboardPage} />
+                  <Route path="/contributions" component={ContributionsPage} />
+                  <Route path="/expenses" component={ExpensesPage} />
+                  <Route
+                    exact
+                    path="/campaigns"
+                    component={ManageCampaignPage}
+                  />
+                </Switch>
+              </div>
+            )}
+          />
+        </WithPermissions>
+      </main>
+    </div>
+    {/* add modal here
         TODO: pass open handler and closing through connector
       */}
-      <Modal />
-    </PageHoc>
-  );
-};
+    <Modal />
+  </PageHoc>
+);
 export default Portal;

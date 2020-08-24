@@ -52,7 +52,7 @@ export const actionCreators = {
 
 // Side Effects, e.g. thunks
 export function getExternalData() {
-  return async (dispatch, _getState, { api, schema }) => {
+  return async (dispatch, _getState, { api }) => {
     dispatch(actionCreators.getExternalData.request());
     try {
       const response = await api.getExternalContributionGeoData();

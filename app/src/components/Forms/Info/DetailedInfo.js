@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import React from 'react';
 import { css, jsx } from '@emotion/core';
 import { Collapsable } from '@hackoregon/component-library';
 
@@ -24,9 +23,9 @@ const DetailedInfo = () => (
         >
           Open and Accountable Elections
         </a>{' '}
-        is the City of Portland's small donor matching program. It is designed
-        to ensure that the City government is accountable to all Portlanders,
-        not just big campaign donors.
+        is the City of Portland`&apos;`s small donor matching program. It is
+        designed to ensure that the City government is accountable to all
+        Portlanders, not just big campaign donors.
       </p>
       <p>
         The program is open to candidates for Mayor, Commissioner, and Auditor.
@@ -102,7 +101,7 @@ const DetailedInfo = () => (
               Auditor’s race and get matched.
             </li>
           </ul>
-          <h3>What it's for</h3>
+          <h3>What it`&apos;`s for</h3>
           <p>
             Our government works best when every person is engaged in the
             elections process and can make a difference in the community. The

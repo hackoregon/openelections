@@ -1,6 +1,6 @@
-import * as React from 'react';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import { jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
 import { HorizontalBarChart } from '@hackoregon/component-library';
 
@@ -39,5 +39,17 @@ function ContributorLocationBar({ data, count }) {
     </div>
   );
 }
+
+ContributorLocationBar.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.string,
+      count: PropTypes.number,
+      total: PropTypes.number,
+      label: PropTypes.string,
+    })
+  ),
+  count: PropTypes.bool,
+};
 
 export default ContributorLocationBar;
