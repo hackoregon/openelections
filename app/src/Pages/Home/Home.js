@@ -309,11 +309,22 @@ const Home = ({
   const bracketField = field => row =>
     `${dollars(row[field].total)} (${row[field].contributions.length})`;
 
+  const bracketFieldFootnote = field => row =>
+    `${dollars(row[field].total)}${row.participatingStatus ? '' : '*'} (${
+      row[field].contributions.length
+    }${row.participatingStatus ? '' : '*'})`;
+
+  const footnote = field => row =>
+    `${row[field]}${row.participatingStatus ? '' : '*'}`;
+
+  const dollarsFootnote = field => row =>
+    `${dollars(row[field])}${row.participatingStatus ? '' : '*'}`;
+
   const columns = [
     {
       field: 'participatingStatus',
       title: 'Public Financing',
-      render: rowData => (rowData.participatingStatus ? '✅' : '❌'),
+      render: row => (row.participatingStatus ? '✅' : '❌'),
     },
     {
       field: 'campaignName',
@@ -327,25 +338,27 @@ const Home = ({
       field: 'donationsCount',
       title: 'Contributions',
       defaultSort: 'desc',
+      render: footnote('donationsCount'),
     },
     {
       field: 'totalAmountContributed',
       title: 'Total Contributions',
-      type: 'currency',
+      render: row => dollars(row.totalAmountContributed),
     },
     {
       field: 'totalAmountMatched',
       title: 'Total Match Approved',
-      type: 'currency',
+      render: row =>
+        row.participatingStatus ? dollars(row.totalAmountMatched) : 'N/A',
     },
     {
       title: 'Micro: <$25',
-      render: bracketField('micro'),
+      render: bracketFieldFootnote('micro'),
       sorting: false,
     },
     {
       title: 'Small: $25-$100',
-      render: bracketField('small'),
+      render: bracketFieldFootnote('small'),
       sorting: false,
     },
     {
@@ -381,29 +394,33 @@ const Home = ({
       field: 'donationsCount',
       title: 'Contributions',
       sorting: false,
+      render: footnote('donationsCount'),
     },
     {
       field: 'donorsCount',
       title: 'Donors',
       sorting: false,
+      render: footnote('donorsCount'),
     },
     {
       field: 'medianContributionSize',
       title: 'Median Contribution',
       sorting: false,
       type: 'currency',
+      render: dollarsFootnote('medianContributionSize'),
     },
     {
       field: 'totalAmountContributed',
       title: 'Total Contributions',
       sorting: false,
-      type: 'currency',
+      render: row => dollars(row.totalAmountContributed),
     },
     {
       field: 'totalAmountMatched',
       title: 'Total Match Approved',
       sorting: false,
-      type: 'currency',
+      render: row =>
+        row.participatingStatus ? dollars(row.totalAmountMatched) : 'N/A',
     },
   ];
 
@@ -608,7 +625,7 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Sarah Iannarone' ||
+                        campaign.name === 'Melton Now' ||
                         campaign.name === 'Ted Wheeler'
                     ),
                     compare: true,
@@ -645,7 +662,7 @@ const Home = ({
                   setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
-                        campaign => campaign.name === 'Sarah Iannarone'
+                        campaign => campaign.name === 'Melton Now'
                       ),
                     ],
                   })
@@ -711,30 +728,35 @@ const Home = ({
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
               {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}. Data loaded
-              from ORESTAR for non-participating candidates. ORESTAR
-              automatically combines smaller contributions, so the location and
-              donor counts for smaller donations is imprecise.
+              from ORESTAR for non-participating candidates may have up to a 6
+              hour delay.
             </div>
           )}
         </FormGroup>
       </div>
       {!!summaryDataByParticipation && !selectedCompare && (
-        <Table
-          isLoading={isLoading}
-          title="Campaigns"
-          columns={summaryColumns}
-          options={{
-            pageSize: 2,
-            showTitle: false,
-            paging: false,
-          }}
-          data={summaryDataByParticipation}
-          perPage={2}
-          pageNumber={0}
-          totalRows={2}
-          // eslint-disable-next-line react/display-name
-          components={{ Toolbar: () => <div /> }}
-        />
+        <>
+          <Table
+            isLoading={isLoading}
+            title="Campaigns"
+            columns={summaryColumns}
+            options={{
+              pageSize: 2,
+              showTitle: false,
+              paging: false,
+            }}
+            data={summaryDataByParticipation}
+            perPage={2}
+            pageNumber={0}
+            totalRows={2}
+            // eslint-disable-next-line react/display-name
+            components={{ Toolbar: () => <div /> }}
+          />
+          <div css={dataLoadedStyle}>
+            *Smaller contributions are bundled by ORESTAR for non-participating
+            candidates.
+          </div>
+        </>
       )}
       {!selectedCompare && (
         <div css={visualizationContainer}>
@@ -966,11 +988,18 @@ const Home = ({
                     <table css={table}>
                       <tr>
                         <th>Public Financing</th>
-                        <td>{campaignsTable[index].participatingStatus}</td>
+                        <td>
+                          {campaignsTable[index].participatingStatus
+                            ? '✅'
+                            : '❌'}
+                        </td>
                       </tr>
                       <tr>
                         <th>Donors</th>
-                        <td>{campaignsTable[index].donorsCount}</td>
+                        <td>
+                          {campaignsTable[index].donorsCount}
+                          {campaignsTable[index].participatingStatus ? '' : '*'}
+                        </td>
                       </tr>
                       <tr>
                         <th>Median Contribution</th>
@@ -978,6 +1007,7 @@ const Home = ({
                           {civicFormat.dollars(
                             campaignsTable[index].medianContributionSize
                           )}
+                          {campaignsTable[index].participatingStatus ? '' : '*'}
                         </td>
                       </tr>
                       <tr>
@@ -1153,6 +1183,10 @@ const Home = ({
             // eslint-disable-next-line react/display-name
             components={{ Toolbar: () => <div /> }}
           />
+          <div css={dataLoadedStyle}>
+            *Smaller contributions are bundled by ORESTAR for non-participating
+            candidates.
+          </div>
         </>
       )}
       <MadeByFooter />

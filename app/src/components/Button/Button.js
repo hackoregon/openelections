@@ -104,12 +104,11 @@ const buttonTypes = {
     fullWidth: true,
   },
   small: {
-    default: {
-      type: 'button',
-      variant: 'contained',
-      color: 'primary',
-      size: 'small',
-    },
+    type: 'button',
+    variant: 'contained',
+    color: 'primary',
+    size: 'small',
+    style: { ...primaryOverrides, backgroundColor: '#313aa7', borderRadius: 0 },
   },
 };
 
