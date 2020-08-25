@@ -313,6 +313,7 @@ const Home = ({
     {
       field: 'participatingStatus',
       title: 'Public Financing',
+      render: rowData => (rowData.participatingStatus ? '✅' : '❌'),
     },
     {
       field: 'campaignName',
@@ -368,6 +369,7 @@ const Home = ({
     {
       field: 'participatingStatus',
       title: 'Public Financing',
+      render: rowData => (rowData.participatingStatus ? '✅' : '❌'),
       sorting: false,
     },
     {
@@ -709,8 +711,9 @@ const Home = ({
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
               {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}. Data loaded
-              from ORESTAR for non-participating candidates on MMM DD, YYYY at
-              h:mm:ssa
+              from ORESTAR for non-participating candidates. ORESTAR
+              automatically combines smaller contributions, so the location and
+              donor counts for smaller donations is imprecise.
             </div>
           )}
         </FormGroup>
@@ -988,11 +991,11 @@ const Home = ({
                       <tr>
                         <th>Total Match Approved</th>
                         <td>
-                          {campaignsTable[index].participatingStatus === '❌'
-                            ? 'N/A'
-                            : civicFormat.dollars(
-                                campaignsTable[index].totalAmountMatched
-                              )}
+                          {campaignsTable[index].participatingStatus
+                            ? civicFormat.dollars(
+                                campaignsTable[compare - 1].totalAmountMatched
+                              )
+                            : 'N/A'}
                         </td>
                       </tr>
                     </table>
@@ -1077,11 +1080,11 @@ const Home = ({
                   <tr>
                     <th>Total Match Approved</th>
                     <td>
-                      {campaignsTable[compare - 1].participatingStatus === '❌'
-                        ? 'N/A'
-                        : civicFormat.dollars(
+                      {campaignsTable[compare - 1].participatingStatus
+                        ? civicFormat.dollars(
                             campaignsTable[compare - 1].totalAmountMatched
-                          )}
+                          )
+                        : 'N/A'}
                     </td>
                   </tr>
                 </table>

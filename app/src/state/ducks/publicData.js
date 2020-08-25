@@ -639,11 +639,11 @@ export const summaryDataByParticipation = createSelector(
     const summaryData = [];
     participatingDonations.length > 0 &&
       summaryData.push(
-        addParticipatingStatus(summarize(participatingDonations), '✅')
+        addParticipatingStatus(summarize(participatingDonations), true)
       );
     nonParticipatingDonations.length > 0 &&
       summaryData.push(
-        addParticipatingStatus(summarize(nonParticipatingDonations), '❌')
+        addParticipatingStatus(summarize(nonParticipatingDonations), false)
       );
     return summaryData;
   }
@@ -923,7 +923,7 @@ export const campaignsTable = createSelector(
       campaign.campaignName = contribution.campaignName;
       campaign.officeSought = contribution.officeSought;
       campaign.participatingStatus =
-        contribution.campaignName === 'Ted Wheeler' ? '❌' : '✅';
+        contribution.campaignName !== 'Ted Wheeler';
     });
 
     return campaigns;
