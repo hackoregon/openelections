@@ -7665,10 +7665,10 @@ eslint-plugin-jsx-a11y@6.2.1:
     has "^1.0.3"
     jsx-ast-utils "^2.0.1"
 
-eslint-plugin-jsx-fragments@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-fragments/-/eslint-plugin-jsx-fragments-0.1.2.tgz#c2e57cb52736ab8bed8a4a43dd2a04d5aad45ff7"
-  integrity sha512-BUrr2uFhqFL5ZWGqa4WXhkL6YRka0bAnC/FNMbaWQLWHWeYxAgUYxiNTZ5zIYXWsFSg08Iw0NjMwnpOh/kQ2wQ==
+eslint-plugin-jsx-fragments@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-fragments/-/eslint-plugin-jsx-fragments-0.2.0.tgz#115ec28eb2b9007266f4f845ea19ca92c31eba80"
+  integrity sha512-d0I8V3Ntx2QJC4eWlJY74xvXdQwKTSHHYZipOpdqWPqXzH6ETkwTTd19J1obIr4VhRVL0O0FPugpJZBV8N6fPw==
   dependencies:
     requireindex "~1.1.0"
 
