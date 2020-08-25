@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import * as React from 'react';
 import { css, jsx } from '@emotion/core';
 import { Collapsable } from '@hackoregon/component-library';
 

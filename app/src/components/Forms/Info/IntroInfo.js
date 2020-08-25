@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import * as React from 'react';
 
 const contentStyle = css`
   padding: 0 2em;

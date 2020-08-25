@@ -278,7 +278,6 @@ const Home = ({
   mapData,
   summaryDataByParticipation,
   showModal,
-  resetAll,
   setCustomFilters,
 }) => {
   const [cookies, setCookie] = useCookies('visited');
@@ -1234,7 +1233,6 @@ Home.propTypes = {
     error: PropTypes.string,
     data: PropTypes.object,
   }),
-  resetAll: PropTypes.func,
   setCustomFilters: PropTypes.func,
   selectedCampaignNames: PropTypes.arrayOf(PropTypes.string),
   selectedCampaigns: PropTypes.arrayOf(

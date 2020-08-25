@@ -62,7 +62,7 @@ const FilterExpenses = props => {
         }}
         initialValues={initialValues}
       >
-        {({ formSections, isValid, handleSubmit, resetForm }) => (
+        {({ formSections, isValid, handleSubmit }) => (
           <div className="nark" css={filterOuter}>
             <div css={filterWrapper}>
               <div css={filterInner}>{formSections.filter}</div>
