@@ -1,13 +1,13 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier", "prettier-react", "plugin:prettier/recommended", "plugin:react/recommended"],
+  "extends": ["airbnb", "prettier", "prettier-react", "plugin:prettier/recommended", "plugin:react/recommended", "jsx-fragments"],
   "env": {
     "mocha": true
   },
   "plugins": ["react", "prettier"],
   "settings": {
     "react": {
-      "version": "16.8.6"
+      "version": "16.8.6",
     }
   },
   "rules": {
@@ -27,6 +27,9 @@
     "react/jsx-props-no-spreading": 0,
     "no-shadow":0,
     "no-unused-expressions": 0,
+    "no-unused-vars": ["error", { "varsIgnorePattern": "React" }],
+    "react/jsx-fragments": [1, "fragment"],
+    "jsx-fragments/react-in-fragment-scope": 2,
     "react/prop-types": "warn",
     "react/destructuring-assignment": "warn",
     "react/jsx-no-bind": "warn",

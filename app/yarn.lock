@@ -7665,6 +7665,13 @@ eslint-plugin-jsx-a11y@6.2.1:
     has "^1.0.3"
     jsx-ast-utils "^2.0.1"
 
+eslint-plugin-jsx-fragments@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-fragments/-/eslint-plugin-jsx-fragments-0.1.2.tgz#c2e57cb52736ab8bed8a4a43dd2a04d5aad45ff7"
+  integrity sha512-BUrr2uFhqFL5ZWGqa4WXhkL6YRka0bAnC/FNMbaWQLWHWeYxAgUYxiNTZ5zIYXWsFSg08Iw0NjMwnpOh/kQ2wQ==
+  dependencies:
+    requireindex "~1.1.0"
+
 eslint-plugin-prettier@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.0.tgz#8695188f95daa93b0dc54b249347ca3b79c4686d"
@@ -14735,6 +14742,11 @@ requireindex@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
   integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
+
+requireindex@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
+  integrity sha1-5UBLgVV+91225JxacgBIk/4D4WI=
 
 requires-port@^1.0.0:
   version "1.0.0"
