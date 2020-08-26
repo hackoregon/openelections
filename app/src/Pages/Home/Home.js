@@ -213,7 +213,7 @@ const mapHeight = css`
 `;
 
 const buttonStyles = css`
-  margin: 0 5px !important;
+  margin: 5px 5px !important;
 `;
 
 const buttonWrapper = css`
@@ -727,7 +727,7 @@ const Home = ({
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
               {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}. Data loaded
-              from ORESTAR for non-participating candidates may have up to a 6
+              from ORESTAR for non-participating candidates may have up to a 12
               hour delay.
             </div>
           )}
