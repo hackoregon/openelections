@@ -680,6 +680,20 @@ describe('Selectors', () => {
       summaryPoint('Yxw', 'Def', 30, 150, 'matchable'),
       summaryPoint('Xwv', 'Ghi', 100, null, 'public_matching_contribution'),
       summaryPoint('Wvu', 'Jkl', 5, 30, 'matchable'),
+      summaryPoint(
+        'Wvu',
+        'Miscellaneous Cash Contributions $100 and under ',
+        150,
+        null,
+        'allowable'
+      ),
+      summaryPoint(
+        'Wvu',
+        'Miscellaneous Cash Contributions $100 and under ',
+        150,
+        null,
+        'allowable'
+      ),
     ];
 
     const [state] = makeData(points);
@@ -694,12 +708,12 @@ describe('Selectors', () => {
       expect(publicData.summaryData(state).campaignsCount).toEqual(3);
     });
 
-    it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution)', () => {
-      expect(publicData.summaryData(state).donorsCount).toEqual(3);
+    it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution, counting each bundled contribution as 1 donor)', () => {
+      expect(publicData.summaryData(state).donorsCount).toEqual(5);
     });
 
     it('returns the total amount contributed (excluding public matching contributions) and the total amount matched', () => {
-      const total = 10 + 20 + 30 + 5;
+      const total = 10 + 20 + 30 + 5 + 150 + 150;
       const matchTotal = 120 + 150 + 30;
       expect(publicData.summaryData(state).totalAmountContributed).toEqual(
         total
@@ -711,14 +725,14 @@ describe('Selectors', () => {
 
     it('returns the median contribution size, excluding public_matching_contribution types', () => {
       // Contributions
-      // [ 10, 20, 30, 100, 5.23 ]
+      // [ 10, 20, 30, 100, 5, 150, 150 ]
       // Exclude public_matching_contribution types
-      // [ 10, 20, 30, 5.23 ]
+      // [ 10, 20, 30, 5, 150, 150 ]
       // Sort
-      // [ 5.23, 10, 20, 30 ]
+      // [ 5.23, 10, 20, 30, 150, 150 ]
       // Median (avg middle data points)
-      // (10 + 20) / 2 = 15
-      expect(publicData.summaryData(state).medianContributionSize).toEqual(15);
+      // (20 + 30) / 2 = 25
+      expect(publicData.summaryData(state).medianContributionSize).toEqual(25);
     });
   });
 
@@ -750,6 +764,53 @@ describe('Selectors', () => {
         small: {
           total: 30 + 50 + 100,
           contributions: [30, 50, 100],
+        },
+        medium: {
+          total: 150 + 200,
+          contributions: [150, 200],
+        },
+        large: {
+          total: 500 + 750 + 1000,
+          contributions: [500, 750, 1000],
+        },
+        mega: {
+          total: 2500,
+          contributions: [2500],
+        },
+      });
+    });
+
+    it('buckets and summates donations appropriately including ', () => {
+      const points = [
+        point({ amount: 0 }),
+        point({ amount: 5 }),
+        point({ amount: 10 }),
+        point({ amount: 20 }),
+        point({ amount: 30 }),
+        point({ amount: 50 }),
+        point({ amount: 100 }),
+        point({ amount: 150 }),
+        point({ amount: 200 }),
+        point({ amount: 500 }),
+        point({ amount: 750 }),
+        point({ amount: 1000 }),
+        point({ amount: 2500 }),
+        point({
+          amount: 2500,
+          contributorName: 'Miscellaneous Cash Contributions $100 and under ',
+        }),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.donationSizeByDonationRange(state)).toEqual({
+        micro: {
+          total: 0 + 5 + 10 + 20,
+          contributions: [0, 5, 10, 20],
+        },
+        small: {
+          total: 30 + 50 + 100 + 2500,
+          contributions: [30, 50, 100, 2500],
         },
         medium: {
           total: 150 + 200,

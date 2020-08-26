@@ -586,7 +586,12 @@ const summarize = donations => {
   // Only iterate over the array once for better performance
   donations.forEach(d => {
     // NOTE: contributor name is not a strong idenfitier, could result in miscounting
-    if (!markedDonors[d.contributorName]) {
+    // NOTE: Count each "Miscellaneous Cash Contributions $100 and under " as one donor
+
+    if (
+      !markedDonors[d.contributorName] ||
+      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
+    ) {
       donorsCount += 1;
       markedDonors[d.contributorName] = true;
     }
@@ -694,6 +699,14 @@ const bracketize = donations => {
         }
         breakpoint = breakpoints[index];
       }
+    }
+
+    // Categorize "Miscellaneous Cash Contributions $100 and under" in the 25-100 category
+    if (
+      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
+    ) {
+      marker = markers[1];
+      breakpoint = breakpoint[1];
     }
 
     aggregates[marker].total += d.amount;
