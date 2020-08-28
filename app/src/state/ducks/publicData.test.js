@@ -794,11 +794,11 @@ describe('Selectors', () => {
         point({ amount: 500 }),
         point({ amount: 750 }),
         point({ amount: 1000 }),
-        point({ amount: 2500 }),
         point({
           amount: 2500,
           contributorName: 'Miscellaneous Cash Contributions $100 and under ',
         }),
+        point({ amount: 2500 }),
       ];
 
       const [state] = makeData(points);

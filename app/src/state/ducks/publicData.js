@@ -705,8 +705,9 @@ const bracketize = donations => {
     if (
       d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
     ) {
-      marker = markers[1];
-      breakpoint = breakpoint[1];
+      aggregates.small.total += d.amount;
+      aggregates.small.contributions.push(d.amount);
+      return;
     }
 
     aggregates[marker].total += d.amount;
