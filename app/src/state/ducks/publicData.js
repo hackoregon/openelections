@@ -149,7 +149,11 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.CAMPAIGNS]: (state, action) => {
     return {
       ...state,
-      filters: { ...state.filters, campaigns: makeArray(action.campaigns) },
+      filters: {
+        ...state.filters,
+        campaigns: makeArray(action.campaigns),
+        compare: makeArray(action.campaigns).length > 1,
+      },
     };
   },
   [actionTypes.SET_FILTER.START_DATE]: (state, action) => {

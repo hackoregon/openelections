@@ -43,7 +43,7 @@ describe('Reducer', () => {
         startDate: null,
         endDate: null,
         count: false,
-        compare: false,
+        compare: true,
       });
     });
 
