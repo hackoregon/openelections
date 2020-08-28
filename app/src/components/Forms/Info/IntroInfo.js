@@ -24,7 +24,7 @@ const IntroInfo = () => {
           >
             Open and Accountable Elections
           </a>{' '}
-          is the City of Portland`&apos;`s small donor matching program. It is
+          is the City of Portland&apos;s small donor matching program. It is
           designed to ensure that the City government is accountable to all
           Portlanders, not just big campaign donors.
         </p>

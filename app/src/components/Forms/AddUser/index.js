@@ -54,7 +54,7 @@ const AddUser = props => (
             {props.isGovAdmin || formSections.addUserRole}
           </div>
           <p>
-            Enter the user`&apos;`s information and we will send them an email
+            Enter the user&apos;s information and we will send them an email
             with instructions to join your portal.
           </p>
           {formSections.addUser}
