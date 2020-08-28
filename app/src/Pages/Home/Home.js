@@ -216,6 +216,13 @@ const buttonStyles = css`
   margin: 5px 5px !important;
 `;
 
+const resetButtonStyles = css`
+  margin: 5px 5px !important;
+  button {
+    background-color: #c21f39 !important;
+  }
+`;
+
 const buttonWrapper = css`
   display: flex;
   flex-direction: row;
@@ -273,6 +280,7 @@ const Home = ({
   setDateRange,
   selectedCount,
   setSelectedCount,
+  resetAll,
   selectedCompare,
   campaignsTable,
   mapData,
@@ -575,20 +583,11 @@ const Home = ({
               </Select>
               <FormHelperText>View by amount or count</FormHelperText>
             </FormControl>
-            {/* <FormControl className="form-control">
-              <div css={buttonStyles}>
-                <Button css={buttonStyles} onClick={() => resetAll()}>
-                  <Clear />
-                </Button>
-              </div>
-              <FormHelperText>Clear all</FormHelperText>
-            </FormControl> */}
           </h1>
           <div css={buttonWrapper}>
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     financing: 'all',
@@ -601,7 +600,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() => {
                   const monthAgo = new Date(timeLoaded);
                   monthAgo.setMonth(timeLoaded.getMonth() - 1);
@@ -618,7 +616,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     financing: 'all',
@@ -637,7 +634,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     financing: 'all',
@@ -656,7 +652,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
@@ -673,7 +668,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
@@ -691,7 +685,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
@@ -708,7 +701,6 @@ const Home = ({
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
-                css={buttonStyles}
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
@@ -720,6 +712,11 @@ const Home = ({
                 }
               >
                 Mingus Mapps
+              </Button>
+            </div>
+            <div css={resetButtonStyles}>
+              <Button buttonType="small" onClick={() => resetAll()}>
+                Reset
               </Button>
             </div>
           </div>
@@ -1253,6 +1250,7 @@ Home.propTypes = {
   setSelectedCount: PropTypes.func,
   setSelectedOffices: PropTypes.func,
   setSelectedFinancing: PropTypes.func,
+  resetAll: PropTypes.func,
   showModal: PropTypes.func,
   summaryData: PropTypes.shape({}),
   summaryDataByParticipation: PropTypes.arrayOf(PropTypes.shape({})),
