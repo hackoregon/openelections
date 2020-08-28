@@ -143,7 +143,11 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.FINANCING]: (state, action) => {
     return {
       ...state,
-      filters: { ...state.filters, financing: action.financing },
+      filters: {
+        ...state.filters,
+        financing: action.financing,
+        compare: false,
+      },
     };
   },
   [actionTypes.SET_FILTER.CAMPAIGNS]: (state, action) => {

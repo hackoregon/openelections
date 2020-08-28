@@ -39,8 +39,8 @@ import Modal from '../../components/Modal/index';
 import MadeByFooter from './MadeByFooter';
 
 const { dollars } = civicFormat;
-const scatterplotColor = { rgba: [36, 184, 26, 255], hex: '#24b81a' };
-const alternateScatterplotColor = { rgba: [230, 0, 26, 255], hex: '#e6001a' };
+const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#0a471e' };
+const alternateScatterplotColor = { rgba: [35, 85, 44, 255], hex: '#0a471e' };
 const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const filterWrapper = css`
@@ -85,7 +85,7 @@ const formStyles = css`
   }
 
   .MuiInputBase-root {
-    background: #d3d3d3;
+    background: #f3f2f3;
   }
 
   .MuiInputBase-root,
@@ -152,12 +152,22 @@ const mobileCompareVisualizationContainer = css`
     display: grid;
     grid-template-rows: repeat(4, auto);
     grid-template-columns: repeat(1, auto);
+    div {
+      z-index: -1;
+    }
   }
 `;
 
 const mobileOnlyToggle = css`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  width: 100%;
   margin: 2rem 0;
   text-align: center;
+  div {
+    background-color: white;
+  }
   @media ${mediaQueryRanges.mediumAndUp} {
     display: none;
   }
@@ -199,12 +209,8 @@ const table = css`
   }
 `;
 
-const scatterplotFill = css`
+const legendScatterplotFill = css`
   fill: ${scatterplotColor.hex};
-`;
-
-const alternateScatterplotFill = css`
-  fill: ${alternateScatterplotColor.hex};
 `;
 
 const mapHeight = css`
@@ -229,6 +235,7 @@ const buttonWrapper = css`
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 1em;
+  filter: opacity(90%);
   @media screen and (max-width: 600px) {
     align-content: center;
   }
@@ -300,7 +307,6 @@ const Home = ({
   }, [showModal, cookies.visited]);
 
   const handleCompare = (event, newCompare) => {
-    debugger;
     setCompare(newCompare);
   };
 
@@ -317,21 +323,23 @@ const Home = ({
     `${dollars(row[field].total)} (${row[field].contributions.length})`;
 
   const bracketFieldFootnote = field => row =>
-    `${dollars(row[field].total)}${row.participatingStatus ? '' : '*'} (${
+    `${dollars(row[field].total)}${row.participatingStatus ? ' ' : '*'} (${
       row[field].contributions.length
-    }${row.participatingStatus ? '' : '*'})`;
+    }${row.participatingStatus ? ' ' : '*'})`;
 
   const footnote = field => row =>
-    `${row[field]}${row.participatingStatus ? '' : '*'}`;
+    `${row[field]}${row.participatingStatus ? ' ' : '*'}`;
 
   const dollarsFootnote = field => row =>
-    `${dollars(row[field])}${row.participatingStatus ? '' : '*'}`;
+    `${dollars(row[field])}${row.participatingStatus ? ' ' : '*'}`;
 
   const columns = [
     {
       field: 'participatingStatus',
       title: 'Public Financing',
       render: row => (row.participatingStatus ? '✅' : '❌'),
+      type: 'boolean',
+      cellStyle: { textAlign: 'center' },
     },
     {
       field: 'campaignName',
@@ -346,17 +354,20 @@ const Home = ({
       title: 'Contributions',
       defaultSort: 'desc',
       render: footnote('donationsCount'),
+      type: 'numeric',
     },
     {
       field: 'totalAmountContributed',
       title: 'Total Contributions',
       render: row => dollars(row.totalAmountContributed),
+      type: 'currency',
     },
     {
       field: 'totalAmountMatched',
       title: 'Total Match Approved',
       render: row =>
         row.participatingStatus ? dollars(row.totalAmountMatched) : 'N/A',
+      type: 'currency',
     },
     {
       title: 'Micro: <$25',
@@ -391,22 +402,27 @@ const Home = ({
       title: 'Public Financing',
       render: rowData => (rowData.participatingStatus ? '✅' : '❌'),
       sorting: false,
+      type: 'boolean',
+      cellStyle: { textAlign: 'center' },
     },
     {
       field: 'campaignsCount',
       title: 'Campaigns',
       sorting: false,
+      type: 'numeric',
     },
     {
       field: 'donationsCount',
       title: 'Contributions',
       sorting: false,
+      type: 'numeric',
       render: footnote('donationsCount'),
     },
     {
       field: 'donorsCount',
       title: 'Donors',
       sorting: false,
+      type: 'numeric',
       render: footnote('donorsCount'),
     },
     {
@@ -420,12 +436,14 @@ const Home = ({
       field: 'totalAmountContributed',
       title: 'Total Contributions',
       sorting: false,
+      type: 'currency',
       render: row => dollars(row.totalAmountContributed),
     },
     {
       field: 'totalAmountMatched',
       title: 'Total Match Approved',
       sorting: false,
+      type: 'currency',
       render: row =>
         row.participatingStatus ? dollars(row.totalAmountMatched) : 'N/A',
     },
@@ -607,6 +625,7 @@ const Home = ({
                     financing: 'all',
                     startDate: monthAgo,
                     endDate: timeLoaded,
+                    compare: false,
                   });
                 }}
               >
@@ -636,29 +655,12 @@ const Home = ({
                 buttonType="small"
                 onClick={() =>
                   setCustomFilters({
-                    financing: 'all',
-                    campaigns: availableCampaigns.filter(
-                      campaign =>
-                        campaign.name === 'Chloe Eudaly' ||
-                        campaign.name === 'Mingus Mapps'
-                    ),
-                    compare: true,
-                  })
-                }
-              >
-                Runoff: Commissioner 4
-              </Button>
-            </div>
-            <div css={buttonStyles}>
-              <Button
-                buttonType="small"
-                onClick={() =>
-                  setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
                         campaign => campaign.name === 'Melton Now'
                       ),
                     ],
+                    compare: false,
                   })
                 }
               >
@@ -676,6 +678,7 @@ const Home = ({
                       ),
                     ],
                     financing: 'all',
+                    compare: false,
                   })
                 }
               >
@@ -687,11 +690,30 @@ const Home = ({
                 buttonType="small"
                 onClick={() =>
                   setCustomFilters({
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign =>
+                        campaign.name === 'Chloe Eudaly' ||
+                        campaign.name === 'Mingus Mapps'
+                    ),
+                    compare: true,
+                  })
+                }
+              >
+                Runoff: Commissioner 4
+              </Button>
+            </div>
+            {/* <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                onClick={() =>
+                  setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
                         campaign => campaign.name === 'Chloe Eudaly'
                       ),
                     ],
+                    compare: false,
                   })
                 }
               >
@@ -708,6 +730,7 @@ const Home = ({
                         campaign => campaign.name === 'Mingus Mapps'
                       ),
                     ],
+                    compare: false,
                   })
                 }
               >
@@ -718,7 +741,7 @@ const Home = ({
               <Button buttonType="small" onClick={() => resetAll()}>
                 Reset
               </Button>
-            </div>
+            </div> */}
           </div>
           {!isLoading && (
             <div css={dataLoadedStyle}>
@@ -791,51 +814,31 @@ const Home = ({
                             cx="5"
                             cy="5"
                             r="1"
-                            css={
-                              selectedFinancing !== 'not public'
-                                ? scatterplotFill
-                                : alternateScatterplotFill
-                            }
+                            css={legendScatterplotFill}
                           />
                           <circle
                             cx="15"
                             cy="5"
                             r="2"
-                            css={
-                              selectedFinancing !== 'not public'
-                                ? scatterplotFill
-                                : alternateScatterplotFill
-                            }
+                            css={legendScatterplotFill}
                           />
                           <circle
                             cx="25"
                             cy="5"
                             r="3"
-                            css={
-                              selectedFinancing !== 'not public'
-                                ? scatterplotFill
-                                : alternateScatterplotFill
-                            }
+                            css={legendScatterplotFill}
                           />
                           <circle
                             cx="35"
                             cy="5"
                             r="4"
-                            css={
-                              selectedFinancing !== 'not public'
-                                ? scatterplotFill
-                                : alternateScatterplotFill
-                            }
+                            css={legendScatterplotFill}
                           />
                           <circle
                             cx="45"
                             cy="5"
                             r="5"
-                            css={
-                              selectedFinancing !== 'not public'
-                                ? scatterplotFill
-                                : alternateScatterplotFill
-                            }
+                            css={legendScatterplotFill}
                           />
                         </svg>
                         <span
@@ -933,7 +936,14 @@ const Home = ({
       )}
       {selectedCompare &&
         selectedCampaignNames.length === campaignsTable.length && (
-          <>
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-around;
+              align-items: flex-start;
+              flex-direction: column;
+            `}
+          >
             {selectedCampaignNames.length > 1 && (
               <div css={mobileOnlyToggle}>
                 <ToggleButtonGroup
@@ -993,8 +1003,19 @@ const Home = ({
                       <tr>
                         <th>Donors</th>
                         <td>
+                          {campaignsTable[index].donationsCount}
+                          {campaignsTable[index].participatingStatus
+                            ? ' '
+                            : '*'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Contributions</th>
+                        <td>
                           {campaignsTable[index].donorsCount}
-                          {campaignsTable[index].participatingStatus ? '' : '*'}
+                          {campaignsTable[index].participatingStatus
+                            ? ' '
+                            : '*'}
                         </td>
                       </tr>
                       <tr>
@@ -1003,7 +1024,9 @@ const Home = ({
                           {civicFormat.dollars(
                             campaignsTable[index].medianContributionSize
                           )}
-                          {campaignsTable[index].participatingStatus ? '' : '*'}
+                          {campaignsTable[index].participatingStatus
+                            ? ' '
+                            : '*'}
                         </td>
                       </tr>
                       <tr>
@@ -1081,11 +1104,24 @@ const Home = ({
                 <table css={table}>
                   <tr>
                     <th>Public Financing</th>
-                    <td>{campaignsTable[compare - 1].participatingStatus}</td>
+                    <td>
+                      {campaignsTable[compare - 1].participatingStatus
+                        ? '✅'
+                        : '❌'}
+                    </td>
                   </tr>
                   <tr>
                     <th>Donors</th>
                     <td>{campaignsTable[compare - 1].donorsCount}</td>
+                  </tr>
+                  <tr>
+                    <th>Donors</th>
+                    <td>
+                      {campaignsTable[compare - 1].donationsCount}
+                      {campaignsTable[compare - 1].participatingStatus
+                        ? ' '
+                        : '*'}
+                    </td>
                   </tr>
                   <tr>
                     <th>Median Contribution</th>
@@ -1149,7 +1185,7 @@ const Home = ({
                 />
               </div>
             </div>
-          </>
+          </div>
         )}
       {!!campaignsTable.length && (
         <>
