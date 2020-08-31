@@ -474,7 +474,7 @@ export const filteredPublicData = createSelector(
       if (financing === 'public') {
         dataCopy.features = dataCopy.features.filter(participatingCandidate);
       }
-      if (financing === 'not public') {
+      if (financing === 'private') {
         dataCopy.features = dataCopy.features.filter(nonParticipatingCandidate);
       }
     }
