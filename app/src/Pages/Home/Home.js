@@ -570,6 +570,7 @@ const Home = ({
                         );
                   setSelectedOffices(selected);
                   setSelectedCampaigns(selectedCampaignsMatchingOffices);
+                  selected.length > 0 && setSelectedFinancing('all');
                 }}
                 input={<Input />}
                 renderValue={selected =>
