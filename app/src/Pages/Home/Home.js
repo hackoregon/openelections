@@ -40,7 +40,10 @@ import MadeByFooter from './MadeByFooter';
 
 const { dollars } = civicFormat;
 const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#0a471e' };
-const alternateScatterplotColor = { rgba: [35, 85, 44, 255], hex: '#0a471e' };
+const alternateScatterplotColor = {
+  rgba: [255, 170, 0, 255],
+  hex: '#ffaa00',
+};
 const screenGridColorRange = VisualizationColors.sequential.ocean;
 
 const filterWrapper = css`
@@ -210,7 +213,19 @@ const table = css`
 `;
 
 const legendScatterplotFill = css`
+  fill: black;
+`;
+
+const participantScatterplotFill = css`
   fill: ${scatterplotColor.hex};
+`;
+
+const nonParticipantScatterplotFill = css`
+  fill: ${alternateScatterplotColor.hex};
+`;
+
+const noWrap = css`
+  white-space: nowrap;
 `;
 
 const mapHeight = css`
@@ -336,10 +351,34 @@ const Home = ({
   const columns = [
     {
       field: 'participatingStatus',
-      title: 'Public Financing',
-      render: row => (row.participatingStatus ? '✅' : '❌'),
-      type: 'boolean',
-      cellStyle: { textAlign: 'center' },
+      title: 'OAE Participant',
+      // eslint-disable-next-line react/display-name
+      render: rowData =>
+        rowData.participatingStatus ? (
+          <div>
+            <span css={noWrap}>
+              <svg viewBox="0 0 10 10" width="10px">
+                <circle cx="5" cy="5" r="5" css={participantScatterplotFill} />
+              </svg>
+              {` `}Participant
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span css={noWrap}>
+              <svg viewBox="0 0 10 10" width="10px">
+                <circle
+                  cx="5"
+                  cy="5"
+                  r="5"
+                  css={nonParticipantScatterplotFill}
+                />
+              </svg>
+              {` `}Non-Participant
+            </span>
+          </div>
+        ),
+      sorting: false,
     },
     {
       field: 'campaignName',
@@ -399,11 +438,34 @@ const Home = ({
   const summaryColumns = [
     {
       field: 'participatingStatus',
-      title: 'Public Financing',
-      render: rowData => (rowData.participatingStatus ? '✅' : '❌'),
+      title: 'OAE Participant',
+      // eslint-disable-next-line react/display-name
+      render: row =>
+        row.participatingStatus ? (
+          <div>
+            <span css={noWrap}>
+              <svg viewBox="0 0 10 10" width="10px">
+                <circle cx="5" cy="5" r="5" css={participantScatterplotFill} />
+              </svg>
+              {` `}Participant
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span css={noWrap}>
+              <svg viewBox="0 0 10 10" width="10px">
+                <circle
+                  cx="5"
+                  cy="5"
+                  r="5"
+                  css={nonParticipantScatterplotFill}
+                />
+              </svg>
+              {` `}Non-Participant
+            </span>
+          </div>
+        ),
       sorting: false,
-      type: 'boolean',
-      cellStyle: { textAlign: 'center' },
     },
     {
       field: 'campaignsCount',
@@ -468,6 +530,25 @@ const Home = ({
         <FormGroup row css={formStyles}>
           <h1>
             <span css={formText}>Campaign contributions for </span>
+            <FormControl className="form-control">
+              <Select
+                value={selectedFinancing}
+                onChange={event => setSelectedFinancing(event.target.value)}
+              >
+                <MenuItem value="public" css={formOption}>
+                  participants
+                </MenuItem>
+                <MenuItem value="private" css={formOption}>
+                  non-participants
+                </MenuItem>
+                <MenuItem value="all" css={formOption}>
+                  participants & non-participants
+                </MenuItem>
+              </Select>
+              <FormHelperText>
+                Open and Accountable Elections (OAE)
+              </FormHelperText>
+            </FormControl>
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
                 {`${
@@ -557,24 +638,6 @@ const Home = ({
               </Select>
               <FormHelperText>Limit by candidate</FormHelperText>
             </FormControl>
-            <span css={formText}>using</span>
-            <FormControl className="form-control">
-              <Select
-                value={selectedFinancing}
-                onChange={event => setSelectedFinancing(event.target.value)}
-              >
-                <MenuItem value="public" css={formOption}>
-                  public financing
-                </MenuItem>
-                <MenuItem value="not public" css={formOption}>
-                  private financing
-                </MenuItem>
-                <MenuItem value="all" css={formOption}>
-                  any financing
-                </MenuItem>
-              </Select>
-              <FormHelperText>Open and Accountable Elections</FormHelperText>
-            </FormControl>
             <FormControl className="form-control">
               <PublicDateRangeField
                 id="filter-date"
@@ -640,7 +703,7 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Melton Now' ||
+                        campaign.name === 'Schoen for Mayor' ||
                         campaign.name === 'Ted Wheeler'
                     ),
                     compare: true,
@@ -657,14 +720,14 @@ const Home = ({
                   setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
-                        campaign => campaign.name === 'Melton Now'
+                        campaign => campaign.name === 'Schoen for Mayor'
                       ),
                     ],
                     compare: false,
                   })
                 }
               >
-                Sarah Iannarone
+                Schoen for Mayor
               </Button>
             </div>
             <div css={buttonStyles}>
@@ -677,7 +740,7 @@ const Home = ({
                         campaign => campaign.name === 'Ted Wheeler'
                       ),
                     ],
-                    financing: 'all',
+                    financing: 'private',
                     compare: false,
                   })
                 }
@@ -693,14 +756,14 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Chloe Eudaly' ||
-                        campaign.name === 'Mingus Mapps'
+                        campaign.name === 'Melton Now' ||
+                        campaign.name === 'NoMelton for Commissioner'
                     ),
                     compare: true,
                   })
                 }
               >
-                Runoff: Commissioner 4
+                Runoff: Commissioner 1
               </Button>
             </div>
             {/* <div css={buttonStyles}>
