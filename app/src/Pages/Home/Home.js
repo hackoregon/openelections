@@ -1105,12 +1105,24 @@ const Home = ({
                         <td>
                           {campaignsTable[index].participatingStatus
                             ? civicFormat.dollars(
-                                campaignsTable[compare - 1].totalAmountMatched
+                                campaignsTable[index].totalAmountMatched
                               )
                             : 'N/A'}
                         </td>
                       </tr>
                     </table>
+                    {!campaignsTable[index].participatingStatus && (
+                      <div
+                        css={css`
+                          ${dataLoadedStyle};
+                          margin: -2em auto 1em auto;
+                          text-align: center;
+                        `}
+                      >
+                        *Smaller contributions are bundled by ORESTAR for
+                        non-participating candidates.
+                      </div>
+                    )}
                   </div>
                   <div
                     css={css`
@@ -1213,6 +1225,17 @@ const Home = ({
                     </td>
                   </tr>
                 </table>
+                {!campaignsTable[compare - 1].participatingStatus && (
+                  <div
+                    css={css`
+                      ${dataLoadedStyle};
+                      margin: -2em auto 1em auto;
+                    `}
+                  >
+                    *Smaller contributions are bundled by ORESTAR for
+                    non-participating candidates.
+                  </div>
+                )}
               </div>
               <div
                 css={css`
