@@ -15,7 +15,7 @@ const IntroInfo = () => {
   return (
     <>
       <section css={contentStyle}>
-        <h2>Open and Accountable Elections</h2>
+        <h2>Open & Accountable Elections Portland</h2>
         <p>
           <a
             href="https://portlandoregon.gov/oae"
@@ -29,8 +29,8 @@ const IntroInfo = () => {
           Portlanders, not just big campaign donors.
         </p>
         <p>
-          This real-time dashboard shows contribution sources for both
-          participating and non-participating candidates.
+          This real-time dashboard shows contribution sources for participating
+          candidates, with filter options to show non-participating candidates.
         </p>
       </section>
     </>

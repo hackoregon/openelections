@@ -350,6 +350,10 @@ const Home = ({
 
   const columns = [
     {
+      field: 'campaignName',
+      title: 'Campaign',
+    },
+    {
       field: 'participatingStatus',
       title: 'OAE Participant',
       // eslint-disable-next-line react/display-name
@@ -379,10 +383,6 @@ const Home = ({
           </div>
         ),
       sorting: false,
-    },
-    {
-      field: 'campaignName',
-      title: 'Campaign',
     },
     {
       field: 'officeSought',
@@ -1057,7 +1057,7 @@ const Home = ({
                     </h2>
                     <table css={table}>
                       <tr>
-                        <th>Public Financing</th>
+                        <th>OAE Participant</th>
                         <td>
                           {campaignsTable[index].participatingStatus
                             ? '✅'
@@ -1179,7 +1179,7 @@ const Home = ({
                 </h2>
                 <table css={table}>
                   <tr>
-                    <th>Public Financing</th>
+                    <th>OAE Participant</th>
                     <td>
                       {campaignsTable[compare - 1].participatingStatus
                         ? '✅'
