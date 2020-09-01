@@ -118,13 +118,8 @@ const storeEnhancer = ReduxQuerySync.enhancer({
 
 export default function configureStore(history) {
   const composeEnhancers =
-    process.env.NODE_ENV === 'development'
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-      : compose;
-  if (
-    process.env.NODE_ENV === 'development' &&
-    !window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-  ) {
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  if (!composeEnhancers) {
     console.warn(
       'Install Redux DevTools Extension to inspect the app state: ' +
         'https://github.com/zalmoxisus/redux-devtools-extension#installation'
