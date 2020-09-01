@@ -38,10 +38,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: ['1', '2', '3'],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
         count: false,
+        compare: true,
       });
     });
 
@@ -53,10 +55,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
 
       expect(
@@ -66,10 +70,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: ['just-the-one'],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -83,10 +89,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: ['1', '2', '3'],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
 
@@ -98,10 +106,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
       });
 
       expect(
@@ -111,10 +121,31 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: ['just-the-one'],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
+      });
+    });
+  });
+
+  describe('set financing', () => {
+    it('sets the financing filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.FINANCING,
+          financing: 'all',
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        financing: 'all',
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+        compare: false,
       });
     });
   });
@@ -129,10 +160,12 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: date,
         endDate: null,
         count: false,
+        compare: false,
       });
     });
   });
@@ -147,10 +180,56 @@ describe('Reducer', () => {
         }).filters
       ).toEqual({
         campaigns: [],
+        financing: 'public',
         offices: [],
         startDate: null,
         endDate: date,
         count: false,
+        compare: false,
+      });
+    });
+  });
+
+  describe('set compare', () => {
+    it('sets the compare filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.COMPARE,
+          compare: true,
+        }).filters
+      ).toEqual({
+        campaigns: [],
+        financing: 'public',
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+        compare: true,
+      });
+    });
+  });
+
+  describe('set custom', () => {
+    it('sets a custom filter', () => {
+      expect(
+        reducer(publicData.initialState, {
+          type: actionTypes.SET_FILTER.CUSTOM,
+          filters: {
+            financing: 'all',
+            count: true,
+            offices: ['1', '2', '3'],
+            campaigns: ['hazel'],
+            compare: true,
+          },
+        }).filters
+      ).toEqual({
+        campaigns: ['hazel'],
+        financing: 'all',
+        offices: ['1', '2', '3'],
+        startDate: null,
+        endDate: null,
+        count: true,
+        compare: true,
       });
     });
   });
@@ -587,15 +666,34 @@ describe('Selectors', () => {
   });
 
   describe('summaryData', () => {
-    const summaryPoint = (contributorName, amount, matchAmount, oaeType) =>
-      point({ contributorName, amount, matchAmount, oaeType });
+    const summaryPoint = (
+      campaignName,
+      contributorName,
+      amount,
+      matchAmount,
+      oaeType
+    ) => point({ campaignName, contributorName, amount, matchAmount, oaeType });
 
     const points = [
-      summaryPoint('Abc', 10, null, 'allowable'),
-      summaryPoint('Abc', 20, 120, 'matchable'),
-      summaryPoint('Def', 30, 150, 'matchable'),
-      summaryPoint('Ghi', 100, null, 'public_matching_contribution'),
-      summaryPoint('Jkl', 5, 30, 'matchable'),
+      summaryPoint('Zyx', 'Abc', 10, null, 'allowable'),
+      summaryPoint('Zyx', 'Abc', 20, 120, 'matchable'),
+      summaryPoint('Yxw', 'Def', 30, 150, 'matchable'),
+      summaryPoint('Xwv', 'Ghi', 100, null, 'public_matching_contribution'),
+      summaryPoint('Wvu', 'Jkl', 5, 30, 'matchable'),
+      summaryPoint(
+        'Wvu',
+        'Miscellaneous Cash Contributions $100 and under ',
+        150,
+        null,
+        'allowable'
+      ),
+      summaryPoint(
+        'Wvu',
+        'Miscellaneous Cash Contributions $100 and under ',
+        150,
+        null,
+        'allowable'
+      ),
     ];
 
     const [state] = makeData(points);
@@ -606,12 +704,16 @@ describe('Selectors', () => {
       );
     });
 
-    it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution)', () => {
-      expect(publicData.summaryData(state).donorsCount).toEqual(3);
+    it('returns the total number of campaigns (uniqued by campaign name, excluding public matching contribution)', () => {
+      expect(publicData.summaryData(state).campaignsCount).toEqual(3);
+    });
+
+    it('returns the total number of donors (uniqued by contributor name, excluding public matching contribution, counting each bundled contribution as 1 donor)', () => {
+      expect(publicData.summaryData(state).donorsCount).toEqual(5);
     });
 
     it('returns the total amount contributed (excluding public matching contributions) and the total amount matched', () => {
-      const total = 10 + 20 + 30 + 5;
+      const total = 10 + 20 + 30 + 5 + 150 + 150;
       const matchTotal = 120 + 150 + 30;
       expect(publicData.summaryData(state).totalAmountContributed).toEqual(
         total
@@ -623,14 +725,14 @@ describe('Selectors', () => {
 
     it('returns the median contribution size, excluding public_matching_contribution types', () => {
       // Contributions
-      // [ 10, 20, 30, 100, 5.23 ]
+      // [ 10, 20, 30, 100, 5, 150, 150 ]
       // Exclude public_matching_contribution types
-      // [ 10, 20, 30, 5.23 ]
+      // [ 10, 20, 30, 5, 150, 150 ]
       // Sort
-      // [ 5.23, 10, 20, 30 ]
+      // [ 5.23, 10, 20, 30, 150, 150 ]
       // Median (avg middle data points)
-      // (10 + 20) / 2 = 15
-      expect(publicData.summaryData(state).medianContributionSize).toEqual(15);
+      // (20 + 30) / 2 = 25
+      expect(publicData.summaryData(state).medianContributionSize).toEqual(25);
     });
   });
 
@@ -662,6 +764,53 @@ describe('Selectors', () => {
         small: {
           total: 30 + 50 + 100,
           contributions: [30, 50, 100],
+        },
+        medium: {
+          total: 150 + 200,
+          contributions: [150, 200],
+        },
+        large: {
+          total: 500 + 750 + 1000,
+          contributions: [500, 750, 1000],
+        },
+        mega: {
+          total: 2500,
+          contributions: [2500],
+        },
+      });
+    });
+
+    it('buckets and summates donations appropriately including ', () => {
+      const points = [
+        point({ amount: 0 }),
+        point({ amount: 5 }),
+        point({ amount: 10 }),
+        point({ amount: 20 }),
+        point({ amount: 30 }),
+        point({ amount: 50 }),
+        point({ amount: 100 }),
+        point({ amount: 150 }),
+        point({ amount: 200 }),
+        point({ amount: 500 }),
+        point({ amount: 750 }),
+        point({ amount: 1000 }),
+        point({
+          amount: 2500,
+          contributorName: 'Miscellaneous Cash Contributions $100 and under ',
+        }),
+        point({ amount: 2500 }),
+      ];
+
+      const [state] = makeData(points);
+
+      expect(publicData.donationSizeByDonationRange(state)).toEqual({
+        micro: {
+          total: 0 + 5 + 10 + 20,
+          contributions: [0, 5, 10, 20],
+        },
+        small: {
+          total: 30 + 50 + 100 + 2500,
+          contributions: [30, 50, 100, 2500],
         },
         medium: {
           total: 150 + 200,
@@ -710,6 +859,81 @@ describe('Selectors', () => {
           contributions: [2500],
         },
       });
+    });
+  });
+
+  describe('donationSizeByDonationRangeByCandidate', () => {
+    const summaryPoint = (campaignId, campaignName, amount) =>
+      point({
+        campaignId,
+        campaignName,
+        amount,
+        officeSought: 'Mayor',
+      });
+
+    const points = [
+      summaryPoint('1', 'One', 5),
+      summaryPoint('1', 'One', 1000),
+
+      summaryPoint('2', 'Two', 5),
+      summaryPoint('2', 'Two', 20),
+    ];
+
+    const filters = {
+      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+    };
+
+    const [stateWithSelections] = makeData(points, { filters });
+
+    it('buckets and summates appropriately in an array by candidate', () => {
+      expect(
+        publicData.donationSizeByDonationRangeByCandidate(stateWithSelections)
+      ).toEqual([
+        {
+          micro: {
+            total: 5,
+            contributions: [5],
+          },
+          small: {
+            total: 0,
+            contributions: [],
+          },
+          medium: {
+            total: 0,
+            contributions: [],
+          },
+          large: {
+            total: 1000,
+            contributions: [1000],
+          },
+          mega: {
+            total: 0,
+            contributions: [],
+          },
+        },
+        {
+          micro: {
+            total: 5 + 20,
+            contributions: [5, 20],
+          },
+          small: {
+            total: 0,
+            contributions: [],
+          },
+          medium: {
+            total: 0,
+            contributions: [],
+          },
+          large: {
+            total: 0,
+            contributions: [],
+          },
+          mega: {
+            total: 0,
+            contributions: [],
+          },
+        },
+      ]);
     });
   });
 
@@ -868,6 +1092,152 @@ describe('Selectors', () => {
     });
   });
 
+  describe('aggregatedContributorTypesByCandidate', () => {
+    const summaryPoint = (campaignId, campaignName, amount, contributorType) =>
+      point({
+        campaignId,
+        campaignName,
+        amount,
+        contributorType,
+      });
+
+    const points = [
+      summaryPoint('1', 'One', 5, 'individual'),
+      summaryPoint('1', 'One', 5, 'individual'),
+      summaryPoint('1', 'One', 20, 'unregistered'),
+      summaryPoint('2', 'Two', 1000, 'business'),
+    ];
+
+    const filters = {
+      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+    };
+
+    const [stateWithSelections] = makeData(points, { filters });
+
+    it('buckets and summates appropriately in an array by candidate', () => {
+      expect(
+        publicData.aggregatedContributorTypesByCandidate(stateWithSelections)
+      ).toEqual([
+        [
+          {
+            type: 'individual',
+            label: 'Individual',
+            total: 5 + 5,
+            contributions: [5, 5],
+            count: 2,
+          },
+          {
+            type: 'business',
+            label: 'Business',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'family',
+            label: 'Family',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'labor',
+            label: 'Labor',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'political_committee',
+            label: 'Political Committee',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'political_party',
+            label: 'Political Party',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'unregistered',
+            label: 'Unregistered',
+            total: 20,
+            contributions: [20],
+            count: 1,
+          },
+          {
+            type: 'other',
+            label: 'Other',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+        ],
+        [
+          {
+            type: 'individual',
+            label: 'Individual',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'business',
+            label: 'Business',
+            total: 1000,
+            contributions: [1000],
+            count: 1,
+          },
+          {
+            type: 'family',
+            label: 'Family',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'labor',
+            label: 'Labor',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'political_committee',
+            label: 'Political Committee',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'political_party',
+            label: 'Political Party',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'unregistered',
+            label: 'Unregistered',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'other',
+            label: 'Other',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+        ],
+      ]);
+    });
+  });
+
   describe('aggregatedContributionTypes', () => {
     const summaryPoint = (contributionSubType, amount) =>
       point({ contributionSubType, amount });
@@ -944,6 +1314,87 @@ describe('Selectors', () => {
           contributions: [],
           count: 0,
         },
+      ]);
+    });
+  });
+
+  describe('aggregatedContributionTypesByCandidate', () => {
+    const summaryPoint = (
+      campaignId,
+      campaignName,
+      amount,
+      contributionSubType
+    ) =>
+      point({
+        campaignId,
+        campaignName,
+        amount,
+        contributionSubType,
+      });
+
+    const points = [
+      summaryPoint('1', 'One', 5, 'cash'),
+      summaryPoint('1', 'One', 7, 'cash'),
+      summaryPoint('1', 'One', 20, 'inkind_onefish'),
+      summaryPoint('2', 'Two', 1000, 'other'),
+    ];
+
+    const filters = {
+      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+    };
+
+    const [stateWithSelections] = makeData(points, { filters });
+
+    it('buckets and summates donations appropriately in candidates array', () => {
+      expect(
+        publicData.aggregatedContributionTypesByCandidate(stateWithSelections)
+      ).toEqual([
+        [
+          {
+            type: 'cash',
+            formattedType: 'Cash',
+            total: 5 + 7,
+            contributions: [5, 7],
+            count: 2,
+          },
+          {
+            type: 'inkind',
+            formattedType: 'Inkind',
+            total: 20,
+            contributions: [20],
+            count: 1,
+          },
+          {
+            type: 'other',
+            formattedType: 'Other',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+        ],
+        [
+          {
+            type: 'cash',
+            formattedType: 'Cash',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'inkind',
+            formattedType: 'Inkind',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'other',
+            formattedType: 'Other',
+            total: 1000,
+            contributions: [1000],
+            count: 1,
+          },
+        ],
       ]);
     });
   });
@@ -1027,6 +1478,85 @@ describe('Selectors', () => {
     });
   });
 
+  describe('aggregatedContributionsByRegionByCandidate', () => {
+    const summaryPoint = (campaignId, campaignName, amount, city, state) =>
+      point({
+        campaignId,
+        campaignName,
+        amount,
+        city,
+        state,
+      });
+
+    const points = [
+      summaryPoint('1', 'One', 5, 'portland', 'or'),
+      summaryPoint('1', 'One', 7, 'gresham', 'or'),
+      summaryPoint('1', 'One', 20, 'washington', 'dc'),
+      summaryPoint('2', 'Two', 1000, 'washington', 'dc'),
+    ];
+
+    const filters = {
+      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+    };
+
+    const [stateWithSelections] = makeData(points, { filters });
+
+    it('aggregates and summates appropriately in an array by candidate', () => {
+      expect(
+        publicData.aggregatedContributionsByRegionByCandidate(
+          stateWithSelections
+        )
+      ).toEqual([
+        [
+          {
+            type: 'portland',
+            label: 'Portland',
+            total: 5,
+            contributions: [5],
+            count: 1,
+          },
+          {
+            type: 'oregon',
+            label: 'Oregon',
+            total: 7,
+            contributions: [7],
+            count: 1,
+          },
+          {
+            type: 'out_of_state',
+            label: 'Out Of State',
+            total: 20,
+            contributions: [20],
+            count: 1,
+          },
+        ],
+        [
+          {
+            type: 'portland',
+            label: 'Portland',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'oregon',
+            label: 'Oregon',
+            total: 0,
+            contributions: [],
+            count: 0,
+          },
+          {
+            type: 'out_of_state',
+            label: 'Out Of State',
+            total: 1000,
+            contributions: [1000],
+            count: 1,
+          },
+        ],
+      ]);
+    });
+  });
+
   describe('campaignsTable', () => {
     const summaryPoint = (
       campaignId,
@@ -1085,7 +1615,9 @@ describe('Selectors', () => {
       {
         campaignId: '1',
         campaignName: 'One',
+        campaignsCount: 1,
         officeSought: 'Mayor',
+        participatingStatus: true,
         donationsCount: 4,
         donorsCount: 3,
         totalAmountContributed: 5 + 20 + 100 + 1000,
@@ -1116,7 +1648,9 @@ describe('Selectors', () => {
       {
         campaignId: '2',
         campaignName: 'Two',
+        campaignsCount: 1,
         officeSought: 'Mayor',
+        participatingStatus: true,
         donationsCount: 6,
         donorsCount: 4,
         totalAmountContributed: 5 + 5 + 20 + 25 + 35 + 100,
@@ -1147,7 +1681,9 @@ describe('Selectors', () => {
       {
         campaignId: '3',
         campaignName: 'Three',
+        campaignsCount: 1,
         officeSought: 'Mayor',
+        participatingStatus: true,
         donationsCount: 4,
         donorsCount: 1,
         totalAmountContributed: 50 + 50 + 78 + 501,
@@ -1178,7 +1714,9 @@ describe('Selectors', () => {
       {
         campaignId: '4',
         campaignName: 'Four',
+        campaignsCount: 1,
         officeSought: 'Mayor',
+        participatingStatus: true,
         donationsCount: 3,
         donorsCount: 3,
         totalAmountContributed: 5 + 6 + 7,

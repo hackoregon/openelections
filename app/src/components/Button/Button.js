@@ -103,6 +103,13 @@ const buttonTypes = {
     color: 'primary',
     fullWidth: true,
   },
+  small: {
+    type: 'button',
+    variant: 'contained',
+    color: 'primary',
+    size: 'small',
+    style: { ...primaryOverrides, backgroundColor: '#313aa7', borderRadius: 0 },
+  },
 };
 
 const Button = ({ buttonType, onClick, disabled, style, children }) => {

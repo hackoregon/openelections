@@ -1,6 +1,6 @@
-import React from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import * as React from 'react';
 
 const contentStyle = css`
   padding: 0 2em;
@@ -15,7 +15,7 @@ const IntroInfo = () => {
   return (
     <>
       <section css={contentStyle}>
-        <h2>Open and Accountable Elections</h2>
+        <h2>Open & Accountable Elections Portland</h2>
         <p>
           <a
             href="https://portlandoregon.gov/oae"
@@ -24,13 +24,13 @@ const IntroInfo = () => {
           >
             Open and Accountable Elections
           </a>{' '}
-          is the City of Portland's small donor matching program. It is designed
-          to ensure that the City government is accountable to all Portlanders,
-          not just big campaign donors.
+          is the City of Portland&apos;s small donor matching program. It is
+          designed to ensure that the City government is accountable to all
+          Portlanders, not just big campaign donors.
         </p>
         <p>
           This real-time dashboard shows contribution sources for participating
-          candidates.
+          candidates, with filter options to show non-participating candidates.
         </p>
       </section>
     </>

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import Form from '../../Form/Form';
 import TextField from '../../Fields/TextField';
@@ -24,5 +25,11 @@ const ExportXMLForm = ({ initialValues, onSubmit, children }) => (
     {children}
   </Form>
 );
+
+ExportXMLForm.propTypes = {
+  initialValues: PropTypes.shape({}),
+  onSubmit: PropTypes.func,
+  children: PropTypes.node,
+};
 
 export default ExportXMLForm;

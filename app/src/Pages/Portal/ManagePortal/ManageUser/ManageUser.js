@@ -50,7 +50,7 @@ const ManageUserPage = props => {
           {userStatus === 'invited' && (
             <React.Fragment>
               <p className="fine-print" css={finePrint}>
-                This user hasn't finished creating their account.
+                This user hasn&apos;t finished creating their account.
               </p>
               <Button buttonType="primary" onClick={() => handleReSendEmail()}>
                 Resend Invitation

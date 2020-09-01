@@ -49,8 +49,8 @@ const AddCampaign = props => (
           <React.Fragment>
             <p css={formTitle}>Add New Campaign</p>
             <p>
-              Enter the user's information and we will send them an email with
-              instructions to join your portal.
+              Enter the user&apos;s information and we will send them an email
+              with instructions to join your portal.
             </p>
             {formSections.AddCampaign}
             <div css={buttonWrapper}>

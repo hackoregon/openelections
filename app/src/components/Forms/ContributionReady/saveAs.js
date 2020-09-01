@@ -143,6 +143,7 @@ class ContributionReadyForm extends React.Component {
             values.status === ContributionStatusEnum.SUBMITTED
           );
           if (values.buttonSubmitted && !isValid) {
+            // eslint-disable-next-line no-unused-vars
             for (const [key, value] of Object.entries(formErrors)) {
               values.buttonSubmitted = '';
               flashMessage(value, { props: { variant: 'error' } });

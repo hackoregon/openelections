@@ -1,7 +1,5 @@
-// TODO remove: import { Logo } from '@hackoregon/component-library';
-// To remove the error: pseudo class ":first-child" is potentially unsafe
-// eslint-disable-next-line
-import React from "react";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+// Checked accessibility of a role="link" and should be ok. Assistive tech should send spacebar to trigger onClick.
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { css, jsx } from '@emotion/core';
@@ -18,6 +16,7 @@ const styles = css`
   align-items: center;
   margin: 0;
   padding: 0 10px;
+  overflow-x: auto;
   .nav-wrapper {
     flex: 2;
   }
@@ -42,18 +41,37 @@ const styles = css`
   }
 `;
 const TopNavigation = props => {
-  const { isLoggedIn } = props;
+  const { isLoggedIn, resetAll } = props;
 
   return (
     <header css={styles}>
-      <Link to={isLoggedIn ? '/dashboard' : '/'} className="header-icon">
-        <img
-          className="logo-img"
-          src={logo}
-          alt="Open and Accountable Elections logo"
-        />
-        <p className="logo-text">Open & Accountable Elections Portland</p>
-      </Link>
+      {!isLoggedIn && (
+        <div className="header-icon">
+          <a
+            onClick={() => resetAll()}
+            role="link"
+            className="link-button"
+            tabIndex="0"
+          >
+            <img
+              className="logo-img"
+              src={logo}
+              alt="Open and Accountable Elections logo"
+            />
+          </a>
+          <p className="logo-text">Open & Accountable Elections Portland</p>
+        </div>
+      )}
+      {isLoggedIn && (
+        <Link to="/dashboard" className="header-icon">
+          <img
+            className="logo-img"
+            src={logo}
+            alt="Open and Accountable Elections logo"
+          />
+          <p className="logo-text">Open & Accountable Elections Portland</p>
+        </Link>
+      )}
       <Navigation />
     </header>
   );
@@ -63,4 +81,5 @@ export default TopNavigation;
 
 TopNavigation.propTypes = {
   isLoggedIn: PropTypes.bool,
+  resetAll: PropTypes.func,
 };

@@ -8,6 +8,7 @@ import createActionTypes, {
 } from '../utils/createActionTypes';
 import action from '../utils/action';
 import { RESET_STATE, resetState } from './common';
+import campaigns from './campaigns';
 
 const { titleCase } = civicFormat;
 export const STATE_KEY = 'publicData';
@@ -59,13 +60,20 @@ const makeArray = input => {
 // Action Types
 export const actionTypes = {
   GET_PUBLIC_DATA: createActionTypes(STATE_KEY, 'GET_PUBLIC_DATA'),
+  GET_EXTERNAL_PUBLIC_DATA: createActionTypes(
+    STATE_KEY,
+    'GET_EXTERNAL_PUBLIC_DATA'
+  ),
   SET_FILTER: createCustomActionTypes(STATE_KEY, 'SET_FILTER', [
     'OFFICES',
+    'FINANCING',
     'CAMPAIGNS',
     'START_DATE',
     'END_DATE',
     'COUNT',
+    'COMPARE',
     'RESET_ALL',
+    'CUSTOM',
   ]),
 };
 
@@ -75,15 +83,23 @@ export const initialState = {
     type: 'FeatureCollection',
     features: [],
   },
+  externalData: {
+    type: 'FeatureCollection',
+    features: [],
+  },
   filters: {
+    financing: 'public',
     campaigns: [],
     offices: [],
     startDate: null,
     endDate: null,
     count: false,
+    compare: false,
   },
   isLoading: false,
+  isExternalLoading: false,
   error: null,
+  externalError: null,
 };
 
 // Reducer
@@ -105,16 +121,43 @@ export default createReducer(initialState, {
   [actionTypes.GET_PUBLIC_DATA.FAILURE]: (state, action) => {
     return { ...state, isLoading: false, error: action.error };
   },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.REQUEST]: state => {
+    return { ...state, isExternalLoading: true };
+  },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.SUCCESS]: (state, action) => {
+    return {
+      ...state,
+      isExternalLoading: false,
+      externalData: action.payload,
+    };
+  },
+  [actionTypes.GET_EXTERNAL_PUBLIC_DATA.FAILURE]: (state, action) => {
+    return { ...state, isExternalLoading: false, externalError: action.error };
+  },
   [actionTypes.SET_FILTER.OFFICES]: (state, action) => {
     return {
       ...state,
       filters: { ...state.filters, offices: makeArray(action.offices) },
     };
   },
+  [actionTypes.SET_FILTER.FINANCING]: (state, action) => {
+    return {
+      ...state,
+      filters: {
+        ...state.filters,
+        financing: action.financing,
+        compare: false,
+      },
+    };
+  },
   [actionTypes.SET_FILTER.CAMPAIGNS]: (state, action) => {
     return {
       ...state,
-      filters: { ...state.filters, campaigns: makeArray(action.campaigns) },
+      filters: {
+        ...state.filters,
+        campaigns: makeArray(action.campaigns),
+        compare: makeArray(action.campaigns).length > 1,
+      },
     };
   },
   [actionTypes.SET_FILTER.START_DATE]: (state, action) => {
@@ -129,15 +172,35 @@ export default createReducer(initialState, {
   [actionTypes.SET_FILTER.COUNT]: (state, action) => {
     return { ...state, filters: { ...state.filters, count: action.count } };
   },
+  [actionTypes.SET_FILTER.COMPARE]: (state, action) => {
+    return { ...state, filters: { ...state.filters, compare: action.compare } };
+  },
   [actionTypes.SET_FILTER.RESET_ALL]: state => {
     return {
       ...state,
       filters: {
+        financing: 'public',
         campaigns: [],
         offices: [],
         startDate: null,
         endDate: null,
         count: false,
+        compare: false,
+      },
+    };
+  },
+  [actionTypes.SET_FILTER.CUSTOM]: (state, action) => {
+    return {
+      ...state,
+      filters: {
+        financing: 'public',
+        campaigns: [],
+        offices: [],
+        startDate: null,
+        endDate: null,
+        count: false,
+        compare: false,
+        ...action.filters,
       },
     };
   },
@@ -151,24 +214,38 @@ export const actionCreators = {
       action(actionTypes.GET_PUBLIC_DATA.SUCCESS, { payload }),
     failure: error => action(actionTypes.GET_PUBLIC_DATA.FAILURE, { error }),
   },
+  getExternalPublicData: {
+    request: () => action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.REQUEST),
+    success: payload =>
+      action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.SUCCESS, { payload }),
+    failure: error =>
+      action(actionTypes.GET_EXTERNAL_PUBLIC_DATA.FAILURE, { error }),
+  },
   setFilter: {
     offices: offices => action(actionTypes.SET_FILTER.OFFICES, { offices }),
+    financing: financing =>
+      action(actionTypes.SET_FILTER.FINANCING, { financing }),
     campaigns: campaigns =>
       action(actionTypes.SET_FILTER.CAMPAIGNS, { campaigns }),
     startDate: startDate =>
       action(actionTypes.SET_FILTER.START_DATE, { startDate }),
     endDate: endDate => action(actionTypes.SET_FILTER.END_DATE, { endDate }),
     count: count => action(actionTypes.SET_FILTER.COUNT, { count }),
+    compare: compare => action(actionTypes.SET_FILTER.COMPARE, { compare }),
     resetAll: () => action(actionTypes.SET_FILTER.RESET_ALL),
+    custom: filters => action(actionTypes.SET_FILTER.CUSTOM, { filters }),
   },
 };
 
 export const setSelectedOffices = actionCreators.setFilter.offices;
+export const setSelectedFinancing = actionCreators.setFilter.financing;
 export const setSelectedCampaigns = actionCreators.setFilter.campaigns;
 export const setSelectedStartDate = actionCreators.setFilter.startDate;
 export const setSelectedEndDate = actionCreators.setFilter.endDate;
 export const setSelectedCount = actionCreators.setFilter.count;
+export const setSelectedCompare = actionCreators.setFilter.compare;
 export const resetAll = actionCreators.setFilter.resetAll;
+export const setCustomFilters = actionCreators.setFilter.custom;
 
 // Side Effects, e.g. thunks
 export function getPublicData() {
@@ -179,6 +256,18 @@ export function getPublicData() {
       dispatch(actionCreators.getPublicData.success(response));
     } catch (error) {
       dispatch(actionCreators.getPublicData.failure(error));
+    }
+  };
+}
+
+export function getExternalPublicData() {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.getExternalPublicData.request());
+    try {
+      const response = await api.getExternalContributionGeoData();
+      dispatch(actionCreators.getExternalPublicData.success(response));
+    } catch (error) {
+      dispatch(actionCreators.getExternalPublicData.failure(error));
     }
   };
 }
@@ -197,11 +286,19 @@ export const publicDataRequest = createSelector(
   }
 );
 
+export const externalPublicDataRequest = createSelector(
+  allPublicData,
+  state => {
+    const { externalData, isExternalLoading, externalError } = state;
+    return { externalData, isExternalLoading, externalError };
+  }
+);
+
 export const publicDataRequestIsLoading = createSelector(
   allPublicData,
   state => {
-    const { isLoading } = state;
-    return isLoading;
+    const { isLoading, isExternalLoading } = state;
+    return !(!isLoading && !isExternalLoading);
   }
 );
 
@@ -212,9 +309,12 @@ export const publicDataFilters = createSelector(
 
 export const publicDataGeojson = createSelector(
   publicDataRequest,
-  req => {
+  externalPublicDataRequest,
+  (req, extReq) => {
     const data = req.data;
     if (!data.features) return data;
+    const externalData = extReq.externalData;
+    if (!externalData.features) return externalData;
 
     // Convert date strings to Date objects
     data.features.forEach(f => {
@@ -223,7 +323,22 @@ export const publicDataGeojson = createSelector(
       }
     });
 
-    return data;
+    // Convert date strings to Date objects and set match to 0
+    externalData.features.forEach(f => {
+      if (f.properties.date) {
+        f.properties.date = new Date(f.properties.date);
+      }
+      f.properties.oaeType = 'not participating';
+      f.properties.matchAmount = null;
+    });
+
+    // Create a shallow copy of the combined Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = data.features
+      .slice()
+      .concat(externalData.features.slice());
+
+    return dataCopy;
   }
 );
 
@@ -268,6 +383,11 @@ export const selectedOffices = createSelector(
   filters => filters.offices || []
 );
 
+export const selectedFinancing = createSelector(
+  publicDataFilters,
+  filters => filters.financing
+);
+
 export const selectedCampaigns = createSelector(
   publicDataFilters,
   filters => filters.campaigns || []
@@ -293,6 +413,11 @@ export const selectedCount = createSelector(
   filters => filters.count
 );
 
+export const selectedCompare = createSelector(
+  publicDataFilters,
+  filters => filters.compare
+);
+
 // Filtered filter options
 
 export const availableCampaigns = createSelector(
@@ -312,15 +437,21 @@ export const availableCampaignNames = createSelector(
   campaigns => campaigns.map(campaign => campaign.name)
 );
 
+// The only non-participating candidate this election cycle is Ted Wheeler
+const participatingCandidate = f => f.properties.campaignName !== 'Ted Wheeler';
+
+const nonParticipatingCandidate = f =>
+  f.properties.campaignName === 'Ted Wheeler';
 // Filtered public dataset (based on above filters)
 
 export const filteredPublicData = createSelector(
   publicDataGeojson,
   selectedOffices,
+  selectedFinancing,
   selectedCampaigns,
   selectedStartDate,
   selectedEndDate,
-  (data, offices, campaigns, start, end) => {
+  (data, offices, financing, campaigns, start, end) => {
     const campaignIds = campaigns.map(c => +c.id);
     // Create a shallow copy of the underlying Geojson
     const dataCopy = { ...data };
@@ -337,6 +468,15 @@ export const filteredPublicData = createSelector(
       dataCopy.features = dataCopy.features.filter(f =>
         offices.includes(f.properties.officeSought)
       );
+    }
+
+    if (financing !== 'all') {
+      if (financing === 'public') {
+        dataCopy.features = dataCopy.features.filter(participatingCandidate);
+      }
+      if (financing === 'private') {
+        dataCopy.features = dataCopy.features.filter(nonParticipatingCandidate);
+      }
     }
 
     if (start && end) {
@@ -372,6 +512,34 @@ export const mapData = createSelector(
   data => data
 );
 
+const addParticipatingStatus = (data, status) => {
+  return { ...data, participatingStatus: status };
+};
+
+export const filteredPublicDataParticipatingOnly = createSelector(
+  filteredPublicData,
+  data => {
+    // Create a shallow copy of the underlying Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = dataCopy.features.slice();
+    // Filter out non-participating candidates
+    dataCopy.features = dataCopy.features.filter(participatingCandidate);
+    return dataCopy;
+  }
+);
+
+export const filteredPublicDataNonParticipatingOnly = createSelector(
+  filteredPublicData,
+  data => {
+    // Create a shallow copy of the underlying Geojson
+    const dataCopy = { ...data };
+    dataCopy.features = dataCopy.features.slice();
+    // Filter for non-participating candidates
+    dataCopy.features = dataCopy.features.filter(nonParticipatingCandidate);
+    return dataCopy;
+  }
+);
+
 const sortedDonations = createSelector(
   filteredPublicData,
   data => {
@@ -381,21 +549,64 @@ const sortedDonations = createSelector(
   }
 );
 
+const sortedDonationsNonParticipatingOnly = createSelector(
+  filteredPublicDataNonParticipatingOnly,
+  data => {
+    const donations = data.features.map(f => f.properties);
+    donations.sort((a, b) => a.amount - b.amount);
+    return donations;
+  }
+);
+
+const sortedDonationsParticipatingOnly = createSelector(
+  filteredPublicDataParticipatingOnly,
+  data => {
+    const donations = data.features.map(f => f.properties);
+    donations.sort((a, b) => a.amount - b.amount);
+    return donations;
+  }
+);
+
+export const sortedDonationsByCandidate = createSelector(
+  filteredPublicData,
+  selectedCampaignNames,
+  (data, campaigns) =>
+    campaigns.map(campaign => {
+      const donations = data.features
+        .filter(f => f.properties.campaignName === campaign)
+        .map(f => f.properties);
+      donations.sort((a, b) => a.amount - b.amount);
+      return donations;
+    })
+);
+
 const summarize = donations => {
   const donationsCount = donations.length;
 
   const nonOAEContributions = [];
   const markedDonors = {};
+  const markedCampaigns = {};
   let donorsCount = 0;
   let totalAmountContributed = 0;
   let totalAmountMatched = 0;
+  let campaignsCount = 0;
 
   // Only iterate over the array once for better performance
   donations.forEach(d => {
     // NOTE: contributor name is not a strong idenfitier, could result in miscounting
-    if (!markedDonors[d.contributorName]) {
+    // NOTE: Count each "Miscellaneous Cash Contributions $100 and under " as one donor
+
+    if (
+      !markedDonors[d.contributorName] ||
+      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
+    ) {
       donorsCount += 1;
       markedDonors[d.contributorName] = true;
+    }
+
+    if (!markedCampaigns[d.campaignName]) {
+      campaignsCount += 1;
+      markedCampaigns[d.campaignName] = true;
     }
 
     // Guard against bad data
@@ -412,6 +623,7 @@ const summarize = donations => {
   });
 
   return {
+    campaignsCount,
     donationsCount,
     donorsCount,
     totalAmountContributed,
@@ -421,14 +633,33 @@ const summarize = donations => {
 };
 
 // Done: summary data includes aggregations and averages
+// - number of campaigns
 // - number of donors
 // - number of donations
 // - median contribution size (exclude OAE type public match)
 // - total amount contributed (by campaign?)
 // - total amount matched (requires explanatory text since it won't be exactly 6x)
+
 export const summaryData = createSelector(
   sortedDonations,
   donations => summarize(donations)
+);
+
+export const summaryDataByParticipation = createSelector(
+  sortedDonationsParticipatingOnly,
+  sortedDonationsNonParticipatingOnly,
+  (participatingDonations, nonParticipatingDonations) => {
+    const summaryData = [];
+    participatingDonations.length > 0 &&
+      summaryData.push(
+        addParticipatingStatus(summarize(participatingDonations), true)
+      );
+    nonParticipatingDonations.length > 0 &&
+      summaryData.push(
+        addParticipatingStatus(summarize(nonParticipatingDonations), false)
+      );
+    return summaryData;
+  }
 );
 
 const bracketize = donations => {
@@ -478,6 +709,15 @@ const bracketize = donations => {
       }
     }
 
+    // Categorize "Miscellaneous Cash Contributions $100 and under" in the 25-100 category
+    if (
+      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
+    ) {
+      aggregates.small.total += d.amount;
+      aggregates.small.contributions.push(d.amount);
+      return;
+    }
+
     aggregates[marker].total += d.amount;
     aggregates[marker].contributions.push(d.amount);
   });
@@ -497,150 +737,185 @@ export const donationSizeByDonationRange = createSelector(
   donations => bracketize(donations)
 );
 
+export const donationSizeByDonationRangeByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidates => candidates.map(donations => bracketize(donations))
+);
+
+const aggregateDonationsBySize = aggregates => {
+  const markers = ['micro', 'small', 'medium', 'large', 'mega'];
+  const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
+  const summarizedAggregates = markers.map((category, index) => {
+    return {
+      type: category,
+      formattedType: labels[index],
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+  return summarizedAggregates;
+};
+
 export const aggregatedDonationSize = createSelector(
   donationSizeByDonationRange,
-  aggregates => {
-    const markers = ['micro', 'small', 'medium', 'large', 'mega'];
-    const labels = ['<$25', '$25-$100', '$100-$250', '$250-$1000', '>$1000'];
-    const summarizedAggregates = markers.map((category, index) => {
-      return {
-        type: category,
-        formattedType: labels[index],
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-    return summarizedAggregates;
-  }
+  aggregateDonationsBySize
+);
+
+export const aggregatedDonationSizeByCandidate = createSelector(
+  donationSizeByDonationRangeByCandidate,
+  candidateDonations => candidateDonations.map(aggregateDonationsBySize)
 );
 
 // Done: count of and sum of donations for each contributor type
 // (individual, business, family, labor, political_committee, political_party, unregistered, other)
 // For each type include three properties ({ type: 'individual', count: number of donations, total: sum of donations })
 // Note: pad out the rest of the map with zeroes for each type that isn't represented in the data
+const aggregateDonationsByContributorType = donations => {
+  const categories = [
+    'individual',
+    'business',
+    'family',
+    'labor',
+    'political_committee',
+    'political_party',
+    'unregistered',
+    'other',
+  ];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    const bucket = aggregates[d.contributorType || 'other'];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      label: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributorTypes = createSelector(
   sortedDonations,
-  donations => {
-    const categories = [
-      'individual',
-      'business',
-      'family',
-      'labor',
-      'political_committee',
-      'political_party',
-      'unregistered',
-      'other',
-    ];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByContributorType
+);
 
-    donations.forEach(d => {
-      const bucket = aggregates[d.contributorType || 'other'];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        label: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributorTypesByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations =>
+    candidateDonations.map(aggregateDonationsByContributorType)
 );
 
 // Done: count of and sum of donations for each contribution type
 // (cash, inkind, other)
 // Same as above data shape
+const aggregateDonationsByContributionType = donations => {
+  const categories = ['cash', 'inkind', 'other'];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    let type = 'other';
+    if (d.contributionSubType === 'cash') type = 'cash';
+    if ((d.contributionSubType || '').startsWith('inkind_')) type = 'inkind';
+
+    const bucket = aggregates[type];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      formattedType: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributionTypes = createSelector(
   sortedDonations,
-  donations => {
-    const categories = ['cash', 'inkind', 'other'];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByContributionType
+);
 
-    donations.forEach(d => {
-      let type = 'other';
-      if (d.contributionSubType === 'cash') type = 'cash';
-      if ((d.contributionSubType || '').startsWith('inkind_')) type = 'inkind';
-
-      const bucket = aggregates[type];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        formattedType: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributionTypesByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations =>
+    candidateDonations.map(aggregateDonationsByContributionType)
 );
 
 // Done: count and sum of donations for each region
 // (portland, oregon, outside)
 // Note: filter out OAE subtype public_matching
 // Note: do not include portland in oregon
+const aggregateDonationsByRegion = donations => {
+  const categories = ['portland', 'oregon', 'out_of_state'];
+  const aggregates = categories.reduce((agg, type) => {
+    agg[type] = {
+      total: 0,
+      contributions: [],
+    };
+    return agg;
+  }, {});
+
+  donations.forEach(d => {
+    let type = 'out_of_state';
+    if ((d.state || '').toUpperCase() === 'OR') {
+      type = 'oregon';
+      // NOTE: this is a strict address match. If we want to include the entire metro area,
+      // it would probably be better to check against a set of zipcodes or something.
+      if ((d.city || '').toUpperCase() === 'PORTLAND') type = 'portland';
+    }
+
+    const bucket = aggregates[type];
+    bucket.total += d.amount;
+    bucket.contributions.push(d.amount);
+  });
+
+  const summarizedAggregates = categories.map(category => {
+    return {
+      type: category,
+      label: titleCase(category),
+      total: aggregates[category].total,
+      contributions: aggregates[category].contributions,
+      count: aggregates[category].contributions.length,
+    };
+  });
+
+  return summarizedAggregates;
+};
+
 export const aggregatedContributionsByRegion = createSelector(
   sortedDonations,
-  donations => {
-    const categories = ['portland', 'oregon', 'out_of_state'];
-    const aggregates = categories.reduce((agg, type) => {
-      agg[type] = {
-        total: 0,
-        contributions: [],
-      };
-      return agg;
-    }, {});
+  aggregateDonationsByRegion
+);
 
-    donations.forEach(d => {
-      let type = 'out_of_state';
-      if ((d.state || '').toUpperCase() === 'OR') {
-        type = 'oregon';
-        // NOTE: this is a strict address match. If we want to include the entire metro area,
-        // it would probably be better to check against a set of zipcodes or something.
-        if ((d.city || '').toUpperCase() === 'PORTLAND') type = 'portland';
-      }
-
-      const bucket = aggregates[type];
-      bucket.total += d.amount;
-      bucket.contributions.push(d.amount);
-    });
-
-    const summarizedAggregates = categories.map(category => {
-      return {
-        type: category,
-        label: titleCase(category),
-        total: aggregates[category].total,
-        contributions: aggregates[category].contributions,
-        count: aggregates[category].contributions.length,
-      };
-    });
-
-    return summarizedAggregates;
-  }
+export const aggregatedContributionsByRegionByCandidate = createSelector(
+  sortedDonationsByCandidate,
+  candidateDonations => candidateDonations.map(aggregateDonationsByRegion)
 );
 
 // Done: create a table that matches this format
@@ -669,6 +944,8 @@ export const campaignsTable = createSelector(
       const contribution = campaign.contributions[0];
       campaign.campaignName = contribution.campaignName;
       campaign.officeSought = contribution.officeSought;
+      campaign.participatingStatus =
+        contribution.campaignName !== 'Ted Wheeler';
     });
 
     return campaigns;

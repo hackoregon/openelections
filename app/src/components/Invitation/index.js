@@ -21,7 +21,7 @@ const center = css`
 const Invitation = ({ campaign, government, code }) => (
   <FormModal>
     <div css={center}>
-      <p>You've been invited to join:</p>
+      <p>You&apos;ve been invited to join:</p>
       <p css={formTitle}>
         {`${campaign && campaign.length > 0 ? campaign : ''}${
           government && government.length > 0 ? government : ''

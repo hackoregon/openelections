@@ -1,11 +1,8 @@
-import * as React from 'react';
 /** @jsx jsx */
-import { css, jsx } from '@emotion/core';
-import { civicFormat } from '@hackoregon/component-library/dist/utils';
+import { jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { PieChart } from '@hackoregon/component-library';
 import OpenElectionsVictoryTheme from './OpenElectionsVictoryTheme';
-
-const { dollars, titleCase } = civicFormat;
 
 function ContributionTypePie({ data, count }) {
   return (
@@ -35,5 +32,16 @@ function ContributionTypePie({ data, count }) {
     </div>
   );
 }
+
+ContributionTypePie.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      formattedType: PropTypes.string,
+      count: PropTypes.number,
+      total: PropTypes.number,
+    })
+  ),
+  count: PropTypes.bool,
+};
 
 export default ContributionTypePie;

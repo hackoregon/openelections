@@ -17,7 +17,7 @@ const buttonWrapper = css`
 const ChangePassword = () => (
   <FormModal>
     <ChangePasswordForm
-      onSubmit={x => console.log('REPLACE ME WITH SOMETHING REAL!')}
+      onSubmit={() => console.log('REPLACE ME WITH SOMETHING REAL!')}
       initialValues={{
         oldPassword: '',
         newPassword: '',
