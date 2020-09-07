@@ -15,7 +15,7 @@ export async function removePermission(request: IRequest, response: Response, ne
         await removePermissionAsync(attrs);
         return response.status(200).send();
     } catch (error) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && error.message !== 'No token set') {
             bugsnagClient.notify(error);
         }
         return response.status(422).json({message: error.message});

@@ -115,7 +115,7 @@ export async function addExpenditure(request: IRequest, response: Response, next
         const expenditure = await addExpenditureAsync(addExpenditureDto);
         return response.status(201).json(expenditure);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -178,7 +178,7 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         }
         return response.status(200).send(expenditures);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -277,7 +277,7 @@ export async function updateExpenditure(request: IRequest, response: Response, n
 
         return response.status(204).send(expenditure);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -320,7 +320,7 @@ export async function createExpenditureComment(request: IRequest, response: Resp
         const comment = await createExpenditureCommentAsync(expenditureCommentDto);
         return response.status(204).json(comment);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({message: err.message});
@@ -348,7 +348,7 @@ export async function getExpenditureById(request: IRequest, response: Response, 
         const expenditure = await getExpenditureByIdAsync(getExpenditureByIdDto);
         return response.status(200).json(expenditure);
     } catch (err) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
         return response.status(422).json({ message: err.message });
