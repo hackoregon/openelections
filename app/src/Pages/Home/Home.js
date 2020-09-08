@@ -38,7 +38,8 @@ import PublicDateRangeField from '../../components/Fields/PublicDateRangeField';
 import Modal from '../../components/Modal/index';
 import MadeByFooter from './MadeByFooter';
 
-const { dollars } = civicFormat;
+const { numeric } = civicFormat;
+const dollars = num => `$${Math.round(num).toLocaleString('en-US')}`;
 const scatterplotColor = { rgba: [35, 85, 44, 255], hex: '#0a471e' };
 const alternateScatterplotColor = {
   rgba: [255, 170, 0, 255],
@@ -343,8 +344,8 @@ const Home = ({
       row[field].contributions.length
     }${row.participatingStatus ? ' ' : '*'})`;
 
-  const footnote = field => row =>
-    `${row[field]}${row.participatingStatus ? ' ' : '*'}`;
+  const numericFootnote = field => row =>
+    `${numeric(row[field])}${row.participatingStatus ? ' ' : '*'}`;
 
   const dollarsFootnote = field => row =>
     `${dollars(row[field])}${row.participatingStatus ? ' ' : '*'}`;
@@ -393,7 +394,7 @@ const Home = ({
       field: 'donationsCount',
       title: 'Contributions',
       defaultSort: 'desc',
-      render: footnote('donationsCount'),
+      render: numericFootnote('donationsCount'),
       type: 'numeric',
     },
     {
@@ -479,14 +480,14 @@ const Home = ({
       title: 'Contributions',
       sorting: false,
       type: 'numeric',
-      render: footnote('donationsCount'),
+      render: numericFootnote('donationsCount'),
     },
     {
       field: 'donorsCount',
       title: 'Donors',
       sorting: false,
       type: 'numeric',
-      render: footnote('donorsCount'),
+      render: numericFootnote('donorsCount'),
     },
     {
       field: 'medianContributionSize',
@@ -912,13 +913,13 @@ const Home = ({
                           {
                             name: `Contribution`,
                             field: 'amount',
-                            formatField: civicFormat.dollars,
+                            formatField: dollars,
                           },
                           {
                             name: `Match`,
                             field: 'matchAmount',
                             formatField: d =>
-                              d === 'N/A' ? 'N/A' : civicFormat.dollars(d),
+                              d === 'N/A' ? 'N/A' : dollars(d),
                           },
                           {
                             name: `Type`,
@@ -1056,7 +1057,7 @@ const Home = ({
                       <tr>
                         <th>Median Contribution</th>
                         <td>
-                          {civicFormat.dollars(
+                          {dollars(
                             campaignsTable[index].medianContributionSize
                           )}
                           {campaignsTable[index].participatingStatus
@@ -1067,7 +1068,7 @@ const Home = ({
                       <tr>
                         <th>Total Contributions</th>
                         <td>
-                          {civicFormat.dollars(
+                          {dollars(
                             campaignsTable[index].totalAmountContributed
                           )}
                         </td>
@@ -1076,9 +1077,7 @@ const Home = ({
                         <th>Total Match Approved</th>
                         <td>
                           {campaignsTable[index].participatingStatus
-                            ? civicFormat.dollars(
-                                campaignsTable[index].totalAmountMatched
-                              )
+                            ? dollars(campaignsTable[index].totalAmountMatched)
                             : 'N/A'}
                         </td>
                       </tr>
@@ -1173,7 +1172,7 @@ const Home = ({
                   <tr>
                     <th>Median Contribution</th>
                     <td>
-                      {civicFormat.dollars(
+                      {dollars(
                         campaignsTable[compare - 1].medianContributionSize
                       )}
                     </td>
@@ -1181,7 +1180,7 @@ const Home = ({
                   <tr>
                     <th>Total Contributions</th>
                     <td>
-                      {civicFormat.dollars(
+                      {dollars(
                         campaignsTable[compare - 1].totalAmountContributed
                       )}
                     </td>
@@ -1190,7 +1189,7 @@ const Home = ({
                     <th>Total Match Approved</th>
                     <td>
                       {campaignsTable[compare - 1].participatingStatus
-                        ? civicFormat.dollars(
+                        ? dollars(
                             campaignsTable[compare - 1].totalAmountMatched
                           )
                         : 'N/A'}
