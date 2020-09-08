@@ -720,7 +720,7 @@ const Home = ({
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
-                      availableCampaigns.find(
+                      availableCampaigns.filter(
                         campaign => campaign.name === 'Sarah Iannarone'
                       ),
                     ],
@@ -728,7 +728,7 @@ const Home = ({
                   })
                 }
               >
-                Schoen for Mayor
+                Sarah Iannarone
               </Button>
             </div>
             <div css={buttonStyles}>
@@ -737,7 +737,7 @@ const Home = ({
                 onClick={() =>
                   setCustomFilters({
                     campaigns: [
-                      availableCampaigns.find(
+                      availableCampaigns.filter(
                         campaign => campaign.name === 'Ted Wheeler'
                       ),
                     ],
