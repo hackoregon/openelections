@@ -238,13 +238,6 @@ const buttonStyles = css`
   margin: 5px 5px !important;
 `;
 
-const resetButtonStyles = css`
-  margin: 5px 5px !important;
-  button {
-    background-color: #c21f39 !important;
-  }
-`;
-
 const buttonWrapper = css`
   display: flex;
   flex-direction: row;
