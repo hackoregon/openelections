@@ -30,7 +30,6 @@ const errorStyle = css`
 `;
 
 const Modal = props => {
-  console.log('here');
   const { getModalState, customModalStyle } = props;
   const handleClose = () => {
     props.clearModal();
