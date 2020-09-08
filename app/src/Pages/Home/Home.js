@@ -1037,7 +1037,7 @@ const Home = ({
                         </td>
                       </tr>
                       <tr>
-                        <th>Donors</th>
+                        <th>Contributions</th>
                         <td>
                           {campaignsTable[index].donationsCount}
                           {campaignsTable[index].participatingStatus
@@ -1046,9 +1046,9 @@ const Home = ({
                         </td>
                       </tr>
                       <tr>
-                        <th>Contributions</th>
+                        <th>Donors</th>
                         <td>
-                          {campaignsTable[index].donorsCount}
+                          {campaignsTable[index].donorsCount}{' '}
                           {campaignsTable[index].participatingStatus
                             ? ' '
                             : '*'}
@@ -1157,13 +1157,18 @@ const Home = ({
                     </td>
                   </tr>
                   <tr>
-                    <th>Donors</th>
-                    <td>{campaignsTable[compare - 1].donorsCount}</td>
+                    <th>Contributions</th>
+                    <td>
+                      {campaignsTable[compare - 1].donationsCount}
+                      {campaignsTable[compare - 1].participatingStatus
+                        ? ' '
+                        : '*'}
+                    </td>
                   </tr>
                   <tr>
                     <th>Donors</th>
                     <td>
-                      {campaignsTable[compare - 1].donationsCount}
+                      {campaignsTable[compare - 1].donorsCount}{' '}
                       {campaignsTable[compare - 1].participatingStatus
                         ? ' '
                         : '*'}
@@ -1175,6 +1180,9 @@ const Home = ({
                       {dollars(
                         campaignsTable[compare - 1].medianContributionSize
                       )}
+                      {campaignsTable[compare - 1].participatingStatus
+                        ? ' '
+                        : '*'}
                     </td>
                   </tr>
                   <tr>
