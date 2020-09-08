@@ -1041,7 +1041,7 @@ const Home = ({
                       <tr>
                         <th>Donors</th>
                         <td>
-                          {campaignsTable[index].donorsCount}{' '}
+                          {campaignsTable[index].donorsCount}
                           {campaignsTable[index].participatingStatus
                             ? ' '
                             : '*'}
@@ -1161,7 +1161,7 @@ const Home = ({
                   <tr>
                     <th>Donors</th>
                     <td>
-                      {campaignsTable[compare - 1].donorsCount}{' '}
+                      {campaignsTable[compare - 1].donorsCount}
                       {campaignsTable[compare - 1].participatingStatus
                         ? ' '
                         : '*'}
