@@ -681,7 +681,7 @@ const Home = ({
                 All
               </Button>
             </div>
-            <div css={buttonStyles}>
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() => {
@@ -697,7 +697,7 @@ const Home = ({
               >
                 Last 2 Months
               </Button>
-            </div>
+            </div> */}
             <div css={buttonStyles}>
               <Button
                 buttonType="small"
