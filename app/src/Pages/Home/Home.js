@@ -309,6 +309,7 @@ const Home = ({
   summaryDataByParticipation,
   showModal,
   setCustomFilters,
+  mostRecentExternalContributionDate,
 }) => {
   const [cookies, setCookie] = useCookies('visited');
   const [compare, setCompare] = React.useState(1);
@@ -684,7 +685,7 @@ const Home = ({
                 buttonType="small"
                 onClick={() => {
                   const monthAgo = new Date(timeLoaded);
-                  monthAgo.setMonth(timeLoaded.getMonth() - 1);
+                  monthAgo.setMonth(timeLoaded.getMonth() - 2);
                   setCustomFilters({
                     financing: 'all',
                     startDate: monthAgo,
@@ -693,7 +694,7 @@ const Home = ({
                   });
                 }}
               >
-                Last Month
+                Last 2 Months
               </Button>
             </div>
             <div css={buttonStyles}>
@@ -719,11 +720,10 @@ const Home = ({
                 buttonType="small"
                 onClick={() =>
                   setCustomFilters({
-                    campaigns: [
-                      availableCampaigns.filter(
-                        campaign => campaign.name === 'Sarah Iannarone'
-                      ),
-                    ],
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign => campaign.name === 'Sarah Iannarone'
+                    ),
                     compare: false,
                   })
                 }
@@ -736,11 +736,10 @@ const Home = ({
                 buttonType="small"
                 onClick={() =>
                   setCustomFilters({
-                    campaigns: [
-                      availableCampaigns.filter(
-                        campaign => campaign.name === 'Ted Wheeler'
-                      ),
-                    ],
+                    campaigns: availableCampaigns.filter(
+                      campaign => campaign.name === 'Ted Wheeler'
+                    ),
+
                     financing: 'private',
                     compare: false,
                   })
@@ -767,52 +766,24 @@ const Home = ({
                 Runoff: Commissioner 1
               </Button>
             </div>
-            {/* <div css={buttonStyles}>
-              <Button
-                buttonType="small"
-                onClick={() =>
-                  setCustomFilters({
-                    campaigns: [
-                      availableCampaigns.find(
-                        campaign => campaign.name === 'Chloe Eudaly'
-                      ),
-                    ],
-                    compare: false,
-                  })
-                }
-              >
-                Chloe Eudaly
-              </Button>
-            </div>
-            <div css={buttonStyles}>
-              <Button
-                buttonType="small"
-                onClick={() =>
-                  setCustomFilters({
-                    campaigns: [
-                      availableCampaigns.find(
-                        campaign => campaign.name === 'Mingus Mapps'
-                      ),
-                    ],
-                    compare: false,
-                  })
-                }
-              >
-                Mingus Mapps
-              </Button>
-            </div>
-            <div css={resetButtonStyles}>
-              <Button buttonType="small" onClick={() => resetAll()}>
-                Reset
-              </Button>
-            </div> */}
           </div>
           {!isLoading && (
             <div css={dataLoadedStyle}>
               Live data from Open and Accountable Elections retrieved on{' '}
-              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}. Data loaded
-              from ORESTAR for non-participating candidates may have up to a 12
-              hour delay.
+              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}.{' '}
+              {mostRecentExternalContributionDate ? (
+                <>
+                  Data loaded from{' '}
+                  <a href="https://secure.sos.state.or.us/orestar/sooDetail.do?sooRsn=87514">
+                    ORESTAR
+                  </a>{' '}
+                  for non-participating candidates & is delayed (latest
+                  transaction{' '}
+                  {format(mostRecentExternalContributionDate, 'MMM DD, YYYY')})
+                </>
+              ) : (
+                ''
+              )}
             </div>
           )}
         </FormGroup>
@@ -1377,6 +1348,7 @@ Home.propTypes = {
   showModal: PropTypes.func,
   summaryData: PropTypes.shape({}),
   summaryDataByParticipation: PropTypes.arrayOf(PropTypes.shape({})),
+  mostRecentExternalContributionDate: PropTypes.instanceOf(Date),
 };
 
 export default Home;

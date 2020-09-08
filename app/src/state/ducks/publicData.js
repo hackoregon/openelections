@@ -307,6 +307,33 @@ export const publicDataFilters = createSelector(
   state => state.filters
 );
 
+export const mostRecentExternalContributionDate = createSelector(
+  externalPublicDataRequest,
+  extReq => {
+    const externalData = extReq.externalData;
+    // Return undefined if no external contributions
+    if (!externalData.features) return undefined;
+    if (externalData.features.length < 1) return undefined;
+
+    // Convert date strings to Date objects
+    externalData.features.forEach(f => {
+      if (f.properties.date) {
+        f.properties.date = new Date(f.properties.date);
+      }
+    });
+
+    // Create a shallow copy of the combined Geojson and sort latest date
+    const dataCopy = { ...externalData };
+    dataCopy.features = externalData.features.slice();
+
+    const donations = dataCopy.features.map(f => f.properties);
+    donations.sort((a, b) => b.date - a.date);
+    const mostRecentDonationDate = donations[0].date;
+
+    return mostRecentDonationDate;
+  }
+);
+
 export const publicDataGeojson = createSelector(
   publicDataRequest,
   externalPublicDataRequest,

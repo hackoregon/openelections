@@ -39,6 +39,7 @@ import {
   setCustomFilters,
   externalPublicDataRequest,
   getExternalPublicData,
+  mostRecentExternalContributionDate,
 } from '../../state/ducks/publicData';
 import { showModal } from '../../state/ducks/modal';
 import Home from './Home';
@@ -94,6 +95,9 @@ export default connect(
     ),
     summaryData: summaryData(state),
     summaryDataByParticipation: summaryDataByParticipation(state),
+    mostRecentExternalContributionDate: mostRecentExternalContributionDate(
+      state
+    ),
   }),
   dispatch => {
     return {
