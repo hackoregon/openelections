@@ -704,7 +704,7 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Schoen for Mayor' ||
+                        campaign.name === 'Sarah Iannarone' ||
                         campaign.name === 'Ted Wheeler'
                     ),
                     compare: true,
@@ -721,7 +721,7 @@ const Home = ({
                   setCustomFilters({
                     campaigns: [
                       availableCampaigns.find(
-                        campaign => campaign.name === 'Schoen for Mayor'
+                        campaign => campaign.name === 'Sarah Iannarone'
                       ),
                     ],
                     compare: false,
@@ -757,8 +757,8 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Melton Now' ||
-                        campaign.name === 'NoMelton for Commissioner'
+                        campaign.name === 'Chloe Eudaly' ||
+                        campaign.name === 'Mingus Mapps'
                     ),
                     compare: true,
                   })
