@@ -885,11 +885,11 @@ describe('Selectors', () => {
 
     const [stateWithSelections] = makeData(points, { filters });
 
-    it('buckets and summates appropriately in an array by candidate', () => {
+    it('buckets and summates appropriately in an object by candidate', () => {
       expect(
         publicData.donationSizeByDonationRangeByCandidate(stateWithSelections)
-      ).toEqual([
-        {
+      ).toEqual({
+        One: {
           micro: {
             total: 5,
             contributions: [5],
@@ -911,7 +911,7 @@ describe('Selectors', () => {
             contributions: [],
           },
         },
-        {
+        Two: {
           micro: {
             total: 5 + 20,
             contributions: [5, 20],
@@ -933,7 +933,7 @@ describe('Selectors', () => {
             contributions: [],
           },
         },
-      ]);
+      });
     });
   });
 
@@ -1114,11 +1114,11 @@ describe('Selectors', () => {
 
     const [stateWithSelections] = makeData(points, { filters });
 
-    it('buckets and summates appropriately in an array by candidate', () => {
+    it('buckets and summates appropriately in an object by candidate', () => {
       expect(
         publicData.aggregatedContributorTypesByCandidate(stateWithSelections)
-      ).toEqual([
-        [
+      ).toEqual({
+        One: [
           {
             type: 'individual',
             label: 'Individual',
@@ -1176,7 +1176,7 @@ describe('Selectors', () => {
             count: 0,
           },
         ],
-        [
+        Two: [
           {
             type: 'individual',
             label: 'Individual',
@@ -1234,7 +1234,7 @@ describe('Selectors', () => {
             count: 0,
           },
         ],
-      ]);
+      });
     });
   });
 
@@ -1345,11 +1345,11 @@ describe('Selectors', () => {
 
     const [stateWithSelections] = makeData(points, { filters });
 
-    it('buckets and summates donations appropriately in candidates array', () => {
+    it('buckets and summates donations appropriately in an object by candidate', () => {
       expect(
         publicData.aggregatedContributionTypesByCandidate(stateWithSelections)
-      ).toEqual([
-        [
+      ).toEqual({
+        One: [
           {
             type: 'cash',
             formattedType: 'Cash',
@@ -1372,7 +1372,7 @@ describe('Selectors', () => {
             count: 0,
           },
         ],
-        [
+        Two: [
           {
             type: 'cash',
             formattedType: 'Cash',
@@ -1395,7 +1395,7 @@ describe('Selectors', () => {
             count: 1,
           },
         ],
-      ]);
+      });
     });
   });
 
@@ -1501,13 +1501,13 @@ describe('Selectors', () => {
 
     const [stateWithSelections] = makeData(points, { filters });
 
-    it('aggregates and summates appropriately in an array by candidate', () => {
+    it('aggregates and summates appropriately in an object by candidate', () => {
       expect(
         publicData.aggregatedContributionsByRegionByCandidate(
           stateWithSelections
         )
-      ).toEqual([
-        [
+      ).toEqual({
+        One: [
           {
             type: 'portland',
             label: 'Portland',
@@ -1530,7 +1530,7 @@ describe('Selectors', () => {
             count: 1,
           },
         ],
-        [
+        Two: [
           {
             type: 'portland',
             label: 'Portland',
@@ -1553,7 +1553,7 @@ describe('Selectors', () => {
             count: 1,
           },
         ],
-      ]);
+      });
     });
   });
 
