@@ -1003,126 +1003,119 @@ const Home = ({
             <div
               css={largeCompareVisualizationContainer(selectedCampaigns.length)}
             >
-              {selectedCampaignNames.map((name, index) => (
-                <>
-                  <div
-                    css={css`
-                      grid-column-start: ${index + 1};
-                      grid-row-start: 1;
-                    `}
-                  >
-                    <h2
+              {selectedCampaignNames.map((name, index) => {
+                const campaignData = campaignsTable.find(
+                  campaign => campaign.campaignName === name
+                );
+                return (
+                  <React.Fragment key={name}>
+                    <div
                       css={css`
-                        display: flex;
-                        justify-content: center;
-                        text-align: center;
+                        grid-column-start: ${index + 1};
+                        grid-row-start: 1;
                       `}
                     >
-                      {campaignsTable[index].campaignName}
-                    </h2>
-                    <table css={table}>
-                      <tr>
-                        <th>OAE Participant</th>
-                        <td>
-                          {campaignsTable[index].participatingStatus
-                            ? '✅'
-                            : '❌'}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Contributions</th>
-                        <td>
-                          {campaignsTable[index].donationsCount}
-                          {campaignsTable[index].participatingStatus
-                            ? ' '
-                            : '*'}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Donors</th>
-                        <td>
-                          {campaignsTable[index].donorsCount}
-                          {campaignsTable[index].participatingStatus
-                            ? ' '
-                            : '*'}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Median Contribution</th>
-                        <td>
-                          {dollars(
-                            campaignsTable[index].medianContributionSize
-                          )}
-                          {campaignsTable[index].participatingStatus
-                            ? ' '
-                            : '*'}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Total Contributions</th>
-                        <td>
-                          {dollars(
-                            campaignsTable[index].totalAmountContributed
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Total Match Approved</th>
-                        <td>
-                          {campaignsTable[index].participatingStatus
-                            ? dollars(campaignsTable[index].totalAmountMatched)
-                            : 'N/A'}
-                        </td>
-                      </tr>
-                    </table>
-                    {!campaignsTable[index].participatingStatus && (
-                      <div
+                      <h2
                         css={css`
-                          ${dataLoadedStyle};
-                          margin: -2em auto 1em auto;
+                          display: flex;
+                          justify-content: center;
                           text-align: center;
                         `}
                       >
-                        *Smaller contributions are bundled by ORESTAR for
-                        non-participating candidates.
-                      </div>
-                    )}
-                  </div>
-                  <div
-                    css={css`
-                      grid-column-start: ${index + 1};
-                      grid-row-start: 2;
-                    `}
-                  >
-                    <ContributionTypeBar
-                      data={aggregatedContributorTypesByCandidate[index]}
-                      count={selectedCount}
-                    />
-                  </div>
-                  <div
-                    css={css`
-                      grid-column-start: ${index + 1};
-                      grid-row-start: 3;
-                    `}
-                  >
-                    <ContributionTypePie
-                      data={aggregatedDonationSizeByCandidate[index]}
-                      count={selectedCount}
-                    />
-                  </div>
-                  <div
-                    css={css`
-                      grid-column-start: ${index + 1};
-                      grid-row-start: 4;
-                    `}
-                  >
-                    <ContributorLocationBar
-                      data={aggregatedContributionsByRegionByCandidate[index]}
-                      count={selectedCount}
-                    />
-                  </div>
-                </>
-              ))}
+                        {campaignData.campaignName}
+                      </h2>
+                      <table css={table}>
+                        <tr>
+                          <th>OAE Participant</th>
+                          <td>
+                            {campaignData.participatingStatus ? '✅' : '❌'}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Contributions</th>
+                          <td>
+                            {campaignData.donationsCount}
+                            {campaignData.participatingStatus ? ' ' : '*'}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Donors</th>
+                          <td>
+                            {campaignData.donorsCount}
+                            {campaignData.participatingStatus ? ' ' : '*'}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Median Contribution</th>
+                          <td>
+                            {dollars(campaignData.medianContributionSize)}
+                            {campaignData.participatingStatus ? ' ' : '*'}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Total Contributions</th>
+                          <td>
+                            {dollars(campaignData.totalAmountContributed)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Total Match Approved</th>
+                          <td>
+                            {campaignData.participatingStatus
+                              ? dollars(campaignData.totalAmountMatched)
+                              : 'N/A'}
+                          </td>
+                        </tr>
+                      </table>
+                      {!campaignData.participatingStatus && (
+                        <div
+                          css={css`
+                            ${dataLoadedStyle};
+                            margin: -2em auto 1em auto;
+                            text-align: center;
+                          `}
+                        >
+                          *Smaller contributions are bundled by ORESTAR for
+                          non-participating candidates.
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      css={css`
+                        grid-column-start: ${index + 1};
+                        grid-row-start: 2;
+                      `}
+                    >
+                      <ContributionTypeBar
+                        data={aggregatedContributorTypesByCandidate[name]}
+                        count={selectedCount}
+                      />
+                    </div>
+                    <div
+                      css={css`
+                        grid-column-start: ${index + 1};
+                        grid-row-start: 3;
+                      `}
+                    >
+                      <ContributionTypePie
+                        data={aggregatedDonationSizeByCandidate[name]}
+                        count={selectedCount}
+                      />
+                    </div>
+                    <div
+                      css={css`
+                        grid-column-start: ${index + 1};
+                        grid-row-start: 4;
+                      `}
+                    >
+                      <ContributorLocationBar
+                        data={aggregatedContributionsByRegionByCandidate[name]}
+                        count={selectedCount}
+                      />
+                    </div>
+                  </React.Fragment>
+                );
+              })}
             </div>
             <div css={mobileCompareVisualizationContainer}>
               <div
@@ -1216,7 +1209,11 @@ const Home = ({
                 `}
               >
                 <ContributionTypeBar
-                  data={aggregatedContributorTypesByCandidate[compare - 1]}
+                  data={
+                    aggregatedContributorTypesByCandidate[
+                      campaignsTable[compare - 1].campaignName
+                    ]
+                  }
                   count={selectedCount}
                 />
               </div>
@@ -1227,7 +1224,11 @@ const Home = ({
                 `}
               >
                 <ContributionTypePie
-                  data={aggregatedDonationSizeByCandidate[compare - 1]}
+                  data={
+                    aggregatedDonationSizeByCandidate[
+                      campaignsTable[compare - 1].campaignName
+                    ]
+                  }
                   count={selectedCount}
                 />
               </div>
@@ -1238,7 +1239,11 @@ const Home = ({
                 `}
               >
                 <ContributorLocationBar
-                  data={aggregatedContributionsByRegionByCandidate[compare - 1]}
+                  data={
+                    aggregatedContributionsByRegionByCandidate[
+                      campaignsTable[compare - 1].campaignName
+                    ]
+                  }
                   count={selectedCount}
                 />
               </div>
