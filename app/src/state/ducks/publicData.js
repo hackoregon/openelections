@@ -2,6 +2,7 @@
 import { createSelector } from 'reselect';
 import { isAfter, isBefore, isEqual } from 'date-fns';
 import { civicFormat } from '@hackoregon/component-library/dist/utils';
+import { fromPairs } from 'lodash';
 import createReducer from '../utils/createReducer';
 import createActionTypes, {
   createCustomActionTypes,
@@ -597,14 +598,22 @@ const sortedDonationsParticipatingOnly = createSelector(
 export const sortedDonationsByCandidate = createSelector(
   filteredPublicData,
   selectedCampaignNames,
-  (data, campaigns) =>
+  (data, campaigns) => {
+    const campaignDonations = {};
     campaigns.map(campaign => {
       const donations = data.features
         .filter(f => f.properties.campaignName === campaign)
         .map(f => f.properties);
       donations.sort((a, b) => a.amount - b.amount);
-      return donations;
-    })
+      campaignDonations[campaign] = donations;
+      return {};
+    });
+    return campaignDonations;
+  }
+  // returns an array of donation for each candidate
+
+  // want to return a keyed object based on candidate name
+  // { ted: donations, sarah: donations }
 );
 
 const summarize = donations => {
@@ -766,7 +775,13 @@ export const donationSizeByDonationRange = createSelector(
 
 export const donationSizeByDonationRangeByCandidate = createSelector(
   sortedDonationsByCandidate,
-  candidates => candidates.map(donations => bracketize(donations))
+  candidateDonations =>
+    fromPairs(
+      Object.entries(candidateDonations).map(entry => [
+        entry[0],
+        bracketize(entry[1]),
+      ])
+    )
 );
 
 const aggregateDonationsBySize = aggregates => {
@@ -791,7 +806,13 @@ export const aggregatedDonationSize = createSelector(
 
 export const aggregatedDonationSizeByCandidate = createSelector(
   donationSizeByDonationRangeByCandidate,
-  candidateDonations => candidateDonations.map(aggregateDonationsBySize)
+  candidateDonations =>
+    fromPairs(
+      Object.entries(candidateDonations).map(entry => [
+        entry[0],
+        aggregateDonationsBySize(entry[1]),
+      ])
+    )
 );
 
 // Done: count of and sum of donations for each contributor type
@@ -844,7 +865,12 @@ export const aggregatedContributorTypes = createSelector(
 export const aggregatedContributorTypesByCandidate = createSelector(
   sortedDonationsByCandidate,
   candidateDonations =>
-    candidateDonations.map(aggregateDonationsByContributorType)
+    fromPairs(
+      Object.entries(candidateDonations).map(entry => [
+        entry[0],
+        aggregateDonationsByContributorType(entry[1]),
+      ])
+    )
 );
 
 // Done: count of and sum of donations for each contribution type
@@ -891,7 +917,12 @@ export const aggregatedContributionTypes = createSelector(
 export const aggregatedContributionTypesByCandidate = createSelector(
   sortedDonationsByCandidate,
   candidateDonations =>
-    candidateDonations.map(aggregateDonationsByContributionType)
+    fromPairs(
+      Object.entries(candidateDonations).map(entry => [
+        entry[0],
+        aggregateDonationsByContributionType(entry[1]),
+      ])
+    )
 );
 
 // Done: count and sum of donations for each region
@@ -942,7 +973,13 @@ export const aggregatedContributionsByRegion = createSelector(
 
 export const aggregatedContributionsByRegionByCandidate = createSelector(
   sortedDonationsByCandidate,
-  candidateDonations => candidateDonations.map(aggregateDonationsByRegion)
+  candidateDonations =>
+    fromPairs(
+      Object.entries(candidateDonations).map(entry => [
+        entry[0],
+        aggregateDonationsByRegion(entry[1]),
+      ])
+    )
 );
 
 // Done: create a table that matches this format
