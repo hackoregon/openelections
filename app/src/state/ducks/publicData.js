@@ -320,6 +320,8 @@ export const mostRecentExternalContributionDate = createSelector(
     externalData.features.forEach(f => {
       if (f.properties.date) {
         f.properties.date = new Date(f.properties.date);
+        // force date to be PDT timezone
+        f.properties.date.setUTCHours(7);
       }
     });
 
