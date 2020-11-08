@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import { PieChart } from '@hackoregon/component-library';
+// import PieChart from '@hackoregon/component-library/dist/PieChart/PieChart';
 import OpenElectionsVictoryTheme from './OpenElectionsVictoryTheme';
 
 function ContributionTypePie({ data, count }) {

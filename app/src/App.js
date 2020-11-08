@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Global, css } from '@emotion/core'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import Logo from '@hackoregon/component-library/assets/civic-logo-animated.svg';
+// import styles from '@hackoregon/component-library/assets/global.styles.css';
 import Routes from './Pages/routes';
 import FlashMessage from './components/FlashMessage/FlashMessage';
 import styles from './assets/styles/global.styles';

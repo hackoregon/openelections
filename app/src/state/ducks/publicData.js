@@ -808,13 +808,17 @@ export const aggregatedDonationSize = createSelector(
 
 export const aggregatedDonationSizeByCandidate = createSelector(
   donationSizeByDonationRangeByCandidate,
-  candidateDonations =>
-    fromPairs(
+  candidateDonations => {
+    if (Object.keys(candidateDonations).length < 1) {
+      return [];
+    }
+    return fromPairs(
       Object.entries(candidateDonations).map(entry => [
         entry[0],
         aggregateDonationsBySize(entry[1]),
       ])
-    )
+    );
+  }
 );
 
 // Done: count of and sum of donations for each contributor type
@@ -866,13 +870,17 @@ export const aggregatedContributorTypes = createSelector(
 
 export const aggregatedContributorTypesByCandidate = createSelector(
   sortedDonationsByCandidate,
-  candidateDonations =>
-    fromPairs(
+  candidateDonations => {
+    if (Object.keys(candidateDonations).length < 1) {
+      return [];
+    }
+    return fromPairs(
       Object.entries(candidateDonations).map(entry => [
         entry[0],
         aggregateDonationsByContributorType(entry[1]),
       ])
-    )
+    );
+  }
 );
 
 // Done: count of and sum of donations for each contribution type
@@ -918,13 +926,17 @@ export const aggregatedContributionTypes = createSelector(
 
 export const aggregatedContributionTypesByCandidate = createSelector(
   sortedDonationsByCandidate,
-  candidateDonations =>
-    fromPairs(
+  candidateDonations => {
+    if (Object.keys(candidateDonations).length < 1) {
+      return [];
+    }
+    return fromPairs(
       Object.entries(candidateDonations).map(entry => [
         entry[0],
         aggregateDonationsByContributionType(entry[1]),
       ])
-    )
+    );
+  }
 );
 
 // Done: count and sum of donations for each region
@@ -975,13 +987,17 @@ export const aggregatedContributionsByRegion = createSelector(
 
 export const aggregatedContributionsByRegionByCandidate = createSelector(
   sortedDonationsByCandidate,
-  candidateDonations =>
-    fromPairs(
+  candidateDonations => {
+    if (Object.keys(candidateDonations).length < 1) {
+      return [];
+    }
+    return fromPairs(
       Object.entries(candidateDonations).map(entry => [
         entry[0],
         aggregateDonationsByRegion(entry[1]),
       ])
-    )
+    );
+  }
 );
 
 // Done: create a table that matches this format
