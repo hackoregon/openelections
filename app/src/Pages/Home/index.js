@@ -52,6 +52,7 @@ class HomePage extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return <Home {...this.props} />;
   }
 }
