@@ -266,6 +266,7 @@ export function getExternalPublicData() {
     dispatch(actionCreators.getExternalPublicData.request());
     try {
       const response = await api.getExternalContributionGeoData();
+      console.log({ response });
       dispatch(actionCreators.getExternalPublicData.success(response));
     } catch (error) {
       dispatch(actionCreators.getExternalPublicData.failure(error));
