@@ -27,6 +27,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.loadAuthentication();
+  }
+
+  loadAuthentication() {
     const { loadAuth } = this.props;
     loadAuth().then(() => {
       this.setState({ isLoading: false });
