@@ -70,6 +70,6 @@ export default connect(
     campaignId: getCurrentCampaignId(state),
   }),
   dispatch => ({
-    createExpenditure: data => dispatch(createExpenditure(data)),
+    createExpenditure: data => dispatch(createExpenditure(data)), // TODO: update this here
   })
 )(AddExpense);

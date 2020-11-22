@@ -63,7 +63,7 @@ export const mapExpenditureDataToForm = expenditure => {
     purposeType: purpose || null,
     payeeType,
     payeeName: name,
-    streetAddress: address1,
+    streetAddress: address1 || '',
     addressLine2: address2 || '',
     city,
     state,
@@ -313,7 +313,7 @@ export const fields = {
     label: 'Street Address',
     section: FormSectionEnum.PAYEE_INFO,
     component: TextField,
-    validation: Yup.string().required('Street address is required'),
+    validation: Yup.string(),
   },
 
   addressLine2: {
