@@ -59,6 +59,7 @@ const Header = props => {
       matchSelectedText = 'Click to select a match';
     }
   } else {
+    // TODO: here
     matchSelectedText =
       matchStrength === 'none'
         ? 'No Matches Found'
@@ -69,12 +70,22 @@ const Header = props => {
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <h3
-      css={sectionStyles.title}
+      css={[sectionStyles.title, { cursor: 'pointer' }]}
       // Data will auto propigate to props of modal so
       onClick={() =>
         showModal({
           component: 'MatchPickerForm',
-          props: { contributionId, currentMatchId },
+          props: {
+            contributionId,
+            currentMatchId,
+            userEnteredFirstName: props.userEnteredFirstName,
+            userEnteredLastName: props.userEnteredLastName,
+            userEnteredAddress1: props.userEnteredAddress1,
+            userEnteredAddress2: props.userEnteredAddress2,
+            userEnteredCity: props.userEnteredCity,
+            userEnteredState: props.userEnteredState,
+            userEnteredZip: props.userEnteredZip,
+          },
         })
       }
     >
@@ -157,6 +168,15 @@ class contributorMatchPicker extends React.Component {
       state,
       zip,
     } = page;
+    const {
+      userEnteredFirstName,
+      userEnteredLastName,
+      userEnteredAddress1,
+      userEnteredAddress2,
+      userEnteredCity,
+      userEnteredState,
+      userEnteredZip,
+    } = this.props;
     const specialExactCase = !!(matchStrength === 'exact' && !inPortland);
     const matchIcon = getMatchIcon(matchStrength, inPortland);
     const noMatchText =
@@ -193,6 +213,20 @@ class contributorMatchPicker extends React.Component {
                     }}
                   >
                     {noMatchText}
+                    <p css={matchPickerModal.addressFields}>
+                      {userEnteredFirstName} {userEnteredLastName}
+                    </p>
+                    <p css={matchPickerModal.addressFields}>
+                      {userEnteredAddress1}
+                    </p>
+                    {userEnteredAddress2 && (
+                      <p css={matchPickerModal.addressFields}>
+                        {userEnteredAddress2}
+                      </p>
+                    )}
+                    <p css={matchPickerModal.addressFields}>
+                      {userEnteredCity}, {userEnteredState} {userEnteredZip}
+                    </p>
                   </div>
                 ) : (
                   <div>
@@ -288,6 +322,13 @@ Header.propTypes = {
   contributorMatches: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   showModal: PropTypes.func,
   contributionId: PropTypes.number,
+  userEnteredFirstName: PropTypes.string,
+  userEnteredLastName: PropTypes.string,
+  userEnteredAddress1: PropTypes.string,
+  userEnteredAddress2: PropTypes.string,
+  userEnteredCity: PropTypes.string,
+  userEnteredState: PropTypes.string,
+  userEnteredZip: PropTypes.string,
 };
 
 contributorMatchPicker.propTypes = {
@@ -301,4 +342,11 @@ contributorMatchPicker.propTypes = {
   currentPage: PropTypes.number,
   totalPages: PropTypes.number,
   selected: PropTypes.bool,
+  userEnteredFirstName: PropTypes.string,
+  userEnteredLastName: PropTypes.string,
+  userEnteredAddress1: PropTypes.string,
+  userEnteredAddress2: PropTypes.string,
+  userEnteredCity: PropTypes.string,
+  userEnteredState: PropTypes.string,
+  userEnteredZip: PropTypes.string,
 };

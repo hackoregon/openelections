@@ -7,7 +7,18 @@ import FormModal from '../../FormModal/FormModal';
 import { getCurrentMatchResults } from '../../../state/ducks/matches';
 
 const MatchPickerForm = props => {
-  const { currentMatchResults, currentMatchId, contributionId } = props;
+  const {
+    currentMatchResults,
+    currentMatchId,
+    contributionId,
+    userEnteredFirstName,
+    userEnteredLastName,
+    userEnteredAddress1,
+    userEnteredAddress2,
+    userEnteredCity,
+    userEnteredState,
+    userEnteredZip,
+  } = props;
 
   return (
     <FormModal>
@@ -15,6 +26,13 @@ const MatchPickerForm = props => {
         contributionId={contributionId}
         currentMatchId={currentMatchId}
         matches={currentMatchResults}
+        userEnteredFirstName={userEnteredFirstName}
+        userEnteredLastName={userEnteredLastName}
+        userEnteredAddress1={userEnteredAddress1}
+        userEnteredAddress2={userEnteredAddress2}
+        userEnteredCity={userEnteredCity}
+        userEnteredState={userEnteredState}
+        userEnteredZip={userEnteredZip}
       />
     </FormModal>
   );
@@ -36,4 +54,11 @@ MatchPickerForm.propTypes = {
   currentMatchResults: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   currentMatchId: PropTypes.string,
   contributionId: PropTypes.number,
+  userEnteredFirstName: PropTypes.string,
+  userEnteredLastName: PropTypes.string,
+  userEnteredAddress1: PropTypes.string,
+  userEnteredAddress2: PropTypes.string,
+  userEnteredCity: PropTypes.string,
+  userEnteredState: PropTypes.string,
+  userEnteredZip: PropTypes.string,
 };
