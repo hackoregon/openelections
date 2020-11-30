@@ -215,13 +215,6 @@ export const ContributorSection = ({
           form="MatchPickerForm"
           contributionId={contributionId}
           currentMatchId={matchId}
-          userEnteredFirstName={formFields.firstName}
-          userEnteredLastName={formFields.lastName}
-          userEnteredAddress1={formFields.streetAddress}
-          userEnteredAddress2={formFields.addressLine2}
-          userEnteredCity={formFields.city}
-          userEnteredState={formFields.state}
-          userEnteredZip={formFields.zipcode}
         />
       </div>
     ) : (

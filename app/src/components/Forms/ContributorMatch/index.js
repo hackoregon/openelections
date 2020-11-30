@@ -5,34 +5,23 @@ import { MatchPicker } from '../../ContributorMatchPicker';
 import { getModalState, clearModal } from '../../../state/ducks/modal';
 import FormModal from '../../FormModal/FormModal';
 import { getCurrentMatchResults } from '../../../state/ducks/matches';
+import { getCurrentContribution } from '../../../state/ducks/contributions';
 
 const MatchPickerForm = props => {
   const {
     currentMatchResults,
     currentMatchId,
     contributionId,
-    userEnteredFirstName,
-    userEnteredLastName,
-    userEnteredAddress1,
-    userEnteredAddress2,
-    userEnteredCity,
-    userEnteredState,
-    userEnteredZip,
+    currentContribution,
   } = props;
-
+  console.log(currentContribution);
   return (
     <FormModal>
       <MatchPicker
         contributionId={contributionId}
         currentMatchId={currentMatchId}
         matches={currentMatchResults}
-        userEnteredFirstName={userEnteredFirstName}
-        userEnteredLastName={userEnteredLastName}
-        userEnteredAddress1={userEnteredAddress1}
-        userEnteredAddress2={userEnteredAddress2}
-        userEnteredCity={userEnteredCity}
-        userEnteredState={userEnteredState}
-        userEnteredZip={userEnteredZip}
+        currentContribution={currentContribution}
       />
     </FormModal>
   );
@@ -42,6 +31,7 @@ export default connect(
   state => ({
     getModalState: getModalState(state),
     currentMatchResults: getCurrentMatchResults(state),
+    currentContribution: getCurrentContribution(state),
   }),
   dispatch => {
     return {
@@ -52,13 +42,7 @@ export default connect(
 
 MatchPickerForm.propTypes = {
   currentMatchResults: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  currentContribution: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   currentMatchId: PropTypes.string,
   contributionId: PropTypes.number,
-  userEnteredFirstName: PropTypes.string,
-  userEnteredLastName: PropTypes.string,
-  userEnteredAddress1: PropTypes.string,
-  userEnteredAddress2: PropTypes.string,
-  userEnteredCity: PropTypes.string,
-  userEnteredState: PropTypes.string,
-  userEnteredZip: PropTypes.string,
 };
