@@ -626,23 +626,6 @@ export const validate = values => {
     error.entityName = 'Name of entity is required';
   }
 
-  // They are employed and they don't have a letter require employer info
-  if (occupation === 'Employed' && visible.isPerson) {
-    // If they don't have a letter then the employer fields are required
-    if (isEmpty(occupationLetterDate)) {
-      // This is now optional
-      // if (isEmpty(employerName)) {
-      //   error.employerName = 'Employer name is required.';
-      // }
-      // if (isEmpty(employerCity)) {
-      //   error.employerCity = 'Employer city is required.';
-      // }
-      // if (isEmpty(employerState)) {
-      //   error.employerState = 'Employer state is required.';
-      // }
-    }
-  }
-
   // Uncomment next line to view conditionally visible fields
   // console.log('Conditionally Visible', visible);
   values._visibleIf = visible;
