@@ -98,7 +98,8 @@ export enum OaeType {
     PUBLICMATCHING = 'public_matching_contribution',
     QUALIFYING = 'qualifying',
     ALLOWABLE = 'allowable',
-    INKIND = 'inkind'
+    INKIND = 'inkind',
+    OTHER = 'other'
 }
 
 export enum PaymentMethod {

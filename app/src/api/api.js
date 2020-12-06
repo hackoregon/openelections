@@ -213,6 +213,7 @@ export const OaeTypeEnum = Object.freeze({
   QUALIFYING: 'qualifying',
   ALLOWABLE: 'allowable',
   INKIND: 'inkind',
+  OTHER: 'other',
 });
 
 export const OaeTypeFieldEnum = Object.freeze({
@@ -222,6 +223,7 @@ export const OaeTypeFieldEnum = Object.freeze({
   QUALIFYING: 'Qualifying',
   ALLOWABLE: 'Allowable',
   INKIND: 'In-Kind',
+  OTHER: 'Other',
 });
 
 export const DataToOaeTypeTypeFieldMap = new Map([
@@ -234,6 +236,7 @@ export const DataToOaeTypeTypeFieldMap = new Map([
   [OaeTypeEnum.QUALIFYING, OaeTypeFieldEnum.QUALIFYING],
   [OaeTypeEnum.ALLOWABLE, OaeTypeFieldEnum.ALLOWABLE],
   [OaeTypeEnum.INKIND, OaeTypeFieldEnum.INKIND],
+  [OaeTypeEnum.OTHER, OaeTypeFieldEnum.OTHER],
 ]);
 
 export const OaeTypeFieldToDataMap = new Map([
