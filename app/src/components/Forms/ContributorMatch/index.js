@@ -14,7 +14,7 @@ const MatchPickerForm = props => {
     contributionId,
     currentContribution,
   } = props;
-  console.log(currentContribution);
+
   return (
     <FormModal>
       <MatchPicker
