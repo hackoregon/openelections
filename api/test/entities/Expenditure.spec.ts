@@ -33,17 +33,13 @@ describe('Expenditure', () => {
     it('isDefined Columns', async () => {
         const newRecord = new Expenditure();
         await newRecord.validateAsync();
-        expect(newRecord.errors.length).to.equal(14);
+        expect(newRecord.errors.length).to.equal(10);
         const isDefinedFields = newRecord.errors.map(item => item.property);
         expect(isDefinedFields).to.deep.equal(['date',
             'type',
             'subType',
             'payeeType',
             'name',
-            'address1',
-            'city',
-            'state',
-            'zip',
             'amount',
             'status',
             'campaignId',

@@ -150,23 +150,19 @@ export class Expenditure {
     @Column({ nullable: true })
     dateOriginalTransaction?: Date;
 
-    @IsDefined()
-    @Column()
+    @Column({ nullable: true })
     address1: string;
 
     @Column({ nullable: true })
     address2?: string;
 
-    @IsDefined()
-    @Column()
+    @Column({ nullable: true })
     city: string;
 
-    @IsDefined()
-    @Column()
+    @Column({ nullable: true })
     state: string;
 
-    @IsDefined()
-    @Column()
+    @Column({ nullable: true })
     zip: string;
 
     @Column({ nullable: true })
