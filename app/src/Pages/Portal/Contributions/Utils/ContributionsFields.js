@@ -414,19 +414,19 @@ export const fields = {
     label: "Employer's Name",
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   employerCity: {
     label: 'City',
     section: FormSectionEnum.CONTRIBUTOR,
     component: TextField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
   },
   employerState: {
     label: 'State',
     section: FormSectionEnum.CONTRIBUTOR,
     component: SelectField,
-    validation: Yup.string(),
+    validation: Yup.string().nullable(),
     options: { values: stateList },
   },
   employerCountry: {
@@ -624,22 +624,6 @@ export const validate = values => {
     }
   } else if (isEmpty(entityName)) {
     error.entityName = 'Name of entity is required';
-  }
-
-  // They are employed and they don't have a letter require employer info
-  if (occupation === 'Employed' && visible.isPerson) {
-    // If they don't have a letter then the employer fields are required
-    if (isEmpty(occupationLetterDate)) {
-      if (isEmpty(employerName)) {
-        error.employerName = 'Employer name is required.';
-      }
-      if (isEmpty(employerCity)) {
-        error.employerCity = 'Employer city is required.';
-      }
-      if (isEmpty(employerState)) {
-        error.employerState = 'Employer state is required.';
-      }
-    }
   }
 
   // Uncomment next line to view conditionally visible fields
