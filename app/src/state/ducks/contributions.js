@@ -196,9 +196,19 @@ export function updateFilter(newFilterOptions) {
         (filterOptions.page * filterOptions.perPage) / newFilterOptions.perPage
       );
     }
+    const existingSortField = filterOptions.sort;
+    const newSortField = newFilterOptions.sort;
+    if (
+      existingSortField.field === newSortField.field &&
+      existingSortField.direction === newSortField.direction
+    ) {
+      const isAsc = existingSortField.direction === 'ASC';
+      newFilterOptions.sort.direction = isAsc ? 'DESC' : 'ASC';
+    }
     Object.entries(filterOptions).forEach(([key, value]) => {
-      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key))
+      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key)) {
         filterOptions[key] = newFilterOptions[key];
+      }
     });
     dispatch(actionCreators.filter.update(filterOptions));
   };

@@ -232,6 +232,7 @@ export class GetContributionsDto implements IGetContributionAttrs {
 
 export async function getContributions(request: IRequest, response: Response, next: Function) {
     try {
+        // TODO: update for additional fields
         checkCurrentUser(request);
         const getContributionsDto = Object.assign(new GetContributionsDto(), {
             ...request.body,
@@ -249,6 +250,7 @@ export async function getContributions(request: IRequest, response: Response, ne
         }
         return response.status(200).send(JSON.stringify(contributions));
     } catch (err) {
+        console.log(request.body, err);
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
