@@ -208,9 +208,8 @@ export function updateFilter(newFilterOptions) {
       newFilterOptions.sort.direction = isAsc ? 'DESC' : 'ASC';
     }
     Object.entries(filterOptions).forEach(([key, value]) => {
-      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key)) {
+      if (Object.prototype.hasOwnProperty.call(newFilterOptions, key))
         filterOptions[key] = newFilterOptions[key];
-      }
     });
     dispatch(actionCreators.filter.update(filterOptions));
   };

@@ -258,15 +258,13 @@ class ContributionsTable extends React.Component {
             const column = columns(isGovAdmin)[item];
             let sortOptions = {};
             if (column) {
-              const sortDirection = direction.toUpperCase();
               sortOptions = {
                 sort: {
                   field: column.field,
-                  direction: sortDirection,
+                  direction: direction.toUpperCase(),
                 },
               };
             }
-            // TODO: sort here:
             updateFilter(sortOptions);
             fetchList();
           }}

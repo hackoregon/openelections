@@ -592,12 +592,13 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
                 },
                 inPortland: contribution.matchResult.donor_info.eligible_address
             };
-            console.log(matchResults);
+            console.log('me too?', matchResults);
             return matchResults;
         } else {
             throw new Error('User does not have permissions');
         }
     } catch (e) {
+        console.log('what up tho?', e);
         throw new Error(e.message);
     }
 }
