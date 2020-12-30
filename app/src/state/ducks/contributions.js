@@ -199,6 +199,8 @@ export function updateFilter(newFilterOptions) {
     const existingSortField = filterOptions.sort;
     const newSortField = newFilterOptions.sort;
     if (
+      existingSortField &&
+      newSortField &&
       existingSortField.field === newSortField.field &&
       existingSortField.direction === newSortField.direction
     ) {

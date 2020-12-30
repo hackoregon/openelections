@@ -169,7 +169,7 @@ export interface IGetContributionOptions {
     from?: string;
     to?: string;
     sort?: {
-        field: 'campaignId' | 'status' | 'date';
+        field: 'campaignId' | 'status' | 'date' | 'id';
         direction: 'ASC' | 'DESC';
     };
     format?: 'json' | 'csv' | 'geoJson' | 'xml';
@@ -579,6 +579,7 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         })) as Contribution;
 
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
+        console.log('this far?', contribution, hasPermissions);
         if (hasPermissions) {
             const matchResults: MatchResults = {
                 matchId: contribution.matchId,
@@ -591,6 +592,7 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
                 },
                 inPortland: contribution.matchResult.donor_info.eligible_address
             };
+            console.log(matchResults);
             return matchResults;
         } else {
             throw new Error('User does not have permissions');

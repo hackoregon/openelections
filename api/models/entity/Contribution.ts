@@ -662,8 +662,11 @@ export async function getContributionsByGovernmentIdAsync(
         };
         if (sort) {
             // TODO: update here
-            if (!['date', 'status', 'campaignId', 'matchAmount', 'amount', 'oaeType'].includes(sort.field)) {
+            if (!['date', 'status', 'campaignId', 'matchAmount', 'amount', 'oaeType', 'name'].includes(sort.field)) {
                 throw new Error('Sort.field must be one of date, status, matchAmount, amount or campaignid');
+            }
+            if (sort.field === 'campaignId') {
+                sort.field = 'id';
             }
 
             if (!['ASC', 'DESC'].includes(sort.direction)) {
