@@ -132,6 +132,7 @@ export const getCurrentContributionMatch = state => {
 
 export const getCurrentMatchResults = state => {
   const currentMatches = getCurrentContributionMatch(state);
+  console.log(currentMatches);
   const matches = [];
   const results = (currentMatches || {}).results;
   const currentContribution = getCurrentContribution(state);

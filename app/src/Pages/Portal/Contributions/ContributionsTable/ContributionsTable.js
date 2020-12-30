@@ -256,14 +256,13 @@ class ContributionsTable extends React.Component {
           data={contributionList}
           onOrderChange={(item, direction) => {
             const column = columns(isGovAdmin)[item];
-            console.log(item, direction, column);
             let sortOptions = {};
             if (column) {
               const sortDirection = direction.toUpperCase();
               sortOptions = {
                 sort: {
                   field: column.field,
-                  direction: sortDirection, // TODO: is this actually toggling?
+                  direction: sortDirection,
                 },
               };
             }

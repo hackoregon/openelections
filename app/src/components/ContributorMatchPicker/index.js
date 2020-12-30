@@ -148,7 +148,10 @@ class contributorMatchPicker extends React.Component {
   }
 
   render() {
-    const inPortland = this.props.matchObj.inPortland;
+    if (!this.props.matchObj) {
+      return <div />;
+    }
+    const inPortland = (this.props.matchObj || {}).inPortland;
     const { totalPages, currentPage, pages } = this.state;
     const page = !isEmpty(pages) ? pages[currentPage] : [{}];
     const {
