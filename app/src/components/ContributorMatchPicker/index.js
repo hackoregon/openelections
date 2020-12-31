@@ -67,11 +67,30 @@ const Header = props => {
   }
   // Switch color and symbol based on matchStrength
   const matchIcon = getMatchIcon(matchStrength, inPortland);
+
+  if (!currentMatchId) {
+    return (
+      <h3 css={[sectionStyles.title]}>
+        Contributor {matchIcon}{' '}
+        {currentMatchId && (
+          <span
+            style={{
+              fontSize: '.7em',
+              textTransform: 'capitalize',
+              display: 'inline-block',
+              verticalAlign: '5px',
+            }}
+          >
+            {matchSelectedText}
+          </span>
+        )}
+      </h3>
+    );
+  }
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <h3
       css={[sectionStyles.title, { cursor: 'pointer' }]}
-      // Data will auto propigate to props of modal so
       onClick={() =>
         showModal({
           component: 'MatchPickerForm',

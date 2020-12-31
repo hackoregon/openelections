@@ -581,19 +581,22 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
         console.log('this far?', contribution, hasPermissions);
         if (hasPermissions) {
-            const matchResults: MatchResults = {
-                matchId: contribution.matchId,
-                matchStrength: contribution.matchStrength,
-                results: {
-                    exact: contribution.matchResult.exact,
-                    strong: contribution.matchResult.strong,
-                    weak: contribution.matchResult.weak,
-                    none: crypto.randomBytes(16).toString('hex')
-                },
-                inPortland: contribution.matchResult.donor_info.eligible_address
-            };
-            console.log('me too?', matchResults);
-            return matchResults;
+            if (contribution.matchId && contribution.matchResult) {
+                const matchResults: MatchResults = {
+                    matchId: contribution.matchId,
+                    matchStrength: contribution.matchStrength,
+                    results: {
+                        exact: contribution.matchResult.exact,
+                        strong: contribution.matchResult.strong,
+                        weak: contribution.matchResult.weak,
+                        none: crypto.randomBytes(16).toString('hex')
+                    },
+                    inPortland: contribution.matchResult.donor_info.eligible_address
+                };
+                return matchResults;
+            } else {
+                throw new Error('No match result for contribution');
+            }
         } else {
             throw new Error('User does not have permissions');
         }
