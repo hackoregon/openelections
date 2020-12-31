@@ -579,7 +579,6 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         })) as Contribution;
 
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
-        console.log('this far?', contribution, hasPermissions);
         if (hasPermissions) {
             if (contribution.matchId && contribution.matchResult) {
                 const matchResults: MatchResults = {
@@ -601,7 +600,6 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
             throw new Error('User does not have permissions');
         }
     } catch (e) {
-        console.log('what up tho?', e);
         throw new Error(e.message);
     }
 }

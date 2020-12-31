@@ -522,9 +522,7 @@ export async function getMatchesByContributionId(request: IRequest, response: Re
             currentUserId: request.currentUser.id
         });
         await checkDto(getContributionMatchesDto);
-        console.log('what is wrong?', getContributionMatchesDto);
         const matches = await getMatchResultAsync(getContributionMatchesDto);
-        console.log(matches);
         return response.status(200).send(matches);
     } catch (err) {
         return response.status(422).json({ message: err.message });
