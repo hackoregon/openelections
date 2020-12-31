@@ -179,7 +179,6 @@ export function updateFilter(newFilterOptions) {
       if (Object.prototype.hasOwnProperty.call(newFilterOptions, key))
         filterOptions[key] = newFilterOptions[key];
     });
-    console.log(filterOptions);
     dispatch(actionCreators.filter.update(filterOptions));
   };
 }
