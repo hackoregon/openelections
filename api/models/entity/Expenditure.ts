@@ -390,7 +390,6 @@ export async function getExpendituresByGovernmentIdAsync(
 
         if (sort) {
             if (!['date', 'status', 'campaignId', 'amount'].includes(sort.field)) {
-                console.log(sort.field);
                 throw new Error('Sort.field must be one of date, status or campaignId');
             }
 
