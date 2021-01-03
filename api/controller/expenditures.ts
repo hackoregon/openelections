@@ -166,7 +166,6 @@ export async function getExpenditures(request: IRequest, response: Response, nex
             currentUserId: request.currentUser.id
         });
         await checkDto(getExpendituresDto);
- 
         const expenditures = await getExpendituresAsync(getExpendituresDto);
         if (expenditures.csv) {
             response.type('text/csv');
