@@ -30,7 +30,7 @@ describe('Expenditure', () => {
         await truncateAll();
     });
 
-    xit('isDefined Columns', async () => {
+    it('isDefined Columns', async () => {
         const newRecord = new Expenditure();
         await newRecord.validateAsync();
         expect(newRecord.errors.length).to.equal(10);
