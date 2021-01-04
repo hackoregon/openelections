@@ -1,6 +1,6 @@
 # Open Elections Project
 
-This is the master repo for the Open Elections project.
+This is the main repo for the Open Elections project.
 
 Check out our [wiki](https://github.com/hackoregon/openelections/wiki) for information.
 
