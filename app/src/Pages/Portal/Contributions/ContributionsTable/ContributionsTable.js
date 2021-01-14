@@ -41,7 +41,7 @@ const buttonWrapper = css`
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
-    : { icon: 'none', name, buttonType, onClick };
+    : { icon: 'none', name, buttonType, onClick, position: 'row' };
 
 const columns = isGovAdmin => {
   const cols = [
@@ -118,11 +118,27 @@ const columns = isGovAdmin => {
 class ContributionsTable extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      itemsToSubmit: null,
+    };
     props.getContributions({
       governmentId: props.govId,
       currentUserId: props.userId,
       campaignId: props.campaignId,
     });
+    this.updateItemsToSubmit = this.updateItemsToSubmit.bind(this);
+  }
+
+  updateItemsToSubmit(items) {
+    if (items.length > 0) {
+      this.setState({
+        itemsToSubmit: items,
+      });
+    } else {
+      this.setState({
+        itemsToSubmit: null,
+      });
+    }
   }
 
   render() {
@@ -144,9 +160,14 @@ class ContributionsTable extends React.Component {
     const isLoading = isListLoading && !Array.isArray(contributionList);
 
     const actions = [
-      actionInfo('View', 'submit', (event, rowData) => {
-        history.push(`/contributions/${rowData.id}`);
-      }),
+      actionInfo(
+        'View',
+        'submit',
+        (event, rowData) => {
+          history.push(`/contributions/${rowData.id}`);
+        },
+        false
+      ),
     ];
 
     const components = {
@@ -253,6 +274,14 @@ class ContributionsTable extends React.Component {
           options={{
             pageSize: filterOptions.perPage || 50,
             showTitle: false,
+            actionsColumnIndex: -1,
+            selection: true,
+            selectionProps: rowData => {
+              return {
+                disabled: rowData.status === 'Submitted',
+                color: 'primary',
+              };
+            },
           }}
           actions={actions}
           components={components}
@@ -275,18 +304,30 @@ class ContributionsTable extends React.Component {
           pageNumber={filterOptions.page || 0}
           totalRows={total}
           onChangePage={handleOnChangePage}
-          // eslint-disable-next-line no-use-before-define
           onChangeRowsPerPage={handleOnRowsPerPageChange}
           toolbarAction={
             !isGovAdmin ? (
-              <Button
-                buttonType="green"
-                onClick={() => history.push({ pathname: '/contributions/add' })}
-              >
-                Add New Contribution
-              </Button>
+              <>
+                <Button
+                  buttonType="green"
+                  onClick={() =>
+                    history.push({ pathname: '/contributions/add' })
+                  }
+                >
+                  Add New Contribution
+                </Button>
+                {this.state.itemsToSubmit && (
+                  <Button
+                    buttonType="green"
+                    onClick={() => console.log(this.state.itemsToSubmit)}
+                  >
+                    bulk submit
+                  </Button>
+                )}
+              </>
             ) : null
           }
+          onSelectionChange={items => this.updateItemsToSubmit(items)}
         />
       </PageHoc>
     );

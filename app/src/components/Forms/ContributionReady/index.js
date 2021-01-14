@@ -148,6 +148,7 @@ class ContributionReadyForm extends React.Component {
             <PageTransitionImage />
           ) : (
             <>
+              <h1>nice</h1>
               <ViewHeaderSection
                 campaignName={values.campaignName || campaignName}
                 isCampAdmin={isCampAdmin}

@@ -603,6 +603,12 @@ export function updateContribution(contributionAttrs) {
   );
 }
 
+// path: '/bulk-update-contributions'
+//   method: 'put',
+export function bulkUpdateContribution(contributionAttrs) {
+  return put(`${baseUrl()}/bulk-update-contributions`, contributionAttrs);
+}
+
 //   path: '/contributions/new',
 //   method: 'post',
 export function createContribution(contributionAttrs) {

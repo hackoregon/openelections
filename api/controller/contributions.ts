@@ -175,6 +175,7 @@ export class UpdateContributionDto implements IUpdateContributionAttrs {
 
 export async function updateContribution(request: IRequest, response: Response, next: Function) {
     try {
+        console.log(response);
         checkCurrentUser(request);
         const updateContributionDto = Object.assign(new UpdateContributionDto(), {
             ...request.body,

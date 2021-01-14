@@ -268,10 +268,12 @@ export function createContribution(contributionAttrs) {
 }
 
 export function updateContribution(contributionAttrs) {
+  // TODO: duplicate for bulk submission
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.updateContribution.request());
     try {
       const response = await api.updateContribution(contributionAttrs);
+      console.log({ contributionAttrs, response });
       if (response.status === 204) {
         let status = '';
         if (contributionAttrs.status) {
