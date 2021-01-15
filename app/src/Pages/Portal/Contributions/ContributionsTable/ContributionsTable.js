@@ -10,6 +10,7 @@ import FilterContribution from '../../../../components/Forms/FilterContributions
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
+  bulkUpdateContributions,
   getContributions,
   getContributionsList,
   getFilterOptions,
@@ -155,6 +156,7 @@ class ContributionsTable extends React.Component {
       userId,
       campaignId,
       isGovAdmin,
+      bulkSubmitContributions,
     } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(contributionList);
@@ -319,7 +321,9 @@ class ContributionsTable extends React.Component {
                 {this.state.itemsToSubmit && (
                   <Button
                     buttonType="green"
-                    onClick={() => console.log(this.state.itemsToSubmit)}
+                    onClick={() =>
+                      bulkSubmitContributions(this.state.itemsToSubmit)
+                    }
                   >
                     bulk submit
                   </Button>
@@ -357,6 +361,7 @@ export default connect(
       showModal: payload => {
         dispatch(showModal(payload));
       },
+      bulkSubmitContributions: data => dispatch(bulkUpdateContributions(data)),
     };
   }
 )(ContributionsTable);

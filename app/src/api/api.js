@@ -597,6 +597,7 @@ export function updateCampaignNameForGovernment(campaignAttrs) {
 // path: '/contributions/:id'
 //   method: 'put',
 export function updateContribution(contributionAttrs) {
+  console.log(contributionAttrs);
   return put(
     `${baseUrl()}/contributions/${contributionAttrs.id}`,
     contributionAttrs
@@ -605,7 +606,7 @@ export function updateContribution(contributionAttrs) {
 
 // path: '/bulk-update-contributions'
 //   method: 'put',
-export function bulkUpdateContribution(contributionAttrs) {
+export function bulkUpdateContributions(contributionAttrs) {
   return put(`${baseUrl()}/bulk-update-contributions`, contributionAttrs);
 }
 

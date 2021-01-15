@@ -130,7 +130,6 @@ const Table = ({
                       }
                     : undefined
                 }
-                // TODO: here?
                 action={toolbarAction}
                 {...toolBarProps}
               />

@@ -268,7 +268,6 @@ export function createContribution(contributionAttrs) {
 }
 
 export function updateContribution(contributionAttrs) {
-  // TODO: duplicate for bulk submission
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.updateContribution.request());
     try {
@@ -300,6 +299,50 @@ export function updateContribution(contributionAttrs) {
         flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
       );
       return error;
+    }
+  };
+}
+
+export function bulkUpdateContributions(contributionAttrsArray) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.updateContribution.request());
+    try {
+      const state = getState();
+      const currentUserId = state.auth.me.id;
+      const ids = contributionAttrsArray.map(contribution => contribution.id);
+      const bulkSubmitInfo = {
+        currentUserId,
+        ids,
+        status: 'Submitted',
+      };
+      console.log({ bulkSubmitInfo });
+      const response = await api.bulkUpdateContributions(bulkSubmitInfo);
+      if (response.status === 200) {
+        const res = await response.json();
+        console.log(res, response);
+        dispatch(actionCreators.updateContribution.success());
+        if (res.message) {
+          dispatch(
+            flashMessage(`${res.message}`, {
+              props: { variant: 'success' },
+            })
+          );
+        }
+        // refetch data
+        // dispatch(push('/contributions'));
+      } else {
+        dispatch(actionCreators.updateContribution.failure());
+        const error = await response.json();
+        dispatch(
+          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+        );
+        return error;
+      }
+    } catch (error) {
+      dispatch(actionCreators.updateContribution.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
     }
   };
 }

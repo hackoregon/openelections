@@ -561,9 +561,9 @@ export const AppRoutes = [
      */
     // TODO: verify swagger is correct
     {
-        path: '/contributions/:id',
+        path: '/bulk-update-contributions',
         method: 'put',
-        action: contributions.updateContribution
+        action: contributions.bulkUpdateContributions
     },
 
     /**
