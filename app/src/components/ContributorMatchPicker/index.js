@@ -139,7 +139,6 @@ class contributorMatchPicker extends React.Component {
   }
 
   handleSubmit() {
-    // TODO: does this need to update this?
     this.props.updateMatchForContribution({
       contributionId: this.props.contributionId,
       matchId: this.state.pages[this.state.currentPage].id,

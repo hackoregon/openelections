@@ -328,8 +328,6 @@ export function bulkUpdateContributions(contributionAttrsArray) {
             })
           );
         }
-        // refetch data
-        // dispatch(push('/contributions'));
       } else {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();

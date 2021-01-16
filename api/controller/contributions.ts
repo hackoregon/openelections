@@ -194,7 +194,6 @@ export async function updateContribution(request: IRequest, response: Response, 
 
 export async function bulkUpdateContributions(request: IRequest, response: Response, next: Function) {
     try {
-        console.log(request.body);
         checkCurrentUser(request);
         if (request.body.ids && request.body.ids.length > 0) {
             const promises = request.body.ids.map(async (id: string) => {

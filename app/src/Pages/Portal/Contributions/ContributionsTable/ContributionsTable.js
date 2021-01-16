@@ -121,6 +121,7 @@ class ContributionsTable extends React.Component {
     super(props);
     this.state = {
       itemsToSubmit: null,
+      bulkSubmitted: false,
     };
     props.getContributions({
       governmentId: props.govId,
@@ -321,11 +322,29 @@ class ContributionsTable extends React.Component {
                 {this.state.itemsToSubmit && (
                   <Button
                     buttonType="green"
-                    onClick={() =>
-                      bulkSubmitContributions(this.state.itemsToSubmit)
-                    }
+                    onClick={() => {
+                      bulkSubmitContributions(this.state.itemsToSubmit);
+                      this.setState({
+                        itemsToSubmit: null,
+                        bulkSubmitted: true,
+                      });
+                    }}
                   >
                     bulk submit
+                  </Button>
+                )}
+                {this.state.bulkSubmitted && (
+                  <Button
+                    buttonType="green"
+                    onClick={() => {
+                      fetchList();
+                      this.setState({
+                        itemsToSubmit: null,
+                        bulkSubmitted: false,
+                      });
+                    }}
+                  >
+                    Refresh
                   </Button>
                 )}
               </>
