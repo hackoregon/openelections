@@ -246,13 +246,7 @@ describe('Side Effects', () => {
     const { id } = await contribution.json();
 
     return store
-      .dispatch(
-        api.bulkUpdateContributions({
-          ids: [id],
-          status: 'Submitted',
-          currentUserId: campaignAdminId,
-        })
-      )
+      .dispatch(contributions.bulkUpdateContributions([{ id }]))
       .then(() => {
         const actions = store.getActions();
         expect(actions[0].type).toEqual(expectedActions[0].type);
