@@ -247,7 +247,7 @@ describe('Side Effects', () => {
 
     return store
       .dispatch(
-        contributions.bulkUpdateContributions({
+        api.bulkUpdateContributions({
           ids: [id],
           status: 'Submitted',
           currentUserId: campaignAdminId,
