@@ -597,7 +597,6 @@ export function updateCampaignNameForGovernment(campaignAttrs) {
 // path: '/contributions/:id'
 //   method: 'put',
 export function updateContribution(contributionAttrs) {
-  console.log(contributionAttrs);
   return put(
     `${baseUrl()}/contributions/${contributionAttrs.id}`,
     contributionAttrs

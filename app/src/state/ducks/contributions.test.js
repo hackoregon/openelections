@@ -220,7 +220,13 @@ describe('Side Effects', () => {
       { type: actionTypes.UPDATE_CONTRIBUTION.REQUEST },
       { type: actionTypes.UPDATE_CONTRIBUTION.SUCCESS },
     ];
-    const store = mockStore({});
+    const store = mockStore({
+      auth: {
+        me: {
+          id: 2,
+        },
+      },
+    });
 
     process.env.TOKEN = campaignAdminToken;
 
