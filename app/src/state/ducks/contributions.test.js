@@ -210,13 +210,12 @@ describe('Side Effects', () => {
       )
       .then(() => {
         const actions = store.getActions();
-        console.log(actions);
         expect(actions[0].type).toEqual(expectedActions[0].type);
         expect(actions[1].type).toEqual(expectedActions[1].type);
       });
   });
 
-  it('bulkUpdateContributions', async () => {
+  it('bulk Update Contributions', async () => {
     const expectedActions = [
       { type: actionTypes.UPDATE_CONTRIBUTION.REQUEST },
       { type: actionTypes.UPDATE_CONTRIBUTION.SUCCESS },
@@ -256,6 +255,7 @@ describe('Side Effects', () => {
       .dispatch(contributions.bulkUpdateContributions([{ id }]))
       .then(() => {
         const actions = store.getActions();
+        console.log({ actions });
         expect(actions[0].type).toEqual(expectedActions[0].type);
         expect(actions[1].type).toEqual(expectedActions[1].type);
       });
