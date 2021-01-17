@@ -318,9 +318,9 @@ export function bulkUpdateContributions(contributionAttrsArray) {
       };
       console.log({ bulkSubmitInfo });
       const response = await api.bulkUpdateContributions(bulkSubmitInfo);
+      const res = await response.json();
+      console.log(res, response);
       if (response.status === 200) {
-        const res = await response.json();
-        console.log(res, response);
         dispatch(actionCreators.updateContribution.success());
         if (res.message) {
           dispatch(
@@ -331,11 +331,9 @@ export function bulkUpdateContributions(contributionAttrsArray) {
         }
       } else {
         dispatch(actionCreators.updateContribution.failure());
-        const error = await response.json();
         dispatch(
-          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+          flashMessage(`Error - ${res}`, { props: { variant: 'error' } })
         );
-        return error;
       }
     } catch (error) {
       dispatch(actionCreators.updateContribution.failure(error));
