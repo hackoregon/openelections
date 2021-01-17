@@ -308,6 +308,7 @@ export function bulkUpdateContributions(contributionAttrsArray) {
     dispatch(actionCreators.updateContribution.request());
     try {
       const state = getState();
+      console.log('bulk state: ', state);
       const currentUserId = state.auth.me.id;
       const ids = contributionAttrsArray.map(contribution => contribution.id);
       const bulkSubmitInfo = {
