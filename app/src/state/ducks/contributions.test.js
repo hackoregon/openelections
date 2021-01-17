@@ -210,6 +210,7 @@ describe('Side Effects', () => {
       )
       .then(() => {
         const actions = store.getActions();
+        console.log(actions);
         expect(actions[0].type).toEqual(expectedActions[0].type);
         expect(actions[1].type).toEqual(expectedActions[1].type);
       });
