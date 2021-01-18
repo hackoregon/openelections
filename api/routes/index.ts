@@ -559,7 +559,6 @@ export const AppRoutes = [
      *         $ref: '#/components/responses/UnprocessableEntity'
      *
      */
-    // TODO: verify swagger is correct
     {
         path: '/bulk-update-contributions',
         method: 'put',

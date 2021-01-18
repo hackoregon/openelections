@@ -330,7 +330,7 @@ class ContributionsTable extends React.Component {
                       });
                     }}
                   >
-                    bulk submit
+                    Bulk submit
                   </Button>
                 )}
                 {this.state.bulkSubmitted && (

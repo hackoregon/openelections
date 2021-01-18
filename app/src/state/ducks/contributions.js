@@ -308,7 +308,6 @@ export function bulkUpdateContributions(contributionAttrsArray) {
     dispatch(actionCreators.updateContribution.request());
     try {
       const state = getState();
-      console.log('bulk state: ', state);
       const currentUserId = state.auth.me.id;
       const ids = contributionAttrsArray.map(contribution => contribution.id);
       const bulkSubmitInfo = {
@@ -316,10 +315,8 @@ export function bulkUpdateContributions(contributionAttrsArray) {
         ids,
         status: 'Submitted',
       };
-      console.log({ bulkSubmitInfo });
       const response = await api.bulkUpdateContributions(bulkSubmitInfo);
       const res = await response.json();
-      console.log(res, response);
       if (response.status === 200) {
         dispatch(actionCreators.updateContribution.success());
         if (res.message) {
