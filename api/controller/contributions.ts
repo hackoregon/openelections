@@ -201,7 +201,6 @@ export async function bulkUpdateContributions(request: IRequest, response: Respo
                 delete updatedContribution.ids;
                 const updateContributionDto = Object.assign(new UpdateContributionDto(), {
                     ...updatedContribution,
-                    currentUserId: request.currentUser.id,
                     id
                 });
                 await checkDto(updateContributionDto);
