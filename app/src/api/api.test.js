@@ -447,6 +447,38 @@ describe('API', () => {
     expect(response.status).toEqual(204);
   });
 
+  it('bulkUpdateExpenditure', async () => {
+    process.env.TOKEN = campaignStaffToken;
+
+    let response = await api.createExpenditure({
+      address1: '123 ABC ST',
+      amount: 250,
+      campaignId,
+      city: 'Portland',
+      currentUserId: campaignStaffId,
+      date: 1562436237700,
+      governmentId,
+      type: api.ExpenditureTypeEnum.EXPENDITURE,
+      subType: api.ExpenditureSubTypeEnum.CASH_EXPENDITURE,
+      state: 'OR',
+      status: api.ExpenditureStatusEnum.DRAFT,
+      zip: '97214',
+      payeeType: api.PayeeTypeEnum.INDIVIDUAL,
+      name: 'Test Expenditure',
+      description: 'This is an update test',
+    });
+    const expenditure = await response.json();
+
+    response = await api.bulkUpdateExpenditures([
+      {
+        ids: [expenditure.id],
+        status: 'submitted',
+        currentUserId: campaignStaffId,
+      },
+    ]);
+    expect(response.status).toEqual(200);
+  });
+
   it('getExpenditureActivities', async () => {
     process.env.TOKEN = campaignStaffToken;
 

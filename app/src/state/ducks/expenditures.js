@@ -270,6 +270,45 @@ export function updateExpenditure(expenditureAttrs) {
   };
 }
 
+export function bulkUpdateExpenditures(expenditureAttrsArray) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.updateExpenditure.request());
+    try {
+      const state = getState();
+      const currentUserId = state.auth.me.id;
+      const ids = expenditureAttrsArray.map(expenditure => expenditure.id);
+      const bulkSubmitInfo = {
+        currentUserId,
+        ids,
+        status: 'submitted',
+      };
+      const response = await api.bulkUpdateExpenditures(bulkSubmitInfo);
+      const res = await response.json();
+      if (response.status === 200) {
+        dispatch(actionCreators.updateExpenditure.success());
+        if (res.message) {
+          dispatch(
+            flashMessage(`${res.message}`, {
+              props: { variant: 'success' },
+            })
+          );
+        }
+      } else {
+        dispatch(actionCreators.updateExpenditure.failure());
+        dispatch(
+          flashMessage(`Error - ${res}`, { props: { variant: 'error' } })
+        );
+      }
+    } catch (error) {
+      dispatch(actionCreators.updateExpenditure.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
+      return error;
+    }
+  };
+}
+
 export function getExpenditures(expenditureSearchAttrs, applyFilter = false) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getExpenditures.request());
