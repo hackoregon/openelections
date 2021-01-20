@@ -541,7 +541,7 @@ export const AppRoutes = [
      *                 type: integer
      *               ids:
      *                 type: array
-     *                 items: 
+     *                 items:
      *                   type: string
      *               status:
      *                 type: string
@@ -937,7 +937,7 @@ export const AppRoutes = [
      *                 type: integer
      *               ids:
      *                 type: array
-     *                 items: 
+     *                 items:
      *                   type: string
      *               status:
      *                 type: string
