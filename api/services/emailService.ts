@@ -160,6 +160,43 @@ export async function sendInvitationEmail(params: ISendInvitationEmailAttrs) {
     return sendEmail(email);
 }
 
+export async function sendNewCommentEmailToCampaignAdminAsync (emails: string[], newContributionComments: string[], newExpenditureComments: string[], contributionComments: string, expendituresComments: string): Promise<ISESEmailParams> {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  const email: ISESEmailParams = {
+      Destination: {
+          ToAddresses: emails,
+          CcAddresses: ['OpenElections@portlandoregon.gov'],
+      },
+      Message: {
+          Body: {
+              Html: {
+                  Charset: 'UTF-8',
+                  Data: commentEmailHtml(newContributionComments,  newExpenditureComments)
+              },
+              Text: {
+                  Charset: 'UTF-8',
+                  Data: 'This is a daily transaction summary for your campaign\'s Contribution and Expenditure comments.\r\n' +
+                      `${contributionComments.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
+                      `${expendituresComments.replace(new RegExp('<br/><br/>', 'g'), '\r\n\r\n').replace(new RegExp('<br/>', 'g'), '\r\n')}\r\n` +
+                      'In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.\r\n' +
+                      `If you would like more information about the transaction(s), please go to your campaign portal at ${host}.\r\n` +
+                      'Sincerely,\r\n' +
+                      'Susan Mottet\r\n' +
+                      'Director, Open and Accountable Elections\r\n' +
+                      'https://www.portlandoregon.gov/OAE'
+              },
+          },
+          Subject: {
+              Charset: 'UTF-8',
+              Data: `Important message from the City's OAE program about a transaction`,
+          }
+      },
+      Source: 'no-reply@openelectionsportland.org',
+      ReplyToAddresses: ['susan.Mottet@portlandoregon.gov']
+  };
+  return sendEmail(email);
+}
+
 export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number): Promise<ISESEmailParams> {
 
     const to: Date = new Date();
@@ -215,6 +252,7 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
     const contributionsText: string = newContributionUpdates.length > 0 ? `Contributions:<br/><br/>The following contributions have been created or updated in the last 24 hours.<br/><br/>${newContributionUpdates.join('<br/>')}` : '';
 
     const contributionComments: string = newContributionComments.length > 0 ? `Contribution Comments:<br/><br/>The following contributions have been commented on in the last 24 hours.<br/><br/>${newContributionComments.join('<br/>')}` : '';
+    console.log('What is this stuff?', contributionComments, newContributionComments);
 
     const expendituresText: string = newExpenditureUpdates.length > 0 ? `Expenditures:<br/><br/>The following expenditures have been created or updated in the last 24 hours.<br/><br/>${newExpenditureUpdates.join('<br/>')}` : '';
 
@@ -255,6 +293,7 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
         Source: 'no-reply@openelectionsportland.org',
         ReplyToAddresses: ['susan.Mottet@portlandoregon.gov']
     };
+    await sendNewCommentEmailToCampaignAdminAsync(emails, newContributionComments, newExpenditureComments, contributionComments, expendituresComments);
     return sendEmail(email);
 }
 
@@ -880,7 +919,7 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
                     <td
                       style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
                     >
-                      The following expenditures have been commented on in the last 24 hours
+                      The following expenditures have been commented on in the last 24 hours:
                     </td>
                   </tr>
                   ${newExpenditureUpdates.filter(item => !!item && item.trim() !== '').map((item: string): string => {
@@ -969,5 +1008,167 @@ export function summaryEmailHtml(newContributionUpdates, newExpenditureUpdates, 
     </table>
   </body>
 </html>
-`; }
+`;
+}
 
+export function commentEmailHtml(newContributionComments, newExpenditureComments) {
+  const host = process.env.HOST_URL || 'http://localhost:3000';
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>24 Hr Summary Email</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="https://open-elections.s3.us-west-2.amazonaws.com/images/favicon.ico" />
+  <link
+    href="//fonts.googleapis.com/css?family=Poppins:400,500,600"
+    rel="stylesheet"
+  />
+</head>
+<body style="background-color: #313131; padding: 40px;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td
+        valign="top"
+        align="left"
+        bgcolor="#23552c"
+        style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Poppins, sans-serif;"
+      >
+        <table>
+          <!-- HEADER -->
+          <table>
+            <tr>
+              <td
+                align="left"
+                style="padding-left: 40px; padding-right: 10px;"
+                bgcolor="#23552c"
+              >
+                <img src="https://open-elections.s3.us-west-2.amazonaws.com/images/oaeLogo.jpeg" style="display: block;" />
+              </td>
+              <td
+                valign="top"
+                align="right"
+                style="color: #ffffff; padding-left: 0px; padding-top: 40px; padding-bottom: 40px; font-family: Poppins, sans-serif; font-size: 24px;"
+              >
+                <b>Open & Accountable Elections Portland</b>
+              </td>
+            </tr>
+          </table>
+
+          <!-- BODY -->
+          <tr>
+            <td bgcolor="#ffffff">
+              <table border="0" cellpadding="40" cellspacing="0" width="100%">
+                <tr>
+                  <td
+                    style="color: #153643; font-family: Poppins, sans-serif; font-size: 20px;"
+                  >
+                    This is a daily summary for your campaign's Contribution and Expenditure comments.
+                  </td>
+                </tr>
+                ${newContributionComments.filter(item => !!item && item.trim() !== '') && (
+                  `<tr>
+                  <td
+                    style="font-size: 20px; padding: 10px 0px 20px 80px; text-align: left; margin-left:30px; color: #153643; font-family: Poppins, sans-serif;"
+                  >
+                    <b>Contribution Comments</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
+                  >
+                    The following contributions have been commented on in the last 24 hours:
+                  </td>
+                </tr>`
+                )}
+                ${newContributionComments.filter(item => !!item && item.trim() !== '').map((item: string): string => {
+      return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
+  })}
+                ${newExpenditureComments.filter(item => !!item && item.trim() !== '') && (
+                  `<tr>
+                    <td
+                      style="font-size: 20px; padding: 10px 0px 20px 80px; text-align: left; margin-left:30px; color: #153643; font-family: Poppins, sans-serif;"
+                    >
+                      <b>Expenditure Comments</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 20px 80px;"
+                    >
+                      The following expenditures have been commented on in the last 24 hours:
+                    </td>
+                  </tr>`
+                )}
+                ${newExpenditureComments.filter(item => !!item && item.trim() !== '').map((item: string): string => {
+      return `<tr><td style="font-size: 20px; font-family: Poppins, sans-serif; padding: 0px 0px 5px 100px;">${item}</td></tr>`;
+  })}
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 20px;
+                    line-height: 1.5;"
+                  >
+                    In accordance with Portland City Code 2.16.170, if you believe a determination was made in error, you may file a Request for Reconsideration with the Director within seven days of this notification being sent. You may make this request by filling out a Request for Reconsideration form on the program website at https://www.portlandoregon.gov/OAE and submitting it to OpenElections@portlandoregon.gov.
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 20px; line-height: 1.5;"
+                  >
+                    If you would like more information about the transaction(s), please go to your <a href="${host}/dashboard">campaign portal</a>.
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 0px; line-height: 1.5;"
+                  >
+                    Sincerely,
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 0px; line-height: 1.5;"
+                  >
+                    Susan Mottet
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 0px; line-height: 1.5;"
+                  >
+                    Director, Open and Accountable Elections
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="font-size: 20px; font-family: Poppins, sans-serif; padding-left: 40px;
+                    padding-top: 0px;
+                    padding-bottom: 40px; line-height: 1.5;"
+                  >
+                    <a href="https://www.portlandoregon.gov/OAE">
+                      https://www.portlandoregon.gov/OAE</a
+                    >
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+}
