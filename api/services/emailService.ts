@@ -252,7 +252,6 @@ export async function sendActivityEmailToCampaignAdminsAsync(campaignId: number)
     const contributionsText: string = newContributionUpdates.length > 0 ? `Contributions:<br/><br/>The following contributions have been created or updated in the last 24 hours.<br/><br/>${newContributionUpdates.join('<br/>')}` : '';
 
     const contributionComments: string = newContributionComments.length > 0 ? `Contribution Comments:<br/><br/>The following contributions have been commented on in the last 24 hours.<br/><br/>${newContributionComments.join('<br/>')}` : '';
-    console.log('What is this stuff?', contributionComments, newContributionComments);
 
     const expendituresText: string = newExpenditureUpdates.length > 0 ? `Expenditures:<br/><br/>The following expenditures have been created or updated in the last 24 hours.<br/><br/>${newExpenditureUpdates.join('<br/>')}` : '';
 
