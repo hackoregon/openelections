@@ -3,7 +3,7 @@
         {
             "name": "jobs",
             "script": "/app/build/jobs/index.js",
-            "watch": true,
+            "watch": false,
             "instances": "1"
         }
     ]
