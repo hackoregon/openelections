@@ -111,7 +111,7 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
         console.log(user);
         if (user.validatePassword(password)) {
             console.log('valid pw');
-            const token = generateJWTokenAsync(user.id);
+            const token = await generateJWTokenAsync(user.id);
             await createActivityRecordAsync({
                 currentUser: user,
                 notes: `${user.name()} logged in`,

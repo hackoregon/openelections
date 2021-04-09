@@ -142,7 +142,7 @@ export class User {
         for (let i = 0; i < validHash.length; ++i) {
             mismatch |= (validHash.charCodeAt(i) ^ this.passwordHash.charCodeAt(i));
         }
-        console.log('this far?');
+        console.log('this far?', mismatch === 0, mismatch, 0);
         return mismatch === 0;
     }
 
