@@ -122,7 +122,7 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
             throw new Error('Invalid email or password');
         }
     } catch (e) {
-        console.log(e);
+        console.log('email error', e);
         throw new Error('Invalid email or password');
     }
 }
