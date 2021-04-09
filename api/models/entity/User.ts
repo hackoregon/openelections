@@ -131,7 +131,7 @@ export class User {
             throw new Error('must set a password');
         }
         let iterations = 2048;
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.APP_ENV === 'production') {
             // prevent derivation attacks
             iterations = 872791;
         }
