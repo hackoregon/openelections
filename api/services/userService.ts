@@ -108,9 +108,7 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
     const repository = getConnection('default').getRepository('User');
     try {
         const user = await repository.findOneOrFail({email: email.toLowerCase()}) as User;
-        console.log(user);
         if (user.validatePassword(password)) {
-            console.log('valid pw');
             const token = await generateJWTokenAsync(user.id);
             await createActivityRecordAsync({
                 currentUser: user,
@@ -123,7 +121,6 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
             throw new Error('Invalid email or password');
         }
     } catch (e) {
-        console.log('email error', e);
         throw new Error('Invalid email or password');
     }
 }
