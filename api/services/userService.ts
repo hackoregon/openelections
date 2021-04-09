@@ -109,7 +109,6 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
     try {
         const user = await repository.findOneOrFail({email: email.toLowerCase()}) as User;
         console.log(user);
-
         if (user.validatePassword(password)) {
             console.log('valid pw');
             const token = await generateJWTokenAsync(user.id);
