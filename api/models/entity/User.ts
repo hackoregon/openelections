@@ -126,6 +126,7 @@ export class User {
     }
 
     validatePassword(password: string) {
+        console.log({ password });
         if (!password) {
             throw new Error('must set a password');
         }
@@ -135,11 +136,13 @@ export class User {
             iterations = 872791;
         }
         const validHash = crypto.pbkdf2Sync(password, this.salt, iterations, 32, 'sha512').toString('hex');
+        console.log({ validHash });
         // prevent timing attacks
         let mismatch = 0;
         for (let i = 0; i < validHash.length; ++i) {
             mismatch |= (validHash.charCodeAt(i) ^ this.passwordHash.charCodeAt(i));
         }
+        console.log('this far?');
         return mismatch === 0;
     }
 
