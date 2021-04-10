@@ -302,6 +302,44 @@ export function updateContribution(contributionAttrs) {
   };
 }
 
+export function bulkUpdateContributions(contributionAttrsArray) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.updateContribution.request());
+    try {
+      const state = getState();
+      const currentUserId = state.auth.me.id;
+      const ids = contributionAttrsArray.map(contribution => contribution.id);
+      const bulkSubmitInfo = {
+        currentUserId,
+        ids,
+        status: 'Submitted',
+      };
+      const response = await api.bulkUpdateContributions(bulkSubmitInfo);
+      const res = await response.json();
+      if (response.status === 200) {
+        dispatch(actionCreators.updateContribution.success());
+        if (res.message) {
+          dispatch(
+            flashMessage(`${res.message}`, {
+              props: { variant: 'success' },
+            })
+          );
+        }
+      } else {
+        dispatch(actionCreators.updateContribution.failure());
+        dispatch(
+          flashMessage(`Error - ${res}`, { props: { variant: 'error' } })
+        );
+      }
+    } catch (error) {
+      dispatch(actionCreators.updateContribution.failure(error));
+      dispatch(
+        flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+      );
+    }
+  };
+}
+
 export function getContributions(contributionSearchAttrs, applyFilter = false) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributions.request());

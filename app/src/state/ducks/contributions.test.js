@@ -360,4 +360,50 @@ describe('Side Effects', () => {
         expect(actions[2].type).toEqual(expectedActions[2].type);
       });
   });
+
+  it('bulk Update Contributions', async () => {
+    const expectedActions = [
+      { type: actionTypes.UPDATE_CONTRIBUTION.REQUEST },
+      { type: actionTypes.UPDATE_CONTRIBUTION.SUCCESS },
+    ];
+    const store = mockStore({
+      auth: {
+        me: {
+          id: 2,
+        },
+      },
+    });
+
+    process.env.TOKEN = campaignAdminToken;
+
+    const contribution = await api.createContribution({
+      address1: '123 ABC ST',
+      amount: 250,
+      campaignId,
+      city: 'Portland',
+      currentUserId: campaignAdminId,
+      date: 1562436237619,
+      firstName: 'John',
+      middleInitial: '',
+      lastName: 'Doe',
+      governmentId,
+      type: api.ContributionTypeEnum.CONTRIBUTION,
+      subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
+      state: 'OR',
+      status: api.ContributionStatusEnum.DRAFT,
+      zip: '97214',
+      contributorType: api.ContributorTypeEnum.INDIVIDUAL,
+    });
+    const { id } = await contribution.json();
+
+    return store
+      .dispatch(contributions.bulkUpdateContributions([{ id }]))
+      .then(() => {
+        const actions = store.getActions();
+        console.log({ actions });
+        expect(actions[0].type).toEqual(expectedActions[0].type);
+        expect(actions[1].type).toEqual(expectedActions[1].type);
+      });
+  });
 });

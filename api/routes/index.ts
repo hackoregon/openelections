@@ -521,6 +521,52 @@ export const AppRoutes = [
 
     /**
      * @swagger
+     * /bulk-update-contributions:
+     *   put:
+     *     summary: Bulk update contributions
+     *     tags:
+     *       - Contributions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: array
+     *             items:
+     *               type: object
+     *               properties:
+     *                 currentUserId:
+     *                   type: integer
+     *                 id:
+     *                   type: integer
+     *                 status:
+     *                   type: string
+     *     responses:
+     *       200:
+     *         description: Success response (X of X updated, X invalid)
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/bulk-update-contributions',
+        method: 'put',
+        action: contributions.bulkUpdateContributions
+    },
+
+    /**
+     * @swagger
      * /contributions/{id}:
      *   delete:
      *     summary: Archive a contribution

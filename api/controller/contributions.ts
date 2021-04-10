@@ -17,6 +17,7 @@ import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { checkDto } from './helpers';
 import {
+    Contribution,
     ContributionStatus,
     ContributionSubType,
     ContributionType,
@@ -183,6 +184,35 @@ export async function updateContribution(request: IRequest, response: Response, 
         await checkDto(updateContributionDto);
         const contribution = await updateContributionAsync(updateContributionDto);
         return response.status(204).send(contribution);
+    } catch (err) {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
+            bugsnagClient.notify(err);
+        }
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export async function bulkUpdateContributions(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        if (request.body.ids && request.body.ids.length > 0) {
+            const promises = request.body.ids.map(async (id: string) => {
+                const updatedContribution = request.body;
+                delete updatedContribution.ids;
+                const updateContributionDto = Object.assign(new UpdateContributionDto(), {
+                    ...updatedContribution,
+                    id
+                });
+                await checkDto(updateContributionDto);
+                return await updateContributionAsync(updateContributionDto);
+            });
+            const contributions = await Promise.all(promises);
+            const completedContributions = contributions.filter(contribution => (contribution as Contribution).status === request.body.status);
+            console.log(completedContributions, contributions);
+            return response.status(200).json({
+                message: `${completedContributions.length} of ${contributions.length} successfully updated.`
+            });
+        }
     } catch (err) {
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);

@@ -559,4 +559,36 @@ describe('API', () => {
     );
     expect(response.status).toEqual(204);
   });
+  it('bulkUpdateContributions', async () => {
+    process.env.TOKEN = campaignAdminToken;
+
+    let response = await api.createContribution({
+      address1: '123 ABC ST',
+      amount: 250,
+      campaignId,
+      city: 'Portland',
+      currentUserId: campaignAdminId,
+      date: 1562436237619,
+      firstName: 'John',
+      middleInitial: '',
+      lastName: 'Doe',
+      governmentId,
+      type: api.ContributionTypeEnum.CONTRIBUTION,
+      subType: api.ContributionSubTypeEnum.CASH,
+      paymentMethod: api.PaymentMethodEnum.CASH,
+      state: 'OR',
+      status: api.ContributionStatusEnum.DRAFT,
+      zip: '97214',
+      contributorType: api.ContributorTypeEnum.INDIVIDUAL,
+    });
+    const contribution = await response.json();
+    console.log('added it', contribution);
+    response = await api.bulkUpdateContributions({
+      ids: [contribution.id],
+      status: 'Submitted',
+      currentUserId: campaignStaffId,
+    });
+    console.log('bulk response', response);
+    expect(response.status).toEqual(200);
+  });
 });
