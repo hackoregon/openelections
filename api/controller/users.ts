@@ -29,6 +29,7 @@ export async function login(request: IRequest, response: Response, next: Functio
         response.cookie('token', token, { expires: new Date(tokenObj.exp), domain} );
         return response.status(204).json({});
     } catch (err) {
+        console.log(err); // debug
         if (process.env.NODE_ENV === 'production') {
             bugsnagClient.notify(err);
         }
