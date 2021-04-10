@@ -318,7 +318,7 @@ class ExpensesTable extends React.Component {
                       });
                     }}
                   >
-                    Bulk submit
+                    Bulk Submit
                   </Button>
                 )}
                 {this.state.bulkSubmitted && (
