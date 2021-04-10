@@ -78,7 +78,7 @@
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
     "react-cookie": "^4.0.3",
-    "react-dev-utils": "^9.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-number-format": "^4.2.0",
     "react-redux": "^6.0.1",
