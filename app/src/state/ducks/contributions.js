@@ -272,7 +272,6 @@ export function updateContribution(contributionAttrs) {
     dispatch(actionCreators.updateContribution.request());
     try {
       const response = await api.updateContribution(contributionAttrs);
-      console.log({ contributionAttrs, response });
       if (response.status === 204) {
         let status = '';
         if (contributionAttrs.status) {
