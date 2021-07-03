@@ -79,13 +79,11 @@ const columns = isGovAdmin => [
   {
     field: 'name',
     title: 'Name',
-    sorting: false,
   },
   {
     field: 'amount',
     title: 'Amount',
     type: 'currency',
-    sorting: false,
   },
   {
     field: 'paymentMethod',
@@ -95,7 +93,6 @@ const columns = isGovAdmin => [
         ? rowData.paymentMethod.replace(/_/g, ' ')
         : '';
     },
-    sorting: false,
   },
   {
     field: 'status',
