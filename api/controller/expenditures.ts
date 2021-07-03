@@ -15,7 +15,8 @@ import {
     ExpenditureType,
     ExpenditureSubType,
     PayeeType,
-    PurposeType
+    PurposeType,
+    Expenditure
 } from '../models/entity/Expenditure';
 import { PaymentMethod } from '../models/entity/Expenditure';
 import { bugsnagClient } from '../services/bugsnagService';
@@ -276,6 +277,36 @@ export async function updateExpenditure(request: IRequest, response: Response, n
         const expenditure = await updateExpenditureAsync(updateExpenditureDto);
 
         return response.status(204).send(expenditure);
+    } catch (err) {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
+            bugsnagClient.notify(err);
+        }
+        return response.status(422).json({message: err.message});
+    }
+}
+
+export async function bulkUpdateExpenditures(request: IRequest, response: Response, next: Function) {
+    try {
+        checkCurrentUser(request);
+        if (request.body.ids && request.body.ids.length > 0) {
+            const promises = request.body.ids.map(async (id: string) => {
+                const updatedExpenditure = request.body;
+                delete updatedExpenditure.ids;
+                const updateExpenditureDto = Object.assign(new UpdateExpenditureDto(), {
+                    ...updatedExpenditure,
+                    id
+                });
+                await checkDto(updateExpenditureDto);
+                return await updateExpenditureAsync(updateExpenditureDto);
+            });
+            const expenditures = await Promise.all(promises);
+            const completedExpenditures = expenditures.filter(contribution => (contribution as Expenditure).status === request.body.status);
+            return response.status(200).json({
+                message: `${completedExpenditures.length} of ${expenditures.length} successfully updated.`
+            });
+        } else {
+            return response.status(422).json({message: 'No expenditures submitted' });
+        }
     } catch (err) {
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);

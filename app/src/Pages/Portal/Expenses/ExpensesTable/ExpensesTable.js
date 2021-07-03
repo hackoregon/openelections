@@ -7,6 +7,7 @@ import PageHoc from '../../../../components/PageHoc/PageHoc';
 import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
+  bulkUpdateExpenditures,
   getExpenditures,
   getExpendituresList,
   getExpendituresTotal,
@@ -37,7 +38,7 @@ const buttonWrapper = css`
 const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
   isFreeAction
     ? { icon: 'none', name, buttonType, onClick, isFreeAction }
-    : { icon: 'none', name, buttonType, onClick };
+    : { icon: 'none', name, buttonType, onClick, position: 'row' };
 
 const columns = isGovAdmin => [
   {
@@ -109,11 +110,28 @@ const columns = isGovAdmin => [
 class ExpensesTable extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      itemsToSubmit: null,
+      bulkSubmitted: false,
+    };
     props.getExpenditures({
       governmentId: props.govId,
       currentUserId: props.userId,
       campaignId: props.campaignId,
     });
+    this.updateItemsToSubmit = this.updateItemsToSubmit.bind(this);
+  }
+
+  updateItemsToSubmit(items) {
+    if (items.length > 0) {
+      this.setState({
+        itemsToSubmit: items,
+      });
+    } else {
+      this.setState({
+        itemsToSubmit: null,
+      });
+    }
   }
 
   render() {
@@ -130,14 +148,20 @@ class ExpensesTable extends React.Component {
       userId,
       campaignId,
       isGovAdmin,
+      bulkSubmitExpenditures,
     } = this.props;
 
     const isLoading = isListLoading && !Array.isArray(expendituresList);
 
     const actions = [
-      actionInfo('View', 'submit', (event, rowData) => {
-        history.push(`/expenses/${rowData.id}`);
-      }),
+      actionInfo(
+        'View',
+        'submit',
+        (event, rowData) => {
+          history.push(`/expenses/${rowData.id}`);
+        },
+        false
+      ),
     ];
 
     const components = {
@@ -242,6 +266,14 @@ class ExpensesTable extends React.Component {
           options={{
             pageSize: filterOptions.perPage || 50,
             showTitle: false,
+            actionsColumnIndex: -1,
+            selection: true,
+            selectionProps: rowData => {
+              return {
+                disabled: rowData.status === 'Submitted',
+                color: 'primary',
+              };
+            },
           }}
           actions={actions}
           components={components}
@@ -264,20 +296,49 @@ class ExpensesTable extends React.Component {
           perPage={filterOptions.perPage}
           pageNumber={filterOptions.page}
           totalRows={total}
-          // eslint-disable-next-line no-use-before-define
           onChangePage={handleOnChangePage}
-          // eslint-disable-next-line no-use-before-define
           onChangeRowsPerPage={handleOnRowsPerPageChange}
           toolbarAction={
             !isGovAdmin ? (
-              <Button
-                buttonType="green"
-                onClick={() => history.push({ pathname: '/expenses/new' })}
-              >
-                Add New Expense
-              </Button>
+              <>
+                <Button
+                  buttonType="green"
+                  onClick={() => history.push({ pathname: '/expenses/new' })}
+                >
+                  Add New Expense
+                </Button>
+                {this.state.itemsToSubmit && (
+                  <Button
+                    buttonType="green"
+                    onClick={() => {
+                      bulkSubmitExpenditures(this.state.itemsToSubmit);
+                      this.setState({
+                        itemsToSubmit: null,
+                        bulkSubmitted: true,
+                      });
+                    }}
+                  >
+                    Bulk Submit
+                  </Button>
+                )}
+                {this.state.bulkSubmitted && (
+                  <Button
+                    buttonType="green"
+                    onClick={() => {
+                      fetchList();
+                      this.setState({
+                        itemsToSubmit: null,
+                        bulkSubmitted: false,
+                      });
+                    }}
+                  >
+                    Refresh
+                  </Button>
+                )}
+              </>
             ) : null
           }
+          onSelectionChange={items => this.updateItemsToSubmit(items)}
         />
       </PageHoc>
     );
@@ -308,6 +369,7 @@ export default connect(
       showModal: payload => {
         dispatch(showModal(payload));
       },
+      bulkSubmitExpenditures: data => dispatch(bulkUpdateExpenditures(data)),
     };
   }
 )(ExpensesTable);
@@ -324,4 +386,5 @@ ExpensesTable.propTypes = {
   userId: PropTypes.number,
   campaignId: PropTypes.number,
   isGovAdmin: PropTypes.bool,
+  bulkSubmitExpenditures: PropTypes.func,
 };

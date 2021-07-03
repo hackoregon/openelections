@@ -690,6 +690,12 @@ export function updateExpenditure(expenditureAttrs) {
   );
 }
 
+// path: '/bulk-update-expenditures'
+//   method: 'put',
+export function bulkUpdateExpenditures(expenditureAttrsArray) {
+  return put(`${baseUrl()}/bulk-update-expenditures`, expenditureAttrsArray);
+}
+
 // path: '/summary'
 //   method: 'post',
 // summaryArttrs = {governmentId: integer OR campaignId: integer}

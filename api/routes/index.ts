@@ -535,16 +535,16 @@ export const AppRoutes = [
      *       content:
      *         application/json:
      *           schema:
-     *             type: array
-     *             items:
-     *               type: object
-     *               properties:
-     *                 currentUserId:
-     *                   type: integer
-     *                 id:
-     *                   type: integer
-     *                 status:
+     *             type: object
+     *             properties:
+     *               currentUserId:
+     *                 type: integer
+     *               ids:
+     *                 type: array
+     *                 items:
      *                   type: string
+     *               status:
+     *                 type: string
      *     responses:
      *       200:
      *         description: Success response (X of X updated, X invalid)
@@ -913,6 +913,52 @@ export const AppRoutes = [
         path: '/expenditures/:id',
         method: 'put',
         action: expenditures.updateExpenditure
+    },
+
+    /**
+     * @swagger
+     * /bulk-update-expenditures:
+     *   put:
+     *     summary: Bulk update expenditures
+     *     tags:
+     *       - Expenditures
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               currentUserId:
+     *                 type: integer
+     *               ids:
+     *                 type: array
+     *                 items:
+     *                   type: string
+     *               status:
+     *                 type: string
+     *     responses:
+     *       200:
+     *         description: Success response (X of X updated, X invalid)
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/bulk-update-expenditures',
+        method: 'put',
+        action: expenditures.bulkUpdateExpenditures
     },
     /**
      * @swagger
