@@ -23,6 +23,7 @@ const fields = {
     component: SelectField,
     options: {
       values: [
+        'Auditor',
         'Mayor',
         'Commissioner 1',
         'Commissioner 2',
