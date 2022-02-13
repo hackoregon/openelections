@@ -45,6 +45,8 @@ services:
     ports: ['6379:6379']
     networks:
       - openelections
+  networks:
+    openelections:
   # data:
   #   build:
   #     context: ./datascience
@@ -88,7 +90,6 @@ services:
   #     - ./api/tsconfig.json:/app/tsconfig.json
   #   networks:
   #     - openelections
-networks:
-  openelections:
+
 
 
