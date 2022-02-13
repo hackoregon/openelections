@@ -692,7 +692,7 @@ const Home = ({
                 Last 2 Months
               </Button>
             </div> */}
-            <div css={buttonStyles}>
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -709,8 +709,27 @@ const Home = ({
               >
                 Runoff: Mayor
               </Button>
-            </div>
+            </div> */}
             <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                onClick={() =>
+                  setCustomFilters({
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign =>
+                        campaign.name === 'Dan Ryan' ||
+                        campaign.name === 'Michael Simpson' ||
+                        campaign.name === 'AJ McCreery'
+                    ),
+                    compare: true,
+                  })
+                }
+              >
+                Commissioner 2
+              </Button>
+            </div>
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -725,8 +744,8 @@ const Home = ({
               >
                 Sarah Iannarone
               </Button>
-            </div>
-            <div css={buttonStyles}>
+            </div> */}
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -742,6 +761,27 @@ const Home = ({
               >
                 Ted Wheeler
               </Button>
+            </div> */}
+            <div css={buttonStyles}>
+              <Button
+                buttonType="small"
+                onClick={() =>
+                  setCustomFilters({
+                    financing: 'all',
+                    campaigns: availableCampaigns.filter(
+                      campaign =>
+                        campaign.name === 'Jo Ann Hardesty' ||
+                        campaign.name === 'Rene Gonzalez' ||
+                        campaign.name === 'Peggy Sue' ||
+                        campaign.name === 'Steven Cox' ||
+                        campaign.name === 'Vadim Mozyrsky'
+                    ),
+                    compare: true,
+                  })
+                }
+              >
+                Commissioner 3
+              </Button>
             </div>
             <div css={buttonStyles}>
               <Button
@@ -751,14 +791,14 @@ const Home = ({
                     financing: 'all',
                     campaigns: availableCampaigns.filter(
                       campaign =>
-                        campaign.name === 'Chloe Eudaly' ||
-                        campaign.name === 'Mingus Mapps'
+                        campaign.name === 'Brian Setzer' ||
+                        campaign.name === 'Simone Rede'
                     ),
                     compare: true,
                   })
                 }
               >
-                Runoff: Commissioner 1
+                Auditor
               </Button>
             </div>
           </div>
