@@ -317,6 +317,11 @@ const Home = ({
       });
   }, [showModal, cookies.visited]);
 
+  useEffect(() => {
+    if (!selectedStartDate && !selectedEndDate) {
+      setDateRange(new Date('Fri Dec 18 2020'), null);
+    }
+  }, []);
   const handleCompare = (event, newCompare) => {
     setCompare(newCompare);
   };
@@ -640,7 +645,9 @@ const Home = ({
                 id="filter-date"
                 from={selectedStartDate}
                 to={selectedEndDate}
-                onChange={setDateRange}
+                onChange={(from, to) => {
+                  setDateRange(from, to);
+                }}
               />
               <FormHelperText>Limit by date range</FormHelperText>
             </FormControl>
