@@ -21,7 +21,12 @@ const popover = css`
 const dateFormat = d => format(new Date(d), 'MM-DD-YYYY');
 
 const renderValue = value => {
-  const [from, to] = value.map(JSON.parse);
+  const [from, to] = value.map(item => {
+    if (item) {
+      return JSON.parse(item);
+    }
+    return undefined;
+  });
   if (from && to) {
     return `between ${dateFormat(from)} and ${dateFormat(to)}`;
   }
@@ -37,11 +42,14 @@ const renderValue = value => {
 const serializeValue = (from, to) => [from, to].map(JSON.stringify);
 
 const parseDate = dateStr => {
-  const date = new Date(dateStr);
-  if (Number.isNaN(+date)) return null;
+  if (dateStr) {
+    const date = new Date(dateStr);
+    if (Number.isNaN(+date)) return null;
 
-  date.setTime(date.getTime() + date.getTimezoneOffset() * 60000);
-  return date;
+    date.setTime(date.getTime() + date.getTimezoneOffset() * 60000);
+    return date;
+  }
+  return null;
 };
 
 const dateFieldFormat = value => {
@@ -51,7 +59,6 @@ const dateFieldFormat = value => {
 
 export default function PublicDateRangeField(props) {
   const { id, from, to, onChange } = props;
-
   return (
     <Select
       value={serializeValue(from, to)}
@@ -80,7 +87,9 @@ export default function PublicDateRangeField(props) {
           labelid={`${id}-to-label`}
           type="date"
           value={dateFieldFormat(to)}
-          onChange={event => onChange(from, parseDate(event.target.value))}
+          onChange={event => {
+            onChange(from, parseDate(event.target.value));
+          }}
         />
       </div>
     </Select>

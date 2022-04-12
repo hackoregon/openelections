@@ -430,12 +430,18 @@ export const selectedCampaignNames = createSelector(
 
 export const selectedStartDate = createSelector(
   publicDataFilters,
-  filters => filters.startDate
+  filters =>
+    typeof filters.startDate === 'string'
+      ? new Date(filters.startDate)
+      : filters.startDate
 );
 
 export const selectedEndDate = createSelector(
   publicDataFilters,
-  filters => filters.endDate
+  filters =>
+    typeof filters.endDate === 'string'
+      ? new Date(filters.endDate)
+      : filters.endDate
 );
 
 export const selectedCount = createSelector(
