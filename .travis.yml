@@ -14,6 +14,7 @@ before_deploy:
   - pip install --user awscli
 
 deploy:
+  if: sender != andrewbiang888
   provider: script
   script: sh scripts/deploy.sh
   skip_cleanup: true
