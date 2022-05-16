@@ -1165,137 +1165,142 @@ const Home = ({
                 );
               })}
             </div>
-            <div css={mobileCompareVisualizationContainer}>
-              <div
-                css={css`
-                  grid-column-start: 1;
-                  grid-row-start: 1;
-                `}
-              >
-                <h2
+            {(campaignsTable[compare - 1] || {}).campaignName && (
+              <div css={mobileCompareVisualizationContainer}>
+                <div
                   css={css`
-                    display: flex;
-                    justify-content: center;
-                    text-align: center;
+                    grid-column-start: 1;
+                    grid-row-start: 1;
                   `}
                 >
-                  {campaignsTable[compare - 1].campaignName}
-                </h2>
-                <table css={table}>
-                  <tr>
-                    <th>OAE Participant</th>
-                    <td>
-                      {campaignsTable[compare - 1].participatingStatus
-                        ? '✅'
-                        : '❌'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Contributions</th>
-                    <td>
-                      {campaignsTable[compare - 1].donationsCount}
-                      {campaignsTable[compare - 1].participatingStatus
-                        ? ' '
-                        : '*'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Donors</th>
-                    <td>
-                      {campaignsTable[compare - 1].donorsCount}
-                      {campaignsTable[compare - 1].participatingStatus
-                        ? ' '
-                        : '*'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Median Contribution</th>
-                    <td>
-                      {dollars(
-                        campaignsTable[compare - 1].medianContributionSize
-                      )}
-                      {campaignsTable[compare - 1].participatingStatus
-                        ? ' '
-                        : '*'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Total Contributions</th>
-                    <td>
-                      {dollars(
-                        campaignsTable[compare - 1].totalAmountContributed
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Total Match Approved</th>
-                    <td>
-                      {campaignsTable[compare - 1].participatingStatus
-                        ? dollars(
-                            campaignsTable[compare - 1].totalAmountMatched
-                          )
-                        : 'N/A'}
-                    </td>
-                  </tr>
-                </table>
-                {!campaignsTable[compare - 1].participatingStatus && (
-                  <div
+                  <h2
                     css={css`
-                      ${dataLoadedStyle};
-                      margin: -2em auto 1em auto;
+                      display: flex;
+                      justify-content: center;
+                      text-align: center;
                     `}
                   >
-                    *Smaller contributions are bundled by ORESTAR for
-                    non-participating candidates.
-                  </div>
-                )}
+                    {(campaignsTable[compare - 1] || {}).campaignName}
+                  </h2>
+                  <table css={table}>
+                    <tr>
+                      <th>OAE Participant</th>
+                      <td>
+                        {(campaignsTable[compare - 1] || {}).participatingStatus
+                          ? '✅'
+                          : '❌'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Contributions</th>
+                      <td>
+                        {(campaignsTable[compare - 1] || {}).donationsCount}
+                        {(campaignsTable[compare - 1] || {}).participatingStatus
+                          ? ' '
+                          : '*'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Donors</th>
+                      <td>
+                        {(campaignsTable[compare - 1] || {}).donorsCount}
+                        {(campaignsTable[compare - 1] || {}).participatingStatus
+                          ? ' '
+                          : '*'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Median Contribution</th>
+                      <td>
+                        {dollars(
+                          (campaignsTable[compare - 1] || {})
+                            .medianContributionSize
+                        )}
+                        {(campaignsTable[compare - 1] || {}).participatingStatus
+                          ? ' '
+                          : '*'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Total Contributions</th>
+                      <td>
+                        {dollars(
+                          (campaignsTable[compare - 1] || {})
+                            .totalAmountContributed
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Total Match Approved</th>
+                      <td>
+                        {(campaignsTable[compare - 1] || {}).participatingStatus
+                          ? dollars(
+                              (campaignsTable[compare - 1] || {})
+                                .totalAmountMatched
+                            )
+                          : 'N/A'}
+                      </td>
+                    </tr>
+                  </table>
+                  {!(campaignsTable[compare - 1] || {}).participatingStatus && (
+                    <div
+                      css={css`
+                        ${dataLoadedStyle};
+                        margin: -2em auto 1em auto;
+                      `}
+                    >
+                      *Smaller contributions are bundled by ORESTAR for
+                      non-participating candidates.
+                    </div>
+                  )}
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: 1;
+                    grid-row-start: 2;
+                  `}
+                >
+                  <ContributionTypeBar
+                    data={
+                      aggregatedContributorTypesByCandidate[
+                        (campaignsTable[compare - 1] || {}).campaignName
+                      ]
+                    }
+                    count={selectedCount}
+                  />
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: 1;
+                    grid-row-start: 3;
+                  `}
+                >
+                  <ContributionTypePie
+                    data={
+                      aggregatedDonationSizeByCandidate[
+                        (campaignsTable[compare - 1] || {}).campaignName
+                      ]
+                    }
+                    count={selectedCount}
+                  />
+                </div>
+                <div
+                  css={css`
+                    grid-column-start: 1;
+                    grid-row-start: 4;
+                  `}
+                >
+                  <ContributorLocationBar
+                    data={
+                      aggregatedContributionsByRegionByCandidate[
+                        (campaignsTable[compare - 1] || {}).campaignName
+                      ]
+                    }
+                    count={selectedCount}
+                  />
+                </div>
               </div>
-              <div
-                css={css`
-                  grid-column-start: 1;
-                  grid-row-start: 2;
-                `}
-              >
-                <ContributionTypeBar
-                  data={
-                    aggregatedContributorTypesByCandidate[
-                      campaignsTable[compare - 1].campaignName
-                    ]
-                  }
-                  count={selectedCount}
-                />
-              </div>
-              <div
-                css={css`
-                  grid-column-start: 1;
-                  grid-row-start: 3;
-                `}
-              >
-                <ContributionTypePie
-                  data={
-                    aggregatedDonationSizeByCandidate[
-                      campaignsTable[compare - 1].campaignName
-                    ]
-                  }
-                  count={selectedCount}
-                />
-              </div>
-              <div
-                css={css`
-                  grid-column-start: 1;
-                  grid-row-start: 4;
-                `}
-              >
-                <ContributorLocationBar
-                  data={
-                    aggregatedContributionsByRegionByCandidate[
-                      campaignsTable[compare - 1].campaignName
-                    ]
-                  }
-                  count={selectedCount}
-                />
-              </div>
-            </div>
+            )}
           </div>
         )}
       {!!campaignsTable.length && (
