@@ -71,7 +71,7 @@ export default connect(
     selectedOffices: selectedOffices(state),
     selectedFinancing: selectedFinancing(state),
     selectedCampaigns: selectedCampaigns(state),
-    selectedCampaignNames: selectedCampaignNames(state),
+    selectedCampaignNames: [...selectedCampaignNames(state)],
     selectedStartDate: selectedStartDate(state),
     selectedEndDate: selectedEndDate(state),
     selectedCount: selectedCount(state),
