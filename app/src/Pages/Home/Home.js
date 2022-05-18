@@ -1213,7 +1213,8 @@ const Home = ({
                       <th>Median Contribution</th>
                       <td>
                         {dollars(
-                          (campaignsTable[compare - 1] || {}).medianContributionSize
+                          (campaignsTable[compare - 1] || {})
+                            .medianContributionSize
                         )}
                         {(campaignsTable[compare - 1] || {}).participatingStatus
                           ? ' '
@@ -1224,7 +1225,8 @@ const Home = ({
                       <th>Total Contributions</th>
                       <td>
                         {dollars(
-                          (campaignsTable[compare - 1] || {}).totalAmountContributed
+                          (campaignsTable[compare - 1] || {})
+                            .totalAmountContributed
                         )}
                       </td>
                     </tr>
@@ -1233,7 +1235,8 @@ const Home = ({
                       <td>
                         {(campaignsTable[compare - 1] || {}).participatingStatus
                           ? dollars(
-                              (campaignsTable[compare - 1] || {}).totalAmountMatched
+                              (campaignsTable[compare - 1] || {})
+                                .totalAmountMatched
                             )
                           : 'N/A'}
                       </td>
