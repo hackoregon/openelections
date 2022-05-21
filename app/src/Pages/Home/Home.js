@@ -140,6 +140,7 @@ const visualizationContainer = css`
 
 const largeCompareVisualizationContainer = rows => css`
   margin: 2rem auto;
+  padding: 0 10px;
   display: grid;
   grid-template-rows: repeat(4, auto);
   grid-template-columns: repeat(${rows}, auto);
@@ -173,7 +174,7 @@ const mobileOnlyToggle = css`
   div {
     background-color: white;
   }
-  @media ${mediaQueryRanges.mediumAndUp} {
+  @media ${mediaQueryRanges.largeAndUp} {
     display: none;
   }
 `;
