@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getConnection } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import {
     newActiveUserAsync,
     newCampaignAsync,
@@ -22,12 +22,12 @@ import { createActivityRecordAsync } from '../../services/activityService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
 
-let activityRepository: any;
+let activityRepository: Repository<Activity>;
 let government: Government;
 
 describe('Activity', () => {
     before(() => {
-        activityRepository = getConnection('default').getRepository('Activity');
+        activityRepository = getConnection('default').getRepository(Activity);
     });
 
     beforeEach(async () => {
@@ -266,9 +266,9 @@ describe('Activity', () => {
             notify: true
         });
 
-        activityRepository.update(activity.id, {createdAt: new Date(2019, 1, 1)});
-        activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
-        activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
+        await activityRepository.update(activity.id, {createdAt: new Date(2019, 1, 1)});
+        await activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
+        await activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
         const activities = await getActivityByContributionAsync(contr.id, 100, 0);
         expect(activities.data.length).to.equal(3);
         let from = new Date(2018, 12, 31);
