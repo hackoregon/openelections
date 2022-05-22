@@ -1057,7 +1057,7 @@ const Home = ({
                   campaign => campaign.campaignName === name
                 );
                 return (
-                  <React.Fragment key={`candidate-${name}-index`}>
+                  <React.Fragment key={`candidate-${name}-${index}`}>
                     <div
                       css={css`
                         grid-column-start: ${index + 1};

@@ -418,7 +418,7 @@ export function decodeToken(token) {
   return jwtDecode(token);
 }
 
-export function baseUrl() {
+export function baseUrl(isDataVisualizationRequest = false) {
   if (process.env.NODE_ENV === 'test') {
     return 'http://localhost:3000';
   }
@@ -427,7 +427,7 @@ export function baseUrl() {
     return 'https://api-qa.openelectionsportland.org';
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' && !isDataVisualizationRequest) {
     return 'http://localhost:3000';
   }
 
@@ -711,7 +711,9 @@ export function updateMatchForContribution(attrs) {
 }
 
 export function getContributionGeoData() {
-  return get(`${baseUrl()}/contributionsgeo`).then(response => response.json());
+  return get(`${baseUrl(true)}/contributionsgeo`).then(response =>
+    response.json()
+  );
 }
 
 export function getExternalContributionGeoData() {
