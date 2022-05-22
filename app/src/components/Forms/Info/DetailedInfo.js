@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /** @jsx jsx */
 import * as React from 'react';
 import { css, jsx } from '@emotion/core';
@@ -15,14 +16,14 @@ const contentStyle = css`
 const DetailedInfo = () => (
   <>
     <section css={contentStyle}>
-      <h2>About Open and Accountable Elections</h2>
+      <h2>About Small Donor Elections</h2>
       <p>
         <a
-          href="https://portlandoregon.gov/oae"
+          href="https://www.portland.gov/smalldonorelections"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open and Accountable Elections
+          Small Donor Elections
         </a>{' '}
         is the City of Portland&apos;s small donor matching program. It is
         designed to ensure that the City government is accountable to all
@@ -31,22 +32,21 @@ const DetailedInfo = () => (
       <p>
         The program is open to candidates for Mayor, Commissioner, and Auditor.
         To participate, they must show broad community support and accept
-        contribution limits. The program provides a 6-to-1 match from the City’s
-        Open & Accountable Elections Fund for the first $50 from any Portland
-        donor.
+        contribution limits. The program provides a 9-to-1 match from the City’s
+        Small Donor Elections Fund for the first $20 from any Portland donor.
       </p>
       <p>
         This real-time dashboard shows contribution sources for participating
         and non-participating candidates.
       </p>
-      <Collapsable description="Open and Accountable Elections">
+      <Collapsable description="Small Donor Elections">
         <Collapsable.Section hidden>
           <h3>How it works</h3>
           <p>
             <i>
               This is a summary. See the{' '}
               <a
-                href="https://www.portlandoregon.gov/oae/"
+                href="https://www.portland.gov/smalldonorelections"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -61,39 +61,39 @@ const DetailedInfo = () => (
               To qualify, they must show that they have{' '}
               <strong>broad community support</strong> by collecting 250 small
               contributions from Portlanders if running for Council or Auditor
-              or 500 small contributions if running for Mayor.
+              or 750 small contributions if running for Mayor.
             </li>
             <li>
               Participating candidates must agree to contribution limits. They
               must{' '}
               <strong>
                 agree to collect no more than $250 per donor and only from
-                humans, not businesses or political committees
+                humans and small donor organizations, not businesses or
+                political committees
               </strong>
               , with two exceptions:
               <ul>
                 <li>
-                  The first exception is that candidates may raise as much as
-                  $5,000 in “seed money” in order to raise their 250 or 500
-                  qualifying contributions. This helps them hire a treasurer and
-                  campaign manager or print materials and build a website to
-                  collect small contributions. This money can come from a past
-                  campaign, themselves as a gift or a loan, or from donors.
+                  The first exception is that candidates may raise $500 per
+                  donor up to $5,000 in “seed money” early on to get their
+                  campaigns up and running.
                 </li>
                 <li>
-                  The second exception is $20,000 of in-kind contributions. This
-                  enables candidates to get <i>non-monetary</i> support – like
-                  throwing house parties or creating art for their campaign –
-                  from supporters, up to a total campaign limit of $20,000.
+                  The second exception is $5,000 of in-kind contributions. This
+                  enables candidates to get <i>non-monetary</i> support from
+                  organizations – either in pooled small contributions,
+                  democracy building activities like organizing volunteer
+                  canvassing, or goods and services to increase disability
+                  accessibility or language inclusivity up to $5,000 per donor.
                 </li>
               </ul>
             </li>
             <li>
               As candidates collect small contributions from Portlanders, the
-              City matches them 6-to-1 on the first $50. So if you give a
-              candidate $10 a month, the City will match that with $60 each time
-              until you’ve given $50 and the City has provided the candidate
-              $300 in matching funds for you.
+              City matches them 9-to-1 on the first $20. So if you give a
+              candidate $10 a month, the City will match that with $90 each time
+              until you’ve given $20 and the City has provided the candidate
+              $180 in matching funds for you.
             </li>
             <li>
               You can get matched for each race, so you could give to someone
@@ -124,8 +124,7 @@ const DetailedInfo = () => (
           <h3>About the software</h3>
           <p>
             This dashboard and the software that powers it was built in
-            partnership between the City’s Open and Accountable Elections
-            program and the{' '}
+            partnership between the City’s Small Donor Elections program and the{' '}
             <a
               href="https://civicsoftwarefoundation.org"
               target="_blank"
@@ -163,47 +162,27 @@ const DetailedInfo = () => (
             </a>
             .
           </p>
-
-          <h3>Coming soon</h3>
-          <ul>
-            <li>Information on non-participating candidates</li>
-            <li>
-              Further integration with the{' '}
-              <a
-                href="civicplatform.org"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                CIVIC Platform
-              </a>{' '}
-              to facilitate public use and sharing of data visualizations
-            </li>
-            <li>
-              Documentation of the collaborative software development process
-            </li>
-          </ul>
         </Collapsable.Section>
       </Collapsable>
     </section>
     <section css={contentStyle}>
       <h2>About the data</h2>
       <p>
-        This data is pulled live from the Open and Accountable Elections
-        application. The dashboard shows all contribution information that has
-        been submitted by campaigns, including contributions that are awaiting
-        City review.
+        This data is pulled live from the Small Donor Elections application. The
+        dashboard shows all contribution information that has been submitted by
+        campaigns, including contributions that are awaiting City review.
       </p>
       <Collapsable description="About this data">
         <Collapsable.Section hidden>
           <h3>Contribution process</h3>
           <p>
-            A campaign submits contribution information through the Open and
-            Accountable Elections application. City staff then review the
-            contribution for matching eligibility and proper documentation, and
-            may request clarification or changes from the campaign. Once any
-            issues have been resolved, an eligible contribution can be approved
-            for matching by City staff. An additional layer of review happens
-            prior to payment from the Open & Accountable Elections Fund.
+            A campaign submits contribution information through the Small Donor
+            Elections application. City staff then review the contribution for
+            matching eligibility and proper documentation, and may request
+            clarification or changes from the campaign. Once any issues have
+            been resolved, an eligible contribution can be approved for matching
+            by City staff. An additional layer of review happens prior to
+            payment from the Small Donor Elections Fund.
           </p>
           <p>
             Contributions are shown on the dashboard as soon as they are
@@ -223,7 +202,10 @@ const DetailedInfo = () => (
           <p>
             The information above includes both monetary and non-monetary
             (in-kind) contributions. Program rules limit in-kind contributions
-            to $20,000 per campaign per election.
+            to $5,000 from non-profit donors per election, either as pooled
+            small contributions, in democracy-building activities, or in goods
+            or services that increase disability accessibility or language
+            inclusivity.
           </p>
           <p>
             When a contribution is on the border of a size category, it is
@@ -235,8 +217,8 @@ const DetailedInfo = () => (
             geolocation from the Google Maps Geocoding API.
           </p>
           <p>
-            Public matching contributions from the Open & Accountable Elections
-            Fund are not shown on the map.
+            Public matching contributions from the Small Donor Elections Fund
+            are not shown on the map.
           </p>
         </Collapsable.Section>
       </Collapsable>

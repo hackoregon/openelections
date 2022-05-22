@@ -7,6 +7,9 @@ import { HorizontalBarChart } from '@hackoregon/component-library';
 const { numeric, dollars } = civicFormat;
 
 function ContributionTypeBar({ data, count }) {
+  if (!data) {
+    return null;
+  }
   const filteredData = data.filter(el => el.count > 0 && el.total > 0);
 
   return (
