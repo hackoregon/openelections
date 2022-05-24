@@ -25,11 +25,15 @@ const Invitation = ({ campaign, government, code }) => (
       <p css={formTitle}>
         {`${campaign && campaign.length > 0 ? campaign : ''}${
           government && government.length > 0 ? government : ''
-        } ${!campaign && !government ? 'Open Elections Portland' : ' Portal'}`}
+        } ${
+          !campaign && !government
+            ? 'Small Donor Elections Portland'
+            : ' Portal'
+        }`}
       </p>
       <p>
-        in the Open and Accountable Elections Portland program. Click below to
-        complete your registration.
+        in the Small Donor Elections Portland program. Click below to complete
+        your registration.
       </p>
       <div css={buttonWrapper}>
         <Link to={`/sign-up?invitationCode=${code}`}>

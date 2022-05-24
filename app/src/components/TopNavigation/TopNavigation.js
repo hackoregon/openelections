@@ -56,10 +56,10 @@ const TopNavigation = props => {
             <img
               className="logo-img"
               src={logo}
-              alt="Open and Accountable Elections logo"
+              alt="Small Donor Elections logo"
             />
           </a>
-          <p className="logo-text">Open & Accountable Elections Portland</p>
+          <p className="logo-text">Small Donor Elections Portland</p>
         </div>
       )}
       {isLoggedIn && (
@@ -67,9 +67,9 @@ const TopNavigation = props => {
           <img
             className="logo-img"
             src={logo}
-            alt="Open and Accountable Elections logo"
+            alt="Small Donor Elections logo"
           />
-          <p className="logo-text">Open & Accountable Elections Portland</p>
+          <p className="logo-text">Small Donor Elections Portland</p>
         </Link>
       )}
       <Navigation />

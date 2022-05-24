@@ -1,4 +1,5 @@
-# Open Elections Frontend
+# Small Donor Elections Frontend
+(Previously Open Elections)
 
 ## Table of Contents
 
