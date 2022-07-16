@@ -279,13 +279,10 @@ export const allPublicData = createSelector(
   state => state[STATE_KEY] || {}
 );
 
-export const publicDataRequest = createSelector(
-  allPublicData,
-  state => {
-    const { data, isLoading, error, timeLoaded } = state;
-    return { data, isLoading, error, timeLoaded };
-  }
-);
+export const publicDataRequest = createSelector(allPublicData, state => {
+  const { data, isLoading, error, timeLoaded } = state;
+  return { data, isLoading, error, timeLoaded };
+});
 
 export const externalPublicDataRequest = createSelector(
   allPublicData,
@@ -374,37 +371,31 @@ export const publicDataGeojson = createSelector(
 
 // Filter Options (based off of the complete public dataset)
 
-export const allOffices = createSelector(
-  publicDataGeojson,
-  json => {
-    if (!json || !json.features) return [];
+export const allOffices = createSelector(publicDataGeojson, json => {
+  if (!json || !json.features) return [];
 
-    const offices = new Set();
-    json.features.forEach(f => {
-      offices.add(f.properties.officeSought);
-    });
-    return Array.from(offices);
-  }
-);
+  const offices = new Set();
+  json.features.forEach(f => {
+    offices.add(f.properties.officeSought);
+  });
+  return Array.from(offices);
+});
 
-export const allCampaigns = createSelector(
-  publicDataGeojson,
-  json => {
-    if (!json || !json.features) return [];
+export const allCampaigns = createSelector(publicDataGeojson, json => {
+  if (!json || !json.features) return [];
 
-    const campaignHash = json.features.reduce((campaigns, f) => {
-      const { campaignName, officeSought } = f.properties;
-      campaigns[f.properties.campaignId] = { campaignName, officeSought };
-      return campaigns;
-    }, {});
+  const campaignHash = json.features.reduce((campaigns, f) => {
+    const { campaignName, officeSought } = f.properties;
+    campaigns[f.properties.campaignId] = { campaignName, officeSought };
+    return campaigns;
+  }, {});
 
-    return Object.keys(campaignHash).map(id => ({
-      id,
-      name: campaignHash[id].campaignName,
-      officeSought: campaignHash[id].officeSought,
-    }));
-  }
-);
+  return Object.keys(campaignHash).map(id => ({
+    id,
+    name: campaignHash[id].campaignName,
+    officeSought: campaignHash[id].officeSought,
+  }));
+});
 
 // Filter selections
 
@@ -428,20 +419,16 @@ export const selectedCampaignNames = createSelector(
   campaigns => campaigns.map(campaign => campaign.name)
 );
 
-export const selectedStartDate = createSelector(
-  publicDataFilters,
-  filters =>
-    typeof filters.startDate === 'string'
-      ? new Date(filters.startDate)
-      : filters.startDate
+export const selectedStartDate = createSelector(publicDataFilters, filters =>
+  typeof filters.startDate === 'string'
+    ? new Date(filters.startDate)
+    : filters.startDate
 );
 
-export const selectedEndDate = createSelector(
-  publicDataFilters,
-  filters =>
-    typeof filters.endDate === 'string'
-      ? new Date(filters.endDate)
-      : filters.endDate
+export const selectedEndDate = createSelector(publicDataFilters, filters =>
+  typeof filters.endDate === 'string'
+    ? new Date(filters.endDate)
+    : filters.endDate
 );
 
 export const selectedCount = createSelector(
@@ -543,10 +530,7 @@ export const filteredPublicData = createSelector(
 // Aggregated data per chart
 
 // Done: map takes Geojson of the filtered donations
-export const mapData = createSelector(
-  filteredPublicData,
-  data => data
-);
+export const mapData = createSelector(filteredPublicData, data => data);
 
 const addParticipatingStatus = (data, status) => {
   return { ...data, participatingStatus: status };
@@ -576,14 +560,11 @@ export const filteredPublicDataNonParticipatingOnly = createSelector(
   }
 );
 
-const sortedDonations = createSelector(
-  filteredPublicData,
-  data => {
-    const donations = data.features.map(f => f.properties);
-    donations.sort((a, b) => a.amount - b.amount);
-    return donations;
-  }
-);
+const sortedDonations = createSelector(filteredPublicData, data => {
+  const donations = data.features.map(f => f.properties);
+  donations.sort((a, b) => a.amount - b.amount);
+  return donations;
+});
 
 const sortedDonationsNonParticipatingOnly = createSelector(
   filteredPublicDataNonParticipatingOnly,
@@ -684,9 +665,8 @@ const summarize = donations => {
 // - total amount contributed (by campaign?)
 // - total amount matched (requires explanatory text since it won't be exactly 6x)
 
-export const summaryData = createSelector(
-  sortedDonations,
-  donations => summarize(donations)
+export const summaryData = createSelector(sortedDonations, donations =>
+  summarize(donations)
 );
 
 export const summaryDataByParticipation = createSelector(
@@ -1011,31 +991,27 @@ export const aggregatedContributionsByRegionByCandidate = createSelector(
 // | ------------- | ------------ | --------------- | ------------------ | ----- | ----- | ------ | ----- | ---- |
 // | One           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
 // | Two           | $1,234       | 29              | $20,444            | 15    | 12    | 1      | 1     | 0    |
-export const campaignsTable = createSelector(
-  sortedDonations,
-  donations => {
-    const donationsByCampaign = groupBy('campaignId', donations);
-    const campaigns = Object.keys(donationsByCampaign).map(k => ({
-      campaignId: k,
-      contributions: donationsByCampaign[k],
-    }));
+export const campaignsTable = createSelector(sortedDonations, donations => {
+  const donationsByCampaign = groupBy('campaignId', donations);
+  const campaigns = Object.keys(donationsByCampaign).map(k => ({
+    campaignId: k,
+    contributions: donationsByCampaign[k],
+  }));
 
-    campaigns.forEach(campaign => {
-      Object.assign(
-        campaign,
-        summarize(campaign.contributions),
-        bracketize(campaign.contributions)
-      );
+  campaigns.forEach(campaign => {
+    Object.assign(
+      campaign,
+      summarize(campaign.contributions),
+      bracketize(campaign.contributions)
+    );
 
-      // Pull common properties of a contribution up
-      // to the campaign for convenience
-      const contribution = campaign.contributions[0];
-      campaign.campaignName = contribution.campaignName;
-      campaign.officeSought = contribution.officeSought;
-      campaign.participatingStatus =
-        contribution.campaignName !== 'Ted Wheeler';
-    });
+    // Pull common properties of a contribution up
+    // to the campaign for convenience
+    const contribution = campaign.contributions[0];
+    campaign.campaignName = contribution.campaignName;
+    campaign.officeSought = contribution.officeSought;
+    campaign.participatingStatus = contribution.campaignName !== 'Ted Wheeler';
+  });
 
-    return campaigns;
-  }
-);
+  return campaigns;
+});

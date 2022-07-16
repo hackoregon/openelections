@@ -72,17 +72,14 @@ const MessageBox = ({
   );
 };
 
-export default connect(
-  null,
-  dispatch => {
-    return {
-      postContributionComment: (id, message, attachment) =>
-        dispatch(postContributionComment(id, message, attachment)),
-      postExpenditureComment: (id, message, attachment) =>
-        dispatch(postExpenditureComment(id, message, attachment)),
-    };
-  }
-)(MessageBox);
+export default connect(null, dispatch => {
+  return {
+    postContributionComment: (id, message, attachment) =>
+      dispatch(postContributionComment(id, message, attachment)),
+    postExpenditureComment: (id, message, attachment) =>
+      dispatch(postExpenditureComment(id, message, attachment)),
+  };
+})(MessageBox);
 
 MessageBox.propTypes = {
   expenditureId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

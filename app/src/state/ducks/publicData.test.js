@@ -590,7 +590,10 @@ describe('Selectors', () => {
       it('returns only data matching both selected campaigns AND selected offices', () => {
         const [state] = makeData(points, {
           filters: {
-            campaigns: [{ id: '2', name: 'Two' }, { id: '4', name: 'Four' }],
+            campaigns: [
+              { id: '2', name: 'Two' },
+              { id: '4', name: 'Four' },
+            ],
             offices: ['Mayor', 'Commissioner 1'],
           },
         });
@@ -637,7 +640,10 @@ describe('Selectors', () => {
       it('returns only data within the start and end date matching both selected campaigns AND selected offices', () => {
         const [state] = makeData(points, {
           filters: {
-            campaigns: [{ id: '2', name: 'Two' }, { id: '4', name: 'Four' }],
+            campaigns: [
+              { id: '2', name: 'Two' },
+              { id: '4', name: 'Four' },
+            ],
             offices: ['Mayor'],
             startDate: new Date('2019-12-03T04:02:09.416Z'),
             endDate: new Date('2019-12-14T04:02:09.416Z'),
@@ -880,7 +886,10 @@ describe('Selectors', () => {
     ];
 
     const filters = {
-      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+      campaigns: [
+        { id: '1', name: 'One' },
+        { id: '2', name: 'Two' },
+      ],
     };
 
     const [stateWithSelections] = makeData(points, { filters });
@@ -1109,7 +1118,10 @@ describe('Selectors', () => {
     ];
 
     const filters = {
-      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+      campaigns: [
+        { id: '1', name: 'One' },
+        { id: '2', name: 'Two' },
+      ],
     };
 
     const [stateWithSelections] = makeData(points, { filters });
@@ -1340,7 +1352,10 @@ describe('Selectors', () => {
     ];
 
     const filters = {
-      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+      campaigns: [
+        { id: '1', name: 'One' },
+        { id: '2', name: 'Two' },
+      ],
     };
 
     const [stateWithSelections] = makeData(points, { filters });
@@ -1496,7 +1511,10 @@ describe('Selectors', () => {
     ];
 
     const filters = {
-      campaigns: [{ id: '1', name: 'One' }, { id: '2', name: 'Two' }],
+      campaigns: [
+        { id: '1', name: 'One' },
+        { id: '2', name: 'Two' },
+      ],
     };
 
     const [stateWithSelections] = makeData(points, { filters });

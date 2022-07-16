@@ -16,10 +16,7 @@ class SignIn extends Component {
   }
 }
 
-export default connect(
-  null,
-  dispatch => ({
-    login: (email, password) => dispatch(login(email, password)),
-    dispatch,
-  })
-)(SignIn);
+export default connect(null, dispatch => ({
+  login: (email, password) => dispatch(login(email, password)),
+  dispatch,
+}))(SignIn);

@@ -322,7 +322,7 @@ const Home = ({
     if (!selectedStartDate && !selectedEndDate) {
       setDateRange(new Date('Fri Dec 18 2020'), null);
     }
-  }, []);
+  }, [selectedEndDate, selectedStartDate, setDateRange]);
   const handleCompare = (event, newCompare) => {
     setCompare(newCompare);
   };
@@ -811,7 +811,7 @@ const Home = ({
           {!isLoading && (
             <div css={dataLoadedStyle}>
               Live data from Small Donor Elections retrieved on{' '}
-              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}.{' '}
+              {timeLoaded && format(timeLoaded, 'MMM dd, yyyy [a]t h:mm:ssa')}.{' '}
               {mostRecentExternalContributionDate ? (
                 <>
                   Data loaded from{' '}
@@ -820,7 +820,7 @@ const Home = ({
                   </a>{' '}
                   for non-participating candidates & is delayed (latest
                   transaction{' '}
-                  {format(mostRecentExternalContributionDate, 'MMM DD, YYYY')})
+                  {format(mostRecentExternalContributionDate, 'MMM dd, yyyy')})
                 </>
               ) : (
                 ''

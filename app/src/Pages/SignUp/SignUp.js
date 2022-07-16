@@ -19,15 +19,12 @@ class SignUp extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  dispatch => {
-    return {
-      redeemInvite: (invitationCode, password) =>
-        dispatch(redeemInvite(invitationCode, password)),
-    };
-  }
-)(SignUp);
+export default connect(null, dispatch => {
+  return {
+    redeemInvite: (invitationCode, password) =>
+      dispatch(redeemInvite(invitationCode, password)),
+  };
+})(SignUp);
 
 SignUp.propTypes = {
   location: PropTypes.object, // eslint-disable-line react/forbid-prop-types

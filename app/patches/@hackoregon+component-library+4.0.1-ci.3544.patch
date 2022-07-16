@@ -1,0 +1,55 @@
+diff --git a/node_modules/@hackoregon/component-library/dist/_Themes/MaterialUI/MaterialUITheme.js b/node_modules/@hackoregon/component-library/dist/_Themes/MaterialUI/MaterialUITheme.js
+index 9466f0f..cb709cc 100644
+--- a/node_modules/@hackoregon/component-library/dist/_Themes/MaterialUI/MaterialUITheme.js
++++ b/node_modules/@hackoregon/component-library/dist/_Themes/MaterialUI/MaterialUITheme.js
+@@ -1,26 +1,26 @@
+-"use strict";
++
+ 
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+-exports["default"] = void 0;
++exports.default = void 0;
+ 
+-var _styles = require("@material-ui/core/styles");
++const _styles = require("@material-ui/core/styles");
+ 
+-var _BrandColors = _interopRequireDefault(require("../Brand/BrandColors"));
++const _BrandColors = _interopRequireDefault(require("../Brand/BrandColors"));
+ 
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+ 
+-var civicPrimary = _BrandColors["default"].primary.hex;
+-var civicPlumLight = _BrandColors["default"].plumLight.hex;
+-var civicMedium = _BrandColors["default"].medium.hex;
+-var civicSubdued = _BrandColors["default"].subdued.hex;
+-var civicAction = _BrandColors["default"].action.hex;
+-var civicError = _BrandColors["default"].error.hex;
+-var dataSanSerif = "Roboto Condensed, Helvetica Neue, Helvetica, sans-serif";
+-var sanSerif = "Rubik, Helvetica Neue, Helvetica, sans-serif";
+-var animationSpeed = 4;
+-var MaterialTheme = (0, _styles.createMuiTheme)({
++const civicPrimary = _BrandColors.default.primary.hex;
++const civicPlumLight = _BrandColors.default.plumLight.hex;
++const civicMedium = _BrandColors.default.medium.hex;
++const civicSubdued = _BrandColors.default.subdued.hex;
++const civicAction = _BrandColors.default.action.hex;
++const civicError = _BrandColors.default.error.hex;
++const dataSanSerif = "Roboto Condensed, Helvetica Neue, Helvetica, sans-serif";
++const sanSerif = "Rubik, Helvetica Neue, Helvetica, sans-serif";
++const animationSpeed = 4;
++const MaterialTheme = (0, _styles.createTheme)({
+   palette: {
+     common: {
+       black: "rgba(0, 0, 0, 1)",
+@@ -92,5 +92,5 @@ var MaterialTheme = (0, _styles.createMuiTheme)({
+     }
+   }
+ });
+-var _default = MaterialTheme;
+-exports["default"] = _default;
+\ No newline at end of file
++const _default = MaterialTheme;
++exports.default = _default;
+\ No newline at end of file

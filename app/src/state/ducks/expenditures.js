@@ -349,25 +349,19 @@ export function postExpenditureComment(id, comment, attachment) {
 // Selectors
 export const rootState = state => state || {};
 
-export const getExpendituresList = createSelector(
-  rootState,
-  state => {
-    if (
-      isEmpty(state.expenditures.list) ||
-      isEmpty(state.expenditures.listOrder)
-    ) {
-      return [];
-    }
-    return state.expenditures.listOrder.map(id => state.expenditures.list[id]);
+export const getExpendituresList = createSelector(rootState, state => {
+  if (
+    isEmpty(state.expenditures.list) ||
+    isEmpty(state.expenditures.listOrder)
+  ) {
+    return [];
   }
-);
+  return state.expenditures.listOrder.map(id => state.expenditures.list[id]);
+});
 
-export const getExpendituresTotal = createSelector(
-  rootState,
-  state => {
-    return state.expenditures.total;
-  }
-);
+export const getExpendituresTotal = createSelector(rootState, state => {
+  return state.expenditures.total;
+});
 
 export const getCurrentExpenditureId = state => {
   return state.expenditures &&

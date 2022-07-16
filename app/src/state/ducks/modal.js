@@ -59,10 +59,7 @@ export function clearModal() {
 
 // Selectors
 export const rootState = state => state || {};
-export const getModalState = createSelector(
-  rootState,
-  state => state.modal
-);
+export const getModalState = createSelector(rootState, state => state.modal);
 
 export const modalIsActive = createSelector(
   rootState,

@@ -10,28 +10,28 @@
 ## Quick Start
 
 The following commands are available in this project:
-`yarn install` or `yarn --ignore-engines` if you get a node engine incompatability
+`npm install` or `npm --ignore-engines` if you get a node engine incompatibility
 
-Install the necessary dependencies by running `yarn` in this directory.
+Install the necessary dependencies by running `npm i` in this directory.
 
-### `yarn start`
+### `npm run start`
 
 This runs the app in development mode on port 4000.
 
-### `yarn build`
+### `npm run build`
 
 This will build the app into a build directory.
 
-### `yarn test`
+### `npm run test`
 
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](#running-tests) for more information.
 
-### `yarn storybook`
+### `npm run storybook`
 
 This starts up storybook on port 6006.
 
-### `yarn build-storybook`
+### `npm run build-storybook`
 
 This will build your storybook app.
 
@@ -267,7 +267,7 @@ To run tests against the backend, you need to run the test stack:
 ```bash
     docker-compose stop api
     docker-compose -f docker-compose-test.yml run api
-    cd app && yarn test
+    cd app && npm test
 
 ```
 
