@@ -70,7 +70,7 @@ export const mapExpenditureDataToForm = expenditure => {
     zipcode: zip || '',
     notes: notes || '',
     status,
-    updatedAt: format(new Date(updatedAt), 'MM-DD-YY hh:mm a'),
+    updatedAt: format(new Date(updatedAt), 'MM-dd-yy hh:mm a'),
     campaignName: campaign && campaign.name ? campaign.name : null,
     dateOriginalTransaction: dateToPickerFormat(dateOriginalTransaction),
     vendorForOriginalPurchase,

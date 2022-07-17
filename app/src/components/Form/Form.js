@@ -133,7 +133,7 @@ Form.propTypes = {
   fields: PropTypes.objectOf(
     PropTypes.shape({
       label: PropTypes.string,
-      component: PropTypes.component,
+      component: PropTypes.func,
       validation: PropTypes.shape({
         /* Yup validation */
       }),

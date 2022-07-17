@@ -450,7 +450,7 @@ export function dateToPickerFormat(date) {
         parseFromTimeZone(date, {
           timeZone: 'America/Los_Angeles',
         }),
-        'YYYY-MM-DD'
+        'yyyy-MM-dd'
       )
     : '';
 }

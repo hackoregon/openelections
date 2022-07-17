@@ -125,7 +125,7 @@ const activityList = ({
                 timeZone: 'America/Los_Angeles',
               })
             ),
-            'MM-DD-YYYY @ hh:mma'
+            'mm-dd-yyyy @ hh:mma'
           );
           return (
             <li

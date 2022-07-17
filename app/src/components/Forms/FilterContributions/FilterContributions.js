@@ -24,7 +24,7 @@ const fields = {
         label: key,
       })),
     },
-    component: SelectField,
+    component: SelectField || undefined,
     validation: Yup.string('Choose a status'),
   },
   range: {

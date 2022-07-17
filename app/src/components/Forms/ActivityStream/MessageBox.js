@@ -41,7 +41,7 @@ const MessageBox = ({
       <div css={messageBoxStyles.boxAndButton} style={{ marginRight: '0px' }}>
         <TextareaAutosize
           css={messageBoxStyles.messageBox}
-          rows="3"
+          minRows="3"
           id="message"
           name="messageBox"
           label="Message"

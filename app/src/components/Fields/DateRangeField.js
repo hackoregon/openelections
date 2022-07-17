@@ -37,11 +37,12 @@ export default function DateRangeField(props) {
   const { formik, label, id, isRequired } = props;
 
   function renderSelectValue(value) {
+    let val = 'All dates';
     if (value && (value.to || value.from)) {
-      return `${value.from ? formatISODate(value.from) : 'All dates'} to 
+      val = `${value.from ? formatISODate(value.from) : 'All dates'} to 
       ${value.to ? formatISODate(value.to) : 'All dates'}`;
     }
-    return 'All dates';
+    return val;
   }
 
   function onDateRangeChange(newDateRange) {
@@ -113,8 +114,8 @@ function Popover(props) {
 
   function setupInitialState(rangeValue) {
     return {
-      from: rangeValue.from ? formatISODate(rangeValue.from, 'YYYY-MM-DD') : '',
-      to: rangeValue.to ? formatISODate(rangeValue.to, 'YYYY-MM-DD') : '',
+      from: rangeValue.from ? formatISODate(rangeValue.from, 'yyyy-MM-DD') : '',
+      to: rangeValue.to ? formatISODate(rangeValue.to, 'yyyy-MM-DD') : '',
     };
   }
 
@@ -201,5 +202,5 @@ function getISOFromDate(date) {
 }
 
 function formatISODate(ISODate, theFormat) {
-  return format(new Date(ISODate), theFormat || 'MM-DD-YYYY');
+  return format(new Date(ISODate), theFormat || 'MM-DD-yyyy');
 }

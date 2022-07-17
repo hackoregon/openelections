@@ -33,22 +33,22 @@ const paginateOptions = css`
 `;
 
 function TablePaginationActions(props) {
-  const { count, page, rowsPerPage, onChangePage } = props;
+  const { count, page, rowsPerPage, onPageChange } = props;
 
   function handleFirstPageButtonClick(event) {
-    onChangePage(event, 0);
+    onPageChange(event, 0);
   }
 
   function handleBackButtonClick(event) {
-    onChangePage(event, page - 1);
+    onPageChange(event, page - 1);
   }
 
   function handleNextButtonClick(event) {
-    onChangePage(event, page + 1);
+    onPageChange(event, page + 1);
   }
 
   function handleLastPageButtonClick(event) {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   }
 
   return (
@@ -125,5 +125,5 @@ TablePaginationActions.propTypes = {
   count: PropTypes.number,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  onChangePage: PropTypes.func,
+  onPageChange: PropTypes.func,
 };
