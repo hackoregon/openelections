@@ -206,12 +206,9 @@ export const getCampaignName = state => {
     : 'Campaign';
 };
 
-export const getCampaignList = createSelector(
-  rootState,
-  state => {
-    return state.campaigns.list ? Object.values(state.campaigns.list) : [{}];
-  }
-);
+export const getCampaignList = createSelector(rootState, state => {
+  return state.campaigns.list ? Object.values(state.campaigns.list) : [{}];
+});
 
 export const isCampaignsLoading = createSelector(
   rootState,

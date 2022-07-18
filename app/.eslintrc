@@ -53,7 +53,8 @@
       {
         "devDependencies": ["**/*.story.js", "**/*.test.js"]
       }
-    ]
+    ],
+    "import/no-cycle": 0
   },
   "globals": {
     "__DEV__": true,

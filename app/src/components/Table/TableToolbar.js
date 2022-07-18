@@ -28,9 +28,9 @@ export function TableToolbar(props) {
             pageNumber={paginationOptions.page}
             totalRows={paginationOptions.totalRows}
             // eslint-disable-next-line no-use-before-define
-            onChangePage={paginationOptions.onChangePage}
+            onPageChange={paginationOptions.onPageChange}
             // eslint-disable-next-line no-use-before-define
-            onChangeRowsPerPage={paginationOptions.onChangeRowsPerPage}
+            onRowsPerPageChange={paginationOptions.onRowsPerPageChange}
           />
         )}
       </div>

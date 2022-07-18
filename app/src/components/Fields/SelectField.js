@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SelectField = ({ id, label, options, formik, isRequired }) => {
+function SelectField({ id, label, options, formik, isRequired }) {
   const classes = useStyles();
   let optionValues = options.values;
 
@@ -103,7 +103,7 @@ const SelectField = ({ id, label, options, formik, isRequired }) => {
       ))}
     </TextField>
   );
-};
+}
 SelectField.propTypes = {
   id: PropTypes.string,
   isRequired: PropTypes.bool,

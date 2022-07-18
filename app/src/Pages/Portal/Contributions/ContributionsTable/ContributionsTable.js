@@ -53,7 +53,7 @@ const columns = isGovAdmin => {
           new Date(
             parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
           ),
-          'MM-DD-YYYY'
+          'mm-dd-yyyy'
         ),
     },
     {
@@ -194,7 +194,7 @@ class ContributionsTable extends React.Component {
         // ...filter,
       });
     }
-    function handleOnChangePage(e, newPage) {
+    function handleonPageChange(e, newPage) {
       updateFilter({ page: newPage });
       fetchList();
     }
@@ -274,9 +274,9 @@ class ContributionsTable extends React.Component {
           perPage={filterOptions.perPage || 50}
           pageNumber={filterOptions.page || 0}
           totalRows={total}
-          onChangePage={handleOnChangePage}
+          onPageChange={handleonPageChange}
           // eslint-disable-next-line no-use-before-define
-          onChangeRowsPerPage={handleOnRowsPerPageChange}
+          onRowsPerPageChange={handleOnRowsPerPageChange}
           toolbarAction={
             !isGovAdmin ? (
               <Button

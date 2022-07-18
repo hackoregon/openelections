@@ -27,15 +27,12 @@ class ResetPassword extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  dispatch => {
-    return {
-      updatePassword: (oldPassword, newPassword) =>
-        dispatch(updatePassword(oldPassword, newPassword)),
-      flashMessage: (message, options) =>
-        dispatch(flashMessage(message, options)),
-      dispatch,
-    };
-  }
-)(ResetPassword);
+export default connect(null, dispatch => {
+  return {
+    updatePassword: (oldPassword, newPassword) =>
+      dispatch(updatePassword(oldPassword, newPassword)),
+    flashMessage: (message, options) =>
+      dispatch(flashMessage(message, options)),
+    dispatch,
+  };
+})(ResetPassword);

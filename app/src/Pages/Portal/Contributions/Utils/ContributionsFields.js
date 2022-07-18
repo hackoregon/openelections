@@ -85,7 +85,7 @@ export const mapContributionDataToForm = contribution => {
       new Date(
         parseFromTimeZone(updatedAt, { timeZone: 'America/Los_Angeles' })
       ),
-      'MM-DD-YY hh:mm a'
+      'MM-dd-yy hh:mm a'
     ),
     typeOfContribution: type,
     subTypeOfContribution: subType,

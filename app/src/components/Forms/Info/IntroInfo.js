@@ -15,14 +15,14 @@ const IntroInfo = () => {
   return (
     <>
       <section css={contentStyle}>
-        <h2>Open & Accountable Elections Portland</h2>
+        <h2>Small Donor Elections Portland</h2>
         <p>
           <a
             href="https://portlandoregon.gov/oae"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Open and Accountable Elections
+            Small Donor Elections
           </a>{' '}
           is the City of Portland&apos;s small donor matching program. It is
           designed to ensure that the City government is accountable to all

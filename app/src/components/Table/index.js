@@ -85,8 +85,8 @@ const Table = ({
   perPage,
   pageNumber,
   totalRows,
-  onChangePage,
-  onChangeRowsPerPage,
+  onPageChange,
+  onRowsPerPageChange,
   toolbarAction,
   ...rest
 }) => {
@@ -94,8 +94,8 @@ const Table = ({
     perPage !== undefined &&
       pageNumber !== undefined &&
       totalRows !== undefined &&
-      onChangePage !== undefined &&
-      onChangeRowsPerPage !== undefined
+      onPageChange !== undefined &&
+      onRowsPerPageChange !== undefined
   );
 
   return (
@@ -125,8 +125,8 @@ const Table = ({
                         page: pageNumber,
                         perPage,
                         totalRows,
-                        onChangePage,
-                        onChangeRowsPerPage,
+                        onPageChange,
+                        onRowsPerPageChange,
                       }
                     : undefined
                 }
@@ -146,9 +146,9 @@ const Table = ({
             pageNumber={pageNumber}
             totalRows={totalRows || data.length}
             // eslint-disable-next-line no-use-before-define
-            onChangePage={onChangePage}
+            onPageChange={onPageChange}
             // eslint-disable-next-line no-use-before-define
-            onChangeRowsPerPage={onChangeRowsPerPage}
+            onRowsPerPageChange={onRowsPerPageChange}
           />
         )}
       </div>
@@ -169,8 +169,8 @@ Table.propTypes = {
   perPage: PropTypes.number,
   pageNumber: PropTypes.number,
   totalRows: PropTypes.number,
-  onChangePage: PropTypes.func,
-  onChangeRowsPerPage: PropTypes.func,
+  onPageChange: PropTypes.func,
+  onRowsPerPageChange: PropTypes.func,
   toolbarAction: PropTypes.any,
 };
 

@@ -2,10 +2,10 @@ FROM node:11.4.0
 
 WORKDIR /app
 COPY package.json .
-COPY yarn.lock .
-RUN yarn install --network-timeout 1000000
+COPY package-lock.json .
+RUN npm install
 
 COPY . /app
 
 EXPOSE 4000
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]

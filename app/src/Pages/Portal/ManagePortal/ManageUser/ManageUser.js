@@ -74,19 +74,16 @@ const ManageUserPage = props => {
   );
 };
 
-export default connect(
-  null,
-  dispatch => {
-    return {
-      resendUserInvite: id => dispatch(resendUserInvite(id)),
-      removeUser: (userId, permissionId) =>
-        dispatch(removeUser(userId, permissionId)),
-      flashMessage: (message, options) =>
-        dispatch(flashMessage(message, options)),
-      showModal: attr => dispatch(showModal(attr)),
-    };
-  }
-)(ManageUserPage);
+export default connect(null, dispatch => {
+  return {
+    resendUserInvite: id => dispatch(resendUserInvite(id)),
+    removeUser: (userId, permissionId) =>
+      dispatch(removeUser(userId, permissionId)),
+    flashMessage: (message, options) =>
+      dispatch(flashMessage(message, options)),
+    showModal: attr => dispatch(showModal(attr)),
+  };
+})(ManageUserPage);
 
 ManageUserPage.propTypes = {
   location: PropTypes.oneOfType([object]),

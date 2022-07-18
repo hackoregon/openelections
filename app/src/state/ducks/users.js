@@ -235,17 +235,15 @@ export function resendUserInvite(userId) {
 // Selectors
 export const rootState = state => state || {};
 
-export const getUsers = createSelector(
-  rootState,
-  state =>
-    Object.values(state.permissions)
-      .filter(perm => !!get(perm, 'id'))
-      .map(perm => {
-        const userAndRole = { ...state.users[perm.user] };
-        userAndRole.role = startCase(perm.role);
-        userAndRole.roleId = perm.id;
-        return userAndRole;
-      })
+export const getUsers = createSelector(rootState, state =>
+  Object.values(state.permissions)
+    .filter(perm => !!get(perm, 'id'))
+    .map(perm => {
+      const userAndRole = { ...state.users[perm.user] };
+      userAndRole.role = startCase(perm.role);
+      userAndRole.roleId = perm.id;
+      return userAndRole;
+    })
 );
 
 export const isUsersLoading = createSelector(

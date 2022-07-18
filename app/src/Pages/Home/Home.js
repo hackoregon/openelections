@@ -322,7 +322,7 @@ const Home = ({
     if (!selectedStartDate && !selectedEndDate) {
       setDateRange(new Date('Fri Dec 18 2020'), null);
     }
-  }, []);
+  }, [selectedEndDate, selectedStartDate, setDateRange]);
   const handleCompare = (event, newCompare) => {
     setCompare(newCompare);
   };
@@ -547,9 +547,7 @@ const Home = ({
                   participants & non-participants
                 </MenuItem>
               </Select>
-              <FormHelperText>
-                Open and Accountable Elections (OAE)
-              </FormHelperText>
+              <FormHelperText>Small Donor Elections</FormHelperText>
             </FormControl>
             <FormControl className="form-control">
               <InputLabel id="filter-offices-label">
@@ -812,8 +810,8 @@ const Home = ({
           </div>
           {!isLoading && (
             <div css={dataLoadedStyle}>
-              Live data from Open and Accountable Elections retrieved on{' '}
-              {format(timeLoaded, 'MMM DD, YYYY [a]t h:mm:ssa')}.{' '}
+              Live data from Small Donor Elections retrieved on{' '}
+              {timeLoaded && format(timeLoaded, 'MMM dd, yyyy [a]t h:mm:ssa')}.{' '}
               {mostRecentExternalContributionDate ? (
                 <>
                   Data loaded from{' '}
@@ -822,7 +820,7 @@ const Home = ({
                   </a>{' '}
                   for non-participating candidates & is delayed (latest
                   transaction{' '}
-                  {format(mostRecentExternalContributionDate, 'MMM DD, YYYY')})
+                  {format(mostRecentExternalContributionDate, 'MMM dd, yyyy')})
                 </>
               ) : (
                 ''

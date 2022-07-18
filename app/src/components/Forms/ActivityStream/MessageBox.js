@@ -41,7 +41,7 @@ const MessageBox = ({
       <div css={messageBoxStyles.boxAndButton} style={{ marginRight: '0px' }}>
         <TextareaAutosize
           css={messageBoxStyles.messageBox}
-          rows="3"
+          minRows="3"
           id="message"
           name="messageBox"
           label="Message"
@@ -72,17 +72,14 @@ const MessageBox = ({
   );
 };
 
-export default connect(
-  null,
-  dispatch => {
-    return {
-      postContributionComment: (id, message, attachment) =>
-        dispatch(postContributionComment(id, message, attachment)),
-      postExpenditureComment: (id, message, attachment) =>
-        dispatch(postExpenditureComment(id, message, attachment)),
-    };
-  }
-)(MessageBox);
+export default connect(null, dispatch => {
+  return {
+    postContributionComment: (id, message, attachment) =>
+      dispatch(postContributionComment(id, message, attachment)),
+    postExpenditureComment: (id, message, attachment) =>
+      dispatch(postExpenditureComment(id, message, attachment)),
+  };
+})(MessageBox);
 
 MessageBox.propTypes = {
   expenditureId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

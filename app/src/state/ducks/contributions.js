@@ -407,27 +407,19 @@ export function postContributionComment(id, comment, attachment) {
 // Selectors
 export const rootState = state => state || {};
 
-export const getContributionsList = createSelector(
-  rootState,
-  state => {
-    if (
-      isEmpty(state.contributions.list) ||
-      isEmpty(state.contributions.listOrder)
-    ) {
-      return [];
-    }
-    return state.contributions.listOrder.map(
-      id => state.contributions.list[id]
-    );
+export const getContributionsList = createSelector(rootState, state => {
+  if (
+    isEmpty(state.contributions.list) ||
+    isEmpty(state.contributions.listOrder)
+  ) {
+    return [];
   }
-);
+  return state.contributions.listOrder.map(id => state.contributions.list[id]);
+});
 
-export const getContributionsTotal = createSelector(
-  rootState,
-  state => {
-    return state.contributions.total;
-  }
-);
+export const getContributionsTotal = createSelector(rootState, state => {
+  return state.contributions.total;
+});
 
 export const getCurrentContribution = state => {
   return state.contributions &&

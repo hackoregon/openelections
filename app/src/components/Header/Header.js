@@ -22,7 +22,7 @@ const styles = css`
 const HeaderComponent = () => (
   <header css={styles}>
     <NavLink to="/" className="header-icon">
-      <h1>Open Elections</h1>
+      <h1>Small Donor Elections</h1>
     </NavLink>
     <Navigation />
   </header>

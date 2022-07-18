@@ -32,7 +32,7 @@ const paths = require('../config/paths');
 const configFactory = require('../config/webpack.config');
 const createDevServerConfig = require('../config/webpackDevServer.config');
 
-const useYarn = fs.existsSync(paths.yarnLockFile);
+const useNpm = fs.existsSync(paths.npmLockFile);
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
@@ -92,7 +92,7 @@ checkBrowsers(paths.appPath, isInteractive)
       config,
       devSocket,
       urls,
-      useYarn,
+      useNpm,
       useTypeScript,
       webpack,
     });

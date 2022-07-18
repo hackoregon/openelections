@@ -2,12 +2,12 @@ FROM node:11.4.0 as build-stage
 
 WORKDIR /app
 COPY package.json .
-COPY yarn.lock .
-RUN yarn install --production
+COPY package-lock.json .
+RUN npm install --production
 
 COPY . /app
 
-RUN yarn run build
+RUN npm run build
 
 FROM nginx:1.16-alpine
 COPY --from=build-stage /app/build/ /usr/share/nginx/html

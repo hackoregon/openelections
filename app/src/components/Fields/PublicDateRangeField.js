@@ -18,7 +18,7 @@ const popover = css`
   }
 `;
 
-const dateFormat = d => format(new Date(d), 'MM-DD-YYYY');
+const dateFormat = d => format(new Date(d), 'mm-dd-yyyy');
 
 const renderValue = value => {
   const [from, to] = value.map(item => {
@@ -54,7 +54,7 @@ const parseDate = dateStr => {
 
 const dateFieldFormat = value => {
   if (value == null || Number.isNaN(+value)) return '';
-  return format(value, 'YYYY-MM-DD');
+  return format(value, 'yyyy-mm-dd');
 };
 
 export default function PublicDateRangeField(props) {

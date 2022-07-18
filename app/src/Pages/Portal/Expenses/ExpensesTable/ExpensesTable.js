@@ -183,7 +183,7 @@ class ExpensesTable extends React.Component {
         campaignId,
       });
     }
-    function handleOnChangePage(e, newPage) {
+    function handleonPageChange(e, newPage) {
       updateFilter({ page: newPage });
       fetchList();
     }
@@ -265,9 +265,9 @@ class ExpensesTable extends React.Component {
           pageNumber={filterOptions.page}
           totalRows={total}
           // eslint-disable-next-line no-use-before-define
-          onChangePage={handleOnChangePage}
+          onPageChange={handleonPageChange}
           // eslint-disable-next-line no-use-before-define
-          onChangeRowsPerPage={handleOnRowsPerPageChange}
+          onRowsPerPageChange={handleOnRowsPerPageChange}
           toolbarAction={
             !isGovAdmin ? (
               <Button
