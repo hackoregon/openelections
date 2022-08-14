@@ -1,16 +1,21 @@
-
+import { Provider, useStore } from 'react-redux'
 import type { AppProps } from 'next/app'
 import {useState, useEffect} from 'react'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setLoading] = useState(true)
+  const store = useStore(pageProps.initialReduxState)
+  
   useEffect(() => {
-    const { loadAuth } = props;
     loadAuth().then(() => {
       setLoading(false)
     });
   }, [])
-  return <Component {...pageProps} />
+  return (
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+  )
 }
 
 export default MyApp
