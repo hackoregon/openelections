@@ -59,7 +59,6 @@ const columns = isGovAdmin => {
     {
       field: 'name',
       title: 'Name',
-      sorting: false,
       render: rowData => {
         if (
           rowData.contributorType === 'individual' ||
@@ -84,7 +83,6 @@ const columns = isGovAdmin => {
     {
       field: 'amount',
       title: 'Contribution Amount',
-      sorting: false,
       type: 'currency',
     },
     {
@@ -104,7 +102,6 @@ const columns = isGovAdmin => {
     cols.splice(1, 0, {
       field: 'campaignId',
       title: 'Campaign',
-      sorting: false,
       render: rowData => {
         return rowData && rowData.campaign
           ? rowData.campaign.name
