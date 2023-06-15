@@ -1,7 +1,12 @@
 FROM node:11.4.0
-LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
 
-RUN apt-get update -y && apt-get install -y gdal-bin
+# force update sources.list (sketchy, but good for now until we update container)
+RUN echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" > /etc/apt/sources.list \
+  && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates main universe" >> /etc/apt/sources.list \
+  && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe" >> /etc/apt/sources.list
+
+# TODO: fix apt-get update (upgrade node image, lol)
+RUN apt-get update -y && apt-get install --allow-unauthenticated -y gdal-bin
 
 WORKDIR /app
 COPY package.json .
