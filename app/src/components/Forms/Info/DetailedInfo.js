@@ -30,10 +30,11 @@ const DetailedInfo = () => (
         Portlanders, not just big campaign donors.
       </p>
       <p>
-        The program is open to candidates for Mayor, Commissioner, and Auditor.
-        To participate, they must show broad community support and accept
-        contribution limits. The program provides a 9-to-1 match from the City’s
-        Small Donor Elections Fund for the first $20 from any Portland donor.
+        The program is open to candidates for Mayor, Councilor District, and
+        Auditor. To participate, they must show broad community support and
+        accept contribution limits. The program provides a 9-to-1 match from the
+        City’s Small Donor Elections Fund for the first $20 from any Portland
+        donor.
       </p>
       <p>
         This real-time dashboard shows contribution sources for participating
