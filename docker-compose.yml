@@ -5,7 +5,6 @@ services:
     build:
       context: 'app'
       dockerfile: 'Dockerfile'
-    command: ["yarn", "start"]
     environment:
       - PORT=4000
     depends_on:
@@ -44,7 +43,7 @@ services:
     depends_on:
       - db
       - redis
-      - data
+      # - data
     ports:
       - 3000:3000
     volumes:
@@ -87,7 +86,7 @@ services:
     depends_on:
       - db
       - redis
-      - data
+      # - data
     volumes:
       - ./api/controller:/app/controller
       - ./api/models:/app/models
@@ -118,25 +117,23 @@ services:
       - POSTGRES_DB=open_elections_dev
     networks:
       - openelections
-  data:
-    build:
-      context: ./datascience
-    volumes:
-      - ./datascience:/app
-    ports: ["8080:80"]
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=open_elections_dev
-      - POSTGRES_PORT=5432
-      - POSTGRES_HOST=db
-      - FLASK_ENV=development
-    command: ["sh", "/app/openelections/api/start.sh"]
-    depends_on:
-      - db
-    networks:
-      - openelections
+  # data:
+  #   build:
+  #     context: ./datascience
+  #   volumes:
+  #     - ./datascience:/app
+  #   ports: ["8080:80"]
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=password
+  #     - POSTGRES_DB=open_elections_dev
+  #     - POSTGRES_PORT=5432
+  #     - POSTGRES_HOST=db
+  #     - FLASK_ENV=development
+  #   command: ["sh", "/app/openelections/api/start.sh"]
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - openelections
 networks:
   openelections:
-
-
