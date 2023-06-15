@@ -1,20 +1,14 @@
 {
-   "compilerOptions": {
-      "lib": [
-        "es7",
-        "es6",
-         "dom"
-      ],
-      "target": "es2016",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "./build",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "sourceMap": true,
-     "typeRoots": [
-       "node_modules/@types",
-       "./types"
-     ]
-   }
+    "compilerOptions": {
+        "lib": ["es7", "es6", "dom"],
+        "target": "es2016",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "./build",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "typeRoots": ["node_modules/@types", "./types"],
+        "skipLibCheck": true
+    }
 }
