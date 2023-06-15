@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 // eslint-disable-next-line
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ArrowDropDown, ExitToApp } from '@material-ui/icons';
 import PropTypes from 'prop-types';
