@@ -318,14 +318,14 @@ describe('Selectors', () => {
     it('returns an array of offices based on the data prop', () => {
       const [state] = makeData([
         point({ officeSought: 'Mayor' }),
-        point({ officeSought: 'Commissioner 1' }),
-        point({ officeSought: 'Commissioner 2' }),
+        point({ officeSought: ' Councilor District 1' }),
+        point({ officeSought: ' Councilor District 2' }),
       ]);
 
       expect(publicData.allOffices(state)).toEqual([
         'Mayor',
-        'Commissioner 1',
-        'Commissioner 2',
+        ' Councilor District 1',
+        ' Councilor District 2',
       ]);
     });
 
@@ -351,7 +351,11 @@ describe('Selectors', () => {
       const campaigns = [
         { campaignId: '1', campaignName: 'Foo', officeSought: 'Mayor' },
         { campaignId: '2', campaignName: 'Bar', officeSought: 'Mayor' },
-        { campaignId: '3', campaignName: 'Baz', officeSought: 'Commissioner' },
+        {
+          campaignId: '3',
+          campaignName: 'Baz',
+          officeSought: ' Councilor District',
+        },
       ];
       const [state] = makeData(campaigns.map(point));
 
@@ -496,12 +500,12 @@ describe('Selectors', () => {
       campaignName: 'Two',
     });
     const campaign3 = factory({
-      officeSought: 'Commissioner 1',
+      officeSought: ' Councilor District 1',
       campaignId: '3',
       campaignName: 'Three',
     });
     const campaign4 = factory({
-      officeSought: 'Commissioner 2',
+      officeSought: ' Councilor District 2',
       campaignId: '4',
       campaignName: 'Four',
     });
@@ -544,7 +548,7 @@ describe('Selectors', () => {
 
         const [multiState] = makeData(points, {
           filters: {
-            offices: ['Mayor', 'Commissioner 2'],
+            offices: ['Mayor', ' Councilor District 2'],
           },
         });
 
@@ -594,7 +598,7 @@ describe('Selectors', () => {
               { id: '2', name: 'Two' },
               { id: '4', name: 'Four' },
             ],
-            offices: ['Mayor', 'Commissioner 1'],
+            offices: ['Mayor', ' Councilor District 1'],
           },
         });
 

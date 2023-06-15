@@ -10,11 +10,11 @@ import SelectField from '../../Fields/SelectField';
 
 const fields = {
   name: {
-    label: 'Campaign Name',
+    label: 'Campaign Name + Year',
     section: 'AddCampaign',
     component: TextField,
-    validation: Yup.string('Enter campaign name').required(
-      'Campaign name required'
+    validation: Yup.string('Enter campaign name and year').required(
+      'Campaign name with year is required'
     ),
   },
   officeSought: {
@@ -25,10 +25,10 @@ const fields = {
       values: [
         'Auditor',
         'Mayor',
-        'Commissioner 1',
-        'Commissioner 2',
-        'Commissioner 3',
-        'Commissioner 4',
+        ' Councilor District 1',
+        ' Councilor District 2',
+        ' Councilor District 3',
+        ' Councilor District 4',
       ],
       style: css`
         display: flex !important;

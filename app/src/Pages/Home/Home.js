@@ -320,7 +320,7 @@ const Home = ({
 
   useEffect(() => {
     if (!selectedStartDate && !selectedEndDate) {
-      setDateRange(new Date('Fri Dec 18 2020'), null);
+      setDateRange(new Date('Sun Jan 01 2023'), null);
     }
   }, [selectedEndDate, selectedStartDate, setDateRange]);
   const handleCompare = (event, newCompare) => {
@@ -716,7 +716,7 @@ const Home = ({
                 Runoff: Mayor
               </Button>
             </div> */}
-            <div css={buttonStyles}>
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -732,9 +732,9 @@ const Home = ({
                   })
                 }
               >
-                Commissioner 2
+                 Councilor District 2
               </Button>
-            </div>
+            </div> */}
             {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
@@ -768,7 +768,7 @@ const Home = ({
                 Ted Wheeler
               </Button>
             </div> */}
-            <div css={buttonStyles}>
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -786,10 +786,10 @@ const Home = ({
                   })
                 }
               >
-                Commissioner 3
+                 Councilor District 3
               </Button>
-            </div>
-            <div css={buttonStyles}>
+            </div> */}
+            {/* <div css={buttonStyles}>
               <Button
                 buttonType="small"
                 onClick={() =>
@@ -806,7 +806,7 @@ const Home = ({
               >
                 Auditor
               </Button>
-            </div>
+            </div> */}
           </div>
           {!isLoading && (
             <div css={dataLoadedStyle}>
