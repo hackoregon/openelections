@@ -143,23 +143,6 @@ DOCKER_BUILDKIT=0 docker-compose -f docker-compose-qa.yml up
 
 If you are seeing pm2 errors when trying to spin up a production container, make the the pm2 version in the Dockerfile matches the node version in the Dockerfile.
 
-#### npm issue
-
-When opening this repo and `nvm use` the `api` directory, I was encountering this error when trying to install the dependencies (`npm i`):
-
-```
-ERROR: npm is known not to run on Node.js v11.4.0
-You'll need to upgrade to a newer Node.js version in order to use this
-version of npm. You can find the latest version at https://nodejs.org/
-```
-
-It took some debugging, but I was able to finally get a clean install by:
-
-```bash
-nvm uninstall v11.4.0 # this is the version in .nvmrc
-nvm install v11.4.0 --latest-npm
-```
-
 ## Deployment
 
 This project uses Travis to Continuously deploy to qa.openelectionsportland.org on commits to develop.

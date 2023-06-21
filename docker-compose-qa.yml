@@ -90,6 +90,3 @@ services:
   #     - ./api/tsconfig.json:/app/tsconfig.json
   #   networks:
   #     - openelections
-
-
-

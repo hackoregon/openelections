@@ -1,5 +1,4 @@
-FROM node:11.4.0
-LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
+FROM node:18.16.0
 
 RUN apt-get update -y && apt-get install -y gdal-bin
 

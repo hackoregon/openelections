@@ -50,7 +50,7 @@
         "jsonwebtoken": "^8.5.1",
         "morgan": "~1.9.0",
         "node-fetch": "^2.6.7",
-        "pg": "^7.9.0",
+        "pg": "^8.5.1",
         "pg-hstore": "^2.3.2",
         "reflect-metadata": "^0.1.13",
         "request": "^2.88.0",
@@ -73,7 +73,6 @@
         "nodemon": "^1.18.10",
         "sinon": "^7.5.0",
         "supertest": "^4.0.2",
-        "tslint": "^5.14.0",
-        "typeorm-fixtures": "^0.8.5"
+        "tslint": "^5.14.0"
     }
 }

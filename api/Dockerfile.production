@@ -1,4 +1,4 @@
-FROM node:11.4.0 as build-stage
+FROM node:18.16.0 as build-stage
 
 WORKDIR /app
 COPY package.json .
@@ -7,8 +7,7 @@ RUN npm install
 COPY . /app
 RUN /app/node_modules/.bin/tsc --build /app/tsconfig.json
 
-FROM keymetrics/pm2:12-alpine
-LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
+FROM keymetrics/pm2:18-alpine
 
 WORKDIR /app
 COPY --from=build-stage /app/models/seeds/ /app/models/seeds
@@ -17,7 +16,6 @@ COPY --from=build-stage /app/node_modules/ /app/node_modules/
 COPY --from=build-stage /app/pm2.json /app/pm2.json
 
 RUN apk add --no-cache curl
-
 
 EXPOSE 3000
 CMD [ "pm2-runtime", "start", "/app/pm2.json" ]
