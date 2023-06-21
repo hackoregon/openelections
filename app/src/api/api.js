@@ -424,14 +424,20 @@ export function baseUrl(isDataVisualizationRequest = false) {
   }
 
   if (window && window.location.hostname.includes('qa')) {
-    return 'https://api-qa.openelectionsportland.org';
+    if (window.location.hostname.includes('openelectionsportland')) {
+      return 'https://api-qa.openelectionsportland.org';
+    }
+    return 'https://api-qa.smalldonorelections.org';
   }
 
   if (process.env.NODE_ENV === 'development' && !isDataVisualizationRequest) {
     return 'http://localhost:3000';
   }
 
-  return 'https://api.openelectionsportland.org';
+  if (window && window.location.hostname.includes('openelectionsportland')) {
+    return 'https://api.openelectionsportland.org';
+  }
+  return 'https://api.smalldonorelections.org';
 }
 
 // returns the jwt session token
