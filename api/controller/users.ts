@@ -20,7 +20,7 @@ export async function login(request: IRequest, response: Response, next: Functio
     try {
         const token = await createUserSessionFromLoginAsync(request.body.email, request.body.password);
         const tokenObj = await decipherJWTokenAsync(token);
-        const hostName = (request.hostname || '').includes('openelectionsportland') ? 'openelectionsportland.org' : 'smalldonorelections';
+        const hostName = (request.hostname || '').includes('openelectionsportland') ? 'openelectionsportland.org' : 'smalldonorelections.org';
         let domain = process.env.NODE_ENV === 'production' ? hostName : 'localhost';
         if (process.env.COOKIE_URL_TEST) {
             // for testsuite
