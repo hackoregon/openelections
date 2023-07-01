@@ -53,7 +53,7 @@ const columns = isGovAdmin => {
           new Date(
             parseFromTimeZone(rowData.date, { timeZone: 'America/Los_Angeles' })
           ),
-          'mm-dd-yyyy'
+          'MM-dd-yyyy'
         ),
     },
     {
