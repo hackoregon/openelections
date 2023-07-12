@@ -218,6 +218,28 @@ class ContributionsTable extends React.Component {
           }}
         />
         <div css={buttonWrapper}>
+          {!isGovAdmin ? (
+            <>
+              <div css={buttonStyles}>
+                <Button
+                  buttonType="green"
+                  onClick={() => console.log('add contributions')}
+                >
+                  Bulk Add Contributions
+                </Button>
+              </div>
+              <div css={buttonStyles}>
+                <Button
+                  buttonType="green"
+                  onClick={() =>
+                    history.push({ pathname: '/contributions/add' })
+                  }
+                >
+                  Add New Contribution
+                </Button>
+              </div>
+            </>
+          ) : null}
           <div css={buttonStyles}>
             <Button
               onClick={() => {
@@ -277,16 +299,26 @@ class ContributionsTable extends React.Component {
           onPageChange={handleonPageChange}
           // eslint-disable-next-line no-use-before-define
           onRowsPerPageChange={handleOnRowsPerPageChange}
-          toolbarAction={
-            !isGovAdmin ? (
-              <Button
-                buttonType="green"
-                onClick={() => history.push({ pathname: '/contributions/add' })}
-              >
-                Add New Contribution
-              </Button>
-            ) : null
-          }
+          // toolbarAction={
+          // !isGovAdmin ? (
+          //   <div>
+          //     <Button
+          //       buttonType="green"
+          //       onClick={() => console.log('add contributions')}
+          //     >
+          //       Bulk Add Contributions
+          //     </Button>
+          //     <Button
+          //       buttonType="green"
+          //       onClick={() =>
+          //         history.push({ pathname: '/contributions/add' })
+          //       }
+          //     >
+          //       Add New Contribution
+          //     </Button>
+          //   </div>
+          // ) : null
+          // }
         />
       </PageHoc>
     );
