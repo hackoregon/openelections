@@ -10,24 +10,25 @@ import {
     createContributionCommentAsync,
     getMatchResultAsync,
     updateMatchResultAsync,
-    getContributionsGeoAsync
+    getContributionsGeoAsync,
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
-import { checkDto } from './helpers';
+import { UploadedFile } from 'express-fileupload';
+import { IBulkUploadCSV, BulkUploadVerified, checkDto, parseBulkCsvData } from './helpers';
 import {
     ContributionStatus,
     ContributionSubType,
     ContributionType,
     ContributorType,
-    InKindDescriptionType, MatchStrength,
+    InKindDescriptionType,
+    MatchStrength,
     OaeType,
     PaymentMethod,
-    PhoneType
+    PhoneType,
 } from '../models/entity/Contribution';
 import { bugsnagClient } from '../services/bugsnagService';
-import { UploadedFile } from 'express-fileupload';
 
 export class UpdateContributionDto implements IUpdateContributionAttrs {
     @IsNumber()
@@ -178,7 +179,7 @@ export async function updateContribution(request: IRequest, response: Response, 
         checkCurrentUser(request);
         const updateContributionDto = Object.assign(new UpdateContributionDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(updateContributionDto);
         const contribution = await updateContributionAsync(updateContributionDto);
@@ -235,7 +236,7 @@ export async function getContributions(request: IRequest, response: Response, ne
         checkCurrentUser(request);
         const getContributionsDto = Object.assign(new GetContributionsDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(getContributionsDto);
         const contributions = await getContributionsAsync(getContributionsDto);
@@ -254,6 +255,17 @@ export async function getContributions(request: IRequest, response: Response, ne
         }
         return response.status(422).json({ message: err.message });
     }
+}
+export class BulkAddContributionDto {
+    @IsNumber()
+    currentUserId: number;
+
+    @IsNumber()
+    governmentId: number;
+
+    @IsNumber()
+    @IsOptional()
+    campaignId: number;
 }
 
 export class AddContributionDto implements IAddContributionAttrs {
@@ -393,20 +405,88 @@ export class AddContributionDto implements IAddContributionAttrs {
     @IsString()
     @IsOptional()
     notes: string;
-
 }
 
-export async function addContribution(request: IRequest, response: Response, next: Function) {
+export async function addContribution(request: IRequest, response: Response, _next: Function) {
     try {
         checkCurrentUser(request);
         const addContributionDto = Object.assign(new AddContributionDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(addContributionDto);
         const contribution = await addContributionAsync(addContributionDto);
         return response.status(201).json(contribution);
     } catch (err) {
+        if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
+            bugsnagClient.notify(err);
+        }
+        return response.status(422).json({ message: err.message });
+    }
+}
+
+export async function bulkAddContributions(request: IRequest, response: Response, _next: Function) {
+    let csvData: BulkUploadVerified;
+    try {
+        csvData = await parseBulkCsvData(request.body, request.files);
+        console.log('got it', { csvData });
+    } catch (error) {
+        console.log(error);
+        return response.status(422).json({ message: 'An unknown error occurred parsing csv.' });
+    }
+
+    if (!csvData) {
+        return response.status(422).json({ message: 'There was an issue parsing the csv.' });
+    }
+
+    try {
+        checkCurrentUser(request);
+        const bulkContributionInfoDto = Object.assign(new BulkAddContributionDto(), {
+            currentUserId: request.currentUser.id,
+            ...csvData.info,
+        });
+        await checkDto(bulkContributionInfoDto);
+        // console.log('success', { bulkContributionInfoDto });
+        const contributionErrors = [];
+        const savedContributions = [];
+        await Promise.all(
+            csvData.contributions.map(async (contribution: Partial<IAddContributionAttrs>) => {
+                try {
+                    const addContributionDto = Object.assign(new AddContributionDto(), {
+                        ...csvData.info,
+                        ...contribution,
+                    });
+                    await checkDto(addContributionDto);
+                    const savedContribution = await addContributionAsync(addContributionDto);
+                    console.log('successful save: ', savedContribution.id);
+                    savedContributions.push(savedContribution);
+                } catch (error) {
+                    contributionErrors.push(error.message);
+                }
+            })
+        );
+        console.log({ contributionErrors });
+        if (contributionErrors.length) {
+            let message = `Many issues were discoverd in the csv file.`;
+            if (contributionErrors.length === 1) {
+                message = 'One issue was discoverd in the csv file.';
+            }
+            return response.status(422).json({ message: message, issues: contributionErrors });
+        }
+        return response.status(200).json({
+            message: `Successfully added ${savedContributions.length} contributions`,
+            contributions: savedContributions,
+        });
+        // return all contributions
+        // const getContributionsDto = Object.assign(new GetContributionsDto(), {
+        //     currentUserId: request.currentUser.id,
+        //     governmentId: csvData.info.governmentId,
+        //     campaignId: csvData.info.campaignId,
+        // });
+        // const contributions = await getContributionsAsync(getContributionsDto);
+        // return response.status(201).json(contributions);
+    } catch (err) {
+        console.log('bulk add contributions error: ', err);
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
@@ -427,7 +507,7 @@ export async function getContributionById(request: IRequest, response: Response,
         checkCurrentUser(request);
         const getContributionByIdDto = Object.assign(new GetContributionByIdDto(), {
             contributionId: parseInt(request.params.id),
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(getContributionByIdDto);
         const contribution = await getContributionByIdAsync(getContributionByIdDto);
@@ -450,7 +530,7 @@ export async function archiveContribution(request: IRequest, response: Response,
         checkCurrentUser(request);
         const archiveContributionDto = Object.assign(new ArchiveContributionDto(), {
             contributionId: parseInt(request.params.id),
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(archiveContributionDto);
         const contribution = await archiveContributionAsync(archiveContributionDto);
@@ -474,7 +554,6 @@ export class ContributionCommentDto {
 
     @IsOptional()
     attachmentPath: UploadedFile;
-
 }
 
 export async function createContributionComment(request: IRequest, response: Response, next: Function) {
@@ -483,7 +562,7 @@ export async function createContributionComment(request: IRequest, response: Res
         const attrs: any = {
             contributionId: parseInt(request.params.id),
             currentUserId: request.currentUser.id,
-            comment: request.body.comment
+            comment: request.body.comment,
         };
         let file;
         if (request.files && request.files.attachment) {
@@ -519,7 +598,7 @@ export async function getMatchesByContributionId(request: IRequest, response: Re
         checkCurrentUser(request);
         const getContributionMatchesDto = Object.assign(new GetContributionMatchesDto(), {
             contributionId: parseInt(request.params.id),
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(getContributionMatchesDto);
         const matches = await getMatchResultAsync(getContributionMatchesDto);
@@ -550,7 +629,7 @@ export async function postMatchResult(request: IRequest, response: Response, nex
             contributionId: parseInt(request.body.contributionId),
             currentUserId: request.currentUser.id,
             matchStrength: request.body.matchStrength,
-            matchId: request.body.matchId
+            matchId: request.body.matchId,
         });
         await checkDto(PostMatchResult);
         const matches = await updateMatchResultAsync(PostMatchResult);
@@ -562,7 +641,7 @@ export async function postMatchResult(request: IRequest, response: Response, nex
 
 export async function getContributionsGeo(request: IRequest, response: Response, next: Function) {
     try {
-        const contributions = await getContributionsGeoAsync({ from: request.query.from, to: request.query.to});
+        const contributions = await getContributionsGeoAsync({ from: request.query.from, to: request.query.to });
         return response.status(200).send(contributions);
     } catch (err) {
         return response.status(422).json({ message: err.message });

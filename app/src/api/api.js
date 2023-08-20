@@ -368,6 +368,30 @@ export function post(url, data) {
   });
 }
 
+export function postCsv(url, data) {
+  // const headers = {
+  //   'Content-Type': 'multipart/form-data',
+  //   Accept: 'application/json',
+  // };
+
+  // if (process.env.NODE_ENV === 'test' && !!process.env.TOKEN) {
+  //   headers.Cookie = `token=${process.env.TOKEN}`;
+  // }
+  const formData = new FormData();
+  formData.append('governmentId', data.governmentId);
+  formData.append('campaignId', data.campaignId);
+  formData.append('currentUserId', data.currentUserId);
+  formData.append('filename', data.file.filename);
+  formData.append('file', data.file);
+
+  return fetch(url, {
+    method: 'POST',
+    // headers,
+    body: formData,
+    credentials: 'include',
+  });
+}
+
 export function deleteRequest(url) {
   const headers = {
     'Content-Type': 'application/json',
@@ -646,6 +670,13 @@ export function getContributionById(id) {
 //   method: 'delete',
 export function archiveContribution(id) {
   return deleteRequest(`${baseUrl()}/contributions/${id}`);
+}
+
+//   path: '/contributions/bulk-upload',
+//   method: 'post',
+export function bulkUploadContribution(contributionAttrs) {
+  console.log({ contributionAttrs });
+  return postCsv(`${baseUrl()}/contributions/bulk-upload`, contributionAttrs);
 }
 
 //   path: '/expenditures/new',

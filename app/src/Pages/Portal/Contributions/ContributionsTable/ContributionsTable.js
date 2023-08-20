@@ -11,6 +11,7 @@ import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
   getContributions,
+  uploadContributionCsv,
   getContributionsList,
   getFilterOptions,
   updateFilter,
@@ -128,6 +129,7 @@ class ContributionsTable extends React.Component {
   render() {
     const {
       getContributions,
+      uploadContributionCsv,
       getAllContributions,
       filterOptions,
       updateFilter,
@@ -169,6 +171,12 @@ class ContributionsTable extends React.Component {
         format: 'csv',
       };
       getContributions(data);
+    }
+
+    function uploadCSV(file) {
+      if (!file) return;
+      console.log(file);
+      uploadContributionCsv(file);
     }
 
     function fetchXML(isAll, filerId) {
@@ -223,7 +231,19 @@ class ContributionsTable extends React.Component {
               <div css={buttonStyles}>
                 <Button
                   buttonType="green"
-                  onClick={() => console.log('add contributions')}
+                  onClick={() => {
+                    console.log('add contributions');
+                    this.props.showModal({
+                      component: 'BulkImport',
+                      props: {
+                        uploadCsv: file => uploadCSV(file),
+                        // children: <h1>nice</h1>,
+                        // fetch: (isAll, filerId) => fetchXML(isAll, filerId),
+                        // totalFiltered: filterOptions.perPage || 50,
+                        // total,
+                      },
+                    });
+                  }}
                 >
                   Bulk Add Contributions
                 </Button>
@@ -253,7 +273,6 @@ class ContributionsTable extends React.Component {
             <Button
               css={buttonStyles}
               onClick={() => {
-                // fetchXML();
                 this.props.showModal({
                   component: 'ExportXML',
                   props: {
@@ -343,6 +362,7 @@ export default connect(
   dispatch => {
     return {
       getContributions: data => dispatch(getContributions(data, true)),
+      uploadContributionCsv: data => dispatch(uploadContributionCsv(data)),
       getAllContributions: data => dispatch(getContributions(data, false)),
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
       showModal: payload => {
@@ -354,6 +374,7 @@ export default connect(
 
 ContributionsTable.propTypes = {
   getContributions: PropTypes.func,
+  uploadContributionCsv: PropTypes.func,
   filterOptions: PropTypes.oneOfType([PropTypes.object]),
   updateFilter: PropTypes.func,
   isListLoading: PropTypes.bool,

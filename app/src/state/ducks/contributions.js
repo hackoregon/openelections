@@ -14,6 +14,8 @@ import {
   ADD_CONTRIBUTION_ENTITIES,
   resetState,
   RESET_STATE,
+  BULK_ADD_CONTRIBUTION_ENTITIES,
+  bulkAddContributionEntities,
 } from './common';
 import { getActivitiesByIdType } from './activities';
 import { downloadFile } from '../utils/helpers';
@@ -42,8 +44,19 @@ export const actionTypes = {
     'GET_MATCHES_BY_CONTRIBUTION_ID'
   ),
   FILTER: createCustomActionTypes(STATE_KEY, 'FILTER', ['UPDATE']),
+  UPLOAD_CONTRIBUTIONS_CSV: createCustomActionTypes(
+    STATE_KEY,
+    'UPLOAD_CONTRIBUTIONS_CSV',
+    ['REQUEST', 'RESET', 'SUCCESS', 'FAILURE']
+  ),
 };
-
+const bulkUploadInitialState = {
+  isLoading: false,
+  error: null,
+  status: null, // error, uploading, success
+  message: null,
+  contributionErrors: null,
+};
 // Initial State
 export const initialState = {
   list: null,
@@ -60,6 +73,7 @@ export const initialState = {
   error: null,
   currentId: 0,
   total: 0,
+  bulkUpload: bulkUploadInitialState,
 };
 
 export const resetContributionState = resetState;
@@ -69,10 +83,19 @@ export default createReducer(initialState, {
     return { ...initialState };
   },
   [ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
+    console.log({ action });
     return {
       ...state,
       list: { ...action.payload.entities.contributions },
       listOrder: action.payload.result,
+    };
+  },
+  [BULK_ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
+    console.log({ action });
+    return {
+      ...state,
+      list: { ...action.payload.entities.contributions, ...state.list },
+      listOrder: [...action.payload.result, ...state.listOrder],
     };
   },
   [actionTypes.CREATE_CONTRIBUTION.REQUEST]: (state, action) => {
@@ -140,6 +163,36 @@ export default createReducer(initialState, {
   [actionTypes.FILTER.UPDATE]: (state, action) => {
     return { ...state, listFilterOptions: action.listFilterOptions };
   },
+  [actionTypes.UPLOAD_CONTRIBUTIONS_CSV.REQUEST]: state => {
+    return { ...state, bulkUpload: { isLoading: true, error: null } };
+  },
+  [actionTypes.UPLOAD_CONTRIBUTIONS_CSV.RESET]: state => {
+    return { ...state, bulkUpload: bulkUploadInitialState };
+  },
+  [actionTypes.UPLOAD_CONTRIBUTIONS_CSV.SUCCESS]: (state, action) => {
+    return {
+      ...state,
+      bulkUpload: {
+        isLoading: false,
+        status: 'success',
+        error: null, // TODO: remove this?
+        message: action.message,
+        contributionErrors: null,
+      },
+    };
+  },
+  [actionTypes.UPLOAD_CONTRIBUTIONS_CSV.FAILURE]: (state, action) => {
+    return {
+      ...state,
+      bulkUpload: {
+        isLoading: false,
+        status: 'error',
+        error: action.message,
+        message: action.message,
+        contributionErrors: action.contributionErrors,
+      },
+    };
+  },
 });
 
 // Action Creators
@@ -183,6 +236,13 @@ export const actionCreators = {
     update: listFilterOptions => {
       return action(actionTypes.FILTER.UPDATE, { listFilterOptions });
     },
+  },
+  uploadContributionsCsv: {
+    request: () => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.REQUEST),
+    reset: () => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.RESET),
+    success: info => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.SUCCESS, info), // TODO: this may be wrong
+    failure: error =>
+      action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.FAILURE, error),
   },
 };
 
@@ -339,6 +399,52 @@ export function getContributions(contributionSearchAttrs, applyFilter = false) {
   };
 }
 
+export function uploadContributionCsv(file) {
+  return async (dispatch, getState, { api, schema }) => {
+    dispatch(actionCreators.uploadContributionsCsv.request());
+    try {
+      const state = getState();
+      const contributionSearchAttrs = {
+        governmentId: state.governments.currentGovernmentId,
+        campaignId: state.campaigns.currentCampaignId,
+        currentUserId: state.auth.me.id,
+        file,
+      };
+      const response = await api.bulkUploadContribution({
+        ...contributionSearchAttrs,
+      });
+      if (response.status === 200) {
+        // Success
+        const json = await response.json();
+        const data = normalize(json.contributions, [schema.contribution]);
+        console.log('duck', json, data);
+        dispatch(bulkAddContributionEntities(data));
+        dispatch(actionCreators.uploadContributionsCsv.success(json));
+      } else {
+        console.log('oh snap, error');
+        const json = await response.json();
+        console.log('json error: ', { json });
+        const errMessage = json.message || 'Could not upload CSV.';
+        dispatch(
+          actionCreators.uploadContributionsCsv.failure({
+            message: errMessage,
+            contributionErrors: json.issues,
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(actionCreators.uploadContributionsCsv.failure(error));
+    }
+  };
+}
+
+export function clearBulkUploadState() {
+  return dispatch => {
+    return dispatch(actionCreators.uploadContributionsCsv.reset());
+  };
+}
+
 export function getContributionById(id) {
   return async (dispatch, getState, { api, schema }) => {
     dispatch(actionCreators.getContributionById.request());
@@ -438,4 +544,8 @@ export const getFilterOptions = state => {
   const filter = state.contributions.listFilterOptions;
   const sort = state.contributions.listFilterOptions.sort || {};
   return { ...filter, sort };
+};
+
+export const getBulkUploadStatus = state => {
+  return state.contributions.bulkUpload;
 };

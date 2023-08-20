@@ -9,8 +9,8 @@ services:
       - PORT=4000
     ports:
       - 4000:4000
-    networks:
-      - openelections
+    # networks:
+    #   - openelections
     volumes:
       - ./app:/app
   api:
@@ -38,15 +38,15 @@ services:
       - ./api/app.ts:/app/app.ts
       - ./api/package.json:/app/package.json
       - ./api/tsconfig.json:/app/tsconfig.json
-    networks:
-      - openelections
+    # networks:
+    #   - openelections
   redis:
     image: redis
     ports: ['6379:6379']
-    networks:
-      - openelections
-  networks:
-    openelections:
+    # networks:
+    #   - openelections
+  # networks:
+  #   openelections:
   # data:
   #   build:
   #     context: ./datascience

@@ -40,7 +40,7 @@ export const AppRoutes = [
         method: 'get',
         action: async (request: IRequest, response: express.Response) => {
             return response.status(200).json(request.currentUser);
-        }
+        },
     },
 
     /**
@@ -64,7 +64,7 @@ export const AppRoutes = [
     {
         path: '/users/login',
         method: 'post',
-        action: users.login
+        action: users.login,
     },
 
     /**
@@ -94,7 +94,7 @@ export const AppRoutes = [
     {
         path: '/users/invite',
         method: 'post',
-        action: users.invite
+        action: users.invite,
     },
 
     /**
@@ -125,7 +125,7 @@ export const AppRoutes = [
     {
         path: '/permissions/:id',
         method: 'delete',
-        action: permissions.removePermission
+        action: permissions.removePermission,
     },
 
     /**
@@ -158,7 +158,7 @@ export const AppRoutes = [
     {
         path: '/users/resend-invite',
         method: 'post',
-        action: users.resendInvite
+        action: users.resendInvite,
     },
 
     /**
@@ -182,7 +182,7 @@ export const AppRoutes = [
     {
         path: '/users/redeem-invite',
         method: 'post',
-        action: users.redeemInvite
+        action: users.redeemInvite,
     },
 
     /**
@@ -214,7 +214,7 @@ export const AppRoutes = [
     {
         path: '/users',
         method: 'post',
-        action: users.getUsers
+        action: users.getUsers,
     },
 
     /**
@@ -247,7 +247,7 @@ export const AppRoutes = [
     {
         path: '/users/send-password-reset-email',
         method: 'post',
-        action: users.sendPasswordReset
+        action: users.sendPasswordReset,
     },
 
     /**
@@ -281,7 +281,7 @@ export const AppRoutes = [
     {
         path: '/users/reset-password',
         method: 'post',
-        action: users.resetPassword
+        action: users.resetPassword,
     },
 
     /**
@@ -318,7 +318,7 @@ export const AppRoutes = [
     {
         path: '/users/password',
         method: 'put',
-        action: users.updatePassword
+        action: users.updatePassword,
     },
 
     /**
@@ -357,7 +357,7 @@ export const AppRoutes = [
     {
         path: '/campaigns',
         method: 'post',
-        action: campaigns.getCampaigns
+        action: campaigns.getCampaigns,
     },
 
     /**
@@ -404,7 +404,7 @@ export const AppRoutes = [
     {
         path: '/campaigns/new',
         method: 'post',
-        action: campaigns.addCampaign
+        action: campaigns.addCampaign,
     },
 
     /**
@@ -445,7 +445,7 @@ export const AppRoutes = [
     {
         path: '/campaigns/update',
         method: 'post',
-        action: campaigns.updateCampaignName
+        action: campaigns.updateCampaignName,
     },
 
     /**
@@ -477,7 +477,7 @@ export const AppRoutes = [
     {
         path: '/activities',
         method: 'post',
-        action: activities.getActivities
+        action: activities.getActivities,
     },
 
     /**
@@ -516,7 +516,7 @@ export const AppRoutes = [
     {
         path: '/contributions/:id',
         method: 'put',
-        action: contributions.updateContribution
+        action: contributions.updateContribution,
     },
 
     /**
@@ -551,7 +551,7 @@ export const AppRoutes = [
     {
         path: '/contributions/:id',
         method: 'delete',
-        action: contributions.archiveContribution
+        action: contributions.archiveContribution,
     },
     /**
      * @swagger
@@ -586,8 +586,9 @@ export const AppRoutes = [
     {
         path: '/activities/:id/attachment',
         method: 'get',
-        action: activities.getActivityAttachment
+        action: activities.getActivityAttachment,
     },
+
     /**
      * @swagger
      * /contributions/new:
@@ -617,7 +618,39 @@ export const AppRoutes = [
     {
         path: '/contributions/new',
         method: 'post',
-        action: contributions.addContribution
+        action: contributions.addContribution,
+    },
+
+    /**
+     * @swagger
+     * /contributions/bulk-upload:
+     *   post:
+     *     summary: Add many contributions via csv upload
+     *     tags:
+     *       - Contributions
+     *     security:
+     *       - cookieAuth: []
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/BulkAddContributionsBody'
+     *     responses:
+     *       204:
+     *         description: add response
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: '#/components/schemas/Contribution'
+     *       422:
+     *         $ref: '#/components/responses/UnprocessableEntity'
+     *
+     */
+    {
+        path: '/contributions/bulk-upload',
+        method: 'post',
+        action: contributions.bulkAddContributions,
     },
 
     {
@@ -654,7 +687,7 @@ export const AppRoutes = [
          */
         path: '/contributions/:id/comments',
         method: 'post',
-        action: contributions.createContributionComment
+        action: contributions.createContributionComment,
     },
 
     /**
@@ -692,7 +725,7 @@ export const AppRoutes = [
     {
         path: '/expenditures/:id/comments',
         method: 'post',
-        action: expenditures.createExpenditureComment
+        action: expenditures.createExpenditureComment,
     },
 
     /**
@@ -724,7 +757,7 @@ export const AppRoutes = [
     {
         path: '/contributions',
         method: 'post',
-        action: contributions.getContributions
+        action: contributions.getContributions,
     },
 
     /**
@@ -759,7 +792,7 @@ export const AppRoutes = [
     {
         path: '/contributions/:id',
         method: 'get',
-        action: contributions.getContributionById
+        action: contributions.getContributionById,
     },
 
     {
@@ -767,7 +800,7 @@ export const AppRoutes = [
         method: 'get',
         action: async (request: IRequest, response: express.Response) => {
             return response.status(200).json({ message: 'running' });
-        }
+        },
     },
 
     /**
@@ -797,7 +830,7 @@ export const AppRoutes = [
     {
         path: '/expenditures/new',
         method: 'post',
-        action: expenditures.addExpenditure
+        action: expenditures.addExpenditure,
     },
 
     /**
@@ -827,7 +860,7 @@ export const AppRoutes = [
     {
         path: '/expenditures',
         method: 'post',
-        action: expenditures.getExpenditures
+        action: expenditures.getExpenditures,
     },
 
     /**
@@ -866,7 +899,7 @@ export const AppRoutes = [
     {
         path: '/expenditures/:id',
         method: 'put',
-        action: expenditures.updateExpenditure
+        action: expenditures.updateExpenditure,
     },
     /**
      * @swagger
@@ -900,7 +933,7 @@ export const AppRoutes = [
     {
         path: '/expenditures/:id',
         method: 'get',
-        action: expenditures.getExpenditureById
+        action: expenditures.getExpenditureById,
     },
     /**
      * @swagger
@@ -925,7 +958,7 @@ export const AppRoutes = [
     {
         path: '/summary',
         method: 'post',
-        action: summary.getSummary
+        action: summary.getSummary,
     },
     {
         path: '/seed',
@@ -933,7 +966,7 @@ export const AppRoutes = [
         action: async (request: IRequest, response: express.Response) => {
             const message = await seedDb();
             return response.status(200).json(message);
-        }
+        },
     },
     /**
      * @swagger
@@ -968,7 +1001,7 @@ export const AppRoutes = [
     {
         path: '/matches/:id',
         method: 'get',
-        action: contributions.getMatchesByContributionId
+        action: contributions.getMatchesByContributionId,
     },
     /**
      * @swagger
@@ -994,7 +1027,7 @@ export const AppRoutes = [
     {
         path: '/matches',
         method: 'post',
-        action: contributions.postMatchResult
+        action: contributions.postMatchResult,
     },
     /**
      * @swagger
@@ -1026,7 +1059,7 @@ export const AppRoutes = [
     {
         path: '/contributionsgeo',
         method: 'get',
-        action: contributions.getContributionsGeo
+        action: contributions.getContributionsGeo,
     },
     /**
      * @swagger
@@ -1059,8 +1092,8 @@ export const AppRoutes = [
     {
         path: '/external-contributionsgeo',
         method: 'get',
-        action: externalContributions.getExternalContributionsGeo
-    }
+        action: externalContributions.getExternalContributionsGeo,
+    },
 ];
 
 export const setupRoutes = (app: express.Express) => {
@@ -1076,19 +1109,19 @@ export const setupRoutes = (app: express.Express) => {
                     openapi: '3.0.0',
                     info: {
                         title: 'Open Elections',
-                        version: '1.0.0'
-                    }
+                        version: '1.0.0',
+                    },
                 },
-                apis: ['routes/*']
+                apis: ['routes/*'],
             })
         )
     );
-    AppRoutes.forEach(route => {
+    AppRoutes.forEach((route) => {
         app[route.method](route.path, (request: IRequest, response: express.Response, next: Function) => {
             route
                 .action(request, response, next)
                 .then(() => next)
-                .catch(err => next(err));
+                .catch((err) => next(err));
         });
     });
 };
