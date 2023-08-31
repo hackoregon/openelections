@@ -495,22 +495,25 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 addressPoint: contribution.addressPoint
             });
 
-            if (contribution.matchResult.exact.length > 0) {
-                contribution.matchId = contribution.matchResult.exact[0].id;
-                contribution.matchStrength = MatchStrength.EXACT;
-            } else if (contribution.matchResult.strong.length > 0) {
-                // tslint:disable-next-line:no-null-keyword
-                contribution.matchId = null;
-                contribution.matchStrength = MatchStrength.STRONG;
-            } else if (contribution.matchResult.weak.length > 0) {
-                contribution.matchStrength = MatchStrength.WEAK;
-                // tslint:disable-next-line:no-null-keyword
-                contribution.matchId = null;
-            } else {
-                contribution.matchId = crypto.randomBytes(16).toString('hex');
-                contribution.matchStrength = MatchStrength.NONE;
+            if (contribution.matchResult) {
+                if (contribution.matchResult.exact.length > 0) {
+                    contribution.matchId = contribution.matchResult.exact[0].id;
+                    contribution.matchStrength = MatchStrength.EXACT;
+                } else if (contribution.matchResult.strong.length > 0) {
+                    // tslint:disable-next-line:no-null-keyword
+                    contribution.matchId = null;
+                    contribution.matchStrength = MatchStrength.STRONG;
+                } else if (contribution.matchResult.weak.length > 0) {
+                    contribution.matchStrength = MatchStrength.WEAK;
+                    // tslint:disable-next-line:no-null-keyword
+                    contribution.matchId = null;
+                } else {
+                    contribution.matchId = crypto.randomBytes(16).toString('hex');
+                    contribution.matchStrength = MatchStrength.NONE;
+                }
+                await contributionRepository.save(contribution);
             }
-            await contributionRepository.save(contribution);
+
         }
     } catch (e) {
         throw new Error(e.message);
@@ -613,12 +616,18 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
             zip: contribution.zip
         });
         if (result) {
-            await contributionRepository.update(contributionId, {
-                addressPoint: {
-                    type: 'Point',
-                    coordinates: result
-                }
-            });
+            try {
+                await contributionRepository.update(contributionId, {
+                    addressPoint: {
+                        type: 'Point',
+                        coordinates: result
+                    }
+                });
+            } catch (error) {
+                console.log('Could not add coordinates to contribution', JSON.stringify({ contributionId, error }));
+                console.log('Error result: ', { result })
+            }
+            
         }
         return true;
     }
