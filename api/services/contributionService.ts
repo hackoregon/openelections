@@ -608,6 +608,10 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
     const contributionRepository = defaultConn.getRepository('Contribution');
 
     const contribution = (await contributionRepository.findOneOrFail(contributionId)) as Contribution;
+    if (contribution.addressPoint && contribution.addressPoint.coordinates) {
+        // TODO: may need to remove this once caught up
+        return true;
+    }
     if (contribution.address1 && contribution.state && contribution.city && contribution.zip) {
         const result = await geocodeAddressAsync({
             address1: contribution.address1,
@@ -625,9 +629,8 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
                 });
             } catch (error) {
                 console.log('Could not add coordinates to contribution', JSON.stringify({ contributionId, error }));
-                console.log('Error result: ', { result })
+                console.log('Error result: ', { result });
             }
-            
         }
         return true;
     }
