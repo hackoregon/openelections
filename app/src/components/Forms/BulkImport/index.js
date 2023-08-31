@@ -71,15 +71,19 @@ const BulkImport = props => {
                     <p>{props.bulkUpload.error ?? props.bulkUpload.error}</p>
                   </div>
                   {formSections.fileUpload}
-                  {props.bulkUpload.contributionErrors &&
-                    props.bulkUpload.contributionErrors.length && (
-                      <div css={oaeWarning}>
-                        <p>Errors:</p>
-                        {props.bulkUpload.contributionErrors.map(error => (
-                          <p key={error}>{error}</p>
-                        ))}
-                      </div>
-                    )}
+                  <div css={oaeWarning}>
+                    {props.bulkUpload.contributionErrors &&
+                      props.bulkUpload.contributionErrors.length && (
+                        <>
+                          <p>Errors:</p>
+                          <ul>
+                            {props.bulkUpload.contributionErrors.map(error => (
+                              <li key={error}>{error}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                  </div>
                   <div css={buttonWrapper}>
                     <div>
                       <Button

@@ -454,13 +454,20 @@ export function baseUrl(isDataVisualizationRequest = false) {
     return 'https://api-qa.smalldonorelections.org';
   }
 
-  if (process.env.NODE_ENV === 'development' && !isDataVisualizationRequest) {
+  if (process.env.NODE_ENV === 'development') {
+    // if (process.env.NODE_ENV === 'development' && !isDataVisualizationRequest) {
     return 'http://localhost:3000';
   }
 
   if (window && window.location.hostname.includes('openelectionsportland')) {
     return 'https://api.openelectionsportland.org';
   }
+  console.log(
+    'REQUESTING FROM PRODUCTION',
+    process.env.NODE_ENV,
+    process.env.NODE_ENV === 'development',
+    !isDataVisualizationRequest
+  );
   return 'https://api.smalldonorelections.org';
 }
 

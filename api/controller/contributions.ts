@@ -450,18 +450,20 @@ export async function bulkAddContributions(request: IRequest, response: Response
         const contributionErrors = [];
         const savedContributions = [];
         await Promise.all(
-            csvData.contributions.map(async (contribution: Partial<IAddContributionAttrs>) => {
+            csvData.contributions.map(async (contribution: Partial<IAddContributionAttrs>, index: number) => {
                 try {
                     const addContributionDto = Object.assign(new AddContributionDto(), {
                         ...csvData.info,
                         ...contribution,
                     });
                     await checkDto(addContributionDto);
+                    // TODO: Not sure if we should do all or nothing. If one column failse dto, should I fail every one?
                     const savedContribution = await addContributionAsync(addContributionDto);
                     console.log('successful save: ', savedContribution.id);
                     savedContributions.push(savedContribution);
                 } catch (error) {
-                    contributionErrors.push(error.message);
+                    console.log({ error });
+                    contributionErrors.push(`Row ${index + 1}: ${error.message}`);
                 }
             })
         );
@@ -601,6 +603,7 @@ export async function getMatchesByContributionId(request: IRequest, response: Re
             currentUserId: request.currentUser.id,
         });
         await checkDto(getContributionMatchesDto);
+        console.log('passing this far');
         const matches = await getMatchResultAsync(getContributionMatchesDto);
         return response.status(200).send(matches);
     } catch (err) {

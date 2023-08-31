@@ -19,7 +19,7 @@ import {
     MatchStrength,
     OaeType,
     PaymentMethod,
-    PhoneType
+    PhoneType,
 } from '../models/entity/Contribution';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
@@ -27,7 +27,7 @@ import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } fr
 import { User } from '../models/entity/User';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync, saveFileAttachmentAsync } from './activityService';
-import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
+import { MatchAddressType, MatchDonorInfoType, PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
 import { addDataScienceJob, renderError } from '../jobs/helpers/addJobs';
@@ -88,7 +88,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             const [campaign, government, user] = await Promise.all([
                 campaignRepository.findOne(contributionAttrs.campaignId),
                 governmentRepository.findOne(contributionAttrs.governmentId),
-                (userRepository.findOneOrFail(contributionAttrs.currentUserId) as unknown) as User
+                userRepository.findOneOrFail(contributionAttrs.currentUserId) as unknown as User,
             ]);
 
             contribution.campaign = campaign as Campaign;
@@ -131,12 +131,12 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
             if (await contribution.isValidAsync()) {
                 const saved = await contributionRepository.save(contribution);
                 await createActivityRecordAsync({
-                    currentUser: (user as User),
+                    currentUser: user as User,
                     notes: `${(user as User).name()} added a contribution (${saved.id}).`,
                     campaign: contribution.campaign,
                     government: contribution.government,
                     activityType: ActivityTypeEnum.CONTRIBUTION,
-                    activityId: saved.id
+                    activityId: saved.id,
                 });
                 if (process.env.NODE_ENV !== 'test') {
                     try {
@@ -204,7 +204,7 @@ export async function getContributionsAsync(
             // This exists here to override the default perPage of 100
             contributions = await getContributionsByGovernmentIdAsync(governmentId, {
                 ...options,
-                page: options.page || 0
+                page: options.page || 0,
             });
             contributions.xml = convertToXml(contributions, contributionAttrs.filerId);
             return contributions;
@@ -212,7 +212,7 @@ export async function getContributionsAsync(
         contributions = await getContributionsByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
-            perPage: options.perPage || 100
+            perPage: options.perPage || 100,
         });
 
         if (contributionAttrs.format === 'csv') {
@@ -268,7 +268,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         const contributionRepository = defaultConn.getRepository('Contribution');
         const userRepository = defaultConn.getRepository('User');
         let contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
-            relations: ['campaign', 'government']
+            relations: ['campaign', 'government'],
         })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
         if (attrs.date) {
@@ -316,13 +316,13 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 contributionRepository.update(contributionAttrs.id, attrs),
-                (userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown) as User,
+                userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown as User,
                 Object.keys(attrs)
-                    .filter(key => attrs[key] && attrs[key] !== '')
-                    .filter(key => contribution[key] && contribution[key] !== '')
-                    .filter(key => contribution[key] !== attrs[key])
-                    .map(k => `${k} changed from ${contribution[k]} to ${attrs[k]}.`)
-                    .join(' ')
+                    .filter((key) => attrs[key] && attrs[key] !== '')
+                    .filter((key) => contribution[key] && contribution[key] !== '')
+                    .filter((key) => contribution[key] !== attrs[key])
+                    .map((k) => `${k} changed from ${contribution[k]} to ${attrs[k]}.`)
+                    .join(' '),
             ]);
             await createActivityRecordAsync({
                 currentUser: user,
@@ -331,10 +331,10 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
                 activityId: contribution.id,
-                notify: isGovAdmin
+                notify: isGovAdmin,
             });
             contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
-                relations: ['campaign', 'government']
+                relations: ['campaign', 'government'],
             })) as Contribution;
             return contribution;
         } else {
@@ -357,7 +357,7 @@ export async function getContributionByIdAsync(
         const { contributionId, currentUserId } = contributionAttrs;
         const contributionRepository = getConnection('default').getRepository('Contribution');
         let contribution = (await contributionRepository.findOneOrFail(contributionId, {
-            relations: ['campaign', 'government']
+            relations: ['campaign', 'government'],
         })) as Contribution;
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(currentUserId, contribution.campaign.id)) ||
@@ -367,7 +367,7 @@ export async function getContributionByIdAsync(
             contribution = (await contributionRepository.findOne({
                 select: hasGovPermissions ? contributionGovSummaryFields : contributionSummaryFields,
                 where: { id: contributionId },
-                relations: ['campaign', 'government']
+                relations: ['campaign', 'government'],
             })) as Contribution;
         } else {
             throw new Error('User does not have permissions');
@@ -389,10 +389,10 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
         const contributionRepository = defaultConn.getRepository('Contribution');
         const userRepository = defaultConn.getRepository('User');
         const [contribution, user] = await Promise.all([
-            (contributionRepository.findOneOrFail(contrAttrs.contributionId, {
-                relations: ['campaign', 'government']
-            }) as unknown) as Contribution,
-            (userRepository.findOneOrFail(contrAttrs.currentUserId) as unknown) as User
+            contributionRepository.findOneOrFail(contrAttrs.contributionId, {
+                relations: ['campaign', 'government'],
+            }) as unknown as Contribution,
+            userRepository.findOneOrFail(contrAttrs.currentUserId) as unknown as User,
         ]);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
@@ -407,7 +407,7 @@ export async function archiveContributionAsync(contrAttrs: IArchiveContributionB
                 campaign: contribution.campaign,
                 government: contribution.government,
                 activityType: ActivityTypeEnum.CONTRIBUTION,
-                activityId: contribution.id
+                activityId: contribution.id,
             });
             return getContributionByIdAsync(contrAttrs);
         } else {
@@ -437,7 +437,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
         const userRepository = defaultConn.getRepository('User');
         const activityRepository = defaultConn.getRepository('Activity');
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['campaign', 'government']
+            relations: ['campaign', 'government'],
         })) as Contribution;
 
         const user = (await userRepository.findOneOrFail(attrs.currentUserId)) as User;
@@ -454,7 +454,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: contribution.id,
                 activityType: ActivityTypeEnum.COMMENT_CONTR,
-                notify: true
+                notify: true,
             });
             if (attrs.attachmentPath) {
                 const attachmentPath = await saveFileAttachmentAsync(
@@ -480,7 +480,7 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
         const contributionRepository = defaultConn.getRepository('Contribution');
 
         const contribution = (await contributionRepository.findOneOrFail(contributionId, {
-            relations: ['campaign', 'government']
+            relations: ['campaign', 'government'],
         })) as Contribution;
 
         if (contribution.validateContributorAddress()) {
@@ -492,7 +492,7 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 city: contribution.city,
                 state: contribution.state,
                 zip_code: contribution.zip,
-                addressPoint: contribution.addressPoint
+                addressPoint: contribution.addressPoint,
             });
 
             if (contribution.matchResult) {
@@ -513,7 +513,6 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                 }
                 await contributionRepository.save(contribution);
             }
-
         }
     } catch (e) {
         throw new Error(e.message);
@@ -533,7 +532,7 @@ export async function updateMatchResultAsync(attrs: UpdateMatchResultAttrs): Pro
         const contributionRepository = defaultConn.getRepository('Contribution');
 
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['government', 'campaign']
+            relations: ['government', 'campaign'],
         })) as Contribution;
 
         if (contribution.matchStrength === MatchStrength.EXACT) {
@@ -578,21 +577,21 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         const contributionRepository = defaultConn.getRepository('Contribution');
 
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['government']
+            relations: ['government'],
         })) as Contribution;
-
+        console.log('match contributions:', contribution.matchResult);
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
         if (hasPermissions) {
             const matchResults: MatchResults = {
                 matchId: contribution.matchId,
                 matchStrength: contribution.matchStrength,
                 results: {
-                    exact: contribution.matchResult.exact,
-                    strong: contribution.matchResult.strong,
-                    weak: contribution.matchResult.weak,
-                    none: crypto.randomBytes(16).toString('hex')
+                    exact: contribution.matchResult.exact || [],
+                    strong: contribution.matchResult.strong || [],
+                    weak: contribution.matchResult.weak || [],
+                    none: crypto.randomBytes(16).toString('hex'),
                 },
-                inPortland: contribution.matchResult.donor_info.eligible_address
+                inPortland: contribution.matchResult.donor_info.eligible_address,
             };
             return matchResults;
         } else {
@@ -617,16 +616,16 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
             address1: contribution.address1,
             city: contribution.city,
             state: contribution.state,
-            zip: contribution.zip
+            zip: contribution.zip,
         });
-        console.log(`geocodeAddressAsync result for ${contribution.id}:`, {result});
+        console.log(`geocodeAddressAsync result for ${contribution.id}:`, { result });
         if (result) {
             try {
                 await contributionRepository.update(contributionId, {
                     addressPoint: {
                         type: 'Point',
-                        coordinates: result
-                    }
+                        coordinates: result,
+                    },
                 });
             } catch (error) {
                 console.log('Could not add coordinates to contribution', JSON.stringify({ contributionId, error }));

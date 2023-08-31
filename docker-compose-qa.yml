@@ -1,12 +1,13 @@
-version: '3'
+version: "3"
 services:
   app:
     tty: true
     build:
-      context: 'app'
-      dockerfile: 'Dockerfile'
+      context: "app"
+      dockerfile: "Dockerfile"
     environment:
       - PORT=4000
+      - NODE_ENV=development
     ports:
       - 4000:4000
     # networks:
@@ -17,8 +18,8 @@ services:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:
-      context: 'api'
-      dockerfile: 'Dockerfile.qa'
+      context: "api"
+      dockerfile: "Dockerfile.qa"
     env_file:
       - .env.qa
     depends_on:
@@ -42,7 +43,7 @@ services:
     #   - openelections
   redis:
     image: redis
-    ports: ['6379:6379']
+    ports: ["6379:6379"]
     # networks:
     #   - openelections
   # networks:
@@ -65,31 +66,28 @@ services:
   #   command: ["sh", "/app/openelections/api/start.sh"]
   #   networks:
   #     - openelections
-  # jobs:
-  #   tty: true # Enables debugging capabilities when attached to this container.
-  #   user: root
-  #   build:
-  #     context: 'api'
-  #     dockerfile: 'Dockerfile.jobs'
-  #   env_file:
-  #     - .env.qa
-  #   depends_on:
-  #     - redis
-  #     - data
-  #   volumes:
-  #     - ./api/controller:/app/controller
-  #     - ./api/models:/app/models
-  #     - ./api/routes:/app/routes
-  #     - ./api/services:/app/services
-  #     - ./api/test:/app/test
-  #     - ./api/types:/app/types
-  #     - ./api/jobs:/app/jobs
-  #     - ./api/.nvmrc:/app/.nvmrc
-  #     - ./api/app.ts:/app/app.ts
-  #     - ./api/package.json:/app/package.json
-  #     - ./api/tsconfig.json:/app/tsconfig.json
+  jobs:
+    tty: true # Enables debugging capabilities when attached to this container.
+    user: root
+    build:
+      context: "api"
+      dockerfile: "Dockerfile.jobs"
+    env_file:
+      - .env.qa
+    depends_on:
+      - redis
+      - data
+    volumes:
+      - ./api/controller:/app/controller
+      - ./api/models:/app/models
+      - ./api/routes:/app/routes
+      - ./api/services:/app/services
+      - ./api/test:/app/test
+      - ./api/types:/app/types
+      - ./api/jobs:/app/jobs
+      - ./api/.nvmrc:/app/.nvmrc
+      - ./api/app.ts:/app/app.ts
+      - ./api/package.json:/app/package.json
+      - ./api/tsconfig.json:/app/tsconfig.json
   #   networks:
   #     - openelections
-
-
-
