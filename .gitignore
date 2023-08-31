@@ -3,7 +3,7 @@
 pgdata
 /gitflow
 api/ts-node*
-
+dev-notes.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
