@@ -776,9 +776,11 @@ export async function getContributionsGeoJsonAsync(
         // I don't like blocking the thread like this. May be fine to not await
         if (missingCoordinates) {
             console.log(`${missingCoordinates.length} missing coordinates`);
+            const coordinateSlice = missingCoordinates.slice(0,1);
+            console.log(`Solving for ${coordinateSlice}`);
             try {
                 await Promise.all(
-                    missingCoordinates.map((contributionId: number) => addDataScienceJob({ id: contributionId }))
+                    coordinateSlice.map((contributionId: number) => addDataScienceJob({ id: contributionId }))
                 );
             } catch (error) {
                 console.log('Error logging missing coordinates', error);

@@ -619,6 +619,7 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
             state: contribution.state,
             zip: contribution.zip
         });
+        console.log(`geocodeAddressAsync result for ${contribution.id}:`, {result});
         if (result) {
             try {
                 await contributionRepository.update(contributionId, {
