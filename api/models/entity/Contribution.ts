@@ -740,6 +740,7 @@ export async function getContributionsGeoJsonAsync(
         const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map((contribution: Contribution): any => {
             // this seems like the best spot to double check geo location. I don't love doing it from within an entity
             if (
+                (contribution.address1 && contribution.state && contribution.city && contribution.zip) &&
                 !contribution.addressPoint ||
                 (contribution.addressPoint && !contribution.addressPoint.coordinates)
             ) {
@@ -776,8 +777,8 @@ export async function getContributionsGeoJsonAsync(
         // I don't like blocking the thread like this. May be fine to not await
         if (missingCoordinates) {
             console.log(`${missingCoordinates.length} missing coordinates`);
-            const coordinateSlice = missingCoordinates.slice(0,1);
-            console.log(`Solving for ${coordinateSlice}`);
+            const coordinateSlice = missingCoordinates.slice(0,10);
+            console.log('Solving for batch of 10: ', coordinateSlice);
             try {
                 await Promise.all(
                     coordinateSlice.map((contributionId: number) => addDataScienceJob({ id: contributionId }))
