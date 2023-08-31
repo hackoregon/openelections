@@ -25,6 +25,7 @@ import { Parser } from 'json2csv';
 import * as dateFormat from 'dateformat';
 import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
 import { convertContributionsToXML } from '../converters';
+import { addDataScienceJob } from '../../jobs/helpers/addJobs';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -734,10 +735,19 @@ export async function getContributionsGeoJsonAsync(
             }
         };
 
-        const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((contribution: Contribution): any => {
+        const missingCoordinates: number[] = [];
+
+        const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map((contribution: Contribution): any => {
+            // this seems like the best spot to double check geo location. I don't love doing it from within an entity
+            if (
+                !contribution.addressPoint ||
+                (contribution.addressPoint && !contribution.addressPoint.coordinates)
+            ) {
+                missingCoordinates.push(contribution.id);
+            }
             const json = {
                 type: 'Feature',
-                    properties: {
+                properties: {
                     type: contribution.type,
                     city: contribution.city,
                     state: contribution.state,
@@ -756,25 +766,34 @@ export async function getContributionsGeoJsonAsync(
                 },
                 geometry: {
                     type: 'Point',
-                        // @ts-ignore
-                        coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined
-                }
+                    // @ts-ignore
+                    coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined,
+                },
             };
-
             return json;
         });
+
+        // I don't like blocking the thread like this. May be fine to not await
+        if (missingCoordinates) {
+            console.log(`${missingCoordinates.length} missing coordinates`);
+            try {
+                await Promise.all(
+                    missingCoordinates.map((contributionId: number) => addDataScienceJob({ id: contributionId }))
+                );
+            } catch (error) {
+                console.log('Error logging missing coordinates', error);
+            }
+        }
 
         return {
             type: 'FeatureCollection',
             features: contributions,
         };
-
     } catch (err) {
         console.log(err);
         throw new Error('Error executing get contributions geojson query');
     }
 }
-
 export function convertToCsv(contributions: any): string {
     const json2csvParser = new Parser();
     contributions.data.map( (item: any ): any => {
