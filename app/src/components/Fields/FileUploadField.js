@@ -15,7 +15,7 @@ const labelFormat = css`
 const FileUploadField = props => {
   const { id, label, formik, isRequired } = props;
   const inputValue = (formik.values[id] || {}).filename || '';
-  console.log({ formik });
+
   return (
     <TextFieldMaterial
       required={isRequired}

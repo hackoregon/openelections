@@ -71,7 +71,10 @@ export interface IAddContributionAttrs {
     notes?: string;
 }
 
-export async function addContributionAsync(contributionAttrs: IAddContributionAttrs): Promise<Contribution> {
+export async function addContributionAsync(
+    contributionAttrs: IAddContributionAttrs,
+    returnExplicitErrors: boolean = false
+): Promise<Contribution> {
     try {
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||
@@ -150,7 +153,22 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
                 }
 
                 return saved;
+            } else if (returnExplicitErrors) {
+                const errors = await contribution.validateAsync();
+                const formattedErrorsString = errors
+                    .map((error) =>
+                        Object.keys(error.constraints)
+                            .map((constraintKey) => error.constraints[constraintKey])
+                            .join(', ')
+                    )
+                    .join(', ');
+                console.log({
+                    errors: JSON.stringify(errors),
+                    formattedErrorsString,
+                });
+                throw new Error(formattedErrorsString);
             }
+
             throw new Error('Contribution is missing one or more required properties.');
         }
         throw new Error('User is not permitted to add contributions for this campaign.');

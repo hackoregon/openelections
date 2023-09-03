@@ -446,7 +446,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
             ...csvData.info,
         });
         await checkDto(bulkContributionInfoDto);
-        // console.log('success', { bulkContributionInfoDto });
         const contributionErrors = [];
         const savedContributions = [];
         await Promise.all(
@@ -457,8 +456,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                         ...contribution,
                     });
                     await checkDto(addContributionDto);
-                    // TODO: Not sure if we should do all or nothing. If one column failse dto, should I fail every one?
-                    const savedContribution = await addContributionAsync(addContributionDto);
+                    const savedContribution = await addContributionAsync(addContributionDto, true);
                     console.log('successful save: ', savedContribution.id);
                     savedContributions.push(savedContribution);
                 } catch (error) {
@@ -471,7 +469,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
         if (contributionErrors.length) {
             let message = `Many issues were discoverd in the csv file.`;
             if (contributionErrors.length === 1) {
-                message = 'One issue was discoverd in the csv file.';
+                message = 'One row had an issue in the csv file.';
             }
             return response.status(422).json({ message: message, issues: contributionErrors });
         }
@@ -479,14 +477,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
             message: `Successfully added ${savedContributions.length} contributions`,
             contributions: savedContributions,
         });
-        // return all contributions
-        // const getContributionsDto = Object.assign(new GetContributionsDto(), {
-        //     currentUserId: request.currentUser.id,
-        //     governmentId: csvData.info.governmentId,
-        //     campaignId: csvData.info.campaignId,
-        // });
-        // const contributions = await getContributionsAsync(getContributionsDto);
-        // return response.status(201).json(contributions);
     } catch (err) {
         console.log('bulk add contributions error: ', err);
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
