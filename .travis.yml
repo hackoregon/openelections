@@ -6,9 +6,7 @@ services:
   - docker
 
 script:
-  # - sh scripts/test.sh
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then sh echo nope; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sh scripts/test.sh; fi'
+  - sh scripts/test.sh
 
 before_deploy:
   - sudo add-apt-repository -y ppa:eugenesan/ppa
