@@ -31,7 +31,6 @@ const FileUploadField = props => {
         if (e && e.target && e.target.files && e.target.files.length) {
           const file = e.target.files?.[0];
           file.filename = e.target.value;
-          console.log({ file });
           formik.setFieldValue(id, file);
           if (file === '') {
             formik.resetForm();

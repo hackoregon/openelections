@@ -38,7 +38,6 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-name.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-name.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        console.log(parsedData);
         expect(parsedData).to.deep.equal({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
@@ -120,7 +119,6 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-name-and-address.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-name-and-address.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        console.log(parsedData);
         expect(parsedData).to.deep.equal({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
@@ -154,7 +152,6 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-same-name-address.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-same-name-address.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        console.log(parsedData);
         expect(parsedData).to.deep.equal({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
@@ -187,7 +184,6 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-download-v-small.csv', async () => {
         mockCsv = createMockCsv('contributions-download-v-small.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        console.log(parsedData);
         expect(parsedData).to.deep.equal({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [

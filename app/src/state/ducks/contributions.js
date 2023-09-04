@@ -83,7 +83,6 @@ export default createReducer(initialState, {
     return { ...initialState };
   },
   [ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
-    console.log({ action });
     return {
       ...state,
       list: { ...action.payload.entities.contributions },
@@ -91,7 +90,6 @@ export default createReducer(initialState, {
     };
   },
   [BULK_ADD_CONTRIBUTION_ENTITIES]: (state, action) => {
-    console.log({ action });
     return {
       ...state,
       list: { ...action.payload.entities.contributions, ...state.list },

@@ -69,7 +69,6 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
 
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
         const addressInfo: MatchAddressType = await response.json();
-        console.log(`Received match info from dataScienceUrl: `, JSON.stringify(addressInfo));
         if (addressInfo.donor_info.eligible_address === 'True') {
             addressInfo.donor_info.eligible_address = true;
         } else {

@@ -40,7 +40,6 @@ const BulkImport = props => {
       <FormModal>
         <BulkImportForm
           onSubmit={values => {
-            console.log('onSubmit: ', values);
             props.uploadCsv(values.fileUpload);
           }}
           initialValues={{

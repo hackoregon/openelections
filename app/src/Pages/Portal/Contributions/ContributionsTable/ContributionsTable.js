@@ -175,7 +175,6 @@ class ContributionsTable extends React.Component {
 
     function uploadCSV(file) {
       if (!file) return;
-      console.log(file);
       uploadContributionCsv(file);
     }
 
@@ -232,7 +231,6 @@ class ContributionsTable extends React.Component {
                 <Button
                   buttonType="green"
                   onClick={() => {
-                    console.log('add contributions');
                     this.props.showModal({
                       component: 'BulkImport',
                       props: {

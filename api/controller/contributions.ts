@@ -630,7 +630,6 @@ export async function getMatchesByContributionId(request: IRequest, response: Re
             currentUserId: request.currentUser.id,
         });
         await checkDto(getContributionMatchesDto);
-        console.log('passing this far');
         const matches = await getMatchResultAsync(getContributionMatchesDto);
         return response.status(200).send(matches);
     } catch (err) {

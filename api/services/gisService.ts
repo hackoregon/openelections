@@ -78,10 +78,8 @@ export async function geocodeAddressAsync(attrs: {
 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address1},+${attrs.city},+${attrs.state},+${attrs.zip}&key=${process.env.GOOGLE_GIS_KEY}`;
     const request = await fetch(url);
-    console.log('GEO RESPONSE: ', JSON.stringify(request));
     if (request.ok) {
         const json = (await request.json()) as GoogleResult;
-        console.log('GEO RESPONSE: ', JSON.stringify(json));
         if (json.status === 'OK' && json.results[0]) {
             return [json.results[0].geometry.location.lng, json.results[0].geometry.location.lat];
         }
