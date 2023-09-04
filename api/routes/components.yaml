@@ -445,13 +445,6 @@ components:
                 type: number
               notes:
                 type: string
-    BulkAddContributionsBody:
-      required: true
-      content:
-        application/octet-stream: # https://stackoverflow.com/questions/14455408/how-to-post-files-in-swagger-openapi
-          schema:
-            type: string
-            format: binary
     GetContributionBody:
       required: true
       content:

@@ -133,7 +133,7 @@ export const getCurrentContributionMatch = state => {
 export const getCurrentMatchResults = state => {
   const currentMatches = getCurrentContributionMatch(state);
   const matches = [];
-  const results = (currentMatches || {}).results;
+  const results = currentMatches.results;
   const currentContribution = getCurrentContribution(state);
   let match = {};
   let selectedMatchId = '';
@@ -172,7 +172,7 @@ export const getCurrentMatchResults = state => {
       }
     }
   }
-  if (currentMatches && currentMatches.matchStrength !== 'exact') {
+  if (currentMatches.matchStrength !== 'exact') {
     if (currentContribution.matchStrength === 'none') {
       matches.unshift({
         id: results.none,

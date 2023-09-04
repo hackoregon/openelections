@@ -1,10 +1,10 @@
-version: "3"
+version: '3'
 services:
   app:
     tty: true
     build:
-      context: "app"
-      dockerfile: "Dockerfile"
+      context: 'app'
+      dockerfile: 'Dockerfile'
     environment:
       - PORT=4000
     depends_on:
@@ -19,9 +19,9 @@ services:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:
-      context: "api"
-      dockerfile: "Dockerfile.development"
-    # command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
+      context: 'api'
+      dockerfile: 'Dockerfile.development'
+    command: ["./wait-for-it.sh", "db:5432", "redis:6379", "--", "npm", "run", "seedandrun"]
     env_file:
       - .env
     environment:
@@ -64,8 +64,8 @@ services:
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:
-      context: "api"
-      dockerfile: "Dockerfile.jobs"
+      context: 'api'
+      dockerfile: 'Dockerfile.jobs'
     env_file:
       - .env
     environment:
@@ -103,15 +103,14 @@ services:
       - openelections
   redis:
     image: redis
-    ports: ["6379:6379"]
+    ports: ['6379:6379']
     networks:
       - openelections
   db:
     image: mdillon/postgis
-    ports: ["5432:5432"]
+    ports: ['5432:5432']
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./pgdata/conf:/etc/postgresql/
+      - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
@@ -121,8 +120,8 @@ services:
   data:
     build:
       context: ./datascience
-    # volumes:
-    # - ./datascience:/app
+    volumes:
+      - ./datascience:/app
     ports: ["8080:80"]
     environment:
       - POSTGRES_USER=postgres
@@ -138,5 +137,3 @@ services:
       - openelections
 networks:
   openelections:
-volumes:
-  pgdata:

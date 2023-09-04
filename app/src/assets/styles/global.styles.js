@@ -56,49 +56,6 @@ const styles = css`
     }
   }
 
-  input::file-selector-button {
-    font-weight: bold;
-    padding: 0.5em;
-    border: thin solid grey;
-    border-radius: 3px;
-    color: rgba(0, 0, 0, 0.87);
-    padding: 6px 16px;
-    font-size: 0.875rem;
-    min-width: 64px;
-    box-sizing: border-box;
-    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-      box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-      border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-    font-weight: 500;
-    line-height: 1.75;
-    border-radius: 4px;
-    letter-spacing: 0.02857em;
-    text-transform: uppercase;
-    color: #fff;
-    background-color: #3f51b5;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-
-  input::file-selector-button:hover {
-    background-color: #303f9f;
-  }
-
-  input#fileUpload {
-    height: auto;
-    cursor: pointer;
-  }
-
-  // .file-input label {
-  //   position: relative;
-  //   padding: 20px;
-  //   transform: none;
-  //   background-color: #e0e0e0;
-  //   border: 1px dashed #676767;
-  //   cursor: pointer;
-  // }
-
   .oe-page-container,
   .oe-portal-container {
     position: relative;

@@ -12,7 +12,7 @@ import {
     Between,
     In,
     LessThanOrEqual,
-    MoreThanOrEqual,
+    MoreThanOrEqual
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
@@ -29,7 +29,7 @@ import { addDataScienceJob } from '../../jobs/helpers/addJobs';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
-    OTHER = 'other',
+    OTHER = 'other'
 }
 
 export enum ContributionSubType {
@@ -41,7 +41,7 @@ export enum ContributionSubType {
     ITEM_SOLD_FAIR_MARKET = 'item_sold_fair_market',
     ITEM_RETURNED_CHECK = 'item_returned_check',
     ITEM_MISC = 'item_misc',
-    ITEM_REFUND = 'item_refund',
+    ITEM_REFUND = 'item_refund'
 }
 
 export enum ContributorType {
@@ -52,13 +52,13 @@ export enum ContributorType {
     POLITICAL_COMMITTEE = 'political_committee',
     POLITICAL_PARTY = 'political_party',
     UNREGISTERED = 'unregistered',
-    OTHER = 'other',
+    OTHER = 'other'
 }
 
 export enum PhoneType {
     MOBILE = 'Mobile',
     WORK = 'Work',
-    HOME = 'Home',
+    HOME = 'Home'
 }
 
 export enum ContributionStatus {
@@ -73,7 +73,7 @@ export enum MatchStrength {
     STRONG = 'strong',
     EXACT = 'exact',
     WEAK = 'weak',
-    NONE = 'none',
+    NONE = 'none'
 }
 
 export enum InKindDescriptionType {
@@ -90,7 +90,7 @@ export enum InKindDescriptionType {
     PREP_AD = 'preparation_of_advertising',
     POLLING = 'surveys_and_polls',
     TRAVEL = 'travel_expenses',
-    UTILITIES = 'utilities',
+    UTILITIES = 'utilities'
 }
 
 export enum OaeType {
@@ -100,7 +100,7 @@ export enum OaeType {
     QUALIFYING = 'qualifying',
     ALLOWABLE = 'allowable',
     INKIND = 'inkind',
-    OTHER = 'other',
+    OTHER = 'other'
 }
 
 export enum PaymentMethod {
@@ -110,7 +110,7 @@ export enum PaymentMethod {
     CREDIT_CARD_ONLINE = 'credit_card_online',
     CREDIT_CARD_PAPER = 'credit_card_paper',
     ETF = 'electronic_funds_transfer',
-    DEBIT = 'debit',
+    DEBIT = 'debit'
 }
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'contributions' })
@@ -129,14 +129,14 @@ export class Contribution {
     @Column({
         type: 'enum',
         enum: ContributionType,
-        default: ContributionType.CONTRIBUTION,
+        default: ContributionType.CONTRIBUTION
     })
     @IsDefined()
     type: ContributionType;
 
     @Column({
         type: 'enum',
-        enum: ContributionSubType,
+        enum: ContributionSubType
     })
     @IsDefined()
     subType: ContributionSubType;
@@ -144,20 +144,20 @@ export class Contribution {
     @Column({
         type: 'enum',
         enum: OaeType,
-        nullable: true,
+        nullable: true
     })
     oaeType: OaeType;
 
     @Column({
         type: 'enum',
         enum: PaymentMethod,
-        nullable: true,
+        nullable: true
     })
     paymentMethod: PaymentMethod;
 
     @Column({
         type: 'enum',
-        enum: ContributorType,
+        enum: ContributorType
     })
     @IsDefined()
     contributorType: ContributorType;
@@ -217,7 +217,7 @@ export class Contribution {
     @Column({
         type: 'enum',
         enum: PhoneType,
-        nullable: true,
+        nullable: true
     })
     phoneType?: PhoneType;
 
@@ -232,8 +232,8 @@ export class Contribution {
             },
             from: (value: string) => {
                 return parseFloat(value);
-            },
-        },
+            }
+        }
     })
     amount: number;
 
@@ -259,7 +259,7 @@ export class Contribution {
     compliant?: boolean;
 
     @Column({
-        nullable: true,
+        nullable: true
     })
     matchAmount?: number;
 
@@ -269,7 +269,7 @@ export class Contribution {
     @Column({
         type: 'enum',
         enum: ContributionStatus,
-        default: ContributionStatus.DRAFT,
+        default: ContributionStatus.DRAFT
     })
     @IsDefined()
     status: ContributionStatus;
@@ -281,13 +281,13 @@ export class Contribution {
     @Column({ nullable: true })
     occupationLetterDate?: Date;
 
-    @ManyToOne((type) => Government, (government) => government.contributions)
+    @ManyToOne(type => Government, government => government.contributions)
     government: Government;
 
-    @ManyToOne((type) => Campaign, (campaign) => campaign.contributions)
+    @ManyToOne(type => Campaign, campaign => campaign.contributions)
     campaign: Campaign;
 
-    @OneToMany((type) => Activity, (activity) => activity.contribution)
+    @OneToMany(type => Activity, activity => activity.contribution)
     activities: Activity[];
 
     @Column({ type: 'json', nullable: true })
@@ -303,7 +303,7 @@ export class Contribution {
         type: 'geometry',
         nullable: true,
         spatialFeatureType: 'Point',
-        srid: 4326,
+        srid: 4326
     })
     addressPoint?: any; // geoJson coordinates for address
 
@@ -364,13 +364,13 @@ export class Contribution {
                     ContributionSubType.INKIND_CONTRIBUTION,
                     ContributionSubType.INKIND_PAID_SUPERVISION,
                     ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-                    ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+                    ContributionSubType.INKIND_FORGIVEN_PERSONAL
                 ].includes(this.subType)
             ) {
                 const error = new ValidationError();
                 error.property = 'subType';
                 error.constraints = {
-                    notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"',
+                    notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"'
                 };
                 this.errors.push(error);
             }
@@ -381,7 +381,7 @@ export class Contribution {
                     ContributionSubType.INKIND_CONTRIBUTION,
                     ContributionSubType.INKIND_PAID_SUPERVISION,
                     ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-                    ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+                    ContributionSubType.INKIND_FORGIVEN_PERSONAL
                 ].includes(this.subType)
             ) {
                 const error = new ValidationError();
@@ -393,17 +393,13 @@ export class Contribution {
     }
 
     validatePaymentType() {
-        if (
-            this.type === ContributionType.CONTRIBUTION &&
-            this.subType === ContributionSubType.CASH &&
-            !this.paymentMethod
-        ) {
-            const error = new ValidationError();
-            error.property = 'paymentMethod';
-            error.constraints = {
-                notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod',
-            };
-            this.errors.push(error);
+        if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
+        const error = new ValidationError();
+        error.property = 'paymentMethod';
+        error.constraints = {
+            notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod'
+        };
+        this.errors.push(error);
         }
     }
 
@@ -453,7 +449,7 @@ export class Contribution {
             ContributionSubType.INKIND_CONTRIBUTION,
             ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
             ContributionSubType.INKIND_FORGIVEN_PERSONAL,
-            ContributionSubType.INKIND_PAID_SUPERVISION,
+            ContributionSubType.INKIND_PAID_SUPERVISION
         ].includes(this.subType);
     }
 
@@ -469,21 +465,25 @@ export class Contribution {
     toJSON(isGov: boolean = false) {
         const json: any = {};
         if (isGov) {
-            contributionGovSummaryFields.forEach((key: string): void => {
-                json[key] = this[key];
-            });
+            contributionGovSummaryFields.forEach(
+                (key: string): void => {
+                    json[key] = this[key];
+                }
+            );
             json.campaign = {
                 name: this.campaign.name,
-                id: this.campaign.id,
+                id: this.campaign.id
             };
             return json as IContributionGovSummary;
         }
-        contributionSummaryFields.forEach((key: string): void => {
-            json[key] = this[key];
-        });
+        contributionSummaryFields.forEach(
+            (key: string): void => {
+                json[key] = this[key];
+            }
+        );
         json.campaign = {
             name: this.campaign.name,
-            id: this.campaign.id,
+            id: this.campaign.id
         };
         return json as IContributionSummary;
     }
@@ -529,9 +529,10 @@ export const contributionSummaryFields = <const>[
     'paymentMethod',
     'date',
     'occupationLetterDate',
-    'addressPoint',
+    'addressPoint'
 ];
-export type IContributionSummary = Pick<Contribution, (typeof contributionSummaryFields)[number]>;
+export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+
 
 export const contributionGovSummaryFields = <const>[
     'id',
@@ -577,10 +578,10 @@ export const contributionGovSummaryFields = <const>[
     'matchId',
     'matchAmount',
     'matchStrength',
-    'matchResult',
+    'matchResult'
 ];
 
-export type IContributionGovSummary = Pick<Contribution, (typeof contributionGovSummaryFields)[number]>;
+export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
 
 export interface IContributionGeoJson {
     type: 'Feature';
@@ -595,15 +596,16 @@ export interface IContributionGeoJson {
         date: string;
         campaign: {
             name: string;
-            id: string;
+            id: string
         };
-        contributorName: string;
+        contributorName: string
     };
     geometry: {
         type: 'Point';
-        coordinates: [number, number];
+        coordinates: [number, number]
     };
 }
+
 
 export interface IContributionsGeoJson {
     type: 'FeatureCollection';
@@ -629,34 +631,35 @@ export async function getContributionsByGovernmentIdAsync(
         const { page, perPage, campaignId, status, from, to, matchId, sort, format } = options;
         const isGovQuery = !options.campaignId;
         const where = {
-            government: {
-                id: governmentId,
-            },
-            campaign: campaignId
-                ? {
-                      id: campaignId,
-                  }
-                : undefined,
-            matchId,
-            status,
-            date: from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined,
-        };
+                government: {
+                    id: governmentId
+                },
+                campaign: campaignId
+                    ? {
+                        id: campaignId
+                    }
+                    : undefined,
+                matchId,
+                status,
+                date:
+                    from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
+            };
         const query: any = {
             select: isGovQuery ? contributionGovSummaryFields : contributionSummaryFields,
             relations: ['campaign', 'government'],
             where,
             skip: format === 'csv' ? undefined : page,
-            take: format === 'csv' ? undefined : perPage,
+            take:  format === 'csv' ? undefined : perPage,
             order: {
-                updatedAt: 'DESC',
+                updatedAt: 'DESC'
             },
             join: {
                 alias: 'contribution',
                 leftJoinAndSelect: {
                     government: 'contribution.government',
-                    campaign: 'contribution.campaign',
-                },
-            },
+                    campaign: 'contribution.campaign'
+                }
+            }
         };
         if (sort) {
             if (!['date', 'status', 'campaignId', 'matchAmount', 'amount'].includes(sort.field)) {
@@ -670,23 +673,20 @@ export async function getContributionsByGovernmentIdAsync(
             query.order = { [sort.field]: sort.direction };
         }
 
-        const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map(
-            (item: any): any => {
-                const json = item.toJSON(isGovQuery);
-                json.campaign = {
-                    id: item.campaign.id,
-                    name: item.campaign.name,
-                };
-                json.government = {
-                    id: item.government.id,
-                    name: item.government.name,
-                };
-                if (json.coordinates) {
-                    json.coordinates = item.addressPoint.coordinates;
-                }
-                return json;
+
+        const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((item: any): any => {
+            const json = item.toJSON(isGovQuery);
+            json.campaign = {
+                id: item.campaign.id,
+                name: item.campaign.name};
+            json.government = {
+                id: item.government.id,
+                name: item.government.name};
+            if (json.coordinates) {
+                json.coordinates = item.addressPoint.coordinates;
             }
-        );
+            return json;
+        });
 
         const total = await contributionRepository.count(removeUndefined({ where }));
 
@@ -694,18 +694,17 @@ export async function getContributionsByGovernmentIdAsync(
             data: contributions,
             perPage,
             page,
-            total,
+            total
         };
     } catch (err) {
         console.log(err);
         throw new Error('Error executing get contributions query');
     }
 }
-// TODO: currently no options are getting passed from client side
+
 export async function getContributionsGeoJsonAsync(
     options?: IGetContributionGeoJsonOptions
 ): Promise<IContributionsGeoJson> {
-    console.log('GET THEM CONTRIBUTIONS GEO', options);
     try {
         const contributionRepository = getConnection('default').getRepository('Contribution');
         let from;
@@ -717,88 +716,68 @@ export async function getContributionsGeoJsonAsync(
 
         const where = {
             status: In([ContributionStatus.PROCESSED, ContributionStatus.SUBMITTED]),
-            // date: from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined,
+            date:
+                from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
         };
         const query: any = {
-            select: [
-                'date',
-                'type',
-                'matchAmount',
-                'oaeType',
-                'amount',
-                'city',
-                'state',
-                'zip',
-                'oaeType',
-                'name',
-                'firstName',
-                'lastName',
-                'addressPoint',
-                'contributorType',
-                'subType',
-            ],
+            select: ['date', 'type', 'matchAmount', 'oaeType', 'amount', 'city', 'state', 'zip', 'oaeType', 'name', 'firstName', 'lastName', 'addressPoint', 'contributorType', 'subType'],
             relations: ['campaign', 'government'],
             where,
             order: {
-                date: 'DESC',
+                date: 'DESC'
             },
             join: {
                 alias: 'contribution',
                 leftJoinAndSelect: {
                     government: 'contribution.government',
-                    campaign: 'contribution.campaign',
-                },
-            },
+                    campaign: 'contribution.campaign'
+                }
+            }
         };
 
         const missingCoordinates: number[] = [];
 
-        const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map(
-            (contribution: Contribution): any => {
-                // this seems like the best spot to double check geo location. I don't love doing it from within an entity
-                if (
-                    (contribution.address1 &&
-                        contribution.state &&
-                        contribution.city &&
-                        contribution.zip &&
-                        !contribution.addressPoint) ||
-                    (contribution.addressPoint && !contribution.addressPoint.coordinates)
-                ) {
-                    missingCoordinates.push(contribution.id);
-                }
-                const json = {
-                    type: 'Feature',
-                    properties: {
-                        type: contribution.type,
-                        city: contribution.city,
-                        state: contribution.state,
-                        zip: contribution.zip,
-                        amount: contribution.amount,
-                        contributorType: contribution.contributorType,
-                        contributionType: contribution.type,
-                        contributionSubType: contribution.subType,
-                        date: contribution.date.toISOString(),
-                        matchAmount: contribution.matchAmount,
-                        oaeType: contribution.oaeType,
-                        contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
-                        campaignId: contribution.campaign.id,
-                        campaignName: contribution.campaign.name,
-                        officeSought: contribution.campaign.officeSought,
-                    },
-                    geometry: {
-                        type: 'Point',
-                        // @ts-ignore
-                        coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined,
-                    },
-                };
-                return json;
+        const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map((contribution: Contribution): any => {
+            // this seems like the best spot to double check geo location. I don't love doing it from within an entity
+            if (
+                (contribution.address1 && contribution.state && contribution.city && contribution.zip) &&
+                !contribution.addressPoint ||
+                (contribution.addressPoint && !contribution.addressPoint.coordinates)
+            ) {
+                missingCoordinates.push(contribution.id);
             }
-        );
+            const json = {
+                type: 'Feature',
+                properties: {
+                    type: contribution.type,
+                    city: contribution.city,
+                    state: contribution.state,
+                    zip: contribution.zip,
+                    amount: contribution.amount,
+                    contributorType: contribution.contributorType,
+                    contributionType: contribution.type,
+                    contributionSubType: contribution.subType,
+                    date: contribution.date.toISOString(),
+                    matchAmount: contribution.matchAmount,
+                    oaeType: contribution.oaeType,
+                    contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
+                    campaignId: contribution.campaign.id,
+                    campaignName: contribution.campaign.name,
+                    officeSought: contribution.campaign.officeSought,
+                },
+                geometry: {
+                    type: 'Point',
+                    // @ts-ignore
+                    coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined,
+                },
+            };
+            return json;
+        });
 
         // I don't like blocking the thread like this. May be fine to not await
         if (missingCoordinates) {
             console.log(`${missingCoordinates.length} missing coordinates`);
-            const coordinateSlice = missingCoordinates.slice(0, 10);
+            const coordinateSlice = missingCoordinates.slice(0,10);
             console.log('Solving for batch of 10: ', coordinateSlice);
             try {
                 await Promise.all(
@@ -820,7 +799,7 @@ export async function getContributionsGeoJsonAsync(
 }
 export function convertToCsv(contributions: any): string {
     const json2csvParser = new Parser();
-    contributions.data.map((item: any): any => {
+    contributions.data.map( (item: any ): any => {
         item.campaignId = item.campaign.id;
         item.campaignName = item.campaign.name;
         item.date = dateFormat(item.date, 'yyyy/mm/dd');
@@ -864,20 +843,22 @@ export async function getContributionsSummaryByStatusAsync(
             contributionQuery.andWhere('contributions."campaignId" = :campaignId', { campaignId: attrs.campaignId });
         } else if (attrs.governmentId) {
             contributionQuery.andWhere('contributions."governmentId" = :governmentId', {
-                governmentId: attrs.governmentId,
+                governmentId: attrs.governmentId
             });
         }
 
         const results: any = await contributionQuery.getRawMany();
         const summary: ContributionSummaryByStatus[] = [];
-        results.forEach((item: any): void => {
-            summary.push({
-                status: item.status,
-                total: parseInt(item.total),
-                amount: parseInt(item.amount),
-                matchAmount: parseInt(item.matchAmount),
-            });
-        });
+        results.forEach(
+            (item: any): void => {
+                summary.push({
+                    status: item.status,
+                    total: parseInt(item.total),
+                    amount: parseInt(item.amount),
+                    matchAmount: parseInt(item.matchAmount)
+                });
+            }
+        );
         return summary;
     } catch (err) {
         throw new Error('Error executing get contributions summary status query');

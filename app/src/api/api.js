@@ -368,21 +368,6 @@ export function post(url, data) {
   });
 }
 
-export function postCsv(url, data) {
-  const formData = new FormData();
-  formData.append('governmentId', data.governmentId);
-  formData.append('campaignId', data.campaignId);
-  formData.append('currentUserId', data.currentUserId);
-  formData.append('filename', data.file.filename);
-  formData.append('file', data.file);
-
-  return fetch(url, {
-    method: 'POST',
-    body: formData,
-    credentials: 'include',
-  });
-}
-
 export function deleteRequest(url) {
   const headers = {
     'Content-Type': 'application/json',
@@ -433,7 +418,7 @@ export function decodeToken(token) {
   return jwtDecode(token);
 }
 
-export function baseUrl() {
+export function baseUrl(isDataVisualizationRequest = false) {
   if (process.env.NODE_ENV === 'test') {
     return 'http://localhost:3000';
   }
@@ -445,14 +430,13 @@ export function baseUrl() {
     return 'https://api-qa.smalldonorelections.org';
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' && !isDataVisualizationRequest) {
     return 'http://localhost:3000';
   }
 
   if (window && window.location.hostname.includes('openelectionsportland')) {
     return 'https://api.openelectionsportland.org';
   }
-
   return 'https://api.smalldonorelections.org';
 }
 
@@ -662,12 +646,6 @@ export function getContributionById(id) {
 //   method: 'delete',
 export function archiveContribution(id) {
   return deleteRequest(`${baseUrl()}/contributions/${id}`);
-}
-
-//   path: '/contributions/bulk-upload',
-//   method: 'post',
-export function bulkUploadContribution(contributionAttrs) {
-  return postCsv(`${baseUrl()}/contributions/bulk-upload`, contributionAttrs);
 }
 
 //   path: '/expenditures/new',
