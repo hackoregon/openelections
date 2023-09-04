@@ -71,7 +71,7 @@ export interface IAddContributionAttrs {
     notes?: string;
 }
 
-export async function getVerificationErrorsAsync(contributionAttrs: IAddContributionAttrs): Promise<string | null> {
+export async function getContributionErrorsAsync(contributionAttrs: IAddContributionAttrs): Promise<string | null> {
     try {
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||

@@ -11,13 +11,13 @@ import {
     getMatchResultAsync,
     updateMatchResultAsync,
     getContributionsGeoAsync,
-    getVerificationErrorsAsync,
+    getContributionErrorsAsync,
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
-import { IBulkUploadCSV, BulkUploadVerified, checkDto, parseBulkCsvData } from './helpers';
+import { BulkUploadVerified, checkDto, parseBulkCsvData } from './helpers';
 import {
     ContributionStatus,
     ContributionSubType,
@@ -458,7 +458,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                         ...contribution,
                     });
                     await checkDto(addContributionDto);
-                    const errorString = await getVerificationErrorsAsync(addContributionDto);
+                    const errorString = await getContributionErrorsAsync(addContributionDto);
                     if (errorString) {
                         contributionErrors.push(`Row ${index + 1}: ${errorString}`);
                     } else {
@@ -494,7 +494,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
         await Promise.all(
             vettedContributions.map(async (addContributionDto, index: number) => {
                 try {
-                    console.log('SAVING . . .');
                     const savedContribution = await addContributionAsync(addContributionDto);
                     savedContributions.push(savedContribution);
                 } catch (error) {
