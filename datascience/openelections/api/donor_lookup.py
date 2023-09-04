@@ -8,7 +8,7 @@ Example Request:
 curl http://127.0.0.1:8080/match -d
 "last_name=Smith&first_name=John&addr1=123 Main St&zip_code=97202&city=Portland&latitude=45.51179&longitude=-122.67563"
 """
-# TODO: looks like lat and long is not originating from here
+
 import sys
 sys.path.insert(0, "/app")
 

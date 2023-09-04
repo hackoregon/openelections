@@ -27,7 +27,6 @@ const FileUploadField = props => {
       helperText={formik.touched[id] ? formik.errors[id] : ''}
       error={formik.touched[id] && Boolean(formik.errors[id])}
       value={inputValue}
-      // defaultValue=""
       onChange={e => {
         if (e && e.target && e.target.files && e.target.files.length) {
           const file = e.target.files?.[0];
@@ -41,11 +40,7 @@ const FileUploadField = props => {
           formik.setFieldValue(id, '');
           formik.resetForm();
         }
-        console.log('change: ', e);
-        // formik.handleChange(e);
       }}
-      // onBlur={formik.handleBlur}
-      // autoComplete="on"
       fullWidth
       style={{ display: 'flex' }}
       InputProps={{ disableUnderline: true }}

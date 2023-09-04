@@ -8,7 +8,7 @@ export function dataScienceUrl() {
     } else if (process.env.APP_ENV === 'test') {
         return 'http://datatest/match'; // docker-compose service name test
     } else {
-        return 'http://data/match'; // docker-compose service name development // TODO: fix this url I think
+        return 'http://data/match'; // docker-compose service name development
     }
 }
 
@@ -66,8 +66,7 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
                 urlParams +
                 `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`;
         }
-        // TODO: locally the datascinceurl is not returning a latitude or longitude and it's fing things up
-        // TODO: actually the attrs above are missing them
+
         const response = await fetch(`${dataScienceUrl()}${urlParams}`);
         const addressInfo: MatchAddressType = await response.json();
         console.log(`Received match info from dataScienceUrl: `, JSON.stringify(addressInfo));

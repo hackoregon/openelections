@@ -240,7 +240,7 @@ export const actionCreators = {
   uploadContributionsCsv: {
     request: () => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.REQUEST),
     reset: () => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.RESET),
-    success: info => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.SUCCESS, info), // TODO: this may be wrong
+    success: info => action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.SUCCESS, info),
     failure: error =>
       action(actionTypes.UPLOAD_CONTRIBUTIONS_CSV.FAILURE, error),
   },

@@ -237,10 +237,6 @@ class ContributionsTable extends React.Component {
                       component: 'BulkImport',
                       props: {
                         uploadCsv: file => uploadCSV(file),
-                        // children: <h1>nice</h1>,
-                        // fetch: (isAll, filerId) => fetchXML(isAll, filerId),
-                        // totalFiltered: filterOptions.perPage || 50,
-                        // total,
                       },
                     });
                   }}
@@ -318,26 +314,6 @@ class ContributionsTable extends React.Component {
           onPageChange={handleonPageChange}
           // eslint-disable-next-line no-use-before-define
           onRowsPerPageChange={handleOnRowsPerPageChange}
-          // toolbarAction={
-          // !isGovAdmin ? (
-          //   <div>
-          //     <Button
-          //       buttonType="green"
-          //       onClick={() => console.log('add contributions')}
-          //     >
-          //       Bulk Add Contributions
-          //     </Button>
-          //     <Button
-          //       buttonType="green"
-          //       onClick={() =>
-          //         history.push({ pathname: '/contributions/add' })
-          //       }
-          //     >
-          //       Add New Contribution
-          //     </Button>
-          //   </div>
-          // ) : null
-          // }
         />
       </PageHoc>
     );

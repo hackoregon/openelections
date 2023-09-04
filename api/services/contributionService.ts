@@ -597,7 +597,6 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['government'],
         })) as Contribution;
-        console.log('match contributions:', contribution.matchResult);
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
         if (hasPermissions) {
             const matchResults: MatchResults = {
