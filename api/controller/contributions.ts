@@ -11,6 +11,7 @@ import {
     getMatchResultAsync,
     updateMatchResultAsync,
     getContributionsGeoAsync,
+    getVerificationErrorsAsync,
 } from '../services/contributionService';
 import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
@@ -457,7 +458,12 @@ export async function bulkAddContributions(request: IRequest, response: Response
                         ...contribution,
                     });
                     await checkDto(addContributionDto);
-                    vettedContributions.push(addContributionDto);
+                    const errorString = await getVerificationErrorsAsync(addContributionDto);
+                    if (errorString) {
+                        contributionErrors.push(`Row ${index + 1}: ${errorString}`);
+                    } else {
+                        vettedContributions.push(addContributionDto);
+                    }
                 } catch (error) {
                     console.log({ error });
                     contributionErrors.push(`Row ${index + 1}: ${error.message}`);
@@ -466,9 +472,9 @@ export async function bulkAddContributions(request: IRequest, response: Response
         );
 
         if (contributionErrors.length) {
-            let message = `Many issues were discoverd in the csv file.`;
+            let message = `Many issues were discoverd in the csv file. Please fix the errors and try again.`;
             if (contributionErrors.length === 1) {
-                message = 'One row had an issue in the csv file.';
+                message = 'One row had an issue in the csv file. Please fix the errors and try again.';
             }
             const errorResponse = { message: message, issues: contributionErrors };
             return response.status(422).json(errorResponse);
@@ -488,7 +494,8 @@ export async function bulkAddContributions(request: IRequest, response: Response
         await Promise.all(
             vettedContributions.map(async (addContributionDto, index: number) => {
                 try {
-                    const savedContribution = await addContributionAsync(addContributionDto, true);
+                    console.log('SAVING . . .');
+                    const savedContribution = await addContributionAsync(addContributionDto);
                     savedContributions.push(savedContribution);
                 } catch (error) {
                     console.log({ error });
@@ -497,9 +504,9 @@ export async function bulkAddContributions(request: IRequest, response: Response
             })
         );
         if (contributionErrors.length) {
-            let message = `Many issues were discoverd in the csv file.`;
+            let message = `Many issues were discoverd in the csv file. Please fix the errors and try again.`;
             if (contributionErrors.length === 1) {
-                message = 'One row had an issue in the csv file.';
+                message = 'One row had an issue in the csv file. Please fix the errors and try again.';
             }
             const errorResponse = { message: message, issues: contributionErrors };
             return response.status(422).json(errorResponse);
@@ -515,61 +522,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
         }
         return response.status(422).json({ message: error.message });
     }
-
-    // try {
-    //     checkCurrentUser(request);
-    //     const bulkContributionInfoDto = Object.assign(new BulkAddContributionDto(), {
-    //         currentUserId: request.currentUser.id,
-    //         ...csvData.info,
-    //     });
-    //     await checkDto(bulkContributionInfoDto);
-    //     const contributionErrors = [];
-    //     const savedContributions = [];
-    //     await Promise.all(
-    //         csvData.contributions.map(async (contribution: Partial<IAddContributionAttrs>, index: number) => {
-    //             try {
-    //                 const addContributionDto = Object.assign(new AddContributionDto(), {
-    //                     ...csvData.info,
-    //                     ...contribution,
-    //                 });
-    //                 await checkDto(addContributionDto);
-    //                 const savedContribution = await addContributionAsync(addContributionDto, true);
-    //                 savedContributions.push(savedContribution);
-    //             } catch (error) {
-    //                 console.log({ error });
-    //                 contributionErrors.push(`Row ${index + 1}: ${error.message}`);
-    //             }
-    //         })
-    //     );
-
-    //     if (contributionErrors.length) {
-    //         let message = `Many issues were discoverd in the csv file.`;
-    //         if (contributionErrors.length === 1) {
-    //             message = 'One row had an issue in the csv file.';
-    //         }
-    //         if (savedContributions.length) {
-    //             if (savedContributions.length === 1) {
-    //                 message += ' 1 contribution successfully uploaded.';
-    //             } else {
-    //                 message += ` ${savedContributions.length} contributions successfully uploaded.`;
-    //             }
-    //             message += ' Please note, if you upload this csv again it will cause duplicates.';
-    //         }
-    //         const errorResponse = { message: message, issues: contributionErrors, contributions: savedContributions };
-
-    //         return response.status(422).json(errorResponse);
-    //     }
-    //     return response.status(200).json({
-    //         message: `Successfully added ${savedContributions.length} contributions`,
-    //         contributions: savedContributions,
-    //     });
-    // } catch (err) {
-    //     console.log('bulk add contributions error: ', err);
-    //     if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
-    //         bugsnagClient.notify(err);
-    //     }
-    //     return response.status(422).json({ message: err.message });
-    // }
 }
 
 export class GetContributionByIdDto {

@@ -71,10 +71,79 @@ export interface IAddContributionAttrs {
     notes?: string;
 }
 
-export async function addContributionAsync(
-    contributionAttrs: IAddContributionAttrs,
-    returnExplicitErrors: boolean = false
-): Promise<Contribution> {
+export async function getVerificationErrorsAsync(contributionAttrs: IAddContributionAttrs): Promise<string | null> {
+    try {
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||
+            (await isCampaignStaffAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId));
+        if (hasCampaignPermissions) {
+            const defaultConn = getConnection('default');
+            const governmentRepository = defaultConn.getRepository('Government');
+            const campaignRepository = defaultConn.getRepository('Campaign');
+
+            const contribution = new Contribution();
+
+            const [campaign, government] = await Promise.all([
+                campaignRepository.findOne(contributionAttrs.campaignId),
+                governmentRepository.findOne(contributionAttrs.governmentId),
+            ]);
+
+            contribution.campaign = campaign as Campaign;
+            contribution.government = government as Government;
+
+            contribution.type = contributionAttrs.type;
+            contribution.subType = contributionAttrs.subType;
+
+            contribution.contrPrefix = contributionAttrs.prefix;
+            contribution.firstName = contributionAttrs.firstName;
+            contribution.middleInitial = contributionAttrs.middleInitial;
+            contribution.lastName = contributionAttrs.lastName;
+            contribution.phone = contributionAttrs.phone;
+            contribution.suffix = contributionAttrs.suffix;
+            contribution.title = contributionAttrs.title;
+            contribution.email = contributionAttrs.email;
+            contribution.address1 = contributionAttrs.address1;
+            contribution.address2 = contributionAttrs.address2;
+            contribution.city = contributionAttrs.city;
+            contribution.state = contributionAttrs.state;
+            contribution.zip = contributionAttrs.zip;
+            contribution.name = contributionAttrs.name;
+            contribution.contributorType = contributionAttrs.contributorType;
+            contribution.inKindType = contributionAttrs.inKindType;
+            contribution.oaeType = contributionAttrs.oaeType;
+            contribution.paymentMethod = contributionAttrs.paymentMethod;
+            contribution.occupationLetterDate =
+                contributionAttrs.occupationLetterDate && new Date(contributionAttrs.occupationLetterDate);
+            contribution.occupation = contributionAttrs.occupation;
+            contribution.employerName = contributionAttrs.employerName;
+            contribution.employerCity = contributionAttrs.employerCity;
+            contribution.employerState = contributionAttrs.employerState;
+            contribution.employerCountry = contributionAttrs.employerCountry;
+            contribution.phoneType = contributionAttrs.phoneType;
+            contribution.checkNumber = contributionAttrs.checkNumber;
+            contribution.status = ContributionStatus.DRAFT;
+            contribution.amount = contributionAttrs.amount;
+            contribution.date = new Date(contributionAttrs.date);
+            contribution.notes = contributionAttrs.notes;
+            const errorCheck = await contribution.validateAsync();
+            if (errorCheck) {
+                const formattedErrorsString = errorCheck
+                    .map((error) =>
+                        Object.keys(error.constraints)
+                            .map((constraintKey) => error.constraints[constraintKey])
+                            .join(', ')
+                    )
+                    .join(', ');
+                return formattedErrorsString;
+            }
+        }
+        throw new Error('User is not permitted to add contributions for this campaign.');
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+export async function addContributionAsync(contributionAttrs: IAddContributionAttrs): Promise<Contribution> {
     try {
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||
@@ -153,20 +222,6 @@ export async function addContributionAsync(
                 }
 
                 return saved;
-            } else if (returnExplicitErrors) {
-                const errors = await contribution.validateAsync();
-                const formattedErrorsString = errors
-                    .map((error) =>
-                        Object.keys(error.constraints)
-                            .map((constraintKey) => error.constraints[constraintKey])
-                            .join(', ')
-                    )
-                    .join(', ');
-                console.log({
-                    errors: JSON.stringify(errors),
-                    formattedErrorsString,
-                });
-                throw new Error(formattedErrorsString);
             }
 
             throw new Error('Contribution is missing one or more required properties.');
