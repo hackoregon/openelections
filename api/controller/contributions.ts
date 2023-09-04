@@ -429,6 +429,7 @@ export async function addContribution(request: IRequest, response: Response, _ne
 export async function bulkAddContributions(request: IRequest, response: Response, _next: Function) {
     let csvData: BulkUploadVerified;
     try {
+        console.log('Getting contribution csv');
         csvData = await parseBulkCsvData(request.body, request.files);
     } catch (error) {
         console.log(error);

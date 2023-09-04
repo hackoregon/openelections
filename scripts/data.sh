@@ -27,4 +27,4 @@ docker tag  openelections-datascience-production:latest 845828040396.dkr.ecr.us-
 docker push 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-data:"$TAG"
 
 echo Running ecs-deploy.sh script...
-scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-data -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-data:"$GITTAG"
+scripts/ecs-deploy.sh  --skip-deployments-check -n openelections-data-staging -c openelections -i 845828040396.dkr.ecr.us-west-2.amazonaws.com/openelections-data:"$GITTAG"

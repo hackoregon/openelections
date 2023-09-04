@@ -667,6 +667,7 @@ export function archiveContribution(id) {
 //   path: '/contributions/bulk-upload',
 //   method: 'post',
 export function bulkUploadContribution(contributionAttrs) {
+  console.log('Upload csv');
   return postCsv(`${baseUrl()}/contributions/bulk-upload`, contributionAttrs);
 }
 
