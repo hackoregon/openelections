@@ -14,6 +14,14 @@ export const addContributionEntities = entities => {
   };
 };
 
+export const BULK_ADD_CONTRIBUTION_ENTITIES = 'BULK_ADD_CONTRIBUTION_ENTITIES';
+export const bulkAddContributionEntities = entities => {
+  return {
+    type: BULK_ADD_CONTRIBUTION_ENTITIES,
+    payload: entities,
+  };
+};
+
 export const ADD_EXPENDITURE_ENTITIES = 'ADD_EXPENDITURE_ENTITIES';
 export const addExpenditureEntities = entities => {
   return {

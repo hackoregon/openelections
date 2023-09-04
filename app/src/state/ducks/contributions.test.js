@@ -15,6 +15,13 @@ describe('Reducer', () => {
   const reducer = contributions.default;
   it('initial state', () => {
     expect(reducer(undefined, {})).toEqual({
+      bulkUpload: {
+        contributionErrors: null,
+        error: null,
+        isLoading: false,
+        message: null,
+        status: null,
+      },
       list: null,
       isLoading: false,
       error: null,
@@ -45,6 +52,13 @@ describe('Reducer', () => {
         },
       })
     ).toEqual({
+      bulkUpload: {
+        contributionErrors: null,
+        error: null,
+        isLoading: false,
+        message: null,
+        status: null,
+      },
       list: {
         '1': {},
       },
@@ -59,6 +73,7 @@ describe('Reducer', () => {
       },
       error: null,
       currentId: 0,
+      listOrder: undefined,
       total: 0,
     });
   });

@@ -114,8 +114,8 @@ function Popover(props) {
 
   function setupInitialState(rangeValue) {
     return {
-      from: rangeValue.from ? formatISODate(rangeValue.from, 'yyyy-MM-DD') : '',
-      to: rangeValue.to ? formatISODate(rangeValue.to, 'yyyy-MM-DD') : '',
+      from: rangeValue.from ? formatISODate(rangeValue.from, 'yyyy-MM-dd') : '',
+      to: rangeValue.to ? formatISODate(rangeValue.to, 'yyyy-MM-dd') : '',
     };
   }
 
@@ -202,5 +202,5 @@ function getISOFromDate(date) {
 }
 
 function formatISODate(ISODate, theFormat) {
-  return format(new Date(ISODate), theFormat || 'MM-DD-yyyy');
+  return format(new Date(ISODate), theFormat || 'MM-dd-yyyy');
 }

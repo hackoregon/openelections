@@ -11,6 +11,7 @@ import Table from '../../../../components/Table';
 import Button from '../../../../components/Button/Button';
 import {
   getContributions,
+  uploadContributionCsv,
   getContributionsList,
   getFilterOptions,
   updateFilter,
@@ -128,6 +129,7 @@ class ContributionsTable extends React.Component {
   render() {
     const {
       getContributions,
+      uploadContributionCsv,
       getAllContributions,
       filterOptions,
       updateFilter,
@@ -169,6 +171,11 @@ class ContributionsTable extends React.Component {
         format: 'csv',
       };
       getContributions(data);
+    }
+
+    function uploadCSV(file) {
+      if (!file) return;
+      uploadContributionCsv(file);
     }
 
     function fetchXML(isAll, filerId) {
@@ -218,6 +225,35 @@ class ContributionsTable extends React.Component {
           }}
         />
         <div css={buttonWrapper}>
+          {!isGovAdmin ? (
+            <>
+              <div css={buttonStyles}>
+                <Button
+                  buttonType="green"
+                  onClick={() => {
+                    this.props.showModal({
+                      component: 'BulkImport',
+                      props: {
+                        uploadCsv: file => uploadCSV(file),
+                      },
+                    });
+                  }}
+                >
+                  Bulk Add Contributions
+                </Button>
+              </div>
+              <div css={buttonStyles}>
+                <Button
+                  buttonType="green"
+                  onClick={() =>
+                    history.push({ pathname: '/contributions/add' })
+                  }
+                >
+                  Add New Contribution
+                </Button>
+              </div>
+            </>
+          ) : null}
           <div css={buttonStyles}>
             <Button
               onClick={() => {
@@ -231,7 +267,6 @@ class ContributionsTable extends React.Component {
             <Button
               css={buttonStyles}
               onClick={() => {
-                // fetchXML();
                 this.props.showModal({
                   component: 'ExportXML',
                   props: {
@@ -277,16 +312,6 @@ class ContributionsTable extends React.Component {
           onPageChange={handleonPageChange}
           // eslint-disable-next-line no-use-before-define
           onRowsPerPageChange={handleOnRowsPerPageChange}
-          toolbarAction={
-            !isGovAdmin ? (
-              <Button
-                buttonType="green"
-                onClick={() => history.push({ pathname: '/contributions/add' })}
-              >
-                Add New Contribution
-              </Button>
-            ) : null
-          }
         />
       </PageHoc>
     );
@@ -311,6 +336,7 @@ export default connect(
   dispatch => {
     return {
       getContributions: data => dispatch(getContributions(data, true)),
+      uploadContributionCsv: data => dispatch(uploadContributionCsv(data)),
       getAllContributions: data => dispatch(getContributions(data, false)),
       updateFilter: filterOptions => dispatch(updateFilter(filterOptions)),
       showModal: payload => {
@@ -322,6 +348,7 @@ export default connect(
 
 ContributionsTable.propTypes = {
   getContributions: PropTypes.func,
+  uploadContributionCsv: PropTypes.func,
   filterOptions: PropTypes.oneOfType([PropTypes.object]),
   updateFilter: PropTypes.func,
   isListLoading: PropTypes.bool,
