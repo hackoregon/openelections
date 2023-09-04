@@ -175,7 +175,7 @@ export default createReducer(initialState, {
       bulkUpload: {
         isLoading: false,
         status: 'success',
-        error: null, // TODO: remove this?
+        error: null,
         message: action.message,
         contributionErrors: null,
       },
@@ -422,6 +422,10 @@ export function uploadContributionCsv(file) {
       } else {
         const json = await response.json();
         const errMessage = json.message || 'Could not upload CSV.';
+        if (json && json.contributions) {
+          const data = normalize(json.contributions, [schema.contribution]);
+          dispatch(bulkAddContributionEntities(data));
+        }
         dispatch(
           actionCreators.uploadContributionsCsv.failure({
             message: errMessage,
