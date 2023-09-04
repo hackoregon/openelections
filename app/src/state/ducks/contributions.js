@@ -417,13 +417,10 @@ export function uploadContributionCsv(file) {
         // Success
         const json = await response.json();
         const data = normalize(json.contributions, [schema.contribution]);
-        console.log('duck', json, data);
         dispatch(bulkAddContributionEntities(data));
         dispatch(actionCreators.uploadContributionsCsv.success(json));
       } else {
-        console.log('oh snap, error');
         const json = await response.json();
-        console.log('json error: ', { json });
         const errMessage = json.message || 'Could not upload CSV.';
         dispatch(
           actionCreators.uploadContributionsCsv.failure({
@@ -433,7 +430,6 @@ export function uploadContributionCsv(file) {
         );
       }
     } catch (error) {
-      console.log(error);
       dispatch(actionCreators.uploadContributionsCsv.failure(error));
     }
   };
