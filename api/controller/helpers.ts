@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { FileArray, UploadedFile } from 'express-fileupload';
+import { FileArray } from 'express-fileupload';
 import { createReadStream } from 'fs';
 import * as parse from 'csv-parse/lib';
 import { IAddContributionAttrs } from '../services/contributionService';
@@ -81,14 +81,10 @@ export type BulkUploadVerified = {
     contributions: Partial<IAddContributionAttrs>[];
 };
 
-// TODO: add parseBulkCsvData tests
 export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): Promise<BulkUploadVerified> {
     const { governmentId, campaignId, currentUserId, filename } = body;
-    console.log('files', file);
     const parsedFiles = JSON.parse(JSON.stringify(file));
-    console.log('parsedFiles', parsedFiles);
     const uploadPath = parsedFiles.file.tempFilePath;
-    console.log({ uploadPath });
 
     const csvContributions: Partial<IAddContributionAttrs>[] = await new Promise((resolve, reject) => {
         const csvRowData: Partial<IAddContributionAttrs>[] = [];
@@ -116,7 +112,6 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
                 });
             })
             .on('end', function () {
-                console.log('finished');
                 resolve(csvRowData);
             })
             .on('error', function (error) {

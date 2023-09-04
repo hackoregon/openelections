@@ -429,7 +429,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
     let csvData: BulkUploadVerified;
     try {
         csvData = await parseBulkCsvData(request.body, request.files);
-        console.log('got it', { csvData });
     } catch (error) {
         console.log(error);
         return response.status(422).json({ message: 'An unknown error occurred parsing csv.' });
@@ -457,7 +456,6 @@ export async function bulkAddContributions(request: IRequest, response: Response
                     });
                     await checkDto(addContributionDto);
                     const savedContribution = await addContributionAsync(addContributionDto, true);
-                    console.log('successful save: ', savedContribution.id);
                     savedContributions.push(savedContribution);
                 } catch (error) {
                     console.log({ error });
@@ -465,7 +463,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                 }
             })
         );
-        console.log({ contributionErrors });
+
         if (contributionErrors.length) {
             let message = `Many issues were discoverd in the csv file.`;
             if (contributionErrors.length === 1) {
