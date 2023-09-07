@@ -56,11 +56,7 @@ const BulkImport = props => {
                 To bulk import your contribution data, make sure the CSV file
                 rows and columns adhere to the standard upload format. Please
                 use{' '}
-                <a
-                  href="/downloads/bulk-contributions.csv"
-                  target="_blank"
-                  download
-                >
+                <a href="/bulk-contributions.csv" target="_blank" download>
                   this CSV template
                 </a>{' '}
                 as an example.
