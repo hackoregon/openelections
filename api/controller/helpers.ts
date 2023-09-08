@@ -4,8 +4,17 @@ import { createReadStream } from 'fs';
 import * as parse from 'csv-parse/lib';
 import { IAddContributionAttrs } from '../services/contributionService';
 import { convertToTimeZone } from 'date-fns-timezone';
+import {
+    ContributionSubType,
+    ContributionType,
+    ContributorType,
+    InKindDescriptionType,
+    OaeType,
+    PhoneType,
+} from '../models/entity/Contribution';
 
 export async function checkDto(dto): Promise<void> {
+    console.log('from checkDto');
     const validationErrors = await validate(dto, { validationError: { target: false } });
     if (validationErrors.length) {
         throw new Error(
@@ -14,6 +23,74 @@ export async function checkDto(dto): Promise<void> {
                     Object.keys(validationError.constraints).map((key) => validationError.constraints[key])
                 )
                 .join(', ')
+        );
+    }
+}
+
+export async function checkDtoWithEnums(dto): Promise<void> {
+    console.log('from checkDtoWithEnums');
+    const validationErrors = await validate(dto, { validationError: { target: false } });
+    if (validationErrors.length) {
+        throw new Error(
+            validationErrors
+                .map((validationError) =>
+                    Object.keys(validationError.constraints).map((key) => {
+                        const keyError = validationError.constraints[key];
+                        if (key === 'isEnum' && keyError.includes('must be a valid enum value')) {
+                            if (validationError.property === 'subType') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(ContributionSubType)
+                                        .map((key) => ContributionSubType[key])
+                                        .join(', ')
+                                );
+                            } else if (validationError.property === 'inKindType') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(InKindDescriptionType)
+                                        .map((key) => InKindDescriptionType[key])
+                                        .join(', ')
+                                );
+                            } else if (validationError.property === 'type') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(ContributionType)
+                                        .map((key) => ContributionType[key])
+                                        .join(', ')
+                                );
+                            } else if (validationError.property === 'oaeType') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(OaeType)
+                                        .map((key) => OaeType[key])
+                                        .join(', ')
+                                );
+                            } else if (validationError.property === 'contributorType') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(ContributorType)
+                                        .map((key) => ContributorType[key])
+                                        .join(', ')
+                                );
+                            } else if (validationError.property === 'phoneType') {
+                                return (
+                                    keyError +
+                                    '. Enum must match one of the following: ' +
+                                    Object.keys(PhoneType)
+                                        .map((key) => PhoneType[key])
+                                        .join(', ')
+                                );
+                            }
+                        }
+                        return keyError;
+                    })
+                )
+                .join('. ')
         );
     }
 }
@@ -80,7 +157,40 @@ export type BulkUploadVerified = {
     };
     contributions: Partial<IAddContributionAttrs>[];
 };
-
+const acceptableColumnTitles = [
+    'amount',
+    'type',
+    'subType',
+    'inKindType',
+    'contributorType',
+    'oaeType',
+    'contrPrefix',
+    'firstName',
+    'middleInitial',
+    'lastName',
+    'suffix',
+    'title',
+    'name',
+    'address1',
+    'address2',
+    'city',
+    'state',
+    'zip',
+    'county',
+    'email',
+    'phone',
+    'phoneType',
+    'checkNumber',
+    'occupation',
+    'employerName',
+    'employerCity',
+    'employerState',
+    'employerCountry',
+    'notes',
+    'paymentMethod',
+    'date',
+    'occupationLetterDate',
+];
 export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): Promise<BulkUploadVerified> {
     const { governmentId, campaignId, currentUserId, filename } = body;
     const parsedFiles = JSON.parse(JSON.stringify(file));
@@ -93,9 +203,35 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
             .on('data', (row: IBulkUploadCSV) => {
                 const newRow: Partial<IAddContributionAttrs> = {};
                 Object.keys(row || {}).forEach((rowItem) => {
-                    if (row[rowItem] === '') {
+                    if (!acceptableColumnTitles.includes(rowItem)) {
+                        reject(
+                            new Error(
+                                `Invalid column title used. Columns should be: ${acceptableColumnTitles.join(', ')}`
+                            )
+                        );
+                    }
+                    if (row[rowItem] === '' || rowItem === 'status' || rowItem === 'matchAmount') {
                         // Don't add empty values to object
                         // delete row[rowItem];
+                    } else if (rowItem === 'phoneType') {
+                        const itemString = row[rowItem];
+                        if (itemString) {
+                            const firstChar = itemString.charAt(0).toUpperCase();
+                            const remainingChars = itemString.slice(1);
+                            newRow[rowItem] = `${firstChar}${remainingChars}` as PhoneType;
+                        }
+                    } else if (rowItem === 'contributorType') {
+                        let itemString = row[rowItem];
+                        if (itemString) {
+                            itemString = itemString.toLowerCase().replace(/ /g, '_');
+                            newRow[rowItem] = itemString as ContributorType;
+                        }
+                    } else if (rowItem === 'inKindType') {
+                        let itemString = row[rowItem];
+                        if (itemString) {
+                            itemString = itemString.toLowerCase().replace(/ /g, '_');
+                            newRow[rowItem] = itemString as InKindDescriptionType;
+                        }
                     } else if (rowItem === 'amount') {
                         newRow[rowItem] = parseInt(row[rowItem]);
                     } else if (rowItem === 'date') {

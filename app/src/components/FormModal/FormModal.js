@@ -12,6 +12,7 @@ const formModalWrapper = css`
   padding: 40px 40px;
   height: 100%;
   overflow: auto;
+  max-height: calc(625px - 135px);
 `;
 
 // TODO: need to fix position, absolute causes other form styling to fail
