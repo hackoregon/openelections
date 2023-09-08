@@ -17,7 +17,7 @@ import { IsNumber, IsString, IsOptional, IsEnum, IsBoolean } from 'class-validat
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { Response } from 'express';
 import { UploadedFile } from 'express-fileupload';
-import { BulkUploadVerified, checkDto, parseBulkCsvData } from './helpers';
+import { BulkUploadVerified, checkDto, checkDtoWithEnums, parseBulkCsvData } from './helpers';
 import {
     ContributionStatus,
     ContributionSubType,
@@ -432,9 +432,10 @@ export async function bulkAddContributions(request: IRequest, response: Response
         console.log('Getting contribution csv');
         csvData = await parseBulkCsvData(request.body, request.files);
     } catch (error) {
-        console.log(error);
         return response.status(422).json({
-            message: 'An unknown error occurred parsing csv. Make sure you have the correct number of columns.',
+            message:
+                error.message ||
+                'An unknown error occurred parsing csv. Make sure you have the correct number of columns.',
         });
     }
 
@@ -460,7 +461,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                         ...csvData.info,
                         ...contribution,
                     });
-                    await checkDto(addContributionDto);
+                    await checkDtoWithEnums(addContributionDto);
                     const errorString = await getContributionErrorsAsync(addContributionDto);
                     if (errorString) {
                         contributionErrors.push(`Row ${index + 1}: ${errorString}`);
@@ -469,7 +470,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                     }
                 } catch (error) {
                     console.log({ error });
-                    contributionErrors.push(`Row ${index + 1}: ${error.message}`);
+                    contributionErrors.push(`Row ${index + 1}: ${error.message}.`);
                 }
             })
         );
