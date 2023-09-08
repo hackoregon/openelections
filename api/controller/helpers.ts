@@ -4,6 +4,7 @@ import { createReadStream } from 'fs';
 import * as parse from 'csv-parse/lib';
 import { IAddContributionAttrs } from '../services/contributionService';
 import { convertToTimeZone } from 'date-fns-timezone';
+import { ContributorType, InKindDescriptionType, PhoneType } from '../models/entity/Contribution';
 
 export async function checkDto(dto): Promise<void> {
     const validationErrors = await validate(dto, { validationError: { target: false } });
@@ -93,9 +94,28 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
             .on('data', (row: IBulkUploadCSV) => {
                 const newRow: Partial<IAddContributionAttrs> = {};
                 Object.keys(row || {}).forEach((rowItem) => {
-                    if (row[rowItem] === '') {
+                    if (row[rowItem] === '' || row[rowItem] === 'status' || row[rowItem] === 'matchAmount') {
                         // Don't add empty values to object
                         // delete row[rowItem];
+                    } else if (rowItem === 'phoneType') {
+                        const itemString = row[rowItem];
+                        if (itemString) {
+                            const firstChar = itemString.charAt(0).toUpperCase();
+                            const remainingChars = itemString.slice(1);
+                            newRow[rowItem] = `${firstChar}${remainingChars}` as PhoneType;
+                        }
+                    } else if (rowItem === 'contributorType') {
+                        let itemString = row[rowItem];
+                        if (itemString) {
+                            itemString = itemString.toLowerCase().replace(/ /g, '_');
+                            newRow[rowItem] = itemString as ContributorType;
+                        }
+                    } else if (rowItem === 'inKindType') {
+                        let itemString = row[rowItem];
+                        if (itemString) {
+                            itemString = itemString.toLowerCase().replace(/ /g, '_');
+                            newRow[rowItem] = itemString as InKindDescriptionType;
+                        }
                     } else if (rowItem === 'amount') {
                         newRow[rowItem] = parseInt(row[rowItem]);
                     } else if (rowItem === 'date') {

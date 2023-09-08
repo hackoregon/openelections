@@ -433,7 +433,9 @@ export async function bulkAddContributions(request: IRequest, response: Response
         csvData = await parseBulkCsvData(request.body, request.files);
     } catch (error) {
         console.log(error);
-        return response.status(422).json({ message: 'An unknown error occurred parsing csv.' });
+        return response.status(422).json({
+            message: 'An unknown error occurred parsing csv. Make sure you have the correct number of columns.',
+        });
     }
 
     if (!csvData) {
