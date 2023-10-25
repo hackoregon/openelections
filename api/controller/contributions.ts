@@ -506,6 +506,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
                 }
             })
         );
+
         if (contributionErrors.length) {
             let message = `Many issues were discoverd in the csv file. Please fix the errors and try again.`;
             if (contributionErrors.length === 1) {

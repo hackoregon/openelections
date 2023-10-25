@@ -16,6 +16,7 @@ const formTitle = css`
   letter-spacing: -2px;
   margin: 10px 0px;
 `;
+
 const buttonWrapper = css`
   display: flex;
   flex-direction: row;
