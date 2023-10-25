@@ -515,7 +515,7 @@ export async function bulkAddContributions(request: IRequest, response: Response
             return response.status(422).json(errorResponse);
         }
         return response.status(200).json({
-            message: `Successfully added ${savedContributions.length} contributions`,
+            message: `Successfully added ${savedContributions.length} contributions!`,
             contributions: savedContributions,
         });
     } catch (error) {
