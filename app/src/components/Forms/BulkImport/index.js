@@ -53,13 +53,13 @@ const BulkImport = props => {
             <>
               <p css={formTitle}>Bulk Import</p>
               <p>
-                To bulk import your contribution data, make sure the CSV file
-                rows and columns adhere to the standard upload format. Please
-                use{' '}
+                To successfully bulk import your contribution data, your the CSV
+                file rows and columns <b>must adhere</b> to the standard upload
+                format. Before proceeding, please download the standard{' '}
                 <a href="/bulk-contributions.csv" target="_blank" download>
-                  this CSV template
-                </a>{' '}
-                as an example.
+                  CSV template here
+                </a>
+                .
               </p>
               {props.bulkUpload.status === 'success' ? (
                 <p>{props.bulkUpload.message}</p>
