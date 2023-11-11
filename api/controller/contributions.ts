@@ -491,6 +491,9 @@ export async function bulkAddContributions(request: IRequest, response: Response
         return response.status(422).json({ message: err.message });
     }
 
+    if (vettedContributions.length !== csvData.contributions.length) {
+        return response.status(422).json({ message: 'There was an issue parsing the csv.' });
+    }
     // Add csv rows if all checks pass
     try {
         const savedContributions = [];
@@ -498,6 +501,15 @@ export async function bulkAddContributions(request: IRequest, response: Response
         await Promise.all(
             vettedContributions.map(async (addContributionDto, index: number) => {
                 try {
+                    console.log('**********************');
+                    console.log('**********************');
+                    console.log('**********************');
+                    console.log('**********************');
+                    console.log('SAVING CONTRIBUTION');
+                    console.log('**********************');
+                    console.log('**********************');
+                    console.log('**********************');
+                    console.log('**********************');
                     const savedContribution = await addContributionAsync(addContributionDto);
                     savedContributions.push(savedContribution);
                 } catch (error) {
