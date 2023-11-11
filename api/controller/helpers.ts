@@ -198,18 +198,31 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
 
     const csvContributions: Partial<IAddContributionAttrs>[] = await new Promise((resolve, reject) => {
         const csvRowData: Partial<IAddContributionAttrs>[] = [];
+        let runColumnCheck = true;
         createReadStream(uploadPath)
             .pipe(parse({ delimiter: ',', columns: true }))
             .on('data', (row: IBulkUploadCSV) => {
+                if (runColumnCheck) {
+                    console.log('header row start');
+                    const rowTitleErrors = [];
+                    Object.keys(row || {}).forEach((rowItem) => {
+                        if (!acceptableColumnTitles.includes(rowItem)) {
+                            console.log(`${rowItem} should not be here.`);
+                            rowTitleErrors.push(rowItem);
+                        }
+                    });
+                    if (rowTitleErrors.length) {
+                        let rowErrorString = 'Invalid column used: ' + rowTitleErrors[0];
+                        if (rowTitleErrors.length > 1) {
+                            rowErrorString = 'Invalid columns used: ' + rowTitleErrors.join(', ');
+                        }
+                        reject(new Error(`${rowErrorString}. Columns should be: ${acceptableColumnTitles.join(', ')}`));
+                    }
+                    console.log('header row end');
+                    runColumnCheck = false;
+                }
                 const newRow: Partial<IAddContributionAttrs> = {};
                 Object.keys(row || {}).forEach((rowItem) => {
-                    if (!acceptableColumnTitles.includes(rowItem)) {
-                        reject(
-                            new Error(
-                                `Invalid column title used. Columns should be: ${acceptableColumnTitles.join(', ')}`
-                            )
-                        );
-                    }
                     if (row[rowItem] === '' || rowItem === 'status' || rowItem === 'matchAmount') {
                         // Don't add empty values to object
                         // delete row[rowItem];
