@@ -1,7 +1,7 @@
 import { dataScienceResultQueue } from '../queues';
 import { bugsnagClient } from '../../services/bugsnagService';
 
-export async function addDataScienceJob(jobData: {id: number}) {
+export async function addDataScienceJob(jobData: { id: number }) {
     if (process.env.NODE_ENV === 'test') {
         return;
     }
@@ -19,7 +19,7 @@ export function renderError(e: Error): any {
     if (!e) {
         return;
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.APP_ENV === 'production') {
         bugsnagClient.notify(e);
     } else {
         console.log(e);
@@ -27,6 +27,6 @@ export function renderError(e: Error): any {
     return {
         stack: e.stack,
         message: e.message,
-        name: e.name
+        name: e.name,
     };
 }
