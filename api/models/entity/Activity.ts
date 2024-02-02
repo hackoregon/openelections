@@ -128,7 +128,7 @@ export interface IActivityResult {
     attachmentPath?: string;
 }
 
-export async function getActivityByGovernmentAsync(governmentId, perPage, page: number): Promise<IActivityResults> {
+export async function getActivityByGovernmentAsync(governmentId, perPage, page: number, hostName: string): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const total = await activityRepository
         .createQueryBuilder('activity')
@@ -150,9 +150,9 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
     data = data.map((item: IActivityResult) => {
         if (item.attachmentPath) {
             if (process.env.APP_ENV === 'staging') {
-                item.attachmentPath = `https://api-qa.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api-qa.${hostName}/activities/${item.id}/attachment`;
             } else if (process.env.APP_ENV === 'production') {
-                item.attachmentPath = `https://api.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api.${hostName}/activities/${item.id}/attachment`;
             } else {
                 item.attachmentPath = `http://localhost:3000/activities/${item.id}/attachment`;
             }
@@ -167,7 +167,7 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
     };
 }
 
-export async function getActivityByCampaignAsync(campaignId, perPage, page: number): Promise<IActivityResults> {
+export async function getActivityByCampaignAsync(campaignId, perPage, page: number, hostName: string): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const total = await activityRepository
         .createQueryBuilder('activity')
@@ -189,9 +189,9 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
     data = data.map((item: IActivityResult) => {
         if (item.attachmentPath) {
             if (process.env.APP_ENV === 'staging') {
-                item.attachmentPath = `https://api-qa.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api-qa.${hostName}/activities/${item.id}/attachment`;
             } else if (process.env.APP_ENV === 'production') {
-                item.attachmentPath = `https://api.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api.${hostName}/activities/${item.id}/attachment`;
             } else {
                 item.attachmentPath = `http://localhost:3000/activities/${item.id}/attachment`;
             }
@@ -252,7 +252,7 @@ export async function getActivityByUserAsync(userId, perPage, page: number): Pro
     };
 }
 
-export async function getActivityByContributionAsync(contributionId, perPage, page: number): Promise<IActivityResults> {
+export async function getActivityByContributionAsync(contributionId, perPage, page: number, hostName: string): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     const total = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
@@ -276,9 +276,9 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
     data = data.map((item: IActivityResult) => {
         if (item.attachmentPath) {
             if (process.env.APP_ENV === 'staging') {
-                item.attachmentPath = `https://api-qa.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api-qa.${hostName}/activities/${item.id}/attachment`;
             } else if (process.env.APP_ENV === 'production') {
-                item.attachmentPath = `https://api.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api.${hostName}/activities/${item.id}/attachment`;
             } else {
                 item.attachmentPath = `http://localhost:3000/activities/${item.id}/attachment`;
             }
@@ -293,7 +293,7 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
     };
 }
 
-export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number): Promise<IActivityResults> {
+export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number, hostName: string): Promise<IActivityResults> {
     const activityRepository = getConnection('default').getRepository('Activity');
     let data = await activityRepository.createQueryBuilder('activity')
         .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
@@ -317,9 +317,9 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
     data = data.map((item: IActivityResult) => {
         if (item.attachmentPath) {
             if (process.env.APP_ENV === 'staging') {
-                item.attachmentPath = `https://api-qa.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api-qa.${hostName}/activities/${item.id}/attachment`;
             } else if (process.env.APP_ENV === 'production') {
-                item.attachmentPath = `https://api.openelectionsportland.org/activities/${item.id}/attachment`;
+                item.attachmentPath = `https://api.${hostName}/activities/${item.id}/attachment`;
             } else {
                 item.attachmentPath = `http://localhost:3000/activities/${item.id}/attachment`;
             }

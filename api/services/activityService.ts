@@ -57,7 +57,7 @@ export interface IGetActivityRecords {
     page?: number;
 }
 
-export async function getAllActivityRecordsAsync(params: IGetActivityRecords): Promise<IActivityResults> {
+export async function getAllActivityRecordsAsync(params: IGetActivityRecords, hostName: string): Promise<IActivityResults> {
 
     const perPage = params.perPage || 100;
     const page = params.page || 0;
@@ -65,7 +65,7 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
     if (params.governmentId) {
         const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, params.governmentId);
         if (hasGovAdminPermissions) {
-            return getActivityByGovernmentAsync(params.governmentId, perPage, page);
+            return getActivityByGovernmentAsync(params.governmentId, perPage, page, hostName);
         }
     }
 
@@ -80,7 +80,7 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
         const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, params.campaignId);
         const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, params.campaignId);
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
-            return getActivityByCampaignAsync(params.campaignId, perPage, page);
+            return getActivityByCampaignAsync(params.campaignId, perPage, page, hostName);
         }
     }
 
@@ -95,7 +95,7 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
         const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, contribution.campaign.id);
         const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, contribution.campaign.id);
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
-            return getActivityByContributionAsync(params.contributionId, perPage, page);
+            return getActivityByContributionAsync(params.contributionId, perPage, page, hostName);
         }
     }
 
@@ -111,7 +111,7 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords): P
         const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, expenditure.campaign.id);
 
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
-            return getActivityByExpenditureAsync(params.expenditureId, perPage, page);
+            return getActivityByExpenditureAsync(params.expenditureId, perPage, page, hostName);
         }
     }
 

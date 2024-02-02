@@ -98,10 +98,10 @@ describe('Activity', () => {
             activityId: user.id,
         });
         // test pagination
-        const noRecords = await getActivityByGovernmentAsync(1000, 100, 0);
-        const records1 = await getActivityByGovernmentAsync(government.id, 100, 0);
-        const records2 = await getActivityByGovernmentAsync(government.id, 1, 0);
-        const records3 = await getActivityByGovernmentAsync(government.id, 1, 1);
+        const noRecords = await getActivityByGovernmentAsync(1000, 100, 0, 'openelectionsportland.org');
+        const records1 = await getActivityByGovernmentAsync(government.id, 100, 0, 'openelectionsportland.org');
+        const records2 = await getActivityByGovernmentAsync(government.id, 1, 0, 'openelectionsportland.org');
+        const records3 = await getActivityByGovernmentAsync(government.id, 1, 1, 'openelectionsportland.org');
         expect(noRecords.data.length).to.equal(0);
         expect(records1.data.length).to.equal(2);
         expect(records2.data.length).to.equal(1);
@@ -142,10 +142,10 @@ describe('Activity', () => {
         });
         // test pagination
         expect(await activityRepository.count()).to.equal(3);
-        const noRecords = await getActivityByCampaignAsync(1000, 100, 0);
-        const records1 = await getActivityByCampaignAsync(campaign.id, 100, 0);
-        const records2 = await getActivityByCampaignAsync(campaign.id, 1, 0);
-        const records3 = await getActivityByCampaignAsync(campaign.id, 1, 1);
+        const noRecords = await getActivityByCampaignAsync(1000, 100, 0, 'openelectionsportland.org');
+        const records1 = await getActivityByCampaignAsync(campaign.id, 100, 0, 'openelectionsportland.org');
+        const records2 = await getActivityByCampaignAsync(campaign.id, 1, 0, 'openelectionsportland.org');
+        const records3 = await getActivityByCampaignAsync(campaign.id, 1, 1, 'openelectionsportland.org');
         expect(noRecords.data.length).to.equal(0);
         expect(records1.data.length).to.equal(2);
         expect(records2.data.length).to.equal(1);
@@ -198,7 +198,7 @@ describe('Activity', () => {
             activityType: ActivityTypeEnum.COMMENT_CONTR,
             activityId: contr.id
         });
-        const activities = await getActivityByContributionAsync(contr.id, 100, 0);
+        const activities = await getActivityByContributionAsync(contr.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(2);
         expect(activities.total).to.equal(2);
     });
@@ -225,7 +225,7 @@ describe('Activity', () => {
             activityType: ActivityTypeEnum.COMMENT_EXP,
             activityId: exp.id
         });
-        const activities = await getActivityByExpenditureAsync(exp.id, 100, 0);
+        const activities = await getActivityByExpenditureAsync(exp.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(2);
         expect(activities.total).to.equal(2);
     });
@@ -269,7 +269,7 @@ describe('Activity', () => {
         await activityRepository.update(activity.id, {createdAt: new Date(2019, 1, 1)});
         await activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
         await activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
-        const activities = await getActivityByContributionAsync(contr.id, 100, 0);
+        const activities = await getActivityByContributionAsync(contr.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(3);
         let from = new Date(2018, 12, 31);
         let to = new Date(2019, 1, 31);

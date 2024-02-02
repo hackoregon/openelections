@@ -13,8 +13,8 @@ export async function getActivities(request: IRequest, response: Response, next:
         checkCurrentUser(request);
 
         request.body.currentUserId = request.currentUser.id;
-
-        const records = await getAllActivityRecordsAsync(request.body);
+        const hostName = (request.hostname || '').includes('openelectionsportland') ? 'openelectionsportland.org' : 'smalldonorelections.org';
+        const records = await getAllActivityRecordsAsync(request.body, hostName);
         response.status(200).json(records);
     } catch (err) {
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
@@ -40,6 +40,7 @@ export async function getActivityAttachment(request: IRequest, response: Respons
             currentUserId: request.currentUser.id
         });
         await checkDto(getActivityFileDto);
+        const hostName = (request.hostname || '').includes('openelectionsportland') ? 'openelectionsportland.org' : 'smalldonorelections.org';
         const data = await getActivityAttachmentAsync(getActivityFileDto);
         response.set('Content-Type', data.contentType);
         if (data.fileName) {
