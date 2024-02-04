@@ -2,7 +2,13 @@ import { expect } from 'chai';
 import { getConnection } from 'typeorm';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
-import { newActiveUserAsync, newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll } from '../factories';
+import {
+    newActiveUserAsync,
+    newCampaignAsync,
+    newExpenditureAsync,
+    newGovernmentAsync,
+    truncateAll,
+} from '../factories';
 import {
     addExpenditureAsync,
     createExpenditureCommentAsync,
@@ -10,14 +16,15 @@ import {
     getExpendituresAsync,
     IAddExpenditureAttrs,
     IGetExpenditureAttrs,
-    updateExpenditureAsync
+    updateExpenditureAsync,
 } from '../../services/expenditureService';
 import {
     ExpenditureStatus,
     ExpenditureSubType,
     ExpenditureType,
     PayeeType,
-    PaymentMethod, PurposeType
+    PaymentMethod,
+    PurposeType,
 } from '../../models/entity/Expenditure';
 import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
 
@@ -42,7 +49,7 @@ describe('expenditureService', () => {
             newActiveUserAsync(),
             newGovernmentAsync(),
             newCampaignAsync(),
-            newCampaignAsync()
+            newCampaignAsync(),
         ]);
 
         await Promise.all([
@@ -50,19 +57,19 @@ describe('expenditureService', () => {
                 userId: campaignAdmin.id,
                 governmentId: government.id,
                 campaignId: campaign1.id,
-                role: UserRole.CAMPAIGN_ADMIN
+                role: UserRole.CAMPAIGN_ADMIN,
             }),
             addPermissionAsync({
                 userId: campaignStaff.id,
                 governmentId: government.id,
                 campaignId: campaign2.id,
-                role: UserRole.CAMPAIGN_STAFF
+                role: UserRole.CAMPAIGN_STAFF,
             }),
             addPermissionAsync({
                 userId: govAdmin.id,
                 governmentId: government.id,
-                role: UserRole.GOVERNMENT_ADMIN
-            })
+                role: UserRole.GOVERNMENT_ADMIN,
+            }),
         ]);
     });
 
@@ -86,7 +93,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
@@ -94,7 +101,7 @@ describe('expenditureService', () => {
         const getExpendituresAttrs: IGetExpenditureAttrs = {
             campaignId: campaign2.id,
             currentUserId: campaignStaff.id,
-            governmentId: government.id
+            governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
         expect(expenditures.data.length).equal(2);
@@ -116,7 +123,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
@@ -124,7 +131,7 @@ describe('expenditureService', () => {
         const getExpendituresAttrs: IGetExpenditureAttrs = {
             campaignId: campaign1.id,
             currentUserId: campaignAdmin.id,
-            governmentId: government.id
+            governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
         expect(expenditures.data.length).equal(2);
@@ -146,7 +153,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const addExpenditureAttrs2: IAddExpenditureAttrs = {
@@ -164,18 +171,18 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await Promise.all([
             addExpenditureAsync(addExpenditureAttrs1),
             addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs2)
+            addExpenditureAsync(addExpenditureAttrs2),
         ]);
 
         const getExpendituresAttrs: IGetExpenditureAttrs = {
             currentUserId: govAdmin.id,
-            governmentId: government.id
+            governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
         expect(expenditures.data.length).equal(3);
@@ -185,7 +192,7 @@ describe('expenditureService', () => {
         try {
             const getExpendituresAttrs: IGetExpenditureAttrs = {
                 currentUserId: campaignAdmin.id,
-                governmentId: government.id
+                governmentId: government.id,
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
@@ -195,7 +202,7 @@ describe('expenditureService', () => {
         try {
             const getExpendituresAttrs: IGetExpenditureAttrs = {
                 currentUserId: campaignStaff.id,
-                governmentId: government.id
+                governmentId: government.id,
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
@@ -219,7 +226,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await Promise.all([addExpenditureAsync(addExpenditureAttrs), addExpenditureAsync(addExpenditureAttrs)]);
@@ -228,7 +235,7 @@ describe('expenditureService', () => {
             const getExpendituresAttrs: IGetExpenditureAttrs = {
                 campaignId: campaign1.id,
                 currentUserId: campaignStaff.id,
-                governmentId: government.id
+                governmentId: government.id,
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
@@ -239,7 +246,7 @@ describe('expenditureService', () => {
             const getExpendituresAttrs: IGetExpenditureAttrs = {
                 campaignId: campaign2.id,
                 currentUserId: campaignAdmin.id,
-                governmentId: government.id
+                governmentId: government.id,
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
@@ -265,7 +272,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await addExpenditureAsync(addExpenditureAttrs);
@@ -290,7 +297,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await addExpenditureAsync(addExpenditureAttrs);
@@ -313,7 +320,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: undefined
+            date: undefined,
         };
 
         try {
@@ -339,7 +346,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: undefined
+            date: undefined,
         };
 
         try {
@@ -365,7 +372,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const addExpenditureAttrs2: IAddExpenditureAttrs = {
@@ -383,43 +390,43 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const [expenditure1, expenditure2] = await Promise.all([
             addExpenditureAsync(addExpenditureAttrs1),
-            addExpenditureAsync(addExpenditureAttrs2)
+            addExpenditureAsync(addExpenditureAttrs2),
         ]);
 
         const updateExpenditure1 = {
             id: expenditure1.id,
             amount: 500,
-            currentUserId: campaignStaff.id
+            currentUserId: campaignStaff.id,
         };
 
         const updateExpenditure2 = {
             id: expenditure2.id,
             name: 'foo',
-            currentUserId: campaignAdmin.id
+            currentUserId: campaignAdmin.id,
         };
 
         const updateExpenditure1Gov = {
             id: updateExpenditure1.id,
             name: 'bar',
-            currentUserId: govAdmin.id
+            currentUserId: govAdmin.id,
         };
 
         const updateExpenditure2Gov = {
             id: updateExpenditure1.id,
             amount: 100,
-            currentUserId: govAdmin.id
+            currentUserId: govAdmin.id,
         };
 
         const [updatedOne, updatedTwo, updatedOneGov, updatedTwoGov] = await Promise.all([
             updateExpenditureAsync(updateExpenditure1),
             updateExpenditureAsync(updateExpenditure2),
             updateExpenditureAsync(updateExpenditure1Gov),
-            updateExpenditureAsync(updateExpenditure2Gov)
+            updateExpenditureAsync(updateExpenditure2Gov),
         ]);
 
         expect(updatedOne.amount === 500);
@@ -444,12 +451,12 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const expenditure = await addExpenditureAsync(addExpenditureAttrs);
 
-        expenditureRepository.update(expenditure.id, { status: ExpenditureStatus.SUBMITTED});
+        expenditureRepository.update(expenditure.id, { status: ExpenditureStatus.SUBMITTED });
 
         const updateExpenditure = {
             id: expenditure.id,
@@ -460,9 +467,7 @@ describe('expenditureService', () => {
         try {
             await updateExpenditureAsync(updateExpenditure);
         } catch (e) {
-            expect(e.message).equal(
-                'User does have permissions to change status on expenditure'
-            );
+            expect(e.message).equal('User does have permissions to change status on expenditure');
         }
     });
 
@@ -482,7 +487,7 @@ describe('expenditureService', () => {
             paymentMethod: PaymentMethod.CASH,
             purpose: PurposeType.CASH,
             payeeType: PayeeType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const expenditure = await addExpenditureAsync(addExpenditureAttrs);
@@ -501,55 +506,58 @@ describe('expenditureService', () => {
 
     it('createExpenditureCommentAsync fails no user permission', async () => {
         const expenditure = await newExpenditureAsync(campaign2, government);
-        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
                 expenditureId: expenditure.id,
                 currentUserId: user.id,
-                comment: 'This is a comment'
+                comment: 'This is a comment',
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions');
         }
-        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
     });
 
     it('getActivityByExpenditureAsync success', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
-        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         await createExpenditureCommentAsync({
             expenditureId: expenditure.id,
             currentUserId: campaignAdmin.id,
-            comment: 'This is a comment'
+            comment: 'This is a comment',
         });
-        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0);
+        activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(1);
     });
 
     it('getActivityByExpenditureAsync fails cant find expenditure', async () => {
-        let activities = await getActivityByExpenditureAsync(1000, 100, 0);
+        let activities = await getActivityByExpenditureAsync(1000, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
                 expenditureId: 1000,
                 currentUserId: user.id,
-                comment: 'This is a comment'
+                comment: 'This is a comment',
             });
         } catch (e) {
             expect(e.message).to.equal('Could not find any entity of type "Expenditure" matching: 1000');
         }
-        activities = await getActivityByExpenditureAsync(1000, 100, 0);
+        activities = await getActivityByExpenditureAsync(1000, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
     });
 
     it('getExpenditureByIdAsync testme', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
-        const summary = await getExpenditureByIdAsync({ currentUserId: campaignAdmin.id, expenditureId: expenditure.id });
+        const summary = await getExpenditureByIdAsync({
+            currentUserId: campaignAdmin.id,
+            expenditureId: expenditure.id,
+        });
 
         expect(summary.id).to.equal(expenditure.id);
     });

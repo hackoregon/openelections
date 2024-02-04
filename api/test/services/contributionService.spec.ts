@@ -10,7 +10,7 @@ import {
     IAddContributionAttrs,
     retrieveAndSaveMatchResultAsync,
     updateContributionAsync,
-    updateMatchResultAsync
+    updateMatchResultAsync,
 } from '../../services/contributionService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
@@ -21,14 +21,14 @@ import {
     ContributionType,
     ContributorType,
     MatchStrength,
-    PaymentMethod
+    PaymentMethod,
 } from '../../models/entity/Contribution';
 import {
     newActiveUserAsync,
     newCampaignAsync,
     newContributionAsync,
     newGovernmentAsync,
-    truncateAll
+    truncateAll,
 } from '../factories';
 
 import { getActivityByContributionAsync } from '../../models/entity/Activity';
@@ -59,7 +59,7 @@ describe('contributionService', () => {
             newActiveUserAsync(),
             newGovernmentAsync(),
             newCampaignAsync(),
-            newCampaignAsync()
+            newCampaignAsync(),
         ]);
 
         await Promise.all([
@@ -67,19 +67,19 @@ describe('contributionService', () => {
                 userId: campaignAdmin.id,
                 governmentId: government.id,
                 campaignId: campaign1.id,
-                role: UserRole.CAMPAIGN_ADMIN
+                role: UserRole.CAMPAIGN_ADMIN,
             }),
             addPermissionAsync({
                 userId: campaignStaff.id,
                 governmentId: government.id,
                 campaignId: campaign2.id,
-                role: UserRole.CAMPAIGN_STAFF
+                role: UserRole.CAMPAIGN_STAFF,
             }),
             addPermissionAsync({
                 userId: govAdmin.id,
                 governmentId: government.id,
-                role: UserRole.GOVERNMENT_ADMIN
-            })
+                role: UserRole.GOVERNMENT_ADMIN,
+            }),
         ]);
     });
 
@@ -106,7 +106,7 @@ describe('contributionService', () => {
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
             paymentMethod: PaymentMethod.CASH,
-            date: Date.now()
+            date: Date.now(),
         };
 
         await addContributionAsync(indvidualContribution);
@@ -132,11 +132,11 @@ describe('contributionService', () => {
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
             paymentMethod: PaymentMethod.CASH,
-            date: Date.now()
+            date: Date.now(),
         };
 
         const contribution = await addContributionAsync(indvidualContribution);
-        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
 
         expect(await contributionRepository.count()).equal(1);
         expect(activity.data).to.have.length(1);
@@ -162,7 +162,7 @@ describe('contributionService', () => {
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
                 paymentMethod: PaymentMethod.CASH,
-                date: Date.now()
+                date: Date.now(),
             };
 
             await addContributionAsync(indvidualContribution);
@@ -190,7 +190,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 paymentMethod: PaymentMethod.CASH,
-                contributorType: ContributorType.INDIVIDUAL
+                contributorType: ContributorType.INDIVIDUAL,
             };
 
             await addContributionAsync(invalidIndvidualContribution as IAddContributionAttrs);
@@ -218,7 +218,7 @@ describe('contributionService', () => {
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
                 paymentMethod: PaymentMethod.CASH,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -236,8 +236,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
         expect(
             (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).data.length
@@ -261,30 +261,31 @@ describe('contributionService', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
-        contributionRepository.update(contribution.id, {matchId: 1});
+        contributionRepository.update(contribution.id, { matchId: 1 });
         contribution = await addContributionAsync({
-                address1: '123 ABC ST',
-                amount: 250,
-                campaignId: campaign2.id,
-                city: 'Portland',
-                currentUserId: campaignStaff.id,
-                firstName: 'John',
-                middleInitial: '',
-                lastName: 'Doe',
-                governmentId: government.id,
-                type: ContributionType.CONTRIBUTION,
-                subType: ContributionSubType.CASH,
-                paymentMethod: PaymentMethod.CASH,
-                state: 'OR',
-                zip: '97214',
-                contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            });
-          contributionRepository.update(contribution.id, {matchId: 2});
+            address1: '123 ABC ST',
+            amount: 250,
+            campaignId: campaign2.id,
+            city: 'Portland',
+            currentUserId: campaignStaff.id,
+            firstName: 'John',
+            middleInitial: '',
+            lastName: 'Doe',
+            governmentId: government.id,
+            type: ContributionType.CONTRIBUTION,
+            subType: ContributionSubType.CASH,
+            paymentMethod: PaymentMethod.CASH,
+            state: 'OR',
+            zip: '97214',
+            contributorType: ContributorType.INDIVIDUAL,
+            date: Date.now(),
+        });
+        contributionRepository.update(contribution.id, { matchId: 2 });
         expect(
-            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: '1' })).data.length
+            (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: '1' }))
+                .data.length
         ).to.equal(1);
     });
 
@@ -314,7 +315,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -332,8 +333,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
         try {
             await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id });
@@ -360,7 +361,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -378,17 +379,19 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
         expect(
-            (await getContributionsAsync({
-                governmentId: government.id,
-                currentUserId: govAdmin.id,
-                page: 0,
-                perPage: 1
-            })).data.length
+            (
+                await getContributionsAsync({
+                    governmentId: government.id,
+                    currentUserId: govAdmin.id,
+                    page: 0,
+                    perPage: 1,
+                })
+            ).data.length
         ).to.equal(1);
     });
 
@@ -410,7 +413,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -428,25 +431,29 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
         expect(
-            (await getContributionsAsync({
-                governmentId: government.id,
-                currentUserId: govAdmin.id,
-                to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()
-            })).data.length
+            (
+                await getContributionsAsync({
+                    governmentId: government.id,
+                    currentUserId: govAdmin.id,
+                    to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                })
+            ).data.length
         ).to.equal(0);
 
         expect(
-            (await getContributionsAsync({
-                governmentId: government.id,
-                currentUserId: govAdmin.id,
-                from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
-                to: new Date().toISOString()
-            })).data.length
+            (
+                await getContributionsAsync({
+                    governmentId: government.id,
+                    currentUserId: govAdmin.id,
+                    from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                    to: new Date().toISOString(),
+                })
+            ).data.length
         ).to.equal(2);
     });
 
@@ -468,7 +475,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -486,7 +493,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -504,18 +511,20 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
-        contributionRepository.update(contr3.id, { status: ContributionStatus.SUBMITTED});
+        contributionRepository.update(contr3.id, { status: ContributionStatus.SUBMITTED });
 
         expect(
-            (await getContributionsAsync({
-                governmentId: government.id,
-                currentUserId: govAdmin.id,
-                status: ContributionStatus.DRAFT
-            })).data.length
+            (
+                await getContributionsAsync({
+                    governmentId: government.id,
+                    currentUserId: govAdmin.id,
+                    status: ContributionStatus.DRAFT,
+                })
+            ).data.length
         ).to.equal(2);
     });
 
@@ -537,7 +546,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -555,8 +564,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
         const contributions = await getContributionsAsync({
@@ -566,7 +575,7 @@ describe('contributionService', () => {
             page: 0,
             perPage: 10,
             from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
-            to: new Date().toISOString()
+            to: new Date().toISOString(),
         });
         expect(contributions.data.length).to.equal(1);
     });
@@ -589,7 +598,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -607,20 +616,22 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
         expect(
-            (await getContributionsAsync({
-                governmentId: government.id,
-                campaignId: campaign2.id,
-                currentUserId: govAdmin.id,
-                page: 0,
-                perPage: 10,
-                from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
-                to: new Date().toISOString()
-            })).data.length
+            (
+                await getContributionsAsync({
+                    governmentId: government.id,
+                    campaignId: campaign2.id,
+                    currentUserId: govAdmin.id,
+                    page: 0,
+                    perPage: 10,
+                    from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
+                    to: new Date().toISOString(),
+                })
+            ).data.length
         ).to.equal(2);
     });
 
@@ -642,7 +653,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -660,8 +671,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
         const data = await getContributionsAsync({
             governmentId: government.id,
@@ -670,14 +681,10 @@ describe('contributionService', () => {
             perPage: 10,
             from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
             to: new Date().toISOString(),
-            format: 'csv'
+            format: 'csv',
         });
-        expect(
-            data.csv.split(',').length
-        ).to.equal(154);
-        expect(
-            data.csv.includes('matchStrength')
-        ).to.equal(true);
+        expect(data.csv.split(',').length).to.equal(154);
+        expect(data.csv.includes('matchStrength')).to.equal(true);
     });
 
     it('Gets contributions for a campaign as campaign admin csv', async () => {
@@ -698,7 +705,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -716,8 +723,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
         const data = await getContributionsAsync({
             governmentId: government.id,
@@ -727,14 +734,10 @@ describe('contributionService', () => {
             perPage: 10,
             from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
             to: new Date().toISOString(),
-            format: 'csv'
+            format: 'csv',
         });
-        expect(
-            data.csv.split(',').length
-        ).to.equal(121);
-        expect(
-            data.csv.includes('matchStrength')
-        ).to.equal(false);
+        expect(data.csv.split(',').length).to.equal(121);
+        expect(data.csv.includes('matchStrength')).to.equal(false);
     });
 
     it('Does not get a contribution if user does not belong to campaign or is not a gov admin', async () => {
@@ -755,7 +758,7 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
+                date: Date.now(),
             }),
             addContributionAsync({
                 address1: '456 ABC ST',
@@ -773,8 +776,8 @@ describe('contributionService', () => {
                 state: 'OR',
                 zip: '97214',
                 contributorType: ContributorType.INDIVIDUAL,
-                date: Date.now()
-            })
+                date: Date.now(),
+            }),
         ]);
 
         try {
@@ -785,7 +788,7 @@ describe('contributionService', () => {
                 page: 0,
                 perPage: 10,
                 from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
-                to: new Date().toISOString()
+                to: new Date().toISOString(),
             });
         } catch (e) {
             expect(e.message);
@@ -798,7 +801,7 @@ describe('contributionService', () => {
             currentUserId: campaignStaff.id,
             id: contribution.id,
             amount: 1500,
-            zip: '98101'
+            zip: '98101',
         });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.amount).to.equal(1500);
@@ -809,7 +812,7 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: campaignAdmin.id,
             id: contribution.id,
-            amount: 1550
+            amount: 1550,
         });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.amount).to.equal(1550);
@@ -820,7 +823,7 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: govAdmin.id,
             id: contribution.id,
-            amount: 150
+            amount: 150,
         });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.amount).to.equal(150);
@@ -833,10 +836,10 @@ describe('contributionService', () => {
             currentUserId: campaignStaff.id,
             id: contribution.id,
             amount: 1500,
-            zip: '98101'
+            zip: '98101',
         });
         contribution = await contributionRepository.findOne(contribution.id);
-        const activity = await getActivityByContributionAsync(contribution.id, 10, 0);
+        const activity = await getActivityByContributionAsync(contribution.id, 10, 0, 'openelectionsportland.org');
         expect(contribution.amount).to.equal(1500);
         expect(contribution.zip).to.equal('98101');
         expect(activity.data).to.have.length(1);
@@ -850,7 +853,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignStaff.id,
                 id: contribution.id,
-                amount: 1500
+                amount: 1500,
             });
             contribution = await contributionRepository.findOne(contribution.id);
             expect(contribution.amount).to.equal(1500);
@@ -865,7 +868,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignAdmin.id,
                 id: contribution.id,
-                amount: 1550
+                amount: 1550,
             });
             contribution = await contributionRepository.findOne(contribution.id);
             expect(contribution.amount).to.equal(1550);
@@ -878,7 +881,7 @@ describe('contributionService', () => {
         const contribution = await newContributionAsync(campaign2, government);
         const c = await getContributionByIdAsync({
             contributionId: contribution.id,
-            currentUserId: govAdmin.id
+            currentUserId: govAdmin.id,
         });
         expect(c.id === contribution.id);
     });
@@ -887,7 +890,7 @@ describe('contributionService', () => {
         const contribution = await newContributionAsync(campaign2, government);
         const c = await getContributionByIdAsync({
             contributionId: contribution.id,
-            currentUserId: campaignStaff.id
+            currentUserId: campaignStaff.id,
         });
         expect(c.id === contribution.id);
     });
@@ -897,7 +900,7 @@ describe('contributionService', () => {
             const contribution = await newContributionAsync(campaign2, government);
             await getContributionByIdAsync({
                 contributionId: contribution.id,
-                currentUserId: campaignStaff.id
+                currentUserId: campaignStaff.id,
             });
         } catch (err) {
             expect(err.message).to.equal('Must be a government admin to query all contributions');
@@ -909,7 +912,7 @@ describe('contributionService', () => {
             const contribution = await newContributionAsync(campaign2, government);
             await getContributionByIdAsync({
                 contributionId: contribution.id,
-                currentUserId: campaignStaff.id
+                currentUserId: campaignStaff.id,
             });
         } catch (err) {
             expect(err.message).to.equal('User is not permitted to get contributions for this campaign');
@@ -947,7 +950,7 @@ describe('contributionService', () => {
         const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
         expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
 
-        const activity = await getActivityByContributionAsync(contribution.id, 100, 0);
+        const activity = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
         expect(activity.data).to.have.length(1);
         expect(activity.data[0].notes).to.include(`archived contribution ${contribution.id}.`);
     });
@@ -984,50 +987,49 @@ describe('contributionService', () => {
 
     it('createContributionCommentAsync fails no user permission', async () => {
         const contribution = await newContributionAsync(campaign2, government);
-        let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        let activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
                 contributionId: contribution.id,
                 currentUserId: user.id,
-                comment: 'This is a comment'
+                comment: 'This is a comment',
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions');
         }
-        activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
     });
 
     it('createContributionCommentAsync fails cant find conrtibution', async () => {
-        let activities = await getActivityByContributionAsync(1000, 100, 0);
+        let activities = await getActivityByContributionAsync(1000, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
                 contributionId: 1000,
                 currentUserId: user.id,
-                comment: 'This is a comment'
+                comment: 'This is a comment',
             });
         } catch (e) {
             expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 1000');
         }
-        activities = await getActivityByContributionAsync(1000, 100, 0);
+        activities = await getActivityByContributionAsync(1000, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
     });
 
-
     it('getActivityByContributionAsync success', async () => {
         const contribution = await newContributionAsync(campaign1, government);
-        let activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        let activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(0);
         await createContributionCommentAsync({
             contributionId: contribution.id,
             currentUserId: campaignAdmin.id,
-            comment: 'This is a comment'
+            comment: 'This is a comment',
         });
-        activities = await getActivityByContributionAsync(contribution.id, 100, 0);
+        activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
         expect(activities.data.length).to.equal(1);
     });
 
@@ -1047,18 +1049,19 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
         contribution = await contributionRepository.findOne(contribution.id);
-
 
         expect(contribution.matchStrength).to.equal(MatchStrength.EXACT);
         expect(contribution.matchId).to.not.be.null;
@@ -1084,13 +1087,15 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
@@ -1120,14 +1125,15 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
@@ -1157,12 +1163,14 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
@@ -1192,13 +1200,18 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
         contribution = await contributionRepository.findOne(contribution.id);
 
         try {
-            await updateMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+            await updateMatchResultAsync({
+                contributionId: contribution.id,
+                currentUserId: govAdmin.id,
+                matchStrength: MatchStrength.NONE,
+                matchId: 'love',
+            });
         } catch (e) {
             expect(e.message).to.equal('Contribution has an exact match, cannot update');
         }
@@ -1220,16 +1233,23 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         try {
-            await updateMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+            await updateMatchResultAsync({
+                contributionId: contribution.id,
+                currentUserId: campaignAdmin.id,
+                matchStrength: MatchStrength.NONE,
+                matchId: 'love',
+            });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions');
         }
@@ -1237,7 +1257,12 @@ describe('contributionService', () => {
 
     it('updateMatchResultAsync contribution not found', async () => {
         try {
-            await updateMatchResultAsync({contributionId: 10000, currentUserId: campaignAdmin.id, matchStrength: MatchStrength.NONE, matchId: 'love'});
+            await updateMatchResultAsync({
+                contributionId: 10000,
+                currentUserId: campaignAdmin.id,
+                matchStrength: MatchStrength.NONE,
+                matchId: 'love',
+            });
         } catch (e) {
             expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
         }
@@ -1259,15 +1284,22 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
-        await updateMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id, matchStrength: MatchStrength.WEAK, matchId: 'love'});
+        await updateMatchResultAsync({
+            contributionId: contribution.id,
+            currentUserId: govAdmin.id,
+            matchStrength: MatchStrength.WEAK,
+            matchId: 'love',
+        });
         contribution = await contributionRepository.findOne(contribution.id);
         expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
         expect(contribution.matchId).to.equal('love');
@@ -1289,16 +1321,18 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
-        await contributionRepository.update(contribution.id, { addressPoint: {
+        await contributionRepository.update(contribution.id, {
+            addressPoint: {
                 type: 'Point',
-                coordinates: [-122.676483, 45.523064]
-            }});
+                coordinates: [-122.676483, 45.523064],
+            },
+        });
 
         try {
-            await getMatchResultAsync({contributionId: contribution.id, currentUserId: campaignAdmin.id});
+            await getMatchResultAsync({ contributionId: contribution.id, currentUserId: campaignAdmin.id });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions');
         }
@@ -1306,7 +1340,7 @@ describe('contributionService', () => {
 
     it('getMatchResultAsync contribution not found', async () => {
         try {
-            await getMatchResultAsync({contributionId: 10000, currentUserId: govAdmin.id});
+            await getMatchResultAsync({ contributionId: 10000, currentUserId: govAdmin.id });
         } catch (e) {
             expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
         }
@@ -1328,9 +1362,9 @@ describe('contributionService', () => {
             paymentMethod: PaymentMethod.CASH,
             subType: ContributionSubType.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
-        const result = await getMatchResultAsync({contributionId: contribution.id, currentUserId: govAdmin.id});
+        const result = await getMatchResultAsync({ contributionId: contribution.id, currentUserId: govAdmin.id });
         expect(result.matchStrength).to.equal(MatchStrength.EXACT);
         expect(result.results.exact.length).to.equal(1);
         expect(result.results.strong.length).to.equal(0);
@@ -1354,7 +1388,7 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
         contribution.status = ContributionStatus.SUBMITTED;
@@ -1364,7 +1398,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignStaff.id,
                 id: contribution.id,
-                amount: 150
+                amount: 150,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions');
@@ -1374,7 +1408,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignAdmin.id,
                 id: contribution.id,
-                status: ContributionStatus.PROCESSED
+                status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions to change status to processed');
@@ -1383,13 +1417,12 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: govAdmin.id,
             id: contribution.id,
-            status: ContributionStatus.PROCESSED
+            status: ContributionStatus.PROCESSED,
         });
 
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
-
     });
 
     it('updateContributionAsync user permissions for status change to processed', async () => {
@@ -1408,7 +1441,7 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
         contribution.status = ContributionStatus.PROCESSED;
@@ -1418,7 +1451,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: govAdmin.id,
                 id: contribution.id,
-                matchAmount: 250
+                matchAmount: 250,
             });
         } catch (e) {
             expect(e.message).to.equal('Cannot change attributes on a processed contribution');
@@ -1427,7 +1460,6 @@ describe('contributionService', () => {
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
-
     });
 
     it('updateContributionAsync user permissions for status change to processed', async () => {
@@ -1446,14 +1478,14 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
         try {
             await updateContributionAsync({
                 currentUserId: campaignStaff.id,
                 id: contribution.id,
-                status: ContributionStatus.PROCESSED
+                status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions to change status to processed');
@@ -1463,7 +1495,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignAdmin.id,
                 id: contribution.id,
-                status: ContributionStatus.PROCESSED
+                status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions to change status to processed');
@@ -1472,13 +1504,12 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: govAdmin.id,
             id: contribution.id,
-            status: ContributionStatus.PROCESSED
+            status: ContributionStatus.PROCESSED,
         });
 
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
-
     });
 
     it('updateContributionAsync user permissions for matchAmount', async () => {
@@ -1497,14 +1528,14 @@ describe('contributionService', () => {
             subType: ContributionSubType.CASH,
             paymentMethod: PaymentMethod.CASH,
             contributorType: ContributorType.INDIVIDUAL,
-            date: Date.now()
+            date: Date.now(),
         });
 
         try {
             await updateContributionAsync({
                 currentUserId: campaignStaff.id,
                 id: contribution.id,
-                matchAmount: 50
+                matchAmount: 50,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions to change matchAmount');
@@ -1514,7 +1545,7 @@ describe('contributionService', () => {
             await updateContributionAsync({
                 currentUserId: campaignAdmin.id,
                 id: contribution.id,
-                matchAmount: 50
+                matchAmount: 50,
             });
         } catch (e) {
             expect(e.message).to.equal('User does not have permissions to change matchAmount');
@@ -1523,13 +1554,11 @@ describe('contributionService', () => {
         await updateContributionAsync({
             currentUserId: govAdmin.id,
             id: contribution.id,
-            matchAmount: 50
+            matchAmount: 50,
         });
 
         contribution = await contributionRepository.findOne(contribution.id);
 
         expect(contribution.matchAmount).to.equal(50);
-
     });
-
 });
