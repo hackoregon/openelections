@@ -106,3 +106,5 @@ elections2019_login.json
 .env.qa
 docker-compose-q.yml
 docker-compose-p.yml
+
+scripts/local.sh
