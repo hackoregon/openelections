@@ -423,7 +423,7 @@ export async function addContribution(request: IRequest, response: Response, _ne
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({ message: err.message }); 
+        return response.status(422).json({ message: err.message });
     }
 }
 
