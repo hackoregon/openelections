@@ -312,9 +312,14 @@ export function createContribution(contributionAttrs) {
       }
       dispatch(actionCreators.createContribution.failure());
       dispatch(
-        flashMessage(`Error - ${response.status} status returned`, {
-          props: { variant: 'error' },
-        })
+        flashMessage(
+          `Error - ${response.status} status returned. ${
+            response.message ? response.message : ''
+          }`,
+          {
+            props: { variant: 'error' },
+          }
+        )
       );
     } catch (error) {
       dispatch(actionCreators.createContribution.failure(error));
