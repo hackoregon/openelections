@@ -186,10 +186,12 @@ export async function updateContribution(request: IRequest, response: Response, 
         const contribution = await updateContributionAsync(updateContributionDto);
         return response.status(204).send(contribution);
     } catch (err) {
+        console.log('updateContribution error', err);
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({ message: err.message });
+        const message = err instanceof Error ? err.message : String(err);
+        return response.status(422).json({ message });
     }
 }
 
@@ -423,7 +425,8 @@ export async function addContribution(request: IRequest, response: Response, _ne
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({ message: err.message });
+        const message = err instanceof Error ? err.message : String(err);
+        return response.status(422).json({ message });
     }
 }
 

@@ -311,15 +311,11 @@ export function createContribution(contributionAttrs) {
         return data.result;
       }
       dispatch(actionCreators.createContribution.failure());
+      const error = await response.json();
       dispatch(
-        flashMessage(
-          `Error - ${response.status} status returned. ${
-            response.message ? response.message : ''
-          }`,
-          {
-            props: { variant: 'error' },
-          }
-        )
+        flashMessage(`Error - ${error.message}`, {
+          props: { variant: 'error' },
+        })
       );
     } catch (error) {
       dispatch(actionCreators.createContribution.failure(error));
@@ -351,7 +347,9 @@ export function updateContribution(contributionAttrs) {
         dispatch(actionCreators.updateContribution.failure());
         const error = await response.json();
         dispatch(
-          flashMessage(`Error - ${error}`, { props: { variant: 'error' } })
+          flashMessage(`Error - ${error.message}`, {
+            props: { variant: 'error' },
+          })
         );
         return error;
       }

@@ -228,6 +228,7 @@ export async function addContributionAsync(contributionAttrs: IAddContributionAt
         }
         throw new Error('User is not permitted to add contributions for this campaign.');
     } catch (e) {
+        console.log('addContributionAsync', e);
         throw new Error(e.message);
     }
 }
@@ -414,6 +415,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
             throw new Error('User does not have permissions');
         }
     } catch (e) {
+        console.log('updateContributionAsync', e);
         throw new Error(e.message);
     }
 }
