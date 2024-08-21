@@ -51,7 +51,7 @@ export interface IAcceptInvitationAttrs {
 
 export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs): Promise<User> {
     const repository = getConnection('default').getRepository('User');
-    let user = await repository.findOneOrFail({invitationCode: params.invitationCode}) as User;
+    let user = (await repository.findOneOrFail({ invitationCode: params.invitationCode })) as User;
     if (params.password.length < 6) {
         throw new Error('User password must be at least 6 characters');
     }
@@ -67,29 +67,29 @@ export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs):
         currentUser: user,
         notes: `${user.name()} redeemed their invitation`,
         activityType: ActivityTypeEnum.USER,
-        activityId: user.id
+        activityId: user.id,
     });
     return user;
 }
 
 export async function generatePasswordResetAsync(email: string): Promise<string> {
     const repository = getConnection('default').getRepository('User');
-    const user = await repository.findOneOrFail({email: email}) as User;
+    const user = (await repository.findOneOrFail({ email: email })) as User;
     const code = user.generatePasswordResetCode();
     await repository.save(user);
-    await sendPasswordResetEmail({to: user.email, invitationCode: user.invitationCode});
+    await sendPasswordResetEmail({ to: user.email, invitationCode: user.invitationCode });
     await createActivityRecordAsync({
         currentUser: user,
         notes: `${user.name()} was sent an email to reset their password`,
         activityType: ActivityTypeEnum.USER,
-        activityId: user.id
+        activityId: user.id,
     });
     return code;
 }
 
 export async function passwordResetAsync(invitationCode, password: string): Promise<User> {
     const repository = getConnection('default').getRepository('User');
-    let user = await repository.findOneOrFail({invitationCode: invitationCode}) as User;
+    let user = (await repository.findOneOrFail({ invitationCode: invitationCode })) as User;
     if (password.length < 6) {
         throw new Error('User password must be at least 6 characters');
     }
@@ -99,7 +99,7 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
         currentUser: user,
         notes: `${user.name()} updated their password`,
         activityType: ActivityTypeEnum.USER,
-        activityId: user.id
+        activityId: user.id,
     });
     return user;
 }
@@ -107,27 +107,28 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
 export async function createUserSessionFromLoginAsync(email, password: string): Promise<string> {
     const repository = getConnection('default').getRepository('User');
     try {
-        const user = await repository.findOneOrFail({email: email.toLowerCase()}) as User;
+        const user = (await repository.findOneOrFail({ email: email.toLowerCase() })) as User;
         if (user.validatePassword(password)) {
             const token = await generateJWTokenAsync(user.id);
             await createActivityRecordAsync({
                 currentUser: user,
                 notes: `${user.name()} logged in`,
                 activityType: ActivityTypeEnum.USER,
-                activityId: user.id
+                activityId: user.id,
             });
             return token;
         } else {
             throw new Error('Invalid email or password');
         }
     } catch (e) {
+        console.log('DEBUG auth error', e);
         throw new Error('Invalid email or password');
     }
 }
 
 export async function updateUserPasswordAsync(userId: number, currentPassword, newPassword: string): Promise<boolean> {
     const repository = getConnection('default').getRepository('User');
-    const user = await repository.findOneOrFail(userId) as User;
+    const user = (await repository.findOneOrFail(userId)) as User;
     if (user.validatePassword(currentPassword)) {
         if (newPassword.length < 6) {
             throw new Error('Invalid password');
@@ -138,7 +139,7 @@ export async function updateUserPasswordAsync(userId: number, currentPassword, n
             currentUser: user,
             notes: `${user.name()} updated their password`,
             activityType: ActivityTypeEnum.USER,
-            activityId: user.id
+            activityId: user.id,
         });
     } else {
         throw new Error('Invalid password');
@@ -148,14 +149,14 @@ export async function updateUserPasswordAsync(userId: number, currentPassword, n
 
 export async function resendInvitationAsync(userId: number): Promise<boolean> {
     const repository = getConnection('default').getRepository('User');
-    const user = await repository.findOneOrFail(userId) as User;
+    const user = (await repository.findOneOrFail(userId)) as User;
     if (user.userStatus === UserStatus.INVITED && user.invitationCode) {
-        await resendInvitationEmail({to: user.email, invitationCode: user.invitationCode});
+        await resendInvitationEmail({ to: user.email, invitationCode: user.invitationCode });
         await createActivityRecordAsync({
             currentUser: user,
             notes: `${user.name()} was re-sent an invitation email`,
             activityType: ActivityTypeEnum.PERMISSION,
-            activityId: user.id
+            activityId: user.id,
         });
         return true;
     } else {
@@ -169,12 +170,14 @@ export interface IRetrieveUserParams {
     campaignId?: number;
 }
 
-
 export async function retrieveUserPermissionsAsync(attrs: IRetrieveUserParams): Promise<IUserPermission[]> {
     if (attrs.campaignId) {
         const campaignRepository = getConnection('default').getRepository('Campaign');
-        const campaign = await campaignRepository.findOneOrFail(attrs.campaignId) as Campaign;
-        if (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id)) {
+        const campaign = (await campaignRepository.findOneOrFail(attrs.campaignId)) as Campaign;
+        if (
+            (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId)) ||
+            (await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id))
+        ) {
             return getPermissionsByCampaignIdAsync(attrs.campaignId);
         }
         return [];
