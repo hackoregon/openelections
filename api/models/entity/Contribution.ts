@@ -597,7 +597,7 @@ export interface IContributionGeoJson {
             name: string;
             id: string;
         };
-        contributorName: string;
+        batchId: string;
     };
     geometry: {
         type: 'Point';
@@ -753,8 +753,11 @@ export async function getContributionsGeoJsonAsync(
 
         const missingCoordinates: number[] = [];
 
+        // create a map of contributors
+        const contributorsMap = new Map<string, string>();
+
         const contributions = ((await contributionRepository.find(removeUndefined(query))) as any).map(
-            (contribution: Contribution): any => {
+            (contribution: Contribution, index: number): any => {
                 // this seems like the best spot to double check geo location. I don't love doing it from within an entity
                 if (
                     (contribution.address1 &&
@@ -766,6 +769,16 @@ export async function getContributionsGeoJsonAsync(
                 ) {
                     missingCoordinates.push(contribution.id);
                 }
+                const userKey = contribution.name || contribution.firstName + ' ' + contribution.lastName;
+                const batchId = `batch-${index}`;
+                if (!contributorsMap.has(userKey)) {
+                    contributorsMap.set(userKey, batchId);
+                }
+                let isMiscCashContributionUnder100 = undefined;
+                if (userKey.includes('Miscellaneous Cash Contributions $100')) {
+                    isMiscCashContributionUnder100 = true;
+                }
+
                 const json = {
                     type: 'Feature',
                     properties: {
@@ -780,10 +793,11 @@ export async function getContributionsGeoJsonAsync(
                         date: contribution.date.toISOString(),
                         matchAmount: contribution.matchAmount,
                         oaeType: contribution.oaeType,
-                        contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
                         campaignId: contribution.campaign.id,
                         campaignName: contribution.campaign.name,
                         officeSought: contribution.campaign.officeSought,
+                        batchId: contributorsMap.get(userKey),
+                        isMiscCashContributionUnder100
                     },
                     geometry: {
                         type: 'Point',

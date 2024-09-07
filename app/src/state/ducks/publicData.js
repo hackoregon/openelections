@@ -621,12 +621,9 @@ const summarize = donations => {
     // NOTE: contributor name is not a strong idenfitier, could result in miscounting
     // NOTE: Count each "Miscellaneous Cash Contributions $100 and under " as one donor
 
-    if (
-      !markedDonors[d.contributorName] ||
-      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
-    ) {
+    if (!markedDonors[d.batchId] || d.isMiscCashContributionUnder100) {
       donorsCount += 1;
-      markedDonors[d.contributorName] = true;
+      markedDonors[d.batchId] = true;
     }
 
     if (!markedCampaigns[d.campaignName]) {
@@ -733,10 +730,7 @@ const bracketize = donations => {
       }
     }
 
-    // Categorize "Miscellaneous Cash Contributions $100 and under" in the 25-100 category
-    if (
-      d.contributorName === 'Miscellaneous Cash Contributions $100 and under '
-    ) {
+    if (d.isMiscCashContributionUnder100) {
       aggregates.small.total += d.amount;
       aggregates.small.contributions.push(d.amount);
       return;

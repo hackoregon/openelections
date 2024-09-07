@@ -248,7 +248,19 @@ export async function getExternalContributionsGeoJsonAsync(
       }
     };
 
-    const contributions = (await externalContributionRepository.find(removeUndefined(query)) as any).map((contribution: ExternalContribution): any => {
+    // create a map of contributors
+    const contributorsMap = new Map<string, string>();
+
+    const contributions = (await externalContributionRepository.find(removeUndefined(query)) as any).map((contribution: ExternalContribution, index: number): any => {
+      const userKey = contribution.name;
+      const batchId = `batch-${index}`;
+      if (!contributorsMap.has(userKey)) {
+          contributorsMap.set(userKey, batchId);
+      }
+      let isMiscCashContributionUnder100 = undefined;
+      if (userKey.includes('Miscellaneous Cash Contributions $100')) {
+          isMiscCashContributionUnder100 = true;
+      }
       const json = {
         type: 'Feature',
         properties: {
@@ -261,10 +273,11 @@ export async function getExternalContributionsGeoJsonAsync(
           contributionType: contribution.type,
           contributionSubType: contribution.subType,
           date: contribution.date.toISOString(),
-          contributorName: contribution.name,
           campaignId: -1,
           campaignName: 'Ted Wheeler',
           officeSought: 'Mayor',
+          batchId: contributorsMap.get(userKey),
+          isMiscCashContributionUnder100,
         },
         geometry: {
             type: 'Point',

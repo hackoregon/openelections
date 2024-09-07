@@ -113,7 +113,7 @@ describe('External Contribution', () => {
       expect(contributions.features.length).to.equal(2);
       expect(contributions.features[0].type).to.equal('Feature');
       expect(Object.keys(contributions.features[0].properties)).to.deep.equal([
-          'type', 'city', 'state', 'zip', 'amount', 'contributorType', 'contributionType', 'contributionSubType', 'date', 'contributorName', 'campaignId', 'campaignName', 'officeSought'
+          'type', 'city', 'state', 'zip', 'amount', 'contributorType', 'contributionType', 'contributionSubType', 'date',  'campaignId', 'campaignName', 'officeSought', 'batchId', 'isMiscCashContributionUnder100'
       ]);
     });
   });

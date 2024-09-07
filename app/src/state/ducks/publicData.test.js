@@ -678,32 +678,20 @@ describe('Selectors', () => {
   describe('summaryData', () => {
     const summaryPoint = (
       campaignName,
-      contributorName,
+      batchId,
       amount,
       matchAmount,
       oaeType
-    ) => point({ campaignName, contributorName, amount, matchAmount, oaeType });
+    ) => point({ campaignName, batchId, amount, matchAmount, oaeType });
 
     const points = [
-      summaryPoint('Zyx', 'Abc', 10, null, 'allowable'),
-      summaryPoint('Zyx', 'Abc', 20, 120, 'matchable'),
-      summaryPoint('Yxw', 'Def', 30, 150, 'matchable'),
-      summaryPoint('Xwv', 'Ghi', 100, null, 'public_matching_contribution'),
-      summaryPoint('Wvu', 'Jkl', 5, 30, 'matchable'),
-      summaryPoint(
-        'Wvu',
-        'Miscellaneous Cash Contributions $100 and under ',
-        150,
-        null,
-        'allowable'
-      ),
-      summaryPoint(
-        'Wvu',
-        'Miscellaneous Cash Contributions $100 and under ',
-        150,
-        null,
-        'allowable'
-      ),
+      summaryPoint('Zyx', 'batch-1', 10, null, 'allowable'),
+      summaryPoint('Zyx', 'batch-2', 20, 120, 'matchable'),
+      summaryPoint('Yxw', 'batch-3', 30, 150, 'matchable'),
+      summaryPoint('Xwv', 'batch-4', 100, null, 'public_matching_contribution'),
+      summaryPoint('Wvu', 'batch-5', 5, 30, 'matchable'),
+      summaryPoint('Wvu', 'batch-6', 150, null, 'allowable'),
+      summaryPoint('Wvu', 'batch-6', 150, null, 'allowable'),
     ];
 
     const [state] = makeData(points);
@@ -792,23 +780,24 @@ describe('Selectors', () => {
 
     it('buckets and summates donations appropriately including ', () => {
       const points = [
-        point({ amount: 0 }),
-        point({ amount: 5 }),
-        point({ amount: 10 }),
-        point({ amount: 20 }),
-        point({ amount: 30 }),
-        point({ amount: 50 }),
-        point({ amount: 100 }),
-        point({ amount: 150 }),
-        point({ amount: 200 }),
-        point({ amount: 500 }),
-        point({ amount: 750 }),
-        point({ amount: 1000 }),
+        point({ batchId: 1, amount: 0 }),
+        point({ batchId: 5, amount: 5 }),
+        point({ batchId: 10, amount: 10 }),
+        point({ batchId: 20, amount: 20 }),
+        point({ batchId: 30, amount: 30 }),
+        point({ batchId: 50, amount: 50 }),
+        point({ batchId: 100, amount: 100 }),
+        point({ batchId: 150, amount: 150 }),
+        point({ batchId: 200, amount: 200 }),
+        point({ batchId: 500, amount: 500 }),
+        point({ batchId: 750, amount: 750 }),
+        point({ batchId: 1000, amount: 1000 }),
         point({
+          batchId: 2,
+          isMiscCashContributionUnder100: true,
           amount: 2500,
-          contributorName: 'Miscellaneous Cash Contributions $100 and under ',
         }),
-        point({ amount: 2500 }),
+        point({ batchId: 3, amount: 2500 }),
       ];
 
       const [state] = makeData(points);
@@ -1583,7 +1572,7 @@ describe('Selectors', () => {
     const summaryPoint = (
       campaignId,
       campaignName,
-      contributorName,
+      batchId,
       amount,
       matchAmount,
       oaeType
@@ -1591,7 +1580,7 @@ describe('Selectors', () => {
       point({
         campaignId,
         campaignName,
-        contributorName,
+        batchId,
         amount,
         matchAmount,
         oaeType,
@@ -1601,34 +1590,34 @@ describe('Selectors', () => {
     // public_matching_contribution
 
     const points = [
-      summaryPoint('1', 'One', 'Abc', 5, 30, 'matchable'),
-      summaryPoint('1', 'One', 'Def', 20, 120, 'matchable'),
-      summaryPoint('1', 'One', 'Def', 100, 0, 'allowable'),
-      summaryPoint('1', 'One', 'Ghi', 1000, null, 'allowable'),
+      summaryPoint('1', 'One', 'batch-0', 5, 30, 'matchable'),
+      summaryPoint('1', 'One', 'batch-1', 20, 120, 'matchable'),
+      summaryPoint('1', 'One', 'batch-1', 100, 0, 'allowable'),
+      summaryPoint('1', 'One', 'batch-2', 1000, null, 'allowable'),
 
-      summaryPoint('2', 'Two', 'Def', 5, 30, 'matchable'),
-      summaryPoint('2', 'Two', 'Ghi', 5, 30, 'matchable'),
-      summaryPoint('2', 'Two', 'Ghi', 20, 120, 'matchable'),
-      summaryPoint('2', 'Two', 'Jkl', 25, 150, 'matchable'),
-      summaryPoint('2', 'Two', 'Jkl', 35, 210, 'matchable'),
-      summaryPoint('2', 'Two', 'Mno', 100, 0, 'allowable'),
+      summaryPoint('2', 'Two', 'batch-1', 5, 30, 'matchable'),
+      summaryPoint('2', 'Two', 'batch-2', 5, 30, 'matchable'),
+      summaryPoint('2', 'Two', 'batch-2', 20, 120, 'matchable'),
+      summaryPoint('2', 'Two', 'batch-3', 25, 150, 'matchable'),
+      summaryPoint('2', 'Two', 'batch-3', 35, 210, 'matchable'),
+      summaryPoint('2', 'Two', 'batch-4', 100, 0, 'allowable'),
       summaryPoint(
         '2',
         'Two',
-        'Mno',
+        'batch-4',
         500,
         null,
         'public_matching_contribution'
       ),
 
-      summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
-      summaryPoint('3', 'Three', 'Abc', 50, 300, 'matchable'),
-      summaryPoint('3', 'Three', 'Abc', 78, 0, 'allowable'),
-      summaryPoint('3', 'Three', 'Abc', 501, 30, 'allowable'),
+      summaryPoint('3', 'Three', 'batch-0', 50, 300, 'matchable'),
+      summaryPoint('3', 'Three', 'batch-0', 50, 300, 'matchable'),
+      summaryPoint('3', 'Three', 'batch-0', 78, 0, 'allowable'),
+      summaryPoint('3', 'Three', 'batch-0', 501, 30, 'allowable'),
 
-      summaryPoint('4', 'Four', 'Def', 5, 30, 'matchable'),
-      summaryPoint('4', 'Four', 'Ghi', 6, 36, 'matchable'),
-      summaryPoint('4', 'Four', 'Jkl', 7, 42, 'matchable'),
+      summaryPoint('4', 'Four', 'batch-1', 5, 30, 'matchable'),
+      summaryPoint('4', 'Four', 'batch-2', 6, 36, 'matchable'),
+      summaryPoint('4', 'Four', 'batch-3', 7, 42, 'matchable'),
     ];
 
     const [state] = makeData(points);
