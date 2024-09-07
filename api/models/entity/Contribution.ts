@@ -769,13 +769,13 @@ export async function getContributionsGeoJsonAsync(
                 ) {
                     missingCoordinates.push(contribution.id);
                 }
-                const userKey = contribution.name || contribution.firstName + ' ' + contribution.lastName;
+                const userKey = contribution.name || contribution.firstName + ' ' + contribution.lastName || 'unknown';
                 const batchId = `batch-${index}`;
                 if (!contributorsMap.has(userKey)) {
                     contributorsMap.set(userKey, batchId);
                 }
                 let isMiscCashContributionUnder100 = undefined;
-                if (userKey.includes('Miscellaneous Cash Contributions $100')) {
+                if (userKey && userKey.includes('Miscellaneous Cash Contributions $100')) {
                     isMiscCashContributionUnder100 = true;
                 }
 
