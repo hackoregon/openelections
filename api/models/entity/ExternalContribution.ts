@@ -252,7 +252,7 @@ export async function getExternalContributionsGeoJsonAsync(
     const contributorsMap = new Map<string, string>();
 
     const contributions = (await externalContributionRepository.find(removeUndefined(query)) as any).map((contribution: ExternalContribution, index: number): any => {
-      const userKey = contribution.name ?? 'unknown';
+      const userKey = contribution.name || 'unknown';
       const batchId = `batch-${index}`;
       if (!contributorsMap.has(userKey)) {
           contributorsMap.set(userKey, batchId);
