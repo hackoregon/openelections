@@ -8,10 +8,9 @@ import {
     OneToMany,
     CreateDateColumn,
     UpdateDateColumn,
-    getConnection,
     Between,
     LessThanOrEqual,
-    MoreThanOrEqual
+    MoreThanOrEqual,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Government } from './Government';
@@ -19,13 +18,14 @@ import { Campaign } from './Campaign';
 import { Activity } from './Activity';
 import { IGetExpenditureAttrs } from '../../services/expenditureService';
 import { Parser } from 'json2csv';
-import * as dateFormat from 'dateformat';
+import * as dateFormat from 'date-and-time';
 import { convertExpendituresToXML } from '../converters';
+import db from '../db';
 
 export enum ExpenditureType {
     EXPENDITURE = 'expenditure',
     OTHER = 'other',
-    OTHER_DISBURSEMENT = 'other_disbursement'
+    OTHER_DISBURSEMENT = 'other_disbursement',
 }
 
 export enum ExpenditureSubType {
@@ -35,7 +35,7 @@ export enum ExpenditureSubType {
     ACCOUNTS_PAYABLE_RESCINDED = 'accounts_payable_rescinded',
     CASH_BALANCE_ADJUSTMENT = 'cash_balance_adjustment',
     MISCELLANEOUS_OTHER_DISBURSEMENT = 'miscellaneous_other_disbursement',
-    REFUND_OF_CONTRIBUTION = 'refund_of_expenditure'
+    REFUND_OF_CONTRIBUTION = 'refund_of_expenditure',
 }
 
 export enum PayeeType {
@@ -46,7 +46,7 @@ export enum PayeeType {
     POLITICAL_COMMITTEE = 'political_committee',
     POLITICAL_PARTY = 'political_party',
     UNREGISTERED = 'unregistered',
-    OTHER = 'other'
+    OTHER = 'other',
 }
 
 export enum PaymentMethod {
@@ -56,7 +56,7 @@ export enum PaymentMethod {
     CREDIT_CARD_ONLINE = 'credit_card_online',
     CREDIT_CARD_PAPER = 'credit_card_paper',
     ETF = 'electronic_funds_transfer',
-    DEBIT = 'debit'
+    DEBIT = 'debit',
 }
 
 export enum ExpenditureStatus {
@@ -64,7 +64,7 @@ export enum ExpenditureStatus {
     DRAFT = 'draft',
     SUBMITTED = 'submitted',
     OUT_OF_COMPLIANCE = 'out_of_compliance',
-    IN_COMPLIANCE = 'in_compliance'
+    IN_COMPLIANCE = 'in_compliance',
 }
 
 export enum PurposeType {
@@ -76,14 +76,14 @@ export enum PurposeType {
     GENERAL_OPERATING = 'general_operating_expenses',
     PRIMTING = 'printing',
     MANAGEMENT = 'management',
-    NEWSPAPER =  'print_advertising',
+    NEWSPAPER = 'print_advertising',
     OTHER_AD = 'other_advertising',
     PETITION = 'petition_circulators',
     POSTAGE = 'postage',
     PREP_AD = 'preparation_of_advertising',
     POLLING = 'surveys_and_polls',
     TRAVEL = 'travel_expenses',
-    UTILITIES = 'utilities'
+    UTILITIES = 'utilities',
 }
 
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
@@ -107,14 +107,14 @@ export class Expenditure {
     @Column({
         type: 'enum',
         enum: ExpenditureType,
-        default: ExpenditureType.EXPENDITURE
+        default: ExpenditureType.EXPENDITURE,
     })
     @IsDefined()
     type: ExpenditureType;
 
     @Column({
         type: 'enum',
-        enum: ExpenditureSubType
+        enum: ExpenditureSubType,
     })
     @IsDefined()
     subType: ExpenditureSubType;
@@ -122,13 +122,13 @@ export class Expenditure {
     @Column({
         type: 'enum',
         enum: PaymentMethod,
-        nullable: true
+        nullable: true,
     })
     paymentMethod?: PaymentMethod;
 
     @Column({
         type: 'enum',
-        enum: PayeeType
+        enum: PayeeType,
     })
     @IsDefined()
     payeeType: PayeeType;
@@ -136,7 +136,7 @@ export class Expenditure {
     @Column({
         type: 'enum',
         enum: PurposeType,
-        nullable: true
+        nullable: true,
     })
     purpose?: PurposeType;
 
@@ -179,8 +179,8 @@ export class Expenditure {
             },
             from: (value: string) => {
                 return parseFloat(value);
-            }
-        }
+            },
+        },
     })
     @IsDefined()
     amount: number;
@@ -188,18 +188,18 @@ export class Expenditure {
     @Column({
         type: 'enum',
         enum: ExpenditureStatus,
-        default: ExpenditureStatus.DRAFT
+        default: ExpenditureStatus.DRAFT,
     })
     @IsDefined()
     status: ExpenditureStatus;
 
-    @ManyToOne(type => Government, government => government.expenditures)
+    @ManyToOne((type) => Government, (government) => government.expenditures)
     government: Government;
 
-    @ManyToOne(type => Campaign, campaign => campaign.expenditures)
+    @ManyToOne((type) => Campaign, (campaign) => campaign.expenditures)
     campaign: Campaign;
 
-    @OneToMany(type => Activity, activity => activity.expenditure)
+    @OneToMany((type) => Activity, (activity) => activity.expenditure)
     activities: Activity[];
 
     public errors: ValidationError[] = [];
@@ -254,14 +254,14 @@ export class Expenditure {
                 ![
                     ExpenditureSubType.ACCOUNTS_PAYABLE,
                     ExpenditureSubType.CASH_EXPENDITURE,
-                    ExpenditureSubType.PERSONAL_EXPENDITURE
+                    ExpenditureSubType.PERSONAL_EXPENDITURE,
                 ].includes(this.subType)
             ) {
                 const error = new ValidationError();
                 error.property = 'subType';
                 error.constraints = {
                     notAllowed:
-                        'Type "expenditure" must have a subType of "accounts_payable, cash_expenditure or personal_expenditure"'
+                        'Type "expenditure" must have a subType of "accounts_payable, cash_expenditure or personal_expenditure"',
                 };
                 this.errors.push(error);
             }
@@ -274,7 +274,7 @@ export class Expenditure {
                 const error = new ValidationError();
                 error.property = 'subType';
                 error.constraints = {
-                    notAllowed: 'Type "other"  must have a subType of "accounts_payable or cash_balance_adjustment"'
+                    notAllowed: 'Type "other"  must have a subType of "accounts_payable or cash_balance_adjustment"',
                 };
                 this.errors.push(error);
             }
@@ -282,14 +282,14 @@ export class Expenditure {
             if (
                 ![
                     ExpenditureSubType.MISCELLANEOUS_OTHER_DISBURSEMENT,
-                    ExpenditureSubType.REFUND_OF_CONTRIBUTION
+                    ExpenditureSubType.REFUND_OF_CONTRIBUTION,
                 ].includes(this.subType)
             ) {
                 const error = new ValidationError();
                 error.property = 'subType';
                 error.constraints = {
                     notAllowed:
-                        'Type "other_disbursement"  must have a subType of "miscellaneous_other_disbursement or refund_of_expenditure"'
+                        'Type "other_disbursement"  must have a subType of "miscellaneous_other_disbursement or refund_of_expenditure"',
                 };
                 this.errors.push(error);
             }
@@ -307,18 +307,18 @@ export class Expenditure {
 
     toJSON() {
         const json: any = {};
-        expenditureSummaryFields.forEach(( (key: string): void => {
+        expenditureSummaryFields.forEach((key: string): void => {
             json[key] = this[key];
-        }));
+        });
         json.campaign = {
             name: this.campaign.name,
-            id: this.campaign.id
+            id: this.campaign.id,
         };
         return json as IExpenditureSummary;
     }
 }
 
-export const expenditureSummaryFields = <const>[
+export const expenditureSummaryFields: (keyof Expenditure)[] = [
     'id',
     'amount',
     'createdAt',
@@ -339,9 +339,9 @@ export const expenditureSummaryFields = <const>[
     'dateOriginalTransaction',
     'vendorForOriginalPurchase',
     'status',
-    'date'
+    'date',
 ];
-export type IExpenditureSummary = Pick<Expenditure, typeof expenditureSummaryFields[number]>;
+export type IExpenditureSummary = Pick<Expenditure, (typeof expenditureSummaryFields)[number]>;
 
 export type IExpenditureSummaryResults = {
     data: IExpenditureSummary[];
@@ -357,21 +357,21 @@ export async function getExpendituresByGovernmentIdAsync(
     options?: IGetExpenditureAttrs
 ): Promise<IExpenditureSummaryResults> {
     try {
-        const expenditureRepository = getConnection('default').getRepository('Expenditure');
+        const dataSource = await db();
+        const expenditureRepository = dataSource.getRepository('Expenditure');
         const { page, perPage, campaignId, status, from, to, sort, format } = options;
         const where = {
-                government: {
-                    id: governmentId
-                },
-                campaign: campaignId
-                    ? {
-                        id: campaignId
-                    }
-                    : undefined,
-                status,
-                date:
-                    from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
-            };
+            government: {
+                id: governmentId,
+            },
+            campaign: campaignId
+                ? {
+                      id: campaignId,
+                  }
+                : undefined,
+            status,
+            date: from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined,
+        };
         const query: any = {
             select: expenditureSummaryFields,
             relations: ['campaign', 'government'],
@@ -380,12 +380,12 @@ export async function getExpendituresByGovernmentIdAsync(
                 alias: 'contribution',
                 leftJoinAndSelect: {
                     government: 'contribution.government',
-                    campaign: 'contribution.campaign'
-                }
+                    campaign: 'contribution.campaign',
+                },
             },
             skip: format === 'csv' ? undefined : page,
-            take:  format === 'csv' ? undefined : perPage,
-            order: { 'updatedAt': 'DESC'}
+            take: format === 'csv' ? undefined : perPage,
+            order: { updatedAt: 'DESC' },
         };
 
         if (sort) {
@@ -402,25 +402,28 @@ export async function getExpendituresByGovernmentIdAsync(
             }
 
             query.order = { [sortField]: sort.direction };
-
         }
 
-        const expenditures = (await expenditureRepository.find(removeUndefined(query))  as IExpenditureSummary[]).map((item: any): any => {
-            const json = item.toJSON();
-            json.campaign = {
-                id: item.campaign.id,
-                name: item.campaign.name};
-            json.government = {
-                id: item.government.id,
-                name: item.government.name};
-            return json;
-        });
+        const expenditures = ((await expenditureRepository.find(removeUndefined(query))) as IExpenditureSummary[]).map(
+            (item: any): any => {
+                const json = item.toJSON();
+                json.campaign = {
+                    id: item.campaign.id,
+                    name: item.campaign.name,
+                };
+                json.government = {
+                    id: item.government.id,
+                    name: item.government.name,
+                };
+                return json;
+            }
+        );
         const total = await expenditureRepository.count(removeUndefined(query));
         return {
             data: expenditures,
             total,
             perPage,
-            page
+            page,
         };
     } catch (err) {
         console.log(err);
@@ -430,10 +433,10 @@ export async function getExpendituresByGovernmentIdAsync(
 
 export function convertToCsv(expenditures: IExpenditureSummaryResults): string {
     const json2csvParser = new Parser();
-    expenditures.data.map( (item: any ): any => {
+    expenditures.data.map((item: any): any => {
         item.campaignId = item.campaign.id;
         item.campaignName = item.campaign.name;
-        item.date = dateFormat(item.date, 'yyyy/mm/dd');
+        item.date = dateFormat.format(item.date, 'yyyy/mm/dd');
         delete item.campaign;
         delete item.government;
         return item;
@@ -445,8 +448,8 @@ export function convertToXml(expenditures: IExpenditureSummaryResults, filerId: 
     return convertExpendituresToXML(expenditures, filerId);
 }
 
-const removeUndefined = obj => {
-    Object.keys(obj).forEach(key => {
+const removeUndefined = (obj) => {
+    Object.keys(obj).forEach((key) => {
         if (obj[key] && typeof obj[key] === 'object') removeUndefined(obj[key]);
         else if (obj[key] === undefined) delete obj[key];
     });
@@ -459,28 +462,28 @@ export interface ExpenditureSummaryByStatus {
     amount: number;
 }
 
-
 export interface SummaryAttrs {
     campaignId?: number;
     governmentId?: number;
 }
 
-export async function getExpenditureSummaryByStatusAsync(
-    attrs: SummaryAttrs
-): Promise<ExpenditureSummaryByStatus[]> {
+export async function getExpenditureSummaryByStatusAsync(attrs: SummaryAttrs): Promise<ExpenditureSummaryByStatus[]> {
     try {
-        const expenditureQuery = getConnection('default')
+        const dataSource = await db();
+        const expenditureQuery = dataSource
             .getRepository('Expenditure')
             .createQueryBuilder('expenditures')
             .select('SUM(expenditures.amount)', 'amount')
             .addSelect('COUNT(expenditures.*)', 'total')
             .addSelect('expenditures.status', 'status')
-            .where('expenditures.status != :status', {status: ExpenditureStatus.ARCHIVED})
+            .where('expenditures.status != :status', { status: ExpenditureStatus.ARCHIVED })
             .groupBy('expenditures.status');
         if (attrs.campaignId) {
-            expenditureQuery.andWhere('expenditures."campaignId" = :campaignId', {campaignId: attrs.campaignId});
+            expenditureQuery.andWhere('expenditures."campaignId" = :campaignId', { campaignId: attrs.campaignId });
         } else if (attrs.governmentId) {
-            expenditureQuery.andWhere('expenditures."governmentId" = :governmentId', {governmentId: attrs.governmentId});
+            expenditureQuery.andWhere('expenditures."governmentId" = :governmentId', {
+                governmentId: attrs.governmentId,
+            });
         }
 
         const results: any = await expenditureQuery.getRawMany();
@@ -489,11 +492,10 @@ export async function getExpenditureSummaryByStatusAsync(
             summary.push({
                 status: item.status,
                 total: parseInt(item.total),
-                amount: parseInt(item.amount)
+                amount: parseInt(item.amount),
             });
         });
         return summary;
-
     } catch (err) {
         throw new Error('Error executing get expenditures summary status query');
     }

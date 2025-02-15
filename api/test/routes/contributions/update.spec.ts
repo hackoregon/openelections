@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -9,14 +7,14 @@ import {
     newCampaignAsync,
     newContributionAsync,
     newGovernmentAsync,
-    truncateAll
+    truncateAll,
 } from '../../factories';
 import { Government } from '../../../models/entity/Government';
 import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
 import { Contribution } from '../../../models/entity/Contribution';
-import { getConnection } from 'typeorm';
+import db from '../../../models/db';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -33,9 +31,10 @@ let contribution1: Contribution;
 let repository: any;
 
 describe('Routes put /contributions/:id', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
-        repository = getConnection('default').getRepository('Contribution');
+        const dataSource = await db();
+        repository = dataSource.getRepository('Contribution');
         setupRoutes(app);
     });
 
@@ -51,19 +50,19 @@ describe('Routes put /contributions/:id', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -78,18 +77,18 @@ describe('Routes put /contributions/:id', () => {
         await truncateAll();
     });
 
-    context('put /contributions/:id', () => {
+    describe('put /contributions/:id', () => {
         it('success', async () => {
             const response = await request(app)
                 .put(`/contributions/${contribution1.id}`)
                 .send({
                     id: contribution1.id,
-                    firstName: 'Dan'
+                    firstName: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(204);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(204);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error id not found', async () => {
@@ -97,12 +96,12 @@ describe('Routes put /contributions/:id', () => {
                 .put(`/contributions/${contribution1.id}`)
                 .send({
                     id: 11111,
-                    firstName: 'Dan'
+                    firstName: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('Could not find any entity of type "Contribution" matching: 11111');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('Could not find any entity of type "Contribution" matching: 11111');
         });
 
         it('error user does not have permissions', async () => {
@@ -110,12 +109,12 @@ describe('Routes put /contributions/:id', () => {
                 .put(`/contributions/11111`)
                 .send({
                     id: contribution1.id,
-                    firstName: 'Dan'
+                    firstName: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaff2Token}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('User does not have permissions')
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('User does not have permissions');
         });
 
         it('error field does not exist', async () => {
@@ -123,12 +122,14 @@ describe('Routes put /contributions/:id', () => {
                 .put(`/contributions/11111`)
                 .send({
                     id: contribution1.id,
-                    thisFieldDoesNotExist: 'Dan'
+                    thisFieldDoesNotExist: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('No entity column "thisFieldDoesNotExist" was found.');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                'Property "thisFieldDoesNotExist" was not found in "Contribution". Make sure your query is correct.'
+            );
         });
     });
 });

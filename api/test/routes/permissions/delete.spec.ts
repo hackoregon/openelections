@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -20,7 +20,7 @@ let govAdminToken: string;
 let campaignAdminToken: string;
 
 describe('Routes post /contributions', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -37,19 +37,19 @@ describe('Routes post /contributions', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -60,15 +60,15 @@ describe('Routes post /contributions', () => {
         await truncateAll();
     });
 
-    context('delete /permissions/id testme', () => {
+    describe('delete /permissions/id testme', () => {
         it('success as gov admin', async () => {
             const permissions = await campaignStaff.permissions;
             const response = await request(app)
                 .delete(`/permissions/${permissions[0].id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign admin', async () => {
@@ -77,8 +77,8 @@ describe('Routes post /contributions', () => {
                 .delete(`/permissions/${permissions[0].id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('failure with other token', async () => {
@@ -87,7 +87,7 @@ describe('Routes post /contributions', () => {
                 .delete(`/permissions/${permissions[0].id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', ['token=love']);
-            expect(response.status).to.equal(401);
+            expect(response.status).toEqual(401);
         });
     });
 });

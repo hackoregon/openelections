@@ -1,5 +1,4 @@
 import { User, UserStatus } from '../models/entity/User';
-import { getConnection } from 'typeorm';
 import { resendInvitationEmail, sendPasswordResetEmail } from './emailService';
 import { generateJWTokenAsync, isCampaignAdminAsync, isGovernmentAdminAsync } from './permissionService';
 import {
@@ -10,6 +9,7 @@ import {
 import { Campaign } from '../models/entity/Campaign';
 import { createActivityRecordAsync } from './activityService';
 import { ActivityTypeEnum } from '../models/entity/Activity';
+import db from '../models/db';
 
 export interface ICreateUser {
     email: string;
@@ -20,7 +20,8 @@ export interface ICreateUser {
 }
 
 export async function createUserAsync(userAttrs: ICreateUser): Promise<User> {
-    const repository = getConnection('default').getRepository('User');
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
     const user = new User();
     user.firstName = userAttrs.firstName;
     user.lastName = userAttrs.lastName;
@@ -50,8 +51,11 @@ export interface IAcceptInvitationAttrs {
 }
 
 export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs): Promise<User> {
-    const repository = getConnection('default').getRepository('User');
-    let user = (await repository.findOneOrFail({ invitationCode: params.invitationCode })) as User;
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
+    let user = (await repository.findOneOrFail({ where: { invitationCode: params.invitationCode } }).catch(() => {
+        throw new Error(`Could not find any entity of type "User" matching invitationCode: ${params.invitationCode}`);
+    })) as User;
     if (params.password.length < 6) {
         throw new Error('User password must be at least 6 characters');
     }
@@ -73,8 +77,11 @@ export async function acceptUserInvitationAsync(params: IAcceptInvitationAttrs):
 }
 
 export async function generatePasswordResetAsync(email: string): Promise<string> {
-    const repository = getConnection('default').getRepository('User');
-    const user = (await repository.findOneOrFail({ email: email })) as User;
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
+    const user = (await repository.findOneOrFail({ where: { email: email } }).catch(() => {
+        throw new Error(`Could not find any entity of type "User" matching: {\n    "email": "${email}"\n}`);
+    })) as User;
     const code = user.generatePasswordResetCode();
     await repository.save(user);
     await sendPasswordResetEmail({ to: user.email, invitationCode: user.invitationCode });
@@ -88,8 +95,11 @@ export async function generatePasswordResetAsync(email: string): Promise<string>
 }
 
 export async function passwordResetAsync(invitationCode, password: string): Promise<User> {
-    const repository = getConnection('default').getRepository('User');
-    let user = (await repository.findOneOrFail({ invitationCode: invitationCode })) as User;
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
+    let user = (await repository.findOneOrFail({ where: { invitationCode: invitationCode } }).catch(() => {
+        throw new Error(`Could not find any entity of type "User" matching: {\n    "invitationCode": "nope"\n}`);
+    })) as User;
     if (password.length < 6) {
         throw new Error('User password must be at least 6 characters');
     }
@@ -105,9 +115,10 @@ export async function passwordResetAsync(invitationCode, password: string): Prom
 }
 
 export async function createUserSessionFromLoginAsync(email, password: string): Promise<string> {
-    const repository = getConnection('default').getRepository('User');
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
     try {
-        const user = (await repository.findOneOrFail({ email: email.toLowerCase() })) as User;
+        const user = (await repository.findOneOrFail({ where: { email: email.toLowerCase() } })) as User;
         if (user.validatePassword(password)) {
             const token = await generateJWTokenAsync(user.id);
             await createActivityRecordAsync({
@@ -127,8 +138,11 @@ export async function createUserSessionFromLoginAsync(email, password: string): 
 }
 
 export async function updateUserPasswordAsync(userId: number, currentPassword, newPassword: string): Promise<boolean> {
-    const repository = getConnection('default').getRepository('User');
-    const user = (await repository.findOneOrFail(userId)) as User;
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
+    const user = (await repository.findOneOrFail({ where: { id: userId } }).catch(() => {
+        throw new Error(`Could not find any entity of type "User" matching: ${userId}`);
+    })) as User;
     if (user.validatePassword(currentPassword)) {
         if (newPassword.length < 6) {
             throw new Error('Invalid password');
@@ -148,8 +162,11 @@ export async function updateUserPasswordAsync(userId: number, currentPassword, n
 }
 
 export async function resendInvitationAsync(userId: number): Promise<boolean> {
-    const repository = getConnection('default').getRepository('User');
-    const user = (await repository.findOneOrFail(userId)) as User;
+    const dataSource = await db();
+    const repository = dataSource.getRepository('User');
+    const user = (await repository.findOneOrFail({ where: { id: userId } }).catch(() => {
+        throw new Error(`Could not find any entity of type "User" matching: ${userId}`);
+    })) as User;
     if (user.userStatus === UserStatus.INVITED && user.invitationCode) {
         await resendInvitationEmail({ to: user.email, invitationCode: user.invitationCode });
         await createActivityRecordAsync({
@@ -172,8 +189,9 @@ export interface IRetrieveUserParams {
 
 export async function retrieveUserPermissionsAsync(attrs: IRetrieveUserParams): Promise<IUserPermission[]> {
     if (attrs.campaignId) {
-        const campaignRepository = getConnection('default').getRepository('Campaign');
-        const campaign = (await campaignRepository.findOneOrFail(attrs.campaignId)) as Campaign;
+        const dataSource = await db();
+        const campaignRepository = dataSource.getRepository('Campaign');
+        const campaign = (await campaignRepository.findOneOrFail({ where: { id: attrs.campaignId } })) as Campaign;
         if (
             (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId)) ||
             (await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id))

@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
+import db from '../../models/db';
 import { Campaign } from '../../models/entity/Campaign';
 import { Government } from '../../models/entity/Government';
 import { truncateAll } from '../factories';
@@ -9,9 +8,10 @@ let governmentRepository: any;
 let government: Government;
 
 describe('Campaign', () => {
-    before(async () => {
-        campaignRepository = getConnection('default').getRepository('Campaign');
-        governmentRepository = getConnection('default').getRepository('Government');
+    beforeAll(async () => {
+        const testDb = await db();
+        campaignRepository = testDb.getRepository('Campaign');
+        governmentRepository = testDb.getRepository('Government');
         government = new Government();
         government.name = 'City of Portland';
         await governmentRepository.save(government);
@@ -21,26 +21,26 @@ describe('Campaign', () => {
         await campaignRepository.query('TRUNCATE "campaign" CASCADE');
     });
 
-    after(async () => {
+    afterAll(async () => {
         await truncateAll();
     });
 
-    context('Validations', () => {
+    describe('Validations', () => {
         it('name testme', async () => {
             const campaign = new Campaign();
             await campaign.validateAsync();
-            expect(campaign.errors.length).to.equal(3);
-            expect(campaign.errors[0].property).equal('name');
-            expect(campaign.errors[0].constraints.isDefined).equal('name should not be null or undefined');
+            expect(campaign.errors.length).toEqual(3);
+            expect(campaign.errors[0].property).toEqual('name');
+            expect(campaign.errors[0].constraints.isDefined).toEqual('name should not be null or undefined');
         });
 
         it('officeSought', async () => {
             const campaign = new Campaign();
             campaign.name = 'Melton for Mayor';
             await campaign.validateAsync();
-            expect(campaign.errors.length).to.equal(2);
-            expect(campaign.errors[0].property).equal('officeSought');
-            expect(campaign.errors[0].constraints.isDefined).equal('officeSought should not be null or undefined');
+            expect(campaign.errors.length).toEqual(2);
+            expect(campaign.errors[0].property).toEqual('officeSought');
+            expect(campaign.errors[0].constraints.isDefined).toEqual('officeSought should not be null or undefined');
         });
 
         it('government', async () => {
@@ -48,18 +48,18 @@ describe('Campaign', () => {
             campaign.name = 'Melton for Mayor';
             campaign.officeSought = 'Mayor';
             await campaign.validateAsync();
-            expect(campaign.errors.length).to.equal(1);
-            expect(campaign.errors[0].property).equal('governmentId');
-            expect(campaign.errors[0].constraints.isDefined).equal('governmentId should not be null or undefined');
+            expect(campaign.errors.length).toEqual(1);
+            expect(campaign.errors[0].property).toEqual('governmentId');
+            expect(campaign.errors[0].constraints.isDefined).toEqual('governmentId should not be null or undefined');
         });
 
         it('isValid', async () => {
             const campaign = new Campaign();
-            expect(await campaign.isValidAsync()).to.be.false;
+            expect(await campaign.isValidAsync()).toBeFalsy();
             campaign.name = 'City of Portland';
             campaign.government = government;
             campaign.officeSought = 'Mayor';
-            expect(await campaign.isValidAsync()).to.be.true;
+            expect(await campaign.isValidAsync()).toBeTruthy();
         });
 
         it('validate throws error', async () => {
@@ -67,7 +67,7 @@ describe('Campaign', () => {
             try {
                 await campaignRepository.save(campaign);
             } catch (e) {
-                expect(e.message).to.equal('campaign has one or more validation problems');
+                expect(e.message).toEqual('campaign has one or more validation problems');
             }
         });
 
@@ -76,14 +76,13 @@ describe('Campaign', () => {
             campaign.name = 'City of Portland';
             campaign.government = government;
             campaign.officeSought = 'Mayor';
-            expect(await campaignRepository.count()).equal(0);
+            expect(await campaignRepository.count()).toEqual(0);
             await campaignRepository.save(campaign);
-            expect(await campaignRepository.count()).equal(1);
+            expect(await campaignRepository.count()).toEqual(1);
         });
-
     });
 
-    context('JSON', () => {
+    describe('JSON', () => {
         it('toJson', async () => {
             const campaign = new Campaign();
             campaign.name = 'Melton for Mayor';
@@ -91,11 +90,10 @@ describe('Campaign', () => {
             campaign.officeSought = 'Mayor';
             await campaignRepository.save(campaign);
             const campaignJson = campaign.toJSON();
-            expect(campaignJson.id).to.not.be.undefined;
-            expect(campaignJson.name).to.equal('Melton for Mayor');
-            expect(campaignJson.governmentId).to.equal(government.id);
-            expect(campaignJson.officeSought).to.equal('Mayor');
+            expect(campaignJson.id).toBeDefined();
+            expect(campaignJson.name).toEqual('Melton for Mayor');
+            expect(campaignJson.governmentId).toEqual(government.id);
+            expect(campaignJson.officeSought).toEqual('Mayor');
         });
     });
-
 });

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -20,7 +20,7 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 
 describe('Routes /campaigns', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -36,19 +36,19 @@ describe('Routes /campaigns', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -60,45 +60,46 @@ describe('Routes /campaigns', () => {
         await truncateAll();
     });
 
-    context('/campaigns', () => {
+    describe('/campaigns', () => {
         it('gets campaigns if the user is a government admin', async () => {
             const response = await request(app)
                 .post('/campaigns')
                 .send({
-                    governmentId: government.id
+                    governmentId: government.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body)
-                .to.be.an.instanceof(Array)
-                .that.has.length(1)
-                .and.to.have.property(0)
-                .that.includes.all.keys(['id', 'name']);
+            expect(response.status).toEqual(200);
+            expect(response.body).toBeInstanceOf(Array);
+            expect(response.body).toHaveLength(1);
+            expect(response.body[0]).toHaveProperty('id');
+            expect(response.body[0]).toHaveProperty('name');
         });
 
         it('returns an error if the user is not a government admin', async () => {
             const response = await request(app)
                 .post('/campaigns')
                 .send({
-                    governmentId: government.id
+                    governmentId: government.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('User is not an admin for the provided government');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('User is not an admin for the provided government');
         });
 
         it('returns an error if government id is not specified', async () => {
             const response = await request(app)
                 .post('/campaigns')
                 .send({
-                    governmentId: undefined
+                    governmentId: undefined,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('governmentId must be a number');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                'governmentId must be a number conforming to the specified constraints'
+            );
         });
     });
 });

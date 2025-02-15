@@ -1,4 +1,3 @@
-import { getConnection } from 'typeorm';
 import { createUserAsync } from '../../services/userService';
 import { newCampaignAsync, newExpenditureAsync, newGovernmentAsync, truncateAll } from '../../test/factories';
 import { addPermissionAsync } from '../../services/permissionService';
@@ -6,12 +5,13 @@ import { UserRole } from '../entity/Permission';
 import { User, UserStatus } from '../../models/entity/User';
 import { Address } from '../../models/entity/Address';
 import * as fs from 'fs';
-import * as parse from 'csv-parse/lib/sync';
+import { parse } from 'csv-parse/sync';
 import { addContributionAsync } from '../../services/contributionService';
 import { ContributionSubType, ContributionType, ContributorType, PaymentMethod, OaeType } from '../entity/Contribution';
-import * as faker from 'faker';
 import { Government } from '../entity/Government';
 import { Campaign } from '../entity/Campaign';
+import db from '../db';
+import { faker } from '@faker-js/faker';
 
 function chunk(array, size) {
     const chunked_arr = [];
@@ -36,19 +36,15 @@ export async function seedAddresses() {
 
     const parsed = parse(data, {
         columns: true,
-        skip_empty_lines: true
+        skip_empty_lines: true,
     });
 
     const chunks = chunk(parsed, 1000);
     let i = 0;
     const promises = [];
+    const dataSource = await db();
     chunks.forEach((addressArray: any): void => {
-        const query = getConnection()
-            .createQueryBuilder()
-            .insert()
-            .into(Address)
-            .values(addressArray)
-            .execute();
+        const query = dataSource.createQueryBuilder().insert().into(Address).values(addressArray).execute();
         promises.push(query);
         i++;
     });
@@ -61,7 +57,7 @@ export function addGISBoundaries() {
     );
 }
 
-export interface Address {
+export interface AddressI {
     firstName: string;
     middleName: string;
     lastName: string;
@@ -85,32 +81,34 @@ export async function addContributions(user: User, government: Government, campa
     // firstName,middleName,lastName,county,address1,address2,city,state,zip,zipPlusFour
     const promises = [];
 
-    const parsed: Address[] = parse(data, {
+    const parsed: AddressI[] = parse(data, {
         columns: true,
-        skip_empty_lines: true
+        skip_empty_lines: true,
     });
 
-    parsed.forEach((address: Address) => {
-        promises.push(addContributionAsync({
-            firstName: address.firstName,
-            lastName: address.lastName,
-            address1: address.address1,
-            address2: address.address2,
-            city: address.city,
-            state: address.state,
-            zip: address.zip,
-            contributorType: ContributorType.INDIVIDUAL,
-            type: ContributionType.CONTRIBUTION,
-            subType: ContributionSubType.CASH,
-            amount: faker.finance.amount(1, 500, 2),
-            date: faker.date.past(1),
-            governmentId: government.id,
-            campaignId: campaign.id,
-            currentUserId: user.id,
-            paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
-            oaeType: OaeType.ALLOWABLE,
-            occupation: 'Other'
-        }));
+    parsed.forEach((address: AddressI) => {
+        promises.push(
+            addContributionAsync({
+                firstName: address.firstName,
+                lastName: address.lastName,
+                address1: address.address1,
+                address2: address.address2,
+                city: address.city,
+                state: address.state,
+                zip: address.zip,
+                contributorType: ContributorType.INDIVIDUAL,
+                type: ContributionType.CONTRIBUTION,
+                subType: ContributionSubType.CASH,
+                amount: parseInt(faker.finance.amount({ min: 1, max: 500, dec: 2 })),
+                date: faker.date.past().getTime(), // this is sus
+                governmentId: government.id,
+                campaignId: campaign.id,
+                currentUserId: user.id,
+                paymentMethod: PaymentMethod.CREDIT_CARD_ONLINE,
+                oaeType: OaeType.ALLOWABLE,
+                occupation: 'Other',
+            })
+        );
     });
 
     return Promise.all(promises);
@@ -132,7 +130,7 @@ export default async (onlyData?: boolean) => {
         email: 'govadmin@openelectionsportland.org',
         password: 'password',
         firstName: 'Government',
-        lastName: 'Admin'
+        lastName: 'Admin',
     });
 
     console.log('Adding a campaign admin');
@@ -140,7 +138,7 @@ export default async (onlyData?: boolean) => {
         email: 'campaignadmin@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
-        lastName: 'Admin'
+        lastName: 'Admin',
     });
 
     console.log('Adding a campaign staff');
@@ -148,7 +146,7 @@ export default async (onlyData?: boolean) => {
         email: 'campaignstaff@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
-        lastName: 'Staff'
+        lastName: 'Staff',
     });
 
     console.log('Adding a campaign staff');
@@ -156,7 +154,7 @@ export default async (onlyData?: boolean) => {
         email: 'campaignstaff+1@openelectionsportland.org',
         invitationCode: 'inviteme',
         firstName: 'Campaign',
-        lastName: 'Staff'
+        lastName: 'Staff',
     });
 
     console.log('Adding a campaign staff');
@@ -164,7 +162,7 @@ export default async (onlyData?: boolean) => {
         email: 'campaignstaff+removeme@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
-        lastName: 'Staff'
+        lastName: 'Staff',
     });
 
     console.log('Adding a campaign staff');
@@ -172,10 +170,11 @@ export default async (onlyData?: boolean) => {
         email: 'campaignstaff+removeme2@openelectionsportland.org',
         password: 'password',
         firstName: 'Campaign',
-        lastName: 'Staff'
+        lastName: 'Staff',
     });
 
-    const userRepository = getConnection('default').getRepository('User');
+    const dataSource = await db();
+    const userRepository = dataSource.getRepository('User');
     let campaignStaffReset = new User();
     campaignStaffReset.email = 'campaignstaff+2@openelectionsportland.org';
     campaignStaffReset.firstName = 'Campaign';
@@ -197,43 +196,43 @@ export default async (onlyData?: boolean) => {
     await addPermissionAsync({
         userId: govAdmin.id,
         role: UserRole.GOVERNMENT_ADMIN,
-        governmentId: government.id
+        governmentId: government.id,
     });
 
     await addPermissionAsync({
         userId: campaignAdmin.id,
         role: UserRole.CAMPAIGN_ADMIN,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await addPermissionAsync({
         userId: campaignStaff.id,
         role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await addPermissionAsync({
         userId: campaignStaffInvited.id,
         role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await addPermissionAsync({
         userId: campaignStaffReset.id,
         role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await addPermissionAsync({
         userId: campaignStaffRemoved.id,
         role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await addPermissionAsync({
         userId: campaignStaffRemoved2.id,
         role: UserRole.CAMPAIGN_STAFF,
-        campaignId: campaign.id
+        campaignId: campaign.id,
     });
 
     await seedAddresses();

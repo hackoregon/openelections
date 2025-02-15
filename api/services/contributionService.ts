@@ -1,4 +1,3 @@
-import { getConnection } from 'typeorm';
 import {
     Contribution,
     contributionGovSummaryFields,
@@ -27,11 +26,12 @@ import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } fr
 import { User } from '../models/entity/User';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync, saveFileAttachmentAsync } from './activityService';
-import { MatchAddressType, MatchDonorInfoType, PersonMatchType, retrieveResultAsync } from './dataScienceService';
+import { PersonMatchType, retrieveResultAsync } from './dataScienceService';
 import * as crypto from 'crypto';
 import { geocodeAddressAsync } from './gisService';
 import { addDataScienceJob, renderError } from '../jobs/helpers/addJobs';
 import { UploadedFile } from 'express-fileupload';
+import db from '../models/db';
 
 export interface IAddContributionAttrs {
     address1: string;
@@ -73,19 +73,19 @@ export interface IAddContributionAttrs {
 
 export async function getContributionErrorsAsync(contributionAttrs: IAddContributionAttrs): Promise<string | null> {
     try {
+        const dataSource = await db();
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId));
         if (hasCampaignPermissions) {
-            const defaultConn = getConnection('default');
-            const governmentRepository = defaultConn.getRepository('Government');
-            const campaignRepository = defaultConn.getRepository('Campaign');
+            const governmentRepository = dataSource.getRepository('Government');
+            const campaignRepository = dataSource.getRepository('Campaign');
 
             const contribution = new Contribution();
 
             const [campaign, government] = await Promise.all([
-                campaignRepository.findOne(contributionAttrs.campaignId),
-                governmentRepository.findOne(contributionAttrs.governmentId),
+                campaignRepository.findOne({ where: { id: contributionAttrs.campaignId } }),
+                governmentRepository.findOne({ where: { id: contributionAttrs.governmentId } }),
             ]);
 
             contribution.campaign = campaign as Campaign;
@@ -145,22 +145,22 @@ export async function getContributionErrorsAsync(contributionAttrs: IAddContribu
 
 export async function addContributionAsync(contributionAttrs: IAddContributionAttrs): Promise<Contribution> {
     try {
+        const dataSource = await db();
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId)) ||
             (await isCampaignStaffAsync(contributionAttrs.currentUserId, contributionAttrs.campaignId));
         if (hasCampaignPermissions) {
-            const defaultConn = getConnection('default');
-            const contributionRepository = defaultConn.getRepository('Contribution');
-            const governmentRepository = defaultConn.getRepository('Government');
-            const campaignRepository = defaultConn.getRepository('Campaign');
-            const userRepository = defaultConn.getRepository('User');
+            const contributionRepository = dataSource.getRepository('Contribution');
+            const governmentRepository = dataSource.getRepository('Government');
+            const campaignRepository = dataSource.getRepository('Campaign');
+            const userRepository = dataSource.getRepository('User');
 
             const contribution = new Contribution();
 
             const [campaign, government, user] = await Promise.all([
-                campaignRepository.findOne(contributionAttrs.campaignId),
-                governmentRepository.findOne(contributionAttrs.governmentId),
-                userRepository.findOneOrFail(contributionAttrs.currentUserId) as unknown as User,
+                campaignRepository.findOne({ where: { id: contributionAttrs.campaignId } }),
+                governmentRepository.findOne({ where: { id: contributionAttrs.governmentId } }),
+                userRepository.findOneOrFail({ where: { id: contributionAttrs.currentUserId } }) as unknown as User,
             ]);
 
             contribution.campaign = campaign as Campaign;
@@ -338,12 +338,17 @@ export interface IUpdateContributionAttrs {
 
 export async function updateContributionAsync(contributionAttrs: IUpdateContributionAttrs): Promise<Contribution> {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
-        const userRepository = defaultConn.getRepository('User');
-        let contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
-            relations: ['campaign', 'government'],
-        })) as Contribution;
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
+        const userRepository = dataSource.getRepository('User');
+        let contribution = (await contributionRepository
+            .findOneOrFail({
+                where: { id: contributionAttrs.id },
+                relations: ['campaign', 'government'],
+            })
+            .catch(() => {
+                throw new Error(`Could not find any entity of type "Contribution" matching: ${contributionAttrs.id}`);
+            })) as Contribution;
         const attrs = Object.assign({}, contributionAttrs);
         if (attrs.date) {
             attrs.date = new Date(attrs.date);
@@ -390,7 +395,7 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 contributionRepository.update(contributionAttrs.id, attrs),
-                userRepository.findOneOrFail({ id: contributionAttrs.currentUserId }) as unknown as User,
+                userRepository.findOneOrFail({ where: { id: contributionAttrs.currentUserId } }) as unknown as User,
                 Object.keys(attrs)
                     .filter((key) => attrs[key] && attrs[key] !== '')
                     .filter((key) => contribution[key] && contribution[key] !== '')
@@ -407,7 +412,8 @@ export async function updateContributionAsync(contributionAttrs: IUpdateContribu
                 activityId: contribution.id,
                 notify: isGovAdmin,
             });
-            contribution = (await contributionRepository.findOneOrFail(contributionAttrs.id, {
+            contribution = (await contributionRepository.findOneOrFail({
+                where: { id: contributionAttrs.id },
                 relations: ['campaign', 'government'],
             })) as Contribution;
             return contribution;
@@ -429,9 +435,11 @@ export async function getContributionByIdAsync(
     contributionAttrs: IGetContributionByIdAttrs
 ): Promise<IContributionSummary | IContributionGovSummary> {
     try {
+        const dataSource = await db();
         const { contributionId, currentUserId } = contributionAttrs;
-        const contributionRepository = getConnection('default').getRepository('Contribution');
-        let contribution = (await contributionRepository.findOneOrFail(contributionId, {
+        const contributionRepository = dataSource.getRepository('Contribution');
+        let contribution = (await contributionRepository.findOneOrFail({
+            where: { id: contributionId },
             relations: ['campaign', 'government'],
         })) as Contribution;
         const hasCampaignPermissions =
@@ -460,14 +468,15 @@ export interface IArchiveContributionByIdOptions {
 
 export async function archiveContributionAsync(contrAttrs: IArchiveContributionByIdOptions) {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
-        const userRepository = defaultConn.getRepository('User');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
+        const userRepository = dataSource.getRepository('User');
         const [contribution, user] = await Promise.all([
-            contributionRepository.findOneOrFail(contrAttrs.contributionId, {
+            contributionRepository.findOneOrFail({
+                where: { id: contrAttrs.contributionId },
                 relations: ['campaign', 'government'],
             }) as unknown as Contribution,
-            userRepository.findOneOrFail(contrAttrs.currentUserId) as unknown as User,
+            userRepository.findOneOrFail({ where: { id: contrAttrs.currentUserId } }) as unknown as User,
         ]);
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(contrAttrs.currentUserId, contribution.campaign.id)) ||
@@ -507,15 +516,21 @@ export interface IContributionCommentAttrs {
 
 export async function createContributionCommentAsync(attrs: IContributionCommentAttrs): Promise<Activity> {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
-        const userRepository = defaultConn.getRepository('User');
-        const activityRepository = defaultConn.getRepository('Activity');
-        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['campaign', 'government'],
-        })) as Contribution;
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
+        const userRepository = dataSource.getRepository('User');
+        const activityRepository = dataSource.getRepository('Activity');
+        const contribution = await contributionRepository
+            .findOneOrFail({
+                where: { id: attrs.contributionId },
+                relations: ['campaign', 'government'],
+            })
+            .catch((error) => {
+                console.log(error.message);
+                throw new Error(`Could not find any entity of type "Contribution" matching: ${attrs.contributionId}`);
+            });
 
-        const user = (await userRepository.findOneOrFail(attrs.currentUserId)) as User;
+        const user = (await userRepository.findOneOrFail({ where: { id: attrs.currentUserId } })) as User;
 
         const hasPermissions =
             (await isCampaignAdminAsync(user.id, contribution.campaign.id)) ||
@@ -551,10 +566,11 @@ export async function createContributionCommentAsync(attrs: IContributionComment
 
 export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<void> {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
 
-        const contribution = (await contributionRepository.findOneOrFail(contributionId, {
+        const contribution = (await contributionRepository.findOneOrFail({
+            where: { id: contributionId },
             relations: ['campaign', 'government'],
         })) as Contribution;
 
@@ -603,12 +619,17 @@ export interface UpdateMatchResultAttrs {
 
 export async function updateMatchResultAsync(attrs: UpdateMatchResultAttrs): Promise<boolean> {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
 
-        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['government', 'campaign'],
-        })) as Contribution;
+        const contribution = (await contributionRepository
+            .findOneOrFail({
+                where: { id: attrs.contributionId },
+                relations: ['government', 'campaign'],
+            })
+            .catch(() => {
+                throw new Error(`Could not find any entity of type "Contribution" matching: ${attrs.contributionId}`);
+            })) as Contribution;
 
         if (contribution.matchStrength === MatchStrength.EXACT) {
             throw new Error('Contribution has an exact match, cannot update');
@@ -648,12 +669,17 @@ export interface MatchResults {
 
 export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<MatchResults> {
     try {
-        const defaultConn = getConnection('default');
-        const contributionRepository = defaultConn.getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
 
-        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
-            relations: ['government'],
-        })) as Contribution;
+        const contribution = (await contributionRepository
+            .findOneOrFail({
+                where: { id: attrs.contributionId },
+                relations: ['government'],
+            })
+            .catch(() => {
+                throw new Error(`Could not find any entity of type "Contribution" matching: ${attrs.contributionId}`);
+            })) as Contribution;
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
         if (hasPermissions) {
             const matchResults: MatchResults = {
@@ -677,10 +703,12 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
 }
 
 export async function getGISCoordinates(contributionId: number): Promise<boolean> {
-    const defaultConn = getConnection('default');
-    const contributionRepository = defaultConn.getRepository('Contribution');
+    const dataSource = await db();
+    const contributionRepository = dataSource.getRepository('Contribution');
 
-    const contribution = (await contributionRepository.findOneOrFail(contributionId)) as Contribution;
+    const contribution = (await contributionRepository.findOneOrFail({
+        where: { id: contributionId },
+    })) as Contribution;
     if (contribution.addressPoint && contribution.addressPoint.coordinates) {
         // TODO: may need to remove this once caught up
         return true;
@@ -692,7 +720,7 @@ export async function getGISCoordinates(contributionId: number): Promise<boolean
             state: contribution.state,
             zip: contribution.zip,
         });
-        console.log(`geocodeAddressAsync result for ${contribution.id}:`, { result });
+        // console.log(`geocodeAddressAsync result for ${contribution.id}:`, { result });
         if (result) {
             try {
                 await contributionRepository.update(contributionId, {

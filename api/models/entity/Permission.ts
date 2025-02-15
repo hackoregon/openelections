@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate, getConnection } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Government, IGovernmentSummary } from './Government';
 import { Campaign, ICampaignSummary } from './Campaign';
-import { IUserSummary, User, UserStatus } from './User';
+import { IUserSummary, User } from './User';
 import { IsDefined, validate, ValidationError } from 'class-validator';
-import { PermissionType } from 'aws-sdk/clients/workmail';
+import db from '../db';
 
 export enum UserRole {
     GOVERNMENT_ADMIN = 'government_admin',
@@ -15,31 +15,29 @@ export enum UserRole {
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity()
 export class Permission {
-
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({
         type: 'enum',
         enum: UserRole,
-        default: UserRole.CAMPAIGN_STAFF
+        default: UserRole.CAMPAIGN_STAFF,
     })
     @IsDefined()
     role: UserRole;
 
-
-    @ManyToOne(type => Government, government => government.permissions, {
-        eager: true
+    @ManyToOne((type) => Government, (government) => government.permissions, {
+        eager: true,
     })
     government: Government;
 
-    @ManyToOne(type => Campaign, campaign => campaign.permissions, {
-        eager: true
+    @ManyToOne((type) => Campaign, (campaign) => campaign.permissions, {
+        eager: true,
     })
     campaign: Campaign;
 
-    @ManyToOne(type => User, user => user.permissions, {
-        eager: true
+    @ManyToOne((type) => User, (user) => user.permissions, {
+        eager: true,
     })
     user: User;
 
@@ -73,7 +71,7 @@ export class Permission {
         if (!u) {
             const error = new ValidationError();
             error.property = 'userId';
-            error.constraints = {isDefined: 'userId should not be null or undefined'};
+            error.constraints = { isDefined: 'userId should not be null or undefined' };
             this.errors.push(error);
         }
     }
@@ -83,7 +81,7 @@ export class Permission {
         if (!g) {
             const error = new ValidationError();
             error.property = 'governmentId';
-            error.constraints = {isDefined: 'governmentId should not be null or undefined'};
+            error.constraints = { isDefined: 'governmentId should not be null or undefined' };
             this.errors.push(error);
         }
     }
@@ -93,12 +91,12 @@ export class Permission {
         if (!c && this.role !== UserRole.GOVERNMENT_ADMIN) {
             const error = new ValidationError();
             error.property = 'campaignId';
-            error.constraints = {isDefined: 'campaignId should not be null or undefined'};
+            error.constraints = { isDefined: 'campaignId should not be null or undefined' };
             this.errors.push(error);
         } else if (c && this.role === UserRole.GOVERNMENT_ADMIN) {
             const error = new ValidationError();
             error.property = 'campaignId';
-            error.constraints = {notAllowed: 'campaignId cannot be set with GovernmentAdmin as a UserRole'};
+            error.constraints = { notAllowed: 'campaignId cannot be set with GovernmentAdmin as a UserRole' };
             this.errors.push(error);
         }
     }
@@ -108,8 +106,8 @@ export class Permission {
             id: this.id,
             user: this.user.id,
             role: this.role,
-            campaign: {id: this.campaign.id, name: this.campaign.name},
-            government: {id: this.government.id, name: this.government.name},
+            campaign: { id: this.campaign.id, name: this.campaign.name },
+            government: { id: this.government.id, name: this.government.name },
         };
     }
 }
@@ -131,14 +129,16 @@ export interface IUserPermission {
 }
 
 export async function getPermissionsByCampaignIdAsync(campaignId: number): Promise<IUserPermission[]> {
-    const permissionRepository = getConnection('default').getRepository('Permission');
-    const permissions = await permissionRepository.createQueryBuilder('permission')
-        .andWhere('"permission"."campaignId" = :campaignId', {campaignId}) // notice "" quotes around camelCase id items
-        .innerJoinAndSelect('permission.user', 'user', )
+    const dataSource = await db();
+    const permissionRepository = dataSource.getRepository('Permission');
+    const permissions = (await permissionRepository
+        .createQueryBuilder('permission')
+        .andWhere('"permission"."campaignId" = :campaignId', { campaignId }) // notice "" quotes around camelCase id items
+        .innerJoinAndSelect('permission.user', 'user')
         .innerJoinAndSelect('permission.campaign', 'campaign')
         .innerJoinAndSelect('permission.government', 'government')
-        .getMany() as IUserPermissionResult[];
-    return permissions.map(permission => {
+        .getMany()) as IUserPermissionResult[];
+    return permissions.map((permission) => {
         return {
             id: permission.id,
             role: permission.role,
@@ -156,16 +156,18 @@ export async function getPermissionsByCampaignIdAsync(campaignId: number): Promi
 }
 
 export async function getPermissionsByGovernmentIdAsync(governmentId: number): Promise<IUserPermission[]> {
-    const permissionRepository = getConnection('default').getRepository('Permission');
-    const permissions = await permissionRepository.createQueryBuilder('permission')
-        .andWhere('"permission"."governmentId" = :governmentId', {governmentId})
+    const dataSource = await db();
+    const permissionRepository = dataSource.getRepository('Permission');
+    const permissions = (await permissionRepository
+        .createQueryBuilder('permission')
+        .andWhere('"permission"."governmentId" = :governmentId', { governmentId })
         .innerJoinAndSelect('permission.user', 'user')
         .innerJoinAndSelect('permission.government', 'government')
         .leftJoinAndSelect('permission.campaign', 'campaign')
         .addOrderBy('"permission"."campaignId"', 'ASC')
-        .getMany() as IUserPermissionResult[];
+        .getMany()) as IUserPermissionResult[];
 
-    return permissions.map(permission => {
+    return permissions.map((permission) => {
         const userPermission: IUserPermission = {
             id: permission.id,
             role: permission.role,
@@ -173,13 +175,13 @@ export async function getPermissionsByGovernmentIdAsync(governmentId: number): P
             government: {
                 id: permission.government.id,
                 name: permission.government.name,
-            }
+            },
         };
 
         if (permission.campaign) {
             userPermission.campaign = {
                 id: permission.campaign.id,
-                name: permission.campaign.name
+                name: permission.campaign.name,
             };
         }
         return userPermission;

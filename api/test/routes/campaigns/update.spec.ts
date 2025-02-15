@@ -1,6 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -21,7 +20,7 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 
 describe('Routes /campaigns', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -37,19 +36,19 @@ describe('Routes /campaigns', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -61,74 +60,83 @@ describe('Routes /campaigns', () => {
         await truncateAll();
     });
 
-    context('/campaigns/update', () => {
+    describe('/campaigns/update', () => {
         it('fails, user does not have permission to create campaign', async () => {
             const response = await request(app)
                 .post('/campaigns/update')
                 .send({
-                    newName: `${faker.name.lastName()} for Mayor`,
+                    newName: `${faker.person.lastName()} for Mayor`,
                     governmentId: government.id,
-                    campaignId: campaign.id
+                    campaignId: campaign.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('User is not an admin for the provided government');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('User is not an admin for the provided government');
         });
 
         it('fails, campaigns newName is missing and so is campaignId', async () => {
             const response = await request(app)
                 .post('/campaigns/update')
                 .send({
-                    governmentId: government.id
+                    governmentId: government.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('newName must be a string, campaignId must be a number');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                'newName must be a string, campaignId must be a number conforming to the specified constraints'
+            );
         });
 
         it('fails, government id is missing', async () => {
             const response = await request(app)
                 .post('/campaigns/update')
                 .send({
-                    newName: `${faker.name.lastName()} for Mayor`,
-                    campaignId: campaign.id
+                    newName: `${faker.person.lastName()} for Mayor`,
+                    campaignId: campaign.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('governmentId must be a number');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                'governmentId must be a number conforming to the specified constraints'
+            );
         });
 
         it('fails, no token set', async () => {
             const response = await request(app)
                 .post('/campaigns/update')
                 .send({
-                    newName: `${faker.name.lastName()} for Mayor`,
+                    newName: `${faker.person.lastName()} for Mayor`,
                     governmentId: government.id,
-                    campaignId: campaign.id
+                    campaignId: campaign.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('No token set');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('No token set');
         });
 
         it('succeeds, govAdmin updates campaign name', async () => {
             const response = await request(app)
                 .post('/campaigns/update')
                 .send({
-                    newName: `${faker.name.lastName()} for Mayor`,
+                    newName: `${faker.person.lastName()} for Mayor`,
                     governmentId: government.id,
-                    campaignId: campaign.id
+                    campaignId: campaign.id,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(201);
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .that.includes.all.keys(['id', 'name', 'governmentId', 'officeSought']);
+            expect(response.status).toEqual(201);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    id: expect.anything(),
+                    name: expect.anything(),
+                    governmentId: expect.anything(),
+                    officeSought: expect.anything(),
+                })
+            );
         });
     });
 });

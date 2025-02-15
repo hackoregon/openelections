@@ -1,4 +1,4 @@
-FROM node:11.4.0
+FROM node:18-bullseye
 LABEL maintainer "Dan Melton <dan@civicsoftwarefoundation.org>"
 
 RUN apt-get update -y && apt-get install -y gdal-bin

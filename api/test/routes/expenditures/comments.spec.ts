@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -9,14 +7,12 @@ import {
     newCampaignAsync,
     newExpenditureAsync,
     newGovernmentAsync,
-    truncateAll
+    truncateAll,
 } from '../../factories';
 import { Government } from '../../../models/entity/Government';
 import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
-import { IUpdateExpenditureAttrs } from '../../../services/expenditureService';
-import { ExpenditureType, ExpenditureSubType, ExpenditureStatus, PayeeType } from '../../../models/entity/Expenditure';
 import { Expenditure } from '../../../models/entity/Expenditure';
 
 let app: express.Express;
@@ -33,7 +29,7 @@ let campaignStaff2Token: string;
 let expenditure1: Expenditure;
 
 describe('Routes put /expenditures/:id', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -50,19 +46,19 @@ describe('Routes put /expenditures/:id', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -77,42 +73,41 @@ describe('Routes put /expenditures/:id', () => {
         await truncateAll();
     });
 
-    context('post /expenditures/:id/comments', () => {
+    describe('post /expenditures/:id/comments', () => {
         it('success', async () => {
             const response = await request(app)
                 .post(`/expenditures/${expenditure1.id}/comments`)
                 .send({
-                    comment: 'hio'
+                    comment: 'hio',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(204);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(204);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error id not found', async () => {
             const response = await request(app)
                 .post(`/expenditures/11111/comments`)
                 .send({
-                    comment: 'hio'
+                    comment: 'hio',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('Could not find any entity of type "Expenditure" matching: 11111');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('Could not find any entity of type "Expenditure" matching: 11111');
         });
 
         it('error user does not have permissions', async () => {
             const response = await request(app)
                 .post(`/expenditures/${expenditure1.id}/comments`)
                 .send({
-                    comment: 'hio'
+                    comment: 'hio',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaff2Token}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('User does not have permissions');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('User does not have permissions');
         });
-
     });
 });

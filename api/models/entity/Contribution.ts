@@ -8,7 +8,6 @@ import {
     OneToMany,
     CreateDateColumn,
     UpdateDateColumn,
-    getConnection,
     Between,
     In,
     LessThanOrEqual,
@@ -22,10 +21,10 @@ import { IGetContributionGeoJsonOptions, IGetContributionOptions } from '../../s
 import { removeUndefined } from './helpers';
 import { MatchAddressType } from '../../services/dataScienceService';
 import { Parser } from 'json2csv';
-import * as dateFormat from 'dateformat';
-import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
+import * as dateFormat from 'date-and-time';
 import { convertContributionsToXML } from '../converters';
 import { addDataScienceJob } from '../../jobs/helpers/addJobs';
+import db from '../db';
 
 export enum ContributionType {
     CONTRIBUTION = 'contribution',
@@ -489,7 +488,7 @@ export class Contribution {
     }
 }
 
-export const contributionSummaryFields = <const>[
+export const contributionSummaryFields: (keyof Contribution)[] = [
     'id',
     'amount',
     'createdAt',
@@ -533,7 +532,7 @@ export const contributionSummaryFields = <const>[
 ];
 export type IContributionSummary = Pick<Contribution, (typeof contributionSummaryFields)[number]>;
 
-export const contributionGovSummaryFields = <const>[
+export const contributionGovSummaryFields: (keyof Contribution)[] = [
     'id',
     'amount',
     'createdAt',
@@ -625,7 +624,8 @@ export async function getContributionsByGovernmentIdAsync(
     options?: IGetContributionOptions
 ): Promise<IContributionSummaryResults> {
     try {
-        const contributionRepository = getConnection('default').getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
         const { page, perPage, campaignId, status, from, to, matchId, sort, format } = options;
         const isGovQuery = !options.campaignId;
         const where = {
@@ -707,7 +707,8 @@ export async function getContributionsGeoJsonAsync(
 ): Promise<IContributionsGeoJson> {
     console.log('GET THEM CONTRIBUTIONS GEO', options);
     try {
-        const contributionRepository = getConnection('default').getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
         let from;
         let to;
         if (options) {
@@ -797,7 +798,7 @@ export async function getContributionsGeoJsonAsync(
                         campaignName: contribution.campaign.name,
                         officeSought: contribution.campaign.officeSought,
                         batchId: contributorsMap.get(userKey),
-                        isMiscCashContributionUnder100
+                        isMiscCashContributionUnder100,
                     },
                     geometry: {
                         type: 'Point',
@@ -837,7 +838,7 @@ export function convertToCsv(contributions: any): string {
     contributions.data.map((item: any): any => {
         item.campaignId = item.campaign.id;
         item.campaignName = item.campaign.name;
-        item.date = dateFormat(item.date, 'yyyy/mm/dd');
+        item.date = dateFormat.format(item.date, 'yyyy/mm/dd');
         delete item.campaign;
         delete item.government;
         return item;
@@ -865,7 +866,8 @@ export async function getContributionsSummaryByStatusAsync(
     attrs: SummaryAttrs
 ): Promise<ContributionSummaryByStatus[]> {
     try {
-        const contributionQuery = getConnection('default')
+        const dataSource = await db();
+        const contributionQuery = dataSource
             .getRepository('Contribution')
             .createQueryBuilder('contributions')
             .select('SUM(contributions.amount)', 'amount')

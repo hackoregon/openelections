@@ -7,19 +7,20 @@ import {
     expenditureSummaryFields,
     ExpenditureType,
     getExpendituresByGovernmentIdAsync,
-    IExpenditureSummary, IExpenditureSummaryResults,
+    IExpenditureSummary,
+    IExpenditureSummaryResults,
     PayeeType,
     PaymentMethod,
-    PurposeType
+    PurposeType,
 } from '../models/entity/Expenditure';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { getConnection } from 'typeorm';
 import { Campaign } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import { Activity, ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync, saveFileAttachmentAsync } from './activityService';
 import { User } from '../models/entity/User';
 import { UploadedFile } from 'express-fileupload';
+import db from '../models/db';
 
 export interface IAddExpenditureAttrs {
     date: number;
@@ -46,21 +47,21 @@ export interface IAddExpenditureAttrs {
 
 export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs): Promise<Expenditure> {
     try {
+        const dataSource = await db();
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(expenditureAttrs.currentUserId, expenditureAttrs.campaignId)) ||
             (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditureAttrs.campaignId));
         if (hasCampaignPermissions) {
-            const defaultConn = getConnection('default');
-            const expenditureRepository = defaultConn.getRepository('Expenditure');
-            const governmentRepository = defaultConn.getRepository('Government');
-            const campaignRepository = defaultConn.getRepository('Campaign');
-            const userRepository = defaultConn.getRepository('User');
+            const expenditureRepository = dataSource.getRepository('Expenditure');
+            const governmentRepository = dataSource.getRepository('Government');
+            const campaignRepository = dataSource.getRepository('Campaign');
+            const userRepository = dataSource.getRepository('User');
 
             const expenditure = new Expenditure();
 
             const [campaign, government] = await Promise.all([
-                campaignRepository.findOne(expenditureAttrs.campaignId),
-                governmentRepository.findOne(expenditureAttrs.governmentId)
+                campaignRepository.findOne({ where: { id: expenditureAttrs.campaignId } }),
+                governmentRepository.findOne({ where: { id: expenditureAttrs.governmentId } }),
             ]);
 
             expenditure.campaign = campaign as Campaign;
@@ -91,7 +92,9 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
 
             if (await expenditure.isValidAsync()) {
                 const saved = await expenditureRepository.save(expenditure);
-                const user = await userRepository.findOneOrFail(expenditureAttrs.currentUserId) as User;
+                const user = (await userRepository.findOneOrFail({
+                    where: { id: expenditureAttrs.currentUserId },
+                })) as User;
 
                 await createActivityRecordAsync({
                     currentUser: user,
@@ -99,7 +102,7 @@ export async function addExpenditureAsync(expenditureAttrs: IAddExpenditureAttrs
                     campaign: expenditure.campaign,
                     government: expenditure.government,
                     activityType: ActivityTypeEnum.EXPENDITURE,
-                    activityId: saved.id
+                    activityId: saved.id,
                 });
                 return saved;
             }
@@ -128,7 +131,9 @@ export interface IGetExpenditureAttrs {
     filerId?: string | number;
 }
 
-export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAttrs): Promise<IExpenditureSummaryResults> {
+export async function getExpendituresAsync(
+    expendituresAttrs: IGetExpenditureAttrs
+): Promise<IExpenditureSummaryResults> {
     try {
         const { governmentId, ...options } = expendituresAttrs;
         if (options.campaignId) {
@@ -147,7 +152,7 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
         if (expendituresAttrs.format === 'xml') {
             expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
                 ...options,
-                page: options.page || 0
+                page: options.page || 0,
             });
             expenditures.xml = convertToXml(expenditures, expendituresAttrs.filerId);
             return expenditures;
@@ -155,7 +160,7 @@ export async function getExpendituresAsync(expendituresAttrs: IGetExpenditureAtt
         expenditures = await getExpendituresByGovernmentIdAsync(governmentId, {
             ...options,
             page: options.page || 0,
-            perPage: options.perPage || 100
+            perPage: options.perPage || 100,
         });
 
         if (expendituresAttrs.format === 'csv') {
@@ -192,12 +197,17 @@ export interface IUpdateExpenditureAttrs {
 
 export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditureAttrs): Promise<Expenditure> {
     try {
-        const defaultConn = getConnection('default');
-        const expenditureRepository = defaultConn.getRepository('Expenditure');
-        let expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
-            relations: ['campaign', 'government']
-        })) as Expenditure;
-        const userRepository = defaultConn.getRepository('User');
+        const dataSource = await db();
+        const expenditureRepository = dataSource.getRepository('Expenditure');
+        let expenditure = (await expenditureRepository
+            .findOneOrFail({
+                where: { id: expenditureAttrs.id },
+                relations: ['campaign', 'government'],
+            })
+            .catch(() => {
+                throw new Error(`Could not find any entity of type "Expenditure" matching: ${expenditureAttrs.id}`);
+            })) as Expenditure;
+        const userRepository = dataSource.getRepository('User');
         const attrs = Object.assign({}, expenditureAttrs);
         if (attrs.date) {
             attrs.date = new Date(attrs.date);
@@ -211,22 +221,25 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
             (await isCampaignStaffAsync(expenditureAttrs.currentUserId, expenditure.campaign.id)) ||
-            (govAdmin);
+            govAdmin;
         if (!govAdmin) {
-            if (attrs.status === ExpenditureStatus.OUT_OF_COMPLIANCE || attrs.status === ExpenditureStatus.IN_COMPLIANCE ) {
+            if (
+                attrs.status === ExpenditureStatus.OUT_OF_COMPLIANCE ||
+                attrs.status === ExpenditureStatus.IN_COMPLIANCE
+            ) {
                 throw new Error('User does have permissions to change status on expenditure');
             }
         }
         if (hasCampaignPermissions) {
             const [_, user, changeNotes] = await Promise.all([
                 expenditureRepository.update(expenditureAttrs.id, attrs),
-                (userRepository.findOneOrFail({ id: expenditureAttrs.currentUserId }) as unknown) as User,
+                userRepository.findOneOrFail({ where: { id: expenditureAttrs.currentUserId } }) as unknown as User,
                 Object.keys(attrs)
-                    .filter(key => attrs[key] && attrs[key] !== '')
-                    .filter(key => expenditure[key] && expenditure[key] !== '')
-                    .filter(key => expenditure[key] !== attrs[key])
-                    .map(k => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
-                    .join(' ')
+                    .filter((key) => attrs[key] && attrs[key] !== '')
+                    .filter((key) => expenditure[key] && expenditure[key] !== '')
+                    .filter((key) => expenditure[key] !== attrs[key])
+                    .map((k) => `${k} changed from ${expenditure[k]} to ${attrs[k]}.`)
+                    .join(' '),
             ]);
 
             await createActivityRecordAsync({
@@ -236,10 +249,11 @@ export async function updateExpenditureAsync(expenditureAttrs: IUpdateExpenditur
                 government: expenditure.government,
                 activityType: ActivityTypeEnum.EXPENDITURE,
                 activityId: expenditure.id,
-                notify: govAdmin
+                notify: govAdmin,
             });
-            expenditure = (await expenditureRepository.findOneOrFail(expenditureAttrs.id, {
-                relations: ['campaign', 'government']
+            expenditure = (await expenditureRepository.findOneOrFail({
+                where: { id: expenditureAttrs.id },
+                relations: ['campaign', 'government'],
             })) as Expenditure;
             return expenditure;
         } else if (!(await isGovernmentAdminAsync(expenditureAttrs.currentUserId, expenditure.government.id))) {
@@ -259,14 +273,20 @@ export interface IExpenditureCommentAttrs {
 
 export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAttrs): Promise<Activity> {
     try {
-        const defaultConn = getConnection('default');
-        const expenditureRepository = defaultConn.getRepository('Expenditure');
-        const userRepository = defaultConn.getRepository('User');
-        const activityRepository = defaultConn.getRepository('Activity');
-        const expenditure = (await expenditureRepository.findOneOrFail(attrs.expenditureId, {
-            relations: ['campaign', 'government']
-        })) as Expenditure;
-        const user = await userRepository.findOneOrFail(attrs.currentUserId) as User;
+        const dataSource = await db();
+        const expenditureRepository = dataSource.getRepository('Expenditure');
+        const userRepository = dataSource.getRepository('User');
+        const activityRepository = dataSource.getRepository('Activity');
+        const expenditure = await expenditureRepository
+            .findOneOrFail({
+                where: { id: attrs.expenditureId },
+                relations: ['campaign', 'government'],
+            })
+            .catch((error) => {
+                console.log(error.message);
+                throw new Error(`Could not find any entity of type "Expenditure" matching: ${attrs.expenditureId}`);
+            });
+        const user = (await userRepository.findOneOrFail({ where: { id: attrs.currentUserId } })) as User;
 
         const hasPermissions =
             (await isCampaignAdminAsync(user.id, expenditure.campaign.id)) ||
@@ -280,11 +300,16 @@ export async function createExpenditureCommentAsync(attrs: IExpenditureCommentAt
                 notes: `${user.name()}: ${attrs.comment}`,
                 activityId: expenditure.id,
                 activityType: ActivityTypeEnum.COMMENT_EXP,
-                notify: true
+                notify: true,
             });
 
             if (attrs.attachmentPath) {
-                const attachmentPath = await saveFileAttachmentAsync(activity.id, 'expenditures', attrs.attachmentPath.name, attrs.attachmentPath.tempFilePath);
+                const attachmentPath = await saveFileAttachmentAsync(
+                    activity.id,
+                    'expenditures',
+                    attrs.attachmentPath.name,
+                    attrs.attachmentPath.tempFilePath
+                );
                 await activityRepository.update(activity.id, { attachmentPath });
                 return activity;
             }
@@ -305,10 +330,12 @@ export async function getExpenditureByIdAsync(
     expenditureAttrs: IGetExpenditureByIdAttrs
 ): Promise<IExpenditureSummary> {
     try {
+        const dataSource = await db();
         const { expenditureId, currentUserId } = expenditureAttrs;
-        const expenditureRepository = getConnection('default').getRepository('Expenditure');
-        let expenditure = (await expenditureRepository.findOneOrFail(expenditureId, {
-            relations: ['campaign', 'government']
+        const expenditureRepository = dataSource.getRepository('Expenditure');
+        let expenditure = (await expenditureRepository.findOneOrFail({
+            where: { id: expenditureId },
+            relations: ['campaign', 'government'],
         })) as Expenditure;
         const hasCampaignPermissions =
             (await isCampaignAdminAsync(currentUserId, expenditure.campaign.id)) ||
@@ -318,7 +345,7 @@ export async function getExpenditureByIdAsync(
             expenditure = (await expenditureRepository.findOne({
                 select: expenditureSummaryFields,
                 where: { id: expenditureId },
-                relations: ['campaign', 'government']
+                relations: ['campaign', 'government'],
             })) as Expenditure;
         } else {
             throw new Error('User does not have permissions');

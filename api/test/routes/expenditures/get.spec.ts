@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -24,7 +24,7 @@ let campaignStaffToken: string;
 let campaignStaff2Token: string;
 
 describe('Routes post /expenditures/new', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -41,19 +41,19 @@ describe('Routes post /expenditures/new', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -66,15 +66,15 @@ describe('Routes post /expenditures/new', () => {
         await truncateAll();
     });
 
-    context('post /expenditures', () => {
+    describe('post /expenditures', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .post(`/expenditures`)
                 .send({ governmentId: government.id, currentUserId: govAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign admin', async () => {
@@ -83,8 +83,8 @@ describe('Routes post /expenditures/new', () => {
                 .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign staff', async () => {
@@ -93,8 +93,8 @@ describe('Routes post /expenditures/new', () => {
                 .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignStaff.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error permissions', async () => {
@@ -103,7 +103,7 @@ describe('Routes post /expenditures/new', () => {
                 .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
+            expect(response.status).toEqual(422);
             expect(response.body.message);
         });
     });

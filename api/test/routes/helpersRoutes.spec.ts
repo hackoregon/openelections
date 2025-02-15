@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../routes';
 import { User } from '../../models/entity/User';
@@ -10,7 +10,7 @@ let app: express.Express;
 let user: User;
 
 describe('Route helpers', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -23,15 +23,15 @@ describe('Route helpers', () => {
         await truncateAll();
     });
 
-    context('getCurrentUser', async () => {
+    describe('getCurrentUser', () => {
         it('fails incorrect or expired token', async () => {
             const response = await request(app)
                 .get('/me')
                 .set('Cookie', ['token=12345667'])
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(401);
-            expect(response.body.message).to.equal('Token expired or incorrect');
-            expect(response.header['set-cookie']).to.deep.equal([ 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT' ]);
+            expect(response.status).toEqual(401);
+            expect(response.body.message).toEqual('Token expired or incorrect');
+            expect(response.header['set-cookie']).toEqual(['token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT']);
         });
 
         it('succeeds', async () => {
@@ -40,8 +40,16 @@ describe('Route helpers', () => {
                 .get('/me')
                 .set('Cookie', [`token=${token}`])
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(200);
-            expect(Object.keys(response.body)).to.deep.equal(['id', 'exp', 'firstName', 'lastName', 'email', 'permissions', 'iat']);
+            expect(response.status).toEqual(200);
+            expect(Object.keys(response.body)).toEqual([
+                'id',
+                'exp',
+                'firstName',
+                'lastName',
+                'email',
+                'permissions',
+                'iat',
+            ]);
         });
     });
 });

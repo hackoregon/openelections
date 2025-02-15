@@ -6,7 +6,9 @@ import {
     IGetExpenditureAttrs,
     getExpendituresAsync,
     IUpdateExpenditureAttrs,
-    updateExpenditureAsync, createExpenditureCommentAsync, getExpenditureByIdAsync
+    updateExpenditureAsync,
+    createExpenditureCommentAsync,
+    getExpenditureByIdAsync,
 } from '../services/expenditureService';
 import { checkCurrentUser, IRequest } from '../routes/helpers';
 import { checkDto } from './helpers';
@@ -15,7 +17,7 @@ import {
     ExpenditureType,
     ExpenditureSubType,
     PayeeType,
-    PurposeType
+    PurposeType,
 } from '../models/entity/Expenditure';
 import { PaymentMethod } from '../models/entity/Expenditure';
 import { bugsnagClient } from '../services/bugsnagService';
@@ -109,7 +111,7 @@ export async function addExpenditure(request: IRequest, response: Response, next
         checkCurrentUser(request);
         const addExpenditureDto = Object.assign(new AddExpenditureDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(addExpenditureDto);
         const expenditure = await addExpenditureAsync(addExpenditureDto);
@@ -118,7 +120,7 @@ export async function addExpenditure(request: IRequest, response: Response, next
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({message: err.message});
+        return response.status(422).json({ message: err.message });
     }
 }
 
@@ -163,7 +165,7 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         checkCurrentUser(request);
         const getExpendituresDto = Object.assign(new GetExpendituresDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(getExpendituresDto);
 
@@ -181,7 +183,7 @@ export async function getExpenditures(request: IRequest, response: Response, nex
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({message: err.message});
+        return response.status(422).json({ message: err.message });
     }
 }
 
@@ -270,7 +272,7 @@ export async function updateExpenditure(request: IRequest, response: Response, n
         checkCurrentUser(request);
         const updateExpenditureDto = Object.assign(new UpdateExpenditureDto(), {
             ...request.body,
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(updateExpenditureDto);
         const expenditure = await updateExpenditureAsync(updateExpenditureDto);
@@ -280,12 +282,11 @@ export async function updateExpenditure(request: IRequest, response: Response, n
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({message: err.message});
+        return response.status(422).json({ message: err.message });
     }
 }
 
 export class ExpenditureCommentDto {
-
     currentUserId: number;
 
     @IsNumber()
@@ -296,7 +297,6 @@ export class ExpenditureCommentDto {
 
     @IsOptional()
     attachmentPath: UploadedFile;
-
 }
 
 export async function createExpenditureComment(request: IRequest, response: Response, next: Function) {
@@ -305,7 +305,7 @@ export async function createExpenditureComment(request: IRequest, response: Resp
         const attrs: any = {
             expenditureId: parseInt(request.params.id),
             currentUserId: request.currentUser.id,
-            comment: request.body.comment
+            comment: request.body.comment,
         };
         let file;
         if (request.files && request.files.attachment) {
@@ -323,13 +323,11 @@ export async function createExpenditureComment(request: IRequest, response: Resp
         if (process.env.NODE_ENV === 'production' && err.message !== 'No token set') {
             bugsnagClient.notify(err);
         }
-        return response.status(422).json({message: err.message});
+        return response.status(422).json({ message: err.message });
     }
 }
 
-
 export class GetExpenditureByIdDto {
-
     @IsNumber()
     expenditureId: number;
 
@@ -342,7 +340,7 @@ export async function getExpenditureById(request: IRequest, response: Response, 
         checkCurrentUser(request);
         const getExpenditureByIdDto = Object.assign(new GetExpenditureByIdDto(), {
             expenditureId: parseInt(request.params.id),
-            currentUserId: request.currentUser.id
+            currentUserId: request.currentUser.id,
         });
         await checkDto(getExpenditureByIdDto);
         const expenditure = await getExpenditureByIdAsync(getExpenditureByIdDto);

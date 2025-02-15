@@ -1,19 +1,11 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    OneToMany,
-    BeforeInsert,
-    BeforeUpdate,
-    getConnection
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { Government } from './Government';
 import { Permission } from './Permission';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 import { Activity } from './Activity';
 import { Contribution } from './Contribution';
 import { Expenditure } from './Expenditure';
+import db from '../db';
 
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity()
@@ -29,21 +21,21 @@ export class Campaign {
     @IsDefined()
     officeSought: string;
 
-    @ManyToOne(type => Government, government => government.campaigns, {
-        eager: true
+    @ManyToOne((type) => Government, (government) => government.campaigns, {
+        eager: true,
     })
     government: Government;
 
-    @OneToMany(type => Activity, activity => activity.user)
+    @OneToMany((type) => Activity, (activity) => activity.user)
     activities: Activity[];
 
-    @OneToMany(type => Permission, permission => permission.campaign)
+    @OneToMany((type) => Permission, (permission) => permission.campaign)
     permissions: Permission[];
 
-    @OneToMany(type => Contribution, contribution => contribution.government)
+    @OneToMany((type) => Contribution, (contribution) => contribution.government)
     contributions: Contribution[];
 
-    @OneToMany(type => Expenditure, expenditure => expenditure.government)
+    @OneToMany((type) => Expenditure, (expenditure) => expenditure.government)
     expenditures: Expenditure[];
 
     public errors: ValidationError[];
@@ -83,7 +75,7 @@ export class Campaign {
             id: this.id,
             name: this.name,
             governmentId: this.government.id,
-            officeSought: this.officeSought
+            officeSought: this.officeSought,
         };
     }
 }
@@ -94,7 +86,8 @@ export interface ICampaignSummary {
 }
 
 export async function getCampaignSummariesByGovernmentIdAsync(governmentId: number): Promise<ICampaignSummary[]> {
-    const campaignRepository = getConnection('default').getRepository('Campaign');
+    const dataSource = await db();
+    const campaignRepository = dataSource.getRepository('Campaign');
     const campaigns = (await campaignRepository
         .createQueryBuilder('campaign')
         .andWhere('"campaign"."governmentId" = :governmentId', { governmentId })

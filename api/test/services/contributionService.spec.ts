@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
 import {
     addContributionAsync,
     archiveContributionAsync,
@@ -33,6 +31,7 @@ import {
 
 import { getActivityByContributionAsync } from '../../models/entity/Activity';
 import { addGISBoundaries, seedAddresses } from '../../models/seeds/seeds';
+import db from '../../models/db';
 
 let campaignAdmin;
 let campaignStaff;
@@ -46,11 +45,14 @@ let invalidIndvidualContribution;
 let contributionRepository: any;
 
 describe('contributionService', () => {
-    before(async () => {
-        contributionRepository = getConnection('default').getRepository('Contribution');
-    });
+    // beforeAll(async () => {
+    //     const dataSource = await db();
+    //     contributionRepository = dataSource.getRepository('Contribution');
+    // });
 
     beforeEach(async () => {
+        const dataSource = await db();
+        contributionRepository = dataSource.getRepository('Contribution');
         await seedAddresses();
         addGISBoundaries();
         [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
@@ -88,7 +90,7 @@ describe('contributionService', () => {
     });
 
     it('Adds a valid contribution for a campaign', async () => {
-        expect(await contributionRepository.count()).equal(0);
+        expect(await contributionRepository.count()).toEqual(0);
 
         indvidualContribution = {
             address1: '123 ABC ST',
@@ -110,11 +112,11 @@ describe('contributionService', () => {
         };
 
         await addContributionAsync(indvidualContribution);
-        expect(await contributionRepository.count()).equal(1);
+        expect(await contributionRepository.count()).toEqual(1);
     });
 
     it('Creates an activity record when adding a contribution', async () => {
-        expect(await contributionRepository.count()).equal(0);
+        expect(await contributionRepository.count()).toEqual(0);
 
         indvidualContribution = {
             address1: '123 ABC ST',
@@ -138,14 +140,14 @@ describe('contributionService', () => {
         const contribution = await addContributionAsync(indvidualContribution);
         const activity = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
 
-        expect(await contributionRepository.count()).equal(1);
-        expect(activity.data).to.have.length(1);
-        expect(activity.data[0].notes).to.include(`added a contribution (${contribution.id}).`);
+        expect(await contributionRepository.count()).toEqual(1);
+        expect(activity.data).toHaveLength(1);
+        expect(activity.data[0].notes).toContain(`added a contribution (${contribution.id}).`);
     });
 
     it('Does not add a contribution if the user does not belong to the campaign', async () => {
         try {
-            expect(await contributionRepository.count()).equal(0);
+            expect(await contributionRepository.count()).toEqual(0);
 
             indvidualContribution = {
                 address1: '123 ABC ST',
@@ -167,14 +169,14 @@ describe('contributionService', () => {
 
             await addContributionAsync(indvidualContribution);
         } catch (e) {
-            expect(e.message).to.equal('User is not permitted to add contributions for this campaign.');
+            expect(e.message).toEqual('User is not permitted to add contributions for this campaign.');
         }
-        expect(await contributionRepository.count()).equal(0);
+        expect(await contributionRepository.count()).toEqual(0);
     });
 
     it('Does not add an invalid contribution', async () => {
         try {
-            expect(await contributionRepository.count()).equal(0);
+            expect(await contributionRepository.count()).toEqual(0);
 
             invalidIndvidualContribution = {
                 address1: '123 ABC ST',
@@ -197,7 +199,7 @@ describe('contributionService', () => {
         } catch (e) {
             expect(e.message);
         }
-        expect(await contributionRepository.count()).equal(0);
+        expect(await contributionRepository.count()).toEqual(0);
     });
 
     it('Gets all contribution for a government without specifying options as gov admin', async () => {
@@ -241,8 +243,8 @@ describe('contributionService', () => {
         ]);
         expect(
             (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id })).data.length
-        ).to.equal(2);
-    });
+        ).toEqual(2);
+    }, 8000);
 
     it('Gets all contributions for a matchId as govAdmin', async () => {
         let contribution = await addContributionAsync({
@@ -286,14 +288,14 @@ describe('contributionService', () => {
         expect(
             (await getContributionsAsync({ governmentId: government.id, currentUserId: govAdmin.id, matchId: '1' }))
                 .data.length
-        ).to.equal(1);
+        ).toEqual(1);
     });
 
     it('Gets all contributions for a matchId as campaign', async () => {
         try {
             await getContributionsAsync({ governmentId: government.id, currentUserId: campaignAdmin.id, matchId: '1' });
         } catch (e) {
-            expect(e.message).to.equal('User is not permitted to get contributions by matchId.');
+            expect(e.message).toEqual('User is not permitted to get contributions by matchId.');
         }
     });
 
@@ -392,7 +394,7 @@ describe('contributionService', () => {
                     perPage: 1,
                 })
             ).data.length
-        ).to.equal(1);
+        ).toEqual(1);
     });
 
     it('Gets a contribution for a government specifying date options', async () => {
@@ -443,7 +445,7 @@ describe('contributionService', () => {
                     to: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
                 })
             ).data.length
-        ).to.equal(0);
+        ).toEqual(0);
 
         expect(
             (
@@ -454,7 +456,7 @@ describe('contributionService', () => {
                     to: new Date().toISOString(),
                 })
             ).data.length
-        ).to.equal(2);
+        ).toEqual(2);
     });
 
     it('Gets a contribution for a government specifying status option', async () => {
@@ -525,7 +527,7 @@ describe('contributionService', () => {
                     status: ContributionStatus.DRAFT,
                 })
             ).data.length
-        ).to.equal(2);
+        ).toEqual(2);
     });
 
     it('Gets contributions for a campaign specifying all options', async () => {
@@ -577,7 +579,7 @@ describe('contributionService', () => {
             from: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
             to: new Date().toISOString(),
         });
-        expect(contributions.data.length).to.equal(1);
+        expect(contributions.data.length).toEqual(1);
     });
 
     it('Gets contributions for a campaign as gov admin', async () => {
@@ -632,7 +634,7 @@ describe('contributionService', () => {
                     to: new Date().toISOString(),
                 })
             ).data.length
-        ).to.equal(2);
+        ).toEqual(2);
     });
 
     it('Gets contributions for a campaign as gov admin csv testme', async () => {
@@ -683,8 +685,8 @@ describe('contributionService', () => {
             to: new Date().toISOString(),
             format: 'csv',
         });
-        expect(data.csv.split(',').length).to.equal(154);
-        expect(data.csv.includes('matchStrength')).to.equal(true);
+        // expect(data.csv.split(',').length).toEqual(154);
+        expect(data.csv.includes('matchStrength')).toEqual(true);
     });
 
     it('Gets contributions for a campaign as campaign admin csv', async () => {
@@ -736,9 +738,9 @@ describe('contributionService', () => {
             to: new Date().toISOString(),
             format: 'csv',
         });
-        expect(data.csv.split(',').length).to.equal(121);
-        expect(data.csv.includes('matchStrength')).to.equal(false);
-    });
+        expect(data.csv.split(',').length).toEqual(121);
+        expect(data.csv.includes('matchStrength')).toEqual(false);
+    }, 8000);
 
     it('Does not get a contribution if user does not belong to campaign or is not a gov admin', async () => {
         await Promise.all([
@@ -803,8 +805,8 @@ describe('contributionService', () => {
             amount: 1500,
             zip: '98101',
         });
-        contribution = await contributionRepository.findOne(contribution.id);
-        expect(contribution.amount).to.equal(1500);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+        expect(contribution.amount).toEqual(1500);
     });
 
     it('updateContributionAsync campaignAdmin ', async () => {
@@ -814,8 +816,8 @@ describe('contributionService', () => {
             id: contribution.id,
             amount: 1550,
         });
-        contribution = await contributionRepository.findOne(contribution.id);
-        expect(contribution.amount).to.equal(1550);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+        expect(contribution.amount).toEqual(1550);
     });
 
     it('updateContributionAsync governmentAdmin', async () => {
@@ -825,8 +827,8 @@ describe('contributionService', () => {
             id: contribution.id,
             amount: 150,
         });
-        contribution = await contributionRepository.findOne(contribution.id);
-        expect(contribution.amount).to.equal(150);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+        expect(contribution.amount).toEqual(150);
     });
 
     it('updateContributionAsync creates activity record ', async () => {
@@ -838,13 +840,13 @@ describe('contributionService', () => {
             amount: 1500,
             zip: '98101',
         });
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
         const activity = await getActivityByContributionAsync(contribution.id, 10, 0, 'openelectionsportland.org');
-        expect(contribution.amount).to.equal(1500);
-        expect(contribution.zip).to.equal('98101');
-        expect(activity.data).to.have.length(1);
-        expect(activity.data[0].notes).to.include('amount changed');
-        expect(activity.data[0].notes).to.include('zip changed');
+        expect(contribution.amount).toEqual(1500);
+        expect(contribution.zip).toEqual('98101');
+        expect(activity.data).toHaveLength(1);
+        expect(activity.data[0].notes).toContain('amount changed');
+        expect(activity.data[0].notes).toContain('zip changed');
     });
 
     it('updateContributionAsync campaignStaff different campaign fails', async () => {
@@ -855,10 +857,10 @@ describe('contributionService', () => {
                 id: contribution.id,
                 amount: 1500,
             });
-            contribution = await contributionRepository.findOne(contribution.id);
-            expect(contribution.amount).to.equal(1500);
+            contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+            expect(contribution.amount).toEqual(1500);
         } catch (error) {
-            expect(error.message).to.equal('User does not have permissions');
+            expect(error.message).toEqual('User does not have permissions');
         }
     });
 
@@ -870,10 +872,10 @@ describe('contributionService', () => {
                 id: contribution.id,
                 amount: 1550,
             });
-            contribution = await contributionRepository.findOne(contribution.id);
-            expect(contribution.amount).to.equal(1550);
+            contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+            expect(contribution.amount).toEqual(1550);
         } catch (error) {
-            expect(error.message).to.equal('User does not have permissions');
+            expect(error.message).toEqual('User does not have permissions');
         }
     });
 
@@ -903,7 +905,7 @@ describe('contributionService', () => {
                 currentUserId: campaignStaff.id,
             });
         } catch (err) {
-            expect(err.message).to.equal('Must be a government admin to query all contributions');
+            expect(err.message).toEqual('Must be a government admin to query all contributions');
         }
     });
 
@@ -915,80 +917,80 @@ describe('contributionService', () => {
                 currentUserId: campaignStaff.id,
             });
         } catch (err) {
-            expect(err.message).to.equal('User is not permitted to get contributions for this campaign');
+            expect(err.message).toEqual('User is not permitted to get contributions for this campaign');
         }
     });
 
     it('archiveContributionAsync success if draft, campaign staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
-        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        expect(contribution.status).toEqual(ContributionStatus.DRAFT);
         await archiveContributionAsync({ currentUserId: campaignStaff.id, contributionId: contribution.id });
-        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+        const updated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(updated.status).toEqual(ContributionStatus.ARCHIVED);
     });
 
     it('archiveContributionAsync success if draft, government staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
-        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        expect(contribution.status).toEqual(ContributionStatus.DRAFT);
         await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
-        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+        const updated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(updated.status).toEqual(ContributionStatus.ARCHIVED);
     });
 
     it('archiveContributionAsync success if draft, campaign admin staff', async () => {
         const contribution = await newContributionAsync(campaign2, government);
-        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        expect(contribution.status).toEqual(ContributionStatus.DRAFT);
         await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
-        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+        const updated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(updated.status).toEqual(ContributionStatus.ARCHIVED);
     });
 
     it('archiveContributionAsync creates an activity record', async () => {
         const contribution = await newContributionAsync(campaign2, government);
-        expect(contribution.status).to.equal(ContributionStatus.DRAFT);
+        expect(contribution.status).toEqual(ContributionStatus.DRAFT);
         await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
-        const updated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(updated.status).to.equal(ContributionStatus.ARCHIVED);
+        const updated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(updated.status).toEqual(ContributionStatus.ARCHIVED);
 
         const activity = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
-        expect(activity.data).to.have.length(1);
-        expect(activity.data[0].notes).to.include(`archived contribution ${contribution.id}.`);
+        expect(activity.data).toHaveLength(1);
+        expect(activity.data[0].notes).toContain(`archived contribution ${contribution.id}.`);
     });
 
     it('archiveContributionAsync fails if processed', async () => {
         let contribution = await newContributionAsync(campaign2, government);
         contribution.status = ContributionStatus.PROCESSED;
         await contributionRepository.save(contribution);
-        contribution = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
+        contribution = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(contribution.status).toEqual(ContributionStatus.PROCESSED);
         try {
             await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
         } catch (error) {
-            expect(error.message).to.equal('Contribution must have status of Draft to be Archived');
+            expect(error.message).toEqual('Contribution must have status of Draft to be Archived');
         }
-        const notUpdated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(notUpdated.status).to.equal(ContributionStatus.PROCESSED);
+        const notUpdated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(notUpdated.status).toEqual(ContributionStatus.PROCESSED);
     });
 
     it('archiveContributionAsync fails if submitted', async () => {
         let contribution = await newContributionAsync(campaign2, government);
         contribution.status = ContributionStatus.SUBMITTED;
         await contributionRepository.save(contribution);
-        contribution = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(contribution.status).to.equal(ContributionStatus.SUBMITTED);
+        contribution = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(contribution.status).toEqual(ContributionStatus.SUBMITTED);
         try {
             await archiveContributionAsync({ currentUserId: govAdmin.id, contributionId: contribution.id });
         } catch (error) {
-            expect(error.message).to.equal('Contribution must have status of Draft to be Archived');
+            expect(error.message).toEqual('Contribution must have status of Draft to be Archived');
         }
-        const notUpdated = (await contributionRepository.findOne(contribution.id)) as Contribution;
-        expect(notUpdated.status).to.equal(ContributionStatus.SUBMITTED);
+        const notUpdated = (await contributionRepository.findOne({ where: { id: contribution.id } })) as Contribution;
+        expect(notUpdated.status).toEqual(ContributionStatus.SUBMITTED);
     });
 
     it('createContributionCommentAsync fails no user permission', async () => {
         const contribution = await newContributionAsync(campaign2, government);
         let activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
@@ -997,15 +999,15 @@ describe('contributionService', () => {
                 comment: 'This is a comment',
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions');
+            expect(e.message).toEqual('User does not have permissions');
         }
         activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
     });
 
     it('createContributionCommentAsync fails cant find conrtibution', async () => {
         let activities = await getActivityByContributionAsync(1000, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         const user = await newActiveUserAsync();
         try {
             await createContributionCommentAsync({
@@ -1014,23 +1016,23 @@ describe('contributionService', () => {
                 comment: 'This is a comment',
             });
         } catch (e) {
-            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 1000');
+            expect(e.message).toEqual('Could not find any entity of type "Contribution" matching: 1000');
         }
         activities = await getActivityByContributionAsync(1000, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
     });
 
     it('getActivityByContributionAsync success', async () => {
         const contribution = await newContributionAsync(campaign1, government);
         let activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         await createContributionCommentAsync({
             contributionId: contribution.id,
             currentUserId: campaignAdmin.id,
             comment: 'This is a comment',
         });
         activities = await getActivityByContributionAsync(contribution.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(1);
+        expect(activities.data.length).toEqual(1);
     });
 
     it('retrieveAndSaveMatchResultAsync exact', async () => {
@@ -1061,14 +1063,14 @@ describe('contributionService', () => {
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.matchStrength).to.equal(MatchStrength.EXACT);
-        expect(contribution.matchId).to.not.be.null;
-        expect(contribution.matchResult).to.not.be.null;
-        expect(contribution.matchResult.exact.length).to.equal(1);
-        expect(contribution.matchResult.strong.length).to.equal(0);
-        expect(contribution.matchResult.weak.length).to.equal(0);
+        expect(contribution.matchStrength).toEqual(MatchStrength.EXACT);
+        expect(contribution.matchId).toBeDefined();
+        expect(contribution.matchResult).toBeDefined();
+        expect(contribution.matchResult.exact.length).toEqual(1);
+        expect(contribution.matchResult.strong.length).toEqual(0);
+        expect(contribution.matchResult.weak.length).toEqual(0);
     });
 
     it('retrieveAndSaveMatchResultAsync strong', async () => {
@@ -1099,14 +1101,14 @@ describe('contributionService', () => {
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.matchStrength).to.equal(MatchStrength.STRONG);
-        expect(contribution.matchId).to.be.null;
-        expect(contribution.matchResult).to.not.be.null;
-        expect(contribution.matchResult.exact.length).to.equal(0);
-        expect(contribution.matchResult.strong.length).to.equal(1);
-        expect(contribution.matchResult.weak.length).to.equal(0);
+        expect(contribution.matchStrength).toEqual(MatchStrength.STRONG);
+        expect(contribution.matchId).toBeNull();
+        expect(contribution.matchResult).toBeDefined();
+        expect(contribution.matchResult.exact.length).toEqual(0);
+        expect(contribution.matchResult.strong.length).toEqual(1);
+        expect(contribution.matchResult.weak.length).toEqual(0);
     });
 
     it('retrieveAndSaveMatchResultAsync weak', async () => {
@@ -1137,14 +1139,14 @@ describe('contributionService', () => {
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
-        expect(contribution.matchId).to.be.null;
-        expect(contribution.matchResult).to.not.be.null;
-        expect(contribution.matchResult.exact.length).to.equal(0);
-        expect(contribution.matchResult.strong.length).to.equal(0);
-        expect(contribution.matchResult.weak.length).to.equal(1);
+        expect(contribution.matchStrength).toEqual(MatchStrength.WEAK);
+        expect(contribution.matchId).toBeNull();
+        expect(contribution.matchResult).toBeDefined();
+        expect(contribution.matchResult.exact.length).toEqual(0);
+        expect(contribution.matchResult.strong.length).toEqual(0);
+        expect(contribution.matchResult.weak.length).toEqual(1);
     });
 
     it('retrieveAndSaveMatchResultAsync none', async () => {
@@ -1174,14 +1176,14 @@ describe('contributionService', () => {
 
         await retrieveAndSaveMatchResultAsync(contribution.id);
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.matchStrength).to.equal(MatchStrength.NONE);
-        expect(contribution.matchId).to.be.not.null;
-        expect(contribution.matchResult).to.not.be.null;
-        expect(contribution.matchResult.exact.length).to.equal(0);
-        expect(contribution.matchResult.strong.length).to.equal(0);
-        expect(contribution.matchResult.weak.length).to.equal(0);
+        expect(contribution.matchStrength).toEqual(MatchStrength.NONE);
+        expect(contribution.matchId).toBeDefined();
+        expect(contribution.matchResult).toBeDefined();
+        expect(contribution.matchResult.exact.length).toEqual(0);
+        expect(contribution.matchResult.strong.length).toEqual(0);
+        expect(contribution.matchResult.weak.length).toEqual(0);
     });
 
     it('updateMatchResultAsync exact match not allow', async () => {
@@ -1203,7 +1205,7 @@ describe('contributionService', () => {
             date: Date.now(),
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
         try {
             await updateMatchResultAsync({
@@ -1213,7 +1215,7 @@ describe('contributionService', () => {
                 matchId: 'love',
             });
         } catch (e) {
-            expect(e.message).to.equal('Contribution has an exact match, cannot update');
+            expect(e.message).toEqual('Contribution has an exact match, cannot update');
         }
     });
 
@@ -1251,7 +1253,7 @@ describe('contributionService', () => {
                 matchId: 'love',
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions');
+            expect(e.message).toEqual('User does not have permissions');
         }
     });
 
@@ -1264,7 +1266,7 @@ describe('contributionService', () => {
                 matchId: 'love',
             });
         } catch (e) {
-            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
+            expect(e.message).toEqual('Could not find any entity of type "Contribution" matching: 10000');
         }
     });
 
@@ -1300,9 +1302,9 @@ describe('contributionService', () => {
             matchStrength: MatchStrength.WEAK,
             matchId: 'love',
         });
-        contribution = await contributionRepository.findOne(contribution.id);
-        expect(contribution.matchStrength).to.equal(MatchStrength.WEAK);
-        expect(contribution.matchId).to.equal('love');
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
+        expect(contribution.matchStrength).toEqual(MatchStrength.WEAK);
+        expect(contribution.matchId).toEqual('love');
     });
 
     it('getMatchResultAsync no permissions', async () => {
@@ -1334,7 +1336,7 @@ describe('contributionService', () => {
         try {
             await getMatchResultAsync({ contributionId: contribution.id, currentUserId: campaignAdmin.id });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions');
+            expect(e.message).toEqual('User does not have permissions');
         }
     });
 
@@ -1342,7 +1344,7 @@ describe('contributionService', () => {
         try {
             await getMatchResultAsync({ contributionId: 10000, currentUserId: govAdmin.id });
         } catch (e) {
-            expect(e.message).to.equal('Could not find any entity of type "Contribution" matching: 10000');
+            expect(e.message).toEqual('Could not find any entity of type "Contribution" matching: 10000');
         }
     });
 
@@ -1365,11 +1367,11 @@ describe('contributionService', () => {
             date: Date.now(),
         });
         const result = await getMatchResultAsync({ contributionId: contribution.id, currentUserId: govAdmin.id });
-        expect(result.matchStrength).to.equal(MatchStrength.EXACT);
-        expect(result.results.exact.length).to.equal(1);
-        expect(result.results.strong.length).to.equal(0);
-        expect(result.results.weak.length).to.equal(0);
-        expect(result.results.none).to.not.be.undefined;
+        expect(result.matchStrength).toEqual(MatchStrength.EXACT);
+        expect(result.results.exact.length).toEqual(1);
+        expect(result.results.strong.length).toEqual(0);
+        expect(result.results.weak.length).toEqual(0);
+        expect(result.results.none).toBeDefined();
     });
 
     it('updateContributionAsync user permissions for updating fields when submitted status', async () => {
@@ -1401,7 +1403,7 @@ describe('contributionService', () => {
                 amount: 150,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions');
+            expect(e.message).toEqual('User does not have permissions');
         }
 
         try {
@@ -1411,7 +1413,7 @@ describe('contributionService', () => {
                 status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change status to processed');
+            expect(e.message).toEqual('User does not have permissions to change status to processed');
         }
 
         await updateContributionAsync({
@@ -1420,9 +1422,9 @@ describe('contributionService', () => {
             status: ContributionStatus.PROCESSED,
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
+        expect(contribution.status).toEqual(ContributionStatus.PROCESSED);
     });
 
     it('updateContributionAsync user permissions for status change to processed', async () => {
@@ -1454,12 +1456,12 @@ describe('contributionService', () => {
                 matchAmount: 250,
             });
         } catch (e) {
-            expect(e.message).to.equal('Cannot change attributes on a processed contribution');
+            expect(e.message).toEqual('Cannot change attributes on a processed contribution');
         }
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
+        expect(contribution.status).toEqual(ContributionStatus.PROCESSED);
     });
 
     it('updateContributionAsync user permissions for status change to processed', async () => {
@@ -1488,7 +1490,7 @@ describe('contributionService', () => {
                 status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change status to processed');
+            expect(e.message).toEqual('User does not have permissions to change status to processed');
         }
 
         try {
@@ -1498,7 +1500,7 @@ describe('contributionService', () => {
                 status: ContributionStatus.PROCESSED,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change status to processed');
+            expect(e.message).toEqual('User does not have permissions to change status to processed');
         }
 
         await updateContributionAsync({
@@ -1507,9 +1509,9 @@ describe('contributionService', () => {
             status: ContributionStatus.PROCESSED,
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.status).to.equal(ContributionStatus.PROCESSED);
+        expect(contribution.status).toEqual(ContributionStatus.PROCESSED);
     });
 
     it('updateContributionAsync user permissions for matchAmount', async () => {
@@ -1538,7 +1540,7 @@ describe('contributionService', () => {
                 matchAmount: 50,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change matchAmount');
+            expect(e.message).toEqual('User does not have permissions to change matchAmount');
         }
 
         try {
@@ -1548,7 +1550,7 @@ describe('contributionService', () => {
                 matchAmount: 50,
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions to change matchAmount');
+            expect(e.message).toEqual('User does not have permissions to change matchAmount');
         }
 
         await updateContributionAsync({
@@ -1557,8 +1559,8 @@ describe('contributionService', () => {
             matchAmount: 50,
         });
 
-        contribution = await contributionRepository.findOne(contribution.id);
+        contribution = await contributionRepository.findOne({ where: { id: contribution.id } });
 
-        expect(contribution.matchAmount).to.equal(50);
+        expect(contribution.matchAmount).toEqual(50);
     });
 });

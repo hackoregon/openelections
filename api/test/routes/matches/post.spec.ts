@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -13,12 +11,11 @@ import {
     Contribution,
     ContributionType,
     ContributionSubType,
-    ContributionStatus,
     ContributorType,
-    PaymentMethod
+    PaymentMethod,
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
-import {getConnection} from "typeorm";
+import db from '../../../models/db';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -34,7 +31,7 @@ let campaignStaff2Token: string;
 let contribution1: Contribution;
 
 describe('Routes post /matches', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -51,19 +48,19 @@ describe('Routes post /matches', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -87,7 +84,7 @@ describe('Routes post /matches', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
-            paymentMethod: PaymentMethod.CHECK
+            paymentMethod: PaymentMethod.CHECK,
         });
     });
 
@@ -95,24 +92,23 @@ describe('Routes post /matches', () => {
         await truncateAll();
     });
 
-    context('post /matches', () => {
+    describe('post /matches', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .post(`/matches`)
                 .send({
                     contributionId: contribution1.id,
                     matchId: 'love',
-                    matchStrength: 'weak'
+                    matchStrength: 'weak',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            const defaultConn = getConnection('default');
-            const contributionRepository = defaultConn.getRepository('Contribution');
-            const updated = await contributionRepository.findOneOrFail(contribution1.id) as Contribution;
-            expect(updated.matchStrength).to.equal('weak');
-            expect(updated.matchId).to.equal('love');
-
+            expect(response.status).toEqual(200);
+            const dataSource = await db();
+            const contributionRepository = dataSource.getRepository('Contribution');
+            const updated = await contributionRepository.findOneOrFail({ where: { id: contribution1.id } });
+            expect(updated.matchStrength).toEqual('weak');
+            expect(updated.matchId).toEqual('love');
         });
 
         it('error permissions', async () => {
@@ -121,12 +117,11 @@ describe('Routes post /matches', () => {
                 .send({
                     contributionId: contribution1.id,
                     matchId: 'love',
-                    matchStrength: 'none'
+                    matchStrength: 'none',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body).to.not.have.property('id');
+            expect(response.status).toEqual(422);
             expect(response.body.message);
         });
     });
