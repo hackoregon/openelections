@@ -6,15 +6,15 @@ import {
     BeforeInsert,
     BeforeUpdate,
     CreateDateColumn,
-    getConnection,
-    Between
+    Between,
 } from 'typeorm';
-import {Government} from './Government';
-import {Campaign} from './Campaign';
-import {User} from './User';
-import {IsDefined, validate, ValidationError} from 'class-validator';
-import {Contribution} from './Contribution';
-import {Expenditure} from './Expenditure';
+import { Government } from './Government';
+import { Campaign } from './Campaign';
+import { User } from './User';
+import { IsDefined, validate, ValidationError } from 'class-validator';
+import { Contribution } from './Contribution';
+import { Expenditure } from './Expenditure';
+import db from '../db';
 
 export enum ActivityTypeEnum {
     USER = 'user',
@@ -44,14 +44,14 @@ export class Activity {
 
     @Column({
         type: 'enum',
-        enum: ActivityTypeEnum
+        enum: ActivityTypeEnum,
     })
     @IsDefined()
     activityType: ActivityTypeEnum;
 
     @Column({
         nullable: true,
-        default: false
+        default: false,
     })
     notify: boolean;
 
@@ -60,19 +60,19 @@ export class Activity {
     })
     attachmentPath: string;
 
-    @ManyToOne(type => Government, government => government.activities, {eager: true})
+    @ManyToOne((type) => Government, (government) => government.activities, { eager: true })
     government: Government;
 
-    @ManyToOne(type => Campaign, campaign => campaign.activities, {eager: true})
+    @ManyToOne((type) => Campaign, (campaign) => campaign.activities, { eager: true })
     campaign: Campaign;
 
-    @ManyToOne(type => User, user => user.activities, {eager: true})
+    @ManyToOne((type) => User, (user) => user.activities, { eager: true })
     user: User;
 
-    @ManyToOne(type => Contribution, contribution => contribution.activities, {eager: true})
+    @ManyToOne((type) => Contribution, (contribution) => contribution.activities, { eager: true })
     contribution: Contribution;
 
-    @ManyToOne(type => Expenditure, expenditure => expenditure.activities, {eager: true})
+    @ManyToOne((type) => Expenditure, (expenditure) => expenditure.activities, { eager: true })
     expenditure: Expenditure;
 
     public errors: ValidationError[];
@@ -105,14 +105,14 @@ export class Activity {
         if (!u) {
             const error = new ValidationError();
             error.property = 'userId';
-            error.constraints = {isDefined: 'userId should not be null or undefined'};
+            error.constraints = { isDefined: 'userId should not be null or undefined' };
             this.errors.push(error);
         }
     }
 }
 
 export interface IActivityResults {
-    data: IActivityResult[]
+    data: IActivityResult[];
     perPage: number;
     page: number;
     total: number;
@@ -128,25 +128,32 @@ export interface IActivityResult {
     attachmentPath?: string;
 }
 
-export async function getActivityByGovernmentAsync(governmentId, perPage, page: number, hostName: string): Promise<IActivityResults> {
-    const activityRepository = getConnection('default').getRepository('Activity');
+export async function getActivityByGovernmentAsync(
+    governmentId,
+    perPage,
+    page: number,
+    hostName: string
+): Promise<IActivityResults> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
     const total = await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
-        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
+        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
         .getCount();
     let data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt"'
         )
-        .andWhere('"activity"."governmentId" = :governmentId', {governmentId: governmentId})
+        .andWhere('"activity"."governmentId" = :governmentId', { governmentId: governmentId })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[]);
+        .getRawMany()) as IActivityResult[];
+
     data = data.map((item: IActivityResult) => {
         if (item.attachmentPath) {
             if (process.env.APP_ENV === 'staging') {
@@ -163,25 +170,31 @@ export async function getActivityByGovernmentAsync(governmentId, perPage, page: 
         data,
         total,
         perPage,
-        page
+        page,
     };
 }
 
-export async function getActivityByCampaignAsync(campaignId, perPage, page: number, hostName: string): Promise<IActivityResults> {
-    const activityRepository = getConnection('default').getRepository('Activity');
+export async function getActivityByCampaignAsync(
+    campaignId,
+    perPage,
+    page: number,
+    hostName: string
+): Promise<IActivityResults> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
     const total = await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
-        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
+        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
         .getCount();
     let data = (await activityRepository
         .createQueryBuilder('activity')
         .select(
             'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
         )
-        .andWhere('"activity"."campaignId" = :campaignId', {campaignId})
+        .andWhere('"activity"."campaignId" = :campaignId', { campaignId })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
@@ -202,10 +215,9 @@ export async function getActivityByCampaignAsync(campaignId, perPage, page: numb
         data,
         total,
         perPage,
-        page
+        page,
     };
 }
-
 
 export interface IShortActivityResult {
     notes: string;
@@ -213,61 +225,84 @@ export interface IShortActivityResult {
     activityType: ActivityTypeEnum;
 }
 
-export async function getActivityByCampaignByTimeAsync(campaignId: number, from, to: Date): Promise<IShortActivityResult[]> {
-    const activityRepository = getConnection('default').getRepository('Activity');
-    return (await activityRepository
-        .find({
-            select: ['notes', 'activityId', 'activityType', 'createdAt'],
-            where: {
-                campaign: {
-                    id: campaignId
-                },
-                createdAt: Between(from, to),
-                notify: true,
+export async function getActivityByCampaignByTimeAsync(
+    campaignId: number,
+    from,
+    to: Date
+): Promise<IShortActivityResult[]> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
+    return (await activityRepository.find({
+        select: ['notes', 'activityId', 'activityType', 'createdAt'],
+        where: {
+            campaign: {
+                id: campaignId,
             },
-            order: {
-                createdAt: 'DESC'
-            }
-        })) as IShortActivityResult[];
+            createdAt: Between(from, to),
+            notify: true,
+        },
+        order: {
+            createdAt: 'DESC',
+        },
+    })) as IShortActivityResult[];
 }
 
 export async function getActivityByUserAsync(userId, perPage, page: number): Promise<IActivityResults> {
-    const activityRepository = getConnection('default').getRepository('Activity');
-    const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."userId" = :userId', {userId})
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
+    const total = await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."userId" = :userId', { userId })
         .getCount();
-    const data = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."userId" = :userId', {userId})
+    const data = (await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."userId" = :userId', { userId })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[];
+        .getRawMany()) as IActivityResult[];
     return {
         data,
         total,
         perPage,
-        page
+        page,
     };
 }
 
-export async function getActivityByContributionAsync(contributionId, perPage, page: number, hostName: string): Promise<IActivityResults> {
-    const activityRepository = getConnection('default').getRepository('Activity');
-    const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."activityId" = :contributionId', {contributionId})
+export async function getActivityByContributionAsync(
+    contributionId,
+    perPage,
+    page: number,
+    hostName: string
+): Promise<IActivityResults> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
+    const total = await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."activityId" = :contributionId', { contributionId })
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.CONTRIBUTION,
-            activityType2: ActivityTypeEnum.COMMENT_CONTR
+            activityType2: ActivityTypeEnum.COMMENT_CONTR,
         })
         .getCount();
-    let data = (await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."activityId" = :contributionId', {contributionId})
+    let data = (await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."activityId" = :contributionId', { contributionId })
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.CONTRIBUTION,
-            activityType2: ActivityTypeEnum.COMMENT_CONTR
+            activityType2: ActivityTypeEnum.COMMENT_CONTR,
         })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
@@ -289,29 +324,41 @@ export async function getActivityByContributionAsync(contributionId, perPage, pa
         data,
         total,
         perPage,
-        page
+        page,
     };
 }
 
-export async function getActivityByExpenditureAsync(expenditureId, perPage, page: number, hostName: string): Promise<IActivityResults> {
-    const activityRepository = getConnection('default').getRepository('Activity');
-    let data = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
+export async function getActivityByExpenditureAsync(
+    expenditureId,
+    perPage,
+    page: number,
+    hostName: string
+): Promise<IActivityResults> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
+    let data = (await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."activityId" = :expenditureId', { expenditureId })
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.EXPENDITURE,
-            activityType2: ActivityTypeEnum.COMMENT_EXP
+            activityType2: ActivityTypeEnum.COMMENT_EXP,
         })
         .orderBy('"activity"."createdAt"', 'DESC')
         .limit(perPage)
         .offset(perPage * page)
-        .getRawMany() as IActivityResult[];
-    const total = await activityRepository.createQueryBuilder('activity')
-        .select('activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"')
-        .andWhere('"activity"."activityId" = :expenditureId', {expenditureId})
+        .getRawMany()) as IActivityResult[];
+    const total = await activityRepository
+        .createQueryBuilder('activity')
+        .select(
+            'activity.id, "activity"."userId", activity.notes, "activity"."campaignId", "activity"."activityId", "activity"."activityType", "activity"."createdAt", "activity"."attachmentPath"'
+        )
+        .andWhere('"activity"."activityId" = :expenditureId', { expenditureId })
         .andWhere('("activity"."activityType" = :activityType1 OR "activity"."activityType" = :activityType2)', {
             activityType1: ActivityTypeEnum.EXPENDITURE,
-            activityType2: ActivityTypeEnum.COMMENT_EXP
+            activityType2: ActivityTypeEnum.COMMENT_EXP,
         })
         .getCount();
     data = data.map((item: IActivityResult) => {
@@ -330,6 +377,6 @@ export async function getActivityByExpenditureAsync(expenditureId, perPage, page
         data,
         total,
         perPage,
-        page
+        page,
     };
 }

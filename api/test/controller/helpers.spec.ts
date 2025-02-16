@@ -2,7 +2,7 @@ import { FileArray, UploadedFile } from 'express-fileupload';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as crypto from 'crypto';
-import { expect } from 'chai';
+
 import { parseBulkCsvData } from '../../controller/helpers';
 
 let bulkUploadBody = {
@@ -38,7 +38,7 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-name.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-name.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        expect(parsedData).to.deep.equal({
+        expect(parsedData).toEqual({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
                 {
@@ -66,7 +66,7 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-name-and-address.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-name-and-address.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        expect(parsedData).to.deep.equal({
+        expect(parsedData).toEqual({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
                 {
@@ -93,7 +93,7 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-invalid-same-name-address.csv', async () => {
         mockCsv = createMockCsv('contributions-invalid-same-name-address.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        expect(parsedData).to.deep.equal({
+        expect(parsedData).toEqual({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
                 {
@@ -121,7 +121,7 @@ describe('controller/helpers', () => {
     it('parseBulkCsvData: contributions-download-v-small.csv', async () => {
         mockCsv = createMockCsv('contributions-download-v-small.csv');
         const parsedData = await parseBulkCsvData(bulkUploadBody, mockCsv);
-        expect(parsedData).to.deep.equal({
+        expect(parsedData).toEqual({
             info: { governmentId: 1, campaignId: 1, currentUserId: 1, filename: '1' },
             contributions: [
                 {

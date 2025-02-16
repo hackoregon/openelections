@@ -1,4 +1,4 @@
-import * as fetch from 'node-fetch';
+import fetch from 'node-fetch';
 
 export function dataScienceUrl() {
     if (process.env.APP_ENV === 'production') {
@@ -67,8 +67,13 @@ export async function retrieveResultAsync(attrs: RetrieveDataScienceMatchAttrs):
                 `&latitude=${attrs.addressPoint.coordinates[1]}&longitude=${attrs.addressPoint.coordinates[0]}`;
         }
 
-        const response = await fetch(`${dataScienceUrl()}${urlParams}`);
-        const addressInfo: MatchAddressType = await response.json();
+        const response = await fetch(`${dataScienceUrl()}${urlParams}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const addressInfo: MatchAddressType = (await response.json()) as MatchAddressType;
         if (addressInfo.donor_info.eligible_address === 'True') {
             addressInfo.donor_info.eligible_address = true;
         } else {

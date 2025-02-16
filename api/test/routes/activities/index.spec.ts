@@ -1,18 +1,15 @@
-import { expect } from 'chai';
 import * as express from 'express';
 import { Campaign } from '../../../models/entity/Campaign';
 import { Government } from '../../../models/entity/Government';
 import { User } from '../../../models/entity/User';
 import { newActiveUserAsync, newCampaignAsync, newGovernmentAsync, truncateAll } from '../../factories';
-import {
-    createActivityRecordAsync,
-} from '../../../services/activityService';
+import { createActivityRecordAsync } from '../../../services/activityService';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import * as request from 'supertest';
 import { Permission, UserRole } from '../../../models/entity/Permission';
 import { ActivityTypeEnum } from '../../../models/entity/Activity';
-import { getConnection } from 'typeorm';
 import { setupRoutes } from '../../../routes';
+import db from '../../../models/db';
 
 let app: express.Express;
 let government: Government;
@@ -27,8 +24,7 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 
 describe('Activity', () => {
-
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -42,19 +38,19 @@ describe('Activity', () => {
         permission = await addPermissionAsync({
             userId: govUser.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
         await addPermissionAsync({
             userId: campaignAdmin.id,
             governmentId: government.id,
             campaignId: campaign1.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
         await addPermissionAsync({
             userId: campaignStaff.id,
             governmentId: government.id,
             campaignId: campaign1.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
         await createActivityRecordAsync({
             government,
@@ -73,7 +69,8 @@ describe('Activity', () => {
             activityType: ActivityTypeEnum.PERMISSION,
             activityId: govUser.id,
         });
-        activityRepository = getConnection('default').getRepository('Activity');
+        const dataSource = await db();
+        activityRepository = dataSource.getRepository('Activity');
         govUserToken = await generateJWTokenAsync(govUser.id);
         campaignStaffToken = await generateJWTokenAsync(campaignStaff.id);
         campaignAdminToken = await generateJWTokenAsync(campaignAdmin.id);
@@ -91,8 +88,8 @@ describe('Activity', () => {
             })
             .set('Accept', 'application/json')
             .set('Cookie', [`token=${govUserToken}`]);
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(2);
+        expect(response.status).toEqual(200);
+        expect(response.body.data.length).toEqual(2);
     });
 
     it('post /activities success governmentAdmin pagination', async () => {
@@ -101,12 +98,12 @@ describe('Activity', () => {
             .send({
                 governmentId: government.id,
                 perPage: 1,
-                page: 0
+                page: 0,
             })
             .set('Accept', 'application/json')
             .set('Cookie', [`token=${govUserToken}`]);
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(1);
+        expect(response.status).toEqual(200);
+        expect(response.body.data.length).toEqual(1);
     });
 
     it('post /activities success campaignAdmin', async () => {
@@ -115,12 +112,12 @@ describe('Activity', () => {
             .send({
                 campaignId: campaign1.id,
                 perPage: 1,
-                page: 0
+                page: 0,
             })
             .set('Accept', 'application/json')
             .set('Cookie', [`token=${campaignAdminToken}`]);
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(1);
+        expect(response.status).toEqual(200);
+        expect(response.body.data.length).toEqual(1);
     });
 
     it('post /activities success campaignStaff', async () => {
@@ -129,12 +126,12 @@ describe('Activity', () => {
             .send({
                 campaignId: campaign1.id,
                 perPage: 1,
-                page: 0
+                page: 0,
             })
             .set('Accept', 'application/json')
             .set('Cookie', [`token=${campaignStaffToken}`]);
-        expect(response.status).to.equal(200);
-        expect(response.body.length).to.equal(1);
+        expect(response.status).toEqual(200);
+        expect(response.body.data.length).toEqual(1);
     });
 
     it('post /activities fails bad token', async () => {
@@ -144,12 +141,11 @@ describe('Activity', () => {
                 governmentId: government.id,
                 campaignId: campaign1.id,
                 perPage: 1,
-                page: 0
+                page: 0,
             })
             .set('Accept', 'application/json')
             .set('Cookie', [`token=${1111}`]);
-        expect(response.status).to.equal(401);
-        expect(response.body.message).to.equal('Token expired or incorrect');
+        expect(response.status).toEqual(401);
+        expect(response.body.message).toEqual('Token expired or incorrect');
     });
-
 });

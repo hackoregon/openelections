@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -24,7 +24,7 @@ let campaignStaffToken: string;
 let campaignStaff2Token: string;
 
 describe('Routes post /expenditures/new', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -41,19 +41,19 @@ describe('Routes post /expenditures/new', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -66,7 +66,7 @@ describe('Routes post /expenditures/new', () => {
         await truncateAll();
     });
 
-    context('post /expenditures/new', () => {
+    describe('post /expenditures/new', () => {
         it('success', async () => {
             const validExpenditurePostBody: IAddExpenditureAttrs = {
                 address1: '123 ABC ST',
@@ -81,15 +81,15 @@ describe('Routes post /expenditures/new', () => {
                 state: 'OR',
                 zip: '97214',
                 payeeType: PayeeType.INDIVIDUAL,
-                name: 'Test Expenditure'
+                name: 'Test Expenditure',
             };
             const response = await request(app)
                 .post(`/expenditures/new`)
                 .send(validExpenditurePostBody)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(201);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(201);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error on missing required properties', async () => {
@@ -106,14 +106,14 @@ describe('Routes post /expenditures/new', () => {
                 zip: '97214',
                 payeeType: PayeeType.INDIVIDUAL,
                 name: 'Test Expenditure',
-                description: 'This is a test'
+                description: 'This is a test',
             };
             const response = await request(app)
                 .post(`/expenditures/new`)
                 .send(invalidExpenditurePostBody)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
+            expect(response.status).toEqual(422);
             expect(response.body.message);
         });
     });

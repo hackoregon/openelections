@@ -1,22 +1,18 @@
-import { getConnection } from 'typeorm';
 import { Campaign, getCampaignSummariesByGovernmentIdAsync, ICampaignSummary } from '../models/entity/Campaign';
 import { Government } from '../models/entity/Government';
 import {
     addUserToCampaignAsync,
     isCampaignAdminAsync,
     isCampaignStaffAsync,
-    isGovernmentAdminAsync
+    isGovernmentAdminAsync,
 } from './permissionService';
 import { UserRole } from '../models/entity/Permission';
 import { ExpenditureSummaryByStatus, getExpenditureSummaryByStatusAsync } from '../models/entity/Expenditure';
-import {
-    Contribution,
-    ContributionSummaryByStatus,
-    getContributionsSummaryByStatusAsync
-} from '../models/entity/Contribution';
+import { ContributionSummaryByStatus, getContributionsSummaryByStatusAsync } from '../models/entity/Contribution';
 import { User } from '../models/entity/User';
 import { ActivityTypeEnum } from '../models/entity/Activity';
 import { createActivityRecordAsync } from './activityService';
+import db from '../models/db';
 
 export interface ICreateCampaign {
     name: string;
@@ -37,17 +33,19 @@ export interface IUpdateCampaignName {
 
 export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promise<Campaign> {
     try {
-
+        const dataSource = await db();
         if (await isGovernmentAdminAsync(campaignAttrs.currentUserId, campaignAttrs.governmentId)) {
-            const campaignRepository = getConnection('default').getRepository('Campaign');
-            const governmentRepository = getConnection('default').getRepository('Government');
+            const campaignRepository = dataSource.getRepository('Campaign');
+            const governmentRepository = dataSource.getRepository('Government');
             const campaign = new Campaign();
             campaign.name = campaignAttrs.name;
             campaign.officeSought = campaignAttrs.officeSought;
-            const government = (await governmentRepository.findOne(campaignAttrs.governmentId)) as Government;
+            const government = (await governmentRepository.findOne({
+                where: { id: campaignAttrs.governmentId },
+            })) as Government;
             campaign.government = government;
             if (await campaign.isValidAsync()) {
-                const savedCampaign = await campaignRepository.save(campaign) as Campaign;
+                const savedCampaign = (await campaignRepository.save(campaign)) as Campaign;
                 if (campaignAttrs.email && campaignAttrs.firstName && campaignAttrs.lastName) {
                     await addUserToCampaignAsync({
                         email: campaignAttrs.email,
@@ -55,7 +53,7 @@ export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promi
                         lastName: campaignAttrs.lastName,
                         role: UserRole.CAMPAIGN_ADMIN,
                         campaignId: savedCampaign.id,
-                        currentUserId: campaignAttrs.currentUserId
+                        currentUserId: campaignAttrs.currentUserId,
                     });
                 }
             } else {
@@ -72,25 +70,30 @@ export async function createCampaignAsync(campaignAttrs: ICreateCampaign): Promi
 
 export async function updateCampaignNameAsync(campaignAttrs: IUpdateCampaignName): Promise<Campaign> {
     try {
+        const dataSource = await db();
         if (await isGovernmentAdminAsync(campaignAttrs.currentUserId, campaignAttrs.governmentId)) {
-            const campaignRepository = getConnection('default').getRepository('Campaign');
-            const governmentRepository = getConnection('default').getRepository('Government');
-            const campaign = (await campaignRepository.findOne(campaignAttrs.campaignId) as Campaign);
+            const campaignRepository = dataSource.getRepository('Campaign');
+            const governmentRepository = dataSource.getRepository('Government');
+            const campaign = (await campaignRepository.findOne({
+                where: { id: campaignAttrs.campaignId },
+            })) as Campaign;
             const oldName = campaign.name;
             campaign.name = campaignAttrs.newName;
-            const government = (await governmentRepository.findOne(campaignAttrs.governmentId)) as Government;
+            const government = (await governmentRepository.findOne({
+                where: { id: campaignAttrs.governmentId },
+            })) as Government;
             campaign.government = government;
             if (await campaign.isValidAsync()) {
-                await campaignRepository.save(campaign) as Campaign;
-                const repository = getConnection('default').getRepository('User');
-                const user = await repository.findOneOrFail(campaignAttrs.currentUserId) as User;
+                (await campaignRepository.save(campaign)) as Campaign;
+                const repository = dataSource.getRepository('User');
+                const user = (await repository.findOneOrFail({ where: { id: campaignAttrs.currentUserId } })) as User;
                 await createActivityRecordAsync({
                     currentUser: user,
                     notes: `${user.name()} changed Campaign name from "${oldName}" to "${campaignAttrs.newName}"`,
                     government: await campaign.government,
                     campaign: campaign,
                     activityType: ActivityTypeEnum.CAMPAIGN,
-                    activityId: user.id
+                    activityId: user.id,
                 });
             } else {
                 throw new Error('Campaign is not valid');
@@ -109,7 +112,7 @@ export interface IGetCampaigns {
     governmentId: number;
 }
 
-export async function getCampaignsAsync({currentUserId, governmentId}: IGetCampaigns): Promise<ICampaignSummary[]> {
+export async function getCampaignsAsync({ currentUserId, governmentId }: IGetCampaigns): Promise<ICampaignSummary[]> {
     try {
         if (await isGovernmentAdminAsync(currentUserId, governmentId)) {
             return getCampaignSummariesByGovernmentIdAsync(governmentId);
@@ -134,37 +137,44 @@ export interface StatusSummary {
 
 export async function getStatusSummary(attrs: GetStatusSummaryAttrs): Promise<StatusSummary> {
     if (attrs.campaignId) {
-        const repository = getConnection('default').getRepository('Campaign');
-        const campaign = (await repository.findOneOrFail(attrs.campaignId, {
-            relations: ['government']
+        const dataSource = await db();
+        const repository = dataSource.getRepository('Campaign');
+        const campaign = (await repository.findOneOrFail({
+            where: { id: attrs.campaignId },
+            relations: ['government'],
         })) as Campaign;
         const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, campaign.government.id);
-        const hasCampaignPermissions = await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId) || await isCampaignStaffAsync(attrs.currentUserId, attrs.campaignId);
+        const hasCampaignPermissions =
+            (await isCampaignAdminAsync(attrs.currentUserId, attrs.campaignId)) ||
+            (await isCampaignStaffAsync(attrs.currentUserId, attrs.campaignId));
         if (hasGovPermissions || hasCampaignPermissions) {
             const contributions = await getContributionsSummaryByStatusAsync({
-                campaignId: attrs.campaignId
+                campaignId: attrs.campaignId,
             });
             const expenditures = await getExpenditureSummaryByStatusAsync({
-                campaignId: attrs.campaignId
+                campaignId: attrs.campaignId,
             });
             return {
                 expenditures,
-                contributions
+                contributions,
             };
         } else {
             throw new Error('User does not have permissions for this campaign');
         }
     } else if (attrs.governmentId) {
         const hasGovPermissions = await isGovernmentAdminAsync(attrs.currentUserId, attrs.governmentId);
+        if (!hasGovPermissions) {
+            throw new Error('User does not have permissions for this government');
+        }
         const contributions = await getContributionsSummaryByStatusAsync({
-            governmentId: attrs.governmentId
+            governmentId: attrs.governmentId,
         });
         const expenditures = await getExpenditureSummaryByStatusAsync({
-            governmentId: attrs.governmentId
+            governmentId: attrs.governmentId,
         });
         return {
             expenditures,
-            contributions
+            contributions,
         };
     }
     throw new Error('Either governmentId or campaignId must be present');

@@ -15,6 +15,7 @@ services:
     volumes:
       - ./app:/app
   api:
+    platform: linux/amd64
     tty: true # Enables debugging capabilities when attached to this container.
     user: root
     build:

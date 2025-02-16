@@ -130,7 +130,8 @@ let campaignAdminToken;
 let campaignStaffToken;
 let governmentId;
 let campaignId;
-describe.only('Side Effects', () => {
+
+describe('Side Effects', () => {
   beforeAll(async () => {
     let tokenResponse = await api.login(
       'govadmin@openelectionsportland.org',

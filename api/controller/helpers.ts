@@ -1,7 +1,7 @@
 import { validate } from 'class-validator';
 import { FileArray } from 'express-fileupload';
 import { createReadStream } from 'fs';
-import * as parse from 'csv-parse/lib';
+import { parse } from 'csv-parse';
 import { IAddContributionAttrs } from '../services/contributionService';
 import { convertToTimeZone } from 'date-fns-timezone';
 import {
@@ -14,7 +14,6 @@ import {
 } from '../models/entity/Contribution';
 
 export async function checkDto(dto): Promise<void> {
-    console.log('from checkDto');
     const validationErrors = await validate(dto, { validationError: { target: false } });
     if (validationErrors.length) {
         throw new Error(
@@ -28,7 +27,6 @@ export async function checkDto(dto): Promise<void> {
 }
 
 export async function checkDtoWithEnums(dto): Promise<void> {
-    console.log('from checkDtoWithEnums');
     const validationErrors = await validate(dto, { validationError: { target: false } });
     if (validationErrors.length) {
         throw new Error(
@@ -203,11 +201,9 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
             .pipe(parse({ delimiter: ',', columns: true }))
             .on('data', (row: IBulkUploadCSV) => {
                 if (runColumnCheck) {
-                    console.log('header row start');
                     const rowTitleErrors = [];
                     Object.keys(row || {}).forEach((rowItem) => {
                         if (!acceptableColumnTitles.includes(rowItem)) {
-                            console.log(`${rowItem} should not be here.`);
                             rowTitleErrors.push(rowItem);
                         }
                     });
@@ -218,7 +214,6 @@ export async function parseBulkCsvData(body: IBulkUploadBody, file: FileArray): 
                         }
                         reject(new Error(`${rowErrorString}. Columns should be: ${acceptableColumnTitles.join(', ')}`));
                     }
-                    console.log('header row end');
                     runColumnCheck = false;
                 }
                 const newRow: Partial<IAddContributionAttrs> = {};

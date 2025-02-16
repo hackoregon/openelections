@@ -1,5 +1,4 @@
 import redisClient from '../models/redis';
-import { expect } from 'chai';
 
 describe('redisClient examples', () => {
     beforeEach(async () => {
@@ -9,12 +8,12 @@ describe('redisClient examples', () => {
         await redisClient.flushall();
     });
     it('set and get', async () => {
-        expect(await redisClient.get('love')).to.be.null;
+        expect(await redisClient.get('love')).toBeNull();
         await redisClient.set('love', 1);
-        expect(await redisClient.get('love')).to.equal('1');
+        expect(await redisClient.get('love')).toEqual('1');
     });
 
     it('test clears between runs', async () => {
-        expect(await redisClient.get('love')).to.be.null;
+        expect(await redisClient.get('love')).toBeNull();
     });
 });

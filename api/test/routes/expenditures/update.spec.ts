@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -8,7 +8,7 @@ import {
     newCampaignAsync,
     newExpenditureAsync,
     newGovernmentAsync,
-    truncateAll
+    truncateAll,
 } from '../../factories';
 import { Government } from '../../../models/entity/Government';
 import { Campaign } from '../../../models/entity/Campaign';
@@ -16,6 +16,7 @@ import { addPermissionAsync, generateJWTokenAsync } from '../../../services/perm
 import { UserRole } from '../../../models/entity/Permission';
 import { Expenditure } from '../../../models/entity/Expenditure';
 import { getConnection } from 'typeorm';
+import db from '../../../models/db';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -32,10 +33,11 @@ let expenditure1: Expenditure;
 let expenditureRepository: any;
 
 describe('Routes put /expenditures/:id', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
-        expenditureRepository = getConnection('default').getRepository('Expenditure');
+        const dataSource = await db();
+        expenditureRepository = dataSource.getRepository('Expenditure');
     });
 
     beforeEach(async () => {
@@ -50,19 +52,19 @@ describe('Routes put /expenditures/:id', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -77,21 +79,22 @@ describe('Routes put /expenditures/:id', () => {
         await truncateAll();
     });
 
-    context('put /expenditures/:id', () => {
+    describe('put /expenditures/:id', () => {
         it('success testme', async () => {
             const response = await request(app)
                 .put(`/expenditures/${expenditure1.id}`)
                 .send({
                     id: expenditure1.id,
-                    amount: 500
+                    amount: 500,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(204);
-            expect(response.body.message).to.be.undefined;
-            const exp = await expenditureRepository.findOne(expenditure1.id) as Expenditure;
-            expect(exp.amount).to.equal(500);
-
+            expect(response.status).toEqual(204);
+            expect(response.body.message).toBeUndefined();
+            const exp = (await expenditureRepository.findOne({
+                where: { id: expenditure1.id },
+            })) as Expenditure;
+            expect(exp.amount).toEqual(500);
         });
 
         it('error id not found', async () => {
@@ -99,12 +102,12 @@ describe('Routes put /expenditures/:id', () => {
                 .put(`/expenditures/${expenditure1.id}`)
                 .send({
                     id: 11111,
-                    firstName: 'Dan'
+                    firstName: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('Could not find any entity of type "Expenditure" matching: 11111');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('Could not find any entity of type "Expenditure" matching: 11111');
         });
 
         it('error user does not have permissions', async () => {
@@ -112,12 +115,12 @@ describe('Routes put /expenditures/:id', () => {
                 .put(`/expenditures/11111`)
                 .send({
                     id: expenditure1.id,
-                    amount: 1
+                    amount: 1,
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaff2Token}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('User does not have permissions');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('User is not permitted to update expenditures for this campaign.');
         });
 
         it('error field does not exist', async () => {
@@ -125,12 +128,14 @@ describe('Routes put /expenditures/:id', () => {
                 .put(`/expenditures/11111`)
                 .send({
                     id: expenditure1.id,
-                    thisFieldDoesNotExist: 'Dan'
+                    thisFieldDoesNotExist: 'Dan',
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('No entity column "thisFieldDoesNotExist" was found.');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                'Property "thisFieldDoesNotExist" was not found in "Expenditure". Make sure your query is correct.'
+            );
         });
     });
 });

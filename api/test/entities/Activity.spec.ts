@@ -1,11 +1,11 @@
-import { expect } from 'chai';
 import { getConnection, Repository } from 'typeorm';
 import {
     newActiveUserAsync,
     newCampaignAsync,
-    newContributionAsync, newExpenditureAsync,
+    newContributionAsync,
+    newExpenditureAsync,
     newGovernmentAsync,
-    truncateAll
+    truncateAll,
 } from '../factories';
 import {
     Activity,
@@ -15,22 +15,21 @@ import {
     getActivityByContributionAsync,
     getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
-    getActivityByUserAsync
+    getActivityByUserAsync,
 } from '../../models/entity/Activity';
 import { Government } from '../../models/entity/Government';
 import { createActivityRecordAsync } from '../../services/activityService';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
+import db from '../../models/db';
 
 let activityRepository: Repository<Activity>;
 let government: Government;
 
 describe('Activity', () => {
-    before(() => {
-        activityRepository = getConnection('default').getRepository(Activity);
-    });
-
     beforeEach(async () => {
+        const dataSource = await db();
+        activityRepository = dataSource.getRepository(Activity);
         government = await newGovernmentAsync();
     });
 
@@ -41,26 +40,26 @@ describe('Activity', () => {
     describe('validations', () => {
         it('notes', async () => {
             const activity = new Activity();
-            expect(await activity.isValidAsync()).to.be.false;
-            expect(activity.errors[0].property).to.equal('notes');
-            expect(activity.errors[0].constraints.isDefined).to.equal('notes should not be null or undefined');
+            expect(await activity.isValidAsync()).toBeFalsy();
+            expect(activity.errors[0].property).toEqual('notes');
+            expect(activity.errors[0].constraints.isDefined).toEqual('notes should not be null or undefined');
         });
 
         it('activityId', async () => {
             const activity = new Activity();
             activity.notes = 'Dan Melton updates something';
-            expect(await activity.isValidAsync()).to.be.false;
-            expect(activity.errors[0].property).to.equal('activityId');
-            expect(activity.errors[0].constraints.isDefined).to.equal('activityId should not be null or undefined');
+            expect(await activity.isValidAsync()).toBeFalsy();
+            expect(activity.errors[0].property).toEqual('activityId');
+            expect(activity.errors[0].constraints.isDefined).toEqual('activityId should not be null or undefined');
         });
 
         it('activityType', async () => {
             const activity = new Activity();
             activity.notes = 'Dan Melton updates something';
             activity.activityId = 1;
-            expect(await activity.isValidAsync()).to.be.false;
-            expect(activity.errors[0].property).to.equal('activityType');
-            expect(activity.errors[0].constraints.isDefined).to.equal('activityType should not be null or undefined');
+            expect(await activity.isValidAsync()).toBeFalsy();
+            expect(activity.errors[0].property).toEqual('activityType');
+            expect(activity.errors[0].constraints.isDefined).toEqual('activityType should not be null or undefined');
         });
 
         it('valid', async () => {
@@ -69,12 +68,12 @@ describe('Activity', () => {
             activity.activityId = 1;
             activity.activityType = ActivityTypeEnum.GOVERNMENT;
             activity.government = government;
-            expect(await activity.isValidAsync()).to.be.true;
-            expect(await activityRepository.count()).to.equal(0);
-            expect(activity.createdAt).to.be.undefined;
+            expect(await activity.isValidAsync()).toBeTruthy();
+            expect(await activityRepository.count()).toEqual(0);
+            expect(activity.createdAt).toBeUndefined();
             await activityRepository.save(activity);
-            expect(await activityRepository.count()).to.equal(1);
-            expect(activity.createdAt).to.not.be.undefined;
+            expect(await activityRepository.count()).toEqual(1);
+            expect(activity.createdAt).toBeDefined();
         });
     });
 
@@ -102,13 +101,13 @@ describe('Activity', () => {
         const records1 = await getActivityByGovernmentAsync(government.id, 100, 0, 'openelectionsportland.org');
         const records2 = await getActivityByGovernmentAsync(government.id, 1, 0, 'openelectionsportland.org');
         const records3 = await getActivityByGovernmentAsync(government.id, 1, 1, 'openelectionsportland.org');
-        expect(noRecords.data.length).to.equal(0);
-        expect(records1.data.length).to.equal(2);
-        expect(records2.data.length).to.equal(1);
-        expect(records2.data[0].id).to.equal(activity2.id);
-        expect(records3.data.length).to.equal(1);
-        expect(records3.total).to.equal(2);
-        expect(records3.data[0].id).to.equal(activity1.id);
+        expect(noRecords.data.length).toEqual(0);
+        expect(records1.data.length).toEqual(2);
+        expect(records2.data.length).toEqual(1);
+        expect(records2.data[0].id).toEqual(activity2.id);
+        expect(records3.data.length).toEqual(1);
+        expect(records3.total).toEqual(2);
+        expect(records3.data[0].id).toEqual(activity1.id);
     });
 
     it('getActivityByCampaignAsync', async () => {
@@ -141,18 +140,18 @@ describe('Activity', () => {
             activityId: user.id,
         });
         // test pagination
-        expect(await activityRepository.count()).to.equal(3);
+        expect(await activityRepository.count()).toEqual(3);
         const noRecords = await getActivityByCampaignAsync(1000, 100, 0, 'openelectionsportland.org');
         const records1 = await getActivityByCampaignAsync(campaign.id, 100, 0, 'openelectionsportland.org');
         const records2 = await getActivityByCampaignAsync(campaign.id, 1, 0, 'openelectionsportland.org');
         const records3 = await getActivityByCampaignAsync(campaign.id, 1, 1, 'openelectionsportland.org');
-        expect(noRecords.data.length).to.equal(0);
-        expect(records1.data.length).to.equal(2);
-        expect(records2.data.length).to.equal(1);
-        expect(records2.data[0].id).to.equal(activity2.id);
-        expect(records3.data.length).to.equal(1);
-        expect(records3.total).to.equal(2);
-        expect(records3.data[0].id).to.equal(activity1.id);
+        expect(noRecords.data.length).toEqual(0);
+        expect(records1.data.length).toEqual(2);
+        expect(records2.data.length).toEqual(1);
+        expect(records2.data[0].id).toEqual(activity2.id);
+        expect(records3.data.length).toEqual(1);
+        expect(records3.total).toEqual(2);
+        expect(records3.data[0].id).toEqual(activity1.id);
     });
 
     it('getActivityByUser', async () => {
@@ -160,19 +159,23 @@ describe('Activity', () => {
         const govUser = await newActiveUserAsync();
         const gov = await newGovernmentAsync();
         const campaign = await newCampaignAsync(gov);
-        await addPermissionAsync({userId: govUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: gov.id});
-        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        await addPermissionAsync({ userId: govUser.id, role: UserRole.GOVERNMENT_ADMIN, governmentId: gov.id });
+        const permission = await addPermissionAsync({
+            userId: user.id,
+            role: UserRole.CAMPAIGN_ADMIN,
+            campaignId: campaign.id,
+        });
         await createActivityRecordAsync({
             currentUser: user,
             notes: `${govUser.name()} added ${user.name()} to ${gov.name} as a ${UserRole.CAMPAIGN_ADMIN}`,
             government: gov,
             campaign,
             activityType: ActivityTypeEnum.PERMISSION,
-            activityId: permission.id
+            activityId: permission.id,
         });
         const activities = await getActivityByUserAsync(user.id, 100, 0);
-        expect(activities.data.length).to.equal(1);
-        expect(activities.total).to.equal(1);
+        expect(activities.data.length).toEqual(1);
+        expect(activities.total).toEqual(1);
     });
 
     it('getActivityByContributionAsync', async () => {
@@ -180,14 +183,18 @@ describe('Activity', () => {
         const campaign = await newCampaignAsync(gov);
         const contr = await newContributionAsync(campaign, gov);
         const user = await newActiveUserAsync();
-        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        const permission = await addPermissionAsync({
+            userId: user.id,
+            role: UserRole.CAMPAIGN_ADMIN,
+            campaignId: campaign.id,
+        });
         await createActivityRecordAsync({
             currentUser: user,
             notes: `${user.name()} added a new contribution (${contr.id})`,
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.CONTRIBUTION,
-            activityId: contr.id
+            activityId: contr.id,
         });
 
         await createActivityRecordAsync({
@@ -196,11 +203,11 @@ describe('Activity', () => {
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.COMMENT_CONTR,
-            activityId: contr.id
+            activityId: contr.id,
         });
         const activities = await getActivityByContributionAsync(contr.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(2);
-        expect(activities.total).to.equal(2);
+        expect(activities.data.length).toEqual(2);
+        expect(activities.total).toEqual(2);
     });
 
     it('getActivityByExpenditureAsync', async () => {
@@ -208,14 +215,18 @@ describe('Activity', () => {
         const campaign = await newCampaignAsync(gov);
         const exp = await newExpenditureAsync(campaign, gov);
         const user = await newActiveUserAsync();
-        const permission = await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        const permission = await addPermissionAsync({
+            userId: user.id,
+            role: UserRole.CAMPAIGN_ADMIN,
+            campaignId: campaign.id,
+        });
         await createActivityRecordAsync({
             currentUser: user,
             notes: `${user.name()} added a new expenditure (${exp.id})`,
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.EXPENDITURE,
-            activityId: exp.id
+            activityId: exp.id,
         });
         await createActivityRecordAsync({
             currentUser: user,
@@ -223,11 +234,11 @@ describe('Activity', () => {
             campaign,
             government: gov,
             activityType: ActivityTypeEnum.COMMENT_EXP,
-            activityId: exp.id
+            activityId: exp.id,
         });
         const activities = await getActivityByExpenditureAsync(exp.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(2);
-        expect(activities.total).to.equal(2);
+        expect(activities.data.length).toEqual(2);
+        expect(activities.total).toEqual(2);
     });
 
     it('getActivityByCampaignByTimeAsync', async () => {
@@ -235,7 +246,7 @@ describe('Activity', () => {
         const campaign = await newCampaignAsync(gov);
         const contr = await newContributionAsync(campaign, gov);
         const user = await newActiveUserAsync();
-        await addPermissionAsync({userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id});
+        await addPermissionAsync({ userId: user.id, role: UserRole.CAMPAIGN_ADMIN, campaignId: campaign.id });
         const activity = await createActivityRecordAsync({
             currentUser: user,
             notes: `${user.name()} added a new contribution (${contr.id})`,
@@ -243,7 +254,7 @@ describe('Activity', () => {
             government: gov,
             activityType: ActivityTypeEnum.CONTRIBUTION,
             activityId: contr.id,
-            notify: false
+            notify: false,
         });
 
         const activity1 = await createActivityRecordAsync({
@@ -253,7 +264,7 @@ describe('Activity', () => {
             government: gov,
             activityType: ActivityTypeEnum.CONTRIBUTION,
             activityId: contr.id,
-            notify: true
+            notify: true,
         });
 
         const activity2 = await createActivityRecordAsync({
@@ -263,26 +274,26 @@ describe('Activity', () => {
             government: gov,
             activityType: ActivityTypeEnum.COMMENT_CONTR,
             activityId: contr.id,
-            notify: true
+            notify: true,
         });
 
-        await activityRepository.update(activity.id, {createdAt: new Date(2019, 1, 1)});
-        await activityRepository.update(activity1.id, {createdAt: new Date(2019, 1, 1)});
-        await activityRepository.update(activity2.id, {createdAt: new Date(2019, 8, 1)});
+        await activityRepository.update(activity.id, { createdAt: new Date(2019, 1, 1) });
+        await activityRepository.update(activity1.id, { createdAt: new Date(2019, 1, 1) });
+        await activityRepository.update(activity2.id, { createdAt: new Date(2019, 8, 1) });
         const activities = await getActivityByContributionAsync(contr.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(3);
+        expect(activities.data.length).toEqual(3);
         let from = new Date(2018, 12, 31);
         let to = new Date(2019, 1, 31);
         let activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
-        expect(activitiesTime.length).to.equal(1);
+        expect(activitiesTime.length).toEqual(1);
         from = new Date(2018, 12, 31);
         to = new Date(2020, 1, 31);
         activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
-        expect(activitiesTime.length).to.equal(2);
+        expect(activitiesTime.length).toEqual(2);
 
         from = new Date(2017, 12, 31);
         to = new Date(2018, 1, 31);
         activitiesTime = await getActivityByCampaignByTimeAsync(campaign.id, from, to);
-        expect(activitiesTime.length).to.equal(0);
+        expect(activitiesTime.length).toEqual(0);
     });
 });

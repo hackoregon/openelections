@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -10,12 +8,10 @@ import { Campaign } from '../../../models/entity/Campaign';
 import { addPermissionAsync, generateJWTokenAsync } from '../../../services/permissionService';
 import { UserRole } from '../../../models/entity/Permission';
 import {
-    Contribution,
     ContributionType,
     ContributionSubType,
-    ContributionStatus,
     ContributorType,
-    PaymentMethod
+    PaymentMethod,
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
 
@@ -31,7 +27,7 @@ let campaignAdminToken: string;
 let campaignAdmin2Token: string;
 
 describe('Routes post /contributions', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -48,19 +44,19 @@ describe('Routes post /contributions', () => {
         await addPermissionAsync({
             userId: campaignAdmin2.id,
             campaignId: campaign2.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -83,7 +79,7 @@ describe('Routes post /contributions', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
-            paymentMethod: PaymentMethod.CASH
+            paymentMethod: PaymentMethod.CASH,
         });
 
         await addContributionAsync({
@@ -102,7 +98,7 @@ describe('Routes post /contributions', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
-            paymentMethod: PaymentMethod.CASH
+            paymentMethod: PaymentMethod.CASH,
         });
     });
 
@@ -110,17 +106,17 @@ describe('Routes post /contributions', () => {
         await truncateAll();
     });
 
-    context('post /summary', () => {
+    describe('post /summary', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .post(`/summary`)
                 .send({ governmentId: government.id, currentUserId: govAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
-            expect(response.body.contributions[0].amount).to.equal(500);
-            expect(response.body.contributions[0].total).to.equal(2);
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
+            expect(response.body.contributions[0].amount).toEqual(500);
+            expect(response.body.contributions[0].total).toEqual(2);
         });
 
         it('success as campaign admin 1', async () => {
@@ -129,9 +125,9 @@ describe('Routes post /contributions', () => {
                 .send({ campaignId: campaign.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.contributions[0].amount).to.equal(250);
-            expect(response.body.contributions[0].total).to.equal(1);
+            expect(response.status).toEqual(200);
+            expect(response.body.contributions[0].amount).toEqual(250);
+            expect(response.body.contributions[0].total).toEqual(1);
         });
 
         it('success as campaign admin 2', async () => {
@@ -140,9 +136,9 @@ describe('Routes post /contributions', () => {
                 .send({ campaignId: campaign2.id, currentUserId: campaignAdmin2.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdmin2Token}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.contributions[0].amount).to.equal(250);
-            expect(response.body.contributions[0].total).to.equal(1);
+            expect(response.status).toEqual(200);
+            expect(response.body.contributions[0].amount).toEqual(250);
+            expect(response.body.contributions[0].total).toEqual(1);
         });
 
         it('error permissions', async () => {
@@ -151,7 +147,7 @@ describe('Routes post /contributions', () => {
                 .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
+            expect(response.status).toEqual(422);
         });
     });
 });

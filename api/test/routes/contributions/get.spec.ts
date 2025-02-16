@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -13,11 +11,11 @@ import {
     Contribution,
     ContributionType,
     ContributionSubType,
-    ContributionStatus,
     ContributorType,
     PaymentMethod,
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
+import { parse } from 'csv-parse/.';
 
 let app: express.Express;
 let campaignStaff: User;
@@ -33,7 +31,7 @@ let campaignStaff2Token: string;
 let contribution1: Contribution;
 
 describe('Routes post /contributions', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -50,19 +48,19 @@ describe('Routes post /contributions', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -86,7 +84,7 @@ describe('Routes post /contributions', () => {
             paymentMethod: PaymentMethod.CASH,
             state: 'OR',
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
         });
     });
 
@@ -94,15 +92,15 @@ describe('Routes post /contributions', () => {
         await truncateAll();
     });
 
-    context('post /contributions', () => {
+    describe('post /contributions', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .post(`/contributions`)
                 .send({ governmentId: government.id, currentUserId: govAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign admin', async () => {
@@ -111,8 +109,8 @@ describe('Routes post /contributions', () => {
                 .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign staff', async () => {
@@ -121,8 +119,8 @@ describe('Routes post /contributions', () => {
                 .send({ governmentId: government.id, campaignId: campaign.id, currentUserId: campaignStaff.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error permissions', async () => {
@@ -131,7 +129,7 @@ describe('Routes post /contributions', () => {
                 .send({ governmentId: government.id, currentUserId: campaignAdmin.id })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
+            expect(response.status).toEqual(422);
             expect(response.body.message);
         });
 
@@ -141,25 +139,27 @@ describe('Routes post /contributions', () => {
                 .send({ governmentId: government.id, currentUserId: govAdmin.id, format: 'csv' })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.text.split(',').length).to.equal(79)
+            expect(response.status).toEqual(200);
+            parse(response.text, { delimiter: ',' }, (err, _records) => {
+                expect(err).toBeFalsy();
+            });
         });
     });
 
-    context('get /contributions/:id', () => {
+    describe('get /contributions/:id', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .get(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('id');
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('status');
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    id: expect.anything(),
+                    status: expect.anything(),
+                })
+            );
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign admin', async () => {
@@ -167,14 +167,14 @@ describe('Routes post /contributions', () => {
                 .get(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('id');
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('status');
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    id: expect.anything(),
+                    status: expect.anything(),
+                })
+            );
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign staff', async () => {
@@ -182,14 +182,14 @@ describe('Routes post /contributions', () => {
                 .get(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('id');
-            expect(response.body)
-                .to.be.an.instanceof(Object)
-                .to.have.property('status');
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    id: expect.anything(),
+                    status: expect.anything(),
+                })
+            );
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error permissions', async () => {
@@ -197,8 +197,12 @@ describe('Routes post /contributions', () => {
                 .get(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaff2Token}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body).to.not.have.property('id');
+            expect(response.status).toEqual(422);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    message: 'User does not have permissions',
+                })
+            );
             expect(response.body.message);
         });
     });

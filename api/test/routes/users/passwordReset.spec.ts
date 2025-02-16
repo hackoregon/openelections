@@ -1,13 +1,9 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
-import {
-    newActiveUserAsync,
-    truncateAll
-} from '../../factories';
+import { newActiveUserAsync, truncateAll } from '../../factories';
 import { generatePasswordResetAsync } from '../../../services/userService';
 import { generateJWTokenAsync } from '../../../services/permissionService';
 
@@ -16,7 +12,7 @@ let govAdmin: User;
 let govAdminToken: string;
 
 describe('Routes /users', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -30,17 +26,19 @@ describe('Routes /users', () => {
         await truncateAll();
     });
 
-    context('/users/send-password-reset-email', () => {
+    describe('/users/send-password-reset-email', () => {
         it('fails, no user found', async () => {
             const email = faker.internet.email();
             const response = await request(app)
                 .post('/users/send-password-reset-email')
                 .send({
-                    email
+                    email,
                 })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal(`Could not find any entity of type "User" matching: {\n    "email": "${email}"\n}`);
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                `Could not find any entity of type "User" matching: {\n    "email": "${email}"\n}`
+            );
         });
 
         it('succeeds, user found', async () => {
@@ -48,25 +46,27 @@ describe('Routes /users', () => {
             const response = await request(app)
                 .post('/users/send-password-reset-email')
                 .send({
-                    email: govAdmin.email
+                    email: govAdmin.email,
                 })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(204);
+            expect(response.status).toEqual(204);
         });
     });
 
-    context('/users/reset-password', () => {
+    describe('/users/reset-password', () => {
         it('fails, invitation code not found', async () => {
             const email = faker.internet.email();
             const response = await request(app)
                 .post('/users/reset-password')
                 .send({
                     invitationCode: 'nope',
-                    password: 'lotsofnope'
+                    password: 'lotsofnope',
                 })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal(`Could not find any entity of type "User" matching: {\n    "invitationCode": "nope"\n}`);
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual(
+                `Could not find any entity of type "User" matching: {\n    "invitationCode": "nope"\n}`
+            );
         });
 
         it('succeeds, user found', async () => {
@@ -75,14 +75,14 @@ describe('Routes /users', () => {
                 .post('/users/reset-password')
                 .send({
                     invitationCode: code,
-                    password: 'lotsofnope'
+                    password: 'lotsofnope',
                 })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(204);
+            expect(response.status).toEqual(204);
         });
     });
 
-    context('/users/password', () => {
+    describe('/users/password', () => {
         it('fails, password not valid', async () => {
             const response = await request(app)
                 .put('/users/password')
@@ -92,8 +92,8 @@ describe('Routes /users', () => {
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('Invalid password');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('Invalid password');
         });
 
         it('fails, new password not valid', async () => {
@@ -105,8 +105,8 @@ describe('Routes /users', () => {
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body.message).to.equal('Invalid password');
+            expect(response.status).toEqual(422);
+            expect(response.body.message).toEqual('Invalid password');
         });
 
         it('succeeds, new password valid', async () => {
@@ -118,8 +118,7 @@ describe('Routes /users', () => {
                 })
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(204);
+            expect(response.status).toEqual(204);
         });
     });
-
 });

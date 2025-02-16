@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { expect } from 'chai';
+
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -20,7 +20,7 @@ let campaignAdminToken: string;
 let campaignStaffToken: string;
 
 describe('Routes /users', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -36,19 +36,19 @@ describe('Routes /users', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -60,34 +60,34 @@ describe('Routes /users', () => {
         await truncateAll();
     });
 
-    context('/users/login', () => {
+    describe('/users/login', () => {
         it('email not found', async () => {
             const response = await request(app)
                 .post('/users/login')
-                .send({password: 'password'})
-                .send({email: 'dan@civicsoftwarefoundation.org'})
+                .send({ password: 'password' })
+                .send({ email: 'dan@civicsoftwarefoundation.org' })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(401);
-            expect(response.body.message).to.equal('No user found with email or password');
+            expect(response.status).toEqual(401);
+            expect(response.body.message).toEqual('No user found with email or password');
         });
 
         it('password not correct', async () => {
             const response = await request(app)
                 .post('/users/login')
-                .send({password: 'password1'})
-                .send({email: campaignStaff.email})
+                .send({ password: 'password1' })
+                .send({ email: campaignStaff.email })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(401);
-            expect(response.body.message).to.equal('No user found with email or password');
+            expect(response.status).toEqual(401);
+            expect(response.body.message).toEqual('No user found with email or password');
         });
 
         it('success, sets token in cookie', async () => {
             const response = await request(app)
                 .post('/users/login')
-                .send({password: 'password'})
-                .send({email: campaignStaff.email})
+                .send({ password: 'password' })
+                .send({ email: campaignStaff.email })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(204);
+            expect(response.status).toEqual(204);
 
             const regex = /(.*?)=(.*?)($|;|,(?! ))/g;
             const matches = [];
@@ -96,18 +96,18 @@ describe('Routes /users', () => {
                 matches.push(match[1]);
                 match = regex.exec(response.header['set-cookie']);
             }
-            expect(matches).to.deep.equal([ 'token', ' Domain', ' Path', ' Expires' ]);
-            expect(response.header['set-cookie'][0].includes('localhost')).to.be.true;
+            expect(matches).toEqual(['token', ' Domain', ' Path', ' Expires']);
+            expect(response.header['set-cookie'][0].includes('localhost')).toBeTruthy();
         });
 
         it('success, sets token in cookie production', async () => {
             process.env.COOKIE_URL_TEST = 'openelectionsportland.org';
             const response = await request(app)
                 .post('/users/login')
-                .send({password: 'password'})
-                .send({email: campaignStaff.email})
+                .send({ password: 'password' })
+                .send({ email: campaignStaff.email })
                 .set('Accept', 'application/json');
-            expect(response.status).to.equal(204);
+            expect(response.status).toEqual(204);
 
             const regex = /(.*?)=(.*?)($|;|,(?! ))/g;
             const matches = [];
@@ -116,10 +116,9 @@ describe('Routes /users', () => {
                 matches.push(match[1]);
                 match = regex.exec(response.header['set-cookie']);
             }
-            expect(matches).to.deep.equal([ 'token', ' Domain', ' Path', ' Expires' ]);
-            expect(response.header['set-cookie'][0].includes('openelectionsportland.org')).to.be.true;
+            expect(matches).toEqual(['token', ' Domain', ' Path', ' Expires']);
+            expect(response.header['set-cookie'][0].includes('openelectionsportland.org')).toBeTruthy();
             delete process.env.COOKIE_URL_TEST;
         });
     });
-
 });

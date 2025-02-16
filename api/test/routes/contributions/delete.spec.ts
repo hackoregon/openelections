@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -13,7 +11,6 @@ import {
     Contribution,
     ContributionType,
     ContributionSubType,
-    ContributionStatus,
     ContributorType,
     PaymentMethod,
 } from '../../../models/entity/Contribution';
@@ -33,7 +30,7 @@ let campaignStaff2Token: string;
 let contribution1: Contribution;
 
 describe('Routes delete /contributions/:id', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -50,19 +47,19 @@ describe('Routes delete /contributions/:id', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -86,7 +83,7 @@ describe('Routes delete /contributions/:id', () => {
             paymentMethod: PaymentMethod.CASH,
             state: 'OR',
             zip: '97214',
-            contributorType: ContributorType.INDIVIDUAL
+            contributorType: ContributorType.INDIVIDUAL,
         });
     });
 
@@ -94,14 +91,14 @@ describe('Routes delete /contributions/:id', () => {
         await truncateAll();
     });
 
-    context('delete /contributions/:id', () => {
+    describe('delete /contributions/:id', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .delete(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign admin', async () => {
@@ -109,8 +106,8 @@ describe('Routes delete /contributions/:id', () => {
                 .delete(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('success as campaign staff', async () => {
@@ -118,8 +115,8 @@ describe('Routes delete /contributions/:id', () => {
                 .delete(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaffToken}`]);
-            expect(response.status).to.equal(200);
-            expect(response.body.message).to.be.undefined;
+            expect(response.status).toEqual(200);
+            expect(response.body.message).toBeUndefined();
         });
 
         it('error does not have permissions', async () => {
@@ -127,7 +124,7 @@ describe('Routes delete /contributions/:id', () => {
                 .delete(`/contributions/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignStaff2Token}`]);
-            expect(response.status).to.equal(422);
+            expect(response.status).toEqual(422);
             expect(response.body.message);
         });
     });

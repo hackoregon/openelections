@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import { getConnection } from 'typeorm';
 import { addPermissionAsync } from '../../services/permissionService';
 import { UserRole } from '../../models/entity/Permission';
 import {
@@ -27,6 +25,7 @@ import {
     PurposeType,
 } from '../../models/entity/Expenditure';
 import { getActivityByExpenditureAsync } from '../../models/entity/Activity';
+import db from '../../models/db';
 
 let campaignAdmin;
 let campaignStaff;
@@ -38,11 +37,9 @@ let government;
 let expenditureRepository: any;
 
 describe('expenditureService', () => {
-    before(() => {
-        expenditureRepository = getConnection('default').getRepository('Expenditure');
-    });
-
     beforeEach(async () => {
+        const dataSource = await db();
+        expenditureRepository = dataSource.getRepository('Expenditure');
         [campaignAdmin, campaignStaff, govAdmin, government, campaign1, campaign2] = await Promise.all([
             newActiveUserAsync(),
             newActiveUserAsync(),
@@ -104,7 +101,7 @@ describe('expenditureService', () => {
             governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+        expect(expenditures.data.length).toEqual(2);
     });
 
     it('Gets expenditures for a campaign as admin', async () => {
@@ -134,7 +131,7 @@ describe('expenditureService', () => {
             governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(2);
+        expect(expenditures.data.length).toEqual(2);
     });
 
     it('Gets all expenditures as gov admin', async () => {
@@ -185,7 +182,7 @@ describe('expenditureService', () => {
             governmentId: government.id,
         };
         const expenditures = await getExpendituresAsync(getExpendituresAttrs);
-        expect(expenditures.data.length).equal(3);
+        expect(expenditures.data.length).toEqual(3);
     });
 
     it('Throws an error requesting expenditures as campaign admin or staff', async () => {
@@ -196,7 +193,7 @@ describe('expenditureService', () => {
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
-            expect(e.message).equal('Must be a government admin to see all expenditures');
+            expect(e.message).toEqual('Must be a government admin to see all expenditures');
         }
 
         try {
@@ -206,7 +203,7 @@ describe('expenditureService', () => {
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
-            expect(e.message).equal('Must be a government admin to see all expenditures');
+            expect(e.message).toEqual('Must be a government admin to see all expenditures');
         }
     });
 
@@ -239,7 +236,7 @@ describe('expenditureService', () => {
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
-            expect(e.message).equal('User is not permitted to get expenditures for this campaign.');
+            expect(e.message).toEqual('User is not permitted to get expenditures for this campaign.');
         }
 
         try {
@@ -250,12 +247,12 @@ describe('expenditureService', () => {
             };
             await getExpendituresAsync(getExpendituresAttrs);
         } catch (e) {
-            expect(e.message).equal('User is not permitted to get expenditures for this campaign.');
+            expect(e.message).toEqual('User is not permitted to get expenditures for this campaign.');
         }
     });
 
     it('Adds a valid expenditure for a campaign as staff', async () => {
-        expect(await expenditureRepository.count()).equal(0);
+        expect(await expenditureRepository.count()).toEqual(0);
 
         const addExpenditureAttrs: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
@@ -276,11 +273,11 @@ describe('expenditureService', () => {
         };
 
         await addExpenditureAsync(addExpenditureAttrs);
-        expect(await expenditureRepository.count()).equal(1);
+        expect(await expenditureRepository.count()).toEqual(1);
     });
 
     it('Adds a valid expenditure for a campaign as admin', async () => {
-        expect(await expenditureRepository.count()).equal(0);
+        expect(await expenditureRepository.count()).toEqual(0);
 
         const addExpenditureAttrs: IAddExpenditureAttrs = {
             address1: '123 ABC ST',
@@ -301,7 +298,7 @@ describe('expenditureService', () => {
         };
 
         await addExpenditureAsync(addExpenditureAttrs);
-        expect(await expenditureRepository.count()).equal(1);
+        expect(await expenditureRepository.count()).toEqual(1);
     });
 
     it('Does not add an invalid expenditure for a campaign', async () => {
@@ -326,7 +323,7 @@ describe('expenditureService', () => {
         try {
             await addExpenditureAsync(addExpenditureAttrs);
         } catch (e) {
-            expect(e.message).equal('Expenditure is missing one or more required properties.');
+            expect(e.message).toEqual('Expenditure is missing one or more required properties.');
         }
     });
 
@@ -352,7 +349,7 @@ describe('expenditureService', () => {
         try {
             await addExpenditureAsync(addExpenditureAttrs);
         } catch (e) {
-            expect(e.message).equal('User is not permitted to add expenditures for this campaign.');
+            expect(e.message).toEqual('User is not permitted to add expenditures for this campaign.');
         }
     });
 
@@ -467,7 +464,7 @@ describe('expenditureService', () => {
         try {
             await updateExpenditureAsync(updateExpenditure);
         } catch (e) {
-            expect(e.message).equal('User does have permissions to change status on expenditure');
+            expect(e.message).toEqual('User does have permissions to change status on expenditure');
         }
     });
 
@@ -500,14 +497,14 @@ describe('expenditureService', () => {
         try {
             await updateExpenditureAsync(updateExpenditure);
         } catch (e) {
-            expect(e.message).equal('User is not permitted to update expenditures for this campaign.');
+            expect(e.message).toEqual('User is not permitted to update expenditures for this campaign.');
         }
     });
 
     it('createExpenditureCommentAsync fails no user permission', async () => {
         const expenditure = await newExpenditureAsync(campaign2, government);
         let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
@@ -516,28 +513,28 @@ describe('expenditureService', () => {
                 comment: 'This is a comment',
             });
         } catch (e) {
-            expect(e.message).to.equal('User does not have permissions');
+            expect(e.message).toEqual('User does not have permissions');
         }
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
     });
 
     it('getActivityByExpenditureAsync success', async () => {
         const expenditure = await newExpenditureAsync(campaign1, government);
         let activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         await createExpenditureCommentAsync({
             expenditureId: expenditure.id,
             currentUserId: campaignAdmin.id,
             comment: 'This is a comment',
         });
         activities = await getActivityByExpenditureAsync(expenditure.id, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(1);
+        expect(activities.data.length).toEqual(1);
     });
 
     it('getActivityByExpenditureAsync fails cant find expenditure', async () => {
         let activities = await getActivityByExpenditureAsync(1000, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
         const user = await newActiveUserAsync();
         try {
             await createExpenditureCommentAsync({
@@ -546,10 +543,10 @@ describe('expenditureService', () => {
                 comment: 'This is a comment',
             });
         } catch (e) {
-            expect(e.message).to.equal('Could not find any entity of type "Expenditure" matching: 1000');
+            expect(e.message).toEqual('Could not find any entity of type "Expenditure" matching: 1000');
         }
         activities = await getActivityByExpenditureAsync(1000, 100, 0, 'openelectionsportland.org');
-        expect(activities.data.length).to.equal(0);
+        expect(activities.data.length).toEqual(0);
     });
 
     it('getExpenditureByIdAsync testme', async () => {
@@ -559,6 +556,6 @@ describe('expenditureService', () => {
             expenditureId: expenditure.id,
         });
 
-        expect(summary.id).to.equal(expenditure.id);
+        expect(summary.id).toEqual(expenditure.id);
     });
 });

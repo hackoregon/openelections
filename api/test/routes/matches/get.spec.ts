@@ -1,6 +1,4 @@
 import * as express from 'express';
-import { expect } from 'chai';
-import * as faker from 'faker';
 import * as request from 'supertest';
 import { setupRoutes } from '../../../routes';
 import { User } from '../../../models/entity/User';
@@ -13,9 +11,8 @@ import {
     Contribution,
     ContributionType,
     ContributionSubType,
-    ContributionStatus,
     ContributorType,
-    PaymentMethod
+    PaymentMethod,
 } from '../../../models/entity/Contribution';
 import { addContributionAsync } from '../../../services/contributionService';
 
@@ -33,7 +30,7 @@ let campaignStaff2Token: string;
 let contribution1: Contribution;
 
 describe('Routes get /matches', () => {
-    before(async () => {
+    beforeAll(async () => {
         app = express();
         setupRoutes(app);
     });
@@ -50,19 +47,19 @@ describe('Routes get /matches', () => {
         await addPermissionAsync({
             userId: campaignStaff.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_STAFF
+            role: UserRole.CAMPAIGN_STAFF,
         });
 
         await addPermissionAsync({
             userId: campaignAdmin.id,
             campaignId: campaign.id,
-            role: UserRole.CAMPAIGN_ADMIN
+            role: UserRole.CAMPAIGN_ADMIN,
         });
 
         await addPermissionAsync({
             userId: govAdmin.id,
             governmentId: government.id,
-            role: UserRole.GOVERNMENT_ADMIN
+            role: UserRole.GOVERNMENT_ADMIN,
         });
 
         govAdminToken = await generateJWTokenAsync(govAdmin.id);
@@ -86,7 +83,7 @@ describe('Routes get /matches', () => {
             state: 'OR',
             zip: '97214',
             contributorType: ContributorType.INDIVIDUAL,
-            paymentMethod: PaymentMethod.CHECK
+            paymentMethod: PaymentMethod.CHECK,
         });
     });
 
@@ -94,13 +91,13 @@ describe('Routes get /matches', () => {
         await truncateAll();
     });
 
-    context('get /matches/:id', () => {
+    describe('get /matches/:id', () => {
         it('success as gov admin', async () => {
             const response = await request(app)
                 .get(`/matches/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${govAdminToken}`]);
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
         });
 
         it('error permissions', async () => {
@@ -108,8 +105,8 @@ describe('Routes get /matches', () => {
                 .get(`/matches/${contribution1.id}`)
                 .set('Accept', 'application/json')
                 .set('Cookie', [`token=${campaignAdminToken}`]);
-            expect(response.status).to.equal(422);
-            expect(response.body).to.not.have.property('id');
+            expect(response.status).toEqual(422);
+            expect(response.body).not.toHaveProperty('id');
             expect(response.body.message);
         });
     });

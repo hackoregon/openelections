@@ -7,16 +7,13 @@ import {
     getActivityByExpenditureAsync,
     getActivityByGovernmentAsync,
     IActivityResults,
-    IShortActivityResult
+    IShortActivityResult,
 } from '../models/entity/Activity';
-import { getConnection } from 'typeorm';
 import { Government } from '../models/entity/Government';
 import { User } from '../models/entity/User';
 import { Campaign } from '../models/entity/Campaign';
 import { isCampaignAdminAsync, isCampaignStaffAsync, isGovernmentAdminAsync } from './permissionService';
-import { Contribution } from '../models/entity/Contribution';
-import { Expenditure } from '../models/entity/Expenditure';
-import * as fs from 'fs';
+import db from '../models/db';
 
 export interface ICreateActivityServiceParams {
     currentUser: User;
@@ -30,7 +27,8 @@ export interface ICreateActivityServiceParams {
 }
 
 export async function createActivityRecordAsync(params: ICreateActivityServiceParams): Promise<Activity> {
-    const repository = getConnection('default').getRepository('Activity');
+    const dataSource = await db();
+    const repository = dataSource.getRepository('Activity');
     let activity = new Activity();
     activity.user = params.currentUser;
     activity.government = params.government;
@@ -52,13 +50,15 @@ export interface IGetActivityRecords {
     governmentId?: number; // get all activities by government, requires government admin
     campaignId?: number; // get all activities by government, requires government admin, campaign admin or staff
     contributionId?: number; // get all activities by contribution, includes comments
-    expenditureId?: number;  // get all activities by expenditures
+    expenditureId?: number; // get all activities by expenditures
     perPage?: number;
     page?: number;
 }
 
-export async function getAllActivityRecordsAsync(params: IGetActivityRecords, hostName: string): Promise<IActivityResults> {
-
+export async function getAllActivityRecordsAsync(
+    params: IGetActivityRecords,
+    hostName: string
+): Promise<IActivityResults> {
     const perPage = params.perPage || 100;
     const page = params.page || 0;
 
@@ -70,45 +70,59 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords, ho
     }
 
     if (params.campaignId) {
-        const campaignRepository = getConnection('default').getRepository('Campaign');
+        const dataSource = await db();
+        const campaignRepository = dataSource.getRepository('Campaign');
 
-        const campaign = (await campaignRepository.findOneOrFail(params.campaignId, {
-            relations: ['government']
-        })) as Campaign;
+        const campaign = await campaignRepository.findOneOrFail({
+            where: { id: params.campaignId },
+            relations: ['government'],
+        });
 
         const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, campaign.government.id);
-        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, params.campaignId);
-        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, params.campaignId);
+        const hasCampaignAdminPermissions =
+            hasGovAdminPermissions || (await isCampaignAdminAsync(params.currentUserId, params.campaignId));
+        const hasCampaignStaffPermissions =
+            hasCampaignAdminPermissions || (await isCampaignStaffAsync(params.currentUserId, params.campaignId));
+
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
             return getActivityByCampaignAsync(params.campaignId, perPage, page, hostName);
         }
     }
 
     if (params.contributionId) {
-        const contributionRepository = getConnection('default').getRepository('Contribution');
+        const dataSource = await db();
+        const contributionRepository = dataSource.getRepository('Contribution');
 
-        const contribution = (await contributionRepository.findOneOrFail(params.contributionId, {
-            relations: ['government', 'campaign']
-        })) as Contribution;
+        const contribution = await contributionRepository.findOneOrFail({
+            where: { id: params.contributionId },
+            relations: ['government', 'campaign'],
+        });
 
         const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, contribution.government.id);
-        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, contribution.campaign.id);
-        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, contribution.campaign.id);
+        const hasCampaignAdminPermissions =
+            hasGovAdminPermissions || (await isCampaignAdminAsync(params.currentUserId, contribution.campaign.id));
+        const hasCampaignStaffPermissions =
+            hasCampaignAdminPermissions || (await isCampaignStaffAsync(params.currentUserId, contribution.campaign.id));
+
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
             return getActivityByContributionAsync(params.contributionId, perPage, page, hostName);
         }
     }
 
     if (params.expenditureId) {
-        const expenditureRepository = getConnection('default').getRepository('Expenditure');
+        const dataSource = await db();
+        const expenditureRepository = dataSource.getRepository('Expenditure');
 
-        const expenditure = (await expenditureRepository.findOneOrFail(params.expenditureId, {
-            relations: ['government', 'campaign']
-        })) as Expenditure;
+        const expenditure = await expenditureRepository.findOneOrFail({
+            where: { id: params.expenditureId },
+            relations: ['government', 'campaign'],
+        });
 
         const hasGovAdminPermissions = await isGovernmentAdminAsync(params.currentUserId, expenditure.government.id);
-        const hasCampaignAdminPermissions = hasGovAdminPermissions || await isCampaignAdminAsync(params.currentUserId, expenditure.campaign.id);
-        const hasCampaignStaffPermissions = hasCampaignAdminPermissions || await isCampaignStaffAsync(params.currentUserId, expenditure.campaign.id);
+        const hasCampaignAdminPermissions =
+            hasGovAdminPermissions || (await isCampaignAdminAsync(params.currentUserId, expenditure.campaign.id));
+        const hasCampaignStaffPermissions =
+            hasCampaignAdminPermissions || (await isCampaignStaffAsync(params.currentUserId, expenditure.campaign.id));
 
         if (hasGovAdminPermissions || hasCampaignAdminPermissions || hasCampaignStaffPermissions) {
             return getActivityByExpenditureAsync(params.expenditureId, perPage, page, hostName);
@@ -119,7 +133,7 @@ export async function getAllActivityRecordsAsync(params: IGetActivityRecords, ho
         total: 0,
         perPage,
         page,
-        data: []
+        data: [],
     };
 }
 
@@ -129,22 +143,27 @@ export interface IGetActivityRecordsForEmails {
     to: Date;
 }
 
-export async function getActivityRecordsForEmailsAsync(params: IGetActivityRecordsForEmails): Promise<IShortActivityResult[]> {
+export async function getActivityRecordsForEmailsAsync(
+    params: IGetActivityRecordsForEmails
+): Promise<IShortActivityResult[]> {
     return await getActivityByCampaignByTimeAsync(params.campaignId, params.from, params.to);
 }
-
 
 export interface IGetActivityAttachment {
     currentUserId: number;
     activityId: number;
 }
 
-export async function getActivityAttachmentAsync(params: IGetActivityAttachment): Promise<{contentType: string, buffer: Buffer, fileName?: string}> {
-    const activityRepository = getConnection('default').getRepository('Activity');
+export async function getActivityAttachmentAsync(
+    params: IGetActivityAttachment
+): Promise<{ contentType: string; buffer: Buffer; fileName?: string }> {
+    const dataSource = await db();
+    const activityRepository = dataSource.getRepository('Activity');
 
-    const activity = (await activityRepository.findOneOrFail(params.activityId, {
-        relations: ['campaign', 'government']
-    })) as Activity;
+    const activity = await activityRepository.findOneOrFail({
+        where: { id: params.activityId },
+        relations: ['campaign', 'government'],
+    });
 
     const isGovernmentAdmin = await isGovernmentAdminAsync(params.currentUserId, activity.government.id);
     let isCampaignAdmin = false;
@@ -163,7 +182,9 @@ export async function getActivityAttachmentAsync(params: IGetActivityAttachment)
     }
 }
 
-export async function getFileAttachmentAsync(filePath: string): Promise<{contentType: string, buffer: Buffer, fileName?: string}> {
+export async function getFileAttachmentAsync(
+    filePath: string
+): Promise<{ contentType: string; buffer: Buffer; fileName?: string }> {
     // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
     //     return(
     //         Promise.resolve({
@@ -176,30 +197,40 @@ export async function getFileAttachmentAsync(filePath: string): Promise<{content
     let key = new URL(filePath).pathname;
     key = key.substr(1);
     const AWS = require('aws-sdk');
-    const s3 = new AWS.S3({apiVersion: '2006-03-01'});
-    const data = await s3.getObject({Bucket: 'open-elections', Key: key}).promise();
+    const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+    const data = await s3.getObject({ Bucket: 'open-elections', Key: key }).promise();
     const fileNameArray = key.split('/');
     const fileName = fileNameArray[fileNameArray.length - 1];
 
-    return {contentType: data.ContentType, buffer: data.Body, fileName};
+    return { contentType: data.ContentType, buffer: data.Body, fileName };
 }
 
-export async function saveFileAttachmentAsync(id: number, type: 'expenditures' | 'contributions', fileName: string, filePath: string): Promise<string> {
+export async function saveFileAttachmentAsync(
+    id: number,
+    type: 'expenditures' | 'contributions',
+    fileName: string,
+    filePath: string
+): Promise<string> {
     // if (process.env.APP_ENV === 'development' || process.env.NODE_ENV === 'test') {
     //     return Promise.resolve(filePath);
     // }
 
     let folder = 'production-uploads';
     // if (process.env.APP_ENV === 'staging') {
-        folder = 'qa-uploads';
+    folder = 'qa-uploads';
     // }
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_DEFAULT_REGION || !process.env.HOST_URL) {
+    if (
+        !process.env.AWS_ACCESS_KEY_ID ||
+        !process.env.AWS_SECRET_ACCESS_KEY ||
+        !process.env.AWS_DEFAULT_REGION ||
+        !process.env.HOST_URL
+    ) {
         throw new Error('The API needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY passed in as env variables');
     }
 
     const AWS = require('aws-sdk');
-    const s3 = new AWS.S3({apiVersion: '2006-03-01'});
-    const uploadParams = {Bucket: 'open-elections', Key: '', Body: ''};
+    const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+    const uploadParams = { Bucket: 'open-elections', Key: '', Body: '' };
 
     const fs = require('fs');
     const fileStream = fs.createReadStream(filePath);
