@@ -45,6 +45,7 @@ ADDRESS_MAP = {'DRIVE': 'DR',
                'ELEVENTH': '11TH',
                'TWELFTH': '12TH'}
 
+SRID_NUM = 3857 # was 900914
 
 def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     """
@@ -75,7 +76,7 @@ def in_portland(longitude: Optional[str], latitude: Optional[str]) -> bool:
     with psycopg2.connect(**db.POSTGRES_LOGIN) as conn:
         with conn.cursor() as curr:
             cmd = f"SELECT ST_Contains(the_geom, ST_Transform(ST_GeomFromText('Point({longitude} {latitude})',4326)," \
-                + f" 900914)) FROM gis_boundaries WHERE cityname='Portland'"
+                + f" {SRID_NUM})) FROM gis_boundaries WHERE cityname='Portland'"
             curr.execute(cmd)
             dbresult = curr.fetchall()
 
