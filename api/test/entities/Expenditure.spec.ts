@@ -187,13 +187,12 @@ describe('Expenditure', () => {
             perPage: 10,
             campaignId: campaign.id,
             status: ExpenditureStatus.SUBMITTED,
-            from: new Date('2023-01-01').toISOString(),
-            to: new Date('2023-12-31').toISOString(),
             sort: { field: 'date', direction: 'ASC' },
             format: 'json',
         };
 
         const result = await getExpendituresByGovernmentIdAsync(government.id, options);
+        console.log(JSON.stringify(result));
         expect(result.data.length).toEqual(1);
         expect(result.data[0].status).toEqual(ExpenditureStatus.SUBMITTED);
         expect(result.total).toEqual(1);

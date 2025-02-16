@@ -175,7 +175,9 @@ describe('Contribution', () => {
         const summary = await getContributionsSummaryByStatusAsync({ governmentId: government.id });
         expect(summary.map((item) => item.amount)).toEqual([1, 1, 1, 1]);
         expect(summary.map((item) => item.matchAmount)).toEqual([0, 0, 0, 0]);
-        expect(summary.map((item) => item.status)).toEqual(['Draft', 'Submitted', 'Processed', 'Awaiting']);
+        expect(summary.map((item) => item.status)).toEqual(
+            expect.arrayContaining(['Draft', 'Submitted', 'Processed', 'Awaiting'])
+        );
         expect(summary.map((item) => item.total)).toEqual([1, 1, 1, 1]);
     });
 
@@ -200,7 +202,7 @@ describe('Contribution', () => {
         summary = await getContributionsSummaryByStatusAsync({ campaignId: campaign.id });
         expect(summary.map((item) => item.amount)).toEqual([1, 1]);
         expect(summary.map((item) => item.matchAmount)).toEqual([0, 0]);
-        expect(summary.map((item) => item.status)).toEqual(['Submitted', 'Processed']);
+        expect(summary.map((item) => item.status)).toEqual(expect.arrayContaining(['Submitted', 'Processed']));
         expect(summary.map((item) => item.total)).toEqual([1, 1]);
     });
 

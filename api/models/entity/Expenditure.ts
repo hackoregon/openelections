@@ -360,30 +360,30 @@ export async function getExpendituresByGovernmentIdAsync(
         const dataSource = await db();
         const expenditureRepository = dataSource.getRepository('Expenditure');
         const { page, perPage, campaignId, status, from, to, sort, format } = options;
-        const where = {
+        // Ensure page is a positive integer
+        const validPage = page < 1 ? 1 : page;
+        const where: any = {
             government: {
                 id: governmentId,
             },
-            campaign: campaignId
-                ? {
-                      id: campaignId,
-                  }
-                : undefined,
-            status,
-            date: from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined,
+            // Only include campaign if campaignId is defined
+            ...(campaignId && { campaign: { id: campaignId } }),
+            // Only include status if status is defined
+            ...(status && { status }),
+            // Only include date range if from or to is defined
+            ...(from && to
+                ? { date: Between(from, to) }
+                : from
+                ? { date: MoreThanOrEqual(from) }
+                : to
+                ? { date: LessThanOrEqual(to) }
+                : {}),
         };
         const query: any = {
             select: expenditureSummaryFields,
             relations: ['campaign', 'government'],
             where,
-            join: {
-                alias: 'contribution',
-                leftJoinAndSelect: {
-                    government: 'contribution.government',
-                    campaign: 'contribution.campaign',
-                },
-            },
-            skip: format === 'csv' ? undefined : page,
+            skip: format === 'csv' ? undefined : (validPage - 1) * perPage,
             take: format === 'csv' ? undefined : perPage,
             order: { updatedAt: 'DESC' },
         };
@@ -404,29 +404,29 @@ export async function getExpendituresByGovernmentIdAsync(
             query.order = { [sortField]: sort.direction };
         }
 
-        const expenditures = ((await expenditureRepository.find(removeUndefined(query))) as IExpenditureSummary[]).map(
-            (item: any): any => {
-                const json = item.toJSON();
-                json.campaign = {
-                    id: item.campaign.id,
-                    name: item.campaign.name,
-                };
-                json.government = {
-                    id: item.government.id,
-                    name: item.government.name,
-                };
-                return json;
-            }
-        );
+        const expenditures = await expenditureRepository.find(removeUndefined(query));
+        const formattedExpenditures = expenditures.map((item: any): any => {
+            const json = item.toJSON();
+            json.campaign = {
+                id: item.campaign.id,
+                name: item.campaign.name,
+            };
+            json.government = {
+                id: item.government.id,
+                name: item.government.name,
+            };
+            return json;
+        });
+
         const total = await expenditureRepository.count(removeUndefined(query));
         return {
-            data: expenditures,
+            data: formattedExpenditures,
             total,
             perPage,
             page,
         };
     } catch (err) {
-        console.log(err);
+        console.log('Error:', err); // Log the error
         throw new Error('Error executing get expenditures query');
     }
 }
