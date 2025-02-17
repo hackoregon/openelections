@@ -1,4 +1,4 @@
-FROM python:3.6.15-buster
+FROM python:3.8-buster
 
 RUN mkdir /app
 RUN mkdir -p /var/log/uwsgi
@@ -8,7 +8,10 @@ WORKDIR /app
 COPY requirements.txt .
 COPY requirements_dev.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip
+# RUN pip install --use-pep517
+RUN pip install --upgrade pip setuptools build wheel
+RUN pip install --use-pep517 -r requirements.txt
 RUN pip install -r requirements_dev.txt
 
 # force update sources.list (sketchy, but good for now until we update container)

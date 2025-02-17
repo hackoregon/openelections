@@ -45,7 +45,7 @@ ADDRESS_MAP = {'DRIVE': 'DR',
                'ELEVENTH': '11TH',
                'TWELFTH': '12TH'}
 
-SRID_NUM = 3857 # was 900914
+SRID_NUM = 900914 # similar to 3857
 
 def tokenize_address(addr1: str, addr2: Optional[str] = None) -> Set[str]:
     """
