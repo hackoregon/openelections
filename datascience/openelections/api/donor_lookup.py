@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, "/app")
 
 import traceback  # noqa: E402
-from flask import Flask  # noqa: E402
+from flask import Flask, request  # noqa: E402
 from flask_restful import Resource, Api, reqparse  # noqa: E402
 from openelections.donor_lookup.match import get_match, in_portland  # noqa: E402
 
@@ -34,17 +34,19 @@ class DonorMatch(Resource):
         """
         try:
             aparser = reqparse.RequestParser()
-            aparser.add_argument("last_name", type=str, required=True)
-            aparser.add_argument("first_name", type=str, required=True)
-            aparser.add_argument("zip_code", type=str, required=True)
-            aparser.add_argument("addr1", type=str, required=True)
-            aparser.add_argument("addr2", default=None, type=str)
-            aparser.add_argument("city", default=None, type=str)
-            aparser.add_argument("latitude", dest="latitude", default=None, type=str)
-            aparser.add_argument("longitude", dest="longitude", default=None, type=str)
-            aparser.add_argument("max_matches", default=10, type=int)
+            aparser.add_argument("last_name", type=str, required=True, location='args')
+            aparser.add_argument("first_name", type=str, required=True, location='args')
+            aparser.add_argument("zip_code", type=str, required=True, location='args')
+            aparser.add_argument("addr1", type=str, required=True, location='args')
+            aparser.add_argument("addr2", default=None, type=str, location='args')
+            aparser.add_argument("city", default=None, type=str, location='args')
+            aparser.add_argument("state", type=str, required=True, location='args')
+            aparser.add_argument("latitude", default=None, type=str, location='args')
+            aparser.add_argument("longitude", default=None, type=str, location='args')
+            aparser.add_argument("max_matches", default=10, type=int, location='args')
 
             options = aparser.parse_args()
+
             matches = get_match(last_name=options['last_name'], first_name=options['first_name'],
                                 zip_code=options['zip_code'], addr1=options['addr1'],
                                 addr2=options['addr2'], city=options['city'], max_num_matches=options['max_matches'])
