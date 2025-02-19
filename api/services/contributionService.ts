@@ -549,7 +549,7 @@ export async function createContributionCommentAsync(attrs: IContributionComment
     }
 }
 
-export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<void> {
+export async function retrieveAndSaveMatchResultAsync(contributionId: number): Promise<Contribution> {
     try {
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
@@ -586,7 +586,8 @@ export async function retrieveAndSaveMatchResultAsync(contributionId: number): P
                     contribution.matchId = crypto.randomBytes(16).toString('hex');
                     contribution.matchStrength = MatchStrength.NONE;
                 }
-                await contributionRepository.save(contribution);
+                const updatedContribution = await contributionRepository.save(contribution);
+                return updatedContribution;
             }
         }
     } catch (e) {
@@ -651,11 +652,20 @@ export async function getMatchResultAsync(attrs: GetMatchResultAttrs): Promise<M
         const defaultConn = getConnection('default');
         const contributionRepository = defaultConn.getRepository('Contribution');
 
-        const contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
+        let contribution = (await contributionRepository.findOneOrFail(attrs.contributionId, {
             relations: ['government'],
         })) as Contribution;
         const hasPermissions = await isGovernmentAdminAsync(attrs.currentUserId, contribution.government.id);
         if (hasPermissions) {
+            if (!contribution.matchId && !contribution.matchStrength && contribution.validateContributorAddress()) {
+                console.log('getMatchResultAsync: No match data found, querying for ', attrs.contributionId);
+                if (!contribution.addressPoint || !contribution.addressPoint.coordinates) {
+                    console.log('getMatchResultAsync: No gis data found, querying for ', attrs.contributionId);
+                    await getGISCoordinates(attrs.contributionId);
+                }
+                // If no match result exists at this point, trigger it
+                contribution = await retrieveAndSaveMatchResultAsync(attrs.contributionId);
+            }
             const matchResults: MatchResults = {
                 matchId: contribution.matchId,
                 matchStrength: contribution.matchStrength,
