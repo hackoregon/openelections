@@ -716,7 +716,7 @@ export async function getContributionsGeoJsonAsync(
         }
 
         const where = {
-            status: In([ContributionStatus.PROCESSED, ContributionStatus.SUBMITTED]),
+            status: In([ContributionStatus.PROCESSED, ContributionStatus.SUBMITTED, ContributionStatus.AWAITING]),
             // date: from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined,
         };
         const query: any = {
@@ -797,7 +797,7 @@ export async function getContributionsGeoJsonAsync(
                         campaignName: contribution.campaign.name,
                         officeSought: contribution.campaign.officeSought,
                         batchId: contributorsMap.get(userKey),
-                        isMiscCashContributionUnder100
+                        isMiscCashContributionUnder100,
                     },
                     geometry: {
                         type: 'Point',
