@@ -45,6 +45,15 @@ const columns = [
         })
         .split(', ')[0],
   },
+  {
+    field: 'matchAmount',
+    render: rowData => {
+      console.log('match amount');
+      return rowData && rowData.matchAmount
+        ? rowData.matchAmount
+        : 'No Match Amount';
+    },
+  },
 ];
 
 class PreviousDonationsTable extends React.Component {
@@ -87,6 +96,7 @@ class PreviousDonationsTable extends React.Component {
             actions={actions}
             components={components}
             data={pastContributions}
+            perPage={10}
           />
         )}
       </PageHoc>
