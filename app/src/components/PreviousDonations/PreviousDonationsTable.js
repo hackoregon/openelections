@@ -11,6 +11,7 @@ const actionInfo = (name, buttonType, onClick, isFreeAction = undefined) =>
 
 const columns = [
   {
+    title: 'Name',
     field: 'name',
     sorting: false,
     render: rowData => {
@@ -24,17 +25,20 @@ const columns = [
     },
   },
   {
+    title: 'Campaign',
     field: 'campaignId',
     render: rowData => {
       return rowData && rowData.campaign ? rowData.campaign.name : 'Loading...';
     },
   },
   {
+    title: 'Amount',
     field: 'amount',
     type: 'currency',
     sorting: false,
   },
   {
+    title: 'Date',
     field: 'date',
     render: rowData =>
       new Date(rowData.date)
@@ -44,6 +48,19 @@ const columns = [
           day: '2-digit',
         })
         .split(', ')[0],
+  },
+  {
+    title: 'Matched Amount',
+    field: 'matchAmount',
+    type: 'currency',
+    render: rowData => {
+      return rowData && rowData.matchAmount
+        ? new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          }).format(rowData.matchAmount)
+        : 'No Match Amount';
+    },
   },
 ];
 
@@ -87,6 +104,10 @@ class PreviousDonationsTable extends React.Component {
             actions={actions}
             components={components}
             data={pastContributions}
+            perPage={10}
+            options={{
+              pageSize: 10,
+            }}
           />
         )}
       </PageHoc>
