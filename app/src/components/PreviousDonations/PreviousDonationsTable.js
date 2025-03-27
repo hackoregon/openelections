@@ -47,6 +47,7 @@ const columns = [
   },
   {
     field: 'matchAmount',
+    type: 'currency',
     render: rowData => {
       console.log('match amount');
       return rowData && rowData.matchAmount
