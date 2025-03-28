@@ -125,11 +125,6 @@ export function updateMatchForContribution(attrs) {
 
 export const matchStrengthEnum = ['exact', 'strong', 'weak', 'none'];
 export const getCurrentContributionMatch = state => {
-  console.log(
-    'getCurrentContributionMatch',
-    state.matches.list,
-    state.contributions.currentId
-  );
   return state.matches && state.matches.list && state.contributions.currentId
     ? state.matches.list[state.contributions.currentId]
     : false;
