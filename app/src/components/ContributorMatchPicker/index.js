@@ -148,7 +148,6 @@ class contributorMatchPicker extends React.Component {
   }
 
   render() {
-    console.log('contributionMatchPicker', this.props.matchObj);
     const inPortland = (this.props.matchObj || {}).inPortland;
     const { totalPages, currentPage, pages } = this.state;
     const page = !isEmpty(pages) ? pages[currentPage] : [{}];
@@ -200,6 +199,29 @@ class contributorMatchPicker extends React.Component {
                       }}
                     >
                       {noMatchText}
+                    </div>
+                    <div
+                      style={{
+                        padding: '5px 0px',
+                        display: 'flex',
+                      }}
+                    >
+                      {inPortland ? (
+                        <span
+                          css={[
+                            matchColors.exact,
+                            matchPickerModal.addressFields,
+                          ]}
+                        >
+                          Address in Portland
+                        </span>
+                      ) : (
+                        <span
+                          css={[matchColors.no, matchPickerModal.addressFields]}
+                        >
+                          Address not in Portland
+                        </span>
+                      )}
                     </div>
                     {currentContribution.firstName &&
                       currentContribution.lastName && (
