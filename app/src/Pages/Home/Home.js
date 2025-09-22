@@ -320,7 +320,10 @@ const Home = ({
 
   useEffect(() => {
     if (!selectedStartDate && !selectedEndDate) {
-      setDateRange(new Date('Sun Jan 01 2023'), null);
+      setDateRange(
+        new Date(process.env.DEFAULT_DATA_START ?? 'Wed Jan 01 2025'),
+        null
+      );
     }
   }, [selectedEndDate, selectedStartDate, setDateRange]);
   const handleCompare = (event, newCompare) => {
